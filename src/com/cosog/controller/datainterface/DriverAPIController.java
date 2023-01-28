@@ -170,8 +170,8 @@ public class DriverAPIController extends BaseController{
 							
 							
 							rpcDeviceInfo.setOnLineCommStatus(0);
-							rpcDeviceInfo.setOnLineAcqTime(time);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								rpcDeviceInfo.setOnLineAcqTime(time);
 								rpcDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -254,8 +254,8 @@ public class DriverAPIController extends BaseController{
 							
 							
 							pcpDeviceInfo.setOnLineCommStatus(0);
-							pcpDeviceInfo.setOnLineAcqTime(time);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								pcpDeviceInfo.setOnLineAcqTime(time);
 								pcpDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								pcpDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								pcpDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -485,9 +485,9 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						if(rpcDeviceInfo!=null){
-							rpcDeviceInfo.setOnLineAcqTime(acqTime);
 							rpcDeviceInfo.setOnLineCommStatus(acqOnline.getStatus()?2:0);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								rpcDeviceInfo.setOnLineAcqTime(acqTime);
 								rpcDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -631,9 +631,9 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						if(pcpDeviceInfo!=null){
-							pcpDeviceInfo.setOnLineAcqTime(acqTime);
 							pcpDeviceInfo.setOnLineCommStatus(acqOnline.getStatus()?2:0);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								pcpDeviceInfo.setOnLineAcqTime(acqTime);
 								pcpDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								pcpDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								pcpDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -871,9 +871,9 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						if(rpcDeviceInfo!=null){
-							rpcDeviceInfo.setOnLineAcqTime(acqTime);
 							rpcDeviceInfo.setOnLineCommStatus(acqOnline.getStatus()?2:0);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								rpcDeviceInfo.setOnLineAcqTime(acqTime);
 								rpcDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -1017,9 +1017,9 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						if(pcpDeviceInfo!=null){
-							pcpDeviceInfo.setOnLineAcqTime(acqTime);
 							pcpDeviceInfo.setOnLineCommStatus(acqOnline.getStatus()?2:0);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								pcpDeviceInfo.setOnLineAcqTime(acqTime);
 								pcpDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								pcpDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								pcpDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -1820,10 +1820,12 @@ public class DriverAPIController extends BaseController{
 					rpcDeviceInfo.setAcqTime(acqTime);
 					rpcDeviceInfo.setCommStatus(1);
 					
-					rpcDeviceInfo.setOnLineAcqTime(acqTime);
+					
 					rpcDeviceInfo.setOnLineCommStatus(1);
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信状态","通信状态","在线","1","","commStatusName","","","","",1));
 					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						rpcDeviceInfo.setOnLineAcqTime(acqTime);
+						
 						updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 						insertHistColumns+=",commTimeEfficiency,commTime";
@@ -2873,10 +2875,11 @@ public class DriverAPIController extends BaseController{
 					//通信
 					pcpDeviceInfo.setAcqTime(acqTime);
 					pcpDeviceInfo.setCommStatus(1);
-					pcpDeviceInfo.setOnLineAcqTime(acqTime);
 					pcpDeviceInfo.setOnLineCommStatus(1);
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信状态","通信状态","在线","1","","commStatusName","","","","",1));
 					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						pcpDeviceInfo.setOnLineAcqTime(acqTime);
+						
 						updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 						insertHistColumns+=",commTimeEfficiency,commTime";

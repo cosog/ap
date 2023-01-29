@@ -363,11 +363,13 @@ public class MemoryDataManagerTask {
 					rpcDeviceInfo.setOnLineCommEff(rs.getFloat(40));
 					rpcDeviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(41)));
 					
+					rpcDeviceInfo.setRunStatusAcqTime(rs.getString(37));
 					rpcDeviceInfo.setRunStatus(rs.getInt(42));
 					rpcDeviceInfo.setRunTime(rs.getFloat(43));
 					rpcDeviceInfo.setRunEff(rs.getFloat(44));
 					rpcDeviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(45)));
 					
+					rpcDeviceInfo.setKWattHAcqTime(rs.getString(37));
 					rpcDeviceInfo.setTotalKWattH(rs.getFloat(46));
 					rpcDeviceInfo.setTodayKWattH(rs.getFloat(47));
 					
@@ -716,11 +718,13 @@ public class MemoryDataManagerTask {
 				pcpDeviceInfo.setOnLineCommEff(rs.getFloat(28));
 				pcpDeviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(29)));
 				
+				pcpDeviceInfo.setRunStatusAcqTime(rs.getString(25));
 				pcpDeviceInfo.setRunStatus(rs.getInt(30));
 				pcpDeviceInfo.setRunTime(rs.getFloat(31));
 				pcpDeviceInfo.setRunEff(rs.getFloat(32));
 				pcpDeviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(33)));
 				
+				pcpDeviceInfo.setKWattHAcqTime(rs.getString(25));
 				pcpDeviceInfo.setTotalKWattH(rs.getFloat(34));
 				pcpDeviceInfo.setTodayKWattH(rs.getFloat(35));
 				String key=pcpDeviceInfo.getId()+"";

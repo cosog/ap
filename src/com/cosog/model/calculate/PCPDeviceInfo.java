@@ -62,6 +62,8 @@ public class PCPDeviceInfo implements Serializable {
 	
 	private String onLineCommRange;
 	
+	private String runStatusAcqTime;
+	
 	private Integer runStatus;
 	
 	private float runTime;
@@ -69,6 +71,8 @@ public class PCPDeviceInfo implements Serializable {
 	private float runEff;
 	
 	private String runRange;
+	
+	private String KWattHAcqTime;
 	
 	private float totalKWattH;
 	
@@ -583,6 +587,26 @@ public class PCPDeviceInfo implements Serializable {
 
 	public void setIpPort(String ipPort) {
 		this.ipPort = ipPort;
+	}
+
+
+	public String getRunStatusAcqTime() {
+		return runStatusAcqTime;
+	}
+
+
+	public void setRunStatusAcqTime(String runStatusAcqTime) {
+		this.runStatusAcqTime = runStatusAcqTime;
+	}
+
+
+	public String getKWattHAcqTime() {
+		return KWattHAcqTime;
+	}
+
+
+	public void setKWattHAcqTime(String kWattHAcqTime) {
+		KWattHAcqTime = kWattHAcqTime;
 	}
 
 

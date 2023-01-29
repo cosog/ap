@@ -197,13 +197,14 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                     	height: '50%',
                     	xtype: 'tabpanel',
                     	id:'RPCHistoryQueryStatTabPanel',
-                    	activeTab: 0,
+                    	activeTab: onlyMonitor?1:0,
                         header: false,
                 		tabPosition: 'top',
                 		items: [{
                 			title:'工况诊断',
                 			layout: 'fit',
                         	id:'RPCHistoryQueryFESdiagramResultStatGraphPanel_Id',
+                        	hidden: onlyMonitor,
                         	html: '<div id="RPCHistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -779,6 +780,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
             		},{
             			title: '图形平铺',
             			id:"RPCHistoryDiagramTabPanel",
+            			hidden:onlyMonitor,
             			border: false,
                         layout: "fit",
                         autoScroll: true,
@@ -831,6 +833,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
             		},{
             			title: '图形叠加',
             			id:"RPCHistoryDiagramOverlayTabPanel",
+            			hidden:onlyMonitor,
             			layout: 'border',
 //                        layout: {
 //                            type: 'hbox',

@@ -195,13 +195,14 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                     	height: '50%',
                     	xtype: 'tabpanel',
                     	id:'RPCRealTimeMonitoringStatTabPanel',
-                    	activeTab: 0,
+                    	activeTab: onlyMonitor?1:0,
                         header: false,
                 		tabPosition: 'top',
                 		items: [{
                 			title:'工况诊断',
                 			layout: 'fit',
                         	id:'RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id',
+                        	hidden: onlyMonitor,
                         	html: '<div id="RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -328,7 +329,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                         region: 'center',
                         xtype: 'tabpanel',
                 		id:"RPCRealTimeMonitoringCurveAndTableTabPanel",
-                		activeTab: 0,
+                		activeTab: onlyMonitor?2:0,
                 		border: false,
                 		tabPosition: 'top',
                 		items: [{
@@ -338,6 +339,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                             autoScroll:true,
                             scrollable: true,
                             id: 'RPCRealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
+                            hidden: onlyMonitor,
                             layout: {
                                 type: 'vbox',
                                 pack: 'start',
@@ -427,6 +429,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                             autoScroll:true,
                             scrollable: true,
                             id: 'RPCRealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id',
+                            hidden: onlyMonitor,
                             layout: {
                                 type: 'vbox',
                                 pack: 'start',
@@ -610,7 +613,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                     	width: '31%',
                     	xtype: 'tabpanel',
                     	id:"RPCRealTimeMonitoringRightTabPanel",
-                		activeTab: 0,
+                		activeTab: onlyMonitor?1:0,
                 		border: false,
                 		split: true,
                         collapsible: true,
@@ -619,6 +622,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                 		items: [{
                 			title:'设备信息',
                 			layout: 'border',
+                			hidden: onlyMonitor,
                 			items:[{
                 				region: 'center',
                 				id: 'RPCRealTimeMonitoringRightDeviceInfoPanel',

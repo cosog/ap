@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -64,10 +64,12 @@ public class EquipmentDriverServerTask {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
-		String probeUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getProbe().getInit());
-		
+		String probeUrl=StringManagerUtils.getRequesrUrl(
+				Config.getInstance().configFile.getAd().getIp(), 
+				Config.getInstance().configFile.getAd().getPort(), 
+				Config.getInstance().configFile.getAd().getProbe().getInit()
+				);
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
 //		

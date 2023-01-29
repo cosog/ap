@@ -331,6 +331,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 split: true,
                 collapsible: true,
                 header:false,
+                hidden:onlyMonitor,
                 items: [{
                 	region: 'center',
                 	header:false,

@@ -133,7 +133,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         				id:'PCPRealTimeMonitoringInfoPanel_Id',
         				items: [PCPRealTimeMonitoringInfoView],
         				layout: "fit",
-        				hidden: pcpHidden,
+        				hidden: pcpHidden||onlyMonitor,
         				border: false
         			}],
         			listeners: {

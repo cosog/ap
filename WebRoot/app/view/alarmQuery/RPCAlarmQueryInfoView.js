@@ -15,12 +15,13 @@ Ext.define("AP.view.alarmQuery.RPCAlarmQueryInfoView", {
         	items: [{
         		xtype: 'tabpanel',
         		id:"RPCAlarmQueryTabPanel",
-        		activeTab: 0,
+        		activeTab: onlyMonitor?1:0,
         		border: false,
         		tabPosition: 'left',
         		items: [{
     				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">工况诊断报警</div>',
     				id:'RPCFESDiagramResultAlarmInfoPanel_Id',
+    				hidden:onlyMonitor,
     				items: [RPCFESDiagramResultAlarmInfoView],
     				layout: "fit",
     				border: false

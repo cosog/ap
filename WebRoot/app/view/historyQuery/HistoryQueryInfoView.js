@@ -25,7 +25,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         				id:'PCPHistoryQueryInfoPanel_Id',
         				items: [PCPHistoryQueryInfoView],
         				layout: "fit",
-        				hidden: pcpHidden,
+        				hidden: pcpHidden||onlyMonitor,
         				border: false
         			}],
         			listeners: {

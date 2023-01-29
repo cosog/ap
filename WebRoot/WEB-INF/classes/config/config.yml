@@ -50,7 +50,7 @@ ap:
       vacuateThreshold: 500           #历史曲线、图形抽稀阈值
       productionUnit: stere           #产量单位 stere-立方米 ton-吨
       pcpHidden: false
-      onlyMonitor: false              #是否仅是监控
+      onlyMonitor: true              #是否仅是监控
       showLogo: true                  #是否显示图标
       printLog: true                 #是否打印日志
       exportLimit: 10000              #导出数据上限

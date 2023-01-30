@@ -336,7 +336,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
 		                    	}
-		                    }else if (visualColIndex === 2 && (visualRowIndex===6) || visualRowIndex===7) {
+		                    }else if (visualColIndex === 2 && (visualRowIndex===6 || visualRowIndex===7) ) {
 		                    	if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined && protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
 		                    		var signInPrefixSuffixHex=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(5,2);
 		                    		if(signInPrefixSuffixHex){
@@ -344,7 +344,22 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 				                    	    return handsontableDataCheck_HexStr_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
 				                    	}
 		                    		}else{
-		                    			this.validator=null;
+		                    			this.validator=function (val, callback) {
+		                    				return callback(true);
+		                    			}
+		                    		}
+		                    	}
+		                    }else if (visualColIndex === 2 && (visualRowIndex===10 || visualRowIndex===11) ) {
+		                    	if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined && protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+		                    		var heartbeatPrefixSuffixHex=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(9,2);
+		                    		if(heartbeatPrefixSuffixHex){
+		                    			this.validator=function (val, callback) {
+				                    	    return handsontableDataCheck_HexStr_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+				                    	}
+		                    		}else{
+		                    			this.validator=function (val, callback) {
+		                    				return callback(true);
+		                    			}
 		                    		}
 		                    	}
 		                    }

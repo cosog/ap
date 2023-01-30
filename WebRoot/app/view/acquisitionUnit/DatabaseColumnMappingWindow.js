@@ -13,13 +13,14 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 800,
-    minWidth: 800,
-    height: 600,
+    width: 1200,
+    minWidth: 1200,
+    height: 800,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {
         var me = this;
+        Ext.create('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore');
         Ext.apply(me, {
         	tbar: [{
             	xtype : "combobox",
@@ -54,15 +55,37 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     				databaseColumnMappingHandsontableHelper.saveData();
     			}
             }],
-            html: '<div id="HistoryQueryDataDetailsDiv_Id" style="width:100%;height:100%;"></div>',
-            listeners: {
-                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
-                		databaseColumnMappingHandsontableHelper.hot.refreshDimensions();
-                	}else{
-              			CreateDatabaseColumnMappingTable();
+            layout: "border",
+            items: [{
+            	region: 'west',
+            	width:'25%',
+            	layout: 'fit',
+            	id:"DatabaseColumnMappingTableLeftTreePanel_Id"
+            },{
+            	region: 'center',
+            	layout: "border",
+            	items: [{
+            		region: 'center',
+                	title:'存储字段表',
+                	layout: 'fit',
+                	header:true,
+                	html: '<div id="DatabaseColumnMappingTableDiv_Id" style="width:100%;height:100%;"></div>',
+                	listeners: {
+                		resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
+                        		databaseColumnMappingHandsontableHelper.hot.refreshDimensions();
+                        	}else{
+                      			CreateDatabaseColumnMappingTable();
+                        	}
+                        }
                 	}
-                },
+            	},{
+            		region: 'south',
+                	height:'40%',
+                	title:'运行状态配置',
+            	}]
+            }],
+            listeners: {
                 beforeclose: function ( panel, eOpts) {
                 	if(databaseColumnMappingHandsontableHelper!=null){
     					if(databaseColumnMappingHandsontableHelper.hot!=undefined){
@@ -89,7 +112,7 @@ function CreateDatabaseColumnMappingTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
-				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("HistoryQueryDataDetailsDiv_Id");
+				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
 				var colHeaders="['序号','名称','字段','计算字段']";
 				var columns="[" 
 						+"{data:'id'}," 

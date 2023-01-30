@@ -57,7 +57,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                             title: '存储字段表'
                         });
                         window.show();
-//                        Ext.create("AP.store.acquisitionUnit.DatabaseColumnMappingStore");
         			}
                 }],
                 layout: "border",
@@ -443,12 +442,11 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
-		                }
 	                    if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
-	                    	if(visualColIndex === 2 && visualRowIndex===0){
+	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
+			                }else if(visualColIndex === 2 && visualRowIndex===0){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
 		                    	}

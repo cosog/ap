@@ -22,32 +22,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
         var me = this;
         Ext.create('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore');
         Ext.apply(me, {
-        	tbar: [{
-            	xtype : "combobox",
-				fieldLabel : '设备类型',
-				labelWidth: 60,
-                width: 150,
-				id : 'databaseColumnMappingDeviceTypeComb_Id',
-				triggerAction : 'all',
-				selectOnFocus : true,
-			    forceSelection : true,
-			    value:0,
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, '抽油机井'],[1, '螺杆泵井']]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : '请选择设备类型',
-				blankText : '请选择设备类型',
-				listeners : {
-					select:function(v,o){
-						CreateDatabaseColumnMappingTable();
-					}
-				}
-            },'->',{
+        	tbar: ['->',{
             	xtype: 'button',
     			text: cosog.string.save,
     			iconCls: 'save',
@@ -64,6 +39,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             },{
             	region: 'center',
             	layout: "border",
+            	border: false,
             	items: [{
             		region: 'center',
                 	title:'存储字段表',
@@ -74,15 +50,13 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 		resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                         	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
                         		databaseColumnMappingHandsontableHelper.hot.refreshDimensions();
-                        	}else{
-                      			CreateDatabaseColumnMappingTable();
                         	}
                         }
                 	}
             	},{
             		region: 'south',
                 	height:'40%',
-                	title:'运行状态配置',
+                	title:'运行状态配置'
             	}]
             }],
             listeners: {
@@ -103,8 +77,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     }
 });
 
-function CreateDatabaseColumnMappingTable(){
-	var deviceType = Ext.getCmp("databaseColumnMappingDeviceTypeComb_Id").getValue();
+function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode){
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getDatabaseColumnMappingTable',
@@ -135,7 +108,9 @@ function CreateDatabaseColumnMappingTable(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType: deviceType
+			classes: classes,
+			deviceType: deviceType,
+			protocolCode: protocolCode
         }
 	});
 };

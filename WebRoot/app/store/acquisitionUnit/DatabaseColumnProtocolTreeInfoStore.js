@@ -54,25 +54,13 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                         },
                         selectionchange ( view, selected, eOpts ){
                         	
-                        },select( v, record, index, eOpts ){
-//                        	Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(index);
-//                        	if(record.data.classes==0){
-//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                        			CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-//                        		}else{
-//                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
-//                        			if(protocolConfigAddrMappingItemsHandsontableHelper!=null && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-//                        				protocolConfigAddrMappingItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-//                        			}
-//                        			if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null && protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined){
-//                        				protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-//                        			}
-//                        		}
-//                        	}else if(record.data.classes==1){
-//                        		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-//                        	}
-//                        	CreateProtocolConfigAddrMappingPropertiesInfoTable(record.data);
-                        	CreateDatabaseColumnMappingTable();
+                        },
+                        select( v, record, index, eOpts ){
+                        	var protocolCode="";
+                        	if(record.data.classes==1){
+                        		protocolCode=record.data.code;
+                        	}
+                        	CreateDatabaseColumnMappingTable(record.data.classes,record.data.deviceType,protocolCode);
                         }
                     }
 

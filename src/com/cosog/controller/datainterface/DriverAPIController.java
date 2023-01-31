@@ -1305,6 +1305,7 @@ public class DriverAPIController extends BaseController{
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
 				EquipmentDriverServerTask.loadAcquisitionItemColumns(DeviceType);
+				acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			if(acqGroup!=null){

@@ -2522,8 +2522,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getDatabaseColumnMappingTable")
 	public String getDatabaseColumnMappingTable() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
+		String classes = ParamUtils.getParameter(request, "classes");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String json = this.acquisitionUnitManagerService.getDatabaseColumnMappingTable(deviceType);
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = this.acquisitionUnitManagerService.getDatabaseColumnMappingTable(classes,deviceType,protocolCode);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getProtocolRunStatusItems")
+	public String getProtocolRunStatusItems() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String classes = ParamUtils.getParameter(request, "classes");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItems(classes,deviceType,protocolCode);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

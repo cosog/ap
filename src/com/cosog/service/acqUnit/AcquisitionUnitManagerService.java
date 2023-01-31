@@ -37,6 +37,7 @@ import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
+import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
@@ -2751,8 +2752,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
+		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
 		result_json.append("]");
 		return result_json.toString();
 	}
@@ -3434,9 +3435,102 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDatabaseColumnMappingTable(String deviceType) {
+	public String getDatabaseColumnMappingTable(String classes,String deviceType,String protocolCode) {
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where t.protocoltype="+deviceType+" order by t.id";
+		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where t.protocoltype="+deviceType;
+		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
+			List<String> protocolMappingColumnList=new ArrayList<String>();
+			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			if(modbusProtocolConfig!=null){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)
+							&& protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						String columnsKey="rpcDeviceAcquisitionItemColumns";
+						if(StringManagerUtils.stringToInteger(deviceType)==1){
+							columnsKey="pcpDeviceAcquisitionItemColumns";
+						}
+						Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+						if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
+							EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+							acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+						}
+						Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							protocolMappingColumnList.add(columnName);
+						}
+						if(protocolMappingColumnList.size()>0){
+							sql+=" and t.mappingcolumn in ("+StringManagerUtils.joinStringArr2(protocolMappingColumnList, ",")+")";
+						}else{
+							sql+=" and 1=2";
+						}
+						break;
+					}
+				}
+			}
+		}
+				
+				
+		sql+=" order by t.id";
+		String columns="["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\" ,children:[] },"
+				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",children:[] },"
+				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",children:[] }"
+				+ "]";
+		List<?> list=this.findCallSql(sql);
+		result_json.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"itemName\":\""+obj[1]+"\",");
+			result_json.append("\"itemColumn\":\""+obj[2]+"\",");
+			result_json.append("\"calColumn\":\""+obj[3]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getProtocolRunStatusItems(String classes,String deviceType,String protocolCode) {
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where t.protocoltype="+deviceType;
+		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
+			List<String> protocolMappingColumnList=new ArrayList<String>();
+			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			if(modbusProtocolConfig!=null){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)
+							&& protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						String columnsKey="rpcDeviceAcquisitionItemColumns";
+						if(StringManagerUtils.stringToInteger(deviceType)==1){
+							columnsKey="pcpDeviceAcquisitionItemColumns";
+						}
+						Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+						if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
+							EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+							acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+						}
+						Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							protocolMappingColumnList.add(columnName);
+						}
+						if(protocolMappingColumnList.size()>0){
+							sql+=" and t.mappingcolumn in ("+StringManagerUtils.joinStringArr2(protocolMappingColumnList, ",")+")";
+						}else{
+							sql+=" and 1=2";
+						}
+						break;
+					}
+				}
+			}
+		}
+				
+				
+		sql+=" and upper(t.calcolumn)='RUNSTATUS' order by t.id";
 		String columns="["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\" ,children:[] },"

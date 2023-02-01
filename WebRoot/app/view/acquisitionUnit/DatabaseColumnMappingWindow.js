@@ -15,7 +15,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     minimizable: true,
     width: 1200,
     minWidth: 1200,
-    height: 800,
+    height: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {
@@ -55,8 +55,27 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 	}
             	},{
             		region: 'south',
-                	height:'40%',
-                	title:'运行状态配置'
+                	height:'33%',
+                	title:'运行状态配置',
+                	layout: "border",
+                	items: [{
+                		region: 'west',
+                		width:'50%',
+                    	layout: 'fit',
+                    	title:'运行状态项列表',
+                    	id:"DatabaseColumnMappingTableRunStatusItemsPanel_Id"
+                	},{
+                		region: 'center',
+                		layout: 'fit',
+                		title:'运行值配置',
+                    	id:"DatabaseColumnMappingTableRunStatusMeaningPanel1_Id"
+                	},{
+                		region: 'east',
+                		width:'25%',
+                		layout: 'fit',
+                		title:'停止值配置',
+                    	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
+                	}]
             	}]
             }],
             listeners: {
@@ -324,4 +343,52 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        }
 	        return databaseColumnMappingHandsontableHelper;
 	    }
+};
+
+function createDatabaseColumnMappingTableRunStatusItemsColumn(columnInfo) {
+    var myArr = columnInfo;
+
+    var myColumns = "[";
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var width_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        var flex_ = "";
+        if (attr.hidden == true) {
+            hidden_ = ",hidden:true";
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            width_ = ",width:" + attr.width;
+        }
+        if (isNotVal(attr.flex)) {
+        	flex_ = ",flex:" + attr.flex;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
+        if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
+        }
+        else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
+        }
+        else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+        }
+        else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
+        }
+        else {
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
+            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
+        }
+        myColumns += "}";
+        if (i < myArr.length - 1) {
+            myColumns += ",";
+        }
+    }
+    myColumns += "]";
+    return myColumns;
 };

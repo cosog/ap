@@ -1838,7 +1838,7 @@ createGridPanelColumn = function(columnInfo) {
 		myColumns += "{text:'" + attr.header + "'";
 		if (attr.dataType == 'timestamp') {
 			myColumns +=lock_+width_+ ",sortable : false,align:'center'" + ",dataIndex:'" + attr.dataIndex+ "',renderer:function(value){return dateFormat(value);}";
-		} else if (attr.dataIndex == 'id'||attr.dataIndex=="jh as id") {
+		} else if (attr.dataIndex == 'id') {
 			myColumns += lock_+width_+",xtype: 'rownumberer',sortable : false,align:'center'";
 		} else {
 			myColumns +=hidden_+lock_+width_+ ",sortable : false,align:'center',dataIndex:'"+ attr.dataIndex + "'";

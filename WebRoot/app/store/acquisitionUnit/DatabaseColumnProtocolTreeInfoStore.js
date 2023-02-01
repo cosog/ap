@@ -61,6 +61,13 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                         		protocolCode=record.data.code;
                         	}
                         	CreateDatabaseColumnMappingTable(record.data.classes,record.data.deviceType,protocolCode);
+                        	
+                        	var databaseColumnMappingTableRunStatusItemsGridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id");
+                        	if (isNotVal(databaseColumnMappingTableRunStatusItemsGridPanel)) {
+                        		databaseColumnMappingTableRunStatusItemsGridPanel.getStore().load();
+                        	}else{
+                        		Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsStore');
+                        	}
                         }
                     }
 

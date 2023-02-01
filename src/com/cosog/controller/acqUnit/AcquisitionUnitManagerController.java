@@ -2551,6 +2551,24 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getProtocolRunStatusItemsMeaning")
+	public String getProtocolRunStatusItemsMeaning() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String status = ParamUtils.getParameter(request, "status");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String itemName = ParamUtils.getParameter(request, "itemName");
+		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
+		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItemsMeaning(status,deviceType,protocolCode,itemName,itemColumn);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveDatabaseColumnMappingTable")
 	public String saveDatabaseColumnMappingTable() throws Exception {
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");

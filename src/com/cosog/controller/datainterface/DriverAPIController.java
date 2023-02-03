@@ -23,6 +23,7 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
 import com.cosog.model.Org;
+import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
@@ -1290,6 +1291,9 @@ public class DriverAPIController extends BaseController{
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
 			
+			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
+				MemoryDataManagerTask.loadProtocolRunStatusConfig();
+			}
 			String realtimeTable="tbl_rpcacqdata_latest";
 			String historyTable="tbl_rpcacqdata_hist";
 			String rawDataTable="tbl_rpcacqrawdata";
@@ -1519,7 +1523,19 @@ public class DriverAPIController extends BaseController{
 									
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
 										isAcqRunStatus=true;
-										runStatus=StringManagerUtils.stringToInteger(rawValue);
+										int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+												runStatus=1;
+											}
+										}else{
+											if(rawRunStatus==1){
+												runStatus=1;
+											}else{
+												runStatus=0;
+											}
+										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.stringToFloat(rawValue)>=0){
 											isAcqEnergy=true;
@@ -2474,6 +2490,9 @@ public class DriverAPIController extends BaseController{
 			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
+			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
+				MemoryDataManagerTask.loadProtocolRunStatusConfig();
+			}
 			
 			String realtimeTable="tbl_pcpacqdata_latest";
 			String historyTable="tbl_pcpacqdata_hist";
@@ -2599,7 +2618,6 @@ public class DriverAPIController extends BaseController{
 								String columnName=loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle());
 								
 								DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
-								
 								if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null){
 									value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 								}
@@ -2697,7 +2715,20 @@ public class DriverAPIController extends BaseController{
 									
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
 										isAcqRunStatus=true;
-										runStatus=StringManagerUtils.stringToInteger(rawValue);
+										int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+
+										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+												runStatus=1;
+											}
+										}else{
+											if(rawRunStatus==1){
+												runStatus=1;
+											}else{
+												runStatus=0;
+											}
+										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.stringToFloat(rawValue)>=0){
 											isAcqEnergy=true;

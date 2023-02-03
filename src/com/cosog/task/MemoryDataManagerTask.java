@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
+import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AcqInstanceOwnItem.AcqItem;
@@ -70,6 +71,8 @@ public class MemoryDataManagerTask {
 		
 		loadProtocolConfig();
 		
+		loadProtocolRunStatusConfig();
+		
 		loadAcqInstanceOwnItemById("","update");
 		loadAlarmInstanceOwnItemById("","update");
 		loadDisplayInstanceOwnItemById("","update");
@@ -87,6 +90,7 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			jedis.del("modbusProtocolConfig".getBytes());
 			jedis.del("ProtocolMappingColumn".getBytes());
+			jedis.del("ProtocolRunStatusConfig".getBytes());
 			jedis.del("RPCDeviceInfo".getBytes());
 			jedis.del("RPCDeviceTodayData".getBytes());
 			jedis.del("PCPDeviceInfo".getBytes());
@@ -162,6 +166,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			jedis.del("ProtocolMappingColumn".getBytes());
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
@@ -177,22 +182,62 @@ public class MemoryDataManagerTask {
 				String key=dataMapping.getProtocolType()+"_"+dataMapping.getMappingColumn();
 				jedis.hset("ProtocolMappingColumn".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMapping));//哈希(Hash)
 			}
-//			Set<String> aa=jedis.hkeys("ProtocolMappingColumn");
-//			Set<byte[]> bb=jedis.hkeys("ProtocolMappingColumn".getBytes());
-//			System.out.println("ProtocolMappingColumn中所有的key:"+aa);
-//			System.out.println("ProtocolMappingColumn中所有的key:"+bb);
-//			byte[] testKey=null;
-//			for (byte[] str : bb) {
-//				testKey=str;
-//				break;
-//			}
-//			
-//			System.out.println("ProtocolMappingColumn中所有的值:"+jedis.hvals("ProtocolMappingColumn".getBytes()));
-//			System.out.println("ProtocolMappingColumn中所有的值:"+jedis.hvals("ProtocolMappingColumn"));
-//			
-//			
-//			System.out.println("判断某个key是否存在:"+jedis.hexists("ProtocolMappingColumn".getBytes(), testKey));
-//			System.out.println("判断某个key的值:"+jedis.hget("ProtocolMappingColumn".getBytes(), testKey));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void loadProtocolRunStatusConfig(){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.runvalue,t.stopvalue,t.protocoltype "
+					+ " from tbl_runstatusconfig t order by t.protocoltype,t.id";
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				ProtocolRunStatusConfig protocolRunStatusConfig=new ProtocolRunStatusConfig();
+				protocolRunStatusConfig.setId(rs.getInt(1));
+				protocolRunStatusConfig.setProtocol(rs.getString(2));
+				protocolRunStatusConfig.setItemName(rs.getString(3));
+				protocolRunStatusConfig.setItemMappingColumn(rs.getString(4));
+				protocolRunStatusConfig.setProtocolType(rs.getInt(7));
+				protocolRunStatusConfig.setRunValue(new ArrayList<Integer>());
+				protocolRunStatusConfig.setStopValue(new ArrayList<Integer>());
+				String runValueStr=rs.getString(5);
+				String stopValueStr=rs.getString(6);
+				if(StringManagerUtils.isNotNull(runValueStr)){
+					String[] runValueArr=runValueStr.split(",");
+					for(int i=0;i<runValueArr.length;i++){
+						if(StringManagerUtils.isNum(runValueArr[i])){
+							protocolRunStatusConfig.getRunValue().add(StringManagerUtils.stringToInteger(runValueArr[i]));
+						}
+					}
+				}
+				if(StringManagerUtils.isNotNull(stopValueStr)){
+					String[] stopValueArr=stopValueStr.split(",");
+					for(int i=0;i<stopValueArr.length;i++){
+						if(StringManagerUtils.isNum(stopValueArr[i])){
+							protocolRunStatusConfig.getStopValue().add(StringManagerUtils.stringToInteger(stopValueArr[i]));
+						}
+					}
+				}
+				
+				String key=protocolRunStatusConfig.getProtocolType()+"_"+protocolRunStatusConfig.getProtocol()+"_"+protocolRunStatusConfig.getItemName();
+				jedis.hset("ProtocolRunStatusConfig".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(protocolRunStatusConfig));//哈希(Hash)
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

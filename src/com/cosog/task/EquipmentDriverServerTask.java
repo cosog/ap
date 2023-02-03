@@ -52,14 +52,14 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
+	private static boolean initEnable=true;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -408,12 +408,40 @@ public class EquipmentDriverServerTask {
 			}
 			
 			MemoryDataManagerTask.loadProtocolMappingColumn();
+			
+			//同步运行状态配置
+			syncProtocolRunStatusConfig();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		
+		return result;
+	}
+	
+	public static int syncProtocolRunStatusConfig(){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		int result=0;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			String deleteRunStatusConfigSql="delete from tbl_runstatusconfig t where t.id not in"
+					+ "( select t2.id from tbl_runstatusconfig t2,tbl_datamapping t3 "
+					+ " where t2.protocoltype=t3.protocoltype and t2.itemname=t3.name "
+					+ " and t2.itemmappingcolumn=t3.mappingcolumn and upper(t3.calcolumn)='RUNSTATUS')";
+			pstmt = conn.prepareStatement(deleteRunStatusConfigSql);
+			result=pstmt.executeUpdate();
+			MemoryDataManagerTask.loadProtocolRunStatusConfig();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
 		return result;
 	}
 	

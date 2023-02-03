@@ -22,19 +22,13 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
         var me = this;
         Ext.create('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore');
         Ext.apply(me, {
-        	tbar: ['->',{
-            	xtype: 'button',
-    			text: cosog.string.save,
-    			iconCls: 'save',
-    			handler: function (v, o) {
-    				databaseColumnMappingHandsontableHelper.saveData();
-    			}
-            }],
             layout: "border",
             items: [{
             	region: 'west',
             	width:'25%',
             	layout: 'fit',
+            	split: true,
+                collapsible: true,
             	id:"DatabaseColumnMappingTableLeftTreePanel_Id"
             },{
             	region: 'center',
@@ -45,6 +39,14 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 	title:'存储字段表',
                 	layout: 'fit',
                 	header:true,
+                	tbar: ['->',{
+                    	xtype: 'button',
+            			text: cosog.string.save,
+            			iconCls: 'save',
+            			handler: function (v, o) {
+            				databaseColumnMappingHandsontableHelper.saveData();
+            			}
+                    }],
                 	html: '<div id="DatabaseColumnMappingTableDiv_Id" style="width:100%;height:100%;"></div>',
                 	listeners: {
                 		resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -58,6 +60,16 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 	height:'33%',
                 	title:'运行状态配置',
                 	layout: "border",
+                	split: true,
+                    collapsible: true,
+                	tbar: ['->',{
+                    	xtype: 'button',
+            			text: cosog.string.save,
+            			iconCls: 'save',
+            			handler: function (v, o) {
+            				saveProtocolRunStatusConfig();
+            			}
+                    }],
                 	items: [{
                 		region: 'west',
                 		width:'50%',
@@ -258,38 +270,53 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        }
 	        //保存数据
 	        databaseColumnMappingHandsontableHelper.saveData = function () {
-	        	databaseColumnMappingHandsontableHelper.insertExpressCount();
-	            if (JSON.stringify(databaseColumnMappingHandsontableHelper.AllData) != "{}" && databaseColumnMappingHandsontableHelper.validresult) {
-	            	Ext.Ajax.request({
-	            		method:'POST',
-	            		url:context + '/acquisitionUnitManagerController/saveDatabaseColumnMappingTable',
-	            		success:function(response) {
-	            			rdata=Ext.JSON.decode(response.responseText);
-	            			if (rdata.success) {
-	                        	Ext.MessageBox.alert("信息","保存成功");
-	                            databaseColumnMappingHandsontableHelper.clearContainer();
-	                            CreateDatabaseColumnMappingTable();
-	                        } else {
-	                        	Ext.MessageBox.alert("信息","数据保存失败");
-
-	                        }
-	            		},
-	            		failure:function(){
-	            			Ext.MessageBox.alert("信息","请求失败");
-	                        databaseColumnMappingHandsontableHelper.clearContainer();
-	            		},
-	            		params: {
-	                    	data: JSON.stringify(databaseColumnMappingHandsontableHelper.AllData),
-	                    	protocolType: Ext.getCmp("databaseColumnMappingDeviceTypeComb_Id").getValue()
-	                    }
-	            	}); 
-	            } else {
-	                if (!databaseColumnMappingHandsontableHelper.validresult) {
-	                	Ext.MessageBox.alert("信息","数据类型错误");
-	                } else {
-	                	Ext.MessageBox.alert("信息","无数据变化");
-	                }
-	            }
+	        	var protocolTreeSelection=Ext.getCmp("DatabaseColumnProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+	        	if(protocolTreeSelection.length>0){
+	        		databaseColumnMappingHandsontableHelper.insertExpressCount();
+	        		var selectedProtocol=protocolTreeSelection[0];
+	        		var classes=selectedProtocol.data.classes;
+	        		var protocolType=selectedProtocol.data.deviceType;
+	        		var protocolCode="";
+	        		if(classes==1){
+	            		protocolCode=selectedProtocol.data.code;
+	            	}
+		            if (JSON.stringify(databaseColumnMappingHandsontableHelper.AllData) != "{}" && databaseColumnMappingHandsontableHelper.validresult) {
+		            	Ext.Ajax.request({
+		            		method:'POST',
+		            		url:context + '/acquisitionUnitManagerController/saveDatabaseColumnMappingTable',
+		            		success:function(response) {
+		            			rdata=Ext.JSON.decode(response.responseText);
+		            			if (rdata.success) {
+		                        	Ext.MessageBox.alert("信息","保存成功");
+		                            databaseColumnMappingHandsontableHelper.clearContainer();
+		                            CreateDatabaseColumnMappingTable(classes,protocolType,protocolCode);
+		                            
+		                            var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id");
+		                            if (isNotVal(gridPanel)) {
+		                            	gridPanel.getSelectionModel().deselectAll(true);
+		                            	gridPanel.getStore().load();
+		                            }
+		                        } else {
+		                        	Ext.MessageBox.alert("信息","数据保存失败");
+		                        }
+		            		},
+		            		failure:function(){
+		            			Ext.MessageBox.alert("信息","请求失败");
+		                        databaseColumnMappingHandsontableHelper.clearContainer();
+		            		},
+		            		params: {
+		                    	data: JSON.stringify(databaseColumnMappingHandsontableHelper.AllData),
+		                    	protocolType: protocolType
+		                    }
+		            	}); 
+		            } else {
+		                if (!databaseColumnMappingHandsontableHelper.validresult) {
+		                	Ext.MessageBox.alert("信息","数据类型错误");
+		                } else {
+		                	Ext.MessageBox.alert("信息","无数据变化");
+		                }
+		            }
+	        	}
 	        }
 	        
 	        
@@ -392,3 +419,71 @@ function createDatabaseColumnMappingTableRunStatusItemsColumn(columnInfo) {
     myColumns += "]";
     return myColumns;
 };
+
+function saveProtocolRunStatusConfig(){
+	var runStatusItemsSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id").getSelectionModel().getSelection();
+	if(runStatusItemsSelection.length>0){
+		var selectedRunStatusItem=runStatusItemsSelection[0];
+		protocolCode=selectedRunStatusItem.data.protocolCode;
+		itemName=selectedRunStatusItem.data.itemName;
+		itemColumn=selectedRunStatusItem.data.itemColumn;
+		deviceType=selectedRunStatusItem.data.deviceType;
+		
+		var runValue="";
+		var stopValue="";
+		var runValueSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id").getSelectionModel().getSelection();
+		var stopValueSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id").getSelectionModel().getSelection();
+		if(runValueSelection.length>0){
+			for(var i=0;i<runValueSelection.length;i++){
+				runValue+=runValueSelection[i].data.value;
+				if(i<runValueSelection.length-1){
+					runValue+=",";
+				}
+			}
+		}
+		if(stopValueSelection.length>0){
+			for(var i=0;i<stopValueSelection.length;i++){
+				stopValue+=stopValueSelection[i].data.value;
+				if(i<stopValueSelection.length-1){
+					stopValue+=",";
+				}
+			}
+		}
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/acquisitionUnitManagerController/saveProtocolRunStatusConfig',
+			success:function(response) {
+				Ext.MessageBox.alert("信息","保存成功");
+				var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getSelectionModel().deselectAll(true);
+                	gridPanel.getStore().load();
+                }else{
+                	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore');
+                }
+                
+                var gridPanel2 = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id");
+                if (isNotVal(gridPanel2)) {
+                	gridPanel2.getSelectionModel().deselectAll(true);
+                	gridPanel2.getStore().load();
+                }else{
+                	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore');
+                }
+			},
+			failure:function(){
+				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			},
+			params: {
+				protocolCode: protocolCode,
+				itemName: itemName,
+				itemColumn: itemColumn,
+				deviceType: deviceType,
+				runValue: runValue,
+				stopValue: stopValue
+	        }
+		});
+		
+		
+	}
+}

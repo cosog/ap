@@ -60,21 +60,25 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                 var panel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id");
                 panel.add(gridPanel);
             }
-//            gridPanel.getSelectionModel().deselectAll(true);
-//            gridPanel.getSelectionModel().select(0, true);
+            gridPanel.getSelectionModel().deselectAll(true);
+            if(get_rawData.stopValueIndex.length>0){
+            	for(var i=0;i<get_rawData.stopValueIndex.length;i++){
+            		gridPanel.getSelectionModel().select(get_rawData.stopValueIndex[i], true);
+            	}
+            }
         },
         beforeload: function (store, options) {
         	var protocolCode="";
         	var itemName="";
         	var itemColumn="";
         	var deviceType=0;
-        	var protocolTreeSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id").getSelectionModel().getSelection();
-        	if(protocolTreeSelection.length>0){
-        		var selectedProtocol=protocolTreeSelection[0];
-        		protocolCode=selectedProtocol.data.protocolCode;
-        		itemName=selectedProtocol.data.itemName;
-        		itemColumn=selectedProtocol.data.itemColumn;
-        		deviceType=selectedProtocol.data.deviceType;
+        	var runStatusItemsSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id").getSelectionModel().getSelection();
+        	if(runStatusItemsSelection.length>0){
+        		var selectedRunStatusItem=runStatusItemsSelection[0];
+        		protocolCode=selectedRunStatusItem.data.protocolCode;
+        		itemName=selectedRunStatusItem.data.itemName;
+        		itemColumn=selectedRunStatusItem.data.itemColumn;
+        		deviceType=selectedRunStatusItem.data.deviceType;
         	}
             var new_params = {
             		status:0,

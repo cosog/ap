@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -445,7 +446,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		totalRoot.append("]");
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"值\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"数值\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"含义\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
 				+ "]";
 		if(resolutionMode==0){
@@ -660,7 +661,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"值\",\"dataIndex\":\"value\",width:120 ,children:[] },"
+				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",width:120 ,children:[] },"
 				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(S)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
@@ -2223,7 +2224,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"值\",\"dataIndex\":\"value\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",width:80 ,children:[] },"
 				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
@@ -3618,9 +3619,39 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+		
+		List<Integer> runValueIndexList=new ArrayList<Integer>();
+		List<Integer> runConfigValueList=new ArrayList<Integer>();
+		List<Integer> stopValueIndexList=new ArrayList<Integer>();
+		List<Integer> stopConfigValueList=new ArrayList<Integer>();
+		String setValueSql="select t.runvalue,t.stopvalue from tbl_runstatusconfig t "
+				+ " where t.protocol='"+protocolCode+"' and t.itemname='"+itemName+"' and t.itemmappingcolumn='"+itemColumn+"' and t.protocoltype="+deviceType;
+		List<?> list=this.findCallSql(setValueSql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			String runValueStr=obj[0]+"";
+			String stopValueStr=obj[1]+"";
+			if(StringManagerUtils.isNotNull(runValueStr)){
+				String[] runValueArr=runValueStr.split(",");
+				for(int i=0;i<runValueArr.length;i++){
+					if(StringManagerUtils.isNum(runValueArr[i])){
+						runConfigValueList.add(StringManagerUtils.stringToInteger(runValueArr[i]));
+					}
+				}
+			}
+			if(StringManagerUtils.isNotNull(stopValueStr)){
+				String[] stopValueArr=stopValueStr.split(",");
+				for(int i=0;i<stopValueArr.length;i++){
+					if(StringManagerUtils.isNum(stopValueArr[i])){
+						stopConfigValueList.add(StringManagerUtils.stringToInteger(stopValueArr[i]));
+					}
+				}
+			}
+		}
+//		StringManagerUtils.existOrNot(runValueIndexList, 1)
 		String columns="["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-				+ "{ \"header\":\"值\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] },"
+				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] },"
 				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",\"flex\":2,\"children\":[] }"
 				+ "]";
 		result_json.append("{\"success\":true,\"columns\":"+columns+",\"totalRoot\":[");
@@ -3638,6 +3669,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									result_json.append("{\"id\":\""+(k+1)+"\",");
 									result_json.append("\"value\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()+"\",");
 									result_json.append("\"meaning\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getMeaning()+"\"},");
+									
+									if(StringManagerUtils.existOrNot(runConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
+										runValueIndexList.add(k);
+									}else if(StringManagerUtils.existOrNot(stopConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
+										stopValueIndexList.add(k);
+									}
 								}
 							}
 							break;
@@ -3650,7 +3687,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
-		result_json.append("],\"totalCount\":"+totalCount+"}");
+		String runValueIndex=StringUtils.join(runValueIndexList, ",");
+		String stopValueIndex=StringUtils.join(stopValueIndexList, ",");
+		result_json.append("],\"totalCount\":"+totalCount+",\"runValueIndex\":["+runValueIndex+"],\"stopValueIndex\":["+stopValueIndex+"]}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -3665,6 +3704,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				getBaseDao().updateOrDeleteBySql(updateSql);
 			}
 		}
+	}
+	
+	public int saveProtocolRunStatusConfig(String protocolCode,String itemName,String itemColumn,String deviceType,String runValue,String stopValue) throws Exception {
+		String recordCountSql="select count(1) from tbl_runstatusconfig t "
+				+ " where t.protocol='"+protocolCode+"' "
+				+ " and t.itemname='"+itemName+"' "
+				+ " and t.itemmappingcolumn='"+itemColumn+"' "
+				+ " and t.protocoltype="+deviceType;
+		int recordCount=this.getTotalCountRows(recordCountSql);
+		String insertOrUpdateSql="";
+		if(recordCount==0){
+			insertOrUpdateSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,runvalue,stopvalue,protocoltype) "
+					+ "values ('"+protocolCode+"','"+itemName+"','"+itemColumn+"','"+runValue+"','"+stopValue+"',"+deviceType+")";
+		}else{
+			insertOrUpdateSql="update tbl_runstatusconfig t"
+					+ " set t.runValue='"+runValue+"',t.stopValue='"+stopValue+"' "
+					+ " where t.protocol='"+protocolCode+"' "
+					+ " and t.itemname='"+itemName+"' "
+					+ " and t.itemmappingcolumn='"+itemColumn+"' "
+					+ " and t.protocoltype="+deviceType;
+		}
+		
+		int result=getBaseDao().updateOrDeleteBySql(insertOrUpdateSql);
+		return result;
 	}
 	
 	public boolean judgeProtocolExistOrNot(int deviceType,String protocolName) {

@@ -42,6 +42,7 @@ import com.cosog.model.ProtocolInstance;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
+import com.cosog.model.RunStatusConfig;
 import com.cosog.model.User;
 import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
@@ -123,6 +124,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	private AcquisitionUnitManagerService<ProtocolSMSInstance> protocolSMSInstanceManagerService;
 	
 	@Autowired
+	private AcquisitionUnitManagerService<RunStatusConfig> runStatusConfigManagerService;
+	
+	@Autowired
 	private CommonDataService service;
 	
 	private AcquisitionUnit acquisitionUnit;
@@ -184,6 +188,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@InitBinder("protocolDisplayInstance")
 	public void initBinder8(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("protocolDisplayInstance.");
+	}
+	
+	//添加绑定前缀 
+	@InitBinder("runStatusConfig")
+	public void initBinder9(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("runStatusConfig.");
 	}
 
 	/**<p>描述：采集类型数据显示方法</p>
@@ -2578,8 +2588,28 @@ public class AcquisitionUnitManagerController extends BaseController {
 		DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData=gson.fromJson(data, type);
 		if(databaseMappingProHandsontableChangedData!=null){
 			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolType);
-			MemoryDataManagerTask.loadProtocolMappingColumn();
+			EquipmentDriverServerTask.syncDataMappingTable();
 		}
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveProtocolRunStatusConfig")
+	public String saveProtocolRunStatusConfig() throws Exception {
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String itemName = ParamUtils.getParameter(request, "itemName");
+		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String runValue = ParamUtils.getParameter(request, "runValue");
+		String stopValue = ParamUtils.getParameter(request, "stopValue");
+		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,itemName,itemColumn,deviceType,runValue,stopValue);
+		MemoryDataManagerTask.loadProtocolRunStatusConfig();
 		String json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

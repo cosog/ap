@@ -670,9 +670,20 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     				bbar: bbar,
     				html:'<div class=PCPCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="PCPCalculateMaintainingDiv_id"></div></div>',
     				listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if(pcpRPMCalculateMaintainingHandsontableHelper!=null && pcpRPMCalculateMaintainingHandsontableHelper.hot!=undefined){
-                        		pcpRPMCalculateMaintainingHandsontableHelper.hot.refreshDimensions();
+//                        		pcpRPMCalculateMaintainingHandsontableHelper.hot.refreshDimensions();
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		newHeight-=29;
+                        		pcpRPMCalculateMaintainingHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
                         	}
                         }
                     }
@@ -683,9 +694,18 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     				border: false,
     				html:'<div class=PCPTotalCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="PCPTotalCalculateMaintainingDiv_id"></div></div>',
     				listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
 //                        	if(pcpTotalCalculateMaintainingHandsontableHelper!=null && pcpTotalCalculateMaintainingHandsontableHelper.hot!=undefined){
-//                        		pcpTotalCalculateMaintainingHandsontableHelper.hot.refreshDimensions();
+//                        		var newWidth=width;
+//                        		var newHeight=height;
+//                        		var header=thisPanel.getHeader();
+//                        		if(header){
+//                        			newHeight=newHeight-header.lastBox.height-2;
+//                        		}
+//                        		pcpTotalCalculateMaintainingHandsontableHelper.hot.updateSettings({
+//                        			width:newWidth,
+//                        			height:newHeight
+//                        		});
 //                        	}
                         }
                     }

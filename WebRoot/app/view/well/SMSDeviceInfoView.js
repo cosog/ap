@@ -236,9 +236,19 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 layout: 'fit',
                 html: '<div class="SMSDeviceContainer" style="width:100%;height:100%;"><div class="con" id="SMSDeviceTableDiv_id"></div></div>',
                 listeners: {
-                	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         if (smsDeviceInfoHandsontableHelper != null && smsDeviceInfoHandsontableHelper.hot != null && smsDeviceInfoHandsontableHelper.hot != undefined) {
-                            smsDeviceInfoHandsontableHelper.hot.refreshDimensions();
+//                            smsDeviceInfoHandsontableHelper.hot.refreshDimensions();
+                        	var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		smsDeviceInfoHandsontableHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
                         }
                     }
                 }

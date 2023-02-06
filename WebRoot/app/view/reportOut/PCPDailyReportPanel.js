@@ -178,9 +178,19 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                 layout: "fit",
                 html:'<div class="PCPDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPDailyReportDiv_id"></div></div>',
                 listeners: {
-                	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                 		if(pcpDailyReportHelper!=null && pcpDailyReportHelper.hot!=undefined){
-                			pcpDailyReportHelper.hot.refreshDimensions();
+//                			pcpDailyReportHelper.hot.refreshDimensions();
+                			var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		pcpDailyReportHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
                     	}
                 	}
                 }

@@ -49,9 +49,19 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                     }],
                 	html: '<div id="DatabaseColumnMappingTableDiv_Id" style="width:100%;height:100%;"></div>',
                 	listeners: {
-                		resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
-                        		databaseColumnMappingHandsontableHelper.hot.refreshDimensions();
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		databaseColumnMappingHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+//                        		databaseColumnMappingHandsontableHelper.hot.refreshDimensions();
                         	}
                         }
                 	}
@@ -74,18 +84,18 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 		region: 'west',
                 		width:'50%',
                     	layout: 'fit',
-                    	title:'运行状态项列表',
+                    	title:'运行状态字段列表',
                     	id:"DatabaseColumnMappingTableRunStatusItemsPanel_Id"
                 	},{
                 		region: 'center',
                 		layout: 'fit',
-                		title:'运行值配置',
+                		title:'隶属运行项配置',
                     	id:"DatabaseColumnMappingTableRunStatusMeaningPanel1_Id"
                 	},{
                 		region: 'east',
                 		width:'25%',
                 		layout: 'fit',
-                		title:'停止值配置',
+                		title:'隶属停止项配置',
                     	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
                 	}]
             	}]

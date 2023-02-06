@@ -290,9 +290,19 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
             		id:'PCPDeviceTablePanel_id',
                 	html: '<div class="PCPDeviceContainer" style="width:100%;height:100%;"><div class="con" id="PCPDeviceTableDiv_id"></div></div>',
                     listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             if (pcpDeviceInfoHandsontableHelper != null && pcpDeviceInfoHandsontableHelper.hot != null && pcpDeviceInfoHandsontableHelper.hot != undefined) {
-                            	pcpDeviceInfoHandsontableHelper.hot.refreshDimensions();
+//                            	pcpDeviceInfoHandsontableHelper.hot.refreshDimensions();
+                            	var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		pcpDeviceInfoHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
                             }
                         }
                     }
@@ -311,9 +321,19 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     	collapsible: true,
                     	html: '<div class="PCPAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="PCPAdditionalInfoTableDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if (pcpProductionHandsontableHelper != null && pcpProductionHandsontableHelper.hot != null && pcpProductionHandsontableHelper.hot != undefined) {
-                            		pcpProductionHandsontableHelper.hot.refreshDimensions();
+//                            		pcpProductionHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		pcpProductionHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                                 }
                             }
                         }
@@ -326,9 +346,19 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     	collapsible: true,
                     	html: '<div class="PCPVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="PCPVideoInfoTableDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if (pcpVideoInfoHandsontableHelper != null && pcpVideoInfoHandsontableHelper.hot != null && pcpVideoInfoHandsontableHelper.hot != undefined) {
-                            		pcpVideoInfoHandsontableHelper.hot.refreshDimensions();
+//                            		pcpVideoInfoHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		pcpVideoInfoHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                                 }
                             }
                         }

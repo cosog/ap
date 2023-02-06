@@ -584,9 +584,19 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                             	layout: 'fit',
                             	html:'<div class="RPCRealTimeMonitoringInfoDataTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="RPCRealTimeMonitoringInfoDataTableInfoDiv_id"></div></div>',
                             	listeners: {
-                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                     	if(rpcDeviceRealTimeMonitoringDataHandsontableHelper!=null && rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
-                                    		rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.refreshDimensions();
+//                                    		rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.refreshDimensions();
+                                    		var newWidth=width;
+                                    		var newHeight=height;
+                                    		var header=thisPanel.getHeader();
+                                    		if(header){
+                                    			newHeight=newHeight-header.lastBox.height-2;
+                                    		}
+                                    		rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.updateSettings({
+                                    			width:newWidth,
+                                    			height:newHeight
+                                    		});
                                     	}
                                     }
                                 }

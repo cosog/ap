@@ -302,9 +302,19 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
             		id:'PumpingModelTablePanel_id',
                     html: '<div class="PumpingModelContainer" style="width:100%;height:100%;"><div class="con" id="PumpingModelTableDiv_id"></div></div>',
                     listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             if (pumpingModelInfoHandsontableHelper != null && pumpingModelInfoHandsontableHelper.hot != null && pumpingModelInfoHandsontableHelper.hot != undefined) {
-                            	pumpingModelInfoHandsontableHelper.hot.refreshDimensions();
+//                            	pumpingModelInfoHandsontableHelper.hot.refreshDimensions();
+                            	var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		pumpingModelInfoHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
                             }
                         }
                     }
@@ -360,9 +370,19 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                     }],
                     html: '<div id="PumpingUnitPTFDiv_Id" style="width:100%;height:100%;"></div>',
                     listeners: {
-                    	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                     		if (pumpingUnitPTFHandsontableHelper != null && pumpingUnitPTFHandsontableHelper.hot != null && pumpingUnitPTFHandsontableHelper.hot != undefined) {
-                    			pumpingUnitPTFHandsontableHelper.hot.refreshDimensions();
+//                    			pumpingUnitPTFHandsontableHelper.hot.refreshDimensions();
+                    			var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		pumpingUnitPTFHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
                             }
                         }
                     }

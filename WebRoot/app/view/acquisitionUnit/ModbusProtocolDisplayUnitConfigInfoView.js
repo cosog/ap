@@ -70,9 +70,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     	layout: 'fit',
                         html:'<div class="ModbusProtocolDisplayUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitPropertiesHandsontableHelper!=null && protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
-                            		protocolDisplayUnitPropertiesHandsontableHelper.hot.refreshDimensions();
+//                            		protocolDisplayUnitPropertiesHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolDisplayUnitPropertiesHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }
@@ -91,9 +101,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             layout: 'fit',
                             html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
-                                		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.refreshDimensions();
+//                                		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
                                 	}
                                 }
                             }
@@ -108,9 +128,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             layout: 'fit',
                             html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
-                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.refreshDimensions();
+//                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
                                 	}
                                 }
                             }
@@ -125,9 +155,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                         split: true,
                         html:'<div class="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
-                            		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.refreshDimensions();
+//                            		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }

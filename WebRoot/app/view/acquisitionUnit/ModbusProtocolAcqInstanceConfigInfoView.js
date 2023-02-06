@@ -71,9 +71,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     	layout: 'fit',
                         html:'<div class="ProtocolConfigInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolConfigInstancePropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolConfigInstancePropertiesHandsontableHelper!=null && protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined){
-                            		protocolConfigInstancePropertiesHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolConfigInstancePropertiesHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+//                            		protocolConfigInstancePropertiesHandsontableHelper.hot.refreshDimensions();
                             	}
                             }
                         }
@@ -86,9 +96,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                 	layout: 'fit',
                     html:'<div class="ModbusProtocolInstanceItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolInstanceItemsConfigTableInfoDiv_id"></div></div>',
                     listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if(protocolInstanceConfigItemsHandsontableHelper!=null && protocolInstanceConfigItemsHandsontableHelper.hot!=undefined){
-                        		protocolInstanceConfigItemsHandsontableHelper.hot.refreshDimensions();
+//                        		protocolInstanceConfigItemsHandsontableHelper.hot.refreshDimensions();
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		protocolInstanceConfigItemsHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
                         	}
                         }
                     }

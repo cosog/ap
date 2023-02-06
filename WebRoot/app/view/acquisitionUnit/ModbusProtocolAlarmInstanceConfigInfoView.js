@@ -76,9 +76,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     	layout: 'fit',
                         html:'<div class="ProtocolAlarmInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolAlarmInstancePropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolAlarmInstancePropertiesHandsontableHelper!=null && protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined){
-                            		protocolAlarmInstancePropertiesHandsontableHelper.hot.refreshDimensions();
+//                            		protocolAlarmInstancePropertiesHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAlarmInstancePropertiesHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }
@@ -104,9 +114,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     		id:'ModbusProtocolAlarmInstanceNumItemsConfigTableInfoPanel_id',
                             html:'<div class="ModbusProtocolAlarmInstanceNumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceNumItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolAlarmInstanceConfigNumItemsHandsontableHelper!=null && protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
-                                		protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot.refreshDimensions();
+//                                		protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
                                 	}
                                 }
                             }
@@ -120,9 +140,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                             id:'ModbusProtocolAlarmInstanceCalNumItemsConfigTableInfoPanel_id',
                             html:'<div class="ModbusProtocolAlarmInstanceCalNumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceCalNumItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper!=null && protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
-                                		protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.refreshDimensions();
+//                                		protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
                                 	}
                                 }
                             }
@@ -133,9 +163,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                         layout: 'fit',
                         html:'<div class="ModbusProtocolAlarmInstanceSwitchItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceSwitchItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper!=null && protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
-                            		protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.refreshDimensions();
+//                            		protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }
@@ -145,9 +185,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                         layout: 'fit',
                         html:'<div class="ModbusProtocolAlarmInstanceEnumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceEnumItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper!=null && protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
-                            		protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot.refreshDimensions();
+//                            		protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }
@@ -157,9 +207,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     	 layout: 'fit',
                          html:'<div class="ModbusProtocolAlarmInstanceFESDiagramResultItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id"></div></div>',
                          listeners: {
-                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                              	if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper!=null && protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
-                             		protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.refreshDimensions();
+//                             		protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.refreshDimensions();
+                             		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                              	}
                              }
                          }
@@ -169,9 +229,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     	 layout: 'fit',
                          html:'<div class="ModbusProtocolAlarmInstanceRunStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceRunStatusItemsConfigTableInfoDiv_id"></div></div>',
                          listeners: {
-                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                              	if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper!=null && protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
-                             		protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.refreshDimensions();
+//                             		protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.refreshDimensions();
+                             		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                              	}
                              }
                          }
@@ -181,9 +251,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     	 layout: 'fit',
                          html:'<div class="ModbusProtocolAlarmInstanceCommStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceCommStatusItemsConfigTableInfoDiv_id"></div></div>',
                          listeners: {
-                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                              	if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper!=null && protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
-                             		protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.refreshDimensions();
+//                             		protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.refreshDimensions();
+                             		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                              	}
                              }
                          }

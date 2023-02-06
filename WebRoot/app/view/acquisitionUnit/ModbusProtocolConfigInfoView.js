@@ -84,9 +84,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     	layout: 'fit',
                         html:'<div class="ModbusProtocolAddrMappingPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolConfigAddrMaooingPropertiesHandsontableHelper!=null && protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=undefined){
-                            		protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.refreshDimensions();
+//                            		protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }
@@ -107,9 +117,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     	id:'ModbusProtocolAddrMappingItemsConfigTabPanel_Id',
                         html:'<div class="ModbusProtocolAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolConfigAddrMappingItemsHandsontableHelper!=null && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-                            		protocolConfigAddrMappingItemsHandsontableHelper.hot.refreshDimensions();
+//                            		protocolConfigAddrMappingItemsHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolConfigAddrMappingItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }
@@ -125,9 +145,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         layout: 'fit',
                         html:'<div class="ModbusProtocolAddrMappingItemsMeaningTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null && protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined){
-                            		protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.refreshDimensions();
+//                            		protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                             	}
                             }
                         }

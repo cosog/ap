@@ -315,12 +315,23 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
             items: [{
             	region: 'center',
         		title:'抽油机井列表',
+        		header: true,
+        		layout: 'fit',
         		id:'RPCDeviceTablePanel_id',
-            	html: '<div class="RPCDeviceContainer" style="width:100%;height:100%;"><div class="con" id="RPCDeviceTableDiv_id"></div></div>',
+            	html: '<div class="RPCDeviceContainer" style="width:100%;height:100%;"><div class="con" id="RPCDeviceTableDiv_id" style="width:100%;height:100%;"></div></div>',
                 listeners: {
-                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                        if (rpcDeviceInfoHandsontableHelper != null && rpcDeviceInfoHandsontableHelper.hot != null && rpcDeviceInfoHandsontableHelper.hot != undefined) {
-                        	rpcDeviceInfoHandsontableHelper.hot.refreshDimensions();
+                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                    	if (rpcDeviceInfoHandsontableHelper != null && rpcDeviceInfoHandsontableHelper.hot != null && rpcDeviceInfoHandsontableHelper.hot != undefined) {
+                    		var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                        	rpcDeviceInfoHandsontableHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
                         }
                     }
                 }
@@ -344,9 +355,19 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                     	collapsible: false,
                     	html: '<div class="RPCAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="RPCAdditionalInfoTableDiv_id"></div></div>',
                         listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if (rpcProductionHandsontableHelper != null && rpcProductionHandsontableHelper.hot != null && rpcProductionHandsontableHelper.hot != undefined) {
-                            		rpcProductionHandsontableHelper.hot.refreshDimensions();
+//                            		rpcProductionHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		rpcProductionHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                                 }
                             }
                         }
@@ -365,9 +386,19 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                             collapsible: true,
                             html: '<div class="RPCPumpingModelListContainer" style="width:100%;height:100%;"><div class="con" id="RPCPumpingModelListTableDiv_id"></div></div>',
                             listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if (rpcPumpingModelHandsontableHelper != null && rpcPumpingModelHandsontableHelper.hot != null && rpcPumpingModelHandsontableHelper.hot != undefined) {
-                                		rpcPumpingModelHandsontableHelper.hot.refreshDimensions();
+//                                		rpcPumpingModelHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		rpcPumpingModelHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
                                     }
                                 }
                             }
@@ -382,9 +413,19 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                             collapsible: true,
                             html: '<div class="RPCPumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="RPCPumpingInfoTableDiv_id"></div></div>',
                             listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if (rpcPumpingInfoHandsontableHelper != null && rpcPumpingInfoHandsontableHelper.hot != null && rpcPumpingInfoHandsontableHelper.hot != undefined) {
-                                		rpcPumpingInfoHandsontableHelper.hot.refreshDimensions();
+//                                		rpcPumpingInfoHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		rpcPumpingInfoHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
                                     }
                                 }
                             }
@@ -399,9 +440,19 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 	collapsible: true,
                 	html: '<div class="RPCVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="RPCVideoInfoTableDiv_id"></div></div>',
                     listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if (rpcVideoInfoHandsontableHelper != null && rpcVideoInfoHandsontableHelper.hot != null && rpcVideoInfoHandsontableHelper.hot != undefined) {
-                        		rpcVideoInfoHandsontableHelper.hot.refreshDimensions();
+//                        		rpcVideoInfoHandsontableHelper.hot.refreshDimensions();
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		rpcVideoInfoHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
                             }
                         }
                     }
@@ -605,7 +656,7 @@ var RPCDeviceInfoHandsontableHelper = {
                 },
                 columns: rpcDeviceInfoHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-                autoWrapRow: true,
+//                autoWrapRow: true,
                 rowHeaders: true, //显示行头
                 colHeaders: rpcDeviceInfoHandsontableHelper.colHeaders, //显示列头
                 columnSorting: true, //允许排序

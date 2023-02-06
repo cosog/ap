@@ -40,9 +40,19 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
             id:'HistoryQueryDataDetailsPanel_Id',
         	html: '<div id="HistoryQueryDataDetailsDiv_Id" style="width:100%;height:100%;"></div>',
             listeners: {
-                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                 	if(deviceHistoryQueryDataHandsontableHelper!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=undefined){
-                		deviceHistoryQueryDataHandsontableHelper.hot.refreshDimensions();
+//                		deviceHistoryQueryDataHandsontableHelper.hot.refreshDimensions();
+                		var newWidth=width;
+                		var newHeight=height;
+                		var header=thisPanel.getHeader();
+                		if(header){
+                			newHeight=newHeight-header.lastBox.height-2;
+                		}
+                		deviceHistoryQueryDataHandsontableHelper.hot.updateSettings({
+                			width:newWidth,
+                			height:newHeight
+                		});
                 	}else{
                       var recordId=Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").getValue();
                       var deviceId=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").getValue()

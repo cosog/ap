@@ -177,9 +177,19 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
             	title: '冲突数据(<font color=red>冲突数据无法保存，请排查冲突内容</font>)',
             	html: '<div id="BatchAddDeviceCollisionDataTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
-            		resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                     	if(batchAddDeviceCollisionDataHandsontableHelper!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=undefined){
-                    		batchAddDeviceCollisionDataHandsontableHelper.hot.refreshDimensions();
+//                    		batchAddDeviceCollisionDataHandsontableHelper.hot.refreshDimensions();
+                    		var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		batchAddDeviceCollisionDataHandsontableHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
                     	}
                     }
             	}
@@ -190,9 +200,19 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
             	title: '已有记录(<font color=red>继续保存，表中数据将覆盖已有记录</font>)',
             	html: '<div id="BatchAddDeviceOverlayDataTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
-            		resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                     	if(batchAddDeviceOverlayDataHandsontableHelper!=null&&batchAddDeviceOverlayDataHandsontableHelper.hot!=null&&batchAddDeviceOverlayDataHandsontableHelper.hot!=undefined){
-                    		batchAddDeviceOverlayDataHandsontableHelper.hot.refreshDimensions();
+//                    		batchAddDeviceOverlayDataHandsontableHelper.hot.refreshDimensions();
+                    		var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		batchAddDeviceOverlayDataHandsontableHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
                     	}
                     }
             	}

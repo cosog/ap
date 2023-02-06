@@ -173,14 +173,24 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
             },{
             	region: 'center',
             	title:'报表数据',
-            	id:'RPCDailyReportPanel_id',
-                border: false,
                 layout: "fit",
+            	id:'RPCDailyReportPanel_id',
+//                border: false,
                 html:'<div class="RPCDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="RPCDailyReportDiv_id"></div></div>',
                 listeners: {
-                	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                 		if(rpcDailyReportHelper!=null && rpcDailyReportHelper.hot!=undefined){
-                			rpcDailyReportHelper.hot.refreshDimensions();
+//                			rpcDailyReportHelper.hot.refreshDimensions();
+                			var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		rpcDailyReportHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
                     	}
                 	}
                 }

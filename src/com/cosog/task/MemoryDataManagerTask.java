@@ -203,6 +203,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			jedis.del("ProtocolRunStatusConfig".getBytes());
 			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.runvalue,t.stopvalue,t.protocoltype "
 					+ " from tbl_runstatusconfig t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);

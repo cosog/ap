@@ -1524,7 +1524,10 @@ public class DriverAPIController extends BaseController{
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
 										isAcqRunStatus=true;
 										int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										ProtocolRunStatusConfig protocolRunStatusConfig=null;
+										if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+											protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										}
 										if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
 											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 												runStatus=1;
@@ -2716,8 +2719,10 @@ public class DriverAPIController extends BaseController{
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
 										isAcqRunStatus=true;
 										int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-
-										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										ProtocolRunStatusConfig protocolRunStatusConfig=null;
+										if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+											protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										}
 										if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
 											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 												runStatus=1;

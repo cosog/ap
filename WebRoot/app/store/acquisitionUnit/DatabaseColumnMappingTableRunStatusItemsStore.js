@@ -72,7 +72,12 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
                 panel.add(gridPanel);
             }
             gridPanel.getSelectionModel().deselectAll(true);
-            gridPanel.getSelectionModel().select(0, true);
+            if(get_rawData.totalCount>0){
+            	gridPanel.getSelectionModel().select(0, true);
+            }else{
+            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel1_Id").removeAll();
+            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id").removeAll();
+            }
         },
         beforeload: function (store, options) {
         	var classes=0;

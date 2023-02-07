@@ -340,6 +340,14 @@ var RPCDailyReportHelper = {
 					rowHeights: [50],
 					colWidths:[50,90,80, 80,100,70, 80,100,70, 140,120, 80,80,80,80,80, 80,80,80,  80,80,80,120, 80, 75],
 					stretchH: 'all',
+					columnSorting: true, //允许排序
+	                allowInsertRow:false,
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
 	                mergeCells: [
 	                    {
 	                        "row": 0,

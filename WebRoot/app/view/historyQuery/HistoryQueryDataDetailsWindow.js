@@ -233,6 +233,14 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	                rowHeaders: false,//显示行头
 	                colHeaders: false,
 	                rowHeights: [40],
+	                columnSorting: true, //允许排序
+	                allowInsertRow:false,
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
 	                mergeCells: [{
                         "row": 0,
                         "col": 0,

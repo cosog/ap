@@ -373,3 +373,11 @@ start with 3
 increment by 1
 cache 20;
 /
+
+create sequence SEQ_RUNSTATUSCONFIG
+minvalue 1
+maxvalue 9999999999999999999999999
+start with 3
+increment by 1
+cache 20;
+/

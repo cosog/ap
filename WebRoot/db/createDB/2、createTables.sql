@@ -1619,6 +1619,29 @@ tablespace AP_DATA
 alter table TBL_RESOURCEMONITORING add constraint PK_TBL_RESOURCEMONITORING primary key (ID)
 /
 
+/*==============================================================*/
+/* Table: TBL_RUNSTATUSCONFIG                                    */
+/*==============================================================*/
+create table TBL_RUNSTATUSCONFIG
+(
+  id                NUMBER(10) not null,
+  protocol          VARCHAR2(50),
+  itemname          VARCHAR2(50),
+  itemmappingcolumn VARCHAR2(50),
+  runvalue          VARCHAR2(50),
+  stopvalue         VARCHAR2(50),
+  protocoltype      NUMBER(1) not null
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_RUNSTATUSCONFIG add constraint PK_RUNSTATUSCONFIG primary key (ID)
+/
 
 create or replace package MYPACKAGE as
    type MY_CURSOR is REF CURSOR;

@@ -328,7 +328,8 @@ var PCPDailyReportHelper = {
 	        pcpDailyReportHelper.createTable = function () {
 	            pcpDailyReportHelper.container.innerHTML = "";
 	            pcpDailyReportHelper.hot = new Handsontable(pcpDailyReportHelper.container, {
-	                data: pcpDailyReportHelper.my_data,
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	            	data: pcpDailyReportHelper.my_data,
 	                fixedRowsTop:3, //固定顶部多少行不能垂直滚动
 	                fixedRowsBottom: 0,//固定底部多少行不能垂直滚动
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动

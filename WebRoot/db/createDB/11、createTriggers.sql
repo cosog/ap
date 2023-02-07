@@ -324,3 +324,9 @@ BEGIN
   SELECT SEQ_USER.nextval INTO :new.USER_NO FROM dual;
 END;
 /
+
+create or replace trigger trg_b_runstatusconfig_i   before  insert on tbl_runstatusconfig FOR EACH ROW
+BEGIN
+  SELECT seq_runstatusconfig.nextval INTO :new.id FROM dual;
+END;
+/

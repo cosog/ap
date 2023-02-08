@@ -98,8 +98,13 @@ private CommonDataService service;
 		String currentLevel="";
 		String currentShowLevel="";
 		String currentFlag="";
-		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_flag from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
-		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,role_flag as roleFlag,decode(t.role_flag,1,'是','否') as roleFlagName,showLevel,remark"
+		String currentReportEdit="";
+		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_flag,t3.role_reportedit "
+				+ "from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
+		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,"
+				+ " role_flag as roleFlag,decode(t.role_flag,1,'是','否') as roleFlagName,"
+				+ " role_reportedit as roleReportEdit,decode(t.role_reportedit,1,'是','否') as roleReportEditName,"
+				+ " showLevel,remark"
 				+ " from  tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")";
@@ -116,12 +121,14 @@ private CommonDataService service;
 			currentLevel=obj[1]+"";
 			currentShowLevel=obj[2]+"";
 			currentFlag=obj[3]+"";
+			currentReportEdit=obj[4]+"";
 		}
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()
 		+",\"currentId\":"+currentId
 		+",\"currentLevel\":"+currentLevel
 		+",\"currentShowLevel\":"+currentShowLevel
 		+",\"currentFlag\":"+currentFlag
+		+",\"currentReportEdit\":"+currentReportEdit
 		+",\"columns\":"+columns+",\"totalRoot\":[");
 		
 		for (Object o : list) {
@@ -131,8 +138,10 @@ private CommonDataService service;
 			result_json.append("\"roleLevel\":\""+obj[2]+"\",");
 			result_json.append("\"roleFlag\":\""+obj[3]+"\",");
 			result_json.append("\"roleFlagName\":"+(StringManagerUtils.stringToInteger(obj[3]+"")==1)+",");
-			result_json.append("\"showLevel\":\""+obj[5]+"\",");
-			result_json.append("\"remark\":\""+obj[6]+"\"},");
+			result_json.append("\"roleReportEdit\":\""+obj[5]+"\",");
+			result_json.append("\"roleReportEditName\":"+(StringManagerUtils.stringToInteger(obj[5]+"")==1)+",");
+			result_json.append("\"showLevel\":\""+obj[7]+"\",");
+			result_json.append("\"remark\":\""+obj[8]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -191,6 +200,7 @@ private CommonDataService service;
 			if(!isLoginedUserRole){//当前登录用户不可修改账号、角色、使能状态
 				sql+= " t.role_level="+role.getRoleLevel()+", "
 						+ " t.role_flag="+role.getRoleFlag()+", "
+						+ " t.role_reportedit="+role.getRoleReportEdit()+", "
 						+ " t.showlevel="+role.getShowLevel()+", ";
 			}	
 			sql+= " t.role_name='"+role.getRoleName()+"', "

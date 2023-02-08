@@ -23,6 +23,7 @@ public class Role implements java.io.Serializable {
 	private String roleName;
 	private Integer roleLevel;
 	private Integer roleFlag;
+	private Integer roleReportEdit;
 	private Integer showLevel;
 	private String remark;
 
@@ -98,6 +99,15 @@ public class Role implements java.io.Serializable {
 
 	public void setShowLevel(Integer showLevel) {
 		this.showLevel = showLevel;
+	}
+
+	@Column(name = "ROLE_REPORTEDIT", nullable = false, length = 10)
+	public Integer getRoleReportEdit() {
+		return roleReportEdit;
+	}
+
+	public void setRoleReportEdit(Integer roleReportEdit) {
+		this.roleReportEdit = roleReportEdit;
 	}
 
 }

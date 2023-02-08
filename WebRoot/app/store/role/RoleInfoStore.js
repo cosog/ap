@@ -28,12 +28,13 @@ Ext.define('AP.store.role.RoleInfoStore', {
             var currentLevel=get_rawData.currentLevel;
             var currentShowLevel=get_rawData.currentShowLevel;
             var currentFlag=get_rawData.currentFlag;
+            var currentReportEdit=get_rawData.currentReportEdit;
             
             Ext.getCmp("currentUserRoleId_Id").setValue(currentId);
             Ext.getCmp("currentUserRoleLevel_Id").setValue(currentLevel);
             Ext.getCmp("currentUserRoleShowLevel_Id").setValue(currentShowLevel);
             Ext.getCmp("currentUserRoleFlag_Id").setValue(currentFlag);
-            
+            Ext.getCmp("currentUserRoleReportEdit_Id").setValue(currentReportEdit);
             var gridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var arrColumns = get_rawData.columns;
@@ -52,8 +53,6 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     layout: "fit",
                     stripeRows: true,
                     forceFit: false,
-//                    selType: 'checkboxmodel',
-//                    multiSelect: true,
                     selModel:{
                     	selType: 'checkboxmodel',
                     	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
@@ -118,6 +117,29 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         sortable: true,
                         width: 85,
                         dataIndex: 'roleFlagName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                    	    	if(parseInt(record.data.roleId)==parseInt(currentId)){
+                    	    		return false;
+                    	    	}else{
+                                    return true;
+                                }
+                    	    }
+                    	}
+                    }, {
+                        header: '报表编辑权限',
+                        xtype: 'checkcolumn',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        width: 85,
+                        dataIndex: 'roleReportEditName',
                         editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
@@ -206,11 +228,18 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             var currentLevel=Ext.getCmp("currentUserRoleLevel_Id").getValue();
                             var currentShowLevel=Ext.getCmp("currentUserRoleShowLevel_Id").getValue();
                             var currentFlag=Ext.getCmp("currentUserRoleFlag_Id").getValue();
+                            var currentUserRoleReportEdit=Ext.getCmp("currentUserRoleReportEdit_Id");
                         	
                         	
                         	var record = grid.getStore().getAt(rowIndex);
                             var dataIndex=grid.getHeaderAtIndex(cellIndex).dataIndex;
-                            if (parseInt(record.data.roleId)==parseInt(currentId) && ( dataIndex.toUpperCase()=='roleLevel'.toUpperCase() || dataIndex.toUpperCase()=='showLevel'.toUpperCase() || dataIndex.toUpperCase()=='roleFlagName'.toUpperCase()  )) {
+                            if (parseInt(record.data.roleId)==parseInt(currentId) 
+                            		&& ( dataIndex.toUpperCase()=='roleLevel'.toUpperCase() 
+                            				|| dataIndex.toUpperCase()=='showLevel'.toUpperCase() 
+                            				|| dataIndex.toUpperCase()=='roleFlagName'.toUpperCase()  
+                            				|| dataIndex.toUpperCase()=='roleReportEditName'.toUpperCase()  
+                            			)
+                            	) {
                                 return false;
                             }else if(parseInt(currentFlag)==0 && dataIndex.toUpperCase()=='roleFlagName'.toUpperCase()){
                             	return false;

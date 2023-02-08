@@ -43,6 +43,32 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             }
         });
         
+        var RoleReportEditCombox = new Ext.form.ComboBox({
+            id: 'roleReportEditComboxfield_Id',
+            value: 0,
+            fieldLabel: '报表编辑权限<font color=red>*</font>',
+            typeAhead : true,
+            allowBlank: false,
+            autoSelect:true,
+            editable:false,
+            anchor: '100%',
+            emptyText: '--请选择--',
+            triggerAction: 'all',
+            store: new Ext.data.SimpleStore({
+            	autoLoad : false,
+                fields: ['roleReportEdit', 'roleReportEditName'],
+                data: [['0', '否'], ['1', '是']]
+            }),
+            displayField: 'roleReportEditName',
+            valueField: 'roleReportEdit',
+            queryMode : 'local',
+            listeners: {
+            	select: function (v,o) {
+					Ext.getCmp("roleReportEdit_Id").setValue(this.value);
+                }
+            }
+        });
+        
         var postroleEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -56,6 +82,11 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 xtype: "hidden",
                 name: 'role.roleFlag',
                 id: 'roleFlag_Id',
+                value: 0
+            }, {
+                xtype: "hidden",
+                name: 'role.roleReportEdit',
+                id: 'roleReportEdit_Id',
                 value: 0
             }, {
                 fieldLabel: cosog.string.roleName+'<font color=red>*</font>',
@@ -104,7 +135,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'
-            },RoleTypeCombox, {
+            },RoleTypeCombox,RoleReportEditCombox, {
                 fieldLabel: '角色描述',
                 id: 'roleRemark_Id',
                 anchor: '100',

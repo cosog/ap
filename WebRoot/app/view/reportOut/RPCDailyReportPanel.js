@@ -259,12 +259,10 @@ var RPCDailyReportHelper = {
 	        	productionUnitStr='m^3/d';
 	        }
 	        rpcDailyReportHelper.my_data = [
-	    ['抽油机井生产报表', '', '', '', '', '', '', '', '', '',  '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-	    ['序号', '井名', '日期','通信','','', '时率', '','', '工况','', '产量', '','','','','平衡','','','效率', '', '','','日用电量(kW·h)', '备注'],
-	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','功图工况','优化建议','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','充满系数(小数)','功率平衡度(%)','电流平衡度(%)','移动距离(cm)', '系统效率(%)', '地面效率(%)', '井下效率(%)','吨液百米耗电量(kW·h/100·t)','','']
-//	    ['合计', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-//	    ['平均', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
-	  ];
+	        	['抽油机井生产报表', '', '', '', '', '', '', '', '', '',  '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+	        	['序号', '井名', '日期','通信','','', '时率', '','', '工况','', '产量', '','','','','平衡','','','效率', '', '','','日用电量(kW·h)', '备注'],
+	        	['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','功图工况','优化建议','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','充满系数(小数)','功率平衡度(%)','电流平衡度(%)','移动距离(cm)', '系统效率(%)', '地面效率(%)', '井下效率(%)','吨液百米耗电量(kW·h/100·t)','','']
+	        ];
 	        rpcDailyReportHelper.updateArray = function () {
 	            for (var i = 0; i < rpcDailyReportHelper.sum; i++) {
 	                rpcDailyReportHelper.my_data.splice(i + 3, 0, ['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
@@ -414,27 +412,16 @@ var RPCDailyReportHelper = {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-
 	                    cellProperties.readOnly = true;
-	                    // 表头
 	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
 	                        cellProperties.renderer = rpcDailyReportHelper.addBoldBg;
 	                    }
-	                    
-	                    // 合计
-//	                    if (visualRowIndex ==rpcDailyReportHelper.last_index) {
-//	                        cellProperties.renderer = rpcDailyReportHelper.addBoldBg;
-//	                    }
-						
 						if (visualRowIndex < 1 ) {
 	                       cellProperties.renderer = rpcDailyReportHelper.addSizeBg;
 	                    }
-						
 						if (visualColIndex === 26&&visualRowIndex>2&&visualRowIndex<rpcDailyReportHelper.last_index) {
 							cellProperties.readOnly = false;
 		                }
-						
-						
 	                    return cellProperties;
 	                },
 	                afterChange:function(changes, source){}

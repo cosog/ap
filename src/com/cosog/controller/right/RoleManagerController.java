@@ -155,6 +155,7 @@ public class RoleManagerController extends BaseController {
 			String roleName = ParamUtils.getParameter(request, "roleName");
 			String roleLevel = ParamUtils.getParameter(request, "roleLevel");
 			String roleFlagName = ParamUtils.getParameter(request, "roleFlagName");
+			String roleReportEditName = ParamUtils.getParameter(request, "roleReportEditName");
 			String showLevel = ParamUtils.getParameter(request, "showLevel");
 			String remark = ParamUtils.getParameter(request, "remark");
 			
@@ -163,6 +164,7 @@ public class RoleManagerController extends BaseController {
 			role.setRoleName(roleName);
 			role.setRoleLevel(StringManagerUtils.stringToInteger(roleLevel));
 			role.setRoleFlag("true".equalsIgnoreCase(roleFlagName)?1:0);
+			role.setRoleReportEdit("true".equalsIgnoreCase(roleReportEditName)?1:0);
 			role.setShowLevel(StringManagerUtils.stringToInteger(showLevel));
 			role.setRemark(remark);
 			

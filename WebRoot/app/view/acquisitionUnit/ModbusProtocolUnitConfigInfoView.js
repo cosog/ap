@@ -9,10 +9,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
     	var ModbusProtocolAcqUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView');
     	var ModbusProtocolAlarmUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView');
     	var ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
+    	var ModbusProtocolReportUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView');
     	Ext.apply(me, {
     		items: [{
     			xtype: 'tabpanel',
-                id:"ModbusProtocolConfigTabPanel_Id",
+                id:"ModbusProtocolUnitConfigTabPanel_Id",
                 activeTab: 0,
                 border: false,
                 tabPosition: 'left',
@@ -34,6 +35,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 	items: [ModbusProtocolDisplayUnitConfigInfoView],
     				layout: "fit",
     				border: false
+                },{
+                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表单元</div>',
+                	id:'ModbusProtocolReportUnitConfigTabPanel_Id',
+                	items: [ModbusProtocolReportUnitConfigInfoView],
+    				layout: "fit",
+    				border: false
                 }],
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
@@ -51,11 +58,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                     		}else{
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
                     		}
+                    	}else if(newCard.id=="ModbusProtocolReportUnitConfigTabPanel_Id"){
+                    		var treeGridPanel = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id");
+                            if (isNotVal(treeGridPanel)) {
+                            	treeGridPanel.getStore().load();
+                            }else{
+                            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore');
+                            }
                     	}
                     },afterrender: function (comp,eOpts) {
-//                    	Ext.getCmp("ModbusProtocolConfigTabPanel_Id").getTabBar().insert(0, {
-//            		      	xtype: 'tbfill'
-//                  		});
+                    	
                     }
                 }
     		}]

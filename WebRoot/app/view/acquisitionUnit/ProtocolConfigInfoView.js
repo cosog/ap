@@ -38,21 +38,74 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){
-//                    		loadFSDiagramAnalysisSingleStatData();
+                    		var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
+                            if (isNotVal(treeGridPanel)) {
+                            	treeGridPanel.getStore().load();
+                            }else{
+                            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore');
+                            }
                     	}else if(newCard.id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
-                    		var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
-                    		if(isNotVal(treePanel)){
-                    			treePanel.getStore().load();
-                    		}else{
-                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
-                    		}
+                    		var activeId = Ext.getCmp("ModbusProtocolUnitConfigTabPanel_Id").getActiveTab().id;
+                    		if(activeId=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
+                    			var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
+                        		}
+                        	}else if(activeId=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
+                        		var treePanel=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore');
+                        		}
+                        	}else if(activeId=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
+                        		var treePanel=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
+                        		}
+                        	}else if(activeId=="ModbusProtocolReportUnitConfigTabPanel_Id"){
+                        		var treeGridPanel = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id");
+                                if (isNotVal(treeGridPanel)) {
+                                	treeGridPanel.getStore().load();
+                                }else{
+                                	Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore');
+                                }
+                        	}
                     	}else if(newCard.id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
-                    		var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
-                    		if(isNotVal(treePanel)){
-                    			treePanel.getStore().load();
-                    		}else{
-                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore');
-                    		}
+                    		var activeId = Ext.getCmp("ModbusProtocolInstanceConfigTabPanel_Id").getActiveTab().id;
+                    		if(activeId=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
+                        		var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore');
+                        		}
+                        	}else if(activeId=="ModbusProtocolDisplayInstanceConfigTabPanel_Id"){
+                        		var treePanel=Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore');
+                        		}
+                        	}else if(activeId=="ModbusProtocolAlarmInstanceConfigTabPanel_Id"){
+                        		var treePanel=Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore');
+                        		}
+                        	}else if(activeId=="ModbusProtocolSMSInstanceConfigTabPanel_Id"){
+                        		var gridPanel=Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id");
+                        		if(isNotVal(gridPanel)){
+                        			gridPanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolSMSInstanceStore');
+                        		}
+                        	}
                     	}
                     }
                 }
@@ -252,12 +305,19 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					protocolDisplayUnitPropertiesHandsontableHelper=null;
     				}
-
     				if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null){
     					if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
     						protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.destroy();
     					}
     					protocolDisplayUnitCtrlItemsConfigHandsontableHelper=null;
+    				}
+    				
+    				//报表单元
+    				if(reportTemplateHandsontableHelper!=null){
+    					if(reportTemplateHandsontableHelper.hot!=undefined){
+    						reportTemplateHandsontableHelper.hot.destroy();
+    					}
+    					reportTemplateHandsontableHelper=null;
     				}
     			},
     			afterrender: function ( panel, eOpts) {}

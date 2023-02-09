@@ -21,6 +21,7 @@ import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.ProtocolAlarmInstance;
 import com.cosog.model.ProtocolSMSInstance;
+import com.cosog.model.ReportTemplate;
 import com.cosog.model.User;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
@@ -2921,6 +2922,74 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String repoerUnitTreeData(){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer rpcTree_json = new StringBuffer();
+		StringBuffer pcpTree_json = new StringBuffer();
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		
+		rpcTree_json.append("[");
+		pcpTree_json.append("[");
+		
+		if(reportTemplate!=null){
+			//排序
+			Collections.sort(reportTemplate.getReportTemplate());
+			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+				if(reportTemplate.getReportTemplate().get(i).getDeviceType()==0){
+					rpcTree_json.append("{\"classes\":1,");
+					rpcTree_json.append("\"text\":\""+reportTemplate.getReportTemplate().get(i).getTemplateName()+"\",");
+					rpcTree_json.append("\"code\":\""+reportTemplate.getReportTemplate().get(i).getTemplateCode()+"\",");
+					rpcTree_json.append("\"deviceType\":"+reportTemplate.getReportTemplate().get(i).getDeviceType()+",");
+					rpcTree_json.append("\"sort\":\""+reportTemplate.getReportTemplate().get(i).getSort()+"\",");
+					rpcTree_json.append("\"iconCls\": \"protocol\",");
+					rpcTree_json.append("\"leaf\": true");
+					rpcTree_json.append("},");
+				}else{
+					pcpTree_json.append("{\"classes\":1,");
+					pcpTree_json.append("\"text\":\""+reportTemplate.getReportTemplate().get(i).getTemplateName()+"\",");
+					pcpTree_json.append("\"code\":\""+reportTemplate.getReportTemplate().get(i).getTemplateCode()+"\",");
+					pcpTree_json.append("\"deviceType\":"+reportTemplate.getReportTemplate().get(i).getDeviceType()+",");
+					pcpTree_json.append("\"sort\":\""+reportTemplate.getReportTemplate().get(i).getSort()+"\",");
+					pcpTree_json.append("\"iconCls\": \"protocol\",");
+					pcpTree_json.append("\"leaf\": true");
+					pcpTree_json.append("},");
+				}
+			}
+		}
+		if(rpcTree_json.toString().endsWith(",")){
+			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		}
+		rpcTree_json.append("]");
+		
+		if(pcpTree_json.toString().endsWith(",")){
+			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
+		}
+		pcpTree_json.append("]");
+		
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
+		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getReportTemplateData(String name,String classes,String code){
+		StringBuffer result_json = new StringBuffer();
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		String result="{}";
+		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+				if(name.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateName()) 
+						&& code.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateCode()) ){
+					Gson gson=new Gson();
+					result=gson.toJson(reportTemplate.getReportTemplate().get(i));
+					break;
+				}
+			}
+		}
+		return result;
+	}
 	
 	public String modbusProtocolAlarmUnitTreeData(){
 		StringBuffer result_json = new StringBuffer();

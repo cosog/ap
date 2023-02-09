@@ -24,6 +24,7 @@ import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
 import com.cosog.model.ProtocolRunStatusConfig;
+import com.cosog.model.ReportTemplate;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AcqInstanceOwnItem.AcqItem;
@@ -73,6 +74,8 @@ public class MemoryDataManagerTask {
 		
 		loadProtocolRunStatusConfig();
 		
+		loadReportTemplateConfig();
+		
 		loadAcqInstanceOwnItemById("","update");
 		loadAlarmInstanceOwnItemById("","update");
 		loadDisplayInstanceOwnItemById("","update");
@@ -105,6 +108,7 @@ public class MemoryDataManagerTask {
 			jedis.del("RPCWorkTypeByName".getBytes());
 			jedis.del("AlarmShowStyle".getBytes());
 			jedis.del("UIKitAccessToken".getBytes());
+			jedis.del("ReportTemplateConfig".getBytes());
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -2407,5 +2411,59 @@ public class MemoryDataManagerTask {
 		public void setDataType(int dataType) {
 			this.dataType = dataType;
 		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public static void loadReportTemplateConfig(){
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		Gson gson = new Gson();
+		String path="";
+		String configData="";
+		java.lang.reflect.Type type=null;
+		path=stringManagerUtils.getFilePath("reportTemplate.json","reportTemplate/");
+		configData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<ReportTemplate>() {}.getType();
+		ReportTemplate reportTemplate=gson.fromJson(configData, type);
+		if(reportTemplate==null){
+			reportTemplate=new ReportTemplate();
+			reportTemplate.setReportTemplate(new ArrayList<ReportTemplate.Template>());
+		}else if(reportTemplate!=null&&reportTemplate.getReportTemplate()==null){
+			reportTemplate.setReportTemplate(new ArrayList<ReportTemplate.Template>());
+		}else if(reportTemplate!=null&&reportTemplate.getReportTemplate()!=null&&reportTemplate.getReportTemplate().size()>0){
+			Collections.sort(reportTemplate.getReportTemplate());
+		}
+		
+		
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			jedis.set("ReportTemplateConfig".getBytes(), SerializeObjectUnils.serialize(reportTemplate));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static ReportTemplate getReportTemplateConfig(){
+		Jedis jedis=null;
+		ReportTemplate reportTemplate=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("ReportTemplateConfig".getBytes())){
+				MemoryDataManagerTask.loadReportTemplateConfig();
+			}
+			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return reportTemplate;
 	}
 }

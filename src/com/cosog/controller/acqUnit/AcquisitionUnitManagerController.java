@@ -984,6 +984,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getReportTemplateData")
+	public String getReportTemplateData() throws Exception {
+		String name = ParamUtils.getParameter(request, "name");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String code = ParamUtils.getParameter(request, "code");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportTemplateData(name,classes,code);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getModbusProtocolNumAlarmItemsConfigData")
 	public String getModbusProtocolNumAlarmItemsConfigData() throws Exception {
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
@@ -1375,6 +1391,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String modbusProtocolAndDisplayUnitTreeData() throws IOException {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		String json = acquisitionUnitItemManagerService.modbusProtocolAndDisplayUnitTreeData(deviceType);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/repoerUnitTreeData")
+	public String repoerUnitTreeData() throws IOException {
+		String json = acquisitionUnitItemManagerService.repoerUnitTreeData();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

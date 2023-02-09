@@ -45,7 +45,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
-//                    		loadFSDiagramAnalysisSingleStatData();
+                    		var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
+                    		if(isNotVal(treePanel)){
+                    			treePanel.getStore().load();
+                    		}else{
+                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore');
+                    		}
                     	}else if(newCard.id=="ModbusProtocolDisplayInstanceConfigTabPanel_Id"){
                     		var treePanel=Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
@@ -69,9 +74,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                     		}
                     	}
                     },afterrender: function (comp,eOpts) {
-//                    	Ext.getCmp("ModbusProtocolConfigTabPanel_Id").getTabBar().insert(0, {
-//            		      	xtype: 'tbfill'
-//                  		});
+                    	
                     }
                 }
     		}]

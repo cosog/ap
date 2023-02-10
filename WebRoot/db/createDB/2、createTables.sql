@@ -59,6 +59,7 @@ create table TBL_ROLE
   role_level NUMBER(3) default 1,
   role_flag   NUMBER(10),
   showlevel   NUMBER(10) default 0,
+  role_reportedit NUMBER(10) default 0,
   remark      VARCHAR2(2000)
 )
 tablespace AP_DATA
@@ -446,6 +447,34 @@ tablespace AP_DATA
   )
 /
 alter table TBL_DISPLAY_ITEMS2UNIT_CONF add constraint PK_DISPLAY_ITEMS2UNIT_CONF primary key (ID)
+/
+
+/*==============================================================*/
+/* Table: TBL_REPORT_ITEMS2UNIT_CONF                                    */
+/*==============================================================*/
+create table TBL_REPORT_ITEMS2UNIT_CONF
+(
+  id               NUMBER(10) not null,
+  itemid           NUMBER(10),
+  itemname         VARCHAR2(100),
+  itemcode         VARCHAR2(100),
+  unitcode         VARCHAR2(100),
+  sort             NUMBER(10),
+  showlevel        NUMBER(10),
+  reportcurve      NUMBER(10),
+  reportcurvecolor VARCHAR2(20),
+  datatype         NUMBER(10),
+  matrix           VARCHAR2(8)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_REPORT_ITEMS2UNIT_CONF add constraint PK_REPORT_ITEMS2UNIT_CONF primary key (ID)
 /
 
 /*==============================================================*/

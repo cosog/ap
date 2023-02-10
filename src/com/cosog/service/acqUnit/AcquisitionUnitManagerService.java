@@ -1510,6 +1510,113 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getReportUnitTotalCalItemsConfigData(String deviceType,String unitCode,String classes){
+		StringBuffer result_json = new StringBuffer();
+		String key="rpcTotalCalItemList";
+		if("1".equalsIgnoreCase(deviceType)){
+			key="pcpTotalCalItemList";
+		}
+		Jedis jedis=null;
+		List<byte[]> rpcCalItemSet=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists(key.getBytes())){
+				if("1".equalsIgnoreCase(deviceType)){
+					MemoryDataManagerTask.loadPCPTotalCalculateItem();
+				}else{
+					MemoryDataManagerTask.loadRPCTotalCalculateItem();
+				}
+			}
+			rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报表曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报表曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "]";
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		List<String> itemsList=new ArrayList<String>();
+		List<String> itemsCodeList=new ArrayList<String>();
+		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsShowLevelList=new ArrayList<String>();
+		List<String> reportCurveList=new ArrayList<String>();
+		List<String> reportCurveColorList=new ArrayList<String>();
+		if("1".equalsIgnoreCase(classes)){
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.reportCurve,t.reportCurveColor "
+					+ " from tbl_report_items2unit_conf t "
+					+ " where t.unitCode='"+unitCode+"'"
+					+ " order by t.sort";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				itemsList.add(obj[0]+"");
+				itemsCodeList.add(obj[1]+"");
+				itemsSortList.add(obj[2]+"");
+				itemsShowLevelList.add(obj[3]+"");
+				reportCurveList.add(obj[4]+"");
+				reportCurveColorList.add(obj[5]+"");
+			}
+		}
+		
+		int index=1;
+		if(rpcCalItemSet!=null){
+			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				
+				boolean checked=false;
+				String sort="";
+				String showLevel="";
+				String isReportCurve="";
+				String reportCurveColor="";
+
+				checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
+				if(checked){
+					for(int k=0;k<itemsList.size();k++){
+						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+							sort=itemsSortList.get(k);
+							showLevel=itemsShowLevelList.get(k);
+							isReportCurve=reportCurveList.get(k);
+							reportCurveColor=reportCurveColorList.get(k);
+							break;
+						}
+					}
+				}
+				result_json.append("{\"checked\":"+checked+","
+						+ "\"id\":"+(index)+","
+						+ "\"title\":\""+calItem.getName()+"\","
+						+ "\"unit\":\""+calItem.getUnit()+"\","
+						+ "\"showLevel\":\""+showLevel+"\","
+						+ "\"sort\":\""+sort+"\","
+						+ "\"reportCurve\":\""+isReportCurve+"\","
+						+ "\"reportCurveColor\":\""+reportCurveColor+"\","
+						+ "\"dataType\":"+calItem.getDataType()+","
+						+ "\"code\":\""+calItem.getCode()+"\""
+						+ "},");
+				index++;
+			
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getProtocolInstanceItemsConfigData(String id,String classes){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
@@ -4057,8 +4164,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().saveOrUpdateObject(displayUnitItem);
 	}
 	
+	public void grantReportItemsPermission(T reportUnitItem) throws Exception {
+		getBaseDao().saveOrUpdateObject(reportUnitItem);
+	}
+	
 	public void deleteCurrentDisplayUnitOwnItems(final String unitId,final String itemType) throws Exception {
 		final String hql = "DELETE DisplayUnitItem u where u.unitId ="+unitId+" and u.type="+itemType;
+		getBaseDao().bulkObjectDelete(hql);
+	}
+	
+	public void deleteCurrentReportUnitOwnItems(final String unitCode) throws Exception {
+		final String hql = "DELETE ReportUnitItem u where u.unitCode ='"+unitCode+"'";
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	

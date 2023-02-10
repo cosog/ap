@@ -40,6 +40,7 @@ import com.cosog.model.ProtocolAlarmInstance;
 import com.cosog.model.ProtocolDisplayInstance;
 import com.cosog.model.ProtocolInstance;
 import com.cosog.model.ProtocolSMSInstance;
+import com.cosog.model.ReportUnitItem;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
 import com.cosog.model.RunStatusConfig;
@@ -110,6 +111,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@Autowired
 	private AcquisitionUnitManagerService<DisplayUnitItem> displayUnitItemManagerService;
+	
+	@Autowired
+	private AcquisitionUnitManagerService<ReportUnitItem> reportUnitItemManagerService;
 	
 	@Autowired
 	private AcquisitionUnitManagerService<ProtocolInstance> protocolInstanceManagerService;
@@ -921,6 +925,55 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/grantTotalCalItemsToReportUnitPermission")
+	public String grantTotalCalItemsToReportUnitPermission() throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		ReportUnitItem reportUnitItem = null;
+		try {
+			String params = ParamUtils.getParameter(request, "params");
+			String sorts = ParamUtils.getParameter(request, "sorts");
+			String unitCode = ParamUtils.getParameter(request, "unitCode");
+			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
+			log.debug("grantTotalCalItemsToReportUnitPermission params==" + params);
+			String paramsArr[] = StringManagerUtils.split(params, ",");
+
+			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitCode);
+			if (StringManagerUtils.isNotNull(matrixCodes)) {
+				String module_matrix[] = matrixCodes.split("\\|");
+				List<String> itemsList=new ArrayList<String>();
+				for (int i = 0; i < module_matrix.length; i++) {
+					String module_[] = module_matrix[i].split("\\:");
+					
+					if(StringManagerUtils.isNotNull(module_[5])){
+						StringManagerUtils.printLog("#"+module_[5]+"isColor16:"+StringManagerUtils.isColor16("#"+module_[5]));
+					}
+					String itemName=module_[0];
+					reportUnitItem = new ReportUnitItem();
+					reportUnitItem.setUnitCode(unitCode);
+					reportUnitItem.setItemName(itemName);
+					reportUnitItem.setItemCode(module_[1]);
+					reportUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
+					reportUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
+					reportUnitItem.setReportCurve((StringManagerUtils.isNumber(module_[4]))?StringManagerUtils.stringTransferInteger(module_[4]):null);
+					reportUnitItem.setReportCurveColor(StringManagerUtils.isColor16("#"+module_[5])?module_[5]:"");
+					reportUnitItem.setDataType(StringManagerUtils.isNumber(module_[6])?StringManagerUtils.stringTransferInteger(module_[6]):null);
+					reportUnitItem.setMatrix(module_[7]);
+					this.reportUnitItemManagerService.grantReportItemsPermission(reportUnitItem);
+				}
+			}
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolEnumOrSwitchItemsConfigData")
 	public String getProtocolEnumOrSwitchItemsConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
@@ -1147,6 +1200,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(deviceType,classes,unitId);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getReportUnitTotalCalItemsConfigData")
+	public String getReportUnitTotalCalItemsConfigData() throws Exception {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String unitCode = ParamUtils.getParameter(request, "unitCode");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(deviceType,unitCode,classes);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

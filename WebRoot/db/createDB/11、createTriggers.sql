@@ -330,3 +330,10 @@ BEGIN
   SELECT seq_runstatusconfig.nextval INTO :new.id FROM dual;
 END;
 /
+
+CREATE OR REPLACE TRIGGER 
+trg_b_report_item2unit_conf_i   before  insert on TBL_REPORT_ITEMS2UNIT_CONF FOR EACH ROW
+BEGIN
+  SELECT seq_report_items2unit_conf.nextval INTO :new.id FROM dual;
+end;
+/

@@ -52,6 +52,8 @@ Ext.define("AP.view.acquisitionUnit.CurveColorSelectWindow", {
                 			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
                 		}else if(tableType==1){
                 			protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
+                		}else if(tableType==21){//汇总计算项
+                			reportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
                 		}
                 		
 //                		protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);

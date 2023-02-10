@@ -1,4 +1,5 @@
 var reportTemplateHandsontableHelper=null;
+var reportTemplateContentHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolReportUnitConfigInfoView',
@@ -32,7 +33,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
         			text: cosog.string.save,
         			iconCls: 'save',
         			handler: function (v, o) {
-//        				SaveModbusProtocolReportUnitConfigTreeData();
+        				SaveReportUnitData();
         			}
                 }],
                 layout: "border",
@@ -106,7 +107,18 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             html:'<div class="ModbusProtocolReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitContentConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	
+                                	if (reportTemplateContentHandsontableHelper != null && reportTemplateContentHandsontableHelper.hot != null && reportTemplateContentHandsontableHelper.hot != undefined) {
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		reportTemplateContentHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                    }
                                 }
                             }
                     	}]
@@ -128,9 +140,17 @@ function CreateReportTemplateInfoTable(name,classes,code){
 			Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('报表模板：'+name);
 			var result =  Ext.JSON.decode(response.responseText);
 			
-			reportTemplateHandsontableHelper = ReportTemplateHandsontableHelper.createNew("ModbusProtocolReportUnitTemplateTableInfoDiv_id","ModbusProtocolReportUnitTemplateTableInfoContainer",result);
-//			reportTemplateHandsontableHelper.getData(result);
-			reportTemplateHandsontableHelper.createTable();
+			if(reportTemplateHandsontableHelper!=null){
+				if(reportTemplateHandsontableHelper.hot!=undefined){
+					reportTemplateHandsontableHelper.hot.destroy();
+				}
+				reportTemplateHandsontableHelper=null;
+			}
+			
+			if(reportTemplateHandsontableHelper==null || reportTemplateHandsontableHelper.hot==undefined){
+				reportTemplateHandsontableHelper = ReportTemplateHandsontableHelper.createNew("ModbusProtocolReportUnitTemplateTableInfoDiv_id","ModbusProtocolReportUnitTemplateTableInfoContainer",result);
+				reportTemplateHandsontableHelper.createTable();
+			}
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").getEl().unmask();
@@ -153,11 +173,44 @@ var ReportTemplateHandsontableHelper = {
 	        reportTemplateHandsontableHelper.hot = '';
 	        reportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
-	        for(var i=0;i<reportTemplateHandsontableHelper.templateData.header.length;i++){
-	        	reportTemplateHandsontableHelper.data.push(reportTemplateHandsontableHelper.templateData.header[i].title);
+	        
+	        reportTemplateHandsontableHelper.initData=function(){
+	        	reportTemplateHandsontableHelper.data=[];
+	        	for(var i=0;i<reportTemplateHandsontableHelper.templateData.header.length;i++){
+		        	reportTemplateHandsontableHelper.data.push(reportTemplateHandsontableHelper.templateData.header[i].title);
+		        }
 	        }
 	        
-	        
+	        reportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	if(reportTemplateHandsontableHelper!=null && reportTemplateHandsontableHelper.hot!=null){
+	        		for(var i=0;i<reportTemplateHandsontableHelper.templateData.header.length;i++){
+		        		if(row==i){
+		        			if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle)){
+		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight)){
+		        					td.style.fontWeight = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight;
+		        				}
+		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize)){
+		        					td.style.fontSize = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
+		        				}
+		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)){
+		        					td.style.fontFamily = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+		        				}
+		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.height)){
+		        					td.style.height = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
+		        				}
+		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.color)){
+		        					td.style.color = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.color;
+		        				}
+		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor)){
+		        					td.style.backgroundColor = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor;
+		        				}
+		        			}
+		        			break;
+		        		}
+		        	}
+	        	}
+	        }
 	        
 	        
 	        reportTemplateHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -224,8 +277,14 @@ var ReportTemplateHandsontableHelper = {
 	                colHeaders: false,
 					rowHeights: reportTemplateHandsontableHelper.templateData.rowHeights,
 					colWidths: reportTemplateHandsontableHelper.templateData.columnWidths,
-					rowHeaders: true, //显示行头
-					colHeaders: true,
+//					rowHeaders: true, //显示行头
+					rowHeaders(index) {
+					    return 'Row ' + (index + 1);
+					},
+//					colHeaders: true, //显示列头
+					colHeaders(index) {
+					    return 'Col ' + (index + 1);
+					},
 					stretchH: 'all',
 					columnSorting: true, //允许排序
 	                allowInsertRow:false,
@@ -241,6 +300,7 @@ var ReportTemplateHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
+	                    cellProperties.renderer = reportTemplateHandsontableHelper.addStyle;
 //	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
 //	                        cellProperties.renderer = reportTemplateHandsontableHelper.addBoldBg;
 //	                    }
@@ -316,9 +376,261 @@ var ReportTemplateHandsontableHelper = {
 	        }
 
 	        var init = function () {
+	        	reportTemplateHandsontableHelper.initData();
 	        }
 
 	        init();
 	        return reportTemplateHandsontableHelper;
 	    }
 	};
+
+function CreateReportTotalItemsInfoTable(deviceType,unitCode,unitName,classes){
+	Ext.getCmp("ModbusProtocolReportUnitContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ModbusProtocolReportUnitContentConfigTableInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(classes==0){
+				Ext.getCmp("ModbusProtocolReportUnitContentConfigTableInfoPanel_Id").setTitle('报表内容配置');
+			}else{
+				Ext.getCmp("ModbusProtocolReportUnitContentConfigTableInfoPanel_Id").setTitle('报表内容配置：'+unitName);
+			}
+			if(reportTemplateContentHandsontableHelper==null || reportTemplateContentHandsontableHelper.hot==undefined){
+				reportTemplateContentHandsontableHelper = ReportTemplateContentHandsontableHelper.createNew("ModbusProtocolReportUnitContentConfigTableInfoDiv_id");
+				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','']";
+				var columns="[" 
+						+"{data:'checked',type:'checkbox'}," 
+						+"{data:'id'}," 
+						+"{data:'title'},"
+					 	+"{data:'unit'},"
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportTemplateContentHandsontableHelper);}}," 
+						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportTemplateContentHandsontableHelper);}}," 
+						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportTemplateContentHandsontableHelper);}}," 
+						+"{data:'reportCurveColor'},"
+						+"{data:'code'},"
+						+"{data:'dataType'}"
+						+"]";
+				reportTemplateContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				reportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
+				reportTemplateContentHandsontableHelper.createTable(result.totalRoot);
+			}else{
+				reportTemplateContentHandsontableHelper.hot.loadData(result.totalRoot);
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ModbusProtocolReportUnitContentConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			deviceType:deviceType,
+			unitCode:unitCode,
+			classes:classes
+        }
+	});
+};
+
+var ReportTemplateContentHandsontableHelper = {
+		createNew: function (divid) {
+	        var reportTemplateContentHandsontableHelper = {};
+	        reportTemplateContentHandsontableHelper.hot1 = '';
+	        reportTemplateContentHandsontableHelper.divid = divid;
+	        reportTemplateContentHandsontableHelper.validresult=true;//数据校验
+	        reportTemplateContentHandsontableHelper.colHeaders=[];
+	        reportTemplateContentHandsontableHelper.columns=[];
+	        reportTemplateContentHandsontableHelper.AllData=[];
+	        
+	        reportTemplateContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        reportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if(value!=null){
+	            	td.style.backgroundColor = '#'+value;
+	            }
+	        }
+	        
+	        reportTemplateContentHandsontableHelper.createTable = function (data) {
+	        	$('#'+reportTemplateContentHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+reportTemplateContentHandsontableHelper.divid);
+	        	reportTemplateContentHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		hiddenColumns: {
+	                    columns: [8,9],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                colWidths: [25,30,140,80,60,60,85,85,],
+	                columns:reportTemplateContentHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:reportTemplateContentHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+	                	if(reportUnitTreeSelectedRow!=''){
+	                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+	                		if(selectedItem.data.classes==0){
+	                			cellProperties.readOnly = true;
+	                		}else{
+	                			if (visualColIndex >=1 && visualColIndex<=3) {
+	    							cellProperties.readOnly = true;
+	    		                }else if(visualColIndex==7){
+	    		                	cellProperties.renderer = reportTemplateContentHandsontableHelper.addCurveBg;
+	    		                }
+	                		}
+	                	}
+	                    return cellProperties;
+	                },
+	                afterBeginEditing:function(row,column){
+	                	if(reportTemplateContentHandsontableHelper!=null && reportTemplateContentHandsontableHelper.hot!=undefined){
+	                		var row1=reportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
+		                	if(row1[0] && (column==7)){
+		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+		                		if(reportUnitTreeSelectedRow!=''){
+		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+		                			if(selectedItem.data.classes==1){
+		                				var CurveColorSelectWindow=Ext.create("AP.view.acquisitionUnit.CurveColorSelectWindow");
+		                				Ext.getCmp("curveColorSelectedTableType_Id").setValue(21);//汇总计算项表
+		                				Ext.getCmp("curveColorSelectedRow_Id").setValue(row);
+		                				Ext.getCmp("curveColorSelectedCol_Id").setValue(column);
+		                				CurveColorSelectWindow.show();
+		                				var value=row1[column];
+		                				if(value==null||value==''){
+		                					value='ff0000';
+		                				}
+		                				Ext.getCmp('CurveColorSelectWindowColor_id').setValue(value);
+	                		        	var BackgroundColor=Ext.getCmp('CurveColorSelectWindowColor_id').color;
+	                		        	BackgroundColor.a=1;
+	                		        	Ext.getCmp('CurveColorSelectWindowColor_id').setColor(BackgroundColor);
+		                			}
+		                		}
+		                	}
+	                	}
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                	
+	                }
+	        	});
+	        }
+	        //保存数据
+	        reportTemplateContentHandsontableHelper.saveData = function () {}
+	        reportTemplateContentHandsontableHelper.clearContainer = function () {
+	        	reportTemplateContentHandsontableHelper.AllData = [];
+	        }
+	        return reportTemplateContentHandsontableHelper;
+	    }
+};
+
+function SaveReportUnitData(){
+	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+	if(reportUnitTreeSelectedRow!=''){
+		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+//		var propertiesData=protocolReportUnitPropertiesHandsontableHelper.hot.getData();
+//		var reportUnitProperties={};
+//		if(selectedItem.data.classes==1){//选中的是单元
+//			reportUnitProperties.classes=selectedItem.data.classes;
+//			reportUnitProperties.id=selectedItem.data.id;
+//			reportUnitProperties.unitCode=selectedItem.data.code;
+//			reportUnitProperties.unitName=propertiesData[0][2];
+//			reportUnitProperties.acqUnitId=selectedItem.data.acqUnitId;
+//			reportUnitProperties.acqUnitName=propertiesData[1][2];
+//			reportUnitProperties.remark=propertiesData[2][2];
+//		}
+		if(selectedItem.data.classes==1){//保存单元
+//			var reportUnitSaveData={};
+//			reportUnitSaveData.updatelist=[];
+//			reportUnitSaveData.updatelist.push(reportUnitProperties);
+//			saveReportUnitConfigData(reportUnitSaveData,selectedItem.data.protocol,selectedItem.parentNode.data.deviceType);
+			grantReportTotalCalItemsPermission();
+		}
+	}
+};
+
+var grantReportTotalCalItemsPermission = function () {
+	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+	if (reportTemplateContentHandsontableHelper == null ||reportUnitTreeSelectedRow=='') {
+        return false;
+    }
+	var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+    var calItemsData = reportTemplateContentHandsontableHelper.hot.getData();
+    var addUrl = context + '/acquisitionUnitManagerController/grantTotalCalItemsToReportUnitPermission'
+    // 添加条件
+    var addjson = [];
+    var addItemSort=[];
+    var matrixData = "";
+    var matrixDataArr = "";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    
+    var unitCode = selectedItem.data.code;
+    if (!isNotVal(unitCode)) {
+        return false
+    }
+
+    Ext.Array.each(calItemsData, function (name, index, countriesItSelf) {
+        if ((calItemsData[index][0]+'')==='true') {
+        	var itemName = calItemsData[index][2];
+        	
+        	var itemShowLevel = calItemsData[index][4];
+        	var itemSort = calItemsData[index][5];
+        	var reportCurve=calItemsData[index][6];
+        	var reportCurveColor=calItemsData[index][7];
+        	
+        	var itemCode = calItemsData[index][8];
+        	var dataType = calItemsData[index][9];
+        	
+            addjson.push(itemCode);
+            addItemSort.push(itemSort);
+            var matrix_value = '0,0,0';
+            matrixData += itemName + ":"
+            + itemCode+ ":"
+            + itemSort+ ":"
+            + itemShowLevel+ ":" 
+            + reportCurve+ ":" 
+            + reportCurveColor+ ":" 
+            + dataType + ":" 
+            + matrix_value+ "|";
+        }
+    });
+    matrixData = matrixData.substring(0, matrixData.length - 1);
+    var addparams = "" + addjson.join(",");
+    var addSortParams = "" + addItemSort.join(",");
+    var matrixCodes_ = "" + matrixData;
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        params: {
+            params: addparams,
+            sorts: addSortParams,
+            unitCode: unitCode,
+            matrixCodes: matrixCodes_
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+            }
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
+    return false;
+}

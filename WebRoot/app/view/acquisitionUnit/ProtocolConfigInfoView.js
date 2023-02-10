@@ -319,6 +319,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					reportTemplateHandsontableHelper=null;
     				}
+    				if(reportTemplateContentHandsontableHelper!=null){
+    					if(reportTemplateContentHandsontableHelper.hot!=undefined){
+    						reportTemplateContentHandsontableHelper.hot.destroy();
+    					}
+    					reportTemplateContentHandsontableHelper=null;
+    				}
     			},
     			afterrender: function ( panel, eOpts) {}
     		}

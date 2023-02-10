@@ -56,6 +56,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(index);
+                        	var selectedUnitCode='';
                         	if(record.data.classes==0){
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			CreateReportTemplateInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
@@ -66,9 +67,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         			}
                         		}
                         	}else if(record.data.classes==1){
+                        		selectedUnitCode=record.data.code;
                         		CreateReportTemplateInfoTable(record.data.text,record.data.classes,record.data.code);
                         	}
-//                        	CreateProtocolConfigAddrMappingPropertiesInfoTable(record.data);
+                        	CreateReportTotalItemsInfoTable(record.data.deviceType,selectedUnitCode,record.data.text,record.data.classes);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
                         }

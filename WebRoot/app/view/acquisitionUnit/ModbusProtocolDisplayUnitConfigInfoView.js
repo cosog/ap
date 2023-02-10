@@ -1002,7 +1002,7 @@ var grantDisplayCtrlItemsPermission = function () {
                 Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + '控制项安排失败' + "。</font>");
             }
         },
         failure: function () {

@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 136235
+start with 136455
 increment by 1
 cache 20;
 /
@@ -98,6 +98,14 @@ create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
 start with 136
+increment by 1
+cache 20;
+/
+
+create sequence SEQ_REPORT_ITEMS2UNIT_CONF
+minvalue 1
+maxvalue 999999999999999999999999
+start with 0
 increment by 1
 cache 20;
 /

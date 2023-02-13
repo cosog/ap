@@ -60,6 +60,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         	if(record.data.classes==0){
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			CreateReportTemplateInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
+                        			selectedUnitCode=record.data.children[0].code;
                         		}else{
                         			Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('报表模板');
                         			if(protocolConfigAddrMappingItemsHandsontableHelper!=null && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){

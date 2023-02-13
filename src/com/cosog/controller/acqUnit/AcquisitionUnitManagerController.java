@@ -39,7 +39,9 @@ import com.cosog.model.Module;
 import com.cosog.model.ProtocolAlarmInstance;
 import com.cosog.model.ProtocolDisplayInstance;
 import com.cosog.model.ProtocolInstance;
+import com.cosog.model.ProtocolReportInstance;
 import com.cosog.model.ProtocolSMSInstance;
+import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
@@ -53,6 +55,7 @@ import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.model.drive.ModbusProtocolConfig.ItemsMeaning;
 import com.cosog.model.drive.ModbusProtocolDisplayInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolInstanceSaveData;
+import com.cosog.model.drive.ModbusProtocolReportInstanceSaveData;
 import com.cosog.model.gridmodel.AcquisitionGroupHandsontableChangeData;
 import com.cosog.model.gridmodel.AcquisitionUnitHandsontableChangeData;
 import com.cosog.model.gridmodel.DatabaseMappingProHandsontableChangedData;
@@ -120,6 +123,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@Autowired
 	private AcquisitionUnitManagerService<ProtocolDisplayInstance> protocolDisplayInstanceManagerService;
+	
+	@Autowired
+	private AcquisitionUnitManagerService<ProtocolReportInstance> protocolReportInstanceManagerService;
 	
 	@Autowired
 	private AcquisitionUnitManagerService<ProtocolAlarmInstance> protocolAlarmInstanceManagerService;
@@ -198,6 +204,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@InitBinder("runStatusConfig")
 	public void initBinder9(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("runStatusConfig.");
+	}
+	
+	//添加绑定前缀 
+	@InitBinder("protocolReportInstance")
+	public void initBinder10(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("protocolReportInstance.");
 	}
 
 	/**<p>描述：采集类型数据显示方法</p>
@@ -1225,6 +1237,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getReportInstanceTotalCalItemsConfigData")
+	public String getReportInstanceTotalCalItemsConfigData() throws Exception {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String unitCode = ParamUtils.getParameter(request, "unitCode");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportInstanceTotalCalItemsConfigData(deviceType,unitCode,classes);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolInstanceItemsConfigData")
 	public String getProtocolInstanceItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
@@ -1545,6 +1573,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/modbusReportInstanceConfigTreeData")
+	public String modbusReportInstanceConfigTreeData() throws IOException {
+		String json = protocolReportInstanceManagerService.modbusReportInstanceConfigTreeData();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/modbusAlarmInstanceConfigTreeData")
 	public String modbusAlarmInstanceConfigTreeData() throws IOException {
 		String json = acquisitionUnitItemManagerService.getModbusAlarmProtocolInstanceConfigTreeData();
@@ -1579,6 +1619,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getModbusProtoclCombList")
 	public String getModbusProtoclCombList() throws IOException {
 		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getReportTemplateCombList")
+	public String getReportTemplateCombList() throws IOException {
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String json=acquisitionUnitItemManagerService.getReportTemplateCombList(deviceType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2400,6 +2453,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/doModbusProtocolReportInstanceAdd")
+	public String doModbusProtocolReportInstanceAdd(@ModelAttribute ProtocolReportInstance protocolReportInstance) throws IOException {
+		String result = "";
+		try {
+			this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceAdd(protocolReportInstance);
+			result = "{success:true,msg:true}";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+		}
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveProtocolDisplayInstanceData")
 	public String saveProtocolDisplayInstanceData() throws Exception {
 		Gson gson=new Gson();
@@ -2464,6 +2537,64 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
 		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveProtocolReportInstanceData")
+	public String saveProtocolReportInstanceData() throws Exception {
+		Gson gson=new Gson();
+		String json ="{success:true}";
+		String data = ParamUtils.getParameter(request, "data");
+		java.lang.reflect.Type type = new TypeToken<ModbusProtocolReportInstanceSaveData>() {}.getType();
+		ModbusProtocolReportInstanceSaveData modbusProtocolReportInstanceSaveData=gson.fromJson(data, type);
+		
+		if(modbusProtocolReportInstanceSaveData!=null){
+			if(modbusProtocolReportInstanceSaveData.getDelidslist()!=null){
+				for(int i=0;i<modbusProtocolReportInstanceSaveData.getDelidslist().size();i++){
+					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceBulkDelete(modbusProtocolReportInstanceSaveData.getDelidslist().get(i));
+				}
+			}
+			
+			if(StringManagerUtils.isNotNull(modbusProtocolReportInstanceSaveData.getName())){
+				ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+				String unitName=modbusProtocolReportInstanceSaveData.getUnitName();
+				String unitCode="";
+				if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
+					for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+						if(unitName.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateName()) && modbusProtocolReportInstanceSaveData.getDeviceType()==reportTemplate.getReportTemplate().get(i).getDeviceType()){
+							unitCode=reportTemplate.getReportTemplate().get(i).getTemplateCode();
+							break;
+						}
+					}
+				}
+				ProtocolReportInstance protocolReportInstance=new ProtocolReportInstance();
+				protocolReportInstance.setId(modbusProtocolReportInstanceSaveData.getId());
+				protocolReportInstance.setCode(modbusProtocolReportInstanceSaveData.getCode());
+				protocolReportInstance.setName(modbusProtocolReportInstanceSaveData.getName());
+				protocolReportInstance.setDeviceType(modbusProtocolReportInstanceSaveData.getDeviceType());
+				protocolReportInstance.setUnitCode(unitCode);
+				
+				
+				if(StringManagerUtils.isNum(modbusProtocolReportInstanceSaveData.getSort())){
+					protocolReportInstance.setSort(StringManagerUtils.stringToInteger(modbusProtocolReportInstanceSaveData.getSort()));
+				}else{
+					protocolReportInstance.setSort(null);
+				}
+				try {
+					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceEdit(protocolReportInstance);
+					json = "{success:true,msg:true}";
+				} catch (Exception e) {
+					e.printStackTrace();
+					json = "{success:false,msg:false}";
+				}
+			}
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
 		pw.flush();
 		pw.close();
 		return null;
@@ -2843,6 +2974,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
 		boolean flag = this.acquisitionUnitManagerService.judgeDisplayInstanceExistOrNot(StringManagerUtils.stringToInteger(deviceType),instanceName);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json = "";
+		if (flag) {
+			json = "{success:true,msg:'1'}";
+		} else {
+			json = "{success:true,msg:'0'}";
+		}
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/judgeReportInstanceExistOrNot")
+	public String judgeReportInstanceExistOrNot() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String instanceName = ParamUtils.getParameter(request, "instanceName");
+		boolean flag = this.acquisitionUnitManagerService.judgeReportInstanceExistOrNot(StringManagerUtils.stringToInteger(deviceType),instanceName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";

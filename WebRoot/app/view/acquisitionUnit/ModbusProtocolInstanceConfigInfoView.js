@@ -10,6 +10,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
     	var ModbusProtocolDisplayInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView');
     	var ModbusProtocolAlarmInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView');
     	var ModbusProtocolSMSInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView');
+    	var ModbusProtocolReportInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView');
     	Ext.apply(me, {
     		items: [{
     			xtype: 'tabpanel',
@@ -39,6 +40,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">短信实例</div>',
                 	id:'ModbusProtocolSMSInstanceConfigTabPanel_Id',
                 	items: [ModbusProtocolSMSInstanceConfigInfoView],
+    				layout: "fit",
+    				border: false
+                },{
+                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表实例</div>',
+                	id:'ModbusProtocolReportInstanceConfigTabPanel_Id',
+                	items: [ModbusProtocolReportInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 }],
@@ -71,6 +78,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                     			gridPanel.getStore().load();
                     		}else{
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolSMSInstanceStore');
+                    		}
+                    	}else if(newCard.id=="ModbusProtocolReportInstanceConfigTabPanel_Id"){
+                    		var gridPanel=Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id");
+                    		if(isNotVal(gridPanel)){
+                    			gridPanel.getStore().load();
+                    		}else{
+                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore');
                     		}
                     	}
                     },afterrender: function (comp,eOpts) {

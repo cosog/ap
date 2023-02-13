@@ -716,6 +716,16 @@ function addModbusProtocolDisplayInstanceConfigData() {
     return false;
 };
 
+function addModbusProtocolReportInstanceConfigData() {
+    var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
+        title: '创建报表实例'
+    });
+    window.show();
+    Ext.getCmp("addFormModbusProtocolReportInstance_Id").show();
+    Ext.getCmp("updateFormaModbusProtocolReportInstance_Id").hide();
+    return false;
+};
+
 //协议实例配置窗体创建按钮事件
 var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocolDisplayInstanceInfoWindow_Id").down('form');
@@ -730,6 +740,38 @@ var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolDisplayInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().load();
+                if (action.result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                }
+                if (action.result.msg == false) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    } else {
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    }
+    // 设置返回值 false : 让Extjs4 自动回调 success函数
+    return false;
+};
+
+var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
+    var winForm = Ext.getCmp("modbusProtocolReportInstanceInfoWindow_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (winForm.getForm().isValid()) {
+        winForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doModbusProtocolReportInstanceAdd',
+            clientValidation: true, // 进行客户端验证
+            method: "POST",
+            waitMsg: cosog.string.sendServer,
+            waitTitle: 'Please Wait...',
+            success: function (response, action) {
+                Ext.getCmp('modbusProtocolReportInstanceInfoWindow_Id').close();
+                Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
                 }

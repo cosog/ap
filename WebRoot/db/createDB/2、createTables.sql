@@ -557,6 +557,29 @@ alter table TBL_PROTOCOLDISPLAYINSTANCE add constraint PK_PROTOCOLDISPLAYINSTANC
 /
 
 /*==============================================================*/
+/* Table: TBL_PROTOCOLREPORTINSTANCE                                    */
+/*==============================================================*/
+create table TBL_PROTOCOLREPORTINSTANCE
+(
+  id         NUMBER(10) not null,
+  name       VARCHAR2(50),
+  code       VARCHAR2(50),
+  unitcode   VARCHAR2(50),
+  devicetype NUMBER(1) default 0,
+  sort       NUMBER(10)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_PROTOCOLREPORTINSTANCE add constraint PK_PROTOCOLREPORTINSTANCE primary key (ID)
+/
+
+/*==============================================================*/
 /* Table: TBL_PROTOCOLSMSINSTANCE                                    */
 /*==============================================================*/
 create table TBL_PROTOCOLSMSINSTANCE
@@ -597,6 +620,7 @@ create table TBL_RPCDEVICE
   instancecode             VARCHAR2(50),
   alarminstancecode        VARCHAR2(50),
   displayinstancecode      VARCHAR2(50),
+  reportinstancecode      VARCHAR2(50),
   videourl                 VARCHAR2(400),
   videoaccesstoken         VARCHAR2(400),
   productiondata           VARCHAR2(4000) default '{}',
@@ -637,6 +661,7 @@ create table TBL_PCPDEVICE
   instancecode             VARCHAR2(50),
   alarminstancecode        VARCHAR2(50),
   displayinstancecode      VARCHAR2(50),
+  reportinstancecode       VARCHAR2(50),
   videourl                 VARCHAR2(400),
   videoaccesstoken         VARCHAR2(400),
   productiondata           VARCHAR2(4000) default '{}',

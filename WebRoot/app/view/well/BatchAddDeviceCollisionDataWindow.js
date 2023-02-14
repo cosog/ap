@@ -277,6 +277,16 @@ function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
                 }
                 source += "]";
                 columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "reportInstanceName".toUpperCase()) {
+                var source = "[";
+                for (var j = 0; j < result.reportInstanceDropdownData.length; j++) {
+                    source += "\'" + result.reportInstanceDropdownData[j] + "\'";
+                    if (j < result.reportInstanceDropdownData.length - 1) {
+                        source += ",";
+                    }
+                }
+                source += "]";
+                columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
             } else if (result.columns[i].dataIndex.toUpperCase() === "alarmInstanceName".toUpperCase()) {
                 var source = "[";
                 for (var j = 0; j < result.alarmInstanceDropdownData.length; j++) {
@@ -575,6 +585,16 @@ function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
                 for (var j = 0; j < result.displayInstanceDropdownData.length; j++) {
                     source += "\'" + result.displayInstanceDropdownData[j] + "\'";
                     if (j < result.displayInstanceDropdownData.length - 1) {
+                        source += ",";
+                    }
+                }
+                source += "]";
+                columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "reportInstanceName".toUpperCase()) {
+                var source = "[";
+                for (var j = 0; j < result.reportInstanceDropdownData.length; j++) {
+                    source += "\'" + result.reportInstanceDropdownData[j] + "\'";
+                    if (j < result.reportInstanceDropdownData.length - 1) {
                         source += ",";
                     }
                 }

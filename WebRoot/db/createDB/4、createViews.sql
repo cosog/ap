@@ -24,6 +24,7 @@ t.instancecode,
 decode(t.devicetype,2,t4.name,t2.name) as instancename,
 t.alarminstancecode,t3.name as alarminstancename,
 t.displayinstancecode,t5.name as displayinstancename,
+t.reportinstancecode,t7.name as reportinstancename,
 t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,t.balanceinfo,t.stroke,t.levelcorrectvalue,
 t.pumpingmodelid,t6.manufacturer,t6.model,t6.crankrotationdirection,t6.offsetangleofcrank,t6.crankgravityradius,t6.singlecrankweight,t6.singlecrankpinweight,t6.structuralunbalance,
@@ -34,6 +35,7 @@ left outer join tbl_protocolinstance t2 on t.instancecode=t2.code
 left outer join tbl_protocolalarminstance t3 on t.alarminstancecode=t3.code
 left outer join tbl_protocolsmsinstance t4 on t.instancecode =t4.code
 left outer join tbl_protocoldisplayinstance t5 on t.displayinstancecode=t5.code
+left outer join tbl_protocolreportinstance t7 on t.reportinstancecode=t7.code
 left outer join tbl_pumpingmodel t6 on t.pumpingmodelid=t6.id
 left outer join tbl_code c1 on c1.itemcode='APPLICATIONSCENARIOS' and t.applicationscenarios=c1.itemvalue
 left outer join tbl_code c2 on c2.itemcode='DEVICETYPE' and t.devicetype=c2.itemvalue;
@@ -53,6 +55,7 @@ t.instancecode,
 decode(t.devicetype,2,t4.name,t2.name) as instancename,
 t.alarminstancecode,t3.name as alarminstancename,
 t.displayinstancecode,t5.name as displayinstancename,
+t.reportinstancecode,t6.name as reportinstancename,
 t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,
 t.sortnum
@@ -62,6 +65,7 @@ left outer join tbl_protocolinstance t2 on t.instancecode=t2.code
 left outer join tbl_protocolalarminstance t3 on t.alarminstancecode=t3.code
 left outer join tbl_protocolsmsinstance t4 on t.instancecode =t4.code
 left outer join tbl_protocoldisplayinstance t5 on t.displayinstancecode=t5.code
+left outer join tbl_protocolreportinstance t6 on t.reportinstancecode=t6.code
 left outer join tbl_code c1 on c1.itemcode='APPLICATIONSCENARIOS' and t.applicationscenarios=c1.itemvalue
 left outer join tbl_code c2 on c2.itemcode='DEVICETYPE' and t.devicetype=c2.itemvalue;
 /

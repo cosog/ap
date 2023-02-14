@@ -138,6 +138,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpcdevice (
                                                     v_applicationScenariosName    in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
+                                                    v_reportInstance    in varchar2,
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
@@ -190,8 +191,9 @@ begin
         Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
           t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
           t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
-               t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
-               t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
+          t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
+          t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
+          t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
           t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
           t.videourl=v_videourl,
           t.status=v_status, t.sortnum=v_sortNum,
@@ -251,6 +253,7 @@ begin
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
                 t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
+                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
                 t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
                 t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model)
             Where t.wellName=v_wellName and t.orgid=v_orgId;
@@ -316,6 +319,7 @@ begin
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
                 t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
+                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
                 t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
                 t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model)
             Where t.wellName=v_wellName and t.orgid=v_orgId;
@@ -371,6 +375,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcpdevice (
                                                     v_applicationScenariosName    in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
+                                                    v_reportInstance    in varchar2,
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
@@ -420,6 +425,7 @@ begin
           t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
           t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
           t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
+          t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
           t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
           t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
           t.videourl=v_videourl,
@@ -478,6 +484,7 @@ begin
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
                 t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
+                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
                 t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1)
             Where t.wellName=v_wellName and t.orgid=v_orgId;
             commit;
@@ -542,6 +549,7 @@ begin
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
                 t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
+                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
                 t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1)
             Where t.wellName=v_wellName and t.orgid=v_orgId;
             commit;
@@ -700,6 +708,7 @@ CREATE OR REPLACE PROCEDURE prd_update_rpcdevice ( v_recordId in NUMBER,
                                                     v_applicationScenariosName    in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
+                                                    v_reportInstance    in varchar2,
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
@@ -739,6 +748,7 @@ begin
                t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
+               t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
                t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
@@ -794,6 +804,7 @@ CREATE OR REPLACE PROCEDURE prd_update_pcpdevice ( v_recordId in NUMBER,
                                                     v_applicationScenariosName    in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
+                                                    v_reportInstance    in varchar2,
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
@@ -833,6 +844,7 @@ begin
                t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
+               t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
                t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,

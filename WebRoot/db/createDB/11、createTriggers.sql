@@ -201,6 +201,12 @@ BEGIN
 end;
 /
 
+CREATE OR REPLACE TRIGGER trg_b_protocolreportinst_i   before  insert on tbl_protocolreportinstance FOR EACH ROW
+BEGIN
+  SELECT seq_protocolreportinstance.nextval,'reportinstance' || seq_protocolreportinstance.nextval INTO :new.id, :new.code FROM dual;
+end;
+/
+
 CREATE OR REPLACE TRIGGER trg_b_protocolinstance_i   before  insert on tbl_protocolinstance FOR EACH ROW
 BEGIN
   SELECT seq_protocolinstance.nextval,'instance' || seq_protocolinstance.nextval INTO :new.id, :new.code FROM dual;

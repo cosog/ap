@@ -43,6 +43,8 @@ public class WellHandsontableChangedData {
 	    
 	    private String displayInstanceName="";
 	    
+	    private String reportInstanceName="";
+	    
 	    private String alarmInstanceName="";
 	    
 	    private String tcpType="";
@@ -739,6 +741,14 @@ public class WellHandsontableChangedData {
 
 		public void setIpPort(String ipPort) {
 			this.ipPort = ipPort;
+		}
+
+		public String getReportInstanceName() {
+			return reportInstanceName;
+		}
+
+		public void setReportInstanceName(String reportInstanceName) {
+			this.reportInstanceName = reportInstanceName;
 		}
 	    
 	}

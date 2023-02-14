@@ -136,6 +136,65 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
 					}
 				});
         
+        /**报表实例*/
+        var reportInstanceStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/getReportInstanceCombList',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							deviceType: 201
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var pcpDeviceReportInstanceComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  '报表实例',
+					emptyText : '请选择报表实例',
+					blankText : '请选择报表实例',
+					id : 'pcpDeviceReportInstanceComb_Id',
+					anchor : '95%',
+					store: reportInstanceStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : true,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (v,o) {
+							if(o.data.boxkey==''){
+								v.setValue('');
+								v.setRawValue(' ');
+							}
+							Ext.getCmp("pcpDeviceReportInstanceCode_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
         /**报警实例*/
         var alarmInstanceStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -303,6 +362,12 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 id: 'pcpDeviceDisplayInstanceCode_Id',
                 value: '',
                 name: "pcpDeviceInformation.displayInstanceCode"
+            },pcpDeviceReportInstanceComb,{
+            	xtype: "hidden",
+                fieldLabel: '报表实例编码',
+                id: 'pcpDeviceReportInstanceCode_Id',
+                value: '',
+                name: "pcpDeviceInformation.reportInstanceCode"
             },pcpDeviceAlarmInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '报警实例编码',

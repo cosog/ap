@@ -135,6 +135,65 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 					}
 				});
         
+        /**报表实例*/
+        var reportInstanceStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/getReportInstanceCombList',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							deviceType: 101
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var rpcDeviceReportInstanceComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  '报表实例',
+					emptyText : '请选择报表实例',
+					blankText : '请选择报表实例',
+					id : 'rpcDeviceReportInstanceComb_Id',
+					anchor : '95%',
+					store: reportInstanceStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : true,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (v,o) {
+							if(o.data.boxkey==''){
+								v.setValue('');
+								v.setRawValue(' ');
+							}
+							Ext.getCmp("rpcDeviceReportInstanceCode_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
         /**报警实例*/
         var alarmInstanceStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -302,6 +361,12 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                 id: 'rpcDeviceDisplayInstanceCode_Id',
                 value: '',
                 name: "rpcDeviceInformation.displayInstanceCode"
+            },rpcDeviceReportInstanceComb,{
+            	xtype: "hidden",
+                fieldLabel: '报表实例编码',
+                id: 'rpcDeviceReportInstanceCode_Id',
+                value: '',
+                name: "rpcDeviceInformation.reportInstanceCode"
             },rpcDeviceAlarmInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '报警实例编码',

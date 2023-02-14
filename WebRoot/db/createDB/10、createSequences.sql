@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 136455
+start with 136615
 increment by 1
 cache 20;
 /
@@ -218,6 +218,14 @@ create sequence SEQ_PROTOCOLDISPLAYINSTANCE
 minvalue 1
 maxvalue 999999999999999999999999
 start with 3
+increment by 1
+cache 20;
+/
+
+create sequence SEQ_PROTOCOLREPORTINSTANCE
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
 increment by 1
 cache 20;
 /

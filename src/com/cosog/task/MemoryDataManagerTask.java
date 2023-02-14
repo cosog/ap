@@ -2581,4 +2581,32 @@ public class MemoryDataManagerTask {
 		}
 		return reportTemplate;
 	}
+	
+	public static String getReportTemplateCodeFromName(String name){
+		String code="";
+		ReportTemplate reportTemplate=getReportTemplateConfig();
+		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+				if(name.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateName())){
+					code=reportTemplate.getReportTemplate().get(i).getTemplateCode();
+					break;
+				}
+			}
+		}
+		return code;
+	}
+	
+	public static String getReportTemplateNameFromCode(String code){
+		String name="";
+		ReportTemplate reportTemplate=getReportTemplateConfig();
+		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+				if(code.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateCode())){
+					name=reportTemplate.getReportTemplate().get(i).getTemplateName();
+					break;
+				}
+			}
+		}
+		return name;
+	}
 }

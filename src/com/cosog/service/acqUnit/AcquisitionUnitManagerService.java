@@ -3115,7 +3115,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		rpcTree_json.append("[");
 		pcpTree_json.append("[");
 		
-		if(reportTemplate!=null){
+		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
 			//排序
 			Collections.sort(reportTemplate.getReportTemplate());
 			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
@@ -3712,14 +3712,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getReportTemplateCombList(String deviceType){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
-		//排序
-		Collections.sort(reportTemplate.getReportTemplate());
-		
-		result_json.append("{\"totals\":"+reportTemplate.getReportTemplate().size()+",\"list\":[");
-		for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
-			if(StringManagerUtils.stringToInteger(deviceType)==reportTemplate.getReportTemplate().get(i).getDeviceType()){
-				result_json.append("{boxkey:\"" + reportTemplate.getReportTemplate().get(i).getTemplateCode() + "\",");
-				result_json.append("boxval:\"" + reportTemplate.getReportTemplate().get(i).getTemplateName() + "\"},");
+		result_json.append("{\"totals\":"+( (reportTemplate!=null&&reportTemplate.getReportTemplate()!=null)?reportTemplate.getReportTemplate().size():0 )+",\"list\":[");
+		if(reportTemplate!=null&&reportTemplate.getReportTemplate()!=null){
+			//排序
+			Collections.sort(reportTemplate.getReportTemplate());
+			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+				if(StringManagerUtils.stringToInteger(deviceType)==reportTemplate.getReportTemplate().get(i).getDeviceType()){
+					result_json.append("{boxkey:\"" + reportTemplate.getReportTemplate().get(i).getTemplateCode() + "\",");
+					result_json.append("boxval:\"" + reportTemplate.getReportTemplate().get(i).getTemplateName() + "\"},");
+				}
 			}
 		}
 		if (result_json.toString().endsWith(",")) {

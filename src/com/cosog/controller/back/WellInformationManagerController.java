@@ -333,6 +333,19 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getReportInstanceCombList")
+	public String getReportInstanceCombList() throws IOException {
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String json=wellInformationManagerService.getReportInstanceCombList(deviceType);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getAlarmInstanceCombList")
 	public String getAlarmInstanceCombList() throws IOException {
 		deviceType= ParamUtils.getParameter(request, "deviceType");

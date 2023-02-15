@@ -20,12 +20,16 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.ReportTemplate;
+import com.cosog.model.ReportUnitItem;
 import com.cosog.service.base.BaseService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
+import com.google.gson.Gson;
 
 import net.sf.json.JSONObject;
 
@@ -828,6 +832,186 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getRPCSingleWellDailyReportData(Page pager, String orgId,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Gson gson =new Gson();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String reportTemplateCode="";
+		ReportTemplate.Template template=null;
+		String reportTemplateCodeSql="select t2.unitcode from tbl_rpcdevice t,tbl_protocolreportinstance t2 where t.reportinstancecode=t2.code and t.id="+wellId+"";
+		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+		if(reportTemplateCodeList.size()>0){
+			reportTemplateCode=reportTemplateCodeList.get(0).toString().replaceAll("null", "");
+		}
+		if(StringManagerUtils.isNotNull(reportTemplateCode)){
+			template=MemoryDataManagerTask.getReportTemplateByCode(reportTemplateCode);
+		}
+		if(template!=null){
+			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template)+",\"data\":[");
+			
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+					+ " where t.unitcode='"+reportTemplateCode+"' "
+					+ " and t.sort>=0"
+					+ " and t.showlevel is null or t.showlevel>(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " order by t.sort";
+			String reportCurveItemSql="select t.itemname,t.unitcode,t.reportcurve,t.reportcurvecolor,t.datatype "
+					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+					+ " where t.unitcode='"+reportTemplateCode+"' "
+					+ " and t.sort>=0"
+					+ " and t.reportcurve>0 "
+					+ " and t.showlevel is null or t.showlevel>(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " order by t.reportcurve";
+			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+			List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
+			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+			List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+			for(int i=0;i<reportItemQuertList.size();i++){
+				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+				ReportUnitItem reportUnitItem=new ReportUnitItem();
+				reportUnitItem.setItemName(reportItemObj[0]+"");
+				reportUnitItem.setItemCode(reportItemObj[1]+"");
+				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				reportItemList.add(reportUnitItem);
+			}
+			for(int i=0;i<reportCurveItemQuertList.size();i++){
+				Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
+				ReportUnitItem reportUnitItem=new ReportUnitItem();
+				reportUnitItem.setItemName(reportCurveItemObj[0]+"");
+				reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
+				reportUnitItem.setReportCurve(StringManagerUtils.stringToInteger(reportCurveItemObj[2]+""));
+				reportUnitItem.setReportCurveColor(reportCurveItemObj[3]+"");
+				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
+				reportCurveItemList.add(reportUnitItem);
+			}
+			
+			StringBuffer sqlBuff = new StringBuffer();
+			StringBuffer cueveSqlBuff = new StringBuffer();
+			sqlBuff.append("select id");
+			cueveSqlBuff.append("select id");
+			for(int i=0;i<reportItemList.size();i++){
+				if(reportItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+",'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+				}else if(reportItemList.get(i).getDataType()==4){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+",'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+				}else{
+					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+				}
+			}
+			sqlBuff.append(" from VIW_RPCDAILYCALCULATIONDATA t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+			sqlBuff.append(" order by t.calDate");
+			
+			for(int i=0;i<reportCurveItemList.size();i++){
+				cueveSqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+			}
+			cueveSqlBuff.append(" from VIW_RPCDAILYCALCULATIONDATA t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+			cueveSqlBuff.append(" order by t.calDate");
+			
+			List<?> reportDataList = this.findCallSql(sqlBuff.toString());
+			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString());
+			
+			result_json.append("]}");
+		}else{
+			result_json.append("{\"success\":false,\"template\":{},\"data\":[]}");
+		}
+		
+		
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getPCPSingleWellDailyReportData(Page pager, String orgId,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Gson gson =new Gson();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String reportTemplateCode="";
+		ReportTemplate.Template template=null;
+		String reportTemplateCodeSql="select t2.unitcode from tbl_rpcdevice t,tbl_protocolreportinstance t2 where t.reportinstancecode=t2.code and t.id="+wellId+"";
+		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+		if(reportTemplateCodeList.size()>0){
+			reportTemplateCode=reportTemplateCodeList.get(0).toString().replaceAll("null", "");
+		}
+		if(StringManagerUtils.isNotNull(reportTemplateCode)){
+			template=MemoryDataManagerTask.getReportTemplateByCode(reportTemplateCode);
+		}
+		if(template!=null){
+			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template)+",\"data\":[");
+			
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+					+ " where t.unitcode='"+reportTemplateCode+"' "
+					+ " and t.sort>=0"
+					+ " and t.showlevel is null or t.showlevel>(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " order by t.sort";
+			String reportCurveItemSql="select t.itemname,t.unitcode,t.reportcurve,t.reportcurvecolor,t.datatype "
+					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+					+ " where t.unitcode='"+reportTemplateCode+"' "
+					+ " and t.sort>=0"
+					+ " and t.reportcurve>0 "
+					+ " and t.showlevel is null or t.showlevel>(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " order by t.reportcurve";
+			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+			List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
+			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+			List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+			for(int i=0;i<reportItemQuertList.size();i++){
+				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+				ReportUnitItem reportUnitItem=new ReportUnitItem();
+				reportUnitItem.setItemName(reportItemObj[0]+"");
+				reportUnitItem.setItemCode(reportItemObj[1]+"");
+				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				reportItemList.add(reportUnitItem);
+			}
+			for(int i=0;i<reportCurveItemQuertList.size();i++){
+				Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
+				ReportUnitItem reportUnitItem=new ReportUnitItem();
+				reportUnitItem.setItemName(reportCurveItemObj[0]+"");
+				reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
+				reportUnitItem.setReportCurve(StringManagerUtils.stringToInteger(reportCurveItemObj[2]+""));
+				reportUnitItem.setReportCurveColor(reportCurveItemObj[3]+"");
+				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
+				reportCurveItemList.add(reportUnitItem);
+			}
+			
+			StringBuffer sqlBuff = new StringBuffer();
+			StringBuffer cueveSqlBuff = new StringBuffer();
+			sqlBuff.append("select id");
+			cueveSqlBuff.append("select id");
+			for(int i=0;i<reportItemList.size();i++){
+				if(reportItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+",'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+				}else if(reportItemList.get(i).getDataType()==4){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+",'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+				}else{
+					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+				}
+			}
+			sqlBuff.append(" from VIW_PCPDAILYCALCULATIONDATA t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+			sqlBuff.append(" order by t.calDate");
+			
+			for(int i=0;i<reportCurveItemList.size();i++){
+				cueveSqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+			}
+			cueveSqlBuff.append(" from VIW_PCPDAILYCALCULATIONDATA t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+			cueveSqlBuff.append(" order by t.calDate");
+			
+			List<?> reportDataList = this.findCallSql(sqlBuff.toString());
+			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString());
+			
+			result_json.append("]}");
+		}else{
+			result_json.append("{\"success\":true,\"template\":{},\"data\":[]}");
+		}
+		
+		
 		return result_json.toString().replaceAll("null", "");
 	}
 	

@@ -26,6 +26,7 @@ public class PcpDeviceInformation implements java.io.Serializable {
 	private Integer applicationScenarios;
 	private String instanceCode;
 	private String displayInstanceCode;
+	private String reportInstanceCode;
 	private String alarmInstanceCode;
 	private String tcpType;
 	private String signInId;
@@ -43,7 +44,8 @@ public class PcpDeviceInformation implements java.io.Serializable {
 
 	/** full constructor */
 	public PcpDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
-			Integer applicationScenarios, String instanceCode, String alarmInstanceCode,String displayInstanceCode, 
+			Integer applicationScenarios, 
+			String instanceCode, String alarmInstanceCode,String displayInstanceCode, String reportInstanceCode, 
 			String tcpType, String signInId,String ipPort, String slave,
 			String videoUrl, Integer sortNum) {
 		super();
@@ -54,6 +56,7 @@ public class PcpDeviceInformation implements java.io.Serializable {
 		this.applicationScenarios = applicationScenarios;
 		this.instanceCode = instanceCode;
 		this.displayInstanceCode = displayInstanceCode;
+		this.reportInstanceCode = reportInstanceCode;
 		this.alarmInstanceCode = alarmInstanceCode;
 		this.tcpType = tcpType;
 		this.signInId = signInId;
@@ -207,5 +210,14 @@ public class PcpDeviceInformation implements java.io.Serializable {
 
 	public void setIpPort(String ipPort) {
 		this.ipPort = ipPort;
+	}
+
+	@Column(name = "reportInstanceCode", nullable = true, length = 50)
+	public String getReportInstanceCode() {
+		return reportInstanceCode;
+	}
+
+	public void setReportInstanceCode(String reportInstanceCode) {
+		this.reportInstanceCode = reportInstanceCode;
 	}
 }

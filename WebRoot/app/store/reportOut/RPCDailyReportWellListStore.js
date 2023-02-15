@@ -34,15 +34,15 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
                     forceFit: true,
 //                    selType: 'checkboxmodel',
 //                    multiSelect: false,
-                    selModel:{
-                    	selType: 'checkboxmodel',
-                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-                    	checkOnly:false,
-                    	allowDeselect:true,
-                    	onHdMouseDown:function(e,t){
-                    		alert("全选/全不选");
-                    	}
-                    },
+//                    selModel:{
+//                    	selType: 'checkboxmodel',
+//                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+//                    	checkOnly:false,
+//                    	allowDeselect:true,
+//                    	onHdMouseDown:function(e,t){
+//                    		alert("全选/全不选");
+//                    	}
+//                    },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },
@@ -50,16 +50,18 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
                     columns: newColumns,
                     listeners: {
                     	selectionchange: function (view, selected, o) {
-                    		if(selected.length>0){
-                    			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setValue(selected[0].data.wellName);
-                            	Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setRawValue(selected[0].data.wellName);
-                    		}else{
-                    			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setValue('');
-                            	Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setRawValue('');
-                    		}
-                    		CreateRPCDailyReportTable();
+//                    		if(selected.length>0){
+//                    			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setValue(selected[0].data.wellName);
+//                            	Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setRawValue(selected[0].data.wellName);
+//                    		}else{
+//                    			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setValue('');
+//                            	Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setRawValue('');
+//                    		}
+//                    		CreateRPCDailyReportTable();
                     	},
                     	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").setValue(index);
+                    		CreateRPCDailyReportTable();
                         }
                     }
                 });
@@ -68,9 +70,11 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);
+            	gridPanel.getSelectionModel().select(0, true);
+            }else{
+            	Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").setValue(-1);
+                CreateRPCDailyReportTable();
             }
-            Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").setValue(-1);
-            CreateRPCDailyReportTable();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

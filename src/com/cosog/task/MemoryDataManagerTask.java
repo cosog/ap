@@ -1793,8 +1793,8 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
-			jedis.zadd("rpcTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","WellName","",1)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",1)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","WellName","",1)));//1-字符串 2-数值 3-日期 4-日期时间
+			jedis.zadd("rpcTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3)));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2)));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2)));
@@ -1857,7 +1857,7 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
 			jedis.zadd("pcpTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","WellName","",1)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",1)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3)));
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2)));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2)));
@@ -2580,6 +2580,35 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return reportTemplate;
+	}
+	
+	public static ReportTemplate.Template getReportTemplateByCode(String code){
+		Jedis jedis=null;
+		ReportTemplate reportTemplate=null;
+		ReportTemplate.Template template=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("ReportTemplateConfig".getBytes())){
+				MemoryDataManagerTask.loadReportTemplateConfig();
+			}
+			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
+			if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
+				for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+					if(code.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateCode())){
+						template=reportTemplate.getReportTemplate().get(i);
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return template;
 	}
 	
 	public static String getReportTemplateCodeFromName(String name){

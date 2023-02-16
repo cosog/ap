@@ -62,6 +62,7 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").setValue(index);
                     		CreateRPCDailyReportTable();
+                    		CreateRPCDailyReportCurve();
                         }
                     }
                 });
@@ -73,7 +74,14 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
             	gridPanel.getSelectionModel().select(0, true);
             }else{
             	Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").setValue(-1);
-                CreateRPCDailyReportTable();
+            	if(rpcDailyReportHelper!=null){
+    				if(rpcDailyReportHelper.hot!=undefined){
+    					rpcDailyReportHelper.hot.destroy();
+    				}
+    				rpcDailyReportHelper=null;
+    			}
+            	$("#RPCDailyReportDiv_id").html('');
+                $("#RPCDailyReportCurveDiv_Id").html('');
             }
         },
         beforeload: function (store, options) {

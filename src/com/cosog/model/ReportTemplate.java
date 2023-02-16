@@ -137,7 +137,7 @@ public class ReportTemplate  implements Serializable{
 		
 	    private int startRow;
 
-	    private int staetColumn;
+	    private int startColumn;
 
 	    private int endRow;
 
@@ -149,11 +149,11 @@ public class ReportTemplate  implements Serializable{
 	    public int getStartRow(){
 	        return this.startRow;
 	    }
-	    public void setStaetColumn(int staetColumn){
-	        this.staetColumn = staetColumn;
+	    public void setStattColumn(int startColumn){
+	        this.startColumn = startColumn;
 	    }
-	    public int getStaetColumn(){
-	        return this.staetColumn;
+	    public int getStartColumn(){
+	        return this.startColumn;
 	    }
 	    public void setEndRow(int endRow){
 	        this.endRow = endRow;

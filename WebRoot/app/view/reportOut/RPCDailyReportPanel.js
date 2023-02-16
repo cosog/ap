@@ -75,6 +75,7 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                     },
                     select: function (combo, record, index) {
                     	CreateRPCDailyReportTable();
+                    	CreateRPCDailyReportCurve();
                     }
                 }
             });
@@ -97,14 +98,15 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                 anchor: '100%',
                 fieldLabel: '日期',
                 labelWidth: 36,
-                width: 126,
+                width: 136,
                 format: 'Y-m-d',
                 id: 'RPCDailyReportStartDate_Id',
-                value: new Date(),
+//                value: new Date(),
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
                         	CreateRPCDailyReportTable();
+                        	CreateRPCDailyReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -116,7 +118,7 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                 hidden: false,
                 fieldLabel: '至',
                 labelWidth: 15,
-                width: 105,
+                width: 115,
                 format: 'Y-m-d ',
                 id: 'RPCDailyReportEndDate_Id',
                 value: new Date(),
@@ -124,6 +126,7 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                 	select: function (combo, record, index) {
                         try {
                         	CreateRPCDailyReportTable();
+                        	CreateRPCDailyReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -136,6 +139,7 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                 hidden:false,
                 handler: function (v, o) {
                 	CreateRPCDailyReportTable();
+                	CreateRPCDailyReportCurve();
                 }
     		},'-', {
                 xtype: 'button',
@@ -173,28 +177,49 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
             	layout: "fit"
             },{
             	region: 'center',
-            	title:'报表数据',
-                layout: "fit",
-            	id:'RPCDailyReportPanel_id',
-//                border: false,
-                html:'<div class="RPCDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="RPCDailyReportDiv_id"></div></div>',
-                listeners: {
-                	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                		if(rpcDailyReportHelper!=null && rpcDailyReportHelper.hot!=undefined){
-//                			rpcDailyReportHelper.hot.refreshDimensions();
-                			var newWidth=width;
-                    		var newHeight=height;
-                    		var header=thisPanel.getHeader();
-                    		if(header){
-                    			newHeight=newHeight-header.lastBox.height-2;
-                    		}
-                    		rpcDailyReportHelper.hot.updateSettings({
-                    			width:newWidth,
-                    			height:newHeight
-                    		});
+            	layout:'border',
+            	border: false,
+            	items:[{
+            		region:'north',
+            		height:'50%',
+            		title:'报表曲线',
+            		collapsible: true, // 是否可折叠
+                    collapsed:false,//是否折叠
+                    split: true, // 竖折叠条
+                    id:'RPCDailyReportCurvePanel_id',
+                    html: '<div id="RPCDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                    listeners: {
+                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            if ($("#RPCDailyReportCurveDiv_Id").highcharts() != undefined) {
+                            	highchartsResize("RPCDailyReportCurveDiv_Id");
+                            }
+                        }
+                    }
+            	},{
+            		region: 'center',
+            		title:'报表数据',
+                    layout: "fit",
+                	id:'RPCDailyReportPanel_id',
+//                    border: false,
+                    html:'<div class="RPCDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="RPCDailyReportDiv_id"></div></div>',
+                    listeners: {
+                    	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                    		if(rpcDailyReportHelper!=null && rpcDailyReportHelper.hot!=undefined){
+//                    			rpcDailyReportHelper.hot.refreshDimensions();
+                    			var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		rpcDailyReportHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                        	}
                     	}
-                	}
-                }
+                    }
+            	}]
             }]
 
         });
@@ -223,6 +248,16 @@ function CreateRPCDailyReportTable(){
 		success:function(response) {
 			Ext.getCmp("RPCDailyReportPanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
+			
+			var startDate=Ext.getCmp('RPCDailyReportStartDate_Id');
+            if(startDate.rawValue==''||null==startDate.rawValue){
+            	startDate.setValue(result.startDate);
+            }
+            var endDate=Ext.getCmp('RPCDailyReportEndDate_Id');
+            if(endDate.rawValue==''||null==endDate.rawValue){
+            	endDate.setValue(result.endDate);
+            }
+            
 			if(rpcDailyReportHelper!=null){
 				if(rpcDailyReportHelper.hot!=undefined){
 					rpcDailyReportHelper.hot.destroy();
@@ -394,8 +429,23 @@ var RPCDailyReportHelper = {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
 	                    cellProperties.renderer = rpcDailyReportHelper.addStyle;
+	                    cellProperties.readOnly = true;
+	                    if(rpcDailyReportHelper.templateData.editable!=null && rpcDailyReportHelper.templateData.editable.length>0){
+	                    	for(var i=0;i<rpcDailyReportHelper.templateData.editable.length;i++){
+	                    		if( row>=rpcDailyReportHelper.templateData.editable[i].startRow 
+	                    				&& row<=rpcDailyReportHelper.templateData.editable[i].endRow
+	                    				&& col>=rpcDailyReportHelper.templateData.editable[i].startColumn 
+	                    				&& col<=rpcDailyReportHelper.templateData.editable[i].endColumn
+	                    		){
+	                    			cellProperties.readOnly = false;
+	                    		}
+	                    	}
+	                    }
+	                    
+	                    
+	                    
+	                    
 //	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
 //	                        cellProperties.renderer = rpcDailyReportHelper.addBoldBg;
 //	                    }
@@ -517,4 +567,262 @@ function createRPCDailyReportWellListDataColumn(columnInfo) {
     }
     myColumns += "]";
     return myColumns;
+};
+
+function CreateRPCDailyReportCurve(){
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//    var wellName = Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').getValue();
+    var startDate = Ext.getCmp('RPCDailyReportStartDate_Id').rawValue;
+    var endDate = Ext.getCmp('RPCDailyReportEndDate_Id').rawValue;
+    
+    var wellName='';
+    var wellId=0;
+    var selectRow= Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").getValue();
+    if(selectRow>=0){
+    	wellName=Ext.getCmp("RPCDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+    	wellId=Ext.getCmp("RPCDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    }
+    
+    Ext.getCmp("RPCDailyReportCurvePanel_id").el.mask(cosog.string.loading).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/reportDataMamagerController/getSingleWellDailyReportCurveData',
+		success:function(response) {
+			Ext.getCmp("RPCDailyReportCurvePanel_id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			
+			var startDate=Ext.getCmp('RPCDailyReportStartDate_Id');
+            if(startDate.rawValue==''||null==startDate.rawValue){
+            	startDate.setValue(result.startDate);
+            }
+            var endDate=Ext.getCmp('RPCDailyReportEndDate_Id');
+            if(endDate.rawValue==''||null==endDate.rawValue){
+            	endDate.setValue(result.endDate);
+            }
+            
+		    var data = result.list;
+//		    var graphicSet=result.graphicSet;
+		    
+		    var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
+		    var tickInterval = 1;
+		    tickInterval = Math.floor(data.length / 10) + 1;
+		    if(tickInterval<100){
+		    	tickInterval=100;
+		    }
+		    var title = result.wellName + "报表曲线";
+		    var xTitle='日期';
+		    var legendName =result.curveItems;
+		    
+		    var color=result.curveColors;
+		    for(var i=0;i<color.length;i++){
+		    	if(color[i]==''){
+		    		color[i]=defaultColors[i%10];
+		    	}else{
+		    		color[i]='#'+color[i];
+		    	}
+		    }
+		    
+		    var yTitle=legendName[0];
+		    
+		    var series = "[";
+		    var yAxis= [];
+		    for (var i = 0; i < legendName.length; i++) {
+		        var maxValue=null;
+		        var minValue=null;
+		        var allPositive=true;//全部是非负数
+		        var allNegative=true;//全部是负值
+		    	series += "{\"name\":\"" + legendName[i] + "\",marker:{enabled: false},"+"\"yAxis\":"+i+",";
+		        series += "\"data\":[";
+		        for (var j = 0; j < data.length; j++) {
+		        	series += "[" + Date.parse(data[j].calDate.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
+		            if (j != data.length - 1) {
+		                series += ",";
+		            }
+		            if(parseFloat(data[j].data[i])<0){
+		            	allPositive=false;
+		            }else if(parseFloat(data[j].data[i])>=0){
+		            	allNegative=false;
+		            }
+		        }
+		        series += "]}";
+		        if (i != legendName.length - 1) {
+		            series += ",";
+		        }
+		        var opposite=false;
+		        if(i>0){
+		        	opposite=true;
+		        }
+		        if(allNegative){
+		        	maxValue=0;
+		        }else if(allPositive){
+		        	minValue=0;
+		        }
+//		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
+//			    	for(var j=0;j<graphicSet.History.length;j++){
+//			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+//			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
+//					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
+//					    	}
+//					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
+//					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
+//					    	}
+//					    	break;
+//			    		}
+//			    	}
+//			    }
+		        
+		        var singleAxis={
+		        		max:maxValue,
+		        		min:minValue,
+		        		title: {
+		                    text: legendName[i],
+		                    style: {
+		                        color: color[i],
+		                    }
+		                },
+		                labels: {
+		                	style: {
+		                        color: color[i],
+		                    }
+		                },
+		                opposite:opposite
+		          };
+		        yAxis.push(singleAxis);
+		        
+		    }
+		    series += "]";
+		    
+		    var ser = Ext.JSON.decode(series);
+		    var timeFormat='%m-%d';
+//		    timeFormat='%H:%M';
+		    initRPCDailyReportCurveChartFn(ser, tickInterval, 'RPCDailyReportCurveDiv_Id', title, '', '', yAxis, color,true,timeFormat);
+		},
+		failure:function(){
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			orgId: orgId,
+			wellId:wellId,
+			wellName: wellName,
+			startDate: startDate,
+			endDate: endDate,
+            deviceType:0
+        }
+	});
+};
+
+function initRPCDailyReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
+	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+	Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    var mychart = new Highcharts.Chart({
+        chart: {
+            renderTo: divId,
+            type: 'spline',
+            shadow: true,
+            borderWidth: 0,
+            zoomType: 'xy'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: title
+        },
+        subtitle: {
+            text: subtitle
+        },
+        colors: color,
+        xAxis: {
+            type: 'datetime',
+            title: {
+                text: xtitle
+            },
+//            tickInterval: tickInterval,
+            tickPixelInterval:tickInterval,
+            labels: {
+                formatter: function () {
+                    return Highcharts.dateFormat(timeFormat, this.value);
+                },
+                autoRotation:true,//自动旋转
+                rotation: -45 //倾斜度，防止数量过多显示不全  
+//                step: 2
+            }
+        },
+        yAxis: yAxis,
+        tooltip: {
+            crosshairs: true, //十字准线
+            shared: true,
+            style: {
+                color: '#333333',
+                fontSize: '12px',
+                padding: '8px'
+            },
+            dateTimeLabelFormats: {
+                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+                second: '%Y-%m-%d %H:%M:%S',
+                minute: '%Y-%m-%d %H:%M',
+                hour: '%Y-%m-%d %H',
+                day: '%Y-%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        exporting: {
+            enabled: true,
+            filename: 'class-booking-chart',
+            url: context + '/exportHighcharsPicController/export',
+            buttons: {
+            	contextButton: {
+            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
+            			,dafaultMenuItem[2],{
+            				text: '图形设置',
+            				onclick: function() {
+//            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
+//                                    title: '历史曲线设置'
+//                                });
+//                                window.show();
+            				}
+            			}]
+            	}
+            }
+        },
+        plotOptions: {
+            spline: {
+//                lineWidth: 1,
+                fillOpacity: 0.3,
+                marker: {
+                    enabled: true,
+                    radius: 3, //曲线点半径，默认是4
+                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+                    states: {
+                        hover: {
+                            enabled: true,
+                            radius: 6
+                        }
+                    }
+                },
+                shadow: true,
+                events: {
+                	legendItemClick: function(e){
+//                		alert("第"+this.index+"个图例被点击，是否可见："+!this.visible);
+//                		return true;
+                	}
+                }
+            }
+        },
+        legend: {
+            layout: 'horizontal',//horizontal水平 vertical 垂直
+            align: 'center',  //left，center 和 right
+            verticalAlign: 'bottom',//top，middle 和 bottom
+            enabled: legend,
+            borderWidth: 0
+        },
+        series: series
+    });
 };

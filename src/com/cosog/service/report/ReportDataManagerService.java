@@ -23,14 +23,18 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
+import com.cosog.model.gridmodel.GraphicSetData;
 import com.cosog.service.base.BaseService;
+import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
@@ -844,8 +848,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportTemplateCode="";
 		String deviceTableName="tbl_rpcdevice";
 		String tableName="VIW_RPCDAILYCALCULATIONDATA";
-		if(!"0".equalsIgnoreCase(deviceType)){
+		String graphicSetTableName="tbl_rpcdevicegraphicset";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			tableName="VIW_PCPDAILYCALCULATIONDATA";
+			graphicSetTableName="tbl_pcpdevicegraphicset";
 			deviceTableName="tbl_pcpdevice";
 		}
 		ReportTemplate.Template template=null;
@@ -941,17 +947,23 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Gson gson =new Gson();
 		ConfigFile configFile=Config.getInstance().configFile;
 		String reportTemplateCode="";
-		
+		String graphicSet="{}";
 		
 		String tableName="VIW_RPCDAILYCALCULATIONDATA";
 		String deviceTableName="tbl_rpcdevice";
-		if(!"0".equalsIgnoreCase(deviceType)){
+		String graphicSetTableName="tbl_rpcdevicegraphicset";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			tableName="VIW_PCPDAILYCALCULATIONDATA";
 			deviceTableName="tbl_pcpdevice";
+			graphicSetTableName="tbl_pcpdevicegraphicset";
 		}
-		
-		
 		result_json.append("{\"success\":true,");
+		
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+wellId;
+		List<?> graphicSetList = this.findCallSql(graphicSetSql);
+		if(graphicSetList.size()>0){
+			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+		}
 		
 		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
@@ -1007,6 +1019,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ "\"curveItems\":"+itemsBuff+","
 				+ "\"curveItemCodes\":"+itemsCodeBuff+","
 				+ "\"curveColors\":"+curveColorBuff+","
+				+ "\"graphicSet\":"+graphicSet+","
 				+ "\"list\":[");
 		
 		StringBuffer cueveSqlBuff = new StringBuffer();
@@ -1036,6 +1049,69 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getReportQueryCurveSetData(String deviceId,String deviceType)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		int dataSaveMode=1;
+		String deviceTableName="tbl_rpcdevice";
+		String graphicSetTableName="tbl_rpcdevicegraphicset";
+//		String columnsKey="rpcDeviceAcquisitionItemColumns";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			deviceTableName="tbl_pcpdevice";
+			graphicSetTableName="tbl_pcpdevicegraphicset";
+//			columnsKey="pcpDeviceAcquisitionItemColumns";
+		}
+//		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+//		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
+//			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+//		}
+//		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+		
+		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+				+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+				+ " and  t.id="+deviceId;
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+		String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurvecolor,t4.itemcode,t4.type "
+				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
+				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
+				+ " and t.id="+deviceId+" and t4.historycurve>=0 "
+				+ " order by t4.historycurve,t4.sort,t4.id";
+		List<?> protocolList = this.findCallSql(protocolSql);
+		List<?> graphicSetList = this.findCallSql(graphicSetSql);
+		List<?> curveItemList = this.findCallSql(curveItemsSql);
+		String protocolName="";
+		String unit="";
+		String dataType="";
+		GraphicSetData graphicSetData=null;
+		int resolutionMode=0;
+		
+		if(graphicSetList.size()>0){
+			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+			type = new TypeToken<GraphicSetData>() {}.getType();
+			graphicSetData=gson.fromJson(graphicSet, type);
+		}
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
+		for(int i=0;i<curveItemList.size();i++){
+			Object[] itemObj=(Object[]) curveItemList.get(i);
+			result_json.append("{\"curveName\":\"" + itemObj[0] + "\",\"itemCode\":\"" + itemObj[3] + "\",\"itemType\":\"" + itemObj[4] + "\",");
+			if(graphicSetData!=null && graphicSetData.getHistory()!=null && graphicSetData.getHistory().size()>i){
+				result_json.append("\"yAxisMaxValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMaxValue() + "\",");
+				result_json.append("\"yAxisMinValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMinValue() + "\"},");
+			}else{
+				result_json.append("\"yAxisMaxValue\":\"\",");
+				result_json.append("\"yAxisMinValue\":\"\"},");
+			}
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		
+		result_json.append("]}");
+		return result_json.toString();
 	}
 	
 	public String exportPCPDailyReportData(Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {

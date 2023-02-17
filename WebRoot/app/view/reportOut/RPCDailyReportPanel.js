@@ -601,7 +601,7 @@ function CreateRPCDailyReportCurve(){
             }
             
 		    var data = result.list;
-//		    var graphicSet=result.graphicSet;
+		    var graphicSet=result.graphicSet;
 		    
 		    var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
 		    var tickInterval = 1;
@@ -657,19 +657,19 @@ function CreateRPCDailyReportCurve(){
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-//		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
-//			    	for(var j=0;j<graphicSet.History.length;j++){
-//			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
-//			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
-//					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
-//					    	}
-//					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
-//					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
-//					    	}
-//					    	break;
-//			    		}
-//			    	}
-//			    }
+		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.Report) ){
+			    	for(var j=0;j<graphicSet.Report.length;j++){
+			    		if(graphicSet.Report[j].itemCode!=undefined && graphicSet.Report[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+			    			if(isNotVal(graphicSet.Report[j].yAxisMaxValue)){
+					    		maxValue=parseFloat(graphicSet.Report[j].yAxisMaxValue);
+					    	}
+					    	if(isNotVal(graphicSet.Report[j].yAxisMinValue)){
+					    		minValue=parseFloat(graphicSet.Report[j].yAxisMinValue);
+					    	}
+					    	break;
+			    		}
+			    	}
+			    }
 		        
 		        var singleAxis={
 		        		max:maxValue,

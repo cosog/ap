@@ -244,6 +244,25 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getReportQueryCurveSetData")
+	public String getReportQueryCurveSetData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		json = reportDataManagerService.getReportQueryCurveSetData(deviceId,deviceType);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	/** <p>描述：导出采出井日报表json数据方法</p>
 	 * 
 	 * @return

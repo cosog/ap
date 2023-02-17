@@ -172,11 +172,62 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				json = reportDataManagerService.getRPCSingleWellDailyReportData(pager, orgId, wellId, wellName, startDate,endDate,user.getUserNo());
-			}else{
-				json = reportDataManagerService.getPCPSingleWellDailyReportData(pager, orgId, wellId, wellName, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellDailyReportData(pager, orgId,deviceType, wellId, wellName, startDate,endDate,user.getUserNo());
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/getSingleWellDailyReportCurveData")
+	public String getSingleWellDailyReportCurveData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_rpcdailycalculationdata";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			if(StringManagerUtils.isNotNull(wellId)){
+				sql+= " and t.wellId="+wellId+" ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
 			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType, wellId, wellName, startDate,endDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

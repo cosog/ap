@@ -50,6 +50,7 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
             'Ext.form.field.ComboBox', {
                 fieldLabel: cosog.string.wellName,
                 id: 'PCPDailyReportPanelWellListCombo_Id',
+                hidden:true,
                 store: wellListCombStore,
                 labelWidth: 35,
                 width: 145,
@@ -74,6 +75,7 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                     },
                     select: function (combo, record, index) {
                     	CreatePCPDailyReportTable();
+                    	CreatePCPDailyReportCurve();
                     }
                 }
             });
@@ -96,14 +98,15 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                 anchor: '100%',
                 fieldLabel: '日期',
                 labelWidth: 36,
-                width: 126,
+                width: 136,
                 format: 'Y-m-d',
                 id: 'PCPDailyReportStartDate_Id',
-                value: new Date(),
+//                value: new Date(),
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
                         	CreatePCPDailyReportTable();
+                        	CreatePCPDailyReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -115,7 +118,7 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                 hidden: false,
                 fieldLabel: '至',
                 labelWidth: 15,
-                width: 105,
+                width: 115,
                 format: 'Y-m-d ',
                 id: 'PCPDailyReportEndDate_Id',
                 value: new Date(),
@@ -123,6 +126,7 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                 	select: function (combo, record, index) {
                         try {
                         	CreatePCPDailyReportTable();
+                        	CreatePCPDailyReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -135,8 +139,9 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                 hidden:false,
                 handler: function (v, o) {
                 	CreatePCPDailyReportTable();
+                	CreatePCPDailyReportCurve();
                 }
-    		},'-',{
+    		},'-', {
                 xtype: 'button',
                 text: cosog.string.exportExcel,
                 iconCls: 'export',
@@ -145,7 +150,7 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                 	var wellName = Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').getValue();
                 	var startDate = Ext.getCmp('PCPDailyReportStartDate_Id').rawValue;
                 	var endDate = Ext.getCmp('PCPDailyReportEndDate_Id').rawValue;
-                	var url=context + '/reportDataMamagerController/exportPCPDailyReportData?wellType=1&wellName='+URLencode(URLencode(wellName))+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
+                	var url=context + '/reportDataMamagerController/exportPCPDailyReportData?wellType=0&wellName='+URLencode(URLencode(wellName))+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
             }, '->', {
@@ -172,28 +177,49 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
             	layout: "fit"
             },{
             	region: 'center',
-            	title:'报表数据',
-            	id:'PCPDailyReportPanel_id',
-                border: false,
-                layout: "fit",
-                html:'<div class="PCPDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPDailyReportDiv_id"></div></div>',
-                listeners: {
-                	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                		if(pcpDailyReportHelper!=null && pcpDailyReportHelper.hot!=undefined){
-//                			pcpDailyReportHelper.hot.refreshDimensions();
-                			var newWidth=width;
-                    		var newHeight=height;
-                    		var header=thisPanel.getHeader();
-                    		if(header){
-                    			newHeight=newHeight-header.lastBox.height-2;
-                    		}
-                    		pcpDailyReportHelper.hot.updateSettings({
-                    			width:newWidth,
-                    			height:newHeight
-                    		});
+            	layout:'border',
+            	border: false,
+            	items:[{
+            		region:'north',
+            		height:'50%',
+            		title:'报表曲线',
+            		collapsible: true, // 是否可折叠
+                    collapsed:false,//是否折叠
+                    split: true, // 竖折叠条
+                    id:'PCPDailyReportCurvePanel_id',
+                    html: '<div id="PCPDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                    listeners: {
+                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            if ($("#PCPDailyReportCurveDiv_Id").highcharts() != undefined) {
+                            	highchartsResize("PCPDailyReportCurveDiv_Id");
+                            }
+                        }
+                    }
+            	},{
+            		region: 'center',
+            		title:'报表数据',
+                    layout: "fit",
+                	id:'PCPDailyReportPanel_id',
+//                    border: false,
+                    html:'<div class="PCPDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPDailyReportDiv_id"></div></div>',
+                    listeners: {
+                    	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                    		if(pcpDailyReportHelper!=null && pcpDailyReportHelper.hot!=undefined){
+//                    			pcpDailyReportHelper.hot.refreshDimensions();
+                    			var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		pcpDailyReportHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                        	}
                     	}
-                	}
-                }
+                    }
+            	}]
             }]
 
         });
@@ -203,36 +229,58 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
 
 function CreatePCPDailyReportTable(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-    var wellName = Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').getValue();
+//    var wellName = Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').getValue();
     var startDate = Ext.getCmp('PCPDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('PCPDailyReportEndDate_Id').rawValue;
+    
+    var wellName='';
+    var wellId=0;
+    var selectRow= Ext.getCmp("PCPDailyReportDeviceListSelectRow_Id").getValue();
+    if(selectRow>=0){
+    	wellName=Ext.getCmp("PCPDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+    	wellId=Ext.getCmp("PCPDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    }
+    
     Ext.getCmp("PCPDailyReportPanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/reportDataMamagerController/getDailyReportData',
+		url:context + '/reportDataMamagerController/getSingleWellDailyReportData',
 		success:function(response) {
 			Ext.getCmp("PCPDailyReportPanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(Ext.getCmp("PCPDailyReportStartDate_Id").getValue()==''||Ext.getCmp("PCPDailyReportStartDate_Id").getValue()==null){
-            	Ext.getCmp("PCPDailyReportStartDate_Id").setValue(result.startDate);
-            	Ext.getCmp("PCPDailyReportStartDate_Id").setRawValue(result.startDate);
-            }
 			
-			if(Ext.getCmp("PCPDailyReportEndDate_Id").getValue()==''||Ext.getCmp("PCPDailyReportEndDate_Id").getValue()==null){
-            	Ext.getCmp("PCPDailyReportEndDate_Id").setValue(result.endDate);
-            	Ext.getCmp("PCPDailyReportEndDate_Id").setRawValue(result.endDate);
+			var startDate=Ext.getCmp('PCPDailyReportStartDate_Id');
+            if(startDate.rawValue==''||null==startDate.rawValue){
+            	startDate.setValue(result.startDate);
             }
+            var endDate=Ext.getCmp('PCPDailyReportEndDate_Id');
+            if(endDate.rawValue==''||null==endDate.rawValue){
+            	endDate.setValue(result.endDate);
+            }
+            
+			if(pcpDailyReportHelper!=null){
+				if(pcpDailyReportHelper.hot!=undefined){
+					pcpDailyReportHelper.hot.destroy();
+				}
+				pcpDailyReportHelper=null;
+			}
+			if(result.success){
+				if(pcpDailyReportHelper==null || pcpDailyReportHelper.hot==undefined){
+					pcpDailyReportHelper = PCPDailyReportHelper.createNew("PCPDailyReportDiv_id","PCPDailyReportContainer",result.template,result.data);
+					pcpDailyReportHelper.createTable();
+				}
+			}else{
+				$("#PCPDailyReportDiv_id").html('');
+			}
 			
-			pcpDailyReportHelper = PCPDailyReportHelper.createNew("PCPDailyReportDiv_id","PCPDailyReportContainer");
-			pcpDailyReportHelper.getData(result);
-			pcpDailyReportHelper.createTable();
-			Ext.getCmp("PCPDailyReportTotalCount_Id").update({count: result.totalCount});
+			Ext.getCmp("PCPDailyReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
 			orgId: orgId,
+			wellId:wellId,
 			wellName: wellName,
 			startDate: startDate,
 			endDate: endDate,
@@ -243,36 +291,58 @@ function CreatePCPDailyReportTable(){
 
 
 var PCPDailyReportHelper = {
-	    createNew: function (divid, containerid) {
+	    createNew: function (divid, containerid,templateData,contentData) {
 	        var pcpDailyReportHelper = {};
+	        pcpDailyReportHelper.templateData=templateData;
+	        pcpDailyReportHelper.contentData=contentData;
 	        pcpDailyReportHelper.get_data = {};
+	        pcpDailyReportHelper.data=[];
 	        pcpDailyReportHelper.hot = '';
 	        pcpDailyReportHelper.container = document.getElementById(divid);
-	        pcpDailyReportHelper.last_index = 0;
-	        pcpDailyReportHelper.calculation_type_computer = [];
-	        pcpDailyReportHelper.calculation_type_not_computer = [];
-	        pcpDailyReportHelper.editable = 0;
-	        pcpDailyReportHelper.sum = 0;
-	        pcpDailyReportHelper.editRecords = [];
-	        var productionUnitStr='t/d';
-	        if(productionUnit!=0){
-	        	productionUnitStr='m^3/d';
+	        
+	        
+	        pcpDailyReportHelper.initData=function(){
+	        	pcpDailyReportHelper.data=[];
+	        	for(var i=0;i<pcpDailyReportHelper.templateData.header.length;i++){
+		        	pcpDailyReportHelper.data.push(pcpDailyReportHelper.templateData.header[i].title);
+		        }
+	        	for(var i=0;i<pcpDailyReportHelper.contentData.length;i++){
+		        	pcpDailyReportHelper.data.push(pcpDailyReportHelper.contentData[i]);
+		        }
 	        }
-	        pcpDailyReportHelper.my_data = [
-	    ['螺杆泵井生产报表', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-	    ['序号', '井名', '日期','通信','','', '时率', '','', '产量', '','','','','效率','','日用电量(kW·h)', '备注'],
-	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','转速(r/min)','系统效率(%)','吨液百米耗电量(kW·h/100·t)','','']
-	  ];
-	        pcpDailyReportHelper.updateArray = function () {
-	            for (var i = 0; i < pcpDailyReportHelper.sum; i++) {
-	                pcpDailyReportHelper.my_data.splice(i + 3, 0, ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-	            }
+	        
+	        pcpDailyReportHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	if(pcpDailyReportHelper!=null && pcpDailyReportHelper.hot!=null){
+	        		for(var i=0;i<pcpDailyReportHelper.templateData.header.length;i++){
+		        		if(row==i){
+		        			if(isNotVal(pcpDailyReportHelper.templateData.header[i].tdStyle)){
+		        				if(isNotVal(pcpDailyReportHelper.templateData.header[i].tdStyle.fontWeight)){
+		        					td.style.fontWeight = pcpDailyReportHelper.templateData.header[i].tdStyle.fontWeight;
+		        				}
+		        				if(isNotVal(pcpDailyReportHelper.templateData.header[i].tdStyle.fontSize)){
+		        					td.style.fontSize = pcpDailyReportHelper.templateData.header[i].tdStyle.fontSize;
+		        				}
+		        				if(isNotVal(pcpDailyReportHelper.templateData.header[i].tdStyle.fontFamily)){
+		        					td.style.fontFamily = pcpDailyReportHelper.templateData.header[i].tdStyle.fontFamily;
+		        				}
+		        				if(isNotVal(pcpDailyReportHelper.templateData.header[i].tdStyle.height)){
+		        					td.style.height = pcpDailyReportHelper.templateData.header[i].tdStyle.height;
+		        				}
+		        				if(isNotVal(pcpDailyReportHelper.templateData.header[i].tdStyle.color)){
+		        					td.style.color = pcpDailyReportHelper.templateData.header[i].tdStyle.color;
+		        				}
+		        				if(isNotVal(pcpDailyReportHelper.templateData.header[i].tdStyle.backgroundColor)){
+		        					td.style.backgroundColor = pcpDailyReportHelper.templateData.header[i].tdStyle.backgroundColor;
+		        				}
+		        			}
+		        			break;
+		        		}
+		        	}
+	        	}
 	        }
-	        pcpDailyReportHelper.clearArray = function () {
-	            pcpDailyReportHelper.hot.loadData(pcpDailyReportHelper.table_header);
-
-	        }
-
+	        
+	        
 	        pcpDailyReportHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
@@ -329,147 +399,129 @@ var PCPDailyReportHelper = {
 	            pcpDailyReportHelper.container.innerHTML = "";
 	            pcpDailyReportHelper.hot = new Handsontable(pcpDailyReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	            	data: pcpDailyReportHelper.my_data,
-	                fixedRowsTop:3, //固定顶部多少行不能垂直滚动
-	                fixedRowsBottom: 0,//固定底部多少行不能垂直滚动
+	            	data: pcpDailyReportHelper.data,
+	                fixedRowsTop:pcpDailyReportHelper.templateData.fixedRowsTop, 
+	                fixedRowsBottom: pcpDailyReportHelper.templateData.fixedRowsBottom,
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
 	                rowHeaders: false,
 	                colHeaders: false,
-					rowHeights: [50],
-					colWidths:[50,90,80,80,100,70,80,100,70,80,80,80,80,80,80,120,80,75],
+					rowHeights: pcpDailyReportHelper.templateData.rowHeights,
+					colWidths: pcpDailyReportHelper.templateData.columnWidths,
+					rowHeaders: false, //显示行头
+//					rowHeaders(index) {
+//					    return 'Row ' + (index + 1);
+//					},
+					colHeaders: false, //显示列头
+//					colHeaders(index) {
+//					    return 'Col ' + (index + 1);
+//					},
 					stretchH: 'all',
-	                mergeCells: [
-	                    {
-	                        "row": 0,
-	                        "col": 0,
-	                        "rowspan": 1,
-	                        "colspan": 18
-	                    },{
-	                        "row": 1,
-	                        "col": 0,
-	                        "rowspan": 2,
-	                        "colspan": 1
-	                    },{
-	                        "row": 1,
-	                        "col": 1,
-	                        "rowspan": 2,
-	                        "colspan": 1
-	                    },{
-	                        "row": 1,
-	                        "col": 2,
-	                        "rowspan": 2,
-	                        "colspan": 1
-	                    },{//通信
-	                        "row": 1,
-	                        "col": 3,
-	                        "rowspan": 1,
-	                        "colspan": 3
-	                    },{//时率
-	                        "row": 1,
-	                        "col": 6,
-	                        "rowspan": 1,
-	                        "colspan": 3
-	                    },{//产量
-	                        "row": 1,
-	                        "col": 9,
-	                        "rowspan": 1,
-	                        "colspan": 5
-	                    },{//效率
-	                        "row": 1,
-	                        "col": 14,
-	                        "rowspan": 1,
-	                        "colspan": 2
-	                    },{//日用电量
-	                        "row": 1,
-	                        "col": 16,
-	                        "rowspan": 2,
-	                        "colspan": 1
-	                    },{//备注
-	                        "row": 1,
-	                        "col": 17,
-	                        "rowspan": 2,
-	                        "colspan": 1
-	                    }],
+					columnSorting: true, //允许排序
+	                allowInsertRow:false,
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                mergeCells: pcpDailyReportHelper.templateData.mergeCells,
 	                cells: function (row, col, prop) {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-
+	                    cellProperties.renderer = pcpDailyReportHelper.addStyle;
 	                    cellProperties.readOnly = true;
-	                    // 表头
-	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
-	                        cellProperties.renderer = pcpDailyReportHelper.addBoldBg;
+	                    if(pcpDailyReportHelper.templateData.editable!=null && pcpDailyReportHelper.templateData.editable.length>0){
+	                    	for(var i=0;i<pcpDailyReportHelper.templateData.editable.length;i++){
+	                    		if( row>=pcpDailyReportHelper.templateData.editable[i].startRow 
+	                    				&& row<=pcpDailyReportHelper.templateData.editable[i].endRow
+	                    				&& col>=pcpDailyReportHelper.templateData.editable[i].startColumn 
+	                    				&& col<=pcpDailyReportHelper.templateData.editable[i].endColumn
+	                    		){
+	                    			cellProperties.readOnly = false;
+	                    		}
+	                    	}
 	                    }
-						
-						if (visualRowIndex < 1 ) {
-	                       cellProperties.renderer = pcpDailyReportHelper.addSizeBg;
-	                    }
-						
-						if (visualColIndex === 17&&visualRowIndex>2&&visualRowIndex<pcpDailyReportHelper.last_index) {
-							cellProperties.readOnly = false;
-		                }
-						
-						
+	                    
+	                    
+	                    
+	                    
+//	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
+//	                        cellProperties.renderer = pcpDailyReportHelper.addBoldBg;
+//	                    }
+//						if (visualRowIndex < 1 ) {
+//	                       cellProperties.renderer = pcpDailyReportHelper.addSizeBg;
+//	                    }
+//						if (visualColIndex === 26&&visualRowIndex>2&&visualRowIndex<pcpDailyReportHelper.last_index) {
+//							cellProperties.readOnly = false;
+//		                }
 	                    return cellProperties;
 	                },
 	                afterChange:function(changes, source){}
 	            });
 	        }
-
-
-
 	        pcpDailyReportHelper.getData = function (data) {
-	            pcpDailyReportHelper.get_data = data;
-	            pcpDailyReportHelper.editable = +data.Editable;
-	            var _daily = data.totalRoot;
-	            pcpDailyReportHelper.sum = _daily.length;
-	            pcpDailyReportHelper.updateArray();
-	            _daily.forEach(function (_day, index) {
-	            	if(_day.id=="合计" || _day.id=="平均"){
-	            		pcpDailyReportHelper.my_data[index + 3][0] = _day.id;
-	            	}else{
-	            		pcpDailyReportHelper.my_data[index + 3][0] = index+1;
-	            	}
-//	                pcpDailyReportHelper.my_data[index + 3][0] = index+1;
-	                pcpDailyReportHelper.my_data[index + 3][1] = _day.wellName;
-	                pcpDailyReportHelper.my_data[index + 3][2] = _day.calculateDate;
-	                
-	                pcpDailyReportHelper.my_data[index + 3][3] = _day.commTime;
-	                var commRange=_day.commRange;
-	                if(commRange.length>12){
-	                	commRange=commRange.substring(0, 11)+"...";
-	                }
-	                var runRange=_day.runRange;
-	                if(runRange.length>12){
-	                	runRange=runRange.substring(0, 11)+"...";
-	                }
-	                pcpDailyReportHelper.my_data[index + 3][4] = commRange;
-	                pcpDailyReportHelper.my_data[index + 3][5] = _day.commTimeEfficiency;
-	                
-	                pcpDailyReportHelper.my_data[index + 3][6] = _day.runTime;
-	                pcpDailyReportHelper.my_data[index + 3][7] = runRange;
-	                pcpDailyReportHelper.my_data[index + 3][8] = _day.runTimeEfficiency;
-	                
-	                
-	                pcpDailyReportHelper.my_data[index + 3][9] = _day.liquidProduction;
-					pcpDailyReportHelper.my_data[index + 3][10] = _day.oilProduction;
-	                pcpDailyReportHelper.my_data[index + 3][11] = _day.waterProduction;
-	                pcpDailyReportHelper.my_data[index + 3][12] = _day.waterCut;
-	                pcpDailyReportHelper.my_data[index + 3][13] = _day.rpm;
-	                
-	                pcpDailyReportHelper.my_data[index + 3][14] = _day.systemEfficiency;
-	                pcpDailyReportHelper.my_data[index + 3][15] = _day.energyPer100mLift;
-	                
-	                pcpDailyReportHelper.my_data[index + 3][16] = _day.todayKWattH;
-	                
-	                pcpDailyReportHelper.my_data[index + 3][17] = _day.remark;
-	            })
-
-	            var _total = data.totalCount;
-	            pcpDailyReportHelper.last_index = _daily.length + 3;
+//	            pcpDailyReportHelper.get_data = data;
+//	            pcpDailyReportHelper.editable = +data.Editable;
+//	            var _daily = data.totalRoot;
+//	            pcpDailyReportHelper.sum = _daily.length;
+//	            pcpDailyReportHelper.updateArray();
+//	            _daily.forEach(function (_day, index) {
+//
+//	            	if(_day.id=="合计" || _day.id=="平均"){
+//	            		pcpDailyReportHelper.my_data[index + 3][0] = _day.id;
+//	            	}else{
+//	            		pcpDailyReportHelper.my_data[index + 3][0] = index+1;
+//	            	}
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][1] = _day.wellName;
+//	                pcpDailyReportHelper.my_data[index + 3][2] = _day.calculateDate;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][3] = _day.commTime;
+//	                var commRange=_day.commRange;
+//	                if(commRange.length>12){
+//	                	commRange=commRange.substring(0, 11)+"...";
+//	                }
+//	                var runRange=_day.runRange;
+//	                if(runRange.length>12){
+//	                	runRange=runRange.substring(0, 11)+"...";
+//	                }
+//	                pcpDailyReportHelper.my_data[index + 3][4] = commRange;
+//	                pcpDailyReportHelper.my_data[index + 3][5] = _day.commTimeEfficiency;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][6] = _day.runTime;
+//	                pcpDailyReportHelper.my_data[index + 3][7] = runRange;
+//	                pcpDailyReportHelper.my_data[index + 3][8] = _day.runTimeEfficiency;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][9] = _day.resultName;
+//	                pcpDailyReportHelper.my_data[index + 3][10] = _day.optimizationSuggestion;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][11] = _day.liquidProduction;
+//					pcpDailyReportHelper.my_data[index + 3][12] = _day.oilProduction;
+//	                pcpDailyReportHelper.my_data[index + 3][13] = _day.waterProduction;
+//	                pcpDailyReportHelper.my_data[index + 3][14] = _day.waterCut;
+//	                pcpDailyReportHelper.my_data[index + 3][15] = _day.fullnesscoEfficient;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][16] = _day.wattDegreeBalance;
+//	                pcpDailyReportHelper.my_data[index + 3][17] = _day.iDegreeBalance;
+//	                pcpDailyReportHelper.my_data[index + 3][18] = _day.deltaRadius;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][19] = _day.systemEfficiency;
+//	                pcpDailyReportHelper.my_data[index + 3][20] = _day.surfaceSystemEfficiency;
+//	                pcpDailyReportHelper.my_data[index + 3][21] = _day.welldownSystemEfficiency;
+//	                pcpDailyReportHelper.my_data[index + 3][22] = _day.energyPer100mLift;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][23] = _day.todayKWattH;
+//	                
+//	                pcpDailyReportHelper.my_data[index + 3][24] = _day.remark;
+//	            })
+//
+//	            var _total = data.totalCount;
+//	            pcpDailyReportHelper.last_index = _daily.length + 3;
 	        }
 
 	        var init = function () {
+	        	pcpDailyReportHelper.initData();
 	        }
 
 	        init();
@@ -515,4 +567,262 @@ function createPCPDailyReportWellListDataColumn(columnInfo) {
     }
     myColumns += "]";
     return myColumns;
+};
+
+function CreatePCPDailyReportCurve(){
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//    var wellName = Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').getValue();
+    var startDate = Ext.getCmp('PCPDailyReportStartDate_Id').rawValue;
+    var endDate = Ext.getCmp('PCPDailyReportEndDate_Id').rawValue;
+    
+    var wellName='';
+    var wellId=0;
+    var selectRow= Ext.getCmp("PCPDailyReportDeviceListSelectRow_Id").getValue();
+    if(selectRow>=0){
+    	wellName=Ext.getCmp("PCPDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+    	wellId=Ext.getCmp("PCPDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    }
+    
+    Ext.getCmp("PCPDailyReportCurvePanel_id").el.mask(cosog.string.loading).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/reportDataMamagerController/getSingleWellDailyReportCurveData',
+		success:function(response) {
+			Ext.getCmp("PCPDailyReportCurvePanel_id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			
+			var startDate=Ext.getCmp('PCPDailyReportStartDate_Id');
+            if(startDate.rawValue==''||null==startDate.rawValue){
+            	startDate.setValue(result.startDate);
+            }
+            var endDate=Ext.getCmp('PCPDailyReportEndDate_Id');
+            if(endDate.rawValue==''||null==endDate.rawValue){
+            	endDate.setValue(result.endDate);
+            }
+            
+		    var data = result.list;
+//		    var graphicSet=result.graphicSet;
+		    
+		    var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
+		    var tickInterval = 1;
+		    tickInterval = Math.floor(data.length / 10) + 1;
+		    if(tickInterval<100){
+		    	tickInterval=100;
+		    }
+		    var title = result.wellName + "报表曲线";
+		    var xTitle='日期';
+		    var legendName =result.curveItems;
+		    
+		    var color=result.curveColors;
+		    for(var i=0;i<color.length;i++){
+		    	if(color[i]==''){
+		    		color[i]=defaultColors[i%10];
+		    	}else{
+		    		color[i]='#'+color[i];
+		    	}
+		    }
+		    
+		    var yTitle=legendName[0];
+		    
+		    var series = "[";
+		    var yAxis= [];
+		    for (var i = 0; i < legendName.length; i++) {
+		        var maxValue=null;
+		        var minValue=null;
+		        var allPositive=true;//全部是非负数
+		        var allNegative=true;//全部是负值
+		    	series += "{\"name\":\"" + legendName[i] + "\",marker:{enabled: false},"+"\"yAxis\":"+i+",";
+		        series += "\"data\":[";
+		        for (var j = 0; j < data.length; j++) {
+		        	series += "[" + Date.parse(data[j].calDate.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
+		            if (j != data.length - 1) {
+		                series += ",";
+		            }
+		            if(parseFloat(data[j].data[i])<0){
+		            	allPositive=false;
+		            }else if(parseFloat(data[j].data[i])>=0){
+		            	allNegative=false;
+		            }
+		        }
+		        series += "]}";
+		        if (i != legendName.length - 1) {
+		            series += ",";
+		        }
+		        var opposite=false;
+		        if(i>0){
+		        	opposite=true;
+		        }
+		        if(allNegative){
+		        	maxValue=0;
+		        }else if(allPositive){
+		        	minValue=0;
+		        }
+//		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
+//			    	for(var j=0;j<graphicSet.History.length;j++){
+//			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+//			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
+//					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
+//					    	}
+//					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
+//					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
+//					    	}
+//					    	break;
+//			    		}
+//			    	}
+//			    }
+		        
+		        var singleAxis={
+		        		max:maxValue,
+		        		min:minValue,
+		        		title: {
+		                    text: legendName[i],
+		                    style: {
+		                        color: color[i],
+		                    }
+		                },
+		                labels: {
+		                	style: {
+		                        color: color[i],
+		                    }
+		                },
+		                opposite:opposite
+		          };
+		        yAxis.push(singleAxis);
+		        
+		    }
+		    series += "]";
+		    
+		    var ser = Ext.JSON.decode(series);
+		    var timeFormat='%m-%d';
+//		    timeFormat='%H:%M';
+		    initPCPDailyReportCurveChartFn(ser, tickInterval, 'PCPDailyReportCurveDiv_Id', title, '', '', yAxis, color,true,timeFormat);
+		},
+		failure:function(){
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			orgId: orgId,
+			wellId:wellId,
+			wellName: wellName,
+			startDate: startDate,
+			endDate: endDate,
+            deviceType:1
+        }
+	});
+};
+
+function initPCPDailyReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
+	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+	Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    var mychart = new Highcharts.Chart({
+        chart: {
+            renderTo: divId,
+            type: 'spline',
+            shadow: true,
+            borderWidth: 0,
+            zoomType: 'xy'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: title
+        },
+        subtitle: {
+            text: subtitle
+        },
+        colors: color,
+        xAxis: {
+            type: 'datetime',
+            title: {
+                text: xtitle
+            },
+//            tickInterval: tickInterval,
+            tickPixelInterval:tickInterval,
+            labels: {
+                formatter: function () {
+                    return Highcharts.dateFormat(timeFormat, this.value);
+                },
+                autoRotation:true,//自动旋转
+                rotation: -45 //倾斜度，防止数量过多显示不全  
+//                step: 2
+            }
+        },
+        yAxis: yAxis,
+        tooltip: {
+            crosshairs: true, //十字准线
+            shared: true,
+            style: {
+                color: '#333333',
+                fontSize: '12px',
+                padding: '8px'
+            },
+            dateTimeLabelFormats: {
+                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+                second: '%Y-%m-%d %H:%M:%S',
+                minute: '%Y-%m-%d %H:%M',
+                hour: '%Y-%m-%d %H',
+                day: '%Y-%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        exporting: {
+            enabled: true,
+            filename: 'class-booking-chart',
+            url: context + '/exportHighcharsPicController/export',
+            buttons: {
+            	contextButton: {
+            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
+            			,dafaultMenuItem[2],{
+            				text: '图形设置',
+            				onclick: function() {
+//            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
+//                                    title: '历史曲线设置'
+//                                });
+//                                window.show();
+            				}
+            			}]
+            	}
+            }
+        },
+        plotOptions: {
+            spline: {
+//                lineWidth: 1,
+                fillOpacity: 0.3,
+                marker: {
+                    enabled: true,
+                    radius: 3, //曲线点半径，默认是4
+                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+                    states: {
+                        hover: {
+                            enabled: true,
+                            radius: 6
+                        }
+                    }
+                },
+                shadow: true,
+                events: {
+                	legendItemClick: function(e){
+//                		alert("第"+this.index+"个图例被点击，是否可见："+!this.visible);
+//                		return true;
+                	}
+                }
+            }
+        },
+        legend: {
+            layout: 'horizontal',//horizontal水平 vertical 垂直
+            align: 'center',  //left，center 和 right
+            verticalAlign: 'bottom',//top，middle 和 bottom
+            enabled: legend,
+            borderWidth: 0
+        },
+        series: series
+    });
 };

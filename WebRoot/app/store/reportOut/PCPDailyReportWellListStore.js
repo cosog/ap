@@ -32,15 +32,17 @@ Ext.define('AP.store.reportOut.PCPDailyReportWellListStore', {
                     autoLoad: false,
                     columnLines: true,
                     forceFit: true,
-                    selModel:{
-                    	selType: 'checkboxmodel',
-                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-                    	checkOnly:false,
-                    	allowDeselect:true,
-                    	onHdMouseDown:function(e,t){
-                    		alert("全选/全不选");
-                    	}
-                    },
+//                    selType: 'checkboxmodel',
+//                    multiSelect: false,
+//                    selModel:{
+//                    	selType: 'checkboxmodel',
+//                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+//                    	checkOnly:false,
+//                    	allowDeselect:true,
+//                    	onHdMouseDown:function(e,t){
+//                    		alert("全选/全不选");
+//                    	}
+//                    },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },
@@ -48,16 +50,19 @@ Ext.define('AP.store.reportOut.PCPDailyReportWellListStore', {
                     columns: newColumns,
                     listeners: {
                     	selectionchange: function (view, selected, o) {
-                    		if(selected.length>0){
-                    			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setValue(selected[0].data.wellName);
-                            	Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setRawValue(selected[0].data.wellName);
-                    		}else{
-                    			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setValue('');
-                            	Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setRawValue('');
-                    		}
-                    		CreatePCPDailyReportTable();
+//                    		if(selected.length>0){
+//                    			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setValue(selected[0].data.wellName);
+//                            	Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setRawValue(selected[0].data.wellName);
+//                    		}else{
+//                    			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setValue('');
+//                            	Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setRawValue('');
+//                    		}
+//                    		CreatePCPDailyReportTable();
                     	},
                     	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("PCPDailyReportDeviceListSelectRow_Id").setValue(index);
+                    		CreatePCPDailyReportTable();
+                    		CreatePCPDailyReportCurve();
                         }
                     }
                 });
@@ -66,9 +71,18 @@ Ext.define('AP.store.reportOut.PCPDailyReportWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);
+            	gridPanel.getSelectionModel().select(0, true);
+            }else{
+            	Ext.getCmp("PCPDailyReportDeviceListSelectRow_Id").setValue(-1);
+            	if(pcpDailyReportHelper!=null){
+    				if(pcpDailyReportHelper.hot!=undefined){
+    					pcpDailyReportHelper.hot.destroy();
+    				}
+    				pcpDailyReportHelper=null;
+    			}
+            	$("#PCPDailyReportDiv_id").html('');
+                $("#PCPDailyReportCurveDiv_Id").html('');
             }
-            Ext.getCmp("PCPDailyReportDeviceListSelectRow_Id").setValue(-1);
-            CreatePCPDailyReportTable();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

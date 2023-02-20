@@ -2822,7 +2822,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString();
 	}
 	
-	public String getHistoryQueryCurveSetData(String deviceId,String deviceType)throws Exception {
+	public String getHistoryQueryCurveSetData(String deviceId,String deviceType,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -2849,6 +2849,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
 				+ " and t.id="+deviceId+" and t4.historycurve>=0 "
+				+ " and (t4.showlevel is null or t4.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
 				+ " order by t4.historycurve,t4.sort,t4.id";
 		List<?> protocolList = this.findCallSql(protocolSql);
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
@@ -2866,17 +2867,31 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		
 		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
+		
 		for(int i=0;i<curveItemList.size();i++){
 			Object[] itemObj=(Object[]) curveItemList.get(i);
-			result_json.append("{\"curveName\":\"" + itemObj[0] + "\",\"itemCode\":\"" + itemObj[3] + "\",\"itemType\":\"" + itemObj[4] + "\",");
-			if(graphicSetData!=null && graphicSetData.getHistory()!=null && graphicSetData.getHistory().size()>i){
-				result_json.append("\"yAxisMaxValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMaxValue() + "\",");
-				result_json.append("\"yAxisMinValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMinValue() + "\"},");
-			}else{
-				result_json.append("\"yAxisMaxValue\":\"\",");
-				result_json.append("\"yAxisMinValue\":\"\"},");
+			String curveName=itemObj[0]+"";
+			String itemCode=itemObj[3]+"";
+			String itemType=itemObj[4]+"";
+			
+			String yAxisMaxValue="";
+			String yAxisMinValue="";
+			result_json.append("{\"curveName\":\"" + curveName + "\",\"itemCode\":\"" + itemCode + "\",\"itemType\":\""+itemType+"\",");
+			if(graphicSetData!=null && graphicSetData.getHistory()!=null && graphicSetData.getHistory().size()>0){
+				for(int j=0;j<graphicSetData.getHistory().size();j++){
+					if(itemCode.equalsIgnoreCase(graphicSetData.getHistory().get(j).getItemCode())){
+						yAxisMaxValue=graphicSetData.getHistory().get(j).getyAxisMaxValue();
+						yAxisMinValue=graphicSetData.getHistory().get(j).getyAxisMinValue();
+						break;
+					}
+				}
 			}
+			
+			result_json.append("\"yAxisMaxValue\":\""+yAxisMaxValue+"\",");
+			result_json.append("\"yAxisMinValue\":\""+yAxisMinValue+"\"},");
 		}
+		
+		
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
@@ -2885,8 +2900,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString();
 	}
 	
-	public int setHistoryDataGraphicInfo(String deviceId,String deviceType,String graphicSetData)throws Exception {
+	public int setHistoryDataGraphicInfo(String deviceId,String deviceType,String graphicSetSaveDataStr)throws Exception {
 		int result=0;
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		
 		if(StringManagerUtils.stringToInteger(deviceId)>0){
 			String deviceTableName="tbl_rpcdevice";
 			String graphicSetTableName="tbl_rpcdevicegraphicset";
@@ -2894,13 +2912,46 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				deviceTableName="tbl_pcpdevice";
 				graphicSetTableName="tbl_pcpdevicegraphicset";
 			}
+			
+			type = new TypeToken<GraphicSetData>() {}.getType();
+			GraphicSetData graphicSetSaveData=gson.fromJson(graphicSetSaveDataStr, type);
+			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			List<?> graphicSetList = this.findCallSql(graphicSetSql);
+			GraphicSetData graphicSetData=null;
+			if(graphicSetList.size()>0){
+				String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+				type = new TypeToken<GraphicSetData>() {}.getType();
+				graphicSetData=gson.fromJson(graphicSet, type);
+			}
+			String saveStr=graphicSetSaveDataStr;
+			if(graphicSetData!=null){
+				if(graphicSetData.getHistory()!=null&&graphicSetData.getHistory().size()>0){
+					for(int i=0;i<graphicSetSaveData.getHistory().size();i++){
+						boolean isExit=false;
+						for(int j=0;j<graphicSetData.getHistory().size();j++){
+							if(graphicSetSaveData.getHistory().get(i).getItemCode().equalsIgnoreCase(graphicSetData.getHistory().get(j).getItemCode())){
+								isExit=true;
+								graphicSetData.getHistory().get(j).setyAxisMaxValue(graphicSetSaveData.getHistory().get(i).getyAxisMaxValue());
+								graphicSetData.getHistory().get(j).setyAxisMinValue(graphicSetSaveData.getHistory().get(i).getyAxisMinValue());
+								break;
+							}
+						}
+						if(!isExit){
+							graphicSetData.getHistory().add(graphicSetSaveData.getHistory().get(i));
+						}
+					}
+				}else{
+					graphicSetData.setHistory(graphicSetSaveData.getHistory());
+				}
+				saveStr=gson.toJson(graphicSetData);
+			}
 			String sql="select t.wellid from "+graphicSetTableName+" t where t.wellid="+deviceId;
 			String updateSql="";
 			List<?> list = this.findCallSql(sql);
 			if(list.size()>0){
-				updateSql="update "+graphicSetTableName+" t set t.graphicstyle='"+graphicSetData+"' where t.wellid="+deviceId;
+				updateSql="update "+graphicSetTableName+" t set t.graphicstyle='"+saveStr+"' where t.wellid="+deviceId;
 			}else{
-				updateSql="insert into "+graphicSetTableName+" (wellid,graphicstyle) values("+deviceId+",'"+graphicSetData+"')";
+				updateSql="insert into "+graphicSetTableName+" (wellid,graphicstyle) values("+deviceId+",'"+saveStr+"')";
 			}
 			result=this.getBaseDao().updateOrDeleteBySql(updateSql);
 		}

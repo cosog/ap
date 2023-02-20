@@ -3760,4 +3760,29 @@ public class StringManagerUtils {
     	}
     	return url;
     }
+    
+    public static List<String> getColumnListFromSql(String sql){
+    	List<String> colList=new ArrayList<String>();
+    	String[] fromArr=sql.split(" from ");
+    	if(fromArr.length>1){
+    		String slectStr=fromArr[0];
+    		if(slectStr.startsWith("select")){
+    			slectStr=slectStr.substring(6, slectStr.length()-1);
+    		}
+    		
+    		String[] columnArr=slectStr.split(",");
+    		for(int i=0;i<columnArr.length;i++){
+    			String col=columnArr[i];
+    			if (col.indexOf(" as ") > 0) {
+    				col = col.substring(col.indexOf(" as ") + 3).trim();//当该字段中含有 as 时，截取as后的字符串作为字段数据
+				} else if (col.indexOf("#") > 0) {
+					col = col.substring(col.lastIndexOf("#") + 1);//如果字段中含有“#”截取最后一段作为字段数据
+				} else if (col.indexOf(".") > 0) {
+					col = col.substring(col.lastIndexOf(".") + 1);//如果字段中含有“.”截取最后一段作为字段数据
+				}
+    			colList.add("{\"data\":\""+col.replaceAll(" ", "")+"\"}");
+    		}
+    	}
+    	return colList;
+    }
 }

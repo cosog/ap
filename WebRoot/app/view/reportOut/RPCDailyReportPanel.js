@@ -266,7 +266,7 @@ function CreateRPCDailyReportTable(){
 			}
 			if(result.success){
 				if(rpcDailyReportHelper==null || rpcDailyReportHelper.hot==undefined){
-					rpcDailyReportHelper = RPCDailyReportHelper.createNew("RPCDailyReportDiv_id","RPCDailyReportContainer",result.template,result.data);
+					rpcDailyReportHelper = RPCDailyReportHelper.createNew("RPCDailyReportDiv_id","RPCDailyReportContainer",result.template,result.data,result.columns);
 					rpcDailyReportHelper.createTable();
 				}
 			}else{
@@ -291,10 +291,11 @@ function CreateRPCDailyReportTable(){
 
 
 var RPCDailyReportHelper = {
-	    createNew: function (divid, containerid,templateData,contentData) {
+	    createNew: function (divid, containerid,templateData,contentData,columns) {
 	        var rpcDailyReportHelper = {};
 	        rpcDailyReportHelper.templateData=templateData;
 	        rpcDailyReportHelper.contentData=contentData;
+	        rpcDailyReportHelper.columns=columns;
 	        rpcDailyReportHelper.get_data = {};
 	        rpcDailyReportHelper.data=[];
 	        rpcDailyReportHelper.hot = '';
@@ -400,7 +401,8 @@ var RPCDailyReportHelper = {
 	            rpcDailyReportHelper.hot = new Handsontable(rpcDailyReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: rpcDailyReportHelper.data,
-	                fixedRowsTop:rpcDailyReportHelper.templateData.fixedRowsTop, 
+//	            	columns:rpcDailyReportHelper.columns,
+	            	fixedRowsTop:rpcDailyReportHelper.templateData.fixedRowsTop, 
 	                fixedRowsBottom: rpcDailyReportHelper.templateData.fixedRowsBottom,
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
 	                rowHeaders: false,
@@ -426,7 +428,7 @@ var RPCDailyReportHelper = {
 	                search: true,
 	                mergeCells: rpcDailyReportHelper.templateData.mergeCells,
 	                cells: function (row, col, prop) {
-	                    var cellProperties = {};
+	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.renderer = rpcDailyReportHelper.addStyle;
@@ -783,10 +785,10 @@ function initRPCDailyReportCurveChartFn(series, tickInterval, divId, title, subt
             			,dafaultMenuItem[2],{
             				text: '图形设置',
             				onclick: function() {
-//            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
-//                                    title: '历史曲线设置'
-//                                });
-//                                window.show();
+            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
+                                    title: '报表曲线设置'
+                                });
+                                window.show();
             				}
             			}]
             	}

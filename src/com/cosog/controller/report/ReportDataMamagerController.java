@@ -253,7 +253,29 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		json = reportDataManagerService.getReportQueryCurveSetData(deviceId,deviceType);
+		if(user!=null){
+			json = reportDataManagerService.getReportQueryCurveSetData(deviceId,deviceType,user.getUserNo());
+		}
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/setReportDataGraphicInfo")
+	public String setReportDataGraphicInfo() throws Exception {
+		String json = "{success:false}";
+		HttpSession session=request.getSession();
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String graphicSetData = ParamUtils.getParameter(request, "graphicSetData");
+		this.pager = new Page("pagerForm", request);
+		int result = reportDataManagerService.setReportDataGraphicInfo(deviceId,deviceType,graphicSetData);
+		json = "{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

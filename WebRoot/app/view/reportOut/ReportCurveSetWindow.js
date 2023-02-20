@@ -4,7 +4,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
     alias: 'widget.reportCurveSetWindow',
     id: 'ReportCurveSetWindow_Id',
     layout: 'fit',
-    title:'历史曲线设置',
+    title:'报表曲线设置',
     border: false,
     hidden: false,
     collapsible: true,
@@ -33,18 +33,18 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 text: cosog.string.save,
                 iconCls: 'save',
                 handler: function (v, o) {
-                	var activeId = Ext.getCmp("ReportQueryTabPanel").getActiveTab().id;
+                	var activeId = Ext.getCmp("ProductionWellDailyReportPanel_Id").getActiveTab().id;
                 	var deviceType=0;
-                	var selectRowId="RPCReportQueryInfoDeviceListSelectRow_Id";
-                	var gridPanelId="RPCReportQueryDeviceListGridPanel_Id";
-                	var divId="rpcReportQueryCurveDiv_Id";
-                	if(activeId=="PCPReportQueryInfoPanel_Id"){
-                		deviceType=1;
-                		selectRowId="PCPReportQueryInfoDeviceListSelectRow_Id";
-                		gridPanelId="PCPReportQueryDeviceListGridPanel_Id";
-                		divId="pcpReportQueryCurveDiv_Id";
-                	}
+                	var selectRowId="RPCDailyReportDeviceListSelectRow_Id";
+                	var gridPanelId="RPCDailyReportGridPanel_Id";
+                	var divId="RPCDailyReportCurveDiv_Id";
                 	
+                	if(activeId=="PCPDailyReportPanel_Id"){
+                		deviceType=1;
+                		selectRowId="PCPDailyReportDeviceListSelectRow_Id";
+                		gridPanelId="PCPDailyReportGridPanel_Id";
+                		divId="PCPDailyReportCurveDiv_Id";
+                	}
                 	var deviceName='';
                 	var deviceId=0;
                 	var selectRow= Ext.getCmp(selectRowId).getValue();
@@ -78,7 +78,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 	
                 	Ext.Ajax.request({
                 		method:'POST',
-                		url:context + '/reportQueryController/setReportDataGraphicInfo',
+                		url:context + '/reportDataMamagerController/setReportDataGraphicInfo',
                 		success:function(response) {
                 			var result =  Ext.JSON.decode(response.responseText);
                 			if (result.success) {
@@ -170,53 +170,6 @@ function CreateDeviceReportCurveSetTable(){
 		url:context + '/reportDataMamagerController/getReportQueryCurveSetData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-//			result={
-//				    "success": true,
-//				    "totalCount": 7,
-//				    "totalRoot": [{
-//				        "curveName": "井下压力计-压力",
-//				        "itemCode": "c_jxyljyl",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "20",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "井口套压",
-//				        "itemCode": "c_jkty",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "6",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "产气量瞬时",
-//				        "itemCode": "c_cqlss",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "",
-//				        "yAxisMinValue": ""
-//				    }, {
-//				        "curveName": "产水量瞬时",
-//				        "itemCode": "c_cslss",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "",
-//				        "yAxisMinValue": ""
-//				    }, {
-//				        "curveName": "变频器输出",
-//				        "itemCode": "c_bpqscdl",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "200",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "修正后井底流压",
-//				        "itemCode": "c_xzhjdly",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "20",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "冲次",
-//				        "itemCode": "c_cc",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "5",
-//				        "yAxisMinValue": "0"
-//				    }]
-//				};
 			if(deviceReportCurveSetHandsontableHelper==null || deviceReportCurveSetHandsontableHelper.hot==undefined){
 				deviceReportCurveSetHandsontableHelper = DeviceReportCurveSetHandsontableHelper.createNew("ReportCurveSetTableDiv_Id");
 				var colHeaders="['曲线','Y轴预设最大值','Y轴预设最小值','项编码','项类型']";

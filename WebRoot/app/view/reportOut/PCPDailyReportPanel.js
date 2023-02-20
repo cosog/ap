@@ -266,7 +266,7 @@ function CreatePCPDailyReportTable(){
 			}
 			if(result.success){
 				if(pcpDailyReportHelper==null || pcpDailyReportHelper.hot==undefined){
-					pcpDailyReportHelper = PCPDailyReportHelper.createNew("PCPDailyReportDiv_id","PCPDailyReportContainer",result.template,result.data);
+					pcpDailyReportHelper = PCPDailyReportHelper.createNew("PCPDailyReportDiv_id","PCPDailyReportContainer",result.template,result.data,result.columns);
 					pcpDailyReportHelper.createTable();
 				}
 			}else{
@@ -291,10 +291,11 @@ function CreatePCPDailyReportTable(){
 
 
 var PCPDailyReportHelper = {
-	    createNew: function (divid, containerid,templateData,contentData) {
+	    createNew: function (divid, containerid,templateData,contentData,columns) {
 	        var pcpDailyReportHelper = {};
 	        pcpDailyReportHelper.templateData=templateData;
 	        pcpDailyReportHelper.contentData=contentData;
+	        pcpDailyReportHelper.columns=columns;
 	        pcpDailyReportHelper.get_data = {};
 	        pcpDailyReportHelper.data=[];
 	        pcpDailyReportHelper.hot = '';
@@ -400,6 +401,7 @@ var PCPDailyReportHelper = {
 	            pcpDailyReportHelper.hot = new Handsontable(pcpDailyReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: pcpDailyReportHelper.data,
+//	            	columns:pcpDailyReportHelper.columns,
 	                fixedRowsTop:pcpDailyReportHelper.templateData.fixedRowsTop, 
 	                fixedRowsBottom: pcpDailyReportHelper.templateData.fixedRowsBottom,
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
@@ -601,7 +603,7 @@ function CreatePCPDailyReportCurve(){
             }
             
 		    var data = result.list;
-//		    var graphicSet=result.graphicSet;
+		    var graphicSet=result.graphicSet;
 		    
 		    var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
 		    var tickInterval = 1;
@@ -657,19 +659,20 @@ function CreatePCPDailyReportCurve(){
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-//		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
-//			    	for(var j=0;j<graphicSet.History.length;j++){
-//			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
-//			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
-//					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
-//					    	}
-//					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
-//					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
-//					    	}
-//					    	break;
-//			    		}
-//			    	}
-//			    }
+		        
+		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.Report) ){
+			    	for(var j=0;j<graphicSet.Report.length;j++){
+			    		if(graphicSet.Report[j].itemCode!=undefined && graphicSet.Report[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+			    			if(isNotVal(graphicSet.Report[j].yAxisMaxValue)){
+					    		maxValue=parseFloat(graphicSet.Report[j].yAxisMaxValue);
+					    	}
+					    	if(isNotVal(graphicSet.Report[j].yAxisMinValue)){
+					    		minValue=parseFloat(graphicSet.Report[j].yAxisMinValue);
+					    	}
+					    	break;
+			    		}
+			    	}
+			    }
 		        
 		        var singleAxis={
 		        		max:maxValue,
@@ -783,10 +786,10 @@ function initPCPDailyReportCurveChartFn(series, tickInterval, divId, title, subt
             			,dafaultMenuItem[2],{
             				text: '图形设置',
             				onclick: function() {
-//            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
-//                                    title: '历史曲线设置'
-//                                });
-//                                window.show();
+            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
+                                    title: '报表曲线设置'
+                                });
+                                window.show();
             				}
             			}]
             	}

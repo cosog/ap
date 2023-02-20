@@ -875,7 +875,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 					+ " where t.unitcode='"+reportTemplateCode+"' "
 					+ " and t.sort>=0"
-					+ " and t.showlevel is null or t.showlevel>(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
 			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
 			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
@@ -894,9 +894,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			for(int i=0;i<reportItemList.size();i++){
 				if(reportItemList.get(i).getDataType()==3){
-					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+",'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 				}else if(reportItemList.get(i).getDataType()==4){
-					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+",'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
 				}else{
 					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 				}
@@ -905,7 +905,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 			sqlBuff.append(" order by t.calDate");
 			
-			List<?> reportDataList = this.findCallSql(sqlBuff.toString());
+			List<String> colList=StringManagerUtils.getColumnListFromSql(sqlBuff.toString());
+			
+			List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
 			for(int i=0;i<reportDataList.size();i++){
 				Object[] reportDataObj=(Object[]) reportDataList.get(i);
 				List<String> everyDaya=new ArrayList<String>();
@@ -926,10 +928,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				dataList.add(everyDaya);
 			}
-			result_json.append("\"data\":"+gson.toJson(dataList));
-			
+			result_json.append("\"data\":"+gson.toJson(dataList)+",\"columns\":"+colList.toString());
 		}else{
-			result_json.append("{\"success\":false,\"template\":{},\"data\":[]");
+			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
 		}
 		result_json.append(",\"wellName\":\""+wellName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
@@ -971,7 +972,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " and t3.id="+wellId
 				+ " and t.sort>=0"
 				+ " and t.reportcurve>0 "
-				+ " and (t.showlevel is null or t.showlevel>(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
+				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
 				+ " order by t.reportcurve";
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
@@ -1032,7 +1033,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 		cueveSqlBuff.append(" order by t.calDate");
 		
-		List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString());
+		List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
 		for(int i=0;i<reportCurveDataList.size();i++){
 			Object[] obj=(Object[]) reportCurveDataList.get(i);
 			result_json.append("{\"calDate\":\"" + obj[1] + "\",\"data\":[");
@@ -1051,43 +1052,28 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportQueryCurveSetData(String deviceId,String deviceType)throws Exception {
+	public String getReportQueryCurveSetData(String deviceId,String deviceType,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		int dataSaveMode=1;
 		String deviceTableName="tbl_rpcdevice";
 		String graphicSetTableName="tbl_rpcdevicegraphicset";
-//		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			deviceTableName="tbl_pcpdevice";
 			graphicSetTableName="tbl_pcpdevicegraphicset";
-//			columnsKey="pcpDeviceAcquisitionItemColumns";
 		}
-//		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-//		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-//			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
-//		}
-//		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
-		
-		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-				+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-				+ " and  t.id="+deviceId;
 		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
-		String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurvecolor,t4.itemcode,t4.type "
-				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
-				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
-				+ " and t.id="+deviceId+" and t4.historycurve>=0 "
-				+ " order by t4.historycurve,t4.sort,t4.id";
-		List<?> protocolList = this.findCallSql(protocolSql);
+		String curveItemsSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype "
+				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
+				+ " where t.unitcode=t2.unitcode and t2.code=t3.reportinstancecode"
+				+ " and t3.id="+deviceId
+				+ " and t.sort>=0"
+				+ " and t.reportcurve>0 "
+				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
+				+ " order by t.reportcurve";
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		List<?> curveItemList = this.findCallSql(curveItemsSql);
-		String protocolName="";
-		String unit="";
-		String dataType="";
 		GraphicSetData graphicSetData=null;
-		int resolutionMode=0;
-		
 		if(graphicSetList.size()>0){
 			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
 			type = new TypeToken<GraphicSetData>() {}.getType();
@@ -1097,14 +1083,25 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
 		for(int i=0;i<curveItemList.size();i++){
 			Object[] itemObj=(Object[]) curveItemList.get(i);
-			result_json.append("{\"curveName\":\"" + itemObj[0] + "\",\"itemCode\":\"" + itemObj[3] + "\",\"itemType\":\"" + itemObj[4] + "\",");
-			if(graphicSetData!=null && graphicSetData.getHistory()!=null && graphicSetData.getHistory().size()>i){
-				result_json.append("\"yAxisMaxValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMaxValue() + "\",");
-				result_json.append("\"yAxisMinValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMinValue() + "\"},");
-			}else{
-				result_json.append("\"yAxisMaxValue\":\"\",");
-				result_json.append("\"yAxisMinValue\":\"\"},");
+			String curveName=itemObj[0]+"";
+			String itemCode=itemObj[1]+"";
+			String itemType="3";//3-汇总项
+			
+			String yAxisMaxValue="";
+			String yAxisMinValue="";
+			result_json.append("{\"curveName\":\"" + curveName + "\",\"itemCode\":\"" + itemCode + "\",\"itemType\":\""+itemType+"\",");
+			if(graphicSetData!=null && graphicSetData.getReport()!=null && graphicSetData.getReport().size()>0){
+				for(int j=0;j<graphicSetData.getReport().size();j++){
+					if(itemCode.equalsIgnoreCase(graphicSetData.getReport().get(j).getItemCode())){
+						yAxisMaxValue=graphicSetData.getReport().get(j).getyAxisMaxValue();
+						yAxisMinValue=graphicSetData.getReport().get(j).getyAxisMinValue();
+						break;
+					}
+				}
 			}
+			
+			result_json.append("\"yAxisMaxValue\":\""+yAxisMaxValue+"\",");
+			result_json.append("\"yAxisMinValue\":\""+yAxisMinValue+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -1112,6 +1109,64 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		result_json.append("]}");
 		return result_json.toString();
+	}
+	
+	public int setReportDataGraphicInfo(String deviceId,String deviceType,String graphicSetSaveDataStr)throws Exception {
+		int result=0;
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		
+		if(StringManagerUtils.stringToInteger(deviceId)>0){
+			String deviceTableName="tbl_rpcdevice";
+			String graphicSetTableName="tbl_rpcdevicegraphicset";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				deviceTableName="tbl_pcpdevice";
+				graphicSetTableName="tbl_pcpdevicegraphicset";
+			}
+			
+			type = new TypeToken<GraphicSetData>() {}.getType();
+			GraphicSetData graphicSetSaveData=gson.fromJson(graphicSetSaveDataStr, type);
+			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			List<?> graphicSetList = this.findCallSql(graphicSetSql);
+			GraphicSetData graphicSetData=null;
+			if(graphicSetList.size()>0){
+				String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+				type = new TypeToken<GraphicSetData>() {}.getType();
+				graphicSetData=gson.fromJson(graphicSet, type);
+			}
+			String saveStr=graphicSetSaveDataStr;
+			if(graphicSetData!=null){
+				if(graphicSetData.getReport()!=null&&graphicSetData.getReport().size()>0){
+					for(int i=0;i<graphicSetSaveData.getReport().size();i++){
+						boolean isExit=false;
+						for(int j=0;j<graphicSetData.getReport().size();j++){
+							if(graphicSetSaveData.getReport().get(i).getItemCode().equalsIgnoreCase(graphicSetData.getReport().get(j).getItemCode())){
+								isExit=true;
+								graphicSetData.getReport().get(j).setyAxisMaxValue(graphicSetSaveData.getReport().get(i).getyAxisMaxValue());
+								graphicSetData.getReport().get(j).setyAxisMinValue(graphicSetSaveData.getReport().get(i).getyAxisMinValue());
+								break;
+							}
+						}
+						if(!isExit){
+							graphicSetData.getReport().add(graphicSetSaveData.getReport().get(i));
+						}
+					}
+				}else{
+					graphicSetData.setReport(graphicSetSaveData.getReport());
+				}
+				saveStr=gson.toJson(graphicSetData);
+			}
+			String sql="select t.wellid from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			String updateSql="";
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				updateSql="update "+graphicSetTableName+" t set t.graphicstyle='"+saveStr+"' where t.wellid="+deviceId;
+			}else{
+				updateSql="insert into "+graphicSetTableName+" (wellid,graphicstyle) values("+deviceId+",'"+saveStr+"')";
+			}
+			result=this.getBaseDao().updateOrDeleteBySql(updateSql);
+		}
+		return result;
 	}
 	
 	public String exportPCPDailyReportData(Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {

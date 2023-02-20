@@ -406,7 +406,10 @@ public class HistoryQueryController extends BaseController  {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		json = historyQueryService.getHistoryQueryCurveSetData(deviceId,deviceType);
+		if(user!=null){
+			json = historyQueryService.getHistoryQueryCurveSetData(deviceId,deviceType,user.getUserNo());
+		}
+		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

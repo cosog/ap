@@ -539,4 +539,16 @@ public class UserManagerService<T> extends BaseService<T> {
 		}
 		return childIds;
 	}
+	
+	public void setUserRoleRight(User user){
+		String sql="select t.role_level,t.role_flag,t.showlevel,t.role_reportedit from tbl_role t,tbl_user t2 where t2.user_type=t.role_id and t2.user_no="+user.getUserNo();
+		List<?> list=getBaseDao().findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			user.setRoleLevel(StringManagerUtils.stringToInteger(obj[0]+""));
+			user.setRoleFlag(StringManagerUtils.stringToInteger(obj[1]+""));
+			user.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[2]+""));
+			user.setRoleReportEdit(StringManagerUtils.stringToInteger(obj[3]+""));
+		}
+	}
 }

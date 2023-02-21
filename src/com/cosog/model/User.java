@@ -54,6 +54,12 @@ public class User implements java.io.Serializable {
 	private String loginIp;
 	
 	private String loginTime;
+	
+	private Integer roleLevel;
+	private Integer roleFlag;
+	private Integer roleShowLevel;
+	private Integer roleReportEdit;
+	
 
 	/**
 	 * 组织节点orgCode集合
@@ -336,5 +342,42 @@ public class User implements java.io.Serializable {
 
 	public void setUserTypeName(String userTypeName) {
 		this.userTypeName = userTypeName;
+	}
+
+	@Transient
+	public Integer getRoleLevel() {
+		return roleLevel;
+	}
+
+	public void setRoleLevel(Integer roleLevel) {
+		this.roleLevel = roleLevel;
+	}
+
+	@Transient
+	public Integer getRoleFlag() {
+		return roleFlag;
+	}
+
+	@Transient
+	public void setRoleFlag(Integer roleFlag) {
+		this.roleFlag = roleFlag;
+	}
+
+	@Transient
+	public Integer getRoleShowLevel() {
+		return roleShowLevel;
+	}
+
+	public void setRoleShowLevel(Integer roleShowLevel) {
+		this.roleShowLevel = roleShowLevel;
+	}
+
+	@Transient
+	public Integer getRoleReportEdit() {
+		return roleReportEdit;
+	}
+
+	public void setRoleReportEdit(Integer roleReportEdit) {
+		this.roleReportEdit = roleReportEdit;
 	}
 }

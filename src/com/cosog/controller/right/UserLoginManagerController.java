@@ -194,6 +194,7 @@ public class UserLoginManagerController extends BaseController {
 				user = this.service.doLogin(username, StringManagerUtils.stringToMD5(userPass));
 			}
 			if (user != null&&user.getUserEnable()==1) {
+				service.setUserRoleRight(user);
 				user.setPicUrl(picUrl);// 通过session传到前台
 				int pageSize = Config.getInstance().configFile.getAp().getOthers().getPageSize();
 				boolean SyncOrAsync=Config.getInstance().configFile.getAp().getOthers().getSyncOrAsync();

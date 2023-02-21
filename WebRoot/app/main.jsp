@@ -40,6 +40,11 @@
  
  
  var userAccount="${userLogin.userId}";
+ 
+ var loginUserRoleLevel="${userLogin.roleLevel}";
+ var loginUserRoleFlag="${userLogin.roleFlag}";
+ var loginUserRoleShowLevel="${userLogin.roleShowLevel}";
+ var loginUserRoleReportEdit="${userLogin.roleReportEdit}";
  if (user_ == null || "" == (user_)) {
 	 window.location.href = "../login/toLogin";
  }

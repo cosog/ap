@@ -150,10 +150,27 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
                 	var wellName = Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').getValue();
                 	var startDate = Ext.getCmp('PCPDailyReportStartDate_Id').rawValue;
                 	var endDate = Ext.getCmp('PCPDailyReportEndDate_Id').rawValue;
-                	var url=context + '/reportDataMamagerController/exportPCPDailyReportData?wellType=0&wellName='+URLencode(URLencode(wellName))+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
+                	
+                	var wellName='';
+                    var wellId=0;
+                    var selectRow= Ext.getCmp("PCPDailyReportDeviceListSelectRow_Id").getValue();
+                    if(selectRow>=0){
+                    	wellName=Ext.getCmp("PCPDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	wellId=Ext.getCmp("PCPDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                    }
+                	
+                	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=1&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
-            }, '->', {
+            }, '->',{
+                xtype: 'button',
+                text: cosog.string.save,
+                iconCls: 'save',
+                disabled: loginUserRoleReportEdit!=1,
+                handler: function (v, o) {
+                	pcpDailyReportHelper.saveData();
+                }
+            },'-', {
                 id: 'PCPDailyReportTotalCount_Id',
                 xtype: 'component',
                 tpl: cosog.string.totalCount + ': {count}',
@@ -300,12 +317,16 @@ var PCPDailyReportHelper = {
 	        pcpDailyReportHelper.data=[];
 	        pcpDailyReportHelper.hot = '';
 	        pcpDailyReportHelper.container = document.getElementById(divid);
-	        
+	        pcpDailyReportHelper.columnCount=0;
+	        pcpDailyReportHelper.editData={};
+	        pcpDailyReportHelper.contentUpdateList = [];
 	        
 	        pcpDailyReportHelper.initData=function(){
 	        	pcpDailyReportHelper.data=[];
 	        	for(var i=0;i<pcpDailyReportHelper.templateData.header.length;i++){
-		        	pcpDailyReportHelper.data.push(pcpDailyReportHelper.templateData.header[i].title);
+	        		pcpDailyReportHelper.templateData.header[i].title.push('');
+	        		pcpDailyReportHelper.data.push(pcpDailyReportHelper.templateData.header[i].title);
+	        		pcpDailyReportHelper.columnCount=pcpDailyReportHelper.templateData.header[i].title.length;
 		        }
 	        	for(var i=0;i<pcpDailyReportHelper.contentData.length;i++){
 		        	pcpDailyReportHelper.data.push(pcpDailyReportHelper.contentData[i]);
@@ -401,8 +422,13 @@ var PCPDailyReportHelper = {
 	            pcpDailyReportHelper.hot = new Handsontable(pcpDailyReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: pcpDailyReportHelper.data,
+	            	hiddenColumns: {
+	                    columns: [pcpDailyReportHelper.columnCount-1],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 //	            	columns:pcpDailyReportHelper.columns,
-	                fixedRowsTop:pcpDailyReportHelper.templateData.fixedRowsTop, 
+	            	fixedRowsTop:pcpDailyReportHelper.templateData.fixedRowsTop, 
 	                fixedRowsBottom: pcpDailyReportHelper.templateData.fixedRowsBottom,
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
 	                rowHeaders: false,
@@ -428,7 +454,7 @@ var PCPDailyReportHelper = {
 	                search: true,
 	                mergeCells: pcpDailyReportHelper.templateData.mergeCells,
 	                cells: function (row, col, prop) {
-	                    var cellProperties = {};
+	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.renderer = pcpDailyReportHelper.addStyle;
@@ -459,7 +485,40 @@ var PCPDailyReportHelper = {
 //		                }
 	                    return cellProperties;
 	                },
-	                afterChange:function(changes, source){}
+	                afterChange: function (changes, source) {
+	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
+	                    if (pcpDailyReportHelper!=null && pcpDailyReportHelper.hot!=undefined && pcpDailyReportHelper.hot!='' && changes != null) {
+	                        for (var i = 0; i < changes.length; i++) {
+	                            var params = [];
+	                            var index = changes[i][0]; //行号码
+	                            var rowdata = pcpDailyReportHelper.hot.getDataAtRow(index);
+	                            
+	                            var editCellInfo={};
+	                            var editRow=changes[i][0];
+	                            var editCol=changes[i][1];
+	                            var column=pcpDailyReportHelper.columns[editCol];
+	                            
+	                            editCellInfo.editRow=editRow;
+	                            editCellInfo.editCol=editCol;
+	                            editCellInfo.column=column;
+	                            editCellInfo.recordId=rowdata[rowdata.length-1]
+	                            editCellInfo.oldValue=changes[i][2];
+	                            editCellInfo.newValue=changes[i][3];
+	                            
+	                            var isExit=false;
+	                            for(var j=0;j<pcpDailyReportHelper.contentUpdateList.length;j++){
+	                            	if(editCellInfo.editRow==pcpDailyReportHelper.contentUpdateList[j].editRow && editCellInfo.editCol==pcpDailyReportHelper.contentUpdateList[j].editCol){
+	                            		pcpDailyReportHelper.contentUpdateList[j].newValue=editCellInfo.newValue;
+	                            		isExit=true;
+	                            		break;
+	                            	}
+	                            }
+	                            if(!isExit){
+	                            	pcpDailyReportHelper.contentUpdateList.push(editCellInfo);
+	                            }
+	                        }
+	                    }
+	                }
 	            });
 	        }
 	        pcpDailyReportHelper.getData = function (data) {
@@ -520,6 +579,41 @@ var PCPDailyReportHelper = {
 //
 //	            var _total = data.totalCount;
 //	            pcpDailyReportHelper.last_index = _daily.length + 3;
+	        }
+	        
+	        pcpDailyReportHelper.saveData = function () {
+	        	if(pcpDailyReportHelper.contentUpdateList.length>0){
+	        		pcpDailyReportHelper.editData.contentUpdateList=pcpDailyReportHelper.contentUpdateList;
+//	        		alert(JSON.stringify(pcpDailyReportHelper.editData));
+	        		Ext.Ajax.request({
+	                    method: 'POST',
+	                    url: context + '/reportDataMamagerController/saveDailyReportData',
+	                    success: function (response) {
+	                        rdata = Ext.JSON.decode(response.responseText);
+	                        if (rdata.success) {
+	                        	Ext.MessageBox.alert("信息", '保存成功');
+	                        	pcpDailyReportHelper.clearContainer();
+	                        	CreatePCPDailyReportTable();
+	                        } else {
+	                        	pcpDailyReportHelper.clearContainer();
+	                        	Ext.MessageBox.alert("信息", "数据保存失败");
+	                        }
+	                    },
+	                    failure: function () {
+	                        Ext.MessageBox.alert("信息", "请求失败");
+	                    },
+	                    params: {
+	                    	data: JSON.stringify(pcpDailyReportHelper.editData),
+	                        deviceType: 1
+	                    }
+	                });
+	        	}else{
+	        		Ext.MessageBox.alert("信息", "无数据变化！");
+	        	}
+	        }
+	        pcpDailyReportHelper.clearContainer = function () {
+	        	pcpDailyReportHelper.editData={};
+            	pcpDailyReportHelper.contentUpdateList=[];
 	        }
 
 	        var init = function () {
@@ -659,7 +753,6 @@ function CreatePCPDailyReportCurve(){
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-		        
 		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.Report) ){
 			    	for(var j=0;j<graphicSet.Report.length;j++){
 			    		if(graphicSet.Report[j].itemCode!=undefined && graphicSet.Report[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){

@@ -875,6 +875,13 @@ public class StringManagerUtils {
     public static boolean isNum(String str) {
         return str != null && str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
     }
+    
+    /**
+     * 判断字符串是否是数字
+     */
+    public static boolean isNumber(String value) {
+        return isInteger(value) || isDouble(value);
+    }
 
     /**
      * 将数字转化为字符串，并格式化为指定的长度，不够位数的前面补指定字符 Input: 1, 5, '0' Output: "00001"
@@ -1646,12 +1653,7 @@ public class StringManagerUtils {
         }
     }
 
-    /**
-     * 判断字符串是否是数字
-     */
-    public static boolean isNumber(String value) {
-        return isInteger(value) || isDouble(value);
-    }
+    
 
     /**
      * 获取某一天如期
@@ -3780,7 +3782,7 @@ public class StringManagerUtils {
 				} else if (col.indexOf(".") > 0) {
 					col = col.substring(col.lastIndexOf(".") + 1);//如果字段中含有“.”截取最后一段作为字段数据
 				}
-    			colList.add("{\"data\":\""+col.replaceAll(" ", "")+"\"}");
+    			colList.add("\""+col.replaceAll(" ", "")+"\"");
     		}
     	}
     	return colList;

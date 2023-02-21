@@ -1842,6 +1842,8 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
+			
+			jedis.zadd("rpcTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1)));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -1892,6 +1894,8 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
+			
+			jedis.zadd("pcpTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1)));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

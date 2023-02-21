@@ -150,10 +150,27 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                 	var wellName = Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').getValue();
                 	var startDate = Ext.getCmp('RPCDailyReportStartDate_Id').rawValue;
                 	var endDate = Ext.getCmp('RPCDailyReportEndDate_Id').rawValue;
-                	var url=context + '/reportDataMamagerController/exportRPCDailyReportData?wellType=0&wellName='+URLencode(URLencode(wellName))+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
+                	
+                	var wellName='';
+                    var wellId=0;
+                    var selectRow= Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").getValue();
+                    if(selectRow>=0){
+                    	wellName=Ext.getCmp("RPCDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	wellId=Ext.getCmp("RPCDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                    }
+                	
+                	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=0&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
-            }, '->', {
+            }, '->',{
+                xtype: 'button',
+                text: cosog.string.save,
+                iconCls: 'save',
+                disabled: loginUserRoleReportEdit!=1,
+                handler: function (v, o) {
+                	rpcDailyReportHelper.saveData();
+                }
+            },'-', {
                 id: 'RPCDailyReportTotalCount_Id',
                 xtype: 'component',
                 tpl: cosog.string.totalCount + ': {count}',
@@ -298,18 +315,49 @@ var RPCDailyReportHelper = {
 	        rpcDailyReportHelper.columns=columns;
 	        rpcDailyReportHelper.get_data = {};
 	        rpcDailyReportHelper.data=[];
+	        rpcDailyReportHelper.sourceData=[];
 	        rpcDailyReportHelper.hot = '';
 	        rpcDailyReportHelper.container = document.getElementById(divid);
-	        
+	        rpcDailyReportHelper.columnCount=0;
+	        rpcDailyReportHelper.editData={};
+	        rpcDailyReportHelper.contentUpdateList = [];
 	        
 	        rpcDailyReportHelper.initData=function(){
 	        	rpcDailyReportHelper.data=[];
 	        	for(var i=0;i<rpcDailyReportHelper.templateData.header.length;i++){
-		        	rpcDailyReportHelper.data.push(rpcDailyReportHelper.templateData.header[i].title);
+	        		rpcDailyReportHelper.templateData.header[i].title.push('');
+	        		rpcDailyReportHelper.columnCount=rpcDailyReportHelper.templateData.header[i].title.length;
+	        		
+	        		var valueArr=[];
+	        		var sourceValueArr=[];
+	        		for(var j=0;j<rpcDailyReportHelper.templateData.header[i].title.length;j++){
+	        			valueArr.push(rpcDailyReportHelper.templateData.header[i].title[j]);
+	        			sourceValueArr.push(rpcDailyReportHelper.templateData.header[i].title[j]);
+	        		}
+	        		
+	        		rpcDailyReportHelper.data.push(valueArr);
+	        		rpcDailyReportHelper.sourceData.push(sourceValueArr);
 		        }
 	        	for(var i=0;i<rpcDailyReportHelper.contentData.length;i++){
-		        	rpcDailyReportHelper.data.push(rpcDailyReportHelper.contentData[i]);
+	        		var valueArr=[];
+	        		var sourceValueArr=[];
+	        		for(var j=0;j<rpcDailyReportHelper.contentData[i].length;j++){
+	        			valueArr.push(rpcDailyReportHelper.contentData[i][j]);
+	        			sourceValueArr.push(rpcDailyReportHelper.contentData[i][j]);
+	        		}
+	        		
+	        		rpcDailyReportHelper.data.push(valueArr);
+		        	rpcDailyReportHelper.sourceData.push(sourceValueArr);
 		        }
+	        	for(var i=rpcDailyReportHelper.templateData.header.length;i<rpcDailyReportHelper.data.length;i++){
+	        		for(var j=0;j<rpcDailyReportHelper.data[i].length;j++){
+	        			var value=rpcDailyReportHelper.data[i][j];
+		                if(value.length>12){
+		                	value=value.substring(0, 11)+"...";
+		                	rpcDailyReportHelper.data[i][j]=value;
+		                }
+	        		}
+	        	}
 	        }
 	        
 	        rpcDailyReportHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
@@ -401,6 +449,11 @@ var RPCDailyReportHelper = {
 	            rpcDailyReportHelper.hot = new Handsontable(rpcDailyReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: rpcDailyReportHelper.data,
+	            	hiddenColumns: {
+	                    columns: [rpcDailyReportHelper.columnCount-1],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 //	            	columns:rpcDailyReportHelper.columns,
 	            	fixedRowsTop:rpcDailyReportHelper.templateData.fixedRowsTop, 
 	                fixedRowsBottom: rpcDailyReportHelper.templateData.fixedRowsBottom,
@@ -444,22 +497,58 @@ var RPCDailyReportHelper = {
 	                    		}
 	                    	}
 	                    }
-	                    
-	                    
-	                    
-	                    
-//	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
-//	                        cellProperties.renderer = rpcDailyReportHelper.addBoldBg;
-//	                    }
-//						if (visualRowIndex < 1 ) {
-//	                       cellProperties.renderer = rpcDailyReportHelper.addSizeBg;
-//	                    }
-//						if (visualColIndex === 26&&visualRowIndex>2&&visualRowIndex<rpcDailyReportHelper.last_index) {
-//							cellProperties.readOnly = false;
-//		                }
 	                    return cellProperties;
 	                },
-	                afterChange:function(changes, source){}
+	                afterOnCellMouseOver(event, coords, TD){
+//	                	if(rpcDailyReportHelper!=null&&rpcDailyReportHelper.hot!=''&&rpcDailyReportHelper.hot!=undefined && rpcDailyReportHelper.hot.getDataAtCell!=undefined){
+//	                		var value=rpcDailyReportHelper.sourceData[coords.row][coords.col];
+//	                		if(coords.row>=rpcDailyReportHelper.templateData.header.length){
+//	                			alert(value);
+//	                		}
+//	                	}
+	                },
+	                afterOnCellMouseOut(event, coords, TD){
+//	                	if(rpcDailyReportHelper!=null&&rpcDailyReportHelper.hot!=''&&rpcDailyReportHelper.hot!=undefined && rpcDailyReportHelper.hot.getDataAtCell!=undefined){
+//	                		var value=rpcDailyReportHelper.sourceData[coords.row][coords.col];
+//	                		if(coords.row>=rpcDailyReportHelper.templateData.header.length){
+//	                			alert(value);
+//	                		}
+//	                	}
+	                },
+	                afterChange: function (changes, source) {
+	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
+	                    if (rpcDailyReportHelper!=null && rpcDailyReportHelper.hot!=undefined && rpcDailyReportHelper.hot!='' && changes != null) {
+	                        for (var i = 0; i < changes.length; i++) {
+	                            var params = [];
+	                            var index = changes[i][0]; //行号码
+	                            var rowdata = rpcDailyReportHelper.hot.getDataAtRow(index);
+	                            
+	                            var editCellInfo={};
+	                            var editRow=changes[i][0];
+	                            var editCol=changes[i][1];
+	                            var column=rpcDailyReportHelper.columns[editCol];
+	                            
+	                            editCellInfo.editRow=editRow;
+	                            editCellInfo.editCol=editCol;
+	                            editCellInfo.column=column;
+	                            editCellInfo.recordId=rowdata[rowdata.length-1]
+	                            editCellInfo.oldValue=changes[i][2];
+	                            editCellInfo.newValue=changes[i][3];
+	                            
+	                            var isExit=false;
+	                            for(var j=0;j<rpcDailyReportHelper.contentUpdateList.length;j++){
+	                            	if(editCellInfo.editRow==rpcDailyReportHelper.contentUpdateList[j].editRow && editCellInfo.editCol==rpcDailyReportHelper.contentUpdateList[j].editCol){
+	                            		rpcDailyReportHelper.contentUpdateList[j].newValue=editCellInfo.newValue;
+	                            		isExit=true;
+	                            		break;
+	                            	}
+	                            }
+	                            if(!isExit){
+	                            	rpcDailyReportHelper.contentUpdateList.push(editCellInfo);
+	                            }
+	                        }
+	                    }
+	                }
 	            });
 	        }
 	        rpcDailyReportHelper.getData = function (data) {
@@ -520,6 +609,41 @@ var RPCDailyReportHelper = {
 //
 //	            var _total = data.totalCount;
 //	            rpcDailyReportHelper.last_index = _daily.length + 3;
+	        }
+	        
+	        rpcDailyReportHelper.saveData = function () {
+	        	if(rpcDailyReportHelper.contentUpdateList.length>0){
+	        		rpcDailyReportHelper.editData.contentUpdateList=rpcDailyReportHelper.contentUpdateList;
+//	        		alert(JSON.stringify(rpcDailyReportHelper.editData));
+	        		Ext.Ajax.request({
+	                    method: 'POST',
+	                    url: context + '/reportDataMamagerController/saveDailyReportData',
+	                    success: function (response) {
+	                        rdata = Ext.JSON.decode(response.responseText);
+	                        if (rdata.success) {
+	                        	Ext.MessageBox.alert("信息", '保存成功');
+	                        	rpcDailyReportHelper.clearContainer();
+	                        	CreateRPCDailyReportTable();
+	                        } else {
+	                        	rpcDailyReportHelper.clearContainer();
+	                        	Ext.MessageBox.alert("信息", "数据保存失败");
+	                        }
+	                    },
+	                    failure: function () {
+	                        Ext.MessageBox.alert("信息", "请求失败");
+	                    },
+	                    params: {
+	                    	data: JSON.stringify(rpcDailyReportHelper.editData),
+	                        deviceType: 0
+	                    }
+	                });
+	        	}else{
+	        		Ext.MessageBox.alert("信息", "无数据变化！");
+	        	}
+	        }
+	        rpcDailyReportHelper.clearContainer = function () {
+	        	rpcDailyReportHelper.editData={};
+            	rpcDailyReportHelper.contentUpdateList=[];
 	        }
 
 	        var init = function () {

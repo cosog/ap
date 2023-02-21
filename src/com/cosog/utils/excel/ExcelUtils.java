@@ -895,7 +895,7 @@ public class ExcelUtils {
 		sheet.setColumnWidth(0, 256*7+184);//列宽7 宽度的单位是字符数的256分之一
 		// 创建合并算法数组
 		int rowLength = sheetDataList.size();
-		int columnLength = sheetDataList.get(0).size();
+		int columnLength = rowLength>0?sheetDataList.get(0).size():0;
 		int[][] mergeArray = new int[rowLength][columnLength];
 		for (int i = 0; i < sheetDataList.size(); i++) {
 			// 每个 Sheet 页中的行数据
@@ -989,7 +989,7 @@ public class ExcelUtils {
         }
         // 纵向合并
         int xLen = mergeArray.length;
-        int yLen = mergeArray[0].length;
+        int yLen = xLen>0?mergeArray[0].length:0;
         for (int y = 0; y < yLen; y++) {
             boolean merge = false;
             int x1 = 0;

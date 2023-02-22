@@ -173,7 +173,10 @@ isNullVal = function(val) {
  */
 isNotVal = function(val) {
 	var result = false;
-	if (val == "" || val == "null" || val == "undefined" || val == undefined || val == null) {
+	if (val == undefined || val == null 
+			|| (val.replace!=undefined&&val.replace(/\s+/g,"") == "") 
+			|| (val.replace!=undefined&&val.replace(/\s+/g,"") == "null" )
+			|| (val.replace!=undefined&&val.replace(/\s+/g,"") == "undefined")) {
 		result = false;
 	} else {
 		result = true;

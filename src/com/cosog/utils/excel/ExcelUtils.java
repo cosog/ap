@@ -853,7 +853,7 @@ public class ExcelUtils {
         }
     }
     
-    public static void exportDataWithTitleAndHead(HttpServletResponse response, String fileName, String sheetName, List<List<Object>> sheetDataList, File file, Map<Integer, List<String>> selectMap) {
+    public static void exportDataWithTitleAndHead(HttpServletResponse response, String fileName, String sheetName, List<List<Object>> sheetDataList, File file, Map<Integer, List<String>> selectMap,int headerRowCount) {
     	// 整个 Excel 表格 book 对象
     	SXSSFWorkbook book = new SXSSFWorkbook();
 
@@ -913,10 +913,10 @@ public class ExcelUtils {
 					setCellPicture(book, row, patriarch, i, j, (URL) o);
 				} else {
 					Cell cell = row.createCell(j);
-					if(i == 0){
+					if(i == 0 && i<headerRowCount){
 						v = setCellValue(cell, o, titleStyle);
 					}
-					else if (i == 1 || i == 2) {
+					else if (i>0 && i<headerRowCount) {
 						v = setCellValue(cell, o, headStyle);
 					} else {
 						v = setCellValue(cell, o, rowStyle);

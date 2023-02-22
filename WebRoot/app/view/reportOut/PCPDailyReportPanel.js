@@ -315,6 +315,7 @@ var PCPDailyReportHelper = {
 	        pcpDailyReportHelper.columns=columns;
 	        pcpDailyReportHelper.get_data = {};
 	        pcpDailyReportHelper.data=[];
+	        pcpDailyReportHelper.sourceData=[];
 	        pcpDailyReportHelper.hot = '';
 	        pcpDailyReportHelper.container = document.getElementById(divid);
 	        pcpDailyReportHelper.columnCount=0;
@@ -325,12 +326,38 @@ var PCPDailyReportHelper = {
 	        	pcpDailyReportHelper.data=[];
 	        	for(var i=0;i<pcpDailyReportHelper.templateData.header.length;i++){
 	        		pcpDailyReportHelper.templateData.header[i].title.push('');
-	        		pcpDailyReportHelper.data.push(pcpDailyReportHelper.templateData.header[i].title);
 	        		pcpDailyReportHelper.columnCount=pcpDailyReportHelper.templateData.header[i].title.length;
+	        		
+	        		var valueArr=[];
+	        		var sourceValueArr=[];
+	        		for(var j=0;j<pcpDailyReportHelper.templateData.header[i].title.length;j++){
+	        			valueArr.push(pcpDailyReportHelper.templateData.header[i].title[j]);
+	        			sourceValueArr.push(pcpDailyReportHelper.templateData.header[i].title[j]);
+	        		}
+	        		
+	        		pcpDailyReportHelper.data.push(valueArr);
+	        		pcpDailyReportHelper.sourceData.push(sourceValueArr);
 		        }
 	        	for(var i=0;i<pcpDailyReportHelper.contentData.length;i++){
-		        	pcpDailyReportHelper.data.push(pcpDailyReportHelper.contentData[i]);
+	        		var valueArr=[];
+	        		var sourceValueArr=[];
+	        		for(var j=0;j<pcpDailyReportHelper.contentData[i].length;j++){
+	        			valueArr.push(pcpDailyReportHelper.contentData[i][j]);
+	        			sourceValueArr.push(pcpDailyReportHelper.contentData[i][j]);
+	        		}
+	        		
+	        		pcpDailyReportHelper.data.push(valueArr);
+		        	pcpDailyReportHelper.sourceData.push(sourceValueArr);
 		        }
+	        	for(var i=pcpDailyReportHelper.templateData.header.length;i<pcpDailyReportHelper.data.length;i++){
+	        		for(var j=0;j<pcpDailyReportHelper.data[i].length;j++){
+	        			var value=pcpDailyReportHelper.data[i][j];
+		                if(value.length>12){
+		                	value=value.substring(0, 11)+"...";
+		                	pcpDailyReportHelper.data[i][j]=value;
+		                }
+	        		}
+	        	}
 	        }
 	        
 	        pcpDailyReportHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
@@ -470,20 +497,44 @@ var PCPDailyReportHelper = {
 	                    		}
 	                    	}
 	                    }
-	                    
-	                    
-	                    
-	                    
-//	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
-//	                        cellProperties.renderer = pcpDailyReportHelper.addBoldBg;
-//	                    }
-//						if (visualRowIndex < 1 ) {
-//	                       cellProperties.renderer = pcpDailyReportHelper.addSizeBg;
-//	                    }
-//						if (visualColIndex === 26&&visualRowIndex>2&&visualRowIndex<pcpDailyReportHelper.last_index) {
-//							cellProperties.readOnly = false;
-//		                }
 	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(pcpDailyReportHelper!=null&&pcpDailyReportHelper.hot!=''&&pcpDailyReportHelper.hot!=undefined && pcpDailyReportHelper.hot.getDataAtCell!=undefined){
+	                		var rawVvalue=pcpDailyReportHelper.sourceData[coords.row][coords.col];
+	                		if(coords.row>=pcpDailyReportHelper.templateData.header.length){
+//	                			TD.outerHTML='<span data-qtip="'+value+'" data-dismissDelay=10000>'+TD.innerText+'</span>';
+//	                			alert(value);
+	                			if(isNotVal(rawVvalue)){
+	                				if(!isNotVal(TD.tip)){
+	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+			                			    target: event.target,
+			                			    html: rawVvalue,
+			                			    listeners: {
+			                			    	hide: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	},
+			                                	close: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	}
+			                                }
+			                			});
+	                				}else{
+	                					TD.tip.update({
+	                						html: rawVvalue
+	                					});
+	                				}
+	                			}
+	                		}
+	                	}
+	                },
+	                afterOnCellMouseOut: function(event, coords, TD){
+	                	if(pcpDailyReportHelper!=null&&pcpDailyReportHelper.hot!=''&&pcpDailyReportHelper.hot!=undefined && pcpDailyReportHelper.hot.getDataAtCell!=undefined){
+	                		var value=pcpDailyReportHelper.sourceData[coords.row][coords.col];
+	                		if(coords.row>=pcpDailyReportHelper.templateData.header.length){
+//	                			TD.outerHTML='<td class="htDimmed">'+TD.innerText+'</td>';
+	                		}
+	                	}
 	                },
 	                afterChange: function (changes, source) {
 	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue

@@ -499,21 +499,40 @@ var RPCDailyReportHelper = {
 	                    }
 	                    return cellProperties;
 	                },
-	                afterOnCellMouseOver(event, coords, TD){
-//	                	if(rpcDailyReportHelper!=null&&rpcDailyReportHelper.hot!=''&&rpcDailyReportHelper.hot!=undefined && rpcDailyReportHelper.hot.getDataAtCell!=undefined){
-//	                		var value=rpcDailyReportHelper.sourceData[coords.row][coords.col];
-//	                		if(coords.row>=rpcDailyReportHelper.templateData.header.length){
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(rpcDailyReportHelper!=null&&rpcDailyReportHelper.hot!=''&&rpcDailyReportHelper.hot!=undefined && rpcDailyReportHelper.hot.getDataAtCell!=undefined){
+	                		var rawVvalue=rpcDailyReportHelper.sourceData[coords.row][coords.col];
+	                		if(coords.row>=rpcDailyReportHelper.templateData.header.length){
+//	                			TD.outerHTML='<span data-qtip="'+value+'" data-dismissDelay=10000>'+TD.innerText+'</span>';
 //	                			alert(value);
-//	                		}
-//	                	}
+	                			if(isNotVal(rawVvalue)){
+	                				if(!isNotVal(TD.tip)){
+	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+			                			    target: event.target,
+			                			    html: rawVvalue,
+			                			    listeners: {
+			                			    	hide: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	},
+			                                	close: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	}
+			                                }
+			                			});
+	                				}else{
+	                					TD.tip.setHtml(rawVvalue);
+	                				}
+	                			}
+	                		}
+	                	}
 	                },
-	                afterOnCellMouseOut(event, coords, TD){
-//	                	if(rpcDailyReportHelper!=null&&rpcDailyReportHelper.hot!=''&&rpcDailyReportHelper.hot!=undefined && rpcDailyReportHelper.hot.getDataAtCell!=undefined){
-//	                		var value=rpcDailyReportHelper.sourceData[coords.row][coords.col];
-//	                		if(coords.row>=rpcDailyReportHelper.templateData.header.length){
-//	                			alert(value);
-//	                		}
-//	                	}
+	                afterOnCellMouseOut: function(event, coords, TD){
+	                	if(rpcDailyReportHelper!=null&&rpcDailyReportHelper.hot!=''&&rpcDailyReportHelper.hot!=undefined && rpcDailyReportHelper.hot.getDataAtCell!=undefined){
+	                		var value=rpcDailyReportHelper.sourceData[coords.row][coords.col];
+	                		if(coords.row>=rpcDailyReportHelper.templateData.header.length){
+//	                			TD.outerHTML='<td class="htDimmed">'+TD.innerText+'</td>';
+	                		}
+	                	}
 	                },
 	                afterChange: function (changes, source) {
 	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue

@@ -12,7 +12,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["抽油机井生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["抽油机井wellNameLabel生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -105,6 +105,118 @@
             "endRow": 999999999,
             "endColumn": 24
         }]
+    },{
+        "deviceType": 0,
+        "templateCode": "CBMWell_heichao",
+        "templateName": "煤层气井排采数据表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title": ["wellNameLabel井排采数据总表", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "",
+                "backgroundColor": "",
+                "textAlign": "center"
+            },
+            "title": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["日期", "当日生产时间/h", "工作制度", "", "动液面（m）", "日 产 量", "", "压 力（Mpa）", "", "累计产量", "", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["", "", "冲次", "冲程", "", "气(方）", "水(方）", "井底压力", "套压", "气 (方)", "水 (方)", ""]
+        }],
+        "fixedRowsTop": 4,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths": [80, 80,80,80,80,80,80,80,80,80,80,1000],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 12
+        },{
+            "row": 1,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 12
+        }, {
+            "row": 2,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 2,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 4,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 5,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 7,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 9,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 11,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 4,
+            "startColumn": 11,
+            "endRow": 999999999,
+            "endColumn": 11
+        },{
+            "startRow": 1,
+            "startColumn": 0,
+            "endRow": 1,
+            "endColumn": 0
+        }]
     }, {
         "deviceType": 1,
         "templateCode": "oilWell_ScrewPump",
@@ -118,7 +230,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["螺杆泵井生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["螺杆泵wellNameLabel井生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",

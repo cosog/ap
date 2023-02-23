@@ -32,6 +32,8 @@ public class ReportTemplate  implements Serializable{
 	    private String color;
 
 	    private String backgroundColor;
+	    
+	    private String textAlign;
 
 	    public void setFontWeight(String fontWeight){
 	        this.fontWeight = fontWeight;
@@ -69,6 +71,12 @@ public class ReportTemplate  implements Serializable{
 	    public String getBackgroundColor(){
 	        return this.backgroundColor;
 	    }
+		public String getTextAlign() {
+			return textAlign;
+		}
+		public void setTextAlign(String textAlign) {
+			this.textAlign = textAlign;
+		}
 	}
 	
 	public static class Header implements Serializable

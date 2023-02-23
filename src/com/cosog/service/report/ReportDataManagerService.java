@@ -866,9 +866,52 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int columnCount=0;
 			if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
 				columnCount=template.getHeader().get(0).getTitle().size();
+				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
+					String header=template.getHeader().get(0).getTitle().get(i);
+					if(StringManagerUtils.isNotNull(header)){
+						template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+					}
+				}
+			}
+			if(template.getHeader().size()>0){
+				String labelInfoStr="";
+				String[] labelInfoArr=null;
+				String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+						+ " where t.wellid="+wellId+" "
+						+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+				List<?> labelInfoList = this.findCallSql(labelInfoSql);
+				if(labelInfoList.size()>0){
+					labelInfoStr=labelInfoList.get(0).toString();
+					if(StringManagerUtils.isNotNull(labelInfoStr)){
+						labelInfoArr=labelInfoStr.split(",");
+					}
+				}
+				if(labelInfoArr!=null && labelInfoArr.length>0){
+					for(int i=0;i<labelInfoArr.length;i++){
+						if("label".equals(labelInfoArr[i])){
+							labelInfoArr[i]="";
+						}
+						for(int j=0;j<template.getHeader().size();j++){
+							boolean exit=false;
+							if(template.getHeader().get(j).getTitle()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
+										exit=true;
+										break;
+									}
+								}
+							}
+							if(exit){
+								break;
+							}
+						}
+					}
+				}
 			}
 			
-			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template)+",");
+			
+			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
 			List<List<String>> dataList=new ArrayList<>();
 			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
@@ -903,6 +946,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 			sqlBuff.append(" order by t.calDate");
+			
+			
 			
 			List<String> colList=StringManagerUtils.getColumnListFromSql(sqlBuff.toString());
 			
@@ -954,7 +999,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportSingleWellDailyReportData(HttpServletResponse response,String fileName,String title,
+	public boolean exportSingleWellDailyReportData(HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
@@ -962,6 +1007,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Gson gson =new Gson();
 			String reportTemplateCode="";
 			int headerRowCount=0;
+			String title="";
+			String fileName="";	
 			String deviceTableName="tbl_rpcdevice";
 			String tableName="VIW_RPCDAILYCALCULATIONDATA";
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -982,7 +1029,56 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				headerRowCount=template.getHeader().size();
 				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
 					columnCount=template.getHeader().get(0).getTitle().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
+						String header=template.getHeader().get(0).getTitle().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							title=header.replaceAll("wellNameLabel", wellName);
+							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+						}
+					}
 				}
+				
+				if(template.getHeader().size()>0){
+					String labelInfoStr="";
+					String[] labelInfoArr=null;
+					String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+							+ " where t.wellid="+wellId+" "
+							+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+					List<?> labelInfoList = this.findCallSql(labelInfoSql);
+					if(labelInfoList.size()>0){
+						labelInfoStr=labelInfoList.get(0).toString();
+						if(StringManagerUtils.isNotNull(labelInfoStr)){
+							labelInfoArr=labelInfoStr.split(",");
+						}
+					}
+					if(labelInfoArr!=null && labelInfoArr.length>0){
+						for(int i=0;i<labelInfoArr.length;i++){
+							if("label".equals(labelInfoArr[i])){
+								labelInfoArr[i]="";
+							}
+							for(int j=0;j<template.getHeader().size();j++){
+								boolean exit=false;
+								if(template.getHeader().get(j).getTitle()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+										if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
+									}
+								}
+								if(exit){
+									break;
+								}
+							}
+						}
+					}
+				}
+				
+				fileName+=title+"-"+startDate;
+		        if(!startDate.equalsIgnoreCase(endDate)){
+		        	fileName+="~"+endDate;
+		        }
 				
 				List<List<String>> dataList=new ArrayList<>();
 				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
@@ -1314,7 +1410,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public int saveDailyReportData(String deviceType,String data) {
+	public int saveDailyReportData(String wellId,String wellName,String deviceType,String data) {
 		int result=0;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1328,16 +1424,56 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			String updateSql="";
 			for(int i=0;i<cellEditData.getContentUpdateList().size();i++){
-				String updateValue=cellEditData.getContentUpdateList().get(i).getNewValue();
-				if( !StringManagerUtils.isNum(updateValue) && !StringManagerUtils.isNumber(updateValue) ){
-					updateValue="'"+updateValue+"'";
-				}
-				updateSql="update "+tableName+" t set t."+cellEditData.getContentUpdateList().get(i).getColumn()+"="+updateValue+" where t.id="+cellEditData.getContentUpdateList().get(i).getRecordId();
 				try {
-					result+=this.getBaseDao().updateOrDeleteBySql(updateSql);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
+					if(StringManagerUtils.isNotNull(cellEditData.getContentUpdateList().get(i).getColumn())){
+						String updateValue=cellEditData.getContentUpdateList().get(i).getNewValue();
+						if(!cellEditData.getContentUpdateList().get(i).getHeader()){
+							if( !StringManagerUtils.isNum(updateValue) && !StringManagerUtils.isNumber(updateValue) ){
+								updateValue="'"+updateValue+"'";
+							}
+							updateSql="update "+tableName+" t set t."+cellEditData.getContentUpdateList().get(i).getColumn()+"="+updateValue+" where t.id="+cellEditData.getContentUpdateList().get(i).getRecordId();
+						}else{
+							updateValue=updateValue.replaceAll(" ", " ").replaceAll("：", ":");
+							List<String> updateValueList=new ArrayList<>();
+							String[] arr = new String[updateValue.length()];
+							StringBuffer updateValueBuff = new StringBuffer();
+							StringBuffer labelBuff = new StringBuffer();
+							for (int j = 0; j < updateValue.length(); j++) {
+						        arr[j] = String.valueOf(updateValue.charAt(j));
+						    }
+							for (int j = 0; j < arr.length; j++) {
+								if(!" ".equals(arr[j])){
+									updateValueList.add(arr[j]);
+								}else{
+									if(updateValueList.size()>1 && ( !" ".equals(updateValueList.get(updateValueList.size()-1)) ) && ( !":".equals(updateValueList.get(updateValueList.size()-1)) )){
+										updateValueList.add(arr[j]);
+									}
+								}
+							}
+							for(int j=0;j<updateValueList.size();j++){
+								updateValueBuff.append(updateValueList.get(j));
+							}
+							String[] labelArr=updateValueBuff.toString().split(" ");
+							for(int j=0;j<labelArr.length;j++){
+								String[] everyLabelArr=labelArr[j].split(":");
+								if(everyLabelArr.length==2){
+									labelBuff.append(everyLabelArr[1]+",");
+								}else{
+									labelBuff.append(",");
+								}
+							}
+							if(labelBuff.toString().endsWith(",")){
+								labelBuff.deleteCharAt(labelBuff.length() - 1);
+							}
+							updateSql="update "+tableName+" t set t.headerlabelinfo='"+labelBuff.toString()+"' where t.wellid="+wellId+" and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.wellid=t.wellid )";
+						}
+						if(StringManagerUtils.isNotNull(updateSql)){
+							result+=this.getBaseDao().updateOrDeleteBySql(updateSql);
+						}
+					}
+				} catch (Exception e) {
 					e.printStackTrace();
+					continue;
 				}
 			}
 		}

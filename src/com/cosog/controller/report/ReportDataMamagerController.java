@@ -237,7 +237,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(response,fileName,title,pager, orgId,deviceType, wellId, wellName, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(response,pager, orgId,deviceType, wellId, wellName, startDate,endDate,user.getUserNo());
 		return null;
 	}
 	
@@ -342,9 +342,11 @@ public class ReportDataMamagerController extends BaseController {
 		String json = "{success:false}";
 		HttpSession session=request.getSession();
 		String data = ParamUtils.getParameter(request, "data");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		int result = reportDataManagerService.saveDailyReportData(deviceType,data);
+		int result = reportDataManagerService.saveDailyReportData(wellId,wellName,deviceType,data);
 		json = "{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

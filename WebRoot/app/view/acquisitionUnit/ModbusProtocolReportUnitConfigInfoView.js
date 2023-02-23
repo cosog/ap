@@ -205,6 +205,9 @@ var ReportTemplateHandsontableHelper = {
 		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor)){
 		        					td.style.backgroundColor = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor;
 		        				}
+		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign)){
+		        					td.style.textAlign = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign;
+		        				}
 		        			}
 		        			break;
 		        		}

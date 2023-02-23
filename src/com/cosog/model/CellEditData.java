@@ -23,6 +23,7 @@ public class CellEditData {
 		private String recordId;
 		private String oldValue;
 		private String newValue;
+		private boolean header;
 		public int getEditRow() {
 			return editRow;
 		}
@@ -58,6 +59,12 @@ public class CellEditData {
 		}
 		public void setNewValue(String newValue) {
 			this.newValue = newValue;
+		}
+		public boolean getHeader() {
+			return header;
+		}
+		public void setHeader(boolean header) {
+			this.header = header;
 		}
 	}
 }

@@ -3167,7 +3167,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(name.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateName()) 
 						&& code.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateCode()) ){
 					Gson gson=new Gson();
-					result=gson.toJson(reportTemplate.getReportTemplate().get(i));
+					result=gson.toJson(reportTemplate.getReportTemplate().get(i)).replaceAll("wellNameLabel", "lable").replaceAll("lable", "***");
 					break;
 				}
 			}

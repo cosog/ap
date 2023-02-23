@@ -351,8 +351,22 @@ var RPCDailyReportHelper = {
 		        }
 	        	for(var i=rpcDailyReportHelper.templateData.header.length;i<rpcDailyReportHelper.data.length;i++){
 	        		for(var j=0;j<rpcDailyReportHelper.data[i].length;j++){
+	        			
+	        			var editable=false
+	        			
+	        			for(var k=0;k<rpcDailyReportHelper.templateData.editable.length;k++){
+	        				if( i>=rpcDailyReportHelper.templateData.editable[k].startRow 
+	                				&& i<=rpcDailyReportHelper.templateData.editable[k].endRow
+	                				&& j>=rpcDailyReportHelper.templateData.editable[k].startColumn 
+	                				&& j<=rpcDailyReportHelper.templateData.editable[k].endColumn
+	                		){
+	        					editable=true;
+	        					break;
+	                		}
+	        			}
+	        			
 	        			var value=rpcDailyReportHelper.data[i][j];
-		                if(value.length>12){
+		                if((!editable)&&value.length>12){
 		                	value=value.substring(0, 11)+"...";
 		                	rpcDailyReportHelper.data[i][j]=value;
 		                }
@@ -383,6 +397,9 @@ var RPCDailyReportHelper = {
 		        				}
 		        				if(isNotVal(rpcDailyReportHelper.templateData.header[i].tdStyle.backgroundColor)){
 		        					td.style.backgroundColor = rpcDailyReportHelper.templateData.header[i].tdStyle.backgroundColor;
+		        				}
+		        				if(isNotVal(rpcDailyReportHelper.templateData.header[i].tdStyle.textAlign)){
+		        					td.style.textAlign = rpcDailyReportHelper.templateData.header[i].tdStyle.textAlign;
 		        				}
 		        			}
 		        			break;
@@ -553,6 +570,10 @@ var RPCDailyReportHelper = {
 	                            editCellInfo.recordId=rowdata[rowdata.length-1]
 	                            editCellInfo.oldValue=changes[i][2];
 	                            editCellInfo.newValue=changes[i][3];
+	                            editCellInfo.header=false;
+	                            if(editCellInfo.editRow<rpcDailyReportHelper.templateData.header.length){
+	                            	editCellInfo.header=true;
+	                            }
 	                            
 	                            var isExit=false;
 	                            for(var j=0;j<rpcDailyReportHelper.contentUpdateList.length;j++){
@@ -633,6 +654,13 @@ var RPCDailyReportHelper = {
 	        rpcDailyReportHelper.saveData = function () {
 	        	if(rpcDailyReportHelper.contentUpdateList.length>0){
 	        		rpcDailyReportHelper.editData.contentUpdateList=rpcDailyReportHelper.contentUpdateList;
+	        		var wellName='';
+	        	    var wellId=0;
+	        	    var selectRow= Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").getValue();
+	        	    if(selectRow>=0){
+	        	    	wellName=Ext.getCmp("RPCDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+	        	    	wellId=Ext.getCmp("RPCDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+	        	    }
 //	        		alert(JSON.stringify(rpcDailyReportHelper.editData));
 	        		Ext.Ajax.request({
 	                    method: 'POST',
@@ -652,6 +680,8 @@ var RPCDailyReportHelper = {
 	                        Ext.MessageBox.alert("信息", "请求失败");
 	                    },
 	                    params: {
+	                    	wellId:wellId,
+	                    	wellName:wellName,
 	                    	data: JSON.stringify(rpcDailyReportHelper.editData),
 	                        deviceType: 0
 	                    }

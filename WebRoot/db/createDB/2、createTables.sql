@@ -1221,7 +1221,16 @@ create table TBL_RPCDAILYCALCULATIONDATA
   volumewatercut             NUMBER(8,2),
   weightwatercut             NUMBER(8,2),
   resultstring               CLOB,
-  extendeddays               NUMBER(5)
+  extendeddays               NUMBER(5),
+  tubingpressure                 NUMBER(8,2),
+  casingpressure                 NUMBER(8,2),
+  welldownpressure               NUMBER(8,2),
+  producingfluidlevel            NUMBER(8,2),
+  gasvolumetricproduction        NUMBER(8,2),
+  totalgasvolumetricproduction   NUMBER(8,2),
+  totalwatervolumetricproduction NUMBER(8,2),
+  headerlabelinfo                VARCHAR2(4000),
+  remark                         VARCHAR2(4000)
 )
 tablespace AP_DATA
   storage
@@ -1562,7 +1571,16 @@ create table TBL_PCPDAILYCALCULATIONDATA
   todaykwatth                NUMBER(13,4),
   volumewatercut             NUMBER(8,2),
   weightwatercut             NUMBER(8,2),
-  extendeddays               NUMBER(5)
+  extendeddays               NUMBER(5),
+  tubingpressure                 NUMBER(8,2),
+  casingpressure                 NUMBER(8,2),
+  welldownpressure               NUMBER(8,2),
+  producingfluidlevel            NUMBER(8,2),
+  gasvolumetricproduction        NUMBER(8,2),
+  totalgasvolumetricproduction   NUMBER(8,2),
+  totalwatervolumetricproduction NUMBER(8,2),
+  headerlabelinfo                VARCHAR2(4000),
+  remark                         VARCHAR2(4000)
 )
 tablespace AP_DATA
   storage

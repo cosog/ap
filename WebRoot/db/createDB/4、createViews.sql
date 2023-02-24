@@ -157,7 +157,10 @@ select
  t.iDegreeBalance,
  t.wattDegreeBalance,
  t.deltaradius*100 as deltaradius,
- well.sortnum,org.org_code,org.org_id,null as remark
+ t.tubingpressure,t.casingpressure,t.welldownpressure,t.producingfluidlevel,
+ t.gasvolumetricproduction,t.totalgasvolumetricproduction,t.totalwatervolumetricproduction,
+ t.headerLabelInfo,
+ well.sortnum,org.org_code,org.org_id,t.remark as remark
 from
 tbl_rpcdevice well
 left outer join  tbl_org org  on well.orgid=org.org_id
@@ -248,7 +251,10 @@ select
  t.pumpeff*100 as pumpeff,t.pumpeff1*100 as pumpeff1,t.pumpeff2*100 as pumpeff2,
  t.systemefficiency*100 as systemEfficiency,t.energyper100mlift,
  t.todayKWattH,
- well.sortnum,org.org_code,org.org_id,null as remark
+ t.tubingpressure,t.casingpressure,t.welldownpressure,t.producingfluidlevel,
+ t.gasvolumetricproduction,t.totalgasvolumetricproduction,t.totalwatervolumetricproduction,
+ t.headerLabelInfo,
+ well.sortnum,org.org_code,org.org_id,t.remark as remark
 from
 tbl_pcpdevice well
 left outer join  tbl_org org  on well.orgid=org.org_id

@@ -169,6 +169,11 @@ public class CalculateUtils {
 		List<Float> systemEfficiencyList=new ArrayList<Float>();
 		List<Float> energyPer100mLiftList=new ArrayList<Float>();
 		
+		List<Float> producingfluidLevelList=new ArrayList<Float>();
+		List<Float> tubingPressureList=new ArrayList<Float>();
+		List<Float> casingPressureList=new ArrayList<Float>();
+		List<Float> wellDownPressureList=new ArrayList<Float>();
+		
 		for(RPCCalculateResponseData responseData:deviceTodayData.getRPCCalculateList()){
 			if(responseData.getFESDiagram().getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
 				acqTimeList.add(responseData.getFESDiagram().getAcqTime());
@@ -203,6 +208,11 @@ public class CalculateUtils {
 				oilWeightProductionList.add(responseData.getProduction().getOilWeightProduction());
 				waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
 				weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
+				
+				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
+				tubingPressureList.add(responseData.getProduction().getTubingPressure());
+				casingPressureList.add(responseData.getProduction().getCasingPressure());
+				wellDownPressureList.add((float) 0);
 				
 				pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
 				pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
@@ -260,7 +270,11 @@ public class CalculateUtils {
 			dataSbf.append("\"PumpEff4\":["+StringUtils.join(pumpEff4List, ",")+"],");
 			dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
 			dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
-			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"]");
+			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
+			dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+			dataSbf.append("\"WellDownPressure\":["+StringUtils.join(wellDownPressureList, ",")+"]");
 			dataSbf.append("}");
 			if("d1e3643c110d11d4".equalsIgnoreCase(deviceInfo.getSignInId())){
 				System.out.println("d1e3643c110d11d4汇总数据长度："+dataSbf.length());
@@ -301,6 +315,11 @@ public class CalculateUtils {
 		List<Float> systemEfficiencyList=new ArrayList<Float>();
 		List<Float> energyPer100mLiftList=new ArrayList<Float>();
 		
+		List<Float> producingfluidLevelList=new ArrayList<Float>();
+		List<Float> tubingPressureList=new ArrayList<Float>();
+		List<Float> casingPressureList=new ArrayList<Float>();
+		List<Float> wellDownPressureList=new ArrayList<Float>();
+		
 		for(PCPCalculateResponseData responseData:deviceTodayData.getPCPCalculateList()){
 			if(responseData.getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
 				acqTimeList.add(responseData.getAcqTime());
@@ -319,6 +338,11 @@ public class CalculateUtils {
 				oilWeightProductionList.add(responseData.getProduction().getOilWeightProduction());
 				waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
 				weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
+				
+				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
+				tubingPressureList.add(responseData.getProduction().getTubingPressure());
+				casingPressureList.add(responseData.getProduction().getCasingPressure());
+				wellDownPressureList.add((float) 0);
 				
 				pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
 				pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
@@ -356,7 +380,11 @@ public class CalculateUtils {
 		dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 		dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
 		dataSbf.append("\"PumpEff1\":["+StringUtils.join(pumpEff1List, ",")+"],");
-		dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"]");
+		dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
+		dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+		dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+		dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+		dataSbf.append("\"WellDownPressure\":["+StringUtils.join(wellDownPressureList, ",")+"]");
 		dataSbf.append("}");
 		
 		return dataSbf.toString();

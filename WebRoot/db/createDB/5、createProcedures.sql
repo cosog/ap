@@ -1211,6 +1211,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
   v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
   v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
+  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_wellDownPressure in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_rpcdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
@@ -1235,6 +1236,7 @@ begin
     t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
     t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
     t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
+    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure,
     t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
     where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
@@ -1251,6 +1253,7 @@ begin
     pumpeff,pumpeff1,pumpeff2,pumpeff3,pumpeff4,
     welldownsystemefficiency,surfacesystemefficiency,systemefficiency,energyper100mlift,
     idegreebalance,wattdegreebalance,deltaradius,
+    producingfluidlevel,casingpressure,tubingpressure,welldownpressure,
     commstatus,commtime,commtimeefficiency,commrange,
     runstatus,runtime,runtimeefficiency,runrange
     )values(
@@ -1263,6 +1266,7 @@ begin
     v_pumpEff,v_pumpEff1,v_pumpEff2,v_pumpEff3,v_pumpEff4,
     v_wellDownSystemEfficiency,v_surfaceSystemEfficiency,v_systemEfficiency,v_energyper100mlift,
     v_iDegreeBalance,v_wattDegreeBalance,v_DeltaRadius,
+    v_producingfluidLevel,v_casingPressure,v_tubingPressure,v_wellDownPressure,
     v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
     v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
     );
@@ -1288,7 +1292,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdailyrecal (
   v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
   v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
-  v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number
+  v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
+  v_producingfluidLevel in number,v_tubingPressure in number,v_casingPressure in number,v_wellDownPressure in number
   ) is
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
@@ -1304,7 +1309,8 @@ begin
     t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
     t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
     t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-    t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius
+    t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
+    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure
     where t.id=v_recordId ;
     commit;
     p_msg := '更新成功';
@@ -1417,6 +1423,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdaily (
   v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
   v_systemEfficiency in number,v_energyper100mlift in number,
+  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_wellDownPressure in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_pcpdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
@@ -1439,6 +1446,7 @@ begin
     t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
     t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
     t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure,
     t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
     where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
@@ -1453,6 +1461,7 @@ begin
     liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
     pumpeff,pumpeff1,pumpeff2,
     systemefficiency,energyper100mlift,
+    producingfluidlevel,casingpressure,tubingpressure,welldownpressure,
     commstatus,commtime,commtimeefficiency,commrange,
     runstatus,runtime,runtimeefficiency,runrange
     )values(
@@ -1463,6 +1472,7 @@ begin
     v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
     v_pumpEff,v_pumpEff1,v_pumpEff2,
     v_systemEfficiency,v_energyper100mlift,
+    v_producingfluidLevel,v_casingPressure,v_tubingPressure,v_wellDownPressure,
     v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
     v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
     );
@@ -1485,7 +1495,8 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdailyrecal (
   v_liquidVolumetricProduction in number,v_oilVolumetricProduction in number,v_waterVolumetricProduction in number,v_volumewatercut in number,
   v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
-  v_systemEfficiency in number,v_energyper100mlift in number
+  v_systemEfficiency in number,v_energyper100mlift in number,
+  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_wellDownPressure in number
   ) is
   p_msg varchar2(3000) := 'error';
 begin
@@ -1498,7 +1509,8 @@ begin
     t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
     t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
     t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
-    t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift
+    t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure
     where t.id=v_recordId ;
     commit;
     p_msg := '更新成功';
@@ -1835,10 +1847,24 @@ begin
     select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_rpcdevice well
     where well.id not in ( select t2.wellid from tbl_rpcdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
     commit;
+    
+    update tbl_rpcdailycalculationdata t set t.headerlabelinfo=
+    ( select t2.headerlabelinfo from  tbl_rpcdailycalculationdata t2 
+    where t2.wellid=t.wellid and t2.caldate=
+    ( select max(t3.caldate) from tbl_rpcdailycalculationdata t3 where t3.wellid=t2.wellid and t3.headerlabelinfo is not null ))
+    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd');
+    commit;
 
     insert into tbl_pcpdailycalculationdata (wellid,caldate)
     select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_pcpdevice well
     where well.id not in ( select t2.wellid from tbl_pcpdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    commit;
+    
+    update tbl_pcpdailycalculationdata t set t.headerlabelinfo=
+    ( select t2.headerlabelinfo from  tbl_pcpdailycalculationdata t2 
+    where t2.wellid=t.wellid and t2.caldate=
+    ( select max(t3.caldate) from tbl_pcpdailycalculationdata t3 where t3.wellid=t2.wellid and t3.headerlabelinfo is not null ))
+    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd');
     commit;
 
 end prd_init_device_daily;

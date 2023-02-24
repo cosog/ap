@@ -1843,7 +1843,16 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcTotalCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),40, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),41, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2)));
+			
+			jedis.zadd("rpcTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","kW·h",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","kW·h",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("井底压力","WellDownPressure","kW·h",2)));
+			
+			jedis.zadd("rpcTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1)));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

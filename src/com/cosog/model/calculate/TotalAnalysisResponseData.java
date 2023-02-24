@@ -16,6 +16,7 @@ public class TotalAnalysisResponseData {
     private int StartReason;
     private Item TubingPressure;
     private Item CasingPressure;
+    private Item WellDownPressure;
     private Item WellHeadFluidTemperature;
     private Item ProductionGasOilRatio;
     private int ResultCode;
@@ -1092,6 +1093,14 @@ public class TotalAnalysisResponseData {
 
 	public void setResultString(String resultString) {
 		ResultString = resultString;
+	}
+
+	public Item getWellDownPressure() {
+		return WellDownPressure;
+	}
+
+	public void setWellDownPressure(Item wellDownPressure) {
+		WellDownPressure = wellDownPressure;
 	}
 
 	

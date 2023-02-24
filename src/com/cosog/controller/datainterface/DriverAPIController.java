@@ -1381,6 +1381,7 @@ public class DriverAPIController extends BaseController{
 					TimeEffResponseData timeEffResponseData=null;
 					EnergyCalculateResponseData energyCalculateResponseData=null;
 					TotalAnalysisResponseData totalAnalysisResponseData=null;
+					String totalRequestData="";
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false;
 					int runStatus=0;
@@ -1781,6 +1782,9 @@ public class DriverAPIController extends BaseController{
 								responseResultData.getProduction().setOilWeightProduction(rpcCalculateResponseData.getProduction().getOilWeightProduction());
 								responseResultData.getProduction().setWaterWeightProduction(rpcCalculateResponseData.getProduction().getWaterWeightProduction());
 								responseResultData.getProduction().setWaterCut(rpcCalculateResponseData.getProduction().getWaterCut());
+								responseResultData.getProduction().setProducingfluidLevel(rpcCalculateResponseData.getProduction().getProducingfluidLevel());
+								responseResultData.getProduction().setTubingPressure(rpcCalculateResponseData.getProduction().getTubingPressure());
+								responseResultData.getProduction().setCasingPressure(rpcCalculateResponseData.getProduction().getCasingPressure());
 								if(rpcCalculateRequestData.getProduction()!=null){
 									responseResultData.getProduction().setWeightWaterCut(rpcCalculateRequestData.getProduction().getWeightWaterCut());
 								}
@@ -1922,7 +1926,7 @@ public class DriverAPIController extends BaseController{
 					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1 && deviceTodayData!=null){
 						//排序
 						Collections.sort(deviceTodayData.getRPCCalculateList());
-						String totalRequestData=CalculateUtils.getFESDiagramTotalRequestData(date, rpcDeviceInfo,deviceTodayData);
+						totalRequestData=CalculateUtils.getFESDiagramTotalRequestData(date, rpcDeviceInfo,deviceTodayData);
 						totalAnalysisResponseData=CalculateUtils.totalCalculate(totalRequestData);
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量",totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+"",totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+"","","liquidVolumetricProduction_l","","","","m^3/d",1));
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量",totalAnalysisResponseData.getLiquidWeightProduction().getValue()+"",totalAnalysisResponseData.getLiquidWeightProduction().getValue()+"","","liquidWeightProduction_l","","","","t/d",1));
@@ -2123,12 +2127,29 @@ public class DriverAPIController extends BaseController{
 					
 					//如果满足单组入库间隔或者有报警，保存数据
 					if(save || alarm){
+						if(FESDiagramCalculate){
+							commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(rpcDeviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
+						}
+						
+						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
+							commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(rpcDeviceInfo,totalAnalysisResponseData,date);
+//							if(rpcDeviceInfo.getId()==25){
+//								System.out.println("汇总请求数据"+totalRequestData);
+//								System.out.println("汇总响应数据"+gson.toJson(totalAnalysisResponseData));
+//							}
+						}else{
+							
+						}
+						
 						String saveRawDataSql="insert into "+rawDataTable+"(wellid,acqtime,rawdata)values("+rpcDeviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
 						rpcDeviceInfo.setSaveTime(acqTime);
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(saveRawDataSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
+//						if(rpcDeviceInfo.getId()==45){
+//							System.out.println("汇总表更新"+updateTotalDataSql);
+//						}
 						
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							List<String> clobCont=new ArrayList<String>();
@@ -2149,15 +2170,7 @@ public class DriverAPIController extends BaseController{
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}
-						if(FESDiagramCalculate){
-							commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(rpcDeviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
-						}
 						
-						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-							commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(rpcDeviceInfo,totalAnalysisResponseData,date);
-						}else{
-							
-						}
 						//报警项
 						if(alarm){
 							calculateDataService.saveAndSendAlarmInfo(rpcDeviceInfo.getId(),rpcDeviceInfo.getWellName(),rpcDeviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
@@ -2870,7 +2883,14 @@ public class DriverAPIController extends BaseController{
 								responseResultData.getProduction().setOilWeightProduction(pcpCalculateResponseData.getProduction().getOilWeightProduction());
 								responseResultData.getProduction().setWaterWeightProduction(pcpCalculateResponseData.getProduction().getWaterWeightProduction());
 								responseResultData.getProduction().setWaterCut(pcpCalculateResponseData.getProduction().getWaterCut());
-								responseResultData.getProduction().setWeightWaterCut(pcpCalculateResponseData.getProduction().getWeightWaterCut());
+								
+								responseResultData.getProduction().setProducingfluidLevel(pcpCalculateResponseData.getProduction().getProducingfluidLevel());
+								responseResultData.getProduction().setTubingPressure(pcpCalculateResponseData.getProduction().getTubingPressure());
+								responseResultData.getProduction().setCasingPressure(pcpCalculateResponseData.getProduction().getCasingPressure());
+								
+								if(pcpCalculateRequestData.getProduction()!=null){
+									responseResultData.getProduction().setWeightWaterCut(pcpCalculateRequestData.getProduction().getWeightWaterCut());
+								}
 							}
 							
 							if(responseResultData.getSystemEfficiency()!=null && pcpCalculateResponseData.getSystemEfficiency()!=null){

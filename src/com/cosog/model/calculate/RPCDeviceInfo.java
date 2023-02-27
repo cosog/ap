@@ -93,6 +93,18 @@ public class RPCDeviceInfo implements Serializable {
 	
 	private float todayKWattH;
 	
+	private String totalGasAcqTime;
+	
+	private float gasVolumetricProduction;
+	
+	private float totalGasVolumetricProduction;
+	
+	private String totalWaterAcqTime;
+	
+	private float waterVolumetricProduction;
+	
+	private float totalWaterVolumetricProduction;
+	
 	private Integer resultCode;
 	
 	private Integer resultStatus;
@@ -548,6 +560,54 @@ public class RPCDeviceInfo implements Serializable {
 
 	public void setKWattHAcqTime(String kWattHAcqTime) {
 		KWattHAcqTime = kWattHAcqTime;
+	}
+
+	public String getTotalGasAcqTime() {
+		return totalGasAcqTime;
+	}
+
+	public void setTotalGasAcqTime(String totalGasAcqTime) {
+		this.totalGasAcqTime = totalGasAcqTime;
+	}
+
+	public float getGasVolumetricProduction() {
+		return gasVolumetricProduction;
+	}
+
+	public void setGasVolumetricProduction(float gasVolumetricProduction) {
+		this.gasVolumetricProduction = gasVolumetricProduction;
+	}
+
+	public float getTotalGasVolumetricProduction() {
+		return totalGasVolumetricProduction;
+	}
+
+	public void setTotalGasVolumetricProduction(float totalGasVolumetricProduction) {
+		this.totalGasVolumetricProduction = totalGasVolumetricProduction;
+	}
+
+	public String getTotalWaterAcqTime() {
+		return totalWaterAcqTime;
+	}
+
+	public void setTotalWaterAcqTime(String totalWaterAcqTime) {
+		this.totalWaterAcqTime = totalWaterAcqTime;
+	}
+
+	public float getWaterVolumetricProduction() {
+		return waterVolumetricProduction;
+	}
+
+	public void setWaterVolumetricProduction(float waterVolumetricProduction) {
+		this.waterVolumetricProduction = waterVolumetricProduction;
+	}
+
+	public float getTotalWaterVolumetricProduction() {
+		return totalWaterVolumetricProduction;
+	}
+
+	public void setTotalWaterVolumetricProduction(float totalWaterVolumetricProduction) {
+		this.totalWaterVolumetricProduction = totalWaterVolumetricProduction;
 	}
 
 }

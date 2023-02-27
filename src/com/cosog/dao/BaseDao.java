@@ -3692,7 +3692,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveFESDiagramTotalCalculateData(RPCDeviceInfo rpcDeviceInfo,TotalAnalysisResponseData totalAnalysisResponseData,String date) throws SQLException, ParseException {
+	public Boolean saveFESDiagramTotalCalculateData(RPCDeviceInfo rpcDeviceInfo,TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String date) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -3720,7 +3720,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,"
-					+ "?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?"
@@ -3768,19 +3768,18 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(32, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(33, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(35, totalAnalysisResponseData.getWellDownPressure()!=null?totalAnalysisResponseData.getWellDownPressure().getValue():0);
 			
-			cs.setInt(36,totalAnalysisResponseData.getCommStatus());
-			cs.setFloat(37, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(38, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(39,commRanceClob);
+			cs.setInt(35,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(36, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(37, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(38,commRanceClob);
 			
-			cs.setInt(40,totalAnalysisResponseData.getRunStatus());
-			cs.setFloat(41, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(42, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(43,runRanceClob);
+			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(40, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(41, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(42,runRanceClob);
 			
-			cs.setString(44, date);
+			cs.setString(43, date);
 			
 			cs.executeUpdate();
 		} catch (SQLException e) {
@@ -3822,7 +3821,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,"
-					+ "?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?"
@@ -3870,19 +3869,20 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(32, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(33, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(35, totalAnalysisResponseData.getWellDownPressure()!=null?totalAnalysisResponseData.getWellDownPressure().getValue():0);
 			
-			cs.setInt(36,totalAnalysisResponseData.getCommStatus());
-			cs.setFloat(37, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(38, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(39,commRanceClob);
 			
-			cs.setInt(40,totalAnalysisResponseData.getRunStatus());
-			cs.setFloat(41, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(42, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(43,runRanceClob);
 			
-			cs.setString(44, date);
+			cs.setInt(35,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(36, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(37, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(38,commRanceClob);
+			
+			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(40, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(41, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(42,runRanceClob);
+			
+			cs.setString(43, date);
 			
 			cs.executeUpdate();
 		} catch (SQLException e) {
@@ -3915,7 +3915,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,?,"
-					+ "?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?"
 					+ ")}");
@@ -3962,7 +3962,6 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(32, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(33, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(35, totalAnalysisResponseData.getWellDownPressure()!=null?totalAnalysisResponseData.getWellDownPressure().getValue():0);
 			
 			cs.executeUpdate();
 		} catch (SQLException e) {
@@ -3976,7 +3975,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveRPMTotalCalculateData(PCPDeviceInfo pcpDeviceInfo,TotalAnalysisResponseData totalAnalysisResponseData,String date) throws SQLException, ParseException {
+	public Boolean saveRPMTotalCalculateData(PCPDeviceInfo pcpDeviceInfo,TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String date) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -4000,7 +3999,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,"
-					+ "?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?"
 					+ ")}");
@@ -4033,19 +4032,18 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(19, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(21, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(22, totalAnalysisResponseData.getWellDownPressure()!=null?totalAnalysisResponseData.getWellDownPressure().getValue():0);
 			
-			cs.setInt(23,totalAnalysisResponseData.getCommStatus());
-			cs.setFloat(24, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(25, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(26,commRanceClob);
+			cs.setInt(22,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(23, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(24, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(25,commRanceClob);
 			
-			cs.setInt(27,totalAnalysisResponseData.getRunStatus());
-			cs.setFloat(28, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(29, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(30,runRanceClob);
+			cs.setInt(26,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(27, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(28, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(29,runRanceClob);
 			
-			cs.setString(31, date);
+			cs.setString(30, date);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4083,7 +4081,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,"
-					+ "?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?"
 					+ ")}");
@@ -4116,19 +4114,18 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(19, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(21, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(22, totalAnalysisResponseData.getWellDownPressure()!=null?totalAnalysisResponseData.getWellDownPressure().getValue():0);
 			
-			cs.setInt(23,totalAnalysisResponseData.getCommStatus());
-			cs.setFloat(24, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(25, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(26,commRanceClob);
+			cs.setInt(22,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(23, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(24, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(25,commRanceClob);
 			
-			cs.setInt(27,totalAnalysisResponseData.getRunStatus());
-			cs.setFloat(28, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(29, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(30,runRanceClob);
+			cs.setInt(26,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(27, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(28, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(29,runRanceClob);
 			
-			cs.setString(31, date);
+			cs.setString(30, date);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4154,7 +4151,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
-					+ "?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,?,"
 					+ "?,?"
 					+ ")}");
@@ -4187,7 +4184,6 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(19, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(21, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(22, totalAnalysisResponseData.getWellDownPressure()!=null?totalAnalysisResponseData.getWellDownPressure().getValue():0);
 			
 			cs.executeUpdate();
 		} catch (SQLException e) {

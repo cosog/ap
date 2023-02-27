@@ -564,6 +564,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf = new StringBuffer();
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+deviceId+"\",");
+				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
+				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
 				dataSbf.append("\"OffsetHour\":0,");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -837,6 +839,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf = new StringBuffer();
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+deviceId+"\",");
+				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
+				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
 				dataSbf.append("\"OffsetHour\":0,");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");

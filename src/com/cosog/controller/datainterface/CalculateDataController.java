@@ -165,6 +165,7 @@ public class CalculateDataController extends BaseController{
 		
 		requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
 		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
+			System.out.println("抽油机井隔天汇总请求数据-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+requestDataList.get(i));
 			try {
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();

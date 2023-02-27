@@ -172,7 +172,6 @@ public class CalculateUtils {
 		List<Float> producingfluidLevelList=new ArrayList<Float>();
 		List<Float> tubingPressureList=new ArrayList<Float>();
 		List<Float> casingPressureList=new ArrayList<Float>();
-		List<Float> wellDownPressureList=new ArrayList<Float>();
 		
 		for(RPCCalculateResponseData responseData:deviceTodayData.getRPCCalculateList()){
 			if(responseData.getFESDiagram().getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
@@ -212,7 +211,6 @@ public class CalculateUtils {
 				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
 				tubingPressureList.add(responseData.getProduction().getTubingPressure());
 				casingPressureList.add(responseData.getProduction().getCasingPressure());
-				wellDownPressureList.add((float) 0);
 				
 				pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
 				pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
@@ -237,10 +235,12 @@ public class CalculateUtils {
 			dataSbf.append("\"OffsetHour\":0,");
 			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 			dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
+			dataSbf.append("\"CurrentCommTime\":"+deviceInfo.getCommStatus()+",");
 			dataSbf.append("\"CommTime\":"+deviceInfo.getCommTime()+",");
 			dataSbf.append("\"CommTimeEfficiency\":"+deviceInfo.getCommEff()+",");
 			dataSbf.append("\"CommRange\":\""+deviceInfo.getCommRange()+"\",");
 			dataSbf.append("\"RunStatus\":["+StringUtils.join(runStatusList, ",")+"],");
+			dataSbf.append("\"CurrentRunTime\":"+deviceInfo.getRunStatus()+",");
 			dataSbf.append("\"RunTime\":"+deviceInfo.getRunTime()+",");
 			dataSbf.append("\"RunTimeEfficiency\":"+deviceInfo.getRunEff()+",");
 			dataSbf.append("\"RunRange\":\""+deviceInfo.getRunRange()+"\",");
@@ -273,8 +273,7 @@ public class CalculateUtils {
 			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
 			dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
 			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
-			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
-			dataSbf.append("\"WellDownPressure\":["+StringUtils.join(wellDownPressureList, ",")+"]");
+			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 			dataSbf.append("}");
 			if("d1e3643c110d11d4".equalsIgnoreCase(deviceInfo.getSignInId())){
 				System.out.println("d1e3643c110d11d4汇总数据长度："+dataSbf.length());
@@ -318,7 +317,6 @@ public class CalculateUtils {
 		List<Float> producingfluidLevelList=new ArrayList<Float>();
 		List<Float> tubingPressureList=new ArrayList<Float>();
 		List<Float> casingPressureList=new ArrayList<Float>();
-		List<Float> wellDownPressureList=new ArrayList<Float>();
 		
 		for(PCPCalculateResponseData responseData:deviceTodayData.getPCPCalculateList()){
 			if(responseData.getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
@@ -342,7 +340,6 @@ public class CalculateUtils {
 				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
 				tubingPressureList.add(responseData.getProduction().getTubingPressure());
 				casingPressureList.add(responseData.getProduction().getCasingPressure());
-				wellDownPressureList.add((float) 0);
 				
 				pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
 				pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
@@ -359,10 +356,12 @@ public class CalculateUtils {
 		dataSbf.append("\"OffsetHour\":0,");
 		dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 		dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
+		dataSbf.append("\"CurrentCommTime\":"+deviceInfo.getCommStatus()+",");
 		dataSbf.append("\"CommTime\":"+deviceInfo.getCommTime()+",");
 		dataSbf.append("\"CommTimeEfficiency\":"+deviceInfo.getCommEff()+",");
 		dataSbf.append("\"CommRange\":\""+deviceInfo.getCommRange()+"\",");
 		dataSbf.append("\"RunStatus\":["+StringUtils.join(runStatusList, ",")+"],");
+		dataSbf.append("\"CurrentRunTime\":"+deviceInfo.getRunStatus()+",");
 		dataSbf.append("\"RunTime\":"+deviceInfo.getRunTime()+",");
 		dataSbf.append("\"RunTimeEfficiency\":"+deviceInfo.getRunEff()+",");
 		dataSbf.append("\"RunRange\":\""+deviceInfo.getRunRange()+"\",");
@@ -383,8 +382,7 @@ public class CalculateUtils {
 		dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
 		dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
 		dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
-		dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
-		dataSbf.append("\"WellDownPressure\":["+StringUtils.join(wellDownPressureList, ",")+"]");
+		dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 		dataSbf.append("}");
 		
 		return dataSbf.toString();

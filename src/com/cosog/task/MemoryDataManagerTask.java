@@ -309,6 +309,8 @@ public class MemoryDataManagerTask {
 						+ "t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
 						+ "t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange,"
 						+ "t2.totalkwatth,t2.todaykwatth,"
+						+ "t2.gasvolumetricproduction,t2.totalgasvolumetricproduction,"
+						+ "t2.watervolumetricproduction,t2.totalwatervolumetricproduction,"
 						+ " t2.resultstatus,decode(t2.resultcode,null,0,t2.resultcode) as resultcode"
 						+ " from viw_rpcdevice t"
 						+ " left outer join tbl_rpcacqdata_latest t2 on t2.wellid=t.id "
@@ -425,8 +427,17 @@ public class MemoryDataManagerTask {
 					rpcDeviceInfo.setTotalKWattH(rs.getFloat(46));
 					rpcDeviceInfo.setTodayKWattH(rs.getFloat(47));
 					
-					rpcDeviceInfo.setResultStatus(rs.getInt(48));
-					rpcDeviceInfo.setResultCode(rs.getInt(49));
+					rpcDeviceInfo.setTotalGasAcqTime(rs.getString(37));
+					rpcDeviceInfo.setGasVolumetricProduction(rs.getFloat(48));
+					rpcDeviceInfo.setTotalGasVolumetricProduction(rs.getFloat(49));
+					
+					rpcDeviceInfo.setTotalWaterAcqTime(rs.getString(37));
+					rpcDeviceInfo.setWaterVolumetricProduction(rs.getFloat(50));
+					rpcDeviceInfo.setTotalWaterVolumetricProduction(rs.getFloat(51));
+					
+					
+					rpcDeviceInfo.setResultStatus(rs.getInt(52));
+					rpcDeviceInfo.setResultCode(rs.getInt(53));
 					
 					String key=rpcDeviceInfo.getId()+"";
 					jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));//哈希(Hash)
@@ -692,7 +703,9 @@ public class MemoryDataManagerTask {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ "t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ "t2.totalkwatth,t2.todaykwatth "
+					+ "t2.totalkwatth,t2.todaykwatth,"
+					+ "t2.gasvolumetricproduction,t2.totalgasvolumetricproduction,"
+					+ "t2.watervolumetricproduction,t2.totalwatervolumetricproduction "
 					+ " from viw_pcpdevice t"
 					+ " left outer join tbl_pcpacqdata_latest t2 on t2.wellid=t.id "
 					+ " where 1=1 ";
@@ -779,6 +792,15 @@ public class MemoryDataManagerTask {
 				pcpDeviceInfo.setKWattHAcqTime(rs.getString(25));
 				pcpDeviceInfo.setTotalKWattH(rs.getFloat(34));
 				pcpDeviceInfo.setTodayKWattH(rs.getFloat(35));
+				
+				pcpDeviceInfo.setTotalGasAcqTime(rs.getString(25));
+				pcpDeviceInfo.setGasVolumetricProduction(rs.getFloat(36));
+				pcpDeviceInfo.setTotalGasVolumetricProduction(rs.getFloat(37));
+				
+				pcpDeviceInfo.setTotalWaterAcqTime(rs.getString(25));
+				pcpDeviceInfo.setWaterVolumetricProduction(rs.getFloat(38));
+				pcpDeviceInfo.setTotalWaterVolumetricProduction(rs.getFloat(39));
+				
 				String key=pcpDeviceInfo.getId()+"";
 				jedis.hset("PCPDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(pcpDeviceInfo));//哈希(Hash)
 //				jedis.hset("PCPDeviceCommStatusInfo", pcpDeviceInfo.getCommStatus()+"", key);//哈希(Hash)
@@ -1848,9 +1870,9 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcTotalCalItemList".getBytes(),41, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2)));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","kW·h",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","kW·h",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("井底压力","WellDownPressure","kW·h",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2)));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1)));
 		}catch (Exception e) {
@@ -1904,7 +1926,16 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),27, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),28, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2)));
+			
+			jedis.zadd("pcpTotalCalItemList".getBytes(),29, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),30, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),32, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2)));
+			
+			jedis.zadd("pcpTotalCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1)));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

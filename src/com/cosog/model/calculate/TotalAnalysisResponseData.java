@@ -16,7 +16,8 @@ public class TotalAnalysisResponseData {
     private int StartReason;
     private Item TubingPressure;
     private Item CasingPressure;
-    private Item WellDownPressure;
+    private Item BottomHolePressure;
+    private Item BottomHoleTemperature;
     private Item WellHeadFluidTemperature;
     private Item ProductionGasOilRatio;
     private int ResultCode;
@@ -1095,12 +1096,20 @@ public class TotalAnalysisResponseData {
 		ResultString = resultString;
 	}
 
-	public Item getWellDownPressure() {
-		return WellDownPressure;
+	public Item getBottomHolePressure() {
+		return BottomHolePressure;
 	}
 
-	public void setWellDownPressure(Item wellDownPressure) {
-		WellDownPressure = wellDownPressure;
+	public void setBottomHolePressure(Item bottomHolePressure) {
+		BottomHolePressure = bottomHolePressure;
+	}
+
+	public Item getBottomHoleTemperature() {
+		return BottomHoleTemperature;
+	}
+
+	public void setBottomHoleTemperature(Item bottomHoleTemperature) {
+		BottomHoleTemperature = bottomHoleTemperature;
 	}
 
 	

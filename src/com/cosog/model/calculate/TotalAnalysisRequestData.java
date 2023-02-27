@@ -3,942 +3,1069 @@ package com.cosog.model.calculate;
 import java.util.List;
 
 public class TotalAnalysisRequestData {
-	
 	private String AKString;
 
     private String WellName;
     
-    private String Date;
+    private int CurrentCommStatus;
     
-    private String EndAcqTime;
-
-    private List<EveryTime> EveryTime;
-
-    public void setAKString(String AKString){
-        this.AKString = AKString;
-    }
-    public String getAKString(){
-        return this.AKString;
-    }
-    public void setWellName(String WellName){
-        this.WellName = WellName;
-    }
-    public String getWellName(){
-        return this.WellName;
-    }
-    public void setEveryTime(List<EveryTime> EveryTime){
-        this.EveryTime = EveryTime;
-    }
-    public List<EveryTime> getEveryTime(){
-        return this.EveryTime;
-    }
-	
-	public static class EveryTime
-	{
-		private String AcqTime;
-		private int CommStatus;
-	    private float CommTime;
-	    private float CommTimeEfficiency;
-	    private String CommRange;
-		private int RunStatus;
-	    private float RunTime;
-	    private float RunTimeEfficiency;
-	    private String RunRange;
-	    private int StopReason;
-	    private int StartReason;
-	    private float TubingPressure;
-	    private float CasingPressure;
-	    private float WellHeadFluidTemperature;
-	    private float ProductionGasOilRatio;
-	    private int ResultCode;
-	    private float Stroke;
-	    private float SPM;
-	    private float UpperLoadLine; //理论上载荷线				kN
-	    private float LowerLoadLine; //理论下载荷线				kN
-	    private float UpperLoadLineOfExact; //考虑沉没压力的上载荷线		kN
-	    private float DeltaLoadLine; //理论液柱载荷				kN
-	    private float DeltaLoadLineOfExact; //考虑沉没压力的理论液柱载荷	kN
-	    private float FMax; //最大载荷					kN
-	    private float FMin; //最小载荷					kN
-	    private float DeltaF; //载荷差					kN
-	    private float Area; //功图面积					kN·m
-	    private float PlungerStroke; //柱塞冲程					m
-	    private float AvailablePlungerStroke; //柱塞有效冲程
-	    private float FullnessCoefficient;
-	    private float TheoreticalProduction; //理论排量
-	    private float LiquidVolumetricProduction;
-	    private float OilVolumetricProduction;
-	    private float WaterVolumetricProduction;
-	    private float AvailablePlungerStrokeVolumetricProduction; //柱塞有效冲程计算产量		m^3/d
-	    private float PumpClearanceLeakVolumetricProduction; //泵间隙漏失量				m^3/d
-	    private float TVLeakVolumetricProduction; //游动凡尔漏失量			m^3/d
-	    private float SVLeakVolumetricProduction; //固定凡尔漏失量			m^3/d
-	    private float GasInfluenceVolumetricProduction; //气影响					m^3/d
-	    private float LiquidWeightProduction;
-	    private float OilWeightProduction;
-	    private float WaterWeightProduction;
-	    private float AvailablePlungerStrokeWeightProduction; //柱塞有效冲程计算产量		t/d
-	    private float PumpClearanceLeakWeightProduction; //泵间隙漏失量				t/d
-	    private float TVLeakWeightProduction; //游动凡尔漏失量			t/d
-	    private float SVLeakWeightProduction; //固定凡尔漏失量			t/d
-	    private float GasInfluenceWeightProduction; //气影响					t/d
-	    private float VolumeWaterCut;
-	    private float WeightWaterCut;
-	    private float PumpEff;
-	    private float PumpEff1; //冲程损失系数				小数
-	    private float RodFlexLength; //抽油杆伸长量				m
-	    private float TubingFlexLength; //计算油管伸缩值			m
-	    private float InertiaLength; //惯性载荷下冲程增量			m
-	    private float PumpEff2; //充满系数					小数
-	    private float PumpEff3; //间隙漏失系数				小数
-	    private float PumpEff4; //液体收缩系数				小数
-	    private float PumpBoreDiameter;
-	    private float PumpSettingDepth;
-	    private float ProducingfluidLevel;
-	    private float Submergence;
-	    private float PumpIntakeP; //泵入口压力				MPa
-	    private float PumpIntakeT; //泵入口温度				℃
-	    private float PumpIntakeGOL; //泵入口就地气液比
-	    private float PumpIntakeVisl; //泵入口粘度				mPa·s
-	    private float PumpIntakeBo; //泵入口原油体积系数
-	    private float PumpOutletP; //泵出口压力				MPa
-	    private float PumpOutletT; //泵出口温度				℃
-	    private float PumpOutletGOL; //泵出口就地气液比
-	    private float PumpOutletVisl; //泵出口粘度				mPa·s
-	    private float PumpOutletBo; //泵出口原油体积系数
-	    private int ETResultCode;
-	    private float WattDegreeBalance;
-	    private float UpStrokeWattMax; //上冲程功率最大值			kW
-	    private float DownStrokeWattMax; //下冲程功率最大值			kW
-	    private float IDegreeBalance;
-	    private float UpStrokeIMax; //上冲程电流最大值			A
-	    private float DownStrokeIMax; //下冲程电流最大值			A
-	    private float DeltaRadius;
-	    private float SurfaceSystemEfficiency;
-	    private float WellDownSystemEfficiency;
-	    private float SystemEfficiency;
-	    private float EnergyPer100mLift;
-	    private float AvgWatt; //平均有功功率        		kW
-	    private float PolishRodPower; //光杆功率              	kW
-	    private float WaterPower; //水功率             		kW
-	    private float IA;
-	    private float IB;
-	    private float IC;
-	    private float VA;
-	    private float VB;
-	    private float VC;
-	    private float RunFrequency;
-	    private float RPM;
-	    private float Signal; //信号强度
-	    private float Watt3; //有功功率					kW
-	    private float Var3; //无功功率					kVar
-	    private float VA3; //视在功率					kVA
-	    private float PF3; //功率因数					小数
-		public String getAcqTime() {
-			return AcqTime;
-		}
-
-		public void setAcqTime(String acqTime) {
-			AcqTime = acqTime;
-		}
-
-		public int getCommStatus() {
-			return CommStatus;
-		}
-
-		public void setCommStatus(int commStatus) {
-			CommStatus = commStatus;
-		}
-
-		public float getCommTime() {
-			return CommTime;
-		}
-
-		public void setCommTime(float commTime) {
-			CommTime = commTime;
-		}
-
-		public float getCommTimeEfficiency() {
-			return CommTimeEfficiency;
-		}
-
-		public void setCommTimeEfficiency(float commTimeEfficiency) {
-			CommTimeEfficiency = commTimeEfficiency;
-		}
-
-		public String getCommRange() {
-			return CommRange;
-		}
-
-		public void setCommRange(String commRange) {
-			CommRange = commRange;
-		}
-
-		public int getRunStatus() {
-			return RunStatus;
-		}
-
-		public void setRunStatus(int runStatus) {
-			RunStatus = runStatus;
-		}
-
-		public float getRunTime() {
-			return RunTime;
-		}
-
-		public void setRunTime(float runTime) {
-			RunTime = runTime;
-		}
-
-		public float getRunTimeEfficiency() {
-			return RunTimeEfficiency;
-		}
-
-		public void setRunTimeEfficiency(float runTimeEfficiency) {
-			RunTimeEfficiency = runTimeEfficiency;
-		}
-
-		public String getRunRange() {
-			return RunRange;
-		}
-
-		public void setRunRange(String runRange) {
-			RunRange = runRange;
-		}
-
-		public int getStopReason() {
-			return StopReason;
-		}
-
-		public void setStopReason(int stopReason) {
-			StopReason = stopReason;
-		}
-
-		public int getStartReason() {
-			return StartReason;
-		}
-
-		public void setStartReason(int startReason) {
-			StartReason = startReason;
-		}
-
-		public float getTubingPressure() {
-			return TubingPressure;
-		}
-
-		public void setTubingPressure(float tubingPressure) {
-			TubingPressure = tubingPressure;
-		}
-
-		public float getCasingPressure() {
-			return CasingPressure;
-		}
-
-		public void setCasingPressure(float casingPressure) {
-			CasingPressure = casingPressure;
-		}
-
-		public float getWellHeadFluidTemperature() {
-			return WellHeadFluidTemperature;
-		}
-
-		public void setWellHeadFluidTemperature(float wellHeadFluidTemperature) {
-			WellHeadFluidTemperature = wellHeadFluidTemperature;
-		}
-
-		public float getProductionGasOilRatio() {
-			return ProductionGasOilRatio;
-		}
-
-		public void setProductionGasOilRatio(float productionGasOilRatio) {
-			ProductionGasOilRatio = productionGasOilRatio;
-		}
-
-		
-
-		public float getStroke() {
-			return Stroke;
-		}
-
-		public void setStroke(float stroke) {
-			Stroke = stroke;
-		}
-
-		public float getSPM() {
-			return SPM;
-		}
-
-		public void setSPM(float sPM) {
-			SPM = sPM;
-		}
-
-		public float getFullnessCoefficient() {
-			return FullnessCoefficient;
-		}
-
-		public void setFullnessCoefficient(float fullnessCoefficient) {
-			FullnessCoefficient = fullnessCoefficient;
-		}
-
-		public float getLiquidVolumetricProduction() {
-			return LiquidVolumetricProduction;
-		}
-
-		public void setLiquidVolumetricProduction(float liquidVolumetricProduction) {
-			LiquidVolumetricProduction = liquidVolumetricProduction;
-		}
-
-		public float getOilVolumetricProduction() {
-			return OilVolumetricProduction;
-		}
-
-		public void setOilVolumetricProduction(float oilVolumetricProduction) {
-			OilVolumetricProduction = oilVolumetricProduction;
-		}
-
-		public float getWaterVolumetricProduction() {
-			return WaterVolumetricProduction;
-		}
-
-		public void setWaterVolumetricProduction(float waterVolumetricProduction) {
-			WaterVolumetricProduction = waterVolumetricProduction;
-		}
-
-		public float getLiquidWeightProduction() {
-			return LiquidWeightProduction;
-		}
-
-		public void setLiquidWeightProduction(float liquidWeightProduction) {
-			LiquidWeightProduction = liquidWeightProduction;
-		}
-
-		public float getOilWeightProduction() {
-			return OilWeightProduction;
-		}
-
-		public void setOilWeightProduction(float oilWeightProduction) {
-			OilWeightProduction = oilWeightProduction;
-		}
-
-		public float getWaterWeightProduction() {
-			return WaterWeightProduction;
-		}
-
-		public void setWaterWeightProduction(float waterWeightProduction) {
-			WaterWeightProduction = waterWeightProduction;
-		}
-
-		public float getVolumeWaterCut() {
-			return VolumeWaterCut;
-		}
-
-		public void setVolumeWaterCut(float volumeWaterCut) {
-			VolumeWaterCut = volumeWaterCut;
-		}
-
-		public float getWeightWaterCut() {
-			return WeightWaterCut;
-		}
-
-		public void setWeightWaterCut(float weightWaterCut) {
-			WeightWaterCut = weightWaterCut;
-		}
-
-		public float getPumpEff() {
-			return PumpEff;
-		}
-
-		public void setPumpEff(float pumpEff) {
-			PumpEff = pumpEff;
-		}
-
-		public float getPumpBoreDiameter() {
-			return PumpBoreDiameter;
-		}
-
-		public void setPumpBoreDiameter(float pumpBoreDiameter) {
-			PumpBoreDiameter = pumpBoreDiameter;
-		}
-
-		public float getPumpSettingDepth() {
-			return PumpSettingDepth;
-		}
-
-		public void setPumpSettingDepth(float pumpSettingDepth) {
-			PumpSettingDepth = pumpSettingDepth;
-		}
-
-		public float getProducingfluidLevel() {
-			return ProducingfluidLevel;
-		}
-
-		public void setProducingfluidLevel(float producingfluidLevel) {
-			ProducingfluidLevel = producingfluidLevel;
-		}
-
-		public float getSubmergence() {
-			return Submergence;
-		}
-
-		public void setSubmergence(float submergence) {
-			Submergence = submergence;
-		}
-
-		public int getETResultCode() {
-			return ETResultCode;
-		}
-
-		public void setETResultCode(int eTResultCode) {
-			ETResultCode = eTResultCode;
-		}
-
-		public float getWattDegreeBalance() {
-			return WattDegreeBalance;
-		}
-
-		public void setWattDegreeBalance(float wattDegreeBalance) {
-			WattDegreeBalance = wattDegreeBalance;
-		}
-
-		public float getIDegreeBalance() {
-			return IDegreeBalance;
-		}
-
-		public void setIDegreeBalance(float iDegreeBalance) {
-			IDegreeBalance = iDegreeBalance;
-		}
-
-		public float getDeltaRadius() {
-			return DeltaRadius;
-		}
-
-		public void setDeltaRadius(float deltaRadius) {
-			DeltaRadius = deltaRadius;
-		}
-
-		public float getSurfaceSystemEfficiency() {
-			return SurfaceSystemEfficiency;
-		}
-
-		public void setSurfaceSystemEfficiency(float surfaceSystemEfficiency) {
-			SurfaceSystemEfficiency = surfaceSystemEfficiency;
-		}
-
-		public float getWellDownSystemEfficiency() {
-			return WellDownSystemEfficiency;
-		}
-
-		public void setWellDownSystemEfficiency(float wellDownSystemEfficiency) {
-			WellDownSystemEfficiency = wellDownSystemEfficiency;
-		}
-
-		public float getSystemEfficiency() {
-			return SystemEfficiency;
-		}
-
-		public void setSystemEfficiency(float systemEfficiency) {
-			SystemEfficiency = systemEfficiency;
-		}
-
-		public float getIA() {
-			return IA;
-		}
-
-		public void setIA(float iA) {
-			IA = iA;
-		}
-
-		public float getIB() {
-			return IB;
-		}
-
-		public void setIB(float iB) {
-			IB = iB;
-		}
-
-		public float getIC() {
-			return IC;
-		}
-
-		public void setIC(float iC) {
-			IC = iC;
-		}
-
-		public float getVA() {
-			return VA;
-		}
-
-		public void setVA(float vA) {
-			VA = vA;
-		}
-
-		public float getVB() {
-			return VB;
-		}
-
-		public void setVB(float vB) {
-			VB = vB;
-		}
-
-		public float getVC() {
-			return VC;
-		}
-
-		public void setVC(float vC) {
-			VC = vC;
-		}
-
-		public float getRPM() {
-			return RPM;
-		}
-
-		public void setRPM(float rPM) {
-			RPM = rPM;
-		}
-
-		public float getUpperLoadLine() {
-			return UpperLoadLine;
-		}
-
-		public void setUpperLoadLine(float upperLoadLine) {
-			UpperLoadLine = upperLoadLine;
-		}
-
-		public float getLowerLoadLine() {
-			return LowerLoadLine;
-		}
-
-		public void setLowerLoadLine(float lowerLoadLine) {
-			LowerLoadLine = lowerLoadLine;
-		}
-
-		public float getUpperLoadLineOfExact() {
-			return UpperLoadLineOfExact;
-		}
-
-		public void setUpperLoadLineOfExact(float upperLoadLineOfExact) {
-			UpperLoadLineOfExact = upperLoadLineOfExact;
-		}
-
-		public float getDeltaLoadLine() {
-			return DeltaLoadLine;
-		}
-
-		public void setDeltaLoadLine(float deltaLoadLine) {
-			DeltaLoadLine = deltaLoadLine;
-		}
-
-		public float getDeltaLoadLineOfExact() {
-			return DeltaLoadLineOfExact;
-		}
-
-		public void setDeltaLoadLineOfExact(float deltaLoadLineOfExact) {
-			DeltaLoadLineOfExact = deltaLoadLineOfExact;
-		}
-
-		public float getFMax() {
-			return FMax;
-		}
-
-		public void setFMax(float fMax) {
-			FMax = fMax;
-		}
-
-		public float getFMin() {
-			return FMin;
-		}
-
-		public void setFMin(float fMin) {
-			FMin = fMin;
-		}
-
-		public float getDeltaF() {
-			return DeltaF;
-		}
-
-		public void setDeltaF(float deltaF) {
-			DeltaF = deltaF;
-		}
-
-		public float getArea() {
-			return Area;
-		}
-
-		public void setArea(float area) {
-			Area = area;
-		}
-
-		public float getPlungerStroke() {
-			return PlungerStroke;
-		}
-
-		public void setPlungerStroke(float plungerStroke) {
-			PlungerStroke = plungerStroke;
-		}
-
-		public float getAvailablePlungerStroke() {
-			return AvailablePlungerStroke;
-		}
-
-		public void setAvailablePlungerStroke(float availablePlungerStroke) {
-			AvailablePlungerStroke = availablePlungerStroke;
-		}
-
-		public float getTheoreticalProduction() {
-			return TheoreticalProduction;
-		}
-
-		public void setTheoreticalProduction(float theoreticalProduction) {
-			TheoreticalProduction = theoreticalProduction;
-		}
-
-		public float getAvailablePlungerStrokeVolumetricProduction() {
-			return AvailablePlungerStrokeVolumetricProduction;
-		}
-
-		public void setAvailablePlungerStrokeVolumetricProduction(float availablePlungerStrokeVolumetricProduction) {
-			AvailablePlungerStrokeVolumetricProduction = availablePlungerStrokeVolumetricProduction;
-		}
-
-		public float getPumpClearanceLeakVolumetricProduction() {
-			return PumpClearanceLeakVolumetricProduction;
-		}
-
-		public void setPumpClearanceLeakVolumetricProduction(float pumpClearanceLeakVolumetricProduction) {
-			PumpClearanceLeakVolumetricProduction = pumpClearanceLeakVolumetricProduction;
-		}
-
-		public float getTVLeakVolumetricProduction() {
-			return TVLeakVolumetricProduction;
-		}
-
-		public void setTVLeakVolumetricProduction(float tVLeakVolumetricProduction) {
-			TVLeakVolumetricProduction = tVLeakVolumetricProduction;
-		}
-
-		public float getSVLeakVolumetricProduction() {
-			return SVLeakVolumetricProduction;
-		}
-
-		public void setSVLeakVolumetricProduction(float sVLeakVolumetricProduction) {
-			SVLeakVolumetricProduction = sVLeakVolumetricProduction;
-		}
-
-		public float getGasInfluenceVolumetricProduction() {
-			return GasInfluenceVolumetricProduction;
-		}
-
-		public void setGasInfluenceVolumetricProduction(float gasInfluenceVolumetricProduction) {
-			GasInfluenceVolumetricProduction = gasInfluenceVolumetricProduction;
-		}
-
-		public float getAvailablePlungerStrokeWeightProduction() {
-			return AvailablePlungerStrokeWeightProduction;
-		}
-
-		public void setAvailablePlungerStrokeWeightProduction(float availablePlungerStrokeWeightProduction) {
-			AvailablePlungerStrokeWeightProduction = availablePlungerStrokeWeightProduction;
-		}
-
-		public float getPumpClearanceLeakWeightProduction() {
-			return PumpClearanceLeakWeightProduction;
-		}
-
-		public void setPumpClearanceLeakWeightProduction(float pumpClearanceLeakWeightProduction) {
-			PumpClearanceLeakWeightProduction = pumpClearanceLeakWeightProduction;
-		}
-
-		public float getTVLeakWeightProduction() {
-			return TVLeakWeightProduction;
-		}
-
-		public void setTVLeakWeightProduction(float tVLeakWeightProduction) {
-			TVLeakWeightProduction = tVLeakWeightProduction;
-		}
-
-		public float getSVLeakWeightProduction() {
-			return SVLeakWeightProduction;
-		}
-
-		public void setSVLeakWeightProduction(float sVLeakWeightProduction) {
-			SVLeakWeightProduction = sVLeakWeightProduction;
-		}
-
-		public float getGasInfluenceWeightProduction() {
-			return GasInfluenceWeightProduction;
-		}
-
-		public void setGasInfluenceWeightProduction(float gasInfluenceWeightProduction) {
-			GasInfluenceWeightProduction = gasInfluenceWeightProduction;
-		}
-
-		public float getPumpEff1() {
-			return PumpEff1;
-		}
-
-		public void setPumpEff1(float pumpEff1) {
-			PumpEff1 = pumpEff1;
-		}
-
-		public float getRodFlexLength() {
-			return RodFlexLength;
-		}
-
-		public void setRodFlexLength(float rodFlexLength) {
-			RodFlexLength = rodFlexLength;
-		}
-
-		public float getTubingFlexLength() {
-			return TubingFlexLength;
-		}
-
-		public void setTubingFlexLength(float tubingFlexLength) {
-			TubingFlexLength = tubingFlexLength;
-		}
-
-		public float getInertiaLength() {
-			return InertiaLength;
-		}
-
-		public void setInertiaLength(float inertiaLength) {
-			InertiaLength = inertiaLength;
-		}
-
-		public float getPumpEff2() {
-			return PumpEff2;
-		}
-
-		public void setPumpEff2(float pumpEff2) {
-			PumpEff2 = pumpEff2;
-		}
-
-		public float getPumpEff3() {
-			return PumpEff3;
-		}
-
-		public void setPumpEff3(float pumpEff3) {
-			PumpEff3 = pumpEff3;
-		}
-
-		public float getPumpEff4() {
-			return PumpEff4;
-		}
-
-		public void setPumpEff4(float pumpEff4) {
-			PumpEff4 = pumpEff4;
-		}
-
-		public float getPumpIntakeP() {
-			return PumpIntakeP;
-		}
-
-		public void setPumpIntakeP(float pumpIntakeP) {
-			PumpIntakeP = pumpIntakeP;
-		}
-
-		public float getPumpIntakeT() {
-			return PumpIntakeT;
-		}
-
-		public void setPumpIntakeT(float pumpIntakeT) {
-			PumpIntakeT = pumpIntakeT;
-		}
-
-		public float getPumpIntakeGOL() {
-			return PumpIntakeGOL;
-		}
-
-		public void setPumpIntakeGOL(float pumpIntakeGOL) {
-			PumpIntakeGOL = pumpIntakeGOL;
-		}
-
-		public float getPumpIntakeVisl() {
-			return PumpIntakeVisl;
-		}
-
-		public void setPumpIntakeVisl(float pumpIntakeVisl) {
-			PumpIntakeVisl = pumpIntakeVisl;
-		}
-
-		public float getPumpIntakeBo() {
-			return PumpIntakeBo;
-		}
-
-		public void setPumpIntakeBo(float pumpIntakeBo) {
-			PumpIntakeBo = pumpIntakeBo;
-		}
-
-		public float getPumpOutletP() {
-			return PumpOutletP;
-		}
-
-		public void setPumpOutletP(float pumpOutletP) {
-			PumpOutletP = pumpOutletP;
-		}
-
-		public float getPumpOutletT() {
-			return PumpOutletT;
-		}
-
-		public void setPumpOutletT(float pumpOutletT) {
-			PumpOutletT = pumpOutletT;
-		}
-
-		public float getPumpOutletGOL() {
-			return PumpOutletGOL;
-		}
-
-		public void setPumpOutletGOL(float pumpOutletGOL) {
-			PumpOutletGOL = pumpOutletGOL;
-		}
-
-		public float getPumpOutletVisl() {
-			return PumpOutletVisl;
-		}
-
-		public void setPumpOutletVisl(float pumpOutletVisl) {
-			PumpOutletVisl = pumpOutletVisl;
-		}
-
-		public float getPumpOutletBo() {
-			return PumpOutletBo;
-		}
-
-		public void setPumpOutletBo(float pumpOutletBo) {
-			PumpOutletBo = pumpOutletBo;
-		}
-
-		public float getUpStrokeWattMax() {
-			return UpStrokeWattMax;
-		}
-
-		public void setUpStrokeWattMax(float upStrokeWattMax) {
-			UpStrokeWattMax = upStrokeWattMax;
-		}
-
-		public float getDownStrokeWattMax() {
-			return DownStrokeWattMax;
-		}
-
-		public void setDownStrokeWattMax(float downStrokeWattMax) {
-			DownStrokeWattMax = downStrokeWattMax;
-		}
-
-		public float getUpStrokeIMax() {
-			return UpStrokeIMax;
-		}
-
-		public void setUpStrokeIMax(float upStrokeIMax) {
-			UpStrokeIMax = upStrokeIMax;
-		}
-
-		public float getDownStrokeIMax() {
-			return DownStrokeIMax;
-		}
-
-		public void setDownStrokeIMax(float downStrokeIMax) {
-			DownStrokeIMax = downStrokeIMax;
-		}
-
-		public float getAvgWatt() {
-			return AvgWatt;
-		}
-
-		public void setAvgWatt(float avgWatt) {
-			AvgWatt = avgWatt;
-		}
-
-		public float getPolishRodPower() {
-			return PolishRodPower;
-		}
-
-		public void setPolishRodPower(float polishRodPower) {
-			PolishRodPower = polishRodPower;
-		}
-
-		public float getWaterPower() {
-			return WaterPower;
-		}
-
-		public void setWaterPower(float waterPower) {
-			WaterPower = waterPower;
-		}
-
-		public float getRunFrequency() {
-			return RunFrequency;
-		}
-
-		public void setRunFrequency(float runFrequency) {
-			RunFrequency = runFrequency;
-		}
-
-		public float getSignal() {
-			return Signal;
-		}
-
-		public void setSignal(float signal) {
-			Signal = signal;
-		}
-
-		public float getWatt3() {
-			return Watt3;
-		}
-
-		public void setWatt3(float watt3) {
-			Watt3 = watt3;
-		}
-
-		public float getVar3() {
-			return Var3;
-		}
-
-		public void setVar3(float var3) {
-			Var3 = var3;
-		}
-
-		public float getVA3() {
-			return VA3;
-		}
-
-		public void setVA3(float va3) {
-			VA3 = va3;
-		}
-
-		public float getPF3() {
-			return PF3;
-		}
-
-		public void setPF3(float pf3) {
-			PF3 = pf3;
-		}
-
-		public float getEnergyPer100mLift() {
-			return EnergyPer100mLift;
-		}
-
-		public void setEnergyPer100mLift(float energyPer100mLift) {
-			EnergyPer100mLift = energyPer100mLift;
-		}
-
-		public int getResultCode() {
-			return ResultCode;
-		}
-
-		public void setResultCode(int resultCode) {
-			ResultCode = resultCode;
-		}
+    private int CurrentRunStatus;
+
+    private String Date;
+
+    private int OffsetHour;
+
+    private List<String> AcqTime;
+
+    private List<Integer> CommStatus;
+
+    private float CommTime;
+
+    private float CommTimeEfficiency;
+
+    private String CommRange;
+
+    private List<Integer> RunStatus;
+
+    private float RunTime;
+
+    private float RunTimeEfficiency;
+
+    private String RunRange;
+
+    private List<Integer> ResultCode;
+
+    private List<Float> TheoreticalProduction;
+
+    private List<Float> LiquidVolumetricProduction;
+
+    private List<Float> OilVolumetricProduction;
+
+    private List<Float> WaterVolumetricProduction;
+
+    private List<Float> VolumeWaterCut;
+
+    private List<Float> AvailablePlungerStrokeVolumetricProduction;
+
+    private List<Float> PumpClearanceLeakVolumetricProduction;
+
+    private List<Float> TVLeakVolumetricProduction;
+
+    private List<Float> SVLeakVolumetricProduction;
+
+    private List<Float> GasInfluenceVolumetricProduction;
+
+    private List<Float> LiquidWeightProduction;
+
+    private List<Float> OilWeightProduction;
+
+    private List<Float> WaterWeightProduction;
+
+    private List<Float> WeightWaterCut;
+
+    private List<Float> AvailablePlungerStrokeWeightProduction;
+
+    private List<Float> PumpClearanceLeakWeightProduction;
+
+    private List<Float> TVLeakWeightProduction;
+
+    private List<Float> SVLeakWeightProduction;
+
+    private List<Float> GasInfluenceWeightProduction;
+
+    private List<Float> SurfaceSystemEfficiency;
+
+    private List<Float> WellDownSystemEfficiency;
+
+    private List<Float> SystemEfficiency;
+
+    private List<Float> EnergyPer100mLift;
+
+    private List<Float> AvgWatt;
+
+    private List<Float> PolishRodPower;
+
+    private List<Float> WaterPower;
+
+    private List<Float> Stroke;
+
+    private List<Float> SPM;
+
+    private List<Float> UpperLoadLine;
+
+    private List<Float> LowerLoadLine;
+
+    private List<Float> UpperLoadLineOfExact;
+
+    private List<Float> DeltaLoadLine;
+
+    private List<Float> DeltaLoadLineOfExact;
+
+    private List<Float> FMax;
+
+    private List<Float> FMin;
+
+    private List<Float> DeltaF;
+
+    private List<Float> Area;
+
+    private List<Float> PlungerStroke;
+
+    private List<Float> AvailablePlungerStroke;
+
+    private List<Float> NoLiquidAvailablePlungerStroke;
+
+    private List<Float> FullnessCoefficient;
+
+    private List<Float> NoLiquidFullnessCoefficient;
+
+    private List<Float> PumpBoreDiameter;
+
+    private List<Float> ProducingfluidLevel;
+
+    private List<Float> PumpSettingDepth;
+
+    private List<Float> Submergence;
+
+    private List<Float> LevelCorrectValue;
+
+    private List<Float> PumpIntakeP;
+
+    private List<Float> PumpIntakeT;
+
+    private List<Float> PumpIntakeGOL;
+
+    private List<Float> PumpIntakeVisl;
+
+    private List<Float> PumpIntakeBo;
+
+    private List<Float> PumpOutletP;
+
+    private List<Float> PumpOutletT;
+
+    private List<Float> PumpOutletGOL;
+
+    private List<Float> PumpOutletVisl;
+
+    private List<Float> PumpOutletBo;
+
+    private List<Float> PumpEff;
+
+    private List<Float> PumpEff1;
+
+    private List<Float> PumpEff2;
+
+    private List<Float> PumpEff3;
+
+    private List<Float> PumpEff4;
+
+    private List<Float> RodFlexLength;
+
+    private List<Float> TubingFlexLength;
+
+    private List<Float> InertiaLength;
+
+    private List<Float> WattDegreeBalance;
+
+    private List<Float> UpStrokeWattMax;
+
+    private List<Float> DownStrokeWattMax;
+
+    private List<Float> IDegreeBalance;
+
+    private List<Float> UpStrokeIMax;
+
+    private List<Float> DownStrokeIMax;
+
+    private List<Float> DeltaRadius;
+
+    private List<Float> TubingPressure;
+
+    private List<Float> CasingPressure;
+    
+    private List<Float> BottomHolePressure;
+    
+    private List<Float> BottomHoleTemperature;
+
+    private List<Float> WellHeadTemperature;
+
+    private List<Float> ProductionGasOilRatio;
+
+    private List<Float> IA;
+
+    private List<Float> IB;
+
+    private List<Float> IC;
+
+    private List<Float> VA;
+
+    private List<Float> VB;
+
+    private List<Float> VC;
+
+    private List<Float> Watt3;
+
+    private List<Float> Var3;
+
+    private List<Float> VA3;
+
+    private List<Float> PF3;
+
+    private List<Float> RunFrequency;
+
+    private List<Float> Signal;
+
+	public String getAKString() {
+		return AKString;
+	}
+
+	public void setAKString(String aKString) {
+		AKString = aKString;
+	}
+
+	public String getWellName() {
+		return WellName;
+	}
+
+	public void setWellName(String wellName) {
+		WellName = wellName;
+	}
+
+	public int getCurrentCommStatus() {
+		return CurrentCommStatus;
+	}
+
+	public void setCurrentCommStatus(int currentCommStatus) {
+		CurrentCommStatus = currentCommStatus;
+	}
+
+	public int getCurrentRunStatus() {
+		return CurrentRunStatus;
+	}
+
+	public void setCurrentRunStatus(int currentRunStatus) {
+		CurrentRunStatus = currentRunStatus;
 	}
 
 	public String getDate() {
 		return Date;
 	}
+
 	public void setDate(String date) {
 		Date = date;
 	}
-	public String getEndAcqTime() {
-		return EndAcqTime;
+
+	public int getOffsetHour() {
+		return OffsetHour;
 	}
-	public void setEndAcqTime(String endAcqTime) {
-		EndAcqTime = endAcqTime;
+
+	public void setOffsetHour(int offsetHour) {
+		OffsetHour = offsetHour;
 	}
+
+	public List<String> getAcqTime() {
+		return AcqTime;
+	}
+
+	public void setAcqTime(List<String> acqTime) {
+		AcqTime = acqTime;
+	}
+
+	public List<Integer> getCommStatus() {
+		return CommStatus;
+	}
+
+	public void setCommStatus(List<Integer> commStatus) {
+		CommStatus = commStatus;
+	}
+
+	public float getCommTime() {
+		return CommTime;
+	}
+
+	public void setCommTime(float commTime) {
+		CommTime = commTime;
+	}
+
+	public float getCommTimeEfficiency() {
+		return CommTimeEfficiency;
+	}
+
+	public void setCommTimeEfficiency(float commTimeEfficiency) {
+		CommTimeEfficiency = commTimeEfficiency;
+	}
+
+	public String getCommRange() {
+		return CommRange;
+	}
+
+	public void setCommRange(String commRange) {
+		CommRange = commRange;
+	}
+
+	public List<Integer> getRunStatus() {
+		return RunStatus;
+	}
+
+	public void setRunStatus(List<Integer> runStatus) {
+		RunStatus = runStatus;
+	}
+
+	public float getRunTime() {
+		return RunTime;
+	}
+
+	public void setRunTime(float runTime) {
+		RunTime = runTime;
+	}
+
+	public float getRunTimeEfficiency() {
+		return RunTimeEfficiency;
+	}
+
+	public void setRunTimeEfficiency(int runTimeEfficiency) {
+		RunTimeEfficiency = runTimeEfficiency;
+	}
+
+	public String getRunRange() {
+		return RunRange;
+	}
+
+	public void setRunRange(String runRange) {
+		RunRange = runRange;
+	}
+
+	public List<Integer> getResultCode() {
+		return ResultCode;
+	}
+
+	public void setResultCode(List<Integer> resultCode) {
+		ResultCode = resultCode;
+	}
+
+	public List<Float> getTheoreticalProduction() {
+		return TheoreticalProduction;
+	}
+
+	public void setTheoreticalProduction(List<Float> theoreticalProduction) {
+		TheoreticalProduction = theoreticalProduction;
+	}
+
+	public List<Float> getLiquidVolumetricProduction() {
+		return LiquidVolumetricProduction;
+	}
+
+	public void setLiquidVolumetricProduction(List<Float> liquidVolumetricProduction) {
+		LiquidVolumetricProduction = liquidVolumetricProduction;
+	}
+
+	public List<Float> getOilVolumetricProduction() {
+		return OilVolumetricProduction;
+	}
+
+	public void setOilVolumetricProduction(List<Float> oilVolumetricProduction) {
+		OilVolumetricProduction = oilVolumetricProduction;
+	}
+
+	public List<Float> getWaterVolumetricProduction() {
+		return WaterVolumetricProduction;
+	}
+
+	public void setWaterVolumetricProduction(List<Float> waterVolumetricProduction) {
+		WaterVolumetricProduction = waterVolumetricProduction;
+	}
+
+	public List<Float> getVolumeWaterCut() {
+		return VolumeWaterCut;
+	}
+
+	public void setVolumeWaterCut(List<Float> volumeWaterCut) {
+		VolumeWaterCut = volumeWaterCut;
+	}
+
+	public List<Float> getAvailablePlungerStrokeVolumetricProduction() {
+		return AvailablePlungerStrokeVolumetricProduction;
+	}
+
+	public void setAvailablePlungerStrokeVolumetricProduction(List<Float> availablePlungerStrokeVolumetricProduction) {
+		AvailablePlungerStrokeVolumetricProduction = availablePlungerStrokeVolumetricProduction;
+	}
+
+	public List<Float> getPumpClearanceLeakVolumetricProduction() {
+		return PumpClearanceLeakVolumetricProduction;
+	}
+
+	public void setPumpClearanceLeakVolumetricProduction(List<Float> pumpClearanceLeakVolumetricProduction) {
+		PumpClearanceLeakVolumetricProduction = pumpClearanceLeakVolumetricProduction;
+	}
+
+	public List<Float> getTVLeakVolumetricProduction() {
+		return TVLeakVolumetricProduction;
+	}
+
+	public void setTVLeakVolumetricProduction(List<Float> tVLeakVolumetricProduction) {
+		TVLeakVolumetricProduction = tVLeakVolumetricProduction;
+	}
+
+	public List<Float> getSVLeakVolumetricProduction() {
+		return SVLeakVolumetricProduction;
+	}
+
+	public void setSVLeakVolumetricProduction(List<Float> sVLeakVolumetricProduction) {
+		SVLeakVolumetricProduction = sVLeakVolumetricProduction;
+	}
+
+	public List<Float> getGasInfluenceVolumetricProduction() {
+		return GasInfluenceVolumetricProduction;
+	}
+
+	public void setGasInfluenceVolumetricProduction(List<Float> gasInfluenceVolumetricProduction) {
+		GasInfluenceVolumetricProduction = gasInfluenceVolumetricProduction;
+	}
+
+	public List<Float> getLiquidWeightProduction() {
+		return LiquidWeightProduction;
+	}
+
+	public void setLiquidWeightProduction(List<Float> liquidWeightProduction) {
+		LiquidWeightProduction = liquidWeightProduction;
+	}
+
+	public List<Float> getOilWeightProduction() {
+		return OilWeightProduction;
+	}
+
+	public void setOilWeightProduction(List<Float> oilWeightProduction) {
+		OilWeightProduction = oilWeightProduction;
+	}
+
+	public List<Float> getWaterWeightProduction() {
+		return WaterWeightProduction;
+	}
+
+	public void setWaterWeightProduction(List<Float> waterWeightProduction) {
+		WaterWeightProduction = waterWeightProduction;
+	}
+
+	public List<Float> getWeightWaterCut() {
+		return WeightWaterCut;
+	}
+
+	public void setWeightWaterCut(List<Float> weightWaterCut) {
+		WeightWaterCut = weightWaterCut;
+	}
+
+	public List<Float> getAvailablePlungerStrokeWeightProduction() {
+		return AvailablePlungerStrokeWeightProduction;
+	}
+
+	public void setAvailablePlungerStrokeWeightProduction(List<Float> availablePlungerStrokeWeightProduction) {
+		AvailablePlungerStrokeWeightProduction = availablePlungerStrokeWeightProduction;
+	}
+
+	public List<Float> getPumpClearanceLeakWeightProduction() {
+		return PumpClearanceLeakWeightProduction;
+	}
+
+	public void setPumpClearanceLeakWeightProduction(List<Float> pumpClearanceLeakWeightProduction) {
+		PumpClearanceLeakWeightProduction = pumpClearanceLeakWeightProduction;
+	}
+
+	public List<Float> getTVLeakWeightProduction() {
+		return TVLeakWeightProduction;
+	}
+
+	public void setTVLeakWeightProduction(List<Float> tVLeakWeightProduction) {
+		TVLeakWeightProduction = tVLeakWeightProduction;
+	}
+
+	public List<Float> getSVLeakWeightProduction() {
+		return SVLeakWeightProduction;
+	}
+
+	public void setSVLeakWeightProduction(List<Float> sVLeakWeightProduction) {
+		SVLeakWeightProduction = sVLeakWeightProduction;
+	}
+
+	public List<Float> getGasInfluenceWeightProduction() {
+		return GasInfluenceWeightProduction;
+	}
+
+	public void setGasInfluenceWeightProduction(List<Float> gasInfluenceWeightProduction) {
+		GasInfluenceWeightProduction = gasInfluenceWeightProduction;
+	}
+
+	public List<Float> getSurfaceSystemEfficiency() {
+		return SurfaceSystemEfficiency;
+	}
+
+	public void setSurfaceSystemEfficiency(List<Float> surfaceSystemEfficiency) {
+		SurfaceSystemEfficiency = surfaceSystemEfficiency;
+	}
+
+	public List<Float> getWellDownSystemEfficiency() {
+		return WellDownSystemEfficiency;
+	}
+
+	public void setWellDownSystemEfficiency(List<Float> wellDownSystemEfficiency) {
+		WellDownSystemEfficiency = wellDownSystemEfficiency;
+	}
+
+	public List<Float> getSystemEfficiency() {
+		return SystemEfficiency;
+	}
+
+	public void setSystemEfficiency(List<Float> systemEfficiency) {
+		SystemEfficiency = systemEfficiency;
+	}
+
+	public List<Float> getEnergyPer100mLift() {
+		return EnergyPer100mLift;
+	}
+
+	public void setEnergyPer100mLift(List<Float> energyPer100mLift) {
+		EnergyPer100mLift = energyPer100mLift;
+	}
+
+	public List<Float> getAvgWatt() {
+		return AvgWatt;
+	}
+
+	public void setAvgWatt(List<Float> avgWatt) {
+		AvgWatt = avgWatt;
+	}
+
+	public List<Float> getPolishRodPower() {
+		return PolishRodPower;
+	}
+
+	public void setPolishRodPower(List<Float> polishRodPower) {
+		PolishRodPower = polishRodPower;
+	}
+
+	public List<Float> getWaterPower() {
+		return WaterPower;
+	}
+
+	public void setWaterPower(List<Float> waterPower) {
+		WaterPower = waterPower;
+	}
+
+	public List<Float> getStroke() {
+		return Stroke;
+	}
+
+	public void setStroke(List<Float> stroke) {
+		Stroke = stroke;
+	}
+
+	public List<Float> getSPM() {
+		return SPM;
+	}
+
+	public void setSPM(List<Float> sPM) {
+		SPM = sPM;
+	}
+
+	public List<Float> getUpperLoadLine() {
+		return UpperLoadLine;
+	}
+
+	public void setUpperLoadLine(List<Float> upperLoadLine) {
+		UpperLoadLine = upperLoadLine;
+	}
+
+	public List<Float> getLowerLoadLine() {
+		return LowerLoadLine;
+	}
+
+	public void setLowerLoadLine(List<Float> lowerLoadLine) {
+		LowerLoadLine = lowerLoadLine;
+	}
+
+	public List<Float> getUpperLoadLineOfExact() {
+		return UpperLoadLineOfExact;
+	}
+
+	public void setUpperLoadLineOfExact(List<Float> upperLoadLineOfExact) {
+		UpperLoadLineOfExact = upperLoadLineOfExact;
+	}
+
+	public List<Float> getDeltaLoadLine() {
+		return DeltaLoadLine;
+	}
+
+	public void setDeltaLoadLine(List<Float> deltaLoadLine) {
+		DeltaLoadLine = deltaLoadLine;
+	}
+
+	public List<Float> getDeltaLoadLineOfExact() {
+		return DeltaLoadLineOfExact;
+	}
+
+	public void setDeltaLoadLineOfExact(List<Float> deltaLoadLineOfExact) {
+		DeltaLoadLineOfExact = deltaLoadLineOfExact;
+	}
+
+	public List<Float> getFMax() {
+		return FMax;
+	}
+
+	public void setFMax(List<Float> fMax) {
+		FMax = fMax;
+	}
+
+	public List<Float> getFMin() {
+		return FMin;
+	}
+
+	public void setFMin(List<Float> fMin) {
+		FMin = fMin;
+	}
+
+	public List<Float> getDeltaF() {
+		return DeltaF;
+	}
+
+	public void setDeltaF(List<Float> deltaF) {
+		DeltaF = deltaF;
+	}
+
+	public List<Float> getArea() {
+		return Area;
+	}
+
+	public void setArea(List<Float> area) {
+		Area = area;
+	}
+
+	public List<Float> getPlungerStroke() {
+		return PlungerStroke;
+	}
+
+	public void setPlungerStroke(List<Float> plungerStroke) {
+		PlungerStroke = plungerStroke;
+	}
+
+	public List<Float> getAvailablePlungerStroke() {
+		return AvailablePlungerStroke;
+	}
+
+	public void setAvailablePlungerStroke(List<Float> availablePlungerStroke) {
+		AvailablePlungerStroke = availablePlungerStroke;
+	}
+
+	public List<Float> getNoLiquidAvailablePlungerStroke() {
+		return NoLiquidAvailablePlungerStroke;
+	}
+
+	public void setNoLiquidAvailablePlungerStroke(List<Float> noLiquidAvailablePlungerStroke) {
+		NoLiquidAvailablePlungerStroke = noLiquidAvailablePlungerStroke;
+	}
+
+	public List<Float> getFullnessCoefficient() {
+		return FullnessCoefficient;
+	}
+
+	public void setFullnessCoefficient(List<Float> fullnessCoefficient) {
+		FullnessCoefficient = fullnessCoefficient;
+	}
+
+	public List<Float> getNoLiquidFullnessCoefficient() {
+		return NoLiquidFullnessCoefficient;
+	}
+
+	public void setNoLiquidFullnessCoefficient(List<Float> noLiquidFullnessCoefficient) {
+		NoLiquidFullnessCoefficient = noLiquidFullnessCoefficient;
+	}
+
+	public List<Float> getPumpBoreDiameter() {
+		return PumpBoreDiameter;
+	}
+
+	public void setPumpBoreDiameter(List<Float> pumpBoreDiameter) {
+		PumpBoreDiameter = pumpBoreDiameter;
+	}
+
+	public List<Float> getProducingfluidLevel() {
+		return ProducingfluidLevel;
+	}
+
+	public void setProducingfluidLevel(List<Float> producingfluidLevel) {
+		ProducingfluidLevel = producingfluidLevel;
+	}
+
+	public List<Float> getPumpSettingDepth() {
+		return PumpSettingDepth;
+	}
+
+	public void setPumpSettingDepth(List<Float> pumpSettingDepth) {
+		PumpSettingDepth = pumpSettingDepth;
+	}
+
+	public List<Float> getSubmergence() {
+		return Submergence;
+	}
+
+	public void setSubmergence(List<Float> submergence) {
+		Submergence = submergence;
+	}
+
+	public List<Float> getLevelCorrectValue() {
+		return LevelCorrectValue;
+	}
+
+	public void setLevelCorrectValue(List<Float> levelCorrectValue) {
+		LevelCorrectValue = levelCorrectValue;
+	}
+
+	public List<Float> getPumpIntakeP() {
+		return PumpIntakeP;
+	}
+
+	public void setPumpIntakeP(List<Float> pumpIntakeP) {
+		PumpIntakeP = pumpIntakeP;
+	}
+
+	public List<Float> getPumpIntakeT() {
+		return PumpIntakeT;
+	}
+
+	public void setPumpIntakeT(List<Float> pumpIntakeT) {
+		PumpIntakeT = pumpIntakeT;
+	}
+
+	public List<Float> getPumpIntakeGOL() {
+		return PumpIntakeGOL;
+	}
+
+	public void setPumpIntakeGOL(List<Float> pumpIntakeGOL) {
+		PumpIntakeGOL = pumpIntakeGOL;
+	}
+
+	public List<Float> getPumpIntakeVisl() {
+		return PumpIntakeVisl;
+	}
+
+	public void setPumpIntakeVisl(List<Float> pumpIntakeVisl) {
+		PumpIntakeVisl = pumpIntakeVisl;
+	}
+
+	public List<Float> getPumpIntakeBo() {
+		return PumpIntakeBo;
+	}
+
+	public void setPumpIntakeBo(List<Float> pumpIntakeBo) {
+		PumpIntakeBo = pumpIntakeBo;
+	}
+
+	public List<Float> getPumpOutletP() {
+		return PumpOutletP;
+	}
+
+	public void setPumpOutletP(List<Float> pumpOutletP) {
+		PumpOutletP = pumpOutletP;
+	}
+
+	public List<Float> getPumpOutletT() {
+		return PumpOutletT;
+	}
+
+	public void setPumpOutletT(List<Float> pumpOutletT) {
+		PumpOutletT = pumpOutletT;
+	}
+
+	public List<Float> getPumpOutletGOL() {
+		return PumpOutletGOL;
+	}
+
+	public void setPumpOutletGOL(List<Float> pumpOutletGOL) {
+		PumpOutletGOL = pumpOutletGOL;
+	}
+
+	public List<Float> getPumpOutletVisl() {
+		return PumpOutletVisl;
+	}
+
+	public void setPumpOutletVisl(List<Float> pumpOutletVisl) {
+		PumpOutletVisl = pumpOutletVisl;
+	}
+
+	public List<Float> getPumpOutletBo() {
+		return PumpOutletBo;
+	}
+
+	public void setPumpOutletBo(List<Float> pumpOutletBo) {
+		PumpOutletBo = pumpOutletBo;
+	}
+
+	public List<Float> getPumpEff() {
+		return PumpEff;
+	}
+
+	public void setPumpEff(List<Float> pumpEff) {
+		PumpEff = pumpEff;
+	}
+
+	public List<Float> getPumpEff1() {
+		return PumpEff1;
+	}
+
+	public void setPumpEff1(List<Float> pumpEff1) {
+		PumpEff1 = pumpEff1;
+	}
+
+	public List<Float> getPumpEff2() {
+		return PumpEff2;
+	}
+
+	public void setPumpEff2(List<Float> pumpEff2) {
+		PumpEff2 = pumpEff2;
+	}
+
+	public List<Float> getPumpEff3() {
+		return PumpEff3;
+	}
+
+	public void setPumpEff3(List<Float> pumpEff3) {
+		PumpEff3 = pumpEff3;
+	}
+
+	public List<Float> getPumpEff4() {
+		return PumpEff4;
+	}
+
+	public void setPumpEff4(List<Float> pumpEff4) {
+		PumpEff4 = pumpEff4;
+	}
+
+	public List<Float> getRodFlexLength() {
+		return RodFlexLength;
+	}
+
+	public void setRodFlexLength(List<Float> rodFlexLength) {
+		RodFlexLength = rodFlexLength;
+	}
+
+	public List<Float> getTubingFlexLength() {
+		return TubingFlexLength;
+	}
+
+	public void setTubingFlexLength(List<Float> tubingFlexLength) {
+		TubingFlexLength = tubingFlexLength;
+	}
+
+	public List<Float> getInertiaLength() {
+		return InertiaLength;
+	}
+
+	public void setInertiaLength(List<Float> inertiaLength) {
+		InertiaLength = inertiaLength;
+	}
+
+	public List<Float> getWattDegreeBalance() {
+		return WattDegreeBalance;
+	}
+
+	public void setWattDegreeBalance(List<Float> wattDegreeBalance) {
+		WattDegreeBalance = wattDegreeBalance;
+	}
+
+	public List<Float> getUpStrokeWattMax() {
+		return UpStrokeWattMax;
+	}
+
+	public void setUpStrokeWattMax(List<Float> upStrokeWattMax) {
+		UpStrokeWattMax = upStrokeWattMax;
+	}
+
+	public List<Float> getDownStrokeWattMax() {
+		return DownStrokeWattMax;
+	}
+
+	public void setDownStrokeWattMax(List<Float> downStrokeWattMax) {
+		DownStrokeWattMax = downStrokeWattMax;
+	}
+
+	public List<Float> getIDegreeBalance() {
+		return IDegreeBalance;
+	}
+
+	public void setIDegreeBalance(List<Float> iDegreeBalance) {
+		IDegreeBalance = iDegreeBalance;
+	}
+
+	public List<Float> getUpStrokeIMax() {
+		return UpStrokeIMax;
+	}
+
+	public void setUpStrokeIMax(List<Float> upStrokeIMax) {
+		UpStrokeIMax = upStrokeIMax;
+	}
+
+	public List<Float> getDownStrokeIMax() {
+		return DownStrokeIMax;
+	}
+
+	public void setDownStrokeIMax(List<Float> downStrokeIMax) {
+		DownStrokeIMax = downStrokeIMax;
+	}
+
+	public List<Float> getDeltaRadius() {
+		return DeltaRadius;
+	}
+
+	public void setDeltaRadius(List<Float> deltaRadius) {
+		DeltaRadius = deltaRadius;
+	}
+
+	public List<Float> getTubingPressure() {
+		return TubingPressure;
+	}
+
+	public void setTubingPressure(List<Float> tubingPressure) {
+		TubingPressure = tubingPressure;
+	}
+
+	public List<Float> getCasingPressure() {
+		return CasingPressure;
+	}
+
+	public void setCasingPressure(List<Float> casingPressure) {
+		CasingPressure = casingPressure;
+	}
+
+	public List<Float> getBottomHolePressure() {
+		return BottomHolePressure;
+	}
+
+	public void setBottomHolePressure(List<Float> bottomHolePressure) {
+		BottomHolePressure = bottomHolePressure;
+	}
+
+	public List<Float> getWellHeadTemperature() {
+		return WellHeadTemperature;
+	}
+
+	public void setWellHeadTemperature(List<Float> wellHeadTemperature) {
+		WellHeadTemperature = wellHeadTemperature;
+	}
+
+	public List<Float> getProductionGasOilRatio() {
+		return ProductionGasOilRatio;
+	}
+
+	public void setProductionGasOilRatio(List<Float> productionGasOilRatio) {
+		ProductionGasOilRatio = productionGasOilRatio;
+	}
+
+	public List<Float> getIA() {
+		return IA;
+	}
+
+	public void setIA(List<Float> iA) {
+		IA = iA;
+	}
+
+	public List<Float> getIB() {
+		return IB;
+	}
+
+	public void setIB(List<Float> iB) {
+		IB = iB;
+	}
+
+	public List<Float> getIC() {
+		return IC;
+	}
+
+	public void setIC(List<Float> iC) {
+		IC = iC;
+	}
+
+	public List<Float> getVA() {
+		return VA;
+	}
+
+	public void setVA(List<Float> vA) {
+		VA = vA;
+	}
+
+	public List<Float> getVB() {
+		return VB;
+	}
+
+	public void setVB(List<Float> vB) {
+		VB = vB;
+	}
+
+	public List<Float> getVC() {
+		return VC;
+	}
+
+	public void setVC(List<Float> vC) {
+		VC = vC;
+	}
+
+	public List<Float> getWatt3() {
+		return Watt3;
+	}
+
+	public void setWatt3(List<Float> watt3) {
+		Watt3 = watt3;
+	}
+
+	public List<Float> getVar3() {
+		return Var3;
+	}
+
+	public void setVar3(List<Float> var3) {
+		Var3 = var3;
+	}
+
+	public List<Float> getVA3() {
+		return VA3;
+	}
+
+	public void setVA3(List<Float> vA3) {
+		VA3 = vA3;
+	}
+
+	public List<Float> getPF3() {
+		return PF3;
+	}
+
+	public void setPF3(List<Float> pF3) {
+		PF3 = pF3;
+	}
+
+	public List<Float> getRunFrequency() {
+		return RunFrequency;
+	}
+
+	public void setRunFrequency(List<Float> runFrequency) {
+		RunFrequency = runFrequency;
+	}
+
+	public List<Float> getSignal() {
+		return Signal;
+	}
+
+	public void setSignal(List<Float> signal) {
+		Signal = signal;
+	}
+
+	public List<Float> getBottomHoleTemperature() {
+		return BottomHoleTemperature;
+	}
+
+	public void setBottomHoleTemperature(List<Float> bottomHoleTemperature) {
+		BottomHoleTemperature = bottomHoleTemperature;
+	}
+
+	public void setRunTimeEfficiency(float runTimeEfficiency) {
+		RunTimeEfficiency = runTimeEfficiency;
+	}
+
+    
 }

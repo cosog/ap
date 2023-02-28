@@ -207,15 +207,20 @@
             "colspan": 1
         }],
         "editable": [{
-            "startRow": 4,
-            "startColumn": 11,
-            "endRow": 999999999,
-            "endColumn": 11
-        },{
             "startRow": 1,
             "startColumn": 0,
             "endRow": 1,
             "endColumn": 0
+        },{
+            "startRow": 4,
+            "startColumn": 3,
+            "endRow": 999999999,
+            "endColumn": 3
+        },{
+            "startRow": 4,
+            "startColumn": 11,
+            "endRow": 999999999,
+            "endColumn": 11
         }]
     }, {
         "deviceType": 1,

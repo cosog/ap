@@ -1714,7 +1714,7 @@ public class DriverAPIController extends BaseController{
 						String energyRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime())){
+						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) && rpcDeviceInfo.getTotalKWattH()>0){
 							energyRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+rpcDeviceInfo.getKWattHAcqTime()+"\","
 									+ "\"Total\":{"
@@ -1739,7 +1739,7 @@ public class DriverAPIController extends BaseController{
 						String energyRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalGasAcqTime())){
+						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalGasAcqTime()) && rpcDeviceInfo.getTotalGasVolumetricProduction()>0){
 							energyRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalGasAcqTime()+"\","
 									+ "\"Total\":{"
@@ -1764,7 +1764,7 @@ public class DriverAPIController extends BaseController{
 						String energyRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalWaterAcqTime())){
+						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalWaterAcqTime()) && rpcDeviceInfo.getTotalWaterVolumetricProduction()>0){
 							energyRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalWaterAcqTime()+"\","
 									+ "\"Total\":{"
@@ -2285,7 +2285,8 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-							commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(rpcDeviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date);
+							int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+							commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(rpcDeviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
 						}else{
 							
 						}
@@ -2968,7 +2969,7 @@ public class DriverAPIController extends BaseController{
 						String energyRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime())){
+						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) && pcpDeviceInfo.getTotalKWattH()>0){
 							energyRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+pcpDeviceInfo.getKWattHAcqTime()+"\","
 									+ "\"Total\":{"
@@ -2993,7 +2994,7 @@ public class DriverAPIController extends BaseController{
 						String energyRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalGasAcqTime())){
+						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalGasAcqTime()) && pcpDeviceInfo.getTotalGasVolumetricProduction()>0){
 							energyRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalGasAcqTime()+"\","
 									+ "\"Total\":{"
@@ -3018,7 +3019,7 @@ public class DriverAPIController extends BaseController{
 						String energyRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalWaterAcqTime())){
+						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalWaterAcqTime()) && pcpDeviceInfo.getTotalWaterVolumetricProduction()>0){
 							energyRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalWaterAcqTime()+"\","
 									+ "\"Total\":{"
@@ -3431,7 +3432,8 @@ public class DriverAPIController extends BaseController{
 						}
 						commonDataService.getBaseDao().saveAcqRPMAndCalculateData(pcpDeviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
 						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-							commonDataService.getBaseDao().saveRPMTotalCalculateData(pcpDeviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date);
+							int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+							commonDataService.getBaseDao().saveRPMTotalCalculateData(pcpDeviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
 						}else{
 							
 						}

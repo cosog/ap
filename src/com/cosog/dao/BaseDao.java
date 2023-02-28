@@ -3692,7 +3692,10 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveFESDiagramTotalCalculateData(RPCDeviceInfo rpcDeviceInfo,TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String date) throws SQLException, ParseException {
+	public Boolean saveFESDiagramTotalCalculateData(RPCDeviceInfo rpcDeviceInfo,
+			TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String date,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -3723,6 +3726,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
+					+ "?,"
 					+ "?"
 					+ ")}");
 			cs.setInt(1,rpcDeviceInfo.getId());
@@ -3780,7 +3784,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(42,runRanceClob);
 			
 			cs.setString(43, date);
-			
+			cs.setInt(44, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3793,7 +3797,9 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveFESDiagramTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String date) throws SQLException, ParseException {
+	public Boolean saveFESDiagramTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String date,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -3824,6 +3830,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
+					+ "?,"
 					+ "?"
 					+ ")}");
 			cs.setInt(1,StringManagerUtils.stringToInteger(totalAnalysisRequestData.getWellName()));
@@ -3883,7 +3890,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(42,runRanceClob);
 			
 			cs.setString(43, date);
-			
+			cs.setInt(44, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3897,7 +3904,7 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	
-	public Boolean saveFESDiagramReTotalData(String recordId,TotalAnalysisResponseData totalAnalysisResponseData) throws SQLException, ParseException {
+	public Boolean saveFESDiagramReTotalData(String recordId,TotalAnalysisResponseData totalAnalysisResponseData,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -3917,6 +3924,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,"
+					+ "?,"
 					+ "?,?,?"
 					+ ")}");
 			cs.setInt(1,StringManagerUtils.stringToInteger(recordId));
@@ -3963,6 +3971,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(33, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCasingPressure().getValue());
 			
+			cs.setInt(35, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3975,7 +3984,10 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveRPMTotalCalculateData(PCPDeviceInfo pcpDeviceInfo,TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String date) throws SQLException, ParseException {
+	public Boolean saveRPMTotalCalculateData(PCPDeviceInfo pcpDeviceInfo,
+			TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String date,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -3991,6 +4003,7 @@ public class BaseDao extends HibernateDaoSupport {
 		try {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmdaily("
 					+ "?,?,"
+					+ "?,"
 					+ "?,"
 					+ "?,"
 					+ "?,"
@@ -4044,6 +4057,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(29,runRanceClob);
 			
 			cs.setString(30, date);
+			cs.setInt(31, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4057,7 +4071,9 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	
-	public Boolean saveRPMTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String date) throws SQLException, ParseException {
+	public Boolean saveRPMTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String date,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -4073,6 +4089,7 @@ public class BaseDao extends HibernateDaoSupport {
 		try {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmdaily("
 					+ "?,?,"
+					+ "?,"
 					+ "?,"
 					+ "?,"
 					+ "?,"
@@ -4126,6 +4143,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(29,runRanceClob);
 			
 			cs.setString(30, date);
+			cs.setInt(31, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4138,7 +4156,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveRPMReTotalData(String recordId,TotalAnalysisResponseData totalAnalysisResponseData) throws SQLException, ParseException {
+	public Boolean saveRPMReTotalData(String recordId,TotalAnalysisResponseData totalAnalysisResponseData,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -4146,6 +4164,7 @@ public class BaseDao extends HibernateDaoSupport {
 		try {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmdailyrecal("
 					+ "?,?,"
+					+ "?,"
 					+ "?,"
 					+ "?,"
 					+ "?,"
@@ -4184,7 +4203,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(19, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(21, totalAnalysisResponseData.getCasingPressure().getValue());
-			
+			cs.setInt(22, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4193,6 +4212,37 @@ public class BaseDao extends HibernateDaoSupport {
 			if(cs!=null)
 				cs.close();
 			conn.close();
+		}
+		return true;
+	}
+	
+	public Boolean initDailyReportData(){
+		Connection conn=null;
+		CallableStatement cs=null;
+		try {
+			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+			cs=null;
+			cs = conn.prepareCall("{call prd_init_device_daily()}");
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				try {
+					cs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			if(conn!=null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return true;
 	}

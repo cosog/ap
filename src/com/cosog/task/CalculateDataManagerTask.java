@@ -74,6 +74,20 @@ public class CalculateDataManagerTask {
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
+	/**
+	 * 报表数据初始化
+	 * */
+	@SuppressWarnings({ "static-access", "unused" })
+	@Scheduled(cron = "1 0 0/24 * * ?")
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	public void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=0";
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+		url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=1";
+		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+	}
+	
 	public static  int getCount(String sql){  
         int result=0;
         Connection conn=null;

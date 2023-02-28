@@ -360,6 +360,11 @@ var PCPDailyReportHelper = {
 	        	}
 	        }
 	        
+	        pcpDailyReportHelper.addEditableColor = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.color='#ff0000';    
+	        }
+	        
 	        pcpDailyReportHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	if(pcpDailyReportHelper!=null && pcpDailyReportHelper.hot!=null){
@@ -494,6 +499,7 @@ var PCPDailyReportHelper = {
 	                    				&& col<=pcpDailyReportHelper.templateData.editable[i].endColumn
 	                    		){
 	                    			cellProperties.readOnly = false;
+	                    			cellProperties.renderer = pcpDailyReportHelper.addEditableColor;
 	                    		}
 	                    	}
 	                    }
@@ -644,6 +650,7 @@ var PCPDailyReportHelper = {
 	                        if (rdata.success) {
 	                        	Ext.MessageBox.alert("信息", '保存成功');
 	                        	pcpDailyReportHelper.clearContainer();
+	                        	CreatePCPDailyReportCurve();
 	                        	CreatePCPDailyReportTable();
 	                        } else {
 	                        	pcpDailyReportHelper.clearContainer();

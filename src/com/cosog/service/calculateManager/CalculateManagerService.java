@@ -1589,7 +1589,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
 					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
-						getBaseDao().saveFESDiagramReTotalData(recordId,totalAnalysisResponseData);
+						int recordCount=acqTimeList.size();
+						getBaseDao().saveFESDiagramReTotalData(recordId,totalAnalysisResponseData,recordCount);
 					}
 				}
 			}
@@ -1727,7 +1728,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
 					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
-						getBaseDao().saveRPMReTotalData(recordId,totalAnalysisResponseData);
+						int recordCount=acqTimeList.size();
+						getBaseDao().saveRPMReTotalData(recordId,totalAnalysisResponseData,recordCount);
 					}
 				}
 			}

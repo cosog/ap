@@ -254,6 +254,32 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
+	@RequestMapping("/initDailyReportData")
+	public String initDailyReportData() throws ParseException, SQLException, IOException{
+		String deviceTypeStr=ParamUtils.getParameter(request, "deviceType");
+		String deviceTypeName="抽油机井";
+		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
+		if(deviceType==1){
+			deviceTypeName="螺杆泵井井";
+		}
+		calculateDataService.initDailyReportData(deviceType);
+		System.out.println(deviceTypeName+"报表数据初始化完成-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	//设置字符串utf-8编码
     public static String StringToUTF8(String xml,String type){
     	StringBuffer sb = new StringBuffer();

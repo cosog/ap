@@ -21,6 +21,8 @@ import org.hibernate.engine.jdbc.SerializableBlobProxy;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.ReportTemplate;
+import com.cosog.model.ReportUnitItem;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
@@ -31,6 +33,7 @@ import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.drive.AcquisitionGroupResolutionData;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.service.base.BaseService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
@@ -321,7 +324,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String sql="select t.id,t.wellname from tbl_rpcdevice t ";
+		String sql="select t.id,t.wellname from tbl_rpcdevice t where 1=1";
 		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -427,6 +430,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}";
 							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 							timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
+							if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
+								commStatus=commResponseData.getDaily().getCommStatus();
+								commTime=commResponseData.getDaily().getCommEfficiency().getTime();
+								commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
+								commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+							}
+
+							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
+								runStatus=timeEffResponseData.getDaily().getRunStatus();
+								runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
+								runTimeEfficiency=timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
+								runRange=timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
+							}
 							break;
 						}
 					}
@@ -434,7 +450,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 					for(int j=0;j<statusList.size();j++){
 						Object[] statusObj=(Object[]) statusList.get(j);
 						if(deviceId.equals(statusObj[0].toString())){
-							commStatus=StringManagerUtils.stringToInteger(statusObj[1]+"")==1;
+							commStatus=StringManagerUtils.stringToInteger(statusObj[1]+"")>=1;
 							commTime=StringManagerUtils.stringToFloat(statusObj[2]+"");
 							commTimeEfficiency=StringManagerUtils.stringToFloat(statusObj[3]+"");
 							commRange=StringManagerUtils.CLOBObjectToString(statusObj[4]);
@@ -497,24 +513,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 						RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 						
 						acqTimeList.add(resuleObj[1]+"");
-						
-						if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
-							commStatusList.add(commResponseData.getDaily().getCommStatus()?1:0);
-							commTime=commResponseData.getDaily().getCommEfficiency().getTime();
-							commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
-							commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
-						}else if(StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())).equals(tatalDate)){//如果是实时汇总
-							commStatusList.add(commStatus?1:0);
-						}
-
-						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
-							runStatusList.add(timeEffResponseData.getDaily().getRunStatus()?1:0);
-							runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
-							runTimeEfficiency=timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
-							runRange=timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
-						}else if(StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())).equals(tatalDate)){//如果是实时汇总
-							runStatusList.add(runStatus?1:0);
-						}
+						commStatusList.add(commStatus?1:0);
+						runStatusList.add(runStatus?1:0);
 					
 						ResultCodeList.add(StringManagerUtils.stringToInteger(resuleObj[2]+""));
 						strokeList.add(StringManagerUtils.stringToFloat(resuleObj[3]+""));
@@ -732,6 +732,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}";
 							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 							timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
+							if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
+								commStatus=commResponseData.getDaily().getCommStatus();
+								commTime=commResponseData.getDaily().getCommEfficiency().getTime();
+								commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
+								commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+							}
+
+							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
+								runStatus=timeEffResponseData.getDaily().getRunStatus();
+								runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
+								runTimeEfficiency=timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
+								runRange=timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
+							}
 							break;
 						}
 					}
@@ -786,24 +799,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 						PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 						
 						acqTimeList.add(resuleObj[1]+"");
-						
-						if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
-							commStatusList.add(commResponseData.getDaily().getCommStatus()?1:0);
-							commTime=commResponseData.getDaily().getCommEfficiency().getTime();
-							commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
-							commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
-						}else if(StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())).equals(tatalDate)){//如果是实时汇总
-							commStatusList.add(commStatus?1:0);
-						}
-
-						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
-							runStatusList.add(timeEffResponseData.getDaily().getRunStatus()?1:0);
-							runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
-							runTimeEfficiency=timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
-							runRange=timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
-						}else if(StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())).equals(tatalDate)){//如果是实时汇总
-							runStatusList.add(runStatus?1:0);
-						}
+						commStatusList.add(commStatus?1:0);
+						runStatusList.add(runStatus?1:0);
 						rpmList.add(StringManagerUtils.stringToFloat(resuleObj[2]+""));
 						
 						theoreticalProductionList.add(StringManagerUtils.stringToFloat(resuleObj[3]+""));
@@ -878,10 +875,82 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public void saveFSDiagramDailyCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String tatalDate) throws SQLException, ParseException{
-		this.getBaseDao().saveFESDiagramTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
+		int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+		this.getBaseDao().saveFESDiagramTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate,recordCount);
 	}
 	
 	public void saveRPMTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String tatalDate) throws SQLException, ParseException{
-		this.getBaseDao().saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
+		int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+		this.getBaseDao().saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate,recordCount);
+	}
+	
+	@SuppressWarnings("unused")
+	public void initDailyReportData(int deviceType){
+		String deviceTableName="tbl_rpcdevice";
+		String tableName="tbl_rpcdailycalculationdata";
+		if(deviceType==1){
+			tableName="tbl_pcpdailycalculationdata";
+			deviceTableName="tbl_pcpdevice";
+		}
+		
+		
+		boolean initResult=this.getBaseDao().initDailyReportData();
+		
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
+				ReportTemplate.Template template=reportTemplate.getReportTemplate().get(i);
+				if(template.getDeviceType()==deviceType && template.getEditable()!=null && template.getEditable().size()>0){
+					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+							+ " where t.unitcode='"+template.getTemplateCode()+"' "
+							+ " and t.sort>=0"
+							+ " order by t.sort";
+					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+					
+					for(int j=0;j<reportItemQuertList.size();j++){
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
+						ReportUnitItem reportUnitItem=new ReportUnitItem();
+						reportUnitItem.setItemName(reportItemObj[0]+"");
+						reportUnitItem.setItemCode(reportItemObj[1]+"");
+						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+						
+						for(int k=0;k<template.getEditable().size();k++){
+							ReportTemplate.Editable editable=template.getEditable().get(k);
+							if(editable.getStartRow()>=template.getHeader().size() && reportUnitItem.getSort()-1>=editable.getStartColumn() && reportUnitItem.getSort()-1<=editable.getEndColumn()){//索引起始不同
+								reportItemList.add(reportUnitItem);
+								break;
+							}
+						}
+					}
+					if(reportItemList.size()>0){
+						StringBuffer updateColBuff = new StringBuffer();
+						for(int j=0;j<reportItemList.size();j++){
+							updateColBuff.append(reportItemList.get(j).getItemCode()+",");
+						}
+						if(updateColBuff.toString().endsWith(",")){
+							updateColBuff.deleteCharAt(updateColBuff.length() - 1);
+						}
+						
+						String updateSql="update "+tableName+" t set ("+updateColBuff+")="
+								+ " (select "+updateColBuff+" from "+tableName+" t2 "
+										+ " where t2.wellid=t.wellid and t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')-1) "
+								+ " where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') "
+								+ " and t.wellid in ( select t3.id from "+deviceTableName+" t3,tbl_protocolreportinstance t4 "
+									+ " where t3.reportinstancecode=t4.code and t4.unitcode='"+template.getTemplateCode()+"'   )";
+						try {
+							int r=this.getBaseDao().updateOrDeleteBySql(updateSql);
+//							System.out.println(updateSql);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							continue;
+						}
+					}
+				}
+			}
+		}
 	}
 }

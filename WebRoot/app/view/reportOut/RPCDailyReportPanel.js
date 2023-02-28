@@ -405,9 +405,14 @@ var RPCDailyReportHelper = {
 		        			break;
 		        		}
 		        	}
+	        		
 	        	}
 	        }
 	        
+	        rpcDailyReportHelper.addEditableColor = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.color='#ff0000';    
+	        }
 	        
 	        rpcDailyReportHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -511,6 +516,7 @@ var RPCDailyReportHelper = {
 	                    				&& col<=rpcDailyReportHelper.templateData.editable[i].endColumn
 	                    		){
 	                    			cellProperties.readOnly = false;
+	                    			cellProperties.renderer = rpcDailyReportHelper.addEditableColor;
 	                    		}
 	                    	}
 	                    }
@@ -671,6 +677,7 @@ var RPCDailyReportHelper = {
 	                        	Ext.MessageBox.alert("信息", '保存成功');
 	                        	rpcDailyReportHelper.clearContainer();
 	                        	CreateRPCDailyReportTable();
+	                        	CreateRPCDailyReportCurve();
 	                        } else {
 	                        	rpcDailyReportHelper.clearContainer();
 	                        	Ext.MessageBox.alert("信息", "数据保存失败");

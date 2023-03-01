@@ -30,6 +30,8 @@ import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AcqInstanceOwnItem.AcqItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem.AlarmItem;
+import com.cosog.model.calculate.CalculateColumnInfo;
+import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.calculate.RPCCalculateRequestData.Balance;
@@ -93,6 +95,7 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			jedis.del("modbusProtocolConfig".getBytes());
 			jedis.del("ProtocolMappingColumn".getBytes());
+			jedis.del("CalculateColumnInfo".getBytes());
 			jedis.del("ProtocolRunStatusConfig".getBytes());
 			jedis.del("RPCDeviceInfo".getBytes());
 			jedis.del("RPCDeviceTodayData".getBytes());
@@ -2678,6 +2681,129 @@ public class MemoryDataManagerTask {
 					name=reportTemplate.getReportTemplate().get(i).getTemplateName();
 					break;
 				}
+			}
+		}
+		return name;
+	}
+	
+	public static CalculateColumnInfo getCalColumnsInfo(){
+
+		CalculateColumnInfo calculateColumnInfo=null;
+		List<CalculateColumn> rpcCalculateColumnList=new ArrayList<CalculateColumn>();
+		List<CalculateColumn> pcpCalculateColumnList=new ArrayList<CalculateColumn>();
+		calculateColumnInfo=new CalculateColumnInfo();
+		calculateColumnInfo.setRPCCalculateColumnList(rpcCalculateColumnList);
+		calculateColumnInfo.setPCPCalculateColumnList(pcpCalculateColumnList);
+		
+		//抽油机井
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("运行状态","RunStatus",1) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("A相电流","IA",2) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("B相电流","IB",3) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("C相电流","IC",4) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("A相电压","VA",5) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("B相电压","VB",6) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("C相电压","VC",7) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("有功功耗","TotalKWattH",8) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("无功功耗","TotalKVarH",9) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("有功功率","Watt3",10) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("无功功率","Var3",11) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功率因数","PF3",12) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("变频设置频率","SetFrequency",13) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("变频运行频率","RunFrequency",14) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("油压","TubingPressure",15) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("套压","CasingPressure",16) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("井口温度","WellHeadTemperature",17) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("井底压力","BottomHolePressure",18) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("井底温度","BottomHoleTemperature",19) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("动液面","ProducingfluidLevel",20) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("含水率","VolumeWaterCut",21) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图实测点数","FESDiagramAcqCount",22) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图采集时间","FESDiagramAcqtime",23) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("冲次","SPM",24) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("冲程","Stroke",25) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-位移","Position_Curve",26) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-载荷","Load_Curve",27) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-电流","Current_Curve",28) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-功率","Power_Curve",29) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产气量","TotalGasVolumetricProduction",30) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产水量","TotalWaterVolumetricProduction",31) );
+		
+		//螺杆泵井
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("运行状态","RunStatus",1) );
+		
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("A相电流","IA",2) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("B相电流","IB",3) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("C相电流","IC",4) );
+		
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("A相电压","VA",5) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("B相电压","VB",6) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("C相电压","VC",7) );
+		
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("有功功耗","TotalKWattH",8) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("无功功耗","TotalKVarH",9) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("有功功率","Watt3",10) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("无功功率","Var3",11) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("功率因数","PF3",12) );
+		
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("变频设置频率","SetFrequency",13) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("变频运行频率","RunFrequency",14) );
+		
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("油压","TubingPressure",15) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("套压","CasingPressure",16) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("井口温度","WellHeadTemperature",17) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("井底压力","BottomHolePressure",18) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("井底温度","BottomHoleTemperature",19) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("动液面","ProducingfluidLevel",20) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("含水率","VolumeWaterCut",21) );
+		
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("螺杆泵转速","RPM",22) );
+		
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("累计产气量","TotalGasVolumetricProduction",23) );
+		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("累计产水量","TotalWaterVolumetricProduction",24) );
+		
+		return calculateColumnInfo;
+	}
+	
+	public static String getCalculateColumnFromName(int deviceType,String name){
+		if(!StringManagerUtils.isNotNull(name)){
+			return "";
+		}
+		CalculateColumnInfo calculateColumnInfo=getCalColumnsInfo();
+		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
+		String code="";
+		if(deviceType!=0){
+			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
+		}
+		for(int i=0;i<calculateColumnList.size();i++){
+			if(name.equalsIgnoreCase(calculateColumnList.get(i).getName())){
+				code=calculateColumnList.get(i).getCode();
+				break;
+			}
+		}
+		return code;
+	}
+	
+	public static String getCalculateColumnNameFromCode(int deviceType,String code){
+		if(!StringManagerUtils.isNotNull(code)){
+			return "";
+		}
+		CalculateColumnInfo calculateColumnInfo=getCalColumnsInfo();
+		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
+		String name="";
+		if(deviceType!=0){
+			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
+		}
+		for(int i=0;i<calculateColumnList.size();i++){
+			if(code.equalsIgnoreCase(calculateColumnList.get(i).getCode())){
+				name=calculateColumnList.get(i).getName();
+				break;
 			}
 		}
 		return name;

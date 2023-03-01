@@ -650,7 +650,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			record.add("");
 			sheetDataList.add(record);
 			
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,3);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,3,null);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1007,8 +1007,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Gson gson =new Gson();
 			String reportTemplateCode="";
 			int headerRowCount=0;
-			String title="";
-			String fileName="";	
+			String title=wellName+"井生产报表";
+			String fileName=wellName+"井生产报表";
 			String deviceTableName="tbl_rpcdevice";
 			String tableName="VIW_RPCDAILYCALCULATIONDATA";
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -1074,7 +1074,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				
+				fileName="";
 				fileName+=title+"-"+startDate;
 		        if(!startDate.equalsIgnoreCase(endDate)){
 		        	fileName+="~"+endDate;
@@ -1172,7 +1172,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1761,7 +1761,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			record.add("");
 			sheetDataList.add(record);
 			
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,3);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,3,null);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

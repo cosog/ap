@@ -2,6 +2,7 @@ package com.cosog.utils.excel;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.cosog.model.ReportTemplate;
 import com.cosog.utils.StringManagerUtils;
 
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
@@ -853,7 +854,8 @@ public class ExcelUtils {
         }
     }
     
-    public static void exportDataWithTitleAndHead(HttpServletResponse response, String fileName, String sheetName, List<List<Object>> sheetDataList, File file, Map<Integer, List<String>> selectMap,int headerRowCount) {
+    public static void exportDataWithTitleAndHead(HttpServletResponse response, String fileName, String sheetName, List<List<Object>> sheetDataList, 
+    		File file, Map<Integer, List<String>> selectMap,int headerRowCount,ReportTemplate.Template template) {
     	// 整个 Excel 表格 book 对象
     	SXSSFWorkbook book = new SXSSFWorkbook();
 
@@ -892,7 +894,15 @@ public class ExcelUtils {
 		rowStyle.setBorderTop(BorderStyle.THIN); //上边框
 		// 设置表格列宽度（默认为15个字节）
 		sheet.setDefaultColumnWidth(15);
-		sheet.setColumnWidth(0, 256*7+184);//列宽7 宽度的单位是字符数的256分之一
+		if(template!=null && template.getColumnWidths()!=null && template.getColumnWidths().size()>0){
+			for(int i=0;i<template.getColumnWidths().size();i++){
+				int colummWidth=15;
+				float coefficient=((float)template.getColumnWidths().get(i))/((float)80);
+				colummWidth=(int) (colummWidth*coefficient);
+				sheet.setColumnWidth(i, colummWidth*256+184);//列宽7 宽度的单位是字符数的256分之一
+			}
+		}
+		
 		// 创建合并算法数组
 		int rowLength = sheetDataList.size();
 		int columnLength = rowLength>0?sheetDataList.get(0).size():0;

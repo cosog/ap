@@ -24,10 +24,12 @@ import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.User;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
+import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.UserInfo;
+import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
@@ -3796,6 +3798,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getDatabaseColumnMappingTable(String classes,String deviceType,String protocolCode) {
 		StringBuffer result_json = new StringBuffer();
+		StringBuffer calColumnNameBuff = new StringBuffer();
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where t.protocoltype="+deviceType;
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
@@ -3837,14 +3840,32 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",children:[] },"
 				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",children:[] }"
 				+ "]";
+		
+		calColumnNameBuff.append("[''");
+		CalculateColumnInfo calculateColumnInfo=MemoryDataManagerTask.getCalColumnsInfo();
+		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
+		}
+		for(int i = 0; i < calculateColumnList.size(); i++){
+			calColumnNameBuff.append(",'"+calculateColumnList.get(i).getName()+"'");
+		}
+		if(calColumnNameBuff.toString().endsWith(",")){
+			calColumnNameBuff.deleteCharAt(calColumnNameBuff.length() - 1);
+		}
+		calColumnNameBuff.append("]");
+		
 		List<?> list=this.findCallSql(sql);
-		result_json.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"calColumnNameList\":"+calColumnNameBuff+",\"columns\":"+columns+",\"totalRoot\":[");
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
+			String calColumn=obj[3]+"";
+			String calColumnName=MemoryDataManagerTask.getCalculateColumnNameFromCode(StringManagerUtils.stringToInteger(deviceType), calColumn);
+			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"itemName\":\""+obj[1]+"\",");
 			result_json.append("\"itemColumn\":\""+obj[2]+"\",");
-			result_json.append("\"calColumn\":\""+obj[3]+"\"},");
+			result_json.append("\"calColumnName\":\""+calColumnName+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -4055,7 +4076,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(databaseMappingProHandsontableChangedData.getUpdatelist()!=null){
 			String updateSql="";
 			for(int i=0;i<databaseMappingProHandsontableChangedData.getUpdatelist().size();i++){
-				updateSql="update tbl_datamapping t set t.calcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumn()+"'"
+				String calColumn=MemoryDataManagerTask.getCalculateColumnFromName(StringManagerUtils.stringToInteger(protocolType), 
+						databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumnName());
+				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"'"
 						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName()+"' "
 						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn()+"' "
 						+ " and t.protocoltype="+protocolType;

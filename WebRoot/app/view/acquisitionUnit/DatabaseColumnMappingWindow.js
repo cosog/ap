@@ -127,21 +127,23 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode){
 			
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
-				var colHeaders="['序号','名称','字段','计算字段']";
+				var colHeaders="['序号','名称','字段','计算含义']";
 				var columns="[" 
 						+"{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemColumn'},"
-						+"{data:'calColumn'}"
+						+"{data:'calColumnName'}"
 						+"]";
 				databaseColumnMappingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				databaseColumnMappingHandsontableHelper.columns=Ext.JSON.decode(columns);
+				databaseColumnMappingHandsontableHelper.calColumnDropdown=result.calColumnNameList;
 				if(result.totalRoot.length==0){
 					databaseColumnMappingHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
 					databaseColumnMappingHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
+				databaseColumnMappingHandsontableHelper.calColumnDropdown=result.calColumnNameList;
 				databaseColumnMappingHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 		},
@@ -167,7 +169,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        databaseColumnMappingHandsontableHelper.updatelist=[];
 	        databaseColumnMappingHandsontableHelper.delidslist=[];
 	        databaseColumnMappingHandsontableHelper.insertlist=[];
-	        
+	        databaseColumnMappingHandsontableHelper.calColumnDropdown=[];
 	        
 	        databaseColumnMappingHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -218,6 +220,11 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    if(visualColIndex<=2){
 	                    	cellProperties.readOnly = true;
 	                    	cellProperties.renderer = databaseColumnMappingHandsontableHelper.addBoldBg;
+	                    }else if(visualColIndex==3){
+	                    	this.type = 'dropdown';
+	                    	this.source = databaseColumnMappingHandsontableHelper.calColumnDropdown;
+	                    	this.strict = true;
+	                    	this.allowInvalid = false;
 	                    }
 	                    return cellProperties;
 	                },

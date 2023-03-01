@@ -58,6 +58,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     	title:'属性',
                     	collapsible: true,
                         split: true,
+                        hidden: true,
                     	layout: 'fit',
                         html:'<div class="ModbusProtocolReportUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {

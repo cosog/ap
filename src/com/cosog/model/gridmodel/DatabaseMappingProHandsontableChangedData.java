@@ -38,6 +38,8 @@ public class DatabaseMappingProHandsontableChangedData {
 	    private String itemColumn;
 	    
 	    private String calColumn;
+	    
+	    private String calColumnName;
 
 		public String getId() {
 			return id;
@@ -69,6 +71,14 @@ public class DatabaseMappingProHandsontableChangedData {
 
 		public void setCalColumn(String calColumn) {
 			this.calColumn = calColumn;
+		}
+
+		public String getCalColumnName() {
+			return calColumnName;
+		}
+
+		public void setCalColumnName(String calColumnName) {
+			this.calColumnName = calColumnName;
 		}
 	}
 }

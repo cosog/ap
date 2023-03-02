@@ -943,7 +943,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 						try {
 							int r=this.getBaseDao().updateOrDeleteBySql(updateSql);
 //							System.out.println(updateSql);
-						} catch (SQLException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 							continue;

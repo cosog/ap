@@ -1439,7 +1439,9 @@ public class DriverAPIController extends BaseController{
 								
 								DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
 								
-								if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null){
+								if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null 
+//										&& acqGroup.getValue().get(i).size()==protocol.getItems().get(j).getQuantity() 
+										){
 									value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 								}
 								String rawValue=value;
@@ -1454,9 +1456,13 @@ public class DriverAPIController extends BaseController{
 								int sort=9999;
 								
 								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
-									updateRealtimeData+=",t."+columnName+"='"+rawValue+"'";
+									String saveValue=rawValue;
+									if(rawValue.length()>50){
+										saveValue=rawValue.substring(0, 50);
+									}
+									updateRealtimeData+=",t."+columnName+"='"+saveValue+"'";
 									insertHistColumns+=","+columnName;
-									insertHistValue+=",'"+rawValue+"'";
+									insertHistValue+=",'"+saveValue+"'";
 									if(protocol.getItems().get(j).getResolutionMode()==1||protocol.getItems().get(j).getResolutionMode()==2){//如果是枚举量或数据量
 										if(protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
 											for(int l=0;l<protocol.getItems().get(j).getMeaning().size();l++){
@@ -1531,39 +1537,52 @@ public class DriverAPIController extends BaseController{
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 									
+									
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
 										isAcqRunStatus=true;
-										int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-										ProtocolRunStatusConfig protocolRunStatusConfig=null;
-										if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-											protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-										}
-										if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
-											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
-												runStatus=1;
+										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
+											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+											ProtocolRunStatusConfig protocolRunStatusConfig=null;
+											if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+												protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+											}
+											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+													runStatus=1;
+												}
+											}else{
+												if(rawRunStatus==1){
+													runStatus=1;
+												}else{
+													runStatus=0;
+												}
 											}
 										}else{
-											if(rawRunStatus==1){
-												runStatus=1;
-											}else{
-												runStatus=0;
-											}
+											runStatus=rpcDeviceInfo.getRunStatus();
 										}
+												
+										
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqEnergy=true;
 											totalKWattH=StringManagerUtils.stringToFloat(rawValue);
+										}else{
+											totalKWattH=rpcDeviceInfo.getTotalKWattH();
 										}
 									}else if("TotalGasVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计产气量
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqTotalGasProd=true;
 											totalGasVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
+										}else{
+											totalGasVolumetricProduction=rpcDeviceInfo.getTotalGasVolumetricProduction();
 										}
 									}
 									else if("TotalWaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计产水量
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqTotalWaterProd=true;
 											totalWaterVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
+										}else{
+											totalWaterVolumetricProduction=rpcDeviceInfo.getTotalWaterVolumetricProduction();
 										}
 									}else if("TubingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
@@ -1711,77 +1730,87 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
-						String energyRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) && rpcDeviceInfo.getTotalKWattH()>0){
-							energyRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+rpcDeviceInfo.getKWattHAcqTime()+"\","
+						if(totalKWattH >= rpcDeviceInfo.getTotalKWattH()){
+							String energyRequest="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) && rpcDeviceInfo.getTotalKWattH()>0){
+								energyRequest+= "\"Last\":{"
+										+ "\"AcqTime\": \""+rpcDeviceInfo.getKWattHAcqTime()+"\","
+										+ "\"Total\":{"
+										+ "\"KWattH\":"+rpcDeviceInfo.getTotalKWattH()
+										+ "},\"Today\":{"
+										+ "\"KWattH\":"+rpcDeviceInfo.getTodayKWattH()
+										+ "}"
+										+ "},";
+							}	
+							energyRequest+= "\"Current\": {"
+									+ "\"AcqTime\":\""+acqTime+"\","
 									+ "\"Total\":{"
-									+ "\"KWattH\":"+rpcDeviceInfo.getTotalKWattH()
-									+ "},\"Today\":{"
-									+ "\"KWattH\":"+rpcDeviceInfo.getTodayKWattH()
+									+ "\"KWattH\":"+totalKWattH
 									+ "}"
-									+ "},";
-						}	
-						energyRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"Total\":{"
-								+ "\"KWattH\":"+totalKWattH
-								+ "}"
-								+ "}"
-								+ "}";
-						energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+									+ "}"
+									+ "}";
+							energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+						}
 					}
 					
 					//判断是否采集了累计气量，如采集则进行日产气量计算
 					if(isAcqTotalGasProd){
-						String energyRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalGasAcqTime()) && rpcDeviceInfo.getTotalGasVolumetricProduction()>0){
-							energyRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalGasAcqTime()+"\","
+						if(totalGasVolumetricProduction>=rpcDeviceInfo.getTotalGasVolumetricProduction()){
+							String energyRequest="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalGasAcqTime()) && rpcDeviceInfo.getTotalGasVolumetricProduction()>0){
+								energyRequest+= "\"Last\":{"
+										+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalGasAcqTime()+"\","
+										+ "\"Total\":{"
+										+ "\"KWattH\":"+rpcDeviceInfo.getTotalGasVolumetricProduction()
+										+ "},\"Today\":{"
+										+ "\"KWattH\":"+rpcDeviceInfo.getGasVolumetricProduction()
+										+ "}"
+										+ "},";
+							}	
+							energyRequest+= "\"Current\": {"
+									+ "\"AcqTime\":\""+acqTime+"\","
 									+ "\"Total\":{"
-									+ "\"KWattH\":"+rpcDeviceInfo.getTotalGasVolumetricProduction()
-									+ "},\"Today\":{"
-									+ "\"KWattH\":"+rpcDeviceInfo.getGasVolumetricProduction()
+									+ "\"KWattH\":"+totalGasVolumetricProduction
 									+ "}"
-									+ "},";
-						}	
-						energyRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"Total\":{"
-								+ "\"KWattH\":"+totalGasVolumetricProduction
-								+ "}"
-								+ "}"
-								+ "}";
-						totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+									+ "}"
+									+ "}";
+							totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+						}
 					}
 					
 					//判断是否采集了累计水量，如采集则进行日产水量计算
 					if(isAcqTotalWaterProd){
-						String energyRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalWaterAcqTime()) && rpcDeviceInfo.getTotalWaterVolumetricProduction()>0){
-							energyRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalWaterAcqTime()+"\","
+						if(totalWaterVolumetricProduction>=rpcDeviceInfo.getTotalWaterVolumetricProduction()){
+							String energyRequest="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalWaterAcqTime()) && rpcDeviceInfo.getTotalWaterVolumetricProduction()>0){
+								energyRequest+= "\"Last\":{"
+										+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalWaterAcqTime()+"\","
+										+ "\"Total\":{"
+										+ "\"KWattH\":"+rpcDeviceInfo.getTotalWaterVolumetricProduction()
+										+ "},\"Today\":{"
+										+ "\"KWattH\":"+rpcDeviceInfo.getWaterVolumetricProduction()
+										+ "}"
+										+ "},";
+							}	
+							energyRequest+= "\"Current\": {"
+									+ "\"AcqTime\":\""+acqTime+"\","
 									+ "\"Total\":{"
-									+ "\"KWattH\":"+rpcDeviceInfo.getTotalWaterVolumetricProduction()
-									+ "},\"Today\":{"
-									+ "\"KWattH\":"+rpcDeviceInfo.getWaterVolumetricProduction()
+									+ "\"KWattH\":"+totalWaterVolumetricProduction
 									+ "}"
-									+ "},";
-						}	
-						energyRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"Total\":{"
-								+ "\"KWattH\":"+totalWaterVolumetricProduction
-								+ "}"
-								+ "}"
-								+ "}";
-						totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+									+ "}"
+									+ "}";
+							totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+							
+							if(totalWaterCalculateResponseData!=null && totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()==0 && rpcDeviceInfo.getWaterVolumetricProduction()>0){
+								System.out.println("计算日产水量为0-"+acqTime+":"+energyRequest);
+							}
+						}
 					}
 					
 					//进行功图计算
@@ -2774,10 +2803,13 @@ public class DriverAPIController extends BaseController{
 								int sort=9999;
 								
 								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
-									updateRealtimeData+=",t."+columnName+"='"+rawValue+"'";
+									String saveValue=rawValue;
+									if(rawValue.length()>50){
+										saveValue=rawValue.substring(0, 50);
+									}
+									updateRealtimeData+=",t."+columnName+"='"+saveValue+"'";
 									insertHistColumns+=","+columnName;
-									insertHistValue+=",'"+rawValue+"'";
-									
+									insertHistValue+=",'"+saveValue+"'";
 									
 									if(protocol.getItems().get(j).getResolutionMode()==1||protocol.getItems().get(j).getResolutionMode()==2){//如果是枚举量或数据量
 										if(protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
@@ -2856,26 +2888,46 @@ public class DriverAPIController extends BaseController{
 									
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
 										isAcqRunStatus=true;
-										int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-										ProtocolRunStatusConfig protocolRunStatusConfig=null;
-										if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-											protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-										}
-										if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
-											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
-												runStatus=1;
+										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
+											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+											ProtocolRunStatusConfig protocolRunStatusConfig=null;
+											if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+												protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+											}
+											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+													runStatus=1;
+												}
+											}else{
+												if(rawRunStatus==1){
+													runStatus=1;
+												}else{
+													runStatus=0;
+												}
 											}
 										}else{
-											if(rawRunStatus==1){
-												runStatus=1;
-											}else{
-												runStatus=0;
-											}
+											runStatus=pcpDeviceInfo.getRunStatus();
 										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqEnergy=true;
 											totalKWattH=StringManagerUtils.stringToFloat(rawValue);
+										}else{
+											totalKWattH=pcpDeviceInfo.getTotalKWattH();
+										}
+									}else if("TotalGasVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计产气量
+										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
+											isAcqTotalGasProd=true;
+											totalGasVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
+										}else{
+											totalGasVolumetricProduction=pcpDeviceInfo.getTotalGasVolumetricProduction();
+										}
+									}else if("TotalWaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计产水量
+										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
+											isAcqTotalWaterProd=true;
+											totalWaterVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
+										}else{
+											totalWaterVolumetricProduction=pcpDeviceInfo.getTotalWaterVolumetricProduction();
 										}
 									}else if("TubingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
@@ -2966,77 +3018,83 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
-						String energyRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) && pcpDeviceInfo.getTotalKWattH()>0){
-							energyRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+pcpDeviceInfo.getKWattHAcqTime()+"\","
+						if(totalKWattH >= pcpDeviceInfo.getTotalKWattH()){
+							String energyRequest="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) && pcpDeviceInfo.getTotalKWattH()>0){
+								energyRequest+= "\"Last\":{"
+										+ "\"AcqTime\": \""+pcpDeviceInfo.getKWattHAcqTime()+"\","
+										+ "\"Total\":{"
+										+ "\"KWattH\":"+pcpDeviceInfo.getTotalKWattH()
+										+ "},\"Today\":{"
+										+ "\"KWattH\":"+pcpDeviceInfo.getTodayKWattH()
+										+ "}"
+										+ "},";
+							}	
+							energyRequest+= "\"Current\": {"
+									+ "\"AcqTime\":\""+acqTime+"\","
 									+ "\"Total\":{"
-									+ "\"KWattH\":"+pcpDeviceInfo.getTotalKWattH()
-									+ "},\"Today\":{"
-									+ "\"KWattH\":"+pcpDeviceInfo.getTodayKWattH()
+									+ "\"KWattH\":"+totalKWattH
 									+ "}"
-									+ "},";
-						}	
-						energyRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"Total\":{"
-								+ "\"KWattH\":"+totalKWattH
-								+ "}"
-								+ "}"
-								+ "}";
-						energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+									+ "}"
+									+ "}";
+							energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+						}
 					}
 					
 					//判断是否采集了累计气量，如采集则进行日产气量计算
 					if(isAcqTotalGasProd){
-						String energyRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalGasAcqTime()) && pcpDeviceInfo.getTotalGasVolumetricProduction()>0){
-							energyRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalGasAcqTime()+"\","
+						if(totalGasVolumetricProduction>=pcpDeviceInfo.getTotalGasVolumetricProduction()){
+							String energyRequest="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalGasAcqTime()) && pcpDeviceInfo.getTotalGasVolumetricProduction()>0){
+								energyRequest+= "\"Last\":{"
+										+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalGasAcqTime()+"\","
+										+ "\"Total\":{"
+										+ "\"KWattH\":"+pcpDeviceInfo.getTotalGasVolumetricProduction()
+										+ "},\"Today\":{"
+										+ "\"KWattH\":"+pcpDeviceInfo.getGasVolumetricProduction()
+										+ "}"
+										+ "},";
+							}	
+							energyRequest+= "\"Current\": {"
+									+ "\"AcqTime\":\""+acqTime+"\","
 									+ "\"Total\":{"
-									+ "\"KWattH\":"+pcpDeviceInfo.getTotalGasVolumetricProduction()
-									+ "},\"Today\":{"
-									+ "\"KWattH\":"+pcpDeviceInfo.getGasVolumetricProduction()
+									+ "\"KWattH\":"+totalGasVolumetricProduction
 									+ "}"
-									+ "},";
-						}	
-						energyRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"Total\":{"
-								+ "\"KWattH\":"+totalGasVolumetricProduction
-								+ "}"
-								+ "}"
-								+ "}";
-						totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+									+ "}"
+									+ "}";
+							totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+						}
 					}
 					
 					//判断是否采集了累计水量，如采集则进行日产水量计算
 					if(isAcqTotalWaterProd){
-						String energyRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalWaterAcqTime()) && pcpDeviceInfo.getTotalWaterVolumetricProduction()>0){
-							energyRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalWaterAcqTime()+"\","
+						if(totalWaterVolumetricProduction>=pcpDeviceInfo.getTotalWaterVolumetricProduction()){
+							String energyRequest="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalWaterAcqTime()) && pcpDeviceInfo.getTotalWaterVolumetricProduction()>0){
+								energyRequest+= "\"Last\":{"
+										+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalWaterAcqTime()+"\","
+										+ "\"Total\":{"
+										+ "\"KWattH\":"+pcpDeviceInfo.getTotalWaterVolumetricProduction()
+										+ "},\"Today\":{"
+										+ "\"KWattH\":"+pcpDeviceInfo.getWaterVolumetricProduction()
+										+ "}"
+										+ "},";
+							}	
+							energyRequest+= "\"Current\": {"
+									+ "\"AcqTime\":\""+acqTime+"\","
 									+ "\"Total\":{"
-									+ "\"KWattH\":"+pcpDeviceInfo.getTotalWaterVolumetricProduction()
-									+ "},\"Today\":{"
-									+ "\"KWattH\":"+pcpDeviceInfo.getWaterVolumetricProduction()
+									+ "\"KWattH\":"+totalWaterVolumetricProduction
 									+ "}"
-									+ "},";
-						}	
-						energyRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"Total\":{"
-								+ "\"KWattH\":"+totalWaterVolumetricProduction
-								+ "}"
-								+ "}"
-								+ "}";
-						totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+									+ "}"
+									+ "}";
+							totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+						}
 					}
 					
 					//进行转速计算

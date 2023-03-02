@@ -186,7 +186,7 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
             items: [{
             	region: 'west',
             	width: '20%',
-            	title: '井列表',
+            	title: '设备列表',
             	id: 'PCPDailyReportWellListPanel_Id',
             	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠

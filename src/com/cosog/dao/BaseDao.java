@@ -920,7 +920,7 @@ public class BaseDao extends HibernateDaoSupport {
 		this.getHibernateTemplate().saveOrUpdate(clazz);
 	}
 
-	public int updateOrDeleteBySql(String sql) throws SQLException{
+	public int updateOrDeleteBySql(String sql){
 		Connection conn=null;
 		PreparedStatement ps=null;
 		int result=0;
@@ -932,13 +932,23 @@ public class BaseDao extends HibernateDaoSupport {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			StringManagerUtils.printLog(sql);
+			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+sql);
 		} finally{
 			if(ps!=null){
-				ps.close();
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			if(conn!=null){
-				conn.close();
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		

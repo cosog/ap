@@ -649,7 +649,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
         	items: [{
         		region: 'west',
             	width: '25%',
-            	title: '井列表',
+            	title: '设备列表',
             	id: 'PCPCalculateMaintainingWellListPanel_Id',
             	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠

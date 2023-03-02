@@ -655,7 +655,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         	items: [{
         		region: 'west',
             	width: '25%',
-            	title: '井列表',
+            	title: '设备列表',
             	id: 'RPCCalculateMaintainingWellListPanel_Id',
             	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠

@@ -897,9 +897,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 		boolean initResult=this.getBaseDao().initDailyReportData();
 		
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
-				ReportTemplate.Template template=reportTemplate.getReportTemplate().get(i);
+		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
+				ReportTemplate.Template template=reportTemplate.getSingleWellReportTemplate().get(i);
 				if(template.getDeviceType()==deviceType && template.getEditable()!=null && template.getEditable().size()>0){
 					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "

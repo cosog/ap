@@ -478,6 +478,30 @@ alter table TBL_REPORT_ITEMS2UNIT_CONF add constraint PK_REPORT_ITEMS2UNIT_CONF 
 /
 
 /*==============================================================*/
+/* Table: TBL_REPORT_UNIT_CONF                                    */
+/*==============================================================*/
+create table TBL_REPORT_UNIT_CONF
+(
+  id                       NUMBER(10) not null,
+  unit_code                VARCHAR2(50) not null,
+  unit_name                VARCHAR2(50),
+  singlewellreporttemplate VARCHAR2(50),
+  productionreporttemplate VARCHAR2(50),
+  devicetype               NUMBER(1),
+  sort                     NUMBER(10)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_REPORT_UNIT_CONF add constraint PK_REPORT_UNIT_CONF primary key (ID)
+/
+
+/*==============================================================*/
 /* Table: TBL_PROTOCOLINSTANCE                                    */
 /*==============================================================*/
 create table TBL_PROTOCOLINSTANCE
@@ -876,6 +900,9 @@ create table TBL_RPCACQDATA_LATEST
   waterweightproduction_l        NUMBER(8,2),
   submergence                    NUMBER(8,2),
   savetime                       DATE default sysdate,
+  gasvolumetricproduction        NUMBER(12,3),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   c_yxzt                         VARCHAR2(50),
   c_qtkz                         VARCHAR2(50),
   c_ggwd                         VARCHAR2(50),
@@ -1042,6 +1069,9 @@ create table TBL_RPCACQDATA_HIST
   waterweightproduction_l        NUMBER(8,2),
   submergence                    NUMBER(8,2),
   savetime                       DATE default sysdate,
+  gasvolumetricproduction        NUMBER(12,3),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   c_yxzt                         VARCHAR2(50),
   c_qtkz                         VARCHAR2(50),
   c_ggwd                         VARCHAR2(50),
@@ -1224,7 +1254,7 @@ create table TBL_RPCDAILYCALCULATIONDATA
   extendeddays               NUMBER(5),
   tubingpressure                 NUMBER(8,2),
   casingpressure                 NUMBER(8,2),
-  welldownpressure               NUMBER(8,2),
+  bottomholepressure               NUMBER(8,2),
   producingfluidlevel            NUMBER(8,2),
   gasvolumetricproduction        NUMBER(8,2),
   totalgasvolumetricproduction   NUMBER(8,2),
@@ -1321,6 +1351,9 @@ create table TBL_PCPACQDATA_LATEST
   liquidweightproduction_l     NUMBER(8,2),
   oilweightproduction_l        NUMBER(8,2),
   waterweightproduction_l      NUMBER(8,2),
+  gasvolumetricproduction        NUMBER(12,3),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   c_yxzt                       VARCHAR2(50),
   c_qtkz                       VARCHAR2(50),
   c_axdl                       VARCHAR2(50),
@@ -1414,6 +1447,9 @@ create table TBL_PCPACQDATA_HIST
   liquidweightproduction_l     NUMBER(8,2),
   oilweightproduction_l        NUMBER(8,2),
   waterweightproduction_l      NUMBER(8,2),
+  gasvolumetricproduction        NUMBER(12,3),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   c_yxzt                       VARCHAR2(50),
   c_qtkz                       VARCHAR2(50),
   c_axdl                       VARCHAR2(50),
@@ -1574,7 +1610,7 @@ create table TBL_PCPDAILYCALCULATIONDATA
   extendeddays               NUMBER(5),
   tubingpressure                 NUMBER(8,2),
   casingpressure                 NUMBER(8,2),
-  welldownpressure               NUMBER(8,2),
+  bottomholepressure               NUMBER(8,2),
   producingfluidlevel            NUMBER(8,2),
   gasvolumetricproduction        NUMBER(8,2),
   totalgasvolumetricproduction   NUMBER(8,2),

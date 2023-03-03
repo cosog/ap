@@ -860,7 +860,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportTemplateCode=reportTemplateCodeList.get(0).toString().replaceAll("null", "");
 		}
 		if(StringManagerUtils.isNotNull(reportTemplateCode)){
-			template=MemoryDataManagerTask.getReportTemplateByCode(reportTemplateCode);
+			template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
 		}
 		if(template!=null){
 			int columnCount=0;
@@ -1022,7 +1022,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportTemplateCode=reportTemplateCodeList.get(0).toString().replaceAll("null", "");
 			}
 			if(StringManagerUtils.isNotNull(reportTemplateCode)){
-				template=MemoryDataManagerTask.getReportTemplateByCode(reportTemplateCode);
+				template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
 			}
 			if(template!=null){
 				int columnCount=0;

@@ -8,14 +8,9 @@ public class ReportTemplate  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private List<Template> reportTemplate;
+	private List<Template> singleWellReportTemplate;
 
-    public void setReportTemplate(List<Template> reportTemplate){
-        this.reportTemplate = reportTemplate;
-    }
-    public List<Template> getReportTemplate(){
-        return this.reportTemplate;
-    }
+	private List<Template> productionReportTemplate;
 	
 	public static class TdStyle implements Serializable
 	{
@@ -274,5 +269,21 @@ public class ReportTemplate  implements Serializable{
 		public void setSort(int sort) {
 			this.sort = sort;
 		}
+	}
+
+	public List<Template> getSingleWellReportTemplate() {
+		return singleWellReportTemplate;
+	}
+
+	public void setSingleWellReportTemplate(List<Template> singleWellReportTemplate) {
+		this.singleWellReportTemplate = singleWellReportTemplate;
+	}
+
+	public List<Template> getProductionReportTemplate() {
+		return productionReportTemplate;
+	}
+
+	public void setProductionReportTemplate(List<Template> productionReportTemplate) {
+		this.productionReportTemplate = productionReportTemplate;
 	}
 }

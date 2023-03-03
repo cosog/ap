@@ -1840,35 +1840,35 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidVolumetricProduction","m^3/d",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("产油量","OilVolumetricProduction","m^3/d",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("产水量","WaterVolumetricProduction","m^3/d",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidVolumetricProduction","m^3/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日产油量","OilVolumetricProduction","m^3/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterVolumetricProduction","m^3/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidWeightProduction","t/d",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("产油量","OilWeightProduction","t/d",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("产水量","WaterWeightProduction","t/d",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidWeightProduction","t/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("日产油量","OilWeightProduction","t/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterWeightProduction","t/d",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("地面效率","SurfaceSystemEfficiency","",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("井下效率","WellDownSystemEfficiency","",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),27, SerializeObjectUnils.serialize(new CalItem("系统效率","SystemEfficiency","",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),28, SerializeObjectUnils.serialize(new CalItem("吨液百米耗电量","EnergyPer100mLift","kW· h/100m· t",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("地面效率","SurfaceSystemEfficiency","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),27, SerializeObjectUnils.serialize(new CalItem("井下效率","WellDownSystemEfficiency","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),28, SerializeObjectUnils.serialize(new CalItem("系统效率","SystemEfficiency","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),29, SerializeObjectUnils.serialize(new CalItem("吨液百米耗电量","EnergyPer100mLift","kW· h/100m· t",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),29, SerializeObjectUnils.serialize(new CalItem("冲程损失系数","PumpEff1","",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),30, SerializeObjectUnils.serialize(new CalItem("充满系数","PumpEff2","",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("间隙漏失系数","PumpEff3","",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),32, SerializeObjectUnils.serialize(new CalItem("液体收缩系数","PumpEff4","",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("总泵效","PumpEff","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),30, SerializeObjectUnils.serialize(new CalItem("冲程损失系数","PumpEff1","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("充满系数","PumpEff2","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),32, SerializeObjectUnils.serialize(new CalItem("间隙漏失系数","PumpEff3","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("液体收缩系数","PumpEff4","",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("总泵效","PumpEff","",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("电流平衡度","IDegreeBalance","%",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("功率平衡度","WattDegreeBalance","%",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("移动距离","DeltaRadius","m",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("电流平衡度","IDegreeBalance","%",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("功率平衡度","WattDegreeBalance","%",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("移动距离","DeltaRadius","m",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2)));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),40, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2)));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),41, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2)));
 			
@@ -1909,27 +1909,27 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),10, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2)));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidVolumetricProduction","m^3/d",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("产油量","OilVolumetricProduction","m^3/d",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("产水量","WaterVolumetricProduction","m^3/d",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidVolumetricProduction","m^3/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("日产油量","OilVolumetricProduction","m^3/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterVolumetricProduction","m^3/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),15, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2)));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),15, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidWeightProduction","t/d",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("产油量","OilWeightProduction","t/d",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("产水量","WaterWeightProduction","t/d",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidWeightProduction","t/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日产油量","OilWeightProduction","t/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterWeightProduction","t/d",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2)));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("系统效率","SystemEfficiency","",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("吨液百米耗电量","EnergyPer100mLift","kW· h/100m· t",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("系统效率","SystemEfficiency","",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("吨液百米耗电量","EnergyPer100mLift","kW· h/100m· t",2)));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("容积效率","PumpEff1","",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("液体收缩系数","PumpEff2","",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("总泵效","PumpEff","",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("容积效率","PumpEff1","",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("液体收缩系数","PumpEff2","",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("总泵效","PumpEff","",2)));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2)));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2)));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2)));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),27, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2)));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),28, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2)));
 			
@@ -2588,13 +2588,20 @@ public class MemoryDataManagerTask {
 		ReportTemplate reportTemplate=gson.fromJson(configData, type);
 		if(reportTemplate==null){
 			reportTemplate=new ReportTemplate();
-			reportTemplate.setReportTemplate(new ArrayList<ReportTemplate.Template>());
-		}else if(reportTemplate!=null&&reportTemplate.getReportTemplate()==null){
-			reportTemplate.setReportTemplate(new ArrayList<ReportTemplate.Template>());
-		}else if(reportTemplate!=null&&reportTemplate.getReportTemplate()!=null&&reportTemplate.getReportTemplate().size()>0){
-			Collections.sort(reportTemplate.getReportTemplate());
+			reportTemplate.setSingleWellReportTemplate(new ArrayList<ReportTemplate.Template>());
+			reportTemplate.setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
+		}else{
+			if(reportTemplate.getSingleWellReportTemplate()==null){
+				reportTemplate.setSingleWellReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getSingleWellReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getSingleWellReportTemplate());
+			}
+			if(reportTemplate.getProductionReportTemplate()==null){
+				reportTemplate.setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getProductionReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getProductionReportTemplate());
+			}
 		}
-		
 		
 		Jedis jedis=null;
 		try {
@@ -2629,7 +2636,7 @@ public class MemoryDataManagerTask {
 		return reportTemplate;
 	}
 	
-	public static ReportTemplate.Template getReportTemplateByCode(String code){
+	public static ReportTemplate.Template getSingleWellReportTemplateByCode(String code){
 		Jedis jedis=null;
 		ReportTemplate reportTemplate=null;
 		ReportTemplate.Template template=null;
@@ -2639,10 +2646,10 @@ public class MemoryDataManagerTask {
 				MemoryDataManagerTask.loadReportTemplateConfig();
 			}
 			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
-			if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
-				for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
-					if(code.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateCode())){
-						template=reportTemplate.getReportTemplate().get(i);
+			if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+				for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
+					if(code.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode())){
+						template=reportTemplate.getSingleWellReportTemplate().get(i);
 						break;
 					}
 				}
@@ -2658,13 +2665,13 @@ public class MemoryDataManagerTask {
 		return template;
 	}
 	
-	public static String getReportTemplateCodeFromName(String name){
+	public static String getSingleWellReportTemplateCodeFromName(String name){
 		String code="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
-				if(name.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateName())){
-					code=reportTemplate.getReportTemplate().get(i).getTemplateCode();
+		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
+				if(name.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName())){
+					code=reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode();
 					break;
 				}
 			}
@@ -2672,13 +2679,70 @@ public class MemoryDataManagerTask {
 		return code;
 	}
 	
-	public static String getReportTemplateNameFromCode(String code){
+	public static String getSingleWellReportTemplateNameFromCode(String code){
 		String name="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
-				if(code.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateCode())){
-					name=reportTemplate.getReportTemplate().get(i).getTemplateName();
+		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
+				if(code.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode())){
+					name=reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName();
+					break;
+				}
+			}
+		}
+		return name;
+	}
+	
+	public static ReportTemplate.Template getProductionReportTemplateByCode(String code){
+		Jedis jedis=null;
+		ReportTemplate reportTemplate=null;
+		ReportTemplate.Template template=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("ReportTemplateConfig".getBytes())){
+				MemoryDataManagerTask.loadReportTemplateConfig();
+			}
+			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
+			if(reportTemplate!=null && reportTemplate.getProductionReportTemplate()!=null && reportTemplate.getProductionReportTemplate().size()>0){
+				for(int i=0;i<reportTemplate.getProductionReportTemplate().size();i++){
+					if(code.equalsIgnoreCase(reportTemplate.getProductionReportTemplate().get(i).getTemplateCode())){
+						template=reportTemplate.getProductionReportTemplate().get(i);
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return template;
+	}
+	
+	public static String getProductionReportTemplateCodeFromName(String name){
+		String code="";
+		ReportTemplate reportTemplate=getReportTemplateConfig();
+		if(reportTemplate!=null && reportTemplate.getProductionReportTemplate()!=null && reportTemplate.getProductionReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getProductionReportTemplate().size();i++){
+				if(name.equalsIgnoreCase(reportTemplate.getProductionReportTemplate().get(i).getTemplateName())){
+					code=reportTemplate.getProductionReportTemplate().get(i).getTemplateCode();
+					break;
+				}
+			}
+		}
+		return code;
+	}
+	
+	public static String getProductionReportTemplateNameFromCode(String code){
+		String name="";
+		ReportTemplate reportTemplate=getReportTemplateConfig();
+		if(reportTemplate!=null && reportTemplate.getProductionReportTemplate()!=null && reportTemplate.getProductionReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getProductionReportTemplate().size();i++){
+				if(code.equalsIgnoreCase(reportTemplate.getProductionReportTemplate().get(i).getTemplateCode())){
+					name=reportTemplate.getProductionReportTemplate().get(i).getTemplateName();
 					break;
 				}
 			}

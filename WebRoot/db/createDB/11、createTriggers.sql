@@ -343,3 +343,9 @@ BEGIN
   SELECT seq_report_items2unit_conf.nextval INTO :new.id FROM dual;
 end;
 /
+
+CREATE OR REPLACE TRIGGER trg_b_report_unit_conf_i   before  insert on TBL_REPORT_UNIT_CONF FOR EACH ROW
+BEGIN
+  SELECT SEQ_REPORT_UNIT_CONF.nextval,'unit' || SEQ_REPORT_UNIT_CONF.nextval INTO :new.id, :new.unit_code FROM dual;
+end;
+/

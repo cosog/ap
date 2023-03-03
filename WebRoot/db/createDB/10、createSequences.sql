@@ -110,6 +110,14 @@ increment by 1
 cache 20;
 /
 
+create sequence SEQ_REPORT_UNIT_CONF
+minvalue 1
+maxvalue 999999999999999999999999
+start with 0
+increment by 1
+cache 20;
+/
+
 create sequence SEQ_DISPLAY_UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999

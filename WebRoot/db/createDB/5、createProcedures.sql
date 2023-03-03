@@ -1211,12 +1211,14 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
   v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
   v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
-  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_wellDownPressure in number,
+  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,
+  
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_rpcdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
   v_runRange in tbl_rpcdailycalculationdata.runrange%TYPE,
-  v_calDate in varchar2
+  v_calDate in varchar2,
+  v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
@@ -1225,22 +1227,29 @@ begin
   if p_count>0 then
     p_msg := '记录存在';
     update tbl_rpcdailycalculationdata t
-    set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
-    t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
-    t.theoreticalproduction=v_TheoreticalProduction,
-    t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
-    t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
-    t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
-    t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
-    t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
-    t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
-    t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-    t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
-    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure,
-    t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
+    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
     where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
     commit;
+    
+    if v_recordCount>0 then
+      update tbl_rpcdailycalculationdata t
+      set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
+          t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
+          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
+          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
+          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
+          t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
+          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+          t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
+          t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+      where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
+      commit;
+    end if;
+    
     p_msg := '更新成功';
   elsif p_count=0 then
     p_msg := '记录不存在';
@@ -1253,7 +1262,7 @@ begin
     pumpeff,pumpeff1,pumpeff2,pumpeff3,pumpeff4,
     welldownsystemefficiency,surfacesystemefficiency,systemefficiency,energyper100mlift,
     idegreebalance,wattdegreebalance,deltaradius,
-    producingfluidlevel,casingpressure,tubingpressure,welldownpressure,
+    producingfluidlevel,casingpressure,tubingpressure,
     commstatus,commtime,commtimeefficiency,commrange,
     runstatus,runtime,runtimeefficiency,runrange
     )values(
@@ -1266,7 +1275,7 @@ begin
     v_pumpEff,v_pumpEff1,v_pumpEff2,v_pumpEff3,v_pumpEff4,
     v_wellDownSystemEfficiency,v_surfaceSystemEfficiency,v_systemEfficiency,v_energyper100mlift,
     v_iDegreeBalance,v_wattDegreeBalance,v_DeltaRadius,
-    v_producingfluidLevel,v_casingPressure,v_tubingPressure,v_wellDownPressure,
+    v_producingfluidLevel,v_casingPressure,v_tubingPressure,
     v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
     v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
     );
@@ -1293,28 +1302,30 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdailyrecal (
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
   v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
   v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
-  v_producingfluidLevel in number,v_tubingPressure in number,v_casingPressure in number,v_wellDownPressure in number
+  v_producingfluidLevel in number,v_tubingPressure in number,v_casingPressure in number,
+  v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
-  p_count number:=0;
 begin
-  update tbl_rpcdailycalculationdata t
+  if v_recordCount>0 then
+    update tbl_rpcdailycalculationdata t
     set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
-    t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
-    t.theoreticalproduction=v_TheoreticalProduction,
-    t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
-    t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
-    t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
-    t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
-    t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
-    t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
-    t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-    t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
-    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure
+        t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
+        t.theoreticalproduction=v_TheoreticalProduction,
+        t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
+        t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+        t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
+        t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
+        t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
+        t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
+        t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+        t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
+        t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
     where t.id=v_recordId ;
     commit;
     p_msg := '更新成功';
-  dbms_output.put_line('p_msg:' || p_msg);
+    dbms_output.put_line('p_msg:' || p_msg);
+  end if;
 Exception
   When Others Then
     p_msg := Sqlerrm || ',' || '操作失败';
@@ -1423,12 +1434,12 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdaily (
   v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
   v_systemEfficiency in number,v_energyper100mlift in number,
-  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_wellDownPressure in number,
+  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_pcpdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
   v_runRange in tbl_pcpdailycalculationdata.runrange%TYPE,
-  v_calDate in varchar2
+  v_calDate in varchar2,v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
@@ -1437,20 +1448,25 @@ begin
   if p_count>0 then
     p_msg := '记录存在';
     update tbl_pcpdailycalculationdata t
-    set t.resultstatus=v_ResultStatus,t.extendeddays=v_ExtendedDays,
-    t.rpm=v_rpm,
-    t.theoreticalproduction=v_TheoreticalProduction,
-    t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
-    t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
-    t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
-    t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
-    t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
-    t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure,
-    t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
+    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
     where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
     commit;
+    if v_recordCount>0 then
+      update tbl_pcpdailycalculationdata t
+      set t.resultstatus=v_ResultStatus,t.extendeddays=v_ExtendedDays,
+          t.rpm=v_rpm,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
+          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
+          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
+          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
+          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+          t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+       where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
+       commit;
+    end if;
     p_msg := '更新成功';
   elsif p_count=0 then
     p_msg := '记录不存在';
@@ -1461,7 +1477,7 @@ begin
     liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
     pumpeff,pumpeff1,pumpeff2,
     systemefficiency,energyper100mlift,
-    producingfluidlevel,casingpressure,tubingpressure,welldownpressure,
+    producingfluidlevel,casingpressure,tubingpressure,
     commstatus,commtime,commtimeefficiency,commrange,
     runstatus,runtime,runtimeefficiency,runrange
     )values(
@@ -1472,7 +1488,7 @@ begin
     v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
     v_pumpEff,v_pumpEff1,v_pumpEff2,
     v_systemEfficiency,v_energyper100mlift,
-    v_producingfluidLevel,v_casingPressure,v_tubingPressure,v_wellDownPressure,
+    v_producingfluidLevel,v_casingPressure,v_tubingPressure,
     v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
     v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
     );
@@ -1496,11 +1512,12 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdailyrecal (
   v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
   v_systemEfficiency in number,v_energyper100mlift in number,
-  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_wellDownPressure in number
+  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
 begin
-  update tbl_pcpdailycalculationdata t
+  if v_recordCount>0 then
+    update tbl_pcpdailycalculationdata t
     set t.resultstatus=v_ResultStatus,t.extendeddays=v_ExtendedDays,
     t.rpm=v_rpm,
     t.theoreticalproduction=v_TheoreticalProduction,
@@ -1510,11 +1527,12 @@ begin
     t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
     t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
     t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,t.welldownpressure=v_wellDownPressure
+    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
     where t.id=v_recordId ;
     commit;
     p_msg := '更新成功';
-  dbms_output.put_line('p_msg:' || p_msg);
+    dbms_output.put_line('p_msg:' || p_msg);
+  end if;
 Exception
   When Others Then
     p_msg := Sqlerrm || ',' || '操作失败';
@@ -1852,7 +1870,8 @@ begin
     ( select t2.headerlabelinfo from  tbl_rpcdailycalculationdata t2 
     where t2.wellid=t.wellid and t2.caldate=
     ( select max(t3.caldate) from tbl_rpcdailycalculationdata t3 where t3.wellid=t2.wellid and t3.headerlabelinfo is not null ))
-    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd');
+    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
+    and t.headerlabelinfo is null;
     commit;
 
     insert into tbl_pcpdailycalculationdata (wellid,caldate)
@@ -1864,7 +1883,8 @@ begin
     ( select t2.headerlabelinfo from  tbl_pcpdailycalculationdata t2 
     where t2.wellid=t.wellid and t2.caldate=
     ( select max(t3.caldate) from tbl_pcpdailycalculationdata t3 where t3.wellid=t2.wellid and t3.headerlabelinfo is not null ))
-    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd');
+    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
+    and t.headerlabelinfo is null;
     commit;
 
 end prd_init_device_daily;

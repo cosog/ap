@@ -1509,6 +1509,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getSingleWellReportDataTemplateList")
+	public String getSingleWellReportDataTemplateList() throws IOException {
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String reportType=ParamUtils.getParameter(request, "reportType");
+		
+		
+		String json = acquisitionUnitItemManagerService.getSingleWellReportDataTemplateList(reportType,deviceType);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/modbusProtocolAndAlarmUnitTreeData")
 	public String modbusProtocolAndAlarmUnitTreeData() throws IOException {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
@@ -2561,10 +2577,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 				ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 				String unitName=modbusProtocolReportInstanceSaveData.getUnitName();
 				String unitCode="";
-				if(reportTemplate!=null && reportTemplate.getReportTemplate()!=null && reportTemplate.getReportTemplate().size()>0){
-					for(int i=0;i<reportTemplate.getReportTemplate().size();i++){
-						if(unitName.equalsIgnoreCase(reportTemplate.getReportTemplate().get(i).getTemplateName()) && modbusProtocolReportInstanceSaveData.getDeviceType()==reportTemplate.getReportTemplate().get(i).getDeviceType()){
-							unitCode=reportTemplate.getReportTemplate().get(i).getTemplateCode();
+				if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+					for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
+						if(unitName.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()) && modbusProtocolReportInstanceSaveData.getDeviceType()==reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()){
+							unitCode=reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode();
 							break;
 						}
 					}

@@ -16,13 +16,15 @@ public class ReportUnitItem implements java.io.Serializable {
 	private Integer itemId;
 	private String itemName;
 	private String itemCode;
-	private String unitCode;
+	private Integer unitId;
 	private String matrix;
 	private Integer showLevel;
 	private Integer sort;
 	private Integer reportCurve;
 	private String reportCurveColor;
 	private Integer dataType;
+	private Integer reportType;
+	
 
 	public ReportUnitItem() {
 		super();
@@ -30,20 +32,21 @@ public class ReportUnitItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ReportUnitItem(Integer id, Integer itemId, String itemName, String itemCode, String unitCode, String matrix,
-			Integer showLevel, Integer sort, Integer reportCurve, String reportCurveColor, Integer dataType) {
+	public ReportUnitItem(Integer id, Integer itemId, String itemName, String itemCode, Integer unitId, String matrix,
+			Integer showLevel, Integer sort, Integer reportCurve, String reportCurveColor, Integer dataType, Integer reportType) {
 		super();
 		this.id = id;
 		this.itemId = itemId;
 		this.itemName = itemName;
 		this.itemCode = itemCode;
-		this.unitCode = unitCode;
+		this.unitId = unitId;
 		this.matrix = matrix;
 		this.showLevel = showLevel;
 		this.sort = sort;
 		this.reportCurve = reportCurve;
 		this.reportCurveColor = reportCurveColor;
 		this.dataType = dataType;
+		this.reportType = reportType;
 	}
 
 	@Id
@@ -64,15 +67,6 @@ public class ReportUnitItem implements java.io.Serializable {
 	
 	public void setMatrix(String matrix) {
 		this.matrix = matrix;
-	}
-
-	@Column(name = "unitCode", nullable = true, length = 100)
-	public String getUnitCode() {
-		return unitCode;
-	}
-
-	public void setUnitCode(String unitCode) {
-		this.unitCode = unitCode;
 	}
 	
 	@Column(name = "itemid", nullable = true, precision = 22, scale = 0)
@@ -144,6 +138,24 @@ public class ReportUnitItem implements java.io.Serializable {
 
 	public void setDataType(Integer dataType) {
 		this.dataType = dataType;
+	}
+
+	@Column(name = "reportType")
+	public Integer getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(Integer reportType) {
+		this.reportType = reportType;
+	}
+
+	@Column(name = "unitId")
+	public Integer getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Integer unitId) {
+		this.unitId = unitId;
 	}
 
 	

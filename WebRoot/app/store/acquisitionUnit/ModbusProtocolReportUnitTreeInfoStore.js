@@ -57,30 +57,70 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(index);
                         	
-                        	var ReportUnitSingleWellReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellReportTemplateListGridPanel_Id");
-                        	if (isNotVal(ReportUnitSingleWellReportTemplateListGridPanel)) {
-                        		ReportUnitSingleWellReportTemplateListGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore')
-                        	}
                         	var selectedUnitCode='';
+                        	var selectedUnitId=0;
                         	if(record.data.classes==0){
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateReportTemplateInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
                         			selectedUnitCode=record.data.children[0].code;
+                        			selectedUnitId=record.data.children[0].id;
                         		}else{
                         			Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('报表模板');
-                        			if(protocolConfigAddrMappingItemsHandsontableHelper!=null && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-                        				protocolConfigAddrMappingItemsHandsontableHelper.hot.loadData([]);
+                        			if(singleWellReportTemplateHandsontableHelper!=null && singleWellReportTemplateHandsontableHelper.hot!=undefined){
+                        				singleWellReportTemplateHandsontableHelper.hot.loadData([]);
                         			}
                         		}
                         	}else if(record.data.classes==1){
                         		selectedUnitCode=record.data.code;
-                        		CreateReportTemplateInfoTable(record.data.text,record.data.classes,record.data.code);
+                        		selectedUnitId=record.data.id;
                         	}
-                        	CreateReportTotalItemsInfoTable(record.data.deviceType,selectedUnitCode,record.data.text,record.data.classes);
-                        },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
+                        	var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
+            				var activeId = tabPanel.getActiveTab().id;
+            				if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
+            					var ReportUnitSingleWellReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellReportTemplateListGridPanel_Id");
+                            	if (isNotVal(ReportUnitSingleWellReportTemplateListGridPanel)) {
+                            		ReportUnitSingleWellReportTemplateListGridPanel.getStore().load();
+                            	}else{
+                            		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore')
+                            	}
+                            	CreateSingleWellReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+            				}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
+            					var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
+                            	if (isNotVal(ReportUnitProductionReportTemplateListGridPanel)) {
+                            		ReportUnitProductionReportTemplateListGridPanel.getStore().load();
+                            	}else{
+                            		Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
+                            	}
+            				}
+                        	
+                        	CreateProtocolReportUnitPropertiesInfoTable(record.data);
+                        },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
+                        	e.preventDefault();//去掉点击右键是浏览器的菜单
+                        	var info='节点';
+                        	if(record.data.classes==0){
+                        		return;
+                        	}if(record.data.classes==1){
+                        		info='报表单元';
+                        	}
+                        	var menu = Ext.create('Ext.menu.Menu', {
+                                floating: true,
+                                items: [{
+                                    text: '删除'+info,
+                                    glyph: 0xf056,
+                                    handler: function () {
+                                    	if(record.data.classes==1){
+                                    		var reportUnitSaveData={};
+                                    		reportUnitSaveData.delidslist=[];
+                                    		reportUnitSaveData.delidslist.push(record.data.id);
+                                    		SaveModbusProtocolReportUnitData(reportUnitSaveData);
+                                    	}
+                                    }
+                                }],
+                                renderTo: document.body
+                            });
+                        	var xy = Ext.get(td).getXY();
+                            Ext.menu.MenuMgr.hideAll();//这个方法避免每次都点击的时候出现重复菜单。
+                            menu.showAt(xy[0] + 100, xy[1]);
                         }
                     }
 

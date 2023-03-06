@@ -156,7 +156,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                                 	protocolName:protocolName,
                                 	unitName: t.value
                                 },
-                                url: context + '/acquisitionUnitManagerController/judgeAcqUnitExistOrNot',
+                                url: context + '/acquisitionUnitManagerController/judgeDisplayUnitExistOrNot',
                                 success: function (response, opts) {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;

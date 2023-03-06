@@ -333,17 +333,23 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     				}
     				
     				//报表单元
-    				if(reportTemplateHandsontableHelper!=null){
-    					if(reportTemplateHandsontableHelper.hot!=undefined){
-    						reportTemplateHandsontableHelper.hot.destroy();
+    				if(singleWellReportTemplateHandsontableHelper!=null){
+    					if(singleWellReportTemplateHandsontableHelper.hot!=undefined){
+    						singleWellReportTemplateHandsontableHelper.hot.destroy();
     					}
-    					reportTemplateHandsontableHelper=null;
+    					singleWellReportTemplateHandsontableHelper=null;
     				}
-    				if(reportTemplateContentHandsontableHelper!=null){
-    					if(reportTemplateContentHandsontableHelper.hot!=undefined){
-    						reportTemplateContentHandsontableHelper.hot.destroy();
+    				if(singleWellReportTemplateContentHandsontableHelper!=null){
+    					if(singleWellReportTemplateContentHandsontableHelper.hot!=undefined){
+    						singleWellReportTemplateContentHandsontableHelper.hot.destroy();
     					}
-    					reportTemplateContentHandsontableHelper=null;
+    					singleWellReportTemplateContentHandsontableHelper=null;
+    				}
+    				if(singleWellReportUnitPropertiesHandsontableHelper!=null){
+    					if(singleWellReportUnitPropertiesHandsontableHelper.hot!=undefined){
+    						singleWellReportUnitPropertiesHandsontableHelper.hot.destroy();
+    					}
+    					singleWellReportUnitPropertiesHandsontableHelper=null;
     				}
     			},
     			afterrender: function ( panel, eOpts) {}

@@ -23,7 +23,7 @@ public class ProtocolReportInstance implements java.io.Serializable {
 	private String name;
 	private String code;
 	private Integer deviceType;
-	private String unitCode;
+	private Integer unitId;
 	private Integer sort;
 
 	// Constructors
@@ -33,13 +33,13 @@ public class ProtocolReportInstance implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ProtocolReportInstance(Integer id, String name, String code, Integer deviceType, String unitCode,Integer sort) {
+	public ProtocolReportInstance(Integer id, String name, String code, Integer deviceType, Integer unitId,Integer sort) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.code = code;
 		this.deviceType = deviceType;
-		this.unitCode = unitCode;
+		this.unitId = unitId;
 		this.sort = sort;
 	}
 
@@ -90,12 +90,12 @@ public class ProtocolReportInstance implements java.io.Serializable {
 		this.sort = sort;
 	}
 
-	@Column(name = "unitCode", nullable = false, length = 50)
-	public String getUnitCode() {
-		return unitCode;
+	@Column(name = "unitId", precision = 22, scale = 0)
+	public Integer getUnitId() {
+		return unitId;
 	}
 
-	public void setUnitCode(String unitCode) {
-		this.unitCode = unitCode;
+	public void setUnitId(Integer unitId) {
+		this.unitId = unitId;
 	}
 }

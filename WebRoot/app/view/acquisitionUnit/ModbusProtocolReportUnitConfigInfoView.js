@@ -1,5 +1,6 @@
-var reportTemplateHandsontableHelper=null;
-var reportTemplateContentHandsontableHelper=null;
+var singleWellReportTemplateHandsontableHelper=null;
+var singleWellReportTemplateContentHandsontableHelper=null;
+var singleWellReportUnitPropertiesHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolReportUnitConfigInfoView',
@@ -29,6 +30,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         }
                     }
         		},'->',{
+        			xtype: 'button',
+                    text: '添加报表单元',
+                    iconCls: 'add',
+                    handler: function (v, o) {
+                    	addReportUnitInfo();
+        			}
+        		},"-",{
                 	xtype: 'button',
         			text: cosog.string.save,
         			iconCls: 'save',
@@ -61,12 +69,23 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     	border: false,
                         split: true,
                         collapsible: true,
-                        hidden: true,
+                        hidden: false,
                     	layout: 'fit',
                         html:'<div class="ModbusProtocolReportUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	
+                            	if (singleWellReportUnitPropertiesHandsontableHelper != null && singleWellReportUnitPropertiesHandsontableHelper.hot != null && singleWellReportUnitPropertiesHandsontableHelper.hot != undefined) {
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		singleWellReportUnitPropertiesHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                                }
                             }
                         }
                     }]
@@ -79,7 +98,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     border: false,
                     tabPosition: 'top',
                     items: [{
-                    	title:'单井报表',
+                    	title:'单井日报',
                     	id:'ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id',
                     	layout: "border",
                     	border: false,
@@ -106,14 +125,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 html:'<div class="ModbusProtocolReportUnitTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (reportTemplateHandsontableHelper != null && reportTemplateHandsontableHelper.hot != null && reportTemplateHandsontableHelper.hot != undefined) {
+                                    	if (singleWellReportTemplateHandsontableHelper != null && singleWellReportTemplateHandsontableHelper.hot != null && singleWellReportTemplateHandsontableHelper.hot != undefined) {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
                                     		if(header){
                                     			newHeight=newHeight-header.lastBox.height-2;
                                     		}
-                                        	reportTemplateHandsontableHelper.hot.updateSettings({
+                                        	singleWellReportTemplateHandsontableHelper.hot.updateSettings({
                                     			width:newWidth,
                                     			height:newHeight
                                     		});
@@ -133,14 +152,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 html:'<div class="ModbusProtocolReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (reportTemplateContentHandsontableHelper != null && reportTemplateContentHandsontableHelper.hot != null && reportTemplateContentHandsontableHelper.hot != undefined) {
+                                    	if (singleWellReportTemplateContentHandsontableHelper != null && singleWellReportTemplateContentHandsontableHelper.hot != null && singleWellReportTemplateContentHandsontableHelper.hot != undefined) {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
                                     		if(header){
                                     			newHeight=newHeight-header.lastBox.height-2;
                                     		}
-                                    		reportTemplateContentHandsontableHelper.hot.updateSettings({
+                                    		singleWellReportTemplateContentHandsontableHelper.hot.updateSettings({
                                     			width:newWidth,
                                     			height:newHeight
                                     		});
@@ -150,7 +169,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	}]
                     	}]
                     },{
-                    	title:'生产报表',
+                    	title:'区块日报',
                     	id:'ModbusProtocolReportUnitProductionReportTemplatePanel_Id',
                     	layout: "border",
                     	border: false,
@@ -159,7 +178,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	width:'16%',
                         	layout: 'fit',
                             border: false,
+                            id:'ReportUnitProductionReportTemplateListPanel_Id',
                             title:'报表模板列表',
+                            header: false,
                             split: true,
                             collapsible: true
                     	},{
@@ -175,14 +196,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 html:'<div class="ModbusProtocolReportUnitProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitProductionTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-//                                    	if (reportTemplateHandsontableHelper != null && reportTemplateHandsontableHelper.hot != null && reportTemplateHandsontableHelper.hot != undefined) {
+//                                    	if (singleWellReportTemplateHandsontableHelper != null && singleWellReportTemplateHandsontableHelper.hot != null && singleWellReportTemplateHandsontableHelper.hot != undefined) {
 //                                    		var newWidth=width;
 //                                    		var newHeight=height;
 //                                    		var header=thisPanel.getHeader();
 //                                    		if(header){
 //                                    			newHeight=newHeight-header.lastBox.height-2;
 //                                    		}
-//                                        	reportTemplateHandsontableHelper.hot.updateSettings({
+//                                        	singleWellReportTemplateHandsontableHelper.hot.updateSettings({
 //                                    			width:newWidth,
 //                                    			height:newHeight
 //                                    		});
@@ -202,14 +223,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 html:'<div class="ModbusProtocolProductionReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-//                                    	if (reportTemplateContentHandsontableHelper != null && reportTemplateContentHandsontableHelper.hot != null && reportTemplateContentHandsontableHelper.hot != undefined) {
+//                                    	if (singleWellReportTemplateContentHandsontableHelper != null && singleWellReportTemplateContentHandsontableHelper.hot != null && singleWellReportTemplateContentHandsontableHelper.hot != undefined) {
 //                                    		var newWidth=width;
 //                                    		var newHeight=height;
 //                                    		var header=thisPanel.getHeader();
 //                                    		if(header){
 //                                    			newHeight=newHeight-header.lastBox.height-2;
 //                                    		}
-//                                    		reportTemplateContentHandsontableHelper.hot.updateSettings({
+//                                    		singleWellReportTemplateContentHandsontableHelper.hot.updateSettings({
 //                                    			width:newWidth,
 //                                    			height:newHeight
 //                                    		});
@@ -221,8 +242,33 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     }],
                     listeners: {
                         tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        	var unitTreeSelection= Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+            				var selectedUnitId=0;
+                        	if(unitTreeSelection.length>0){
+            					var record=unitTreeSelection[0];
+            					if(record.data.classes==0 && isNotVal(record.data.children) && record.data.children.length>0){
+            						selectedUnitId=record.data.children[0].id;
+            					}else if(record.data.classes==1){
+                            		selectedUnitCode=record.data.code;
+                            		selectedUnitId=record.data.id;
+                            	}
+            				}
+                        	
                         	if(newCard.id=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
-                        		
+                        		var ReportUnitSingleWellReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellReportTemplateListGridPanel_Id");
+                            	if (isNotVal(ReportUnitSingleWellReportTemplateListGridPanel)) {
+                            		ReportUnitSingleWellReportTemplateListGridPanel.getStore().load();
+                            	}else{
+                            		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore')
+                            	}
+                            	CreateSingleWellReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                        	}else if(newCard.id=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
+                        		var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
+                            	if (isNotVal(ReportUnitProductionReportTemplateListGridPanel)) {
+                            		ReportUnitProductionReportTemplateListGridPanel.getStore().load();
+                            	}else{
+                            		Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
+                            	}
                         	}
                         }
                     }
@@ -233,7 +279,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
     }
 });
 
-function CreateReportTemplateInfoTable(name,classes,code){
+function CreateReportTemplateInfoTable(name,deviceType,code){
 	Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -243,16 +289,16 @@ function CreateReportTemplateInfoTable(name,classes,code){
 			Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('报表模板：'+name);
 			var result =  Ext.JSON.decode(response.responseText);
 			
-			if(reportTemplateHandsontableHelper!=null){
-				if(reportTemplateHandsontableHelper.hot!=undefined){
-					reportTemplateHandsontableHelper.hot.destroy();
+			if(singleWellReportTemplateHandsontableHelper!=null){
+				if(singleWellReportTemplateHandsontableHelper.hot!=undefined){
+					singleWellReportTemplateHandsontableHelper.hot.destroy();
 				}
-				reportTemplateHandsontableHelper=null;
+				singleWellReportTemplateHandsontableHelper=null;
 			}
 			
-			if(reportTemplateHandsontableHelper==null || reportTemplateHandsontableHelper.hot==undefined){
-				reportTemplateHandsontableHelper = ReportTemplateHandsontableHelper.createNew("ModbusProtocolReportUnitTemplateTableInfoDiv_id","ModbusProtocolReportUnitTemplateTableInfoContainer",result);
-				reportTemplateHandsontableHelper.createTable();
+			if(singleWellReportTemplateHandsontableHelper==null || singleWellReportTemplateHandsontableHelper.hot==undefined){
+				singleWellReportTemplateHandsontableHelper = SingleWellReportTemplateHandsontableHelper.createNew("ModbusProtocolReportUnitTemplateTableInfoDiv_id","ModbusProtocolReportUnitTemplateTableInfoContainer",result);
+				singleWellReportTemplateHandsontableHelper.createTable();
 			}
 		},
 		failure:function(){
@@ -261,55 +307,55 @@ function CreateReportTemplateInfoTable(name,classes,code){
 		},
 		params: {
 			name:name,
-			classes:classes,
+			deviceType:deviceType,
 			code:code
         }
 	});
 }
 
-var ReportTemplateHandsontableHelper = {
+var SingleWellReportTemplateHandsontableHelper = {
 	    createNew: function (divid, containerid,templateData) {
-	        var reportTemplateHandsontableHelper = {};
-	        reportTemplateHandsontableHelper.templateData=templateData;
-	        reportTemplateHandsontableHelper.get_data = {};
-	        reportTemplateHandsontableHelper.data=[];
-	        reportTemplateHandsontableHelper.hot = '';
-	        reportTemplateHandsontableHelper.container = document.getElementById(divid);
+	        var singleWellReportTemplateHandsontableHelper = {};
+	        singleWellReportTemplateHandsontableHelper.templateData=templateData;
+	        singleWellReportTemplateHandsontableHelper.get_data = {};
+	        singleWellReportTemplateHandsontableHelper.data=[];
+	        singleWellReportTemplateHandsontableHelper.hot = '';
+	        singleWellReportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
 	        
-	        reportTemplateHandsontableHelper.initData=function(){
-	        	reportTemplateHandsontableHelper.data=[];
-	        	for(var i=0;i<reportTemplateHandsontableHelper.templateData.header.length;i++){
-		        	reportTemplateHandsontableHelper.data.push(reportTemplateHandsontableHelper.templateData.header[i].title);
+	        singleWellReportTemplateHandsontableHelper.initData=function(){
+	        	singleWellReportTemplateHandsontableHelper.data=[];
+	        	for(var i=0;i<singleWellReportTemplateHandsontableHelper.templateData.header.length;i++){
+		        	singleWellReportTemplateHandsontableHelper.data.push(singleWellReportTemplateHandsontableHelper.templateData.header[i].title);
 		        }
 	        }
 	        
-	        reportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        singleWellReportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
-	        	if(reportTemplateHandsontableHelper!=null && reportTemplateHandsontableHelper.hot!=null){
-	        		for(var i=0;i<reportTemplateHandsontableHelper.templateData.header.length;i++){
+	        	if(singleWellReportTemplateHandsontableHelper!=null && singleWellReportTemplateHandsontableHelper.hot!=null){
+	        		for(var i=0;i<singleWellReportTemplateHandsontableHelper.templateData.header.length;i++){
 		        		if(row==i){
-		        			if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle)){
-		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight)){
-		        					td.style.fontWeight = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight;
+		        			if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle)){
+		        				if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight)){
+		        					td.style.fontWeight = singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight;
 		        				}
-		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize)){
-		        					td.style.fontSize = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
+		        				if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize)){
+		        					td.style.fontSize = singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
-		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+		        				if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)){
+		        					td.style.fontFamily = singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
-		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.height)){
-		        					td.style.height = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
+		        				if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height)){
+		        					td.style.height = singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
 		        				}
-		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.color)){
-		        					td.style.color = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.color;
+		        				if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.color)){
+		        					td.style.color = singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.color;
 		        				}
-		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor)){
-		        					td.style.backgroundColor = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor;
+		        				if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor)){
+		        					td.style.backgroundColor = singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor;
 		        				}
-		        				if(isNotVal(reportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign)){
-		        					td.style.textAlign = reportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign;
+		        				if(isNotVal(singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign)){
+		        					td.style.textAlign = singleWellReportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign;
 		        				}
 		        			}
 		        			break;
@@ -319,7 +365,7 @@ var ReportTemplateHandsontableHelper = {
 	        }
 	        
 	        
-	        reportTemplateHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        singleWellReportTemplateHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
 	            if (row <= 2&&row>=1) {
@@ -330,7 +376,7 @@ var ReportTemplateHandsontableHelper = {
 	            }
 	        }
 			
-			reportTemplateHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+			singleWellReportTemplateHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if (row < 1) {
 	                td.style.fontWeight = 'bold';
@@ -340,7 +386,7 @@ var ReportTemplateHandsontableHelper = {
 			    }      
 	        }
 			
-			reportTemplateHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+			singleWellReportTemplateHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';
 		         if(row < 3){
@@ -351,38 +397,38 @@ var ReportTemplateHandsontableHelper = {
 	        }
 			
 
-	        reportTemplateHandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
+	        singleWellReportTemplateHandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(183, 222, 232)';
 	        }
 
-	        reportTemplateHandsontableHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
+	        singleWellReportTemplateHandsontableHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(216, 228, 188)';
 	        }
 	        
-	        reportTemplateHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
+	        singleWellReportTemplateHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
 	        }
 
 	        // 实现标题居中
-	        reportTemplateHandsontableHelper.titleCenter = function () {
+	        singleWellReportTemplateHandsontableHelper.titleCenter = function () {
 	            $(containerid).width($($('.wtHider')[0]).width());
 	        }
 
-	        reportTemplateHandsontableHelper.createTable = function () {
-	            reportTemplateHandsontableHelper.container.innerHTML = "";
-	            reportTemplateHandsontableHelper.hot = new Handsontable(reportTemplateHandsontableHelper.container, {
+	        singleWellReportTemplateHandsontableHelper.createTable = function () {
+	            singleWellReportTemplateHandsontableHelper.container.innerHTML = "";
+	            singleWellReportTemplateHandsontableHelper.hot = new Handsontable(singleWellReportTemplateHandsontableHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	            	data: reportTemplateHandsontableHelper.data,
-	                fixedRowsTop:reportTemplateHandsontableHelper.templateData.fixedRowsTop, 
-	                fixedRowsBottom: reportTemplateHandsontableHelper.templateData.fixedRowsBottom,
+	            	data: singleWellReportTemplateHandsontableHelper.data,
+	                fixedRowsTop:singleWellReportTemplateHandsontableHelper.templateData.fixedRowsTop, 
+	                fixedRowsBottom: singleWellReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
 	                rowHeaders: false,
 	                colHeaders: false,
-					rowHeights: reportTemplateHandsontableHelper.templateData.rowHeights,
-					colWidths: reportTemplateHandsontableHelper.templateData.columnWidths,
+					rowHeights: singleWellReportTemplateHandsontableHelper.templateData.rowHeights,
+					colWidths: singleWellReportTemplateHandsontableHelper.templateData.columnWidths,
 //					rowHeaders: true, //显示行头
 					rowHeaders(index) {
 					    return 'Row ' + (index + 1);
@@ -400,20 +446,20 @@ var ReportTemplateHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
-	                mergeCells: reportTemplateHandsontableHelper.templateData.mergeCells,
+	                mergeCells: singleWellReportTemplateHandsontableHelper.templateData.mergeCells,
 	                cells: function (row, col, prop) {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    cellProperties.renderer = reportTemplateHandsontableHelper.addStyle;
+	                    cellProperties.renderer = singleWellReportTemplateHandsontableHelper.addStyle;
 //	                    if (visualRowIndex <= 2 && visualRowIndex >= 1) {
-//	                        cellProperties.renderer = reportTemplateHandsontableHelper.addBoldBg;
+//	                        cellProperties.renderer = singleWellReportTemplateHandsontableHelper.addBoldBg;
 //	                    }
 //						if (visualRowIndex < 1 ) {
-//	                       cellProperties.renderer = reportTemplateHandsontableHelper.addSizeBg;
+//	                       cellProperties.renderer = singleWellReportTemplateHandsontableHelper.addSizeBg;
 //	                    }
-//						if (visualColIndex === 26&&visualRowIndex>2&&visualRowIndex<reportTemplateHandsontableHelper.last_index) {
+//						if (visualColIndex === 26&&visualRowIndex>2&&visualRowIndex<singleWellReportTemplateHandsontableHelper.last_index) {
 //							cellProperties.readOnly = false;
 //		                }
 	                    return cellProperties;
@@ -421,24 +467,24 @@ var ReportTemplateHandsontableHelper = {
 	                afterChange:function(changes, source){}
 	            });
 	        }
-	        reportTemplateHandsontableHelper.getData = function (data) {
-//	            reportTemplateHandsontableHelper.get_data = data;
-//	            reportTemplateHandsontableHelper.editable = +data.Editable;
+	        singleWellReportTemplateHandsontableHelper.getData = function (data) {
+//	            singleWellReportTemplateHandsontableHelper.get_data = data;
+//	            singleWellReportTemplateHandsontableHelper.editable = +data.Editable;
 //	            var _daily = data.totalRoot;
-//	            reportTemplateHandsontableHelper.sum = _daily.length;
-//	            reportTemplateHandsontableHelper.updateArray();
+//	            singleWellReportTemplateHandsontableHelper.sum = _daily.length;
+//	            singleWellReportTemplateHandsontableHelper.updateArray();
 //	            _daily.forEach(function (_day, index) {
 //
 //	            	if(_day.id=="合计" || _day.id=="平均"){
-//	            		reportTemplateHandsontableHelper.my_data[index + 3][0] = _day.id;
+//	            		singleWellReportTemplateHandsontableHelper.my_data[index + 3][0] = _day.id;
 //	            	}else{
-//	            		reportTemplateHandsontableHelper.my_data[index + 3][0] = index+1;
+//	            		singleWellReportTemplateHandsontableHelper.my_data[index + 3][0] = index+1;
 //	            	}
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][1] = _day.wellName;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][2] = _day.calculateDate;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][1] = _day.wellName;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][2] = _day.calculateDate;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][3] = _day.commTime;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][3] = _day.commTime;
 //	                var commRange=_day.commRange;
 //	                if(commRange.length>12){
 //	                	commRange=commRange.substring(0, 11)+"...";
@@ -447,50 +493,50 @@ var ReportTemplateHandsontableHelper = {
 //	                if(runRange.length>12){
 //	                	runRange=runRange.substring(0, 11)+"...";
 //	                }
-//	                reportTemplateHandsontableHelper.my_data[index + 3][4] = commRange;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][5] = _day.commTimeEfficiency;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][4] = commRange;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][5] = _day.commTimeEfficiency;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][6] = _day.runTime;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][7] = runRange;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][8] = _day.runTimeEfficiency;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][6] = _day.runTime;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][7] = runRange;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][8] = _day.runTimeEfficiency;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][9] = _day.resultName;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][10] = _day.optimizationSuggestion;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][9] = _day.resultName;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][10] = _day.optimizationSuggestion;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][11] = _day.liquidProduction;
-//					reportTemplateHandsontableHelper.my_data[index + 3][12] = _day.oilProduction;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][13] = _day.waterProduction;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][14] = _day.waterCut;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][15] = _day.fullnesscoEfficient;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][11] = _day.liquidProduction;
+//					singleWellReportTemplateHandsontableHelper.my_data[index + 3][12] = _day.oilProduction;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][13] = _day.waterProduction;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][14] = _day.waterCut;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][15] = _day.fullnesscoEfficient;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][16] = _day.wattDegreeBalance;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][17] = _day.iDegreeBalance;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][18] = _day.deltaRadius;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][16] = _day.wattDegreeBalance;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][17] = _day.iDegreeBalance;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][18] = _day.deltaRadius;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][19] = _day.systemEfficiency;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][20] = _day.surfaceSystemEfficiency;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][21] = _day.welldownSystemEfficiency;
-//	                reportTemplateHandsontableHelper.my_data[index + 3][22] = _day.energyPer100mLift;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][19] = _day.systemEfficiency;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][20] = _day.surfaceSystemEfficiency;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][21] = _day.welldownSystemEfficiency;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][22] = _day.energyPer100mLift;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][23] = _day.todayKWattH;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][23] = _day.todayKWattH;
 //	                
-//	                reportTemplateHandsontableHelper.my_data[index + 3][24] = _day.remark;
+//	                singleWellReportTemplateHandsontableHelper.my_data[index + 3][24] = _day.remark;
 //	            })
 //
 //	            var _total = data.totalCount;
-//	            reportTemplateHandsontableHelper.last_index = _daily.length + 3;
+//	            singleWellReportTemplateHandsontableHelper.last_index = _daily.length + 3;
 	        }
 
 	        var init = function () {
-	        	reportTemplateHandsontableHelper.initData();
+	        	singleWellReportTemplateHandsontableHelper.initData();
 	        }
 
 	        init();
-	        return reportTemplateHandsontableHelper;
+	        return singleWellReportTemplateHandsontableHelper;
 	    }
 	};
 
-function CreateReportTotalItemsInfoTable(deviceType,unitCode,unitName,classes){
+function CreateSingleWellReportTotalItemsInfoTable(deviceType,unitId,unitName,classes){
 	Ext.getCmp("ModbusProtocolReportUnitContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -503,26 +549,26 @@ function CreateReportTotalItemsInfoTable(deviceType,unitCode,unitName,classes){
 			}else{
 				Ext.getCmp("ModbusProtocolReportUnitContentConfigTableInfoPanel_Id").setTitle('报表内容配置：'+unitName);
 			}
-			if(reportTemplateContentHandsontableHelper==null || reportTemplateContentHandsontableHelper.hot==undefined){
-				reportTemplateContentHandsontableHelper = ReportTemplateContentHandsontableHelper.createNew("ModbusProtocolReportUnitContentConfigTableInfoDiv_id");
+			if(singleWellReportTemplateContentHandsontableHelper==null || singleWellReportTemplateContentHandsontableHelper.hot==undefined){
+				singleWellReportTemplateContentHandsontableHelper = SingleWellReportTemplateContentHandsontableHelper.createNew("ModbusProtocolReportUnitContentConfigTableInfoDiv_id");
 				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportTemplateContentHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportTemplateContentHandsontableHelper);}}," 
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'reportCurveColor'},"
 						+"{data:'code'},"
 						+"{data:'dataType'}"
 						+"]";
-				reportTemplateContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				reportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
-				reportTemplateContentHandsontableHelper.createTable(result.totalRoot);
+				singleWellReportTemplateContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				singleWellReportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
+				singleWellReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
 			}else{
-				reportTemplateContentHandsontableHelper.hot.loadData(result.totalRoot);
+				singleWellReportTemplateContentHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 		},
 		failure:function(){
@@ -530,39 +576,40 @@ function CreateReportTotalItemsInfoTable(deviceType,unitCode,unitName,classes){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType:deviceType,
-			unitCode:unitCode,
-			classes:classes
+			deviceType: deviceType,
+			reportType: 0,
+			unitId: unitId,
+			classes: classes
         }
 	});
 };
 
-var ReportTemplateContentHandsontableHelper = {
+var SingleWellReportTemplateContentHandsontableHelper = {
 		createNew: function (divid) {
-	        var reportTemplateContentHandsontableHelper = {};
-	        reportTemplateContentHandsontableHelper.hot1 = '';
-	        reportTemplateContentHandsontableHelper.divid = divid;
-	        reportTemplateContentHandsontableHelper.validresult=true;//数据校验
-	        reportTemplateContentHandsontableHelper.colHeaders=[];
-	        reportTemplateContentHandsontableHelper.columns=[];
-	        reportTemplateContentHandsontableHelper.AllData=[];
+	        var singleWellReportTemplateContentHandsontableHelper = {};
+	        singleWellReportTemplateContentHandsontableHelper.hot1 = '';
+	        singleWellReportTemplateContentHandsontableHelper.divid = divid;
+	        singleWellReportTemplateContentHandsontableHelper.validresult=true;//数据校验
+	        singleWellReportTemplateContentHandsontableHelper.colHeaders=[];
+	        singleWellReportTemplateContentHandsontableHelper.columns=[];
+	        singleWellReportTemplateContentHandsontableHelper.AllData=[];
 	        
-	        reportTemplateContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        singleWellReportTemplateContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
 	        }
 	        
-	        reportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        singleWellReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
 	            	td.style.backgroundColor = '#'+value;
 	            }
 	        }
 	        
-	        reportTemplateContentHandsontableHelper.createTable = function (data) {
-	        	$('#'+reportTemplateContentHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+reportTemplateContentHandsontableHelper.divid);
-	        	reportTemplateContentHandsontableHelper.hot = new Handsontable(hotElement, {
+	        singleWellReportTemplateContentHandsontableHelper.createTable = function (data) {
+	        	$('#'+singleWellReportTemplateContentHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+singleWellReportTemplateContentHandsontableHelper.divid);
+	        	singleWellReportTemplateContentHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
@@ -571,11 +618,11 @@ var ReportTemplateContentHandsontableHelper = {
 	                    copyPasteEnabled: false
 	                },
 	                colWidths: [25,30,140,80,60,60,85,85,],
-	                columns:reportTemplateContentHandsontableHelper.columns,
+	                columns:singleWellReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:reportTemplateContentHandsontableHelper.colHeaders,//显示列头
+	                colHeaders:singleWellReportTemplateContentHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -596,15 +643,15 @@ var ReportTemplateContentHandsontableHelper = {
 	                			if (visualColIndex >=1 && visualColIndex<=3) {
 	    							cellProperties.readOnly = true;
 	    		                }else if(visualColIndex==7){
-	    		                	cellProperties.renderer = reportTemplateContentHandsontableHelper.addCurveBg;
+	    		                	cellProperties.renderer = singleWellReportTemplateContentHandsontableHelper.addCurveBg;
 	    		                }
 	                		}
 	                	}
 	                    return cellProperties;
 	                },
 	                afterBeginEditing:function(row,column){
-	                	if(reportTemplateContentHandsontableHelper!=null && reportTemplateContentHandsontableHelper.hot!=undefined){
-	                		var row1=reportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
+	                	if(singleWellReportTemplateContentHandsontableHelper!=null && singleWellReportTemplateContentHandsontableHelper.hot!=undefined){
+	                		var row1=singleWellReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
 		                	if(row1[0] && (column==7)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
@@ -634,11 +681,126 @@ var ReportTemplateContentHandsontableHelper = {
 	        	});
 	        }
 	        //保存数据
-	        reportTemplateContentHandsontableHelper.saveData = function () {}
-	        reportTemplateContentHandsontableHelper.clearContainer = function () {
-	        	reportTemplateContentHandsontableHelper.AllData = [];
+	        singleWellReportTemplateContentHandsontableHelper.saveData = function () {}
+	        singleWellReportTemplateContentHandsontableHelper.clearContainer = function () {
+	        	singleWellReportTemplateContentHandsontableHelper.AllData = [];
 	        }
-	        return reportTemplateContentHandsontableHelper;
+	        return singleWellReportTemplateContentHandsontableHelper;
+	    }
+};
+
+function CreateProtocolReportUnitPropertiesInfoTable(data){
+	var root=[];
+	if(data.classes==1){
+		var item1={};
+		item1.id=1;
+		item1.title='实例名称';
+		item1.value=data.text;
+		root.push(item1);
+		
+		var item2={};
+		item2.id=2;
+		item2.title='设备类型';
+		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
+		root.push(item2);
+		
+		
+		var item3={};
+		item3.id=3;
+		item3.title='排序序号';
+		item3.value=data.sort;
+		root.push(item3);
+	}
+	
+	if(singleWellReportUnitPropertiesHandsontableHelper==null || singleWellReportUnitPropertiesHandsontableHelper.hot==undefined){
+		singleWellReportUnitPropertiesHandsontableHelper = SingleWellReportUnitPropertiesHandsontableHelper.createNew("ModbusProtocolReportUnitPropertiesTableInfoDiv_id");
+		var colHeaders="['序号','名称','变量']";
+		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
+		singleWellReportUnitPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+		singleWellReportUnitPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
+		singleWellReportUnitPropertiesHandsontableHelper.classes=data.classes;
+		singleWellReportUnitPropertiesHandsontableHelper.createTable(root);
+	}else{
+		singleWellReportUnitPropertiesHandsontableHelper.classes=data.classes;
+		singleWellReportUnitPropertiesHandsontableHelper.hot.loadData(root);
+	}
+};
+
+var SingleWellReportUnitPropertiesHandsontableHelper = {
+		createNew: function (divid) {
+	        var singleWellReportUnitPropertiesHandsontableHelper = {};
+	        singleWellReportUnitPropertiesHandsontableHelper.hot = '';
+	        singleWellReportUnitPropertiesHandsontableHelper.classes =null;
+	        singleWellReportUnitPropertiesHandsontableHelper.divid = divid;
+	        singleWellReportUnitPropertiesHandsontableHelper.validresult=true;//数据校验
+	        singleWellReportUnitPropertiesHandsontableHelper.colHeaders=[];
+	        singleWellReportUnitPropertiesHandsontableHelper.columns=[];
+	        singleWellReportUnitPropertiesHandsontableHelper.AllData=[];
+	        
+	        singleWellReportUnitPropertiesHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        singleWellReportUnitPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        singleWellReportUnitPropertiesHandsontableHelper.createTable = function (data) {
+	        	$('#'+singleWellReportUnitPropertiesHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+singleWellReportUnitPropertiesHandsontableHelper.divid);
+	        	singleWellReportUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [2,5,5],
+	                columns:singleWellReportUnitPropertiesHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:singleWellReportUnitPropertiesHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    if (visualColIndex ==0 || visualColIndex ==1) {
+							cellProperties.readOnly = true;
+							cellProperties.renderer = singleWellReportUnitPropertiesHandsontableHelper.addBoldBg;
+		                }
+	                    if(singleWellReportUnitPropertiesHandsontableHelper.classes===1){
+	                    	if(visualColIndex === 2 && visualRowIndex===0){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, singleWellReportUnitPropertiesHandsontableHelper);
+		                    	}
+		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+		                    	this.type = 'dropdown';
+		                    	this.source = ['抽油机井','螺杆泵井'];
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }else if(visualColIndex === 2 && visualRowIndex===3){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, singleWellReportUnitPropertiesHandsontableHelper);
+		                    	}
+		                    }
+	                    }
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        singleWellReportUnitPropertiesHandsontableHelper.saveData = function () {}
+	        singleWellReportUnitPropertiesHandsontableHelper.clearContainer = function () {
+	        	singleWellReportUnitPropertiesHandsontableHelper.AllData = [];
+	        }
+	        return singleWellReportUnitPropertiesHandsontableHelper;
 	    }
 };
 
@@ -646,35 +808,81 @@ function SaveReportUnitData(){
 	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 	if(reportUnitTreeSelectedRow!=''){
 		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
-//		var propertiesData=protocolReportUnitPropertiesHandsontableHelper.hot.getData();
-//		var reportUnitProperties={};
-//		if(selectedItem.data.classes==1){//选中的是单元
-//			reportUnitProperties.classes=selectedItem.data.classes;
-//			reportUnitProperties.id=selectedItem.data.id;
-//			reportUnitProperties.unitCode=selectedItem.data.code;
-//			reportUnitProperties.unitName=propertiesData[0][2];
-//			reportUnitProperties.acqUnitId=selectedItem.data.acqUnitId;
-//			reportUnitProperties.acqUnitName=propertiesData[1][2];
-//			reportUnitProperties.remark=propertiesData[2][2];
-//		}
+		var propertiesData=singleWellReportUnitPropertiesHandsontableHelper.hot.getData();
+		var reportUnitProperties={};
+		if(selectedItem.data.classes==1){//选中的是单元
+			reportUnitProperties.classes=selectedItem.data.classes;
+			reportUnitProperties.id=selectedItem.data.id;
+			reportUnitProperties.unitCode=selectedItem.data.code;
+			reportUnitProperties.unitName=propertiesData[0][2];
+			
+			reportUnitProperties.singlewellReportTemplate=selectedItem.data.singlewellReportTemplate;
+			reportUnitProperties.productionReportTemplate=selectedItem.data.productionReportTemplate;
+			
+			var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
+			var activeId = tabPanel.getActiveTab().id;
+			if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
+				var templateSelection= Ext.getCmp("ReportUnitSingleWellReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
+				if(templateSelection.length>0){
+					reportUnitProperties.singlewellReportTemplate=templateSelection[0].data.templateCode;
+				}
+			}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
+				
+			}
+			
+			
+			reportUnitProperties.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
+			reportUnitProperties.sort=propertiesData[2][2];
+		}
 		if(selectedItem.data.classes==1){//保存单元
-//			var reportUnitSaveData={};
-//			reportUnitSaveData.updatelist=[];
-//			reportUnitSaveData.updatelist.push(reportUnitProperties);
-//			saveReportUnitConfigData(reportUnitSaveData,selectedItem.data.protocol,selectedItem.parentNode.data.deviceType);
+			SaveModbusProtocolReportUnitData(reportUnitProperties);
 			grantReportTotalCalItemsPermission();
 		}
 	}
 };
 
+function SaveModbusProtocolReportUnitData(saveData){
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/saveProtocolReportUnitData',
+		success:function(response) {
+			data=Ext.JSON.decode(response.responseText);
+			if (data.success) {
+				Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
+            	Ext.MessageBox.alert("信息","保存成功");
+            } else {
+            	Ext.MessageBox.alert("信息","显示单元数据保存失败");
+            }
+		},
+		failure:function(){
+			Ext.MessageBox.alert("信息","请求失败");
+		},
+		params: {
+			data: JSON.stringify(saveData),
+        }
+	});
+}
+
 var grantReportTotalCalItemsPermission = function () {
 	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
-	if (reportTemplateContentHandsontableHelper == null ||reportUnitTreeSelectedRow=='') {
+	if (singleWellReportTemplateContentHandsontableHelper == null ||reportUnitTreeSelectedRow=='') {
         return false;
     }
 	var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
-    var calItemsData = reportTemplateContentHandsontableHelper.hot.getData();
     var addUrl = context + '/acquisitionUnitManagerController/grantTotalCalItemsToReportUnitPermission'
+    
+    var reportType=0;
+    var calItemsData = null;
+    var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
+		reportType=0;
+		calItemsData = singleWellReportTemplateContentHandsontableHelper.hot.getData();
+	}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
+		calItemsData = singleWellReportTemplateContentHandsontableHelper.hot.getData();
+		reportType=1;
+	}
+	
     // 添加条件
     var addjson = [];
     var addItemSort=[];
@@ -682,8 +890,8 @@ var grantReportTotalCalItemsPermission = function () {
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     
-    var unitCode = selectedItem.data.code;
-    if (!isNotVal(unitCode)) {
+    var unitId = selectedItem.data.id;
+    if (!isNotVal(unitId)) {
         return false
     }
 
@@ -722,7 +930,8 @@ var grantReportTotalCalItemsPermission = function () {
         params: {
             params: addparams,
             sorts: addSortParams,
-            unitCode: unitCode,
+            unitId: unitId,
+            reportType: reportType,
             matrixCodes: matrixCodes_
         },
         success: function (response) {

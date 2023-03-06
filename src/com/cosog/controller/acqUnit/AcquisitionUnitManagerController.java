@@ -42,6 +42,7 @@ import com.cosog.model.ProtocolInstance;
 import com.cosog.model.ProtocolReportInstance;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
+import com.cosog.model.ReportUnit;
 import com.cosog.model.ReportUnitItem;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
@@ -56,6 +57,7 @@ import com.cosog.model.drive.ModbusProtocolConfig.ItemsMeaning;
 import com.cosog.model.drive.ModbusProtocolDisplayInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolReportInstanceSaveData;
+import com.cosog.model.drive.ModbusProtocolReportUnitSaveData;
 import com.cosog.model.gridmodel.AcquisitionGroupHandsontableChangeData;
 import com.cosog.model.gridmodel.AcquisitionUnitHandsontableChangeData;
 import com.cosog.model.gridmodel.DatabaseMappingProHandsontableChangedData;
@@ -114,6 +116,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@Autowired
 	private AcquisitionUnitManagerService<DisplayUnitItem> displayUnitItemManagerService;
+	
+	@Autowired
+	private AcquisitionUnitManagerService<ReportUnit> reportUnitManagerService;
 	
 	@Autowired
 	private AcquisitionUnitManagerService<ReportUnitItem> reportUnitItemManagerService;
@@ -207,8 +212,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	}
 	
 	//添加绑定前缀 
-	@InitBinder("protocolReportInstance")
+	@InitBinder("reportUnit")
 	public void initBinder10(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("reportUnit.");
+	}
+	
+	//添加绑定前缀 
+	@InitBinder("protocolReportInstance")
+	public void initBinder11(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("protocolReportInstance.");
 	}
 
@@ -945,12 +956,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			String params = ParamUtils.getParameter(request, "params");
 			String sorts = ParamUtils.getParameter(request, "sorts");
-			String unitCode = ParamUtils.getParameter(request, "unitCode");
+			String unitId = ParamUtils.getParameter(request, "unitId");
+			String reportType = ParamUtils.getParameter(request, "reportType");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			log.debug("grantTotalCalItemsToReportUnitPermission params==" + params);
 			String paramsArr[] = StringManagerUtils.split(params, ",");
 
-			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitCode);
+			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType);
 			if (StringManagerUtils.isNotNull(matrixCodes)) {
 				String module_matrix[] = matrixCodes.split("\\|");
 				List<String> itemsList=new ArrayList<String>();
@@ -962,7 +974,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 					String itemName=module_[0];
 					reportUnitItem = new ReportUnitItem();
-					reportUnitItem.setUnitCode(unitCode);
+					reportUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
+					reportUnitItem.setReportType(StringManagerUtils.stringToInteger(reportType));
 					reportUnitItem.setItemName(itemName);
 					reportUnitItem.setItemCode(module_[1]);
 					reportUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
@@ -1052,10 +1065,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getReportTemplateData")
 	public String getReportTemplateData() throws Exception {
 		String name = ParamUtils.getParameter(request, "name");
-		String classes = ParamUtils.getParameter(request, "classes");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportTemplateData(name,classes,code);
+		json = acquisitionUnitItemManagerService.getReportTemplateData(name,deviceType,code);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1224,10 +1237,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getReportUnitTotalCalItemsConfigData")
 	public String getReportUnitTotalCalItemsConfigData() throws Exception {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String unitCode = ParamUtils.getParameter(request, "unitCode");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String unitId = ParamUtils.getParameter(request, "unitId");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(deviceType,unitCode,classes);
+		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(deviceType,reportType,unitId,classes);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2469,6 +2483,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/doModbusProtocolReportUnitAdd")
+	public String doModbusProtocolReportUnitAdd(@ModelAttribute ReportUnit reportUnit) throws IOException {
+		String result = "";
+		try {
+			this.reportUnitManagerService.doModbusProtocolReportUnitAdd(reportUnit);
+			result = "{success:true,msg:true}";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+		}
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/doModbusProtocolReportInstanceAdd")
 	public String doModbusProtocolReportInstanceAdd(@ModelAttribute ProtocolReportInstance protocolReportInstance) throws IOException {
 		String result = "";
@@ -2558,6 +2592,52 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/saveProtocolReportUnitData")
+	public String saveProtocolReportUnitData() throws Exception {
+		Gson gson=new Gson();
+		String json ="{success:true}";
+		String data = ParamUtils.getParameter(request, "data");
+		java.lang.reflect.Type type = new TypeToken<ModbusProtocolReportUnitSaveData>() {}.getType();
+		ModbusProtocolReportUnitSaveData modbusProtocolReportUnitSaveData=gson.fromJson(data, type);
+		
+		if(modbusProtocolReportUnitSaveData!=null){
+			if(modbusProtocolReportUnitSaveData.getDelidslist()!=null){
+				for(int i=0;i<modbusProtocolReportUnitSaveData.getDelidslist().size();i++){
+					this.reportUnitManagerService.doModbusProtocolReportUnitBulkDelete(modbusProtocolReportUnitSaveData.getDelidslist().get(i));
+				}
+			}
+			
+			if(StringManagerUtils.isNotNull(modbusProtocolReportUnitSaveData.getUnitName())){
+				ReportUnit reportUnit=new ReportUnit();
+				reportUnit.setId(modbusProtocolReportUnitSaveData.getId());
+				reportUnit.setUnitCode(modbusProtocolReportUnitSaveData.getUnitCode());
+				reportUnit.setUnitName(modbusProtocolReportUnitSaveData.getUnitName());
+				reportUnit.setSingleWellReportTemplate(modbusProtocolReportUnitSaveData.getSinglewellReportTemplate());
+				reportUnit.setProductionReportTemplate(modbusProtocolReportUnitSaveData.getProductionReportTemplate());
+				reportUnit.setDeviceType(modbusProtocolReportUnitSaveData.getDeviceType());
+				if(StringManagerUtils.isNum(modbusProtocolReportUnitSaveData.getSort()) || StringManagerUtils.isNumber(modbusProtocolReportUnitSaveData.getSort())){
+					reportUnit.setSort(StringManagerUtils.stringToInteger(modbusProtocolReportUnitSaveData.getSort()));
+				}else{
+					reportUnit.setSort(null);
+				}
+				try {
+					this.reportUnitManagerService.doModbusProtocolReportUnitEdit(reportUnit);
+					json = "{success:true,msg:true}";
+				} catch (Exception e) {
+					e.printStackTrace();
+					json = "{success:false,msg:false}";
+				}
+			}
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveProtocolReportInstanceData")
 	public String saveProtocolReportInstanceData() throws Exception {
 		Gson gson=new Gson();
@@ -2590,7 +2670,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolReportInstance.setCode(modbusProtocolReportInstanceSaveData.getCode());
 				protocolReportInstance.setName(modbusProtocolReportInstanceSaveData.getName());
 				protocolReportInstance.setDeviceType(modbusProtocolReportInstanceSaveData.getDeviceType());
-				protocolReportInstance.setUnitCode(unitCode);
+//				protocolReportInstance.setUnitCode(unitCode);
 				
 				
 				if(StringManagerUtils.isNum(modbusProtocolReportInstanceSaveData.getSort())){
@@ -2904,6 +2984,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/judgeDisplayUnitExistOrNot")
+	public String judgeDisplayUnitExistOrNot() throws IOException {
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String unitName = ParamUtils.getParameter(request, "unitName");
+		boolean flag = this.acquisitionUnitManagerService.judgeDisplayUnitExistOrNot(protocolName,unitName);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json = "";
+		if (flag) {
+			json = "{success:true,msg:'1'}";
+		} else {
+			json = "{success:true,msg:'0'}";
+		}
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/judgeAcqGroupExistOrNot")
 	public String judgeAcqGroupExistOrNot() throws IOException {
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
@@ -2990,6 +3090,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
 		boolean flag = this.acquisitionUnitManagerService.judgeDisplayInstanceExistOrNot(StringManagerUtils.stringToInteger(deviceType),instanceName);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json = "";
+		if (flag) {
+			json = "{success:true,msg:'1'}";
+		} else {
+			json = "{success:true,msg:'0'}";
+		}
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/judgeReportUnitExistOrNot")
+	public String judgeReportUnitExistOrNot() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String unitName = ParamUtils.getParameter(request, "unitName");
+		boolean flag = this.acquisitionUnitManagerService.judgeReportUnitExistOrNot(StringManagerUtils.stringToInteger(deviceType),unitName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";

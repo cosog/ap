@@ -1513,7 +1513,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitTotalCalItemsConfigData(String deviceType,String unitCode,String classes){
+	public String getReportUnitTotalCalItemsConfigData(String deviceType,String reportType,String unitId,String classes){
 		StringBuffer result_json = new StringBuffer();
 		String key="rpcTotalCalItemList";
 		if("1".equalsIgnoreCase(deviceType)){
@@ -1560,7 +1560,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("1".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.reportCurve,t.reportCurveColor "
 					+ " from tbl_report_items2unit_conf t "
-					+ " where t.unitCode='"+unitCode+"'"
+					+ " where t.unitid="+unitId+" and t.reportType="+reportType
 					+ " order by t.sort";
 			List<?> list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -3113,36 +3113,72 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rpcTree_json = new StringBuffer();
 		StringBuffer pcpTree_json = new StringBuffer();
-		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+//		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		
 		rpcTree_json.append("[");
 		pcpTree_json.append("[");
-		
-		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
-			//排序
-			Collections.sort(reportTemplate.getSingleWellReportTemplate());
-			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
-				if(reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()==0){
-					rpcTree_json.append("{\"classes\":1,");
-					rpcTree_json.append("\"text\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()+"\",");
-					rpcTree_json.append("\"code\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()+"\",");
-					rpcTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()+",");
-					rpcTree_json.append("\"sort\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getSort()+"\",");
-					rpcTree_json.append("\"iconCls\": \"protocol\",");
-					rpcTree_json.append("\"leaf\": true");
-					rpcTree_json.append("},");
-				}else{
-					pcpTree_json.append("{\"classes\":1,");
-					pcpTree_json.append("\"text\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()+"\",");
-					pcpTree_json.append("\"code\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()+"\",");
-					pcpTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()+",");
-					pcpTree_json.append("\"sort\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getSort()+"\",");
-					pcpTree_json.append("\"iconCls\": \"protocol\",");
-					pcpTree_json.append("\"leaf\": true");
-					pcpTree_json.append("},");
-				}
+		String unitSql="select t.id,t.unit_code,t.unit_name,t.singlewellreporttemplate,t.productionreporttemplate,t.devicetype,t.sort from tbl_report_unit_conf t order by t.devicetype,t.sort";
+		List<?> unitList=this.findCallSql(unitSql);
+		for(int i=0;i<unitList.size();i++){
+			Object[] obj = (Object[]) unitList.get(i);
+			String deviceType=obj[5]+"";
+			if(StringManagerUtils.stringToInteger(deviceType)==0){
+				rpcTree_json.append("{\"classes\":1,");
+				rpcTree_json.append("\"id\":"+obj[0]+",");
+				rpcTree_json.append("\"code\":\""+obj[1]+"\",");
+				rpcTree_json.append("\"text\":\""+obj[2]+"\",");
+				rpcTree_json.append("\"singlewellReportTemplate\":\""+obj[3]+"\",");
+				rpcTree_json.append("\"productionReportTemplate\":\""+obj[4]+"\",");
+				rpcTree_json.append("\"deviceType\":"+deviceType+",");
+				rpcTree_json.append("\"sort\":\""+obj[6]+"\",");
+				rpcTree_json.append("\"iconCls\": \"protocol\",");
+				rpcTree_json.append("\"leaf\": true");
+				rpcTree_json.append("},");
+			}else{
+				pcpTree_json.append("{\"classes\":1,");
+				pcpTree_json.append("\"id\":"+obj[0]+",");
+				pcpTree_json.append("\"code\":\""+obj[1]+"\",");
+				pcpTree_json.append("\"text\":\""+obj[2]+"\",");
+				pcpTree_json.append("\"singlewellReportTemplate\":\""+obj[3]+"\",");
+				pcpTree_json.append("\"productionReportTemplate\":\""+obj[4]+"\",");
+				pcpTree_json.append("\"deviceType\":"+deviceType+",");
+				pcpTree_json.append("\"sort\":\""+obj[6]+"\",");
+				pcpTree_json.append("\"iconCls\": \"protocol\",");
+				pcpTree_json.append("\"leaf\": true");
+				pcpTree_json.append("},");
 			}
+			
 		}
+		
+//		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+//			//排序
+//			Collections.sort(reportTemplate.getSingleWellReportTemplate());
+//			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
+//				if(reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()==0){
+//					rpcTree_json.append("{\"classes\":1,");
+//					rpcTree_json.append("\"text\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()+"\",");
+//					rpcTree_json.append("\"code\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()+"\",");
+//					rpcTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()+",");
+//					rpcTree_json.append("\"sort\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getSort()+"\",");
+//					rpcTree_json.append("\"iconCls\": \"protocol\",");
+//					rpcTree_json.append("\"leaf\": true");
+//					rpcTree_json.append("},");
+//				}else{
+//					pcpTree_json.append("{\"classes\":1,");
+//					pcpTree_json.append("\"text\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()+"\",");
+//					pcpTree_json.append("\"code\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()+"\",");
+//					pcpTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()+",");
+//					pcpTree_json.append("\"sort\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getSort()+"\",");
+//					pcpTree_json.append("\"iconCls\": \"protocol\",");
+//					pcpTree_json.append("\"leaf\": true");
+//					pcpTree_json.append("},");
+//				}
+//			}
+//		}
+		
+		
+		
+		
 		if(rpcTree_json.toString().endsWith(",")){
 			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
 		}
@@ -3158,7 +3194,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
 		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
 		result_json.append("]");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getSingleWellReportDataTemplateList(String reportType,String deviceType){
@@ -3193,14 +3229,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportTemplateData(String name,String classes,String code){
+	public String getReportTemplateData(String name,String deviceType,String code){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		String result="{}";
 		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
 			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
 				if(name.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()) 
-						&& code.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()) ){
+						&& code.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()) 
+						&& reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)
+						){
 					Gson gson=new Gson();
 					result=gson.toJson(reportTemplate.getSingleWellReportTemplate().get(i)).replaceAll("wellNameLabel", "label").replaceAll("label", "***");
 					break;
@@ -4170,6 +4208,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
+	public boolean judgeDisplayUnitExistOrNot(String protocolName,String unitName) {
+		boolean flag = false;
+		if (StringManagerUtils.isNotNull(protocolName)&&StringManagerUtils.isNotNull(unitName)) {
+			String sql = "select t.id from TBL_DISPLAY_UNIT_CONF t where t.protocol='"+protocolName+"' and t.unit_name='"+unitName+"'";
+			List<?> list = this.findCallSql(sql);
+			if (list.size() > 0) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	
 	public boolean judgeAcqGroupExistOrNot(String protocolName,String unitName,String groupName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(protocolName)&&StringManagerUtils.isNotNull(unitName)) {
@@ -4224,6 +4274,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(instanceName)) {
 			String sql = "select t.id from TBL_PROTOCOLDISPLAYINSTANCE t where t.devicetype="+deviceType+" and t.name='"+instanceName+"'";
+			List<?> list = this.findCallSql(sql);
+			if (list.size() > 0) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	
+	public boolean judgeReportUnitExistOrNot(int deviceType,String unitName) {
+		boolean flag = false;
+		if (StringManagerUtils.isNotNull(unitName)) {
+			String sql = "select t.id from tbl_report_unit_conf t where t.devicetype="+deviceType+" and t.unit_name='"+unitName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -4423,8 +4485,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
-	public void deleteCurrentReportUnitOwnItems(final String unitCode) throws Exception {
-		final String hql = "DELETE ReportUnitItem u where u.unitCode ='"+unitCode+"'";
+	public void deleteCurrentReportUnitOwnItems(final String unitId,final String reportType) throws Exception {
+		final String hql = "DELETE ReportUnitItem u where u.unitId ="+unitId+" and u.reportType="+reportType;
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
@@ -4509,6 +4571,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().updateObject(protocolDisplayInstance);
 	}
 	
+	public void doModbusProtocolReportUnitEdit(T reportUnit) throws Exception {
+		getBaseDao().updateObject(reportUnit);
+	}
+	
 	public void doModbusProtocolReportInstanceEdit(T protocolReportInstance) throws Exception {
 		getBaseDao().updateObject(protocolReportInstance);
 	}
@@ -4527,6 +4593,26 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		super.bulkObjectDelete(hql);
 	}
 	
+	
+	public void doModbusProtocolReportUnitBulkDelete(final String ids) throws Exception {
+		int delorUpdateCount=0;
+		String sql = "update tbl_rpcdevice t set t.reportinstancecode='' where t.reportinstancecode in ( select t2.code from tbl_protocolreportinstance t2  where t2.unitid in ("+ids+") )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql = "update tbl_pcpdevice t set t.reportinstancecode='' where t.reportinstancecode in ( select t2.code from tbl_protocolreportinstance t2  where t2.unitid in ("+ids+") )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_report_items2unit_conf t where t.unitid in("+ids+")";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		
+		sql="delete from tbl_protocolreportinstance t where t.unitid in("+ids+")";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		final String hql = "DELETE ReportUnit u where u.id in (" + ids + ")";
+		super.bulkObjectDelete(hql);
+	}
+	
 	public void doModbusProtocolReportInstanceBulkDelete(final String ids) throws Exception {
 		final String hql = "DELETE ProtocolReportInstance u where u.id in (" + ids + ")";
 		super.bulkObjectDelete(hql);
@@ -4534,6 +4620,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {
 		getBaseDao().addObject(protocolDisplayInstance);
+	}
+	
+	public void doModbusProtocolReportUnitAdd(T reportUnit) throws Exception {
+		getBaseDao().addObject(reportUnit);
 	}
 	
 	public void doModbusProtocolReportInstanceAdd(T protocolReportInstance) throws Exception {

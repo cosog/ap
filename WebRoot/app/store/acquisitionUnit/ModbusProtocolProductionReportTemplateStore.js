@@ -1,6 +1,6 @@
-Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore', {
+Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.ModbusProtocolSingleWellReportTemplateStore',
+    alias: 'widget.ModbusProtocolProductionReportTemplateStore',
     fields: ['templateName','templateCode','deviceType'],
     autoLoad: true,
     proxy: {
@@ -18,10 +18,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	var gridPanel = Ext.getCmp("ReportUnitSingleWellReportTemplateListGridPanel_Id");
+        	var gridPanel = Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
             if (!isNotVal(gridPanel)) {
             	gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "ReportUnitSingleWellReportTemplateListGridPanel_Id",
+                    id: "ReportUnitProductionReportTemplateListGridPanel_Id",
 //                    layout: "fit",
                     columnLines: true,
                     forceFit: true,
@@ -37,7 +37,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
                     },
                     store: store,
                     columns: [{
-                    	text: '单井日报模板列表',
+                    	text: '区块日报模板列表',
                         flex: 8,
                         align: 'left',
                         dataIndex: 'templateName'
@@ -57,12 +57,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-                        	CreateReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
+//                        	CreateReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
                         }
                     }
 
                 });
-                var panel = Ext.getCmp("ReportUnitSingleWellReportTemplateListPanel_Id");
+                var panel = Ext.getCmp("ReportUnitProductionReportTemplateListPanel_Id");
                 panel.add(gridPanel);
             }
             
@@ -73,12 +73,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
         		var selectUnit = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data;
             	if(selectUnit.classes==0){
             		if(isNotVal(selectUnit.children) && selectUnit.children.length>0){
-            			selectUnitReportTemplateCode=selectUnit.children[0].singlewellReportTemplate;
+            			selectUnitReportTemplateCode=selectUnit.children[0].productionReportTemplate;
             		}else{
             			
             		}
             	}else if(selectUnit.classes==1){
-            		selectUnitReportTemplateCode=selectUnit.singlewellReportTemplate;
+            		selectUnitReportTemplateCode=selectUnit.productionReportTemplate;
             	}
             	
             	var store = gridPanel.getStore();
@@ -95,7 +95,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
         },
         beforeload: function (store, options) {
         	var deviceType=0;
-        	var reportType=0;
+        	var reportType=1;
         	var selectRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
         	if(selectRow>=0){
         		deviceType = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceType;

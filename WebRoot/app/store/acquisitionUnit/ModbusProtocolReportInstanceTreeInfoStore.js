@@ -56,31 +56,57 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").setValue(index);
-                        	var selectedUnitCode='';
-                        	var selectedUnitName='';
+                        	
+                        	var reportType=0;
+                        	var selectedUnitId='';
+                        	var selectedTemplateCode='';
+                        	var selectedInstanceName='';
+                        	
+                        	var tabPanel = Ext.getCmp("ModbusProtocolReportInstanceReportTemplateTabPanel_Id");
+            				var activeId = tabPanel.getActiveTab().id;
+            				if(activeId=="ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id"){
+            					reportType=0;
+            				}else if(activeId=="ModbusProtocolReportInstanceProductionReportTemplatePanel_Id"){
+            					reportType=1;
+            				}
+                        	
                         	if(record.data.classes==0){//选中设备类型deviceType
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			selectedUnitCode=record.data.children[0].unitCode;
-                        			selectedUnitName=record.data.children[0].unitName;
-                        			CreateReportInstanceTemplateInfoTable(record.data.children[0].unitName,record.data.children[0].classes,record.data.children[0].unitCode);
-                        		}else{
-                        			Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('报表模板');
-                        			if(reportInstanceTemplateHandsontableHelper!=null && reportInstanceTemplateHandsontableHelper.hot!=undefined){
-                        				reportInstanceTemplateHandsontableHelper.hot.loadData([]);
+                        			selectedUnitId=record.data.children[0].unitId;
+                        			selectedInstanceName=record.data.children[0].text;
+                        			if(reportType==0){
+                        				selectedTemplateCode=record.data.children[0].singleWellReportTemplate;
+                        			}else{
+                        				selectedTemplateCode=record.data.children[0].productionReportTemplate;
                         			}
                         		}
                         	}else if(record.data.classes==2){//选中报表单元
-                        		selectedUnitCode=record.data.code;
-                        		selectedUnitName=record.data.name;
-                        		CreateReportInstanceTemplateInfoTable(record.data.text,record.data.classes,record.data.code);
+                        		selectedUnitId=record.data.unitId;
+                        		selectedInstanceName=record.parentNode.data.text;
+                        		if(reportType==0){
+                    				selectedTemplateCode=record.data.singleWellReportTemplate;
+                    			}else{
+                    				selectedTemplateCode=record.data.productionReportTemplate;
+                    			}
                         	}else{
-                        		selectedUnitCode=record.data.unitCode;
-                        		selectedUnitName=record.data.unitName;
-                        		CreateReportInstanceTemplateInfoTable(record.data.unitName,record.data.classes,record.data.unitCode);
+                        		selectedUnitId=record.data.unitId;
+                        		selectedInstanceName=record.data.text;
+                        		if(reportType==0){
+                    				selectedTemplateCode=record.data.singleWellReportTemplate;
+                    			}else{
+                    				selectedTemplateCode=record.data.productionReportTemplate;
+                    			}
+                        	}
+                        	
+                        	if(reportType==0){
+                    			CreateReportInstanceSingleWellTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
+                    			CreateSingleWellReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                        	}else{
+                        		CreateReportInstanceProductionTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
+                        		CreateProductionReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
                         	}
 //                        	
                         	CreateProtocolReportInstancePropertiesInfoTable(record.data);
-                        	CreateReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitCode,selectedUnitName,record.data.classes);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='节点';

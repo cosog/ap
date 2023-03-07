@@ -17,7 +17,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
-        var reportTemplateStore = new Ext.data.SimpleStore({
+        var reportUnitStore = new Ext.data.SimpleStore({
         	fields: [{
                 name: "boxkey",
                 type: "string"
@@ -26,7 +26,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
                 type: "string"
             }],
 			proxy : {
-				url : context+ '/acquisitionUnitManagerController/getReportTemplateCombList',
+				url : context+ '/acquisitionUnitManagerController/getReportUnitCombList',
 				type : "ajax",
 				actionMethods: {
                     read: 'POST'
@@ -49,12 +49,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
 			}
 		});
         
-        var reportTemplateComb = Ext.create(
+        var reportUnitComb = Ext.create(
 				'Ext.form.field.ComboBox', {
 					fieldLabel :  '报表单元<font color=red>*</font>',
 					id : 'modbusProtocolReportInstanceTemplateComb_Id',
 					anchor : '100%',
-					store: reportTemplateStore,
+					store: reportUnitStore,
 					queryMode : 'remote',
 					typeAhead : true,
 					autoSelect : false,
@@ -65,9 +65,9 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
 					valueField : "boxkey",
 					listeners : {
 						expand: function (sm, selections) {
-							reportTemplateComb.getStore().load();
+							reportUnitComb.getStore().load();
 		                },select: function (v,o) {
-							Ext.getCmp("modbusInstanceReportUnitCode_Id").setValue(this.value);
+							Ext.getCmp("modbusInstanceReportUnit_Id").setValue(this.value);
 	                    }
 					}
 				});
@@ -155,10 +155,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
                 }
             },{
 				xtype : "hidden",
-				id : 'modbusInstanceReportUnitCode_Id',
+				id : 'modbusInstanceReportUnit_Id',
 				value: 0,
-				name : "protocolReportInstance.unitCode"
-			},reportTemplateComb,{
+				name : "protocolReportInstance.unitId"
+			},reportUnitComb,{
             	xtype: 'numberfield',
             	id: "modbusProtocolReportInstanceSort_Id",
                 name: 'protocolReportInstance.sort',

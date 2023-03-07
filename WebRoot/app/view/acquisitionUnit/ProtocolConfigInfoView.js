@@ -237,23 +237,35 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     				}
     				
     				//报表实例
-    				if(reportInstanceTemplateHandsontableHelper!=null){
-    					if(reportInstanceTemplateHandsontableHelper.hot!=undefined){
-    						reportInstanceTemplateHandsontableHelper.hot.destroy();
+    				if(reportInstanceSingleWellTemplateHandsontableHelper!=null){
+    					if(reportInstanceSingleWellTemplateHandsontableHelper.hot!=undefined){
+    						reportInstanceSingleWellTemplateHandsontableHelper.hot.destroy();
     					}
-    					reportInstanceTemplateHandsontableHelper=null;
+    					reportInstanceSingleWellTemplateHandsontableHelper=null;
     				}
-    				if(reportInstanceTemplateContentHandsontableHelper!=null){
-    					if(reportInstanceTemplateContentHandsontableHelper.hot!=undefined){
-    						reportInstanceTemplateContentHandsontableHelper.hot.destroy();
+    				if(reportInstanceSingleWellTemplateContentHandsontableHelper!=null){
+    					if(reportInstanceSingleWellTemplateContentHandsontableHelper.hot!=undefined){
+    						reportInstanceSingleWellTemplateContentHandsontableHelper.hot.destroy();
     					}
-    					reportInstanceTemplateContentHandsontableHelper=null;
+    					reportInstanceSingleWellTemplateContentHandsontableHelper=null;
     				}
     				if(protocolReportInstancePropertiesHandsontableHelper!=null){
     					if(protocolReportInstancePropertiesHandsontableHelper.hot!=undefined){
     						protocolReportInstancePropertiesHandsontableHelper.hot.destroy();
     					}
     					protocolReportInstancePropertiesHandsontableHelper=null;
+    				}
+    				if(reportInstanceProductionTemplateHandsontableHelper!=null){
+    					if(reportInstanceProductionTemplateHandsontableHelper.hot!=undefined){
+    						reportInstanceProductionTemplateHandsontableHelper.hot.destroy();
+    					}
+    					reportInstanceProductionTemplateHandsontableHelper=null;
+    				}
+    				if(reportInstanceProductionTemplateContentHandsontableHelper!=null){
+    					if(reportInstanceProductionTemplateContentHandsontableHelper.hot!=undefined){
+    						reportInstanceProductionTemplateContentHandsontableHelper.hot.destroy();
+    					}
+    					reportInstanceProductionTemplateContentHandsontableHelper=null;
     				}
     				
     				//报警实例HandsontableHelper资源
@@ -345,11 +357,23 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					singleWellReportTemplateContentHandsontableHelper=null;
     				}
-    				if(singleWellReportUnitPropertiesHandsontableHelper!=null){
-    					if(singleWellReportUnitPropertiesHandsontableHelper.hot!=undefined){
-    						singleWellReportUnitPropertiesHandsontableHelper.hot.destroy();
+    				if(reportUnitPropertiesHandsontableHelper!=null){
+    					if(reportUnitPropertiesHandsontableHelper.hot!=undefined){
+    						reportUnitPropertiesHandsontableHelper.hot.destroy();
     					}
-    					singleWellReportUnitPropertiesHandsontableHelper=null;
+    					reportUnitPropertiesHandsontableHelper=null;
+    				}
+    				if(productionReportTemplateHandsontableHelper!=null){
+    					if(productionReportTemplateHandsontableHelper.hot!=undefined){
+    						productionReportTemplateHandsontableHelper.hot.destroy();
+    					}
+    					productionReportTemplateHandsontableHelper=null;
+    				}
+    				if(productionReportTemplateContentHandsontableHelper!=null){
+    					if(productionReportTemplateContentHandsontableHelper.hot!=undefined){
+    						productionReportTemplateContentHandsontableHelper.hot.destroy();
+    					}
+    					productionReportTemplateContentHandsontableHelper=null;
     				}
     			},
     			afterrender: function ( panel, eOpts) {}

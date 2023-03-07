@@ -57,7 +57,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-//                        	CreateReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
+                        	CreateProductionReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
                         }
                     }
 
@@ -82,13 +82,24 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
             	}
             	
             	var store = gridPanel.getStore();
+            	var selected=false;
             	for(var i=0;i<store.getCount();i++){
 					var record=store.getAt(i);
 					if(record.data.templateCode==selectUnitReportTemplateCode){
 						gridPanel.getSelectionModel().select(i, true);
+						selected=true;
 						break;
 					}
 				}
+            	if(!selected){
+            		if(productionReportTemplateHandsontableHelper!=null){
+    					if(productionReportTemplateHandsontableHelper.hot!=undefined){
+    						productionReportTemplateHandsontableHelper.hot.destroy();
+    					}
+    					productionReportTemplateHandsontableHelper=null;
+    				}
+            		Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区块报表模板：');
+            	}
         	}
 //            gridPanel.getSelectionModel().deselectAll(true);
 //            gridPanel.getSelectionModel().select(0, true);

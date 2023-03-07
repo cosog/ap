@@ -1064,11 +1064,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getReportTemplateData")
 	public String getReportTemplateData() throws Exception {
-		String name = ParamUtils.getParameter(request, "name");
+		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportTemplateData(name,deviceType,code);
+		json = acquisitionUnitItemManagerService.getReportTemplateData(reportType,deviceType,code);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1254,10 +1254,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getReportInstanceTotalCalItemsConfigData")
 	public String getReportInstanceTotalCalItemsConfigData() throws Exception {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String unitCode = ParamUtils.getParameter(request, "unitCode");
-		String classes = ParamUtils.getParameter(request, "classes");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String reportType = ParamUtils.getParameter(request, "reportType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportInstanceTotalCalItemsConfigData(deviceType,unitCode,classes);
+		json = acquisitionUnitItemManagerService.getReportInstanceTotalCalItemsConfigData(deviceType,unitId,reportType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1591,6 +1591,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getReportUnitList")
+	public String getReportUnitList() throws IOException {
+		String json = acquisitionUnitItemManagerService.getReportUnitList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/modbusDisplayInstanceConfigTreeData")
 	public String modbusDisplayInstanceConfigTreeData() throws IOException {
 		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData();
@@ -1662,6 +1674,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getReportTemplateCombList() throws IOException {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		String json=acquisitionUnitItemManagerService.getReportTemplateCombList(deviceType);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getReportUnitCombList")
+	public String getReportUnitCombList() throws IOException {
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String json=acquisitionUnitItemManagerService.getReportUnitCombList(deviceType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2654,23 +2679,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolReportInstanceSaveData.getName())){
-				ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
-				String unitName=modbusProtocolReportInstanceSaveData.getUnitName();
-				String unitCode="";
-				if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
-					for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
-						if(unitName.equalsIgnoreCase(reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()) && modbusProtocolReportInstanceSaveData.getDeviceType()==reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()){
-							unitCode=reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode();
-							break;
-						}
-					}
+				String sql="select t.id from tbl_report_unit_conf t where t.unit_name='"+modbusProtocolReportInstanceSaveData.getUnitName()+"' "
+						+ "and t.deviceType="+modbusProtocolReportInstanceSaveData.getDeviceType()+" and rownum=1";
+				String unitId="";
+				List list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					unitId=list.get(0).toString();
 				}
 				ProtocolReportInstance protocolReportInstance=new ProtocolReportInstance();
 				protocolReportInstance.setId(modbusProtocolReportInstanceSaveData.getId());
 				protocolReportInstance.setCode(modbusProtocolReportInstanceSaveData.getCode());
 				protocolReportInstance.setName(modbusProtocolReportInstanceSaveData.getName());
 				protocolReportInstance.setDeviceType(modbusProtocolReportInstanceSaveData.getDeviceType());
-//				protocolReportInstance.setUnitCode(unitCode);
+				protocolReportInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
 				
 				
 				if(StringManagerUtils.isNum(modbusProtocolReportInstanceSaveData.getSort())){

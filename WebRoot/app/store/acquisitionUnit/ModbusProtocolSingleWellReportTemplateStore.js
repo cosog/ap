@@ -57,7 +57,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-                        	CreateReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
+                        	CreateSingleWellReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
                         }
                     }
 
@@ -82,13 +82,24 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
             	}
             	
             	var store = gridPanel.getStore();
+            	var selected=false;
             	for(var i=0;i<store.getCount();i++){
 					var record=store.getAt(i);
 					if(record.data.templateCode==selectUnitReportTemplateCode){
 						gridPanel.getSelectionModel().select(i, true);
+						selected=true;
 						break;
 					}
 				}
+            	if(!selected){
+            		if(singleWellReportTemplateHandsontableHelper!=null){
+    					if(singleWellReportTemplateHandsontableHelper.hot!=undefined){
+    						singleWellReportTemplateHandsontableHelper.hot.destroy();
+    					}
+    					singleWellReportTemplateHandsontableHelper=null;
+    				}
+            		Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('单井报表模板：');
+            	}
         	}
 //            gridPanel.getSelectionModel().deselectAll(true);
 //            gridPanel.getSelectionModel().select(0, true);

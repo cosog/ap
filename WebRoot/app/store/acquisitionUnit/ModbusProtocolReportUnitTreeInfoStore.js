@@ -63,11 +63,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			selectedUnitCode=record.data.children[0].code;
                         			selectedUnitId=record.data.children[0].id;
-                        		}else{
-                        			Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('报表模板');
-                        			if(singleWellReportTemplateHandsontableHelper!=null && singleWellReportTemplateHandsontableHelper.hot!=undefined){
-                        				singleWellReportTemplateHandsontableHelper.hot.loadData([]);
-                        			}
                         		}
                         	}else if(record.data.classes==1){
                         		selectedUnitCode=record.data.code;
@@ -91,6 +86,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                             	}else{
                             		Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
                             	}
+                            	CreateproductionReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
             				}
                         	
                         	CreateProtocolReportUnitPropertiesInfoTable(record.data);

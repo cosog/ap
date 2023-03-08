@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.cosog.model.CellEditData;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
+import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.gridmodel.GraphicSetData;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.EquipmentDriverServerTask;
@@ -843,24 +844,38 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
 		String reportTemplateCode="";
+		String reportUnitId="";
 		String deviceTableName="tbl_rpcdevice";
 		String tableName="VIW_RPCDAILYCALCULATIONDATA";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="VIW_PCPDAILYCALCULATIONDATA";
 			deviceTableName="tbl_pcpdevice";
+			tableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
 		ReportTemplate.Template template=null;
-		String reportTemplateCodeSql="select t2.unitcode from "+deviceTableName+" t,tbl_protocolreportinstance t2 where t.reportinstancecode=t2.code and t.id="+wellId+"";
+		String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t.id="+wellId;
 		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 		if(reportTemplateCodeList.size()>0){
-			reportTemplateCode=reportTemplateCodeList.get(0).toString().replaceAll("null", "");
+			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+			reportUnitId=(obj[0]+"").replaceAll("null", "");
+			if(StringManagerUtils.stringToInteger(reportType)==0){
+				reportTemplateCode=(obj[1]+"").replaceAll("null", "");
+			}else{
+				reportTemplateCode=(obj[2]+"").replaceAll("null", "");
+			}
 		}
 		if(StringManagerUtils.isNotNull(reportTemplateCode)){
-			template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+			if(StringManagerUtils.stringToInteger(reportType)==0){
+				template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+			}else{
+				template=MemoryDataManagerTask.getProductionReportTemplateByCode(reportTemplateCode);
+			}
 		}
 		if(template!=null){
 			int columnCount=0;
@@ -915,8 +930,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<List<String>> dataList=new ArrayList<>();
 			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
-					+ " where t.unitcode='"+reportTemplateCode+"' "
+					+ " where t.unitid="+reportUnitId+" "
+					+ " and t.reportType="+reportType
 					+ " and t.sort>=0"
+					+ " and t.sort<="+columnCount
 					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
 			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
@@ -1000,12 +1017,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public boolean exportSingleWellDailyReportData(HttpServletResponse response,
-			Page pager,String orgId,String deviceType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+			Page pager,String orgId,String deviceType,String reportType,
+			String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			Gson gson =new Gson();
 			String reportTemplateCode="";
+			String reportUnitId="";
 			int headerRowCount=0;
 			String title=wellName+"井生产报表";
 			String fileName=wellName+"井生产报表";
@@ -1016,10 +1035,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				deviceTableName="tbl_pcpdevice";
 			}
 			ReportTemplate.Template template=null;
-			String reportTemplateCodeSql="select t2.unitcode from "+deviceTableName+" t,tbl_protocolreportinstance t2 where t.reportinstancecode=t2.code and t.id="+wellId+"";
+			String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+					+ " and t.id="+wellId;
 			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 			if(reportTemplateCodeList.size()>0){
-				reportTemplateCode=reportTemplateCodeList.get(0).toString().replaceAll("null", "");
+				Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+				reportUnitId=(obj[0]+"").replaceAll("null", "");
+				if(StringManagerUtils.stringToInteger(reportType)==0){
+					reportTemplateCode=(obj[1]+"").replaceAll("null", "");
+				}else{
+					reportTemplateCode=(obj[2]+"").replaceAll("null", "");
+				}
 			}
 			if(StringManagerUtils.isNotNull(reportTemplateCode)){
 				template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
@@ -1083,8 +1111,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				List<List<String>> dataList=new ArrayList<>();
 				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
-						+ " where t.unitcode='"+reportTemplateCode+"' "
+						+ " where t.unitid="+reportUnitId+" "
+						+ " and t.reportType="+reportType
 						+ " and t.sort>=0"
+						+ " and t.sort<="+columnCount
 						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 						+ " order by t.sort";
 				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
@@ -1180,7 +1210,136 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getProductionDailyReportData(Page pager, String orgId,String deviceType,String reportType,
+			String instanceCode,String unitId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Gson gson =new Gson();
+		String reportTemplateCode="";
+		String deviceTableName="tbl_rpcdevice";
+		String tableName="VIW_RPCDAILYCALCULATIONDATA";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			deviceTableName="tbl_pcpdevice";
+			tableName="VIW_PCPDAILYCALCULATIONDATA";
+		}
+		ReportTemplate.Template template=null;
+		String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t3.id="+unitId;
+		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+		if(reportTemplateCodeList.size()>0){
+			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+			if(StringManagerUtils.stringToInteger(reportType)==0){
+				reportTemplateCode=(obj[1]+"").replaceAll("null", "");
+			}else{
+				reportTemplateCode=(obj[2]+"").replaceAll("null", "");
+			}
+		}
+		if(StringManagerUtils.isNotNull(reportTemplateCode)){
+			if(StringManagerUtils.stringToInteger(reportType)==0){
+				template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+			}else{
+				template=MemoryDataManagerTask.getProductionReportTemplateByCode(reportTemplateCode);
+			}
+		}
+		if(template!=null){
+			int columnCount=0;
+			if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
+				columnCount=template.getHeader().get(0).getTitle().size();
+				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
+					String header=template.getHeader().get(0).getTitle().get(i);
+					if(StringManagerUtils.isNotNull(header)){
+						template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+					}
+				}
+			}
+			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
+			List<List<String>> dataList=new ArrayList<>();
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+					+ " where t.unitid="+unitId+" "
+					+ " and t.reportType="+reportType
+					+ " and t.sort>=0"
+					+ " and t.sort<="+columnCount
+					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " order by t.sort";
+			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+			for(int i=0;i<reportItemQuertList.size();i++){
+				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+				ReportUnitItem reportUnitItem=new ReportUnitItem();
+				reportUnitItem.setItemName(reportItemObj[0]+"");
+				reportUnitItem.setItemCode(reportItemObj[1]+"");
+				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				reportItemList.add(reportUnitItem);
+			}
+			
+			StringBuffer sqlBuff = new StringBuffer();
+			sqlBuff.append("select id");
+			
+			for(int i=0;i<reportItemList.size();i++){
+				if(reportItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
+				}else if(reportItemList.get(i).getDataType()==4){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+				}else{
+					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+				}
+			}
+			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.reportinstancecode='"+instanceCode+"' ");
+			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+			sqlBuff.append(" order by t.calDate");
+			
+			List<String> allColList=new ArrayList<String>();;
+			
+			List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+			for(int i=0;i<reportDataList.size();i++){
+				Object[] reportDataObj=(Object[]) reportDataList.get(i);
+				String recordId=reportDataObj[0]+"";
+				List<String> everyDaya=new ArrayList<String>();
+				for(int j=0;j<columnCount;j++){
+					everyDaya.add("");
+				}
+				everyDaya.set(0, (i+1)+"");
+				everyDaya.add(recordId);
+				for(int j=0;j<reportItemList.size();j++){
+					if(reportItemList.get(j).getSort()>=1){
+						String addValue="";
+						if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
+							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+						}else{
+							addValue=reportDataObj[j+1]+"";
+						}
+						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+					}
+				}
+				dataList.add(everyDaya);
+				
+				if(allColList.size()==0){
+					for(int j=0;j<columnCount;j++){
+						allColList.add("\"\"");
+					}
+					allColList.add("\"recordId\"");
+					for(int j=0;j<reportItemList.size();j++){
+						if(reportItemList.get(j).getSort()>=1){
+							allColList.set(reportItemList.get(j).getSort()-1, "\""+reportItemList.get(j).getItemCode()+"\"");
+						}
+					}
+				}
+			}
+			result_json.append("\"data\":"+gson.toJson(dataList)+",\"columns\":"+allColList.toString());
+		}else{
+			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
+		}
+		result_json.append(",\"wellName\":\""+wellName+"\"");
+		result_json.append(",\"startDate\":\""+startDate+"\"");
+		result_json.append(",\"endDate\":\""+endDate+"\"");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -1201,6 +1360,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("{\"success\":true,");
 		
+		
+		
 		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+wellId;
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		if(graphicSetList.size()>0){
@@ -1209,9 +1370,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
-				+ " where t.unitcode=t2.unitcode and t2.code=t3.reportinstancecode"
+				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
 				+ " and t3.id="+wellId
 				+ " and t.sort>=0"
+				+ " and t.reportType= "+reportType
 				+ " and t.reportcurve>0 "
 				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
 				+ " order by t.reportcurve";
@@ -1293,7 +1455,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportQueryCurveSetData(String deviceId,String deviceType,int userNo)throws Exception {
+	public String getReportQueryCurveSetData(String deviceId,String deviceType,String reportType,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1306,9 +1468,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
 		String curveItemsSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
-				+ " where t.unitcode=t2.unitcode and t2.code=t3.reportinstancecode"
+				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
 				+ " and t3.id="+deviceId
 				+ " and t.sort>=0"
+				+ " and t.reportType="+reportType
 				+ " and t.reportcurve>0 "
 				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
 				+ " order by t.reportcurve";
@@ -1795,6 +1958,94 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"wellName\":\""+obj[1]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
+	public String getReportTemplateList(String orgId,String wellName,String deviceType,String reportType){
+		StringBuffer result_json = new StringBuffer();
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		String tableName="tbl_rpcdevice";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdevice";
+		}
+		String sql="select t3.singlewellreporttemplate,t3.productionreporttemplate "
+				+ " from tbl_rpcdevice t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t.orgid in("+orgId+")";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and t.wellName='"+wellName+"'";
+		}
+		sql+=" group by t3.singlewellreporttemplate,t3.productionreporttemplate";
+		
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"模板\",\"dataIndex\":\"templateName\" ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		int totalCount=0;
+		if(reportTemplate!=null){
+			List<?> list = this.findCallSql(sql);
+			List<Template> templateList=reportTemplate.getSingleWellReportTemplate();
+			if(StringManagerUtils.stringToInteger(reportType)==1){
+				templateList=reportTemplate.getProductionReportTemplate();
+			}
+			for(int i=0;i<templateList.size();i++){
+				for(int j=0;j<list.size();j++){
+					Object[] obj=(Object[]) list.get(j);
+					String templateCode=obj[0]+"";
+					if(StringManagerUtils.stringToInteger(reportType)==1){
+						templateCode=obj[1]+"";
+					}
+					if(templateCode.equalsIgnoreCase(templateList.get(i).getTemplateCode())){
+						totalCount++;
+						result_json.append("{\"id\":"+totalCount+",");
+						result_json.append("\"templateName\":\""+templateList.get(i).getTemplateName()+"\",");
+						result_json.append("\"templateCode\":\""+templateList.get(i).getTemplateCode()+"\"},");
+						break;
+					}
+				}
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("],\"totalCount\":"+totalCount+"}");
+		return result_json.toString();
+	}
+	
+	public String getReportInstanceList(String orgId,String wellName,String deviceType){
+		StringBuffer result_json = new StringBuffer();
+		String tableName="tbl_rpcdevice";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdevice";
+		}
+		String sql="select  t2.id,t2.name,t2.code,t2.unitid,t2.sort "
+				+ " from tbl_rpcdevice t,tbl_protocolreportinstance t2 "
+				+ " where t.reportinstancecode=t2.code "
+				+ " and t.orgid in("+orgId+")";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and t.wellName='"+wellName+"'";
+		}
+		sql+=" group by t2.id,t2.name,t2.code,t2.unitid,t2.sort order by t2.sort";
+		List<?> list = this.findCallSql(sql);
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"报表实例\",\"dataIndex\":\"instanceName\" ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"totalCount\":"+list.size()+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"instanceName\":\""+obj[1]+"\",");
+			result_json.append("\"instanceCode\":\""+obj[2]+"\",");
+			result_json.append("\"unitId\":\""+obj[3]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

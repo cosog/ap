@@ -414,14 +414,29 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var tabPanel = Ext.getCmp("ProductionWellDailyReportPanel_Id");
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="RPCDailyReportPanel_Id"){
-			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setRawValue('');
-			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setValue('');
-			var gridPanel = Ext.getCmp("RPCDailyReportGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
-			}else{
-				Ext.create('AP.store.reportOut.RPCDailyReportWellListStore');
+			var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
+			if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
+				Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+				Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setValue('');
+				var gridPanel = Ext.getCmp("RPCSingleWellDailyReportGridPanel_Id");
+				if (isNotVal(gridPanel)) {
+					gridPanel.getStore().load();
+				}else{
+					Ext.create('AP.store.reportOut.RPCSingleWellDailyReportWellListStore');
+				}
+			}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
+				Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+				Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setValue('');
+				var gridPanel = Ext.getCmp("RPCProductionDailyReportGridPanel_Id");
+    			if (isNotVal(gridPanel)) {
+    				gridPanel.getStore().load();
+    			}else{
+    				Ext.create('AP.store.reportOut.RPCProductionDailyReportInstanceListStore');
+    			}
 			}
+			
+			
+			
 		}else if(activeId=="PCPDailyReportPanel_Id"){
 			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setRawValue('');
 			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setValue('');

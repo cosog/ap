@@ -35,9 +35,9 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 handler: function (v, o) {
                 	var activeId = Ext.getCmp("ProductionWellDailyReportPanel_Id").getActiveTab().id;
                 	var deviceType=0;
-                	var selectRowId="RPCDailyReportDeviceListSelectRow_Id";
-                	var gridPanelId="RPCDailyReportGridPanel_Id";
-                	var divId="RPCDailyReportCurveDiv_Id";
+                	var selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
+                	var gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
+                	var divId="RPCSingleWellDailyReportCurveDiv_Id";
                 	
                 	if(activeId=="PCPDailyReportPanel_Id"){
                 		deviceType=1;
@@ -147,15 +147,39 @@ function CreateDeviceReportCurveSetTable(){
 	var activeId = Ext.getCmp("ProductionWellDailyReportPanel_Id").getActiveTab().id;
 	
 	var deviceType=0;
-	var selectRowId="RPCDailyReportDeviceListSelectRow_Id";
-	var gridPanelId="RPCDailyReportGridPanel_Id";
-	var divId="RPCDailyReportCurveDiv_Id";
+	var reportType=0;
+	var selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
+	var gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
+	var divId="RPCSingleWellDailyReportCurveDiv_Id";
 	
-	if(activeId=="PCPDailyReportPanel_Id"){
+	if(activeId=="RPCDailyReportPanel_Id"){
+		deviceType=0;
+		var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
+		if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
+			reportType=0;
+			selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
+			gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
+			divId="RPCSingleWellDailyReportCurveDiv_Id";
+		}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
+			reportType=1;
+			selectRowId="RPCProductionDailyReportInstanceListSelectRow_Id";
+			gridPanelId="RPCProductionDailyReportGridPanel_Id";
+			divId="RPCProductionDailyReportCurveDiv_Id";
+		}
+	}else{
 		deviceType=1;
-		selectRowId="PCPDailyReportDeviceListSelectRow_Id";
-		gridPanelId="PCPDailyReportGridPanel_Id";
-		divId="PCPDailyReportCurveDiv_Id";
+		var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
+		if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
+			reportType=0;
+			selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
+			gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
+			divId="PCPSingleWellDailyReportCurveDiv_Id";
+		}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
+			reportType=1;
+			selectRowId="PCPProductionDailyReportDeviceListSelectRow_Id";
+			gridPanelId="PCPProductionDailyReportGridPanel_Id";
+			divId="PCPProductionDailyReportCurveDiv_Id";
+		}
 	}
 	var deviceName='';
 	var deviceId=0;
@@ -193,6 +217,7 @@ function CreateDeviceReportCurveSetTable(){
 		params: {
 			deviceName:deviceName,
 			deviceId:deviceId,
+			reportType:reportType,
 			deviceType:deviceType
         }
 	});

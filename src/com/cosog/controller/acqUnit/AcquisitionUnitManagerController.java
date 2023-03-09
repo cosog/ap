@@ -58,6 +58,7 @@ import com.cosog.model.drive.ModbusProtocolDisplayInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolReportInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolReportUnitSaveData;
+import com.cosog.model.drive.TotalCalItemsToReportUnitSaveData;
 import com.cosog.model.gridmodel.AcquisitionGroupHandsontableChangeData;
 import com.cosog.model.gridmodel.AcquisitionUnitHandsontableChangeData;
 import com.cosog.model.gridmodel.DatabaseMappingProHandsontableChangedData;
@@ -953,37 +954,40 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		ReportUnitItem reportUnitItem = null;
+		java.lang.reflect.Type type=null;
+		Gson gson = new Gson();
 		try {
-			String params = ParamUtils.getParameter(request, "params");
-			String sorts = ParamUtils.getParameter(request, "sorts");
+			
 			String unitId = ParamUtils.getParameter(request, "unitId");
 			String reportType = ParamUtils.getParameter(request, "reportType");
-			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
-			log.debug("grantTotalCalItemsToReportUnitPermission params==" + params);
-			String paramsArr[] = StringManagerUtils.split(params, ",");
-
+			String saveData = ParamUtils.getParameter(request, "saveData");
+			
 			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType);
-			if (StringManagerUtils.isNotNull(matrixCodes)) {
-				String module_matrix[] = matrixCodes.split("\\|");
-				List<String> itemsList=new ArrayList<String>();
-				for (int i = 0; i < module_matrix.length; i++) {
-					String module_[] = module_matrix[i].split("\\:");
-					
-					if(StringManagerUtils.isNotNull(module_[5])){
-						StringManagerUtils.printLog("#"+module_[5]+"isColor16:"+StringManagerUtils.isColor16("#"+module_[5]));
-					}
-					String itemName=module_[0];
+			
+			type = new TypeToken<TotalCalItemsToReportUnitSaveData>() {}.getType();
+			TotalCalItemsToReportUnitSaveData totalCalItemsToReportUnitSaveData=gson.fromJson(saveData, type);
+			if (totalCalItemsToReportUnitSaveData!=null && totalCalItemsToReportUnitSaveData.getItemList()!=null && totalCalItemsToReportUnitSaveData.getItemList().size()>0) {
+				
+				for (int i = 0; i < totalCalItemsToReportUnitSaveData.getItemList().size(); i++) {
 					reportUnitItem = new ReportUnitItem();
 					reportUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
 					reportUnitItem.setReportType(StringManagerUtils.stringToInteger(reportType));
-					reportUnitItem.setItemName(itemName);
-					reportUnitItem.setItemCode(module_[1]);
-					reportUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-					reportUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
-					reportUnitItem.setReportCurve((StringManagerUtils.isNumber(module_[4]))?StringManagerUtils.stringTransferInteger(module_[4]):null);
-					reportUnitItem.setReportCurveColor(StringManagerUtils.isColor16("#"+module_[5])?module_[5]:"");
-					reportUnitItem.setDataType(StringManagerUtils.isNumber(module_[6])?StringManagerUtils.stringTransferInteger(module_[6]):null);
-					reportUnitItem.setMatrix(module_[7]);
+					reportUnitItem.setItemName(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName());
+					reportUnitItem.setItemCode(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemCode());
+					
+					reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
+					reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
+					
+					reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
+					reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
+					
+					reportUnitItem.setReportCurve( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurve()!=null && (StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurve())) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurve()):null);
+					reportUnitItem.setReportCurveColor(StringManagerUtils.isColor16("#"+totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveColor())?totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveColor():"");
+					
+					reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
+					
+					reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
+					reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");
 					this.reportUnitItemManagerService.grantReportItemsPermission(reportUnitItem);
 				}
 			}

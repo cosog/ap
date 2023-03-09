@@ -20,8 +20,15 @@ public class ReportUnitItem implements java.io.Serializable {
 	private String matrix;
 	private Integer showLevel;
 	private Integer sort;
+	
+	private Integer sumSign;
+	private Integer averageSign;
+	
 	private Integer reportCurve;
 	private String reportCurveColor;
+	
+	private Integer curveStatType;
+	
 	private Integer dataType;
 	private Integer reportType;
 	
@@ -158,5 +165,30 @@ public class ReportUnitItem implements java.io.Serializable {
 		this.unitId = unitId;
 	}
 
-	
+	@Column(name = "sumSign")
+	public Integer getSumSign() {
+		return sumSign;
+	}
+
+	public void setSumSign(Integer sumSign) {
+		this.sumSign = sumSign;
+	}
+
+	@Column(name = "averageSign")
+	public Integer getAverageSign() {
+		return averageSign;
+	}
+
+	public void setAverageSign(Integer averageSign) {
+		this.averageSign = averageSign;
+	}
+
+	@Column(name = "curveStatType")
+	public Integer getCurveStatType() {
+		return curveStatType;
+	}
+
+	public void setCurveStatType(Integer curveStatType) {
+		this.curveStatType = curveStatType;
+	}
 }

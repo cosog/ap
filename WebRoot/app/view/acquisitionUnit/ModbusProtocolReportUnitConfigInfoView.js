@@ -952,7 +952,7 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			}
 			if(productionReportTemplateContentHandsontableHelper==null || productionReportTemplateContentHandsontableHelper.hot==undefined){
 				productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -960,8 +960,15 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 					 	+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
+						
+						+"{data:'sumSign',type:'checkbox'}," 
+						+"{data:'averageSign',type:'checkbox'}," 
+						
 						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'reportCurveColor'},"
+						
+						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},"
+						
 						+"{data:'code'},"
 						+"{data:'dataType'}"
 						+"]";
@@ -1014,11 +1021,11 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9],
+	                    columns: [11,12],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,85,85,],
+	                colWidths: [25,30,140,80,60,60,30,45,85,85,70],
 	                columns:productionReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1043,7 +1050,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                		}else{
 	                			if (visualColIndex >=1 && visualColIndex<=3) {
 	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==7){
+	    		                }else if(visualColIndex==9){
 	    		                	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCurveBg;
 	    		                }
 	                		}
@@ -1053,7 +1060,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(productionReportTemplateContentHandsontableHelper!=null && productionReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=productionReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==7)){
+		                	if(row1[0] && (column==9)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
@@ -1125,6 +1132,9 @@ function SaveReportUnitData(){
 		}
 		if(selectedItem.data.classes==1){//保存单元
 			SaveModbusProtocolReportUnitData(reportUnitProperties);
+			
+			
+			
 			grantReportTotalCalItemsPermission();
 		}
 	}
@@ -1176,10 +1186,8 @@ var grantReportTotalCalItemsPermission = function () {
     var addUrl = context + '/acquisitionUnitManagerController/grantTotalCalItemsToReportUnitPermission';
 	
     // 添加条件
-    var addjson = [];
-    var addItemSort=[];
-    var matrixData = "";
-    var matrixDataArr = "";
+    var saveData={};
+    saveData.itemList=[];
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     
     var unitId = selectedItem.data.id;
@@ -1189,42 +1197,62 @@ var grantReportTotalCalItemsPermission = function () {
 
     Ext.Array.each(calItemsData, function (name, index, countriesItSelf) {
         if ((calItemsData[index][0]+'')==='true') {
-        	var itemName = calItemsData[index][2];
-        	
-        	var itemShowLevel = calItemsData[index][4];
-        	var itemSort = calItemsData[index][5];
-        	var reportCurve=calItemsData[index][6];
-        	var reportCurveColor=calItemsData[index][7];
-        	
-        	var itemCode = calItemsData[index][8];
-        	var dataType = calItemsData[index][9];
-        	
-            addjson.push(itemCode);
-            addItemSort.push(itemSort);
-            var matrix_value = '0,0,0';
-            matrixData += itemName + ":"
-            + itemCode+ ":"
-            + itemSort+ ":"
-            + itemShowLevel+ ":" 
-            + reportCurve+ ":" 
-            + reportCurveColor+ ":" 
-            + dataType + ":" 
-            + matrix_value+ "|";
+        	var item={};
+        	item.matrix='0,0,0';
+        	if(reportType==0){
+        		item.itemName = calItemsData[index][2];
+            	
+        		item.itemShowLevel = calItemsData[index][4];
+        		item.itemSort = calItemsData[index][5];
+        		item.reportCurve=calItemsData[index][6];
+        		item.reportCurveColor=calItemsData[index][7];
+            	
+        		item.itemCode = calItemsData[index][8];
+        		item.dataType = calItemsData[index][9];
+        	}else if(reportType==1){
+        		item.itemName = calItemsData[index][2];
+            	
+        		item.itemShowLevel = calItemsData[index][4];
+        		item.itemSort = calItemsData[index][5];
+        		
+        		item.sumSign='0';
+        		if((calItemsData[index][6]+'')==='true'){
+        			item.sumSign='1';
+        		}
+        		
+        		item.averageSign='0';
+        		if((calItemsData[index][7]+'')==='true'){
+        			item.averageSign='1';
+        		}
+        		
+        		item.reportCurve=calItemsData[index][8];
+        		item.reportCurveColor=calItemsData[index][9];
+        		
+        		item.curveStatType = calItemsData[index][10];
+        		if(calItemsData[index][10]=='合计'){
+        			item.curveStatType='1';
+        		}else if(calItemsData[index][10]=='平均'){
+        			item.curveStatType='2';
+        		}else if(calItemsData[index][10]=='最大值'){
+        			item.curveStatType='3';
+        		}else if(calItemsData[index][10]=='最小值'){
+        			item.curveStatType='4';
+        		}
+        		
+            	
+        		item.itemCode = calItemsData[index][11];
+        		item.dataType = calItemsData[index][12]+"";
+        	}
+        	saveData.itemList.push(item);
         }
     });
-    matrixData = matrixData.substring(0, matrixData.length - 1);
-    var addparams = "" + addjson.join(",");
-    var addSortParams = "" + addItemSort.join(",");
-    var matrixCodes_ = "" + matrixData;
     Ext.Ajax.request({
         url: addUrl,
         method: "POST",
         params: {
-            params: addparams,
-            sorts: addSortParams,
             unitId: unitId,
             reportType: reportType,
-            matrixCodes: matrixCodes_
+            saveData: JSON.stringify(saveData)
         },
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);

@@ -1544,8 +1544,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\"报表曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报曲线统计类型\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -1555,10 +1558,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsCodeList=new ArrayList<String>();
 		List<String> itemsSortList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
+		
+		List<String> sumSignList=new ArrayList<String>();
+		List<String> averageSignList=new ArrayList<String>();
+		
 		List<String> reportCurveList=new ArrayList<String>();
 		List<String> reportCurveColorList=new ArrayList<String>();
+		
+		List<String> curveStatTypeList=new ArrayList<String>();
 		if("1".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.reportCurve,t.reportCurveColor "
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurve,t.reportCurveColor,t.curvestattype "
 					+ " from tbl_report_items2unit_conf t "
 					+ " where t.unitid="+unitId+" and t.reportType="+reportType
 					+ " order by t.sort";
@@ -1569,8 +1578,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsCodeList.add(obj[1]+"");
 				itemsSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
-				reportCurveList.add(obj[4]+"");
-				reportCurveColorList.add(obj[5]+"");
+				
+				sumSignList.add(obj[4]+"");
+				averageSignList.add(obj[5]+"");
+				
+				reportCurveList.add(obj[6]+"");
+				reportCurveColorList.add(obj[7]+"");
+				
+				curveStatTypeList.add(obj[8]+"");
 			}
 		}
 		
@@ -1582,8 +1597,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				boolean checked=false;
 				String sort="";
 				String showLevel="";
+				
+				boolean sumSign=false;
+				boolean averageSign=false;
+				
 				String isReportCurve="";
 				String reportCurveColor="";
+				
+				String curveStatType="";
 
 				checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
 				if(checked){
@@ -1591,8 +1612,38 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 							sort=itemsSortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
+							
+							if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+								if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+									sumSign=true;
+								}else{
+									sumSign=false;
+								}
+							}
+							
+							if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+								if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+									averageSign=true;
+								}else{
+									averageSign=false;
+								}
+							}
+							
 							isReportCurve=reportCurveList.get(k);
 							reportCurveColor=reportCurveColorList.get(k);
+							
+							String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+							if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+								if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+									curveStatType="合计";
+								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+									curveStatType="平均";
+								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+									curveStatType="最大值";
+								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+									curveStatType="最小值";
+								}
+							}
 							break;
 						}
 					}
@@ -1603,8 +1654,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"unit\":\""+calItem.getUnit()+"\","
 						+ "\"showLevel\":\""+showLevel+"\","
 						+ "\"sort\":\""+sort+"\","
+						+ "\"sumSign\":"+sumSign+","
+						+ "\"averageSign\":"+averageSign+","
 						+ "\"reportCurve\":\""+isReportCurve+"\","
 						+ "\"reportCurveColor\":\""+reportCurveColor+"\","
+						+ "\"curveStatType\":\""+curveStatType+"\","
 						+ "\"dataType\":"+calItem.getDataType()+","
 						+ "\"code\":\""+calItem.getCode()+"\""
 						+ "},");
@@ -1617,6 +1671,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
+		System.out.println(result_json.toString().replaceAll("null", ""));
 		return result_json.toString().replaceAll("null", "");
 	}
 	

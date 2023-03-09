@@ -347,3 +347,11 @@
 .sync {
 	background-image: url(../images/icon/sync.png) !important;
 }
+
+.forward {
+	background-image: url(../images/icon/forward.png) !important;
+}
+
+.backwards {
+	background-image: url(../images/icon/backwards.png) !important;
+}

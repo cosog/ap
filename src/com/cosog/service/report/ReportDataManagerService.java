@@ -1211,7 +1211,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getProductionDailyReportData(Page pager, String orgId,String deviceType,String reportType,
-			String instanceCode,String unitId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+			String instanceCode,String unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
 		String reportTemplateCode="";
@@ -1288,8 +1288,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.reportinstancecode='"+instanceCode+"' ");
-			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
-			sqlBuff.append(" order by t.calDate");
+			sqlBuff.append(" and t.calDate = to_date('"+reportDate+"','yyyy-mm-dd')");
+			sqlBuff.append(" order by t.sortnum");
 			
 			List<String> allColList=new ArrayList<String>();;
 			
@@ -1337,6 +1337,164 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append(",\"endDate\":\""+endDate+"\"");
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public boolean exportProductionDailyReportData(HttpServletResponse response,
+			Page pager,String orgId,String deviceType,String reportType,
+			String instanceCode,String  unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			List<List<Object>> sheetDataList = new ArrayList<>();
+			Gson gson =new Gson();
+			String title=wellName+"井生产报表";
+			String fileName=wellName+"井生产报表";
+			int headerRowCount=0;
+			
+			String reportTemplateCode="";
+			String deviceTableName="tbl_rpcdevice";
+			String tableName="VIW_RPCDAILYCALCULATIONDATA";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				deviceTableName="tbl_pcpdevice";
+				tableName="VIW_PCPDAILYCALCULATIONDATA";
+			}
+			ReportTemplate.Template template=null;
+			String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+					+ " and t3.id="+unitId;
+			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+			if(reportTemplateCodeList.size()>0){
+				Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+				if(StringManagerUtils.stringToInteger(reportType)==0){
+					reportTemplateCode=(obj[1]+"").replaceAll("null", "");
+				}else{
+					reportTemplateCode=(obj[2]+"").replaceAll("null", "");
+				}
+			}
+			if(StringManagerUtils.isNotNull(reportTemplateCode)){
+				if(StringManagerUtils.stringToInteger(reportType)==0){
+					template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+				}else{
+					template=MemoryDataManagerTask.getProductionReportTemplateByCode(reportTemplateCode);
+				}
+			}
+			if(template!=null){
+				int columnCount=0;
+				headerRowCount=template.getHeader().size();
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
+					columnCount=template.getHeader().get(0).getTitle().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
+						String header=template.getHeader().get(0).getTitle().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							title=header.replaceAll("wellNameLabel", wellName);
+							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+						}
+					}
+				}
+				
+				fileName="";
+				fileName+=title+"-"+reportDate;
+				
+				List<List<String>> dataList=new ArrayList<>();
+				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+						+ " where t.unitid="+unitId+" "
+						+ " and t.reportType="+reportType
+						+ " and t.sort>=0"
+						+ " and t.sort<="+columnCount
+						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+						+ " order by t.sort";
+				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+				for(int i=0;i<reportItemQuertList.size();i++){
+					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+					ReportUnitItem reportUnitItem=new ReportUnitItem();
+					reportUnitItem.setItemName(reportItemObj[0]+"");
+					reportUnitItem.setItemCode(reportItemObj[1]+"");
+					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+					reportItemList.add(reportUnitItem);
+				}
+				
+				StringBuffer sqlBuff = new StringBuffer();
+				sqlBuff.append("select id");
+				
+				for(int i=0;i<reportItemList.size();i++){
+					if(reportItemList.get(i).getDataType()==3){
+						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
+					}else if(reportItemList.get(i).getDataType()==4){
+						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+					}else{
+						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+					}
+				}
+				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.reportinstancecode='"+instanceCode+"' ");
+				sqlBuff.append(" and t.calDate = to_date('"+reportDate+"','yyyy-mm-dd')");
+				sqlBuff.append(" order by t.sortnum");
+				
+				List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+				for(int i=0;i<reportDataList.size();i++){
+					Object[] reportDataObj=(Object[]) reportDataList.get(i);
+					String recordId=reportDataObj[0]+"";
+					List<String> everyDaya=new ArrayList<String>();
+					for(int j=0;j<columnCount;j++){
+						everyDaya.add("");
+					}
+					everyDaya.set(0, (i+1)+"");
+					for(int j=0;j<reportItemList.size();j++){
+						if(reportItemList.get(j).getSort()>=1){
+							String addValue="";
+							if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
+								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+							}else{
+								addValue=reportDataObj[j+1]+"";
+							}
+							everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+						}
+					}
+					dataList.add(everyDaya);
+				}
+				
+				for(int i=0;i<template.getHeader().size();i++){
+					List<Object> record = new ArrayList<>();
+					for(int j=0;j<template.getHeader().get(i).getTitle().size();j++){
+						record.add(template.getHeader().get(i).getTitle().get(j));
+					}
+					sheetDataList.add(record);
+				}
+				for(int i=0;i<dataList.size();i++){
+					List<Object> record = new ArrayList<>();
+					for(int j=0;j<dataList.get(i).size();j++){
+						record.add(dataList.get(i).get(j));
+					}
+					sheetDataList.add(record);
+				}
+				if(template.getMergeCells()!=null && template.getMergeCells().size()>0){
+					for(int i=0;i<template.getMergeCells().size();i++){
+						if(template.getMergeCells().get(i).getRowspan()==1&&template.getMergeCells().get(i).getColspan()>1){
+							for(int j=template.getMergeCells().get(i).getCol();j<template.getMergeCells().get(i).getCol()+template.getMergeCells().get(i).getColspan();j++){
+								String value=sheetDataList.get(template.getMergeCells().get(i).getRow()).get(j)+"";
+								if(!StringManagerUtils.isNotNull(value)){
+									sheetDataList.get(template.getMergeCells().get(i).getRow()).set(j, ExcelUtils.COLUMN_MERGE);
+								}
+							}
+						}else if(template.getMergeCells().get(i).getRowspan()>1&&template.getMergeCells().get(i).getColspan()==1){
+							for(int j=template.getMergeCells().get(i).getRow();j<template.getMergeCells().get(i).getRow()+template.getMergeCells().get(i).getRowspan();j++){
+								String value=sheetDataList.get(j).get(template.getMergeCells().get(i).getCol())+"";
+								if(!StringManagerUtils.isNotNull(value)){
+									sheetDataList.get(j).set(template.getMergeCells().get(i).getCol(), ExcelUtils.ROW_MERGE);
+								}
+							}
+						}
+					}
+				}
+			}
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
@@ -1387,7 +1545,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitItem.setReportCurve(StringManagerUtils.stringToInteger(reportCurveItemObj[2]+""));
 			reportUnitItem.setReportCurveColor((reportCurveItemObj[3]+"").replaceAll("null", ""));
 			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
-			reportCurveItemList.add(reportUnitItem);
+			if(reportUnitItem.getDataType()==2){
+				reportCurveItemList.add(reportUnitItem);
+			}
 		}
 		
 		itemsBuff.append("[");
@@ -1425,31 +1585,184 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ "\"curveColors\":"+curveColorBuff+","
 				+ "\"graphicSet\":"+graphicSet+","
 				+ "\"list\":[");
-		
-		StringBuffer cueveSqlBuff = new StringBuffer();
-		
-		cueveSqlBuff.append("select t.id,to_char(calDate,'yyyy-mm-dd') as calDate");
-		for(int i=0;i<reportCurveItemList.size();i++){
-			cueveSqlBuff.append(","+reportCurveItemList.get(i).getItemCode()+"");
-		}
-		cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
-		cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
-		cueveSqlBuff.append(" order by t.calDate");
-		
-		List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
-		for(int i=0;i<reportCurveDataList.size();i++){
-			Object[] obj=(Object[]) reportCurveDataList.get(i);
-			result_json.append("{\"calDate\":\"" + obj[1] + "\",\"data\":[");
-			for(int j=2;j<obj.length;j++){
-				result_json.append(obj[j]+",");
+		if(reportCurveItemList.size()>0){
+			StringBuffer cueveSqlBuff = new StringBuffer();
+			
+			cueveSqlBuff.append("select t.id,to_char(calDate,'yyyy-mm-dd') as calDate");
+			for(int i=0;i<reportCurveItemList.size();i++){
+				cueveSqlBuff.append(","+reportCurveItemList.get(i).getItemCode()+"");
+			}
+			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+			cueveSqlBuff.append(" order by t.calDate");
+			
+			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
+			for(int i=0;i<reportCurveDataList.size();i++){
+				Object[] obj=(Object[]) reportCurveDataList.get(i);
+				result_json.append("{\"calDate\":\"" + obj[1] + "\",\"data\":[");
+				for(int j=2;j<obj.length;j++){
+					result_json.append(obj[j]+",");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]},");
 			}
 			if (result_json.toString().endsWith(",")) {
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
-			result_json.append("]},");
 		}
-		if (result_json.toString().endsWith(",")) {
-			result_json.deleteCharAt(result_json.length() - 1);
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getProductionDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String unitId,String instanceCode,String wellName,String startDate,String endDate,int userNo)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer itemsBuff = new StringBuffer();
+		StringBuffer itemsCodeBuff = new StringBuffer();
+		StringBuffer curveColorBuff = new StringBuffer();
+		
+		Gson gson =new Gson();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String reportTemplateCode="";
+		String graphicSet="{}";
+		
+		String tableName="VIW_RPCDAILYCALCULATIONDATA";
+		String deviceTableName="tbl_rpcdevice";
+		String graphicSetTableName="tbl_rpcdevicegraphicset";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			tableName="VIW_PCPDAILYCALCULATIONDATA";
+			deviceTableName="tbl_pcpdevice";
+			graphicSetTableName="tbl_pcpdevicegraphicset";
+		}
+		result_json.append("{\"success\":true,");
+		
+		
+		
+//		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+wellId;
+//		List<?> graphicSetList = this.findCallSql(graphicSetSql);
+//		if(graphicSetList.size()>0){
+//			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+//		}
+		
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype,t.curvestattype "
+				+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+				+ " where t.unitid= "+unitId
+				+ " and t.sort>=0"
+				+ " and t.reportType= "+reportType
+				+ " and t.reportcurve>0 "
+				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
+				+ " order by t.reportcurve";
+		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
+		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+		for(int i=0;i<reportCurveItemQuertList.size();i++){
+			Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
+			ReportUnitItem reportUnitItem=new ReportUnitItem();
+			reportUnitItem.setItemName(reportCurveItemObj[0]+"");
+			reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
+			reportUnitItem.setReportCurve(StringManagerUtils.stringToInteger(reportCurveItemObj[2]+""));
+			reportUnitItem.setReportCurveColor((reportCurveItemObj[3]+"").replaceAll("null", ""));
+			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
+			
+			String curveStatTypeStr=reportCurveItemObj[5]+"";
+			reportUnitItem.setCurveStatType(StringManagerUtils.isNumber(curveStatTypeStr)?StringManagerUtils.stringTransferInteger(curveStatTypeStr):null);
+			if(StringManagerUtils.isNumber(curveStatTypeStr) && reportUnitItem.getDataType()==2 ){
+				reportCurveItemList.add(reportUnitItem);
+			}
+			
+		}
+		
+		itemsBuff.append("[");
+		for(int i=0;i<reportCurveItemList.size();i++){
+			String statTypeName="";
+			if(reportCurveItemList.get(i).getCurveStatType()==1){
+				statTypeName="合计";
+			}else if(reportCurveItemList.get(i).getCurveStatType()==2){
+				statTypeName="平均值";
+			}else if(reportCurveItemList.get(i).getCurveStatType()==3){
+				statTypeName="最大值";
+			}else if(reportCurveItemList.get(i).getCurveStatType()==4){
+				statTypeName="最小值";
+			}else{
+				statTypeName="合计";
+			}
+			
+			itemsBuff.append("\""+reportCurveItemList.get(i).getItemName()+statTypeName+"\",");
+		}
+		if (itemsBuff.toString().endsWith(",")) {
+			itemsBuff.deleteCharAt(itemsBuff.length() - 1);
+		}
+		itemsBuff.append("]");
+		
+		itemsCodeBuff.append("[");
+		for(int i=0;i<reportCurveItemList.size();i++){
+			itemsCodeBuff.append("\""+reportCurveItemList.get(i).getItemCode()+"\",");
+		}
+		if (itemsCodeBuff.toString().endsWith(",")) {
+			itemsCodeBuff.deleteCharAt(itemsCodeBuff.length() - 1);
+		}
+		itemsCodeBuff.append("]");
+		
+		curveColorBuff.append("[");
+		for(int i=0;i<reportCurveItemList.size();i++){
+			curveColorBuff.append("\""+reportCurveItemList.get(i).getReportCurveColor()+"\",");
+		}
+		if (curveColorBuff.toString().endsWith(",")) {
+			curveColorBuff.deleteCharAt(curveColorBuff.length() - 1);
+		}
+		curveColorBuff.append("]");
+		
+		result_json.append("\"wellName\":\""+wellName+"\","
+				+ "\"startDate\":\""+startDate+"\","
+				+ "\"endDate\":\""+endDate+"\","
+				+ "\"curveItems\":"+itemsBuff+","
+				+ "\"curveItemCodes\":"+itemsCodeBuff+","
+				+ "\"curveColors\":"+curveColorBuff+","
+				+ "\"graphicSet\":"+graphicSet+","
+				+ "\"list\":[");
+		if(reportCurveItemList.size()>0){
+			StringBuffer cueveSqlBuff = new StringBuffer();
+			
+			cueveSqlBuff.append("select to_char(calDate,'yyyy-mm-dd') as calDate");
+			for(int i=0;i<reportCurveItemList.size();i++){
+				String statType="";
+				if(reportCurveItemList.get(i).getCurveStatType()==1){
+					statType="sum";
+				}else if(reportCurveItemList.get(i).getCurveStatType()==2){
+					statType="avg";
+				}else if(reportCurveItemList.get(i).getCurveStatType()==3){
+					statType="max";
+				}else if(reportCurveItemList.get(i).getCurveStatType()==4){
+					statType="min";
+				}else{
+					statType="sum";
+				}
+				
+				
+				cueveSqlBuff.append(","+statType+"("+reportCurveItemList.get(i).getItemCode()+")"+"");
+			}
+			cueveSqlBuff.append(" from "+tableName+" t ");
+			cueveSqlBuff.append(" where t.org_id in ("+orgId+") ");
+			cueveSqlBuff.append(" and t.reportinstancecode='"+instanceCode+"'");
+			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+			cueveSqlBuff.append(" group by t.calDate");
+			cueveSqlBuff.append(" order by t.calDate");
+			
+			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
+			for(int i=0;i<reportCurveDataList.size();i++){
+				Object[] obj=(Object[]) reportCurveDataList.get(i);
+				result_json.append("{\"calDate\":\"" + obj[0] + "\",\"data\":[");
+				for(int j=1;j<obj.length;j++){
+					result_json.append(obj[j]+",");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]},");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");

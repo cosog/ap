@@ -52,11 +52,25 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                     			}
                 			}
                     	}else if(newCard.id=="PCPDailyReportPanel_Id"){
-                    		var gridPanel = Ext.getCmp("PPCDailyReportGridPanel_Id");
-                			if (isNotVal(gridPanel)) {
-                				gridPanel.getStore().load();
-                			}else{
-                				Ext.create('AP.store.reportOut.PCPDailyReportWellListStore');
+                    		var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
+                			if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
+                				Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+                				Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setValue('');
+                				var gridPanel = Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id");
+                				if (isNotVal(gridPanel)) {
+                					gridPanel.getStore().load();
+                				}else{
+                					Ext.create('AP.store.reportOut.PCPSingleWellDailyReportWellListStore');
+                				}
+                			}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
+                				Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+                				Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setValue('');
+                				var gridPanel = Ext.getCmp("PCPProductionDailyReportGridPanel_Id");
+                    			if (isNotVal(gridPanel)) {
+                    				gridPanel.getStore().load();
+                    			}else{
+                    				Ext.create('AP.store.reportOut.PCPProductionDailyReportInstanceListStore');
+                    			}
                 			}
                     	}
                         Ext.getCmp("bottomTab_Id").setValue(newCard.id); 

@@ -42,7 +42,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                     	text: '报表实例列表',
                         flex: 8,
                         align: 'left',
-                        dataIndex: 'text'
+                        dataIndex: 'text',
+                        renderer: function (value) {
+                            if (isNotVal(value)) {
+                                return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                            }
+                        }
                     },{
                         header: 'id',
                         hidden: true,

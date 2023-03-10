@@ -40,7 +40,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
                     	text: '区块日报模板列表',
                         flex: 8,
                         align: 'left',
-                        dataIndex: 'templateName'
+                        dataIndex: 'templateName',
+                        renderer: function (value) {
+                            if (isNotVal(value)) {
+                                return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                            }
+                        }
                     },{
                         header: 'templateCode',
                         hidden: true,

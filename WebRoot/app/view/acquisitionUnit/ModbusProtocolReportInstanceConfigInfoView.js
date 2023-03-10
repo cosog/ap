@@ -612,15 +612,22 @@ function CreateProductionReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','']";
+				var colHeaders="['序号','名称','单位','显示级别','显示顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceProductionTemplateContentHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceProductionTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceProductionTemplateContentHandsontableHelper);}}," 
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
+						
+						+"{data:'sumSign',type:'checkbox'}," 
+						+"{data:'averageSign',type:'checkbox'}," 
+						
+						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'reportCurveColor'},"
+						
+						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},"
+						
 						+"{data:'code'},"
 						+"{data:'dataType'}"
 						+"]";
@@ -672,11 +679,11 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7,8],
+	                    columns: [10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [30,140,80,60,60,85,85],
+	                colWidths: [30,140,80,60,60,30,45,85,85,70],
 	                columns:reportInstanceProductionTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -694,7 +701,7 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6){
+	                    if(visualColIndex==8){
 		                	cellProperties.renderer = reportInstanceProductionTemplateContentHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;

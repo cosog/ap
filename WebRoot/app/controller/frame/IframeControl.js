@@ -434,17 +434,26 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
     				Ext.create('AP.store.reportOut.RPCProductionDailyReportInstanceListStore');
     			}
 			}
-			
-			
-			
 		}else if(activeId=="PCPDailyReportPanel_Id"){
-			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setRawValue('');
-			Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').setValue('');
-			var gridPanel = Ext.getCmp("PCPDailyReportGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
-			}else{
-				Ext.create('AP.store.reportOut.PCPDailyReportWellListStore');
+			var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
+			if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
+				Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+				Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setValue('');
+				var gridPanel = Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id");
+				if (isNotVal(gridPanel)) {
+					gridPanel.getStore().load();
+				}else{
+					Ext.create('AP.store.reportOut.PCPSingleWellDailyReportWellListStore');
+				}
+			}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
+				Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+				Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setValue('');
+				var gridPanel = Ext.getCmp("PCPProductionDailyReportGridPanel_Id");
+    			if (isNotVal(gridPanel)) {
+    				gridPanel.getStore().load();
+    			}else{
+    				Ext.create('AP.store.reportOut.PCPProductionDailyReportInstanceListStore');
+    			}
 			}
 		}
 	}else if(module_Code == "LogQuery"){

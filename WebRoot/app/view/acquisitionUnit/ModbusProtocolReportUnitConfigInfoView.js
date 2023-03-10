@@ -1132,9 +1132,6 @@ function SaveReportUnitData(){
 		}
 		if(selectedItem.data.classes==1){//保存单元
 			SaveModbusProtocolReportUnitData(reportUnitProperties);
-			
-			
-			
 			grantReportTotalCalItemsPermission();
 		}
 	}

@@ -2,7 +2,7 @@
     "singleWellReportTemplate": [{
         "deviceType": 0,
         "templateCode": "oilWell_Pumping",
-        "templateName": "油井_抽油机井",
+        "templateName": "油井_抽油机井单井日报",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -108,7 +108,7 @@
     },{
         "deviceType": 0,
         "templateCode": "CBMWell_heichao",
-        "templateName": "煤层气井排采数据表",
+        "templateName": "煤层气井排采数据表_单井日报",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -225,7 +225,7 @@
     }, {
         "deviceType": 1,
         "templateCode": "oilWell_ScrewPump",
-        "templateName": "油井_螺杆泵井",
+        "templateName": "油井_螺杆泵井单井日报",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -322,7 +322,7 @@
     "productionReportTemplate": [{
         "deviceType": 0,
         "templateCode": "oilWell_PumpingProductionReport",
-        "templateName": "油井_抽油机井生产报表",
+        "templateName": "油井_抽油机井区块日报",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -428,7 +428,7 @@
     },{
         "deviceType": 0,
         "templateCode": "CBMWell_heichaoProductionReport",
-        "templateName": "煤层气井排采生产报表",
+        "templateName": "煤层气井排采生产报表_区块日报",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -529,7 +529,7 @@
     }, {
         "deviceType": 1,
         "templateCode": "oilWell_ScrewPumpProductionReoirt",
-        "templateName": "油井_螺杆泵井生产报表",
+        "templateName": "油井_螺杆泵井区块日报",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",

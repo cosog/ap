@@ -41,9 +41,9 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 	
                 	if(activeId=="PCPDailyReportPanel_Id"){
                 		deviceType=1;
-                		selectRowId="PCPDailyReportDeviceListSelectRow_Id";
-                		gridPanelId="PCPDailyReportGridPanel_Id";
-                		divId="PCPDailyReportCurveDiv_Id";
+                		selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
+                		gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
+                		divId="PCPSingleWellDailyReportCurveDiv_Id";
                 	}
                 	var deviceName='';
                 	var deviceId=0;
@@ -107,7 +107,6 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                     	if(deviceReportCurveSetHandsontableHelper!=null&&deviceReportCurveSetHandsontableHelper.hot!=null&&deviceReportCurveSetHandsontableHelper.hot!=undefined){
-//                    		deviceReportCurveSetHandsontableHelper.hot.refreshDimensions();
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

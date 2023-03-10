@@ -1253,9 +1253,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			
+			
+			
 			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
 			List<List<String>> dataList=new ArrayList<>();
-			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+			List<List<String>> statDataList=new ArrayList<>();
+			List<String> sumDataList=new ArrayList<>();
+			List<String> avgDataList=new ArrayList<>();
+			List<Integer> avgRecordsList=new ArrayList<>();
+			for(int j=0;j<columnCount;j++){
+				sumDataList.add("");
+				avgDataList.add("");
+				avgRecordsList.add(0);
+			}
+			sumDataList.set(0, "合计");
+			avgDataList.set(0, "平均值");
+			statDataList.add(sumDataList);
+			statDataList.add(avgDataList);
+			
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.sumsign,t.averagesign "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 					+ " where t.unitid="+unitId+" "
 					+ " and t.reportType="+reportType
@@ -1272,6 +1289,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setItemCode(reportItemObj[1]+"");
 				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				
+				reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
+				reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
+				
 				reportItemList.add(reportUnitItem);
 			}
 			
@@ -1312,6 +1333,24 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							addValue=reportDataObj[j+1]+"";
 						}
 						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+						
+						if(reportItemList.get(j).getSumSign()!=null && reportItemList.get(j).getSumSign()==1){//求和
+							if(StringManagerUtils.isNumber(addValue)){
+								avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
+								String currentSum=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+								if(StringManagerUtils.isNumber(currentSum)){
+									statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+								}else{
+									statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+								}
+							}
+						}
+						if(reportItemList.get(j).getAverageSign()!=null && reportItemList.get(j).getAverageSign()==1){//求平均
+							String sumStr=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+							int avgRecordCount=avgRecordsList.get(reportItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportItemList.get(j).getSort()-1);
+							float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
+							statDataList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+						}
 					}
 				}
 				dataList.add(everyDaya);
@@ -1328,9 +1367,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			result_json.append("\"data\":"+gson.toJson(dataList)+",\"columns\":"+allColList.toString());
+			result_json.append("\"data\":"+gson.toJson(dataList)+",\"statData\":"+gson.toJson(statDataList)+",\"columns\":"+allColList.toString());
 		}else{
-			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
+			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"statData\":[],\"columns\":[]");
 		}
 		result_json.append(",\"wellName\":\""+wellName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
@@ -1396,7 +1435,21 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				fileName+=title+"-"+reportDate;
 				
 				List<List<String>> dataList=new ArrayList<>();
-				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+				List<List<String>> statDataList=new ArrayList<>();
+				List<String> sumDataList=new ArrayList<>();
+				List<String> avgDataList=new ArrayList<>();
+				List<Integer> avgRecordsList=new ArrayList<>();
+				for(int j=0;j<columnCount;j++){
+					sumDataList.add("");
+					avgDataList.add("");
+					avgRecordsList.add(0);
+				}
+				sumDataList.set(0, "合计");
+				avgDataList.set(0, "平均值");
+				statDataList.add(sumDataList);
+				statDataList.add(avgDataList);
+				
+				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.sumsign,t.averagesign "
 						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 						+ " where t.unitid="+unitId+" "
 						+ " and t.reportType="+reportType
@@ -1413,6 +1466,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setItemCode(reportItemObj[1]+"");
 					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+					
+					reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
+					reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
+					
 					reportItemList.add(reportUnitItem);
 				}
 				
@@ -1449,7 +1506,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}else{
 								addValue=reportDataObj[j+1]+"";
 							}
-							everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+							addValue=addValue.replaceAll("null", "");
+							everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+							
+							if(reportItemList.get(j).getSumSign()!=null && reportItemList.get(j).getSumSign()==1){//求和
+								if(StringManagerUtils.isNumber(addValue)){
+									avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
+									String currentSum=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+									if(StringManagerUtils.isNumber(currentSum)){
+										statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+									}else{
+										statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+									}
+								}
+							}
+							if(reportItemList.get(j).getAverageSign()!=null && reportItemList.get(j).getAverageSign()==1){//求平均
+								String sumStr=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+								int avgRecordCount=avgRecordsList.get(reportItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportItemList.get(j).getSort()-1);
+								float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
+								statDataList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+							}
 						}
 					}
 					dataList.add(everyDaya);
@@ -1469,6 +1545,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 					sheetDataList.add(record);
 				}
+				
+				for(int i=0;i<statDataList.size();i++){
+					List<Object> record = new ArrayList<>();
+					for(int j=0;j<statDataList.get(i).size();j++){
+						record.add(statDataList.get(i).get(j));
+					}
+					sheetDataList.add(record);
+				}
+				
 				if(template.getMergeCells()!=null && template.getMergeCells().size()>0){
 					for(int i=0;i<template.getMergeCells().size();i++){
 						if(template.getMergeCells().get(i).getRowspan()==1&&template.getMergeCells().get(i).getColspan()>1){
@@ -1904,7 +1989,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.isNotNull(cellEditData.getContentUpdateList().get(i).getColumn())){
 						String updateValue=cellEditData.getContentUpdateList().get(i).getNewValue();
 						if(!cellEditData.getContentUpdateList().get(i).getHeader()){
-							if( !StringManagerUtils.isNum(updateValue) && !StringManagerUtils.isNumber(updateValue) ){
+							if( (!StringManagerUtils.isNum(updateValue)) && (!StringManagerUtils.isNumber(updateValue)) ){
 								updateValue="'"+updateValue+"'";
 							}
 							updateSql="update "+tableName+" t set t."+cellEditData.getContentUpdateList().get(i).getColumn()+"="+updateValue+" where t.id="+cellEditData.getContentUpdateList().get(i).getRecordId();
@@ -2339,7 +2424,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			tableName="tbl_pcpdevice";
 		}
 		String sql="select  t2.id,t2.name,t2.code,t2.unitid,t2.sort "
-				+ " from tbl_rpcdevice t,tbl_protocolreportinstance t2 "
+				+ " from "+tableName+" t,tbl_protocolreportinstance t2 "
 				+ " where t.reportinstancecode=t2.code "
 				+ " and t.orgid in("+orgId+")";
 		if(StringManagerUtils.isNotNull(wellName)){

@@ -458,12 +458,16 @@ create table TBL_REPORT_ITEMS2UNIT_CONF
   itemid           NUMBER(10),
   itemname         VARCHAR2(100),
   itemcode         VARCHAR2(100),
-  unitcode         VARCHAR2(100),
+  unitid           NUMBER(10),
   sort             NUMBER(10),
   showlevel        NUMBER(10),
+  sumsign          NUMBER(1) default 0,
+  averagesign      NUMBER(1) default 0,
   reportcurve      NUMBER(10),
   reportcurvecolor VARCHAR2(20),
+  curvestattype    NUMBER(1),
   datatype         NUMBER(10),
+  reporttype       NUMBER(1) default 0,
   matrix           VARCHAR2(8)
 )
 tablespace AP_DATA
@@ -588,7 +592,7 @@ create table TBL_PROTOCOLREPORTINSTANCE
   id         NUMBER(10) not null,
   name       VARCHAR2(50),
   code       VARCHAR2(50),
-  unitcode   VARCHAR2(50),
+  unitid     NUMBER(10),
   devicetype NUMBER(1) default 0,
   sort       NUMBER(10)
 )

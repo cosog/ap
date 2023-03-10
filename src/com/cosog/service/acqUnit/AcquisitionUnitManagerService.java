@@ -1671,7 +1671,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		System.out.println(result_json.toString().replaceAll("null", ""));
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -1706,18 +1705,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\"报表曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报曲线统计类型\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.reportCurve,t.reportCurveColor "
+		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurve,t.reportCurveColor,t.curvestattype "
 				+ " from tbl_report_items2unit_conf t "
-				+ " where t.unitid="+unitId+""
-				+ " and t.reporttype="+reportType
+				+ " where t.unitid="+unitId+" and t.reportType="+reportType
 				+ " order by t.sort";
+		
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[])list.get(i);
@@ -1734,13 +1736,52 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			boolean sumSign=false;
+			boolean averageSign=false;
+			String sumSignStr=obj[4]+"";
+			String averageSignStr=obj[5]+"";
+			String curveStatType="";
+			String curveStatTypeStr=(obj[8]+"").replaceAll("null", "");
+			
+			if(StringManagerUtils.isNum(sumSignStr)||StringManagerUtils.isNumber(sumSignStr)){
+				if(StringManagerUtils.stringToInteger(sumSignStr)==1){
+					sumSign=true;
+				}else{
+					sumSign=false;
+				}
+			}
+			
+			if(StringManagerUtils.isNum(averageSignStr)||StringManagerUtils.isNumber(averageSignStr)){
+				if(StringManagerUtils.stringToInteger(averageSignStr)==1){
+					averageSign=true;
+				}else{
+					averageSign=false;
+				}
+			}
+			
+			if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+				if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+					curveStatType="合计";
+				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+					curveStatType="平均";
+				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+					curveStatType="最大值";
+				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+					curveStatType="最小值";
+				}
+			}
+			
+			
 			result_json.append("{\"id\":"+(i)+","
 					+ "\"title\":\""+obj[0]+""+"\","
 					+ "\"unit\":\""+unit+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","
 					+ "\"sort\":\""+obj[2]+""+"\","
-					+ "\"reportCurve\":\""+obj[4]+""+"\","
-					+ "\"reportCurveColor\":\""+obj[5]+""+"\","
+					+ "\"sumSign\":"+sumSign+""+","
+					+ "\"averageSign\":"+averageSign+""+","
+					+ "\"reportCurve\":\""+obj[6]+""+"\","
+					+ "\"reportCurveColor\":\""+obj[7]+""+"\","
+					+ "\"curveStatType\":\""+curveStatType+""+"\","
 					+ "\"dataType\":"+dataType+","
 					+ "\"code\":\""+obj[1]+""+"\""
 					+ "},");

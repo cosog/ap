@@ -896,57 +896,73 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		boolean initResult=this.getBaseDao().initDailyReportData();
 		
-		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
-				ReportTemplate.Template template=reportTemplate.getSingleWellReportTemplate().get(i);
-				if(template.getDeviceType()==deviceType && template.getEditable()!=null && template.getEditable().size()>0){
-					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
-							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
-							+ " where t.unitcode='"+template.getTemplateCode()+"' "
-							+ " and t.sort>=0"
-							+ " order by t.sort";
-					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
-					
-					for(int j=0;j<reportItemQuertList.size();j++){
-						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
-						ReportUnitItem reportUnitItem=new ReportUnitItem();
-						reportUnitItem.setItemName(reportItemObj[0]+"");
-						reportUnitItem.setItemCode(reportItemObj[1]+"");
-						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
-						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
-						
-						for(int k=0;k<template.getEditable().size();k++){
-							ReportTemplate.Editable editable=template.getEditable().get(k);
-							if(editable.getStartRow()>=template.getHeader().size() && reportUnitItem.getSort()-1>=editable.getStartColumn() && reportUnitItem.getSort()-1<=editable.getEndColumn()){//索引起始不同
-								reportItemList.add(reportUnitItem);
+		String instanceSql="select t.id,t.code,t.unitid,t2.singlewellreporttemplate from tbl_protocolreportinstance t,tbl_report_unit_conf t2 where t.unitid=t2.id and t.devicetype="+deviceType;
+		List<?> instanceList = this.findCallSql(instanceSql);
+		if(instanceList.size()>0){
+			ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+			if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+				for(int i=0;i<instanceList.size();i++){
+					Object[] instanceObj=(Object[]) instanceList.get(i);
+					String instanceCode=(instanceObj[1]+"").replaceAll("null", "");
+					String unitId=(instanceObj[2]+"").replaceAll("null", "");
+					String templateCode=(instanceObj[3]+"").replaceAll("null", "");
+					if(StringManagerUtils.isNotNull(templateCode)){
+						for(int j=0;j<reportTemplate.getSingleWellReportTemplate().size();j++){
+							ReportTemplate.Template template=reportTemplate.getSingleWellReportTemplate().get(j);
+							if(template.getDeviceType()==deviceType && templateCode.equalsIgnoreCase(template.getTemplateCode())){
+								if(template.getEditable()!=null && template.getEditable().size()>0){
+									String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+											+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+											+ " where t.unitid="+unitId+" "
+											+ " and t.sort>=0"
+											+ " and t.reporttype=0"
+											+ " order by t.sort";
+									List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+									List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+									
+									for(int k=0;k<reportItemQuertList.size();k++){
+										Object[] reportItemObj=(Object[]) reportItemQuertList.get(k);
+										ReportUnitItem reportUnitItem=new ReportUnitItem();
+										reportUnitItem.setItemName(reportItemObj[0]+"");
+										reportUnitItem.setItemCode(reportItemObj[1]+"");
+										reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+										reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+										
+										
+										for(int l=0;l<template.getEditable().size();l++){
+											ReportTemplate.Editable editable=template.getEditable().get(l);
+											if(editable.getStartRow()>=template.getHeader().size() && reportUnitItem.getSort()-1>=editable.getStartColumn() && reportUnitItem.getSort()-1<=editable.getEndColumn()){//索引起始不同
+												reportItemList.add(reportUnitItem);
+												break;
+											}
+										}
+									}
+									if(reportItemList.size()>0){
+										StringBuffer updateColBuff = new StringBuffer();
+										for(int m=0;m<reportItemList.size();m++){
+											updateColBuff.append(reportItemList.get(m).getItemCode()+",");
+										}
+										if(updateColBuff.toString().endsWith(",")){
+											updateColBuff.deleteCharAt(updateColBuff.length() - 1);
+										}
+										
+										String updateSql="update "+tableName+" t set ("+updateColBuff+")="
+												+ " (select "+updateColBuff+" from "+tableName+" t2 "
+														+ " where t2.wellid=t.wellid and t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')-1) "
+												+ " where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') "
+												+ " and t.wellid in ( select t3.id from "+deviceTableName+" t3 where t3.reportinstancecode='"+instanceCode+"'   )";
+										try {
+											int r=this.getBaseDao().updateOrDeleteBySql(updateSql);
+											System.out.println(updateSql);
+										} catch (Exception e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+											continue;
+										}
+									}
+								}
 								break;
 							}
-						}
-					}
-					if(reportItemList.size()>0){
-						StringBuffer updateColBuff = new StringBuffer();
-						for(int j=0;j<reportItemList.size();j++){
-							updateColBuff.append(reportItemList.get(j).getItemCode()+",");
-						}
-						if(updateColBuff.toString().endsWith(",")){
-							updateColBuff.deleteCharAt(updateColBuff.length() - 1);
-						}
-						
-						String updateSql="update "+tableName+" t set ("+updateColBuff+")="
-								+ " (select "+updateColBuff+" from "+tableName+" t2 "
-										+ " where t2.wellid=t.wellid and t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')-1) "
-								+ " where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') "
-								+ " and t.wellid in ( select t3.id from "+deviceTableName+" t3,tbl_protocolreportinstance t4 "
-									+ " where t3.reportinstancecode=t4.code and t4.unitcode='"+template.getTemplateCode()+"'   )";
-						try {
-							int r=this.getBaseDao().updateOrDeleteBySql(updateSql);
-//							System.out.println(updateSql);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							continue;
 						}
 					}
 				}

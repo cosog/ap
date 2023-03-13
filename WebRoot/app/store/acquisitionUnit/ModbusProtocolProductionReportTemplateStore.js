@@ -37,7 +37,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
                     },
                     store: store,
                     columns: [{
-                    	text: '区块日报模板列表',
+                    	text: '区域日报模板列表',
                         flex: 8,
                         align: 'left',
                         dataIndex: 'templateName',
@@ -103,7 +103,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
     					}
     					productionReportTemplateHandsontableHelper=null;
     				}
-            		Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区块报表模板：');
+            		Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区域报表模板：');
             	}
         	}
 //            gridPanel.getSelectionModel().deselectAll(true);

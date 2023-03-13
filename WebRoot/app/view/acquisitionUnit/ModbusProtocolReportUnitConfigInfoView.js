@@ -173,7 +173,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	}]
                     	}]
                     },{
-                    	title:'区块日报',
+                    	title:'区域日报',
                     	id:'ModbusProtocolReportUnitProductionReportTemplatePanel_Id',
                     	layout: "border",
                     	border: false,
@@ -193,7 +193,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     		border: false,
                     		items: [{
                         		region: 'center',
-                        		title:'区块日报模板',
+                        		title:'区域日报模板',
                         		id:"ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id",
                                 layout: 'fit',
                                 border: false,
@@ -217,7 +217,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	},{
                         		region: 'south',
                             	height:'50%',
-                            	title:'区块日报内容配置',
+                            	title:'区域日报内容配置',
                             	collapsible: true,
                                 split: true,
                             	layout: 'fit',
@@ -491,7 +491,7 @@ function CreateSingleWellReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			}
 			if(singleWellReportTemplateContentHandsontableHelper==null || singleWellReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellReportTemplateContentHandsontableHelper = SingleWellReportTemplateContentHandsontableHelper.createNew("ModbusProtocolReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -502,7 +502,8 @@ function CreateSingleWellReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'reportCurveColor'},"
 						+"{data:'code'},"
-						+"{data:'dataType'}"
+						+"{data:'dataType'},"
+						+"{data:'remark'}"
 						+"]";
 				singleWellReportTemplateContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				singleWellReportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -553,7 +554,7 @@ var SingleWellReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9],
+	                    columns: [8,9,10],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -613,6 +614,31 @@ var SingleWellReportTemplateContentHandsontableHelper = {
 		                			}
 		                		}
 		                	}
+	                	}
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(singleWellReportTemplateContentHandsontableHelper!=null&&singleWellReportTemplateContentHandsontableHelper.hot!=''&&singleWellReportTemplateContentHandsontableHelper.hot!=undefined && singleWellReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		if(coords.col==2){
+	                			var remark=singleWellReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,10);
+	                			if(isNotVal(remark)){
+	                				if(!isNotVal(TD.tip)){
+	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+			                			    target: event.target,
+			                			    html: remark,
+			                			    listeners: {
+			                			    	hide: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	},
+			                                	close: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	}
+			                                }
+			                			});
+	                				}else{
+	                					TD.tip.setHtml(remark);
+	                				}
+	                			}
+	                		}
 	                	}
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
@@ -751,7 +777,7 @@ function CreateProductionReportTemplateInfoTable(name,deviceType,code){
 		url:context + '/acquisitionUnitManagerController/getReportTemplateData',
 		success:function(response) {
 			Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区块日报模板：'+name);
+			Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区域日报模板：'+name);
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			if(productionReportTemplateHandsontableHelper!=null){
@@ -946,13 +972,13 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==0){
-				Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle('区块日报内容配置');
+				Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle('区域日报内容配置');
 			}else{
-				Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle(unitName+'/区块日报内容配置');
+				Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle(unitName+'/区域日报内容配置');
 			}
 			if(productionReportTemplateContentHandsontableHelper==null || productionReportTemplateContentHandsontableHelper.hot==undefined){
 				productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -970,7 +996,8 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},"
 						
 						+"{data:'code'},"
-						+"{data:'dataType'}"
+						+"{data:'dataType'},"
+						+"{data:'remark'}"
 						+"]";
 				productionReportTemplateContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				productionReportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1021,7 +1048,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [11,12],
+	                    columns: [11,12,13],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -1066,7 +1093,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
 		                			if(selectedItem.data.classes==1){
 		                				var CurveColorSelectWindow=Ext.create("AP.view.acquisitionUnit.CurveColorSelectWindow");
-		                				Ext.getCmp("curveColorSelectedTableType_Id").setValue(22);//区块报表汇总计算项表
+		                				Ext.getCmp("curveColorSelectedTableType_Id").setValue(22);//区域报表汇总计算项表
 		                				Ext.getCmp("curveColorSelectedRow_Id").setValue(row);
 		                				Ext.getCmp("curveColorSelectedCol_Id").setValue(column);
 		                				CurveColorSelectWindow.show();
@@ -1081,6 +1108,31 @@ var ProductionReportTemplateContentHandsontableHelper = {
 		                			}
 		                		}
 		                	}
+	                	}
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(productionReportTemplateContentHandsontableHelper!=null&&productionReportTemplateContentHandsontableHelper.hot!=''&&productionReportTemplateContentHandsontableHelper.hot!=undefined && productionReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		if(coords.col==2){
+	                			var remark=productionReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,13);
+	                			if(isNotVal(remark)){
+	                				if(!isNotVal(TD.tip)){
+	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+			                			    target: event.target,
+			                			    html: remark,
+			                			    listeners: {
+			                			    	hide: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	},
+			                                	close: function (thisTip, eOpts) {
+//			                			    		thisTip.destroy();
+			                                	}
+			                                }
+			                			});
+	                				}else{
+	                					TD.tip.setHtml(remark);
+	                				}
+	                			}
+	                		}
 	                	}
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

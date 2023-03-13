@@ -23,7 +23,7 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
     				layout: "fit",
     				border: false
     			},{
-    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">区块日报</div>',
+    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">区域日报</div>',
     				id:'RPCProductionDailyReportTabPanel_Id',
     				items: [RPCProductionDailyReportPanel],
     				layout: "fit",

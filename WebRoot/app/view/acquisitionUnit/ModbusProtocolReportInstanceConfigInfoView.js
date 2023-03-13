@@ -160,7 +160,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         	}]
                     	}]
                     },{
-                    	title:'区块日报',
+                    	title:'区域日报',
                     	id:'ModbusProtocolReportInstanceProductionReportTemplatePanel_Id',
                     	border: false,
                     	region: 'center',
@@ -170,7 +170,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     		layout: "border",
                     		items: [{
                         		region: 'center',
-                        		title:'区块日报模板',
+                        		title:'区域日报模板',
                         		id:"ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id",
                                 layout: 'fit',
                                 border: false,
@@ -194,7 +194,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         	},{
                         		region: 'south',
                             	height:'50%',
-                            	title:'区块日报内容',
+                            	title:'区域日报内容',
                             	border: false,
                             	collapsible: true,
                                 split: true,
@@ -606,9 +606,9 @@ function CreateProductionReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 			Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(selectedInstanceName)){
-				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/区块日报内容');
+				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/区域日报内容');
 			}else{
-				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle('区块日报内容');
+				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle('区域日报内容');
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
@@ -931,7 +931,7 @@ function CreateReportInstanceProductionTemplateInfoTable(deviceType,code,selecte
 		url:context + '/acquisitionUnitManagerController/getReportTemplateData',
 		success:function(response) {
 			Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").setTitle(selectedInstanceName+'/区块日报模板');
+			Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").setTitle(selectedInstanceName+'/区域日报模板');
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			if(reportInstanceProductionTemplateHandsontableHelper!=null){

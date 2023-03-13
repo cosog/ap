@@ -1660,7 +1660,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"reportCurveColor\":\""+reportCurveColor+"\","
 						+ "\"curveStatType\":\""+curveStatType+"\","
 						+ "\"dataType\":"+calItem.getDataType()+","
-						+ "\"code\":\""+calItem.getCode()+"\""
+						+ "\"code\":\""+calItem.getCode()+"\","
+						+ "\"remark\":\""+calItem.getRemark()+"\""
 						+ "},");
 				index++;
 			

@@ -37,15 +37,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">短信实例</div>',
-                	id:'ModbusProtocolSMSInstanceConfigTabPanel_Id',
-                	items: [ModbusProtocolSMSInstanceConfigInfoView],
-    				layout: "fit",
-    				border: false
-                },{
                 	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表实例</div>',
                 	id:'ModbusProtocolReportInstanceConfigTabPanel_Id',
                 	items: [ModbusProtocolReportInstanceConfigInfoView],
+    				layout: "fit",
+    				border: false
+                },{
+                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">短信实例</div>',
+                	id:'ModbusProtocolSMSInstanceConfigTabPanel_Id',
+                	items: [ModbusProtocolSMSInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 }],

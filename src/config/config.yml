@@ -79,7 +79,7 @@ ad:                                                          #AD程序配置 一
       server:                                                #目标服务器初始化
          url: api/init/server                                #初始化路径
          content:                                            #始化内容 数组，可配置多个
-          - {ip: 8.142.92.84,port: 16100,projectName: ap}      #目标服务器IP或域名、端口、项目名称
+          - {ip: 127.0.0.1,port: 16100,projectName: ap}      #目标服务器IP或域名、端口、项目名称
       protocol: api/init/protocol                            #协议初始化
       instance: api/init/instance                            #实例初始化
       id: api/init/id                                        #id初始化 下位机为tcp client模式

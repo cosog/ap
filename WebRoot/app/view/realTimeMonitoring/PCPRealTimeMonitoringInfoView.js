@@ -563,12 +563,15 @@ function CreatePCPDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceTy
 				pcpDeviceRealTimeMonitoringDataHandsontableHelper.columns=Ext.JSON.decode(columns);
 				pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo=result.CellInfo;
 				if(result.totalRoot.length==0){
+					pcpDeviceRealTimeMonitoringDataHandsontableHelper.sourceData=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 					pcpDeviceRealTimeMonitoringDataHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
+					pcpDeviceRealTimeMonitoringDataHandsontableHelper.sourceData=result.totalRoot;
 					pcpDeviceRealTimeMonitoringDataHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo=result.CellInfo;
+				pcpDeviceRealTimeMonitoringDataHandsontableHelper.sourceData=result.totalRoot;
 				pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 			//添加单元格属性
@@ -601,6 +604,8 @@ var PCPDeviceRealTimeMonitoringDataHandsontableHelper = {
 	        pcpDeviceRealTimeMonitoringDataHandsontableHelper.colHeaders=[];
 	        pcpDeviceRealTimeMonitoringDataHandsontableHelper.columns=[];
 	        pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo=[];
+	        
+	        pcpDeviceRealTimeMonitoringDataHandsontableHelper.sourceData=[];
 	        
 	        pcpDeviceRealTimeMonitoringDataHandsontableHelper.addFirstAlarmLevelColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	        	var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue()); 
@@ -764,34 +769,43 @@ var PCPDeviceRealTimeMonitoringDataHandsontableHelper = {
 	                    cellProperties.readOnly = true;
 	                    return cellProperties;
 	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(rpcDeviceRealTimeMonitoringDataHandsontableHelper!=null&&rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot!=''&&rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var record=rpcDeviceRealTimeMonitoringDataHandsontableHelper.sourceData[coords.row];
+	                		var rawVvalue='';
+	                		if(coords.col==0){
+	                			rawVvalue=record.name1;
+	                		}else if(coords.col==1){
+	                			rawVvalue=record.value1;
+	                		}else if(coords.col==2){
+	                			rawVvalue=record.name2;
+	                		}else if(coords.col==3){
+	                			rawVvalue=record.value2;
+	                		}else if(coords.col==4){
+	                			rawVvalue=record.name3;
+	                		}else if(coords.col==5){
+	                			rawVvalue=record.value3;
+	                		}
+                			if(isNotVal(rawVvalue)){
+                				if(!isNotVal(TD.tip)){
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    html: rawVvalue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(rawVvalue);
+                				}
+                			}
+	                	}
+	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-//	                	if(row>0||column>0){
-//	                		var relRow=row;
-//	                		var relColumn=column;
-//	                		if(column%2==1){
-//	                			relColumn=column-1;
-//	                		}else if(column%2==0){
-//	                			
-//	                		}
-//		                	
-//		                	var item=pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(relRow,relColumn);
-//		                	var selectecCell=pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot.getCell(relRow,relColumn);
-//		                	var columnDataType='';
-//		                	var resolutionMode=0;
-//		                	for(var i=0;i<pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
-//		        				if(relRow==pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row && relColumn==pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2){
-//		        					item=pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].columnName;
-//		        					columnDataType=pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].columnDataType;
-//		        					resolutionMode=pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].resolutionMode;
-//		        					break;
-//		        				}
-//		        			}
-//		                	
-//		                	if(isNotVal(item)&&resolutionMode==2){
-//		                		Ext.getCmp("PCPRealTimeMonitoringSelectedCurve_Id").setValue(item);
-//			                	pcpRealTimeMonitoringCurve(item);
-//		                	}
-//	                	}
+	                	
 	                }
 	        	});
 	        }

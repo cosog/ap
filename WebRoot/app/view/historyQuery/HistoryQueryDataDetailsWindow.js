@@ -107,12 +107,15 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 				deviceHistoryQueryDataHandsontableHelper.columns=Ext.JSON.decode(columns);
 				deviceHistoryQueryDataHandsontableHelper.CellInfo=result.CellInfo;
 				if(result.totalRoot.length==0){
+					deviceHistoryQueryDataHandsontableHelper.sourceData=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 					deviceHistoryQueryDataHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
+					deviceHistoryQueryDataHandsontableHelper.sourceData=result.totalRoot;
 					deviceHistoryQueryDataHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				deviceHistoryQueryDataHandsontableHelper.CellInfo=result.CellInfo;
+				deviceHistoryQueryDataHandsontableHelper.sourceData=result.totalRoot;
 				deviceHistoryQueryDataHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 			//添加单元格属性
@@ -145,6 +148,8 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	        deviceHistoryQueryDataHandsontableHelper.colHeaders=[];
 	        deviceHistoryQueryDataHandsontableHelper.columns=[];
 	        deviceHistoryQueryDataHandsontableHelper.CellInfo=[];
+	        
+	        deviceHistoryQueryDataHandsontableHelper.sourceData=[];
 	        
 	        deviceHistoryQueryDataHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -255,6 +260,41 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	                    
 	                    cellProperties.readOnly = true;
 	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(deviceHistoryQueryDataHandsontableHelper!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=''&&deviceHistoryQueryDataHandsontableHelper.hot!=undefined && deviceHistoryQueryDataHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var record=deviceHistoryQueryDataHandsontableHelper.sourceData[coords.row];
+	                		var rawVvalue='';
+	                		if(coords.col==0){
+	                			rawVvalue=record.name1;
+	                		}else if(coords.col==1){
+	                			rawVvalue=record.value1;
+	                		}else if(coords.col==2){
+	                			rawVvalue=record.name2;
+	                		}else if(coords.col==3){
+	                			rawVvalue=record.value2;
+	                		}else if(coords.col==4){
+	                			rawVvalue=record.name3;
+	                		}else if(coords.col==5){
+	                			rawVvalue=record.value3;
+	                		}
+                			if(isNotVal(rawVvalue)){
+                				if(!isNotVal(TD.tip)){
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    html: rawVvalue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(rawVvalue);
+                				}
+                			}
+	                	}
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}
 	        	});

@@ -2686,6 +2686,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":37,\"itemName\":\"工况干预\",\"itemValue\":\""+manualInterventionName+"\"},");
 						result_json.append("{\"id\":38,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
 						result_json.append("{\"id\":39,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
+						result_json.append("{\"id\":40,\"itemName\":\"反演液面校正值(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getLevelCorrectValue():"")+"\"},");
 					}else{
 						result_json.append("{\"id\":1,\"itemName\":\"原油密度(g/cm^3)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":2,\"itemName\":\"水密度(g/cm^3)\",\"itemValue\":\"\"},");
@@ -2736,8 +2737,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":37,\"itemName\":\"工况干预\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":38,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":39,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":40,\"itemName\":\"反演液面校正值(MPa)\",\"itemValue\":\"\"},");
 					}
-					result_json.append("{\"id\":40,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
+					result_json.append("{\"id\":41,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 				}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
 					type = new TypeToken<PCPProductionData>() {}.getType();
 					PCPProductionData pcpProductionData=gson.fromJson(productionData, type);

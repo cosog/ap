@@ -1773,7 +1773,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			
-			result_json.append("{\"id\":"+(i)+","
+			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+obj[0]+""+"\","
 					+ "\"unit\":\""+unit+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","

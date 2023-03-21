@@ -902,6 +902,9 @@ var RPCDeviceInfoHandsontableHelper = {
             		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
             			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
             		}
+            		if(isNumber(parseFloat(productionHandsontableData[39][2]))){
+            			deviceProductionData.Production.LevelCorrectValue=parseFloat(productionHandsontableData[39][2]);
+            		}
             		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
             			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
             		}
@@ -1470,7 +1473,7 @@ var RPCProductionHandsontableHelper = {
 	                    if (visualColIndex !=2) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcProductionHandsontableHelper.addBoldBg;
-		                }else if(visualRowIndex==39 && visualColIndex==2){
+		                }else if(visualRowIndex==40 && visualColIndex==2){
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    

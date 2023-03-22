@@ -2065,11 +2065,10 @@ public class DriverAPIController extends BaseController{
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("日产水量","日产水量",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"","","waterVolumetricProduction","","","","m^3/d",1));
 					}
 					
-					
-					
-					
 					//更新液面反演校正值
-					if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 && rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+					if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
+							&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
+							&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0){
 						rpcDeviceInfo.getProduction().setLevelCorrectValue(rpcCalculateResponseData.getProduction().getLevelCorrectValue());
 					}
 					

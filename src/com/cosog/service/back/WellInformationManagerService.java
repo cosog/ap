@@ -642,6 +642,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer reportInstanceDropdownData = new StringBuffer();
 		StringBuffer alarmInstanceDropdownData = new StringBuffer();
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
+		StringBuffer resultNameDropdownData = new StringBuffer();
 		int collisionCount=0;
 		int overlayCount=0;
 		int overCount=0;
@@ -653,17 +654,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype=0 order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype=0 order by t.sort";
 		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue";
+		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		instanceDropdownData.append("[");
 		displayInstanceDropdownData.append("[");
 		reportInstanceDropdownData.append("[");
 		alarmInstanceDropdownData.append("[");
 		applicationScenariosDropdownData.append("[");
+		resultNameDropdownData.append("[");
 
 		List<?> instanceList = this.findCallSql(instanceSql);
 		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
 		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
 		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
 		List<?> applicationScenariosList = this.findCallSql(applicationScenariosSql);
+		List<?> resultList = this.findCallSql(resultSql);
 		
 		if(instanceList.size()>0){
 			instanceDropdownData.append("\"\",");
@@ -712,11 +716,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(applicationScenariosDropdownData.toString().endsWith(",")){
 			applicationScenariosDropdownData.deleteCharAt(applicationScenariosDropdownData.length() - 1);
 		}
+		
+		if(resultList.size()>0){
+			resultNameDropdownData.append("\"不干预\"");
+			for(int i=0;i<resultList.size();i++){
+				resultNameDropdownData.append(",\""+resultList.get(i).toString()+"\"");
+			}
+		}
+		
 		instanceDropdownData.append("]");
 		displayInstanceDropdownData.append("]");
 		reportInstanceDropdownData.append("]");
 		alarmInstanceDropdownData.append("]");
 		applicationScenariosDropdownData.append("]");
+		resultNameDropdownData.append("]");
 		collisionBuff.append("[");
 		overlayBuff.append("[");
 		if(list!=null){
@@ -776,8 +789,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		        	collisionBuff.append("\"rodOutsideDiameter4\":\""+list.get(i).getRodOutsideDiameter4()+"\",");
 		        	collisionBuff.append("\"rodInsideDiameter4\":\""+list.get(i).getRodInsideDiameter4()+"\",");
 		        	collisionBuff.append("\"rodLength4\":\""+list.get(i).getRodLength4()+"\",");
+		        	
+		        	collisionBuff.append("\"manualInterventionResultName\":\""+list.get(i).getManualInterventionResultName()+"\",");
+		        	
 		        	collisionBuff.append("\"netGrossRatio\":\""+list.get(i).getNetGrossRatio()+"\",");
 		        	collisionBuff.append("\"netGrossValue\":\""+list.get(i).getNetGrossValue()+"\",");
+		        	
+		        	collisionBuff.append("\"levelCorrectValue\":\""+list.get(i).getLevelCorrectValue()+"\",");
+		        	
 		        	collisionBuff.append("\"manufacturer\":\""+list.get(i).getManufacturer()+"\",");
 		        	collisionBuff.append("\"model\":\""+list.get(i).getModel()+"\",");
 		        	collisionBuff.append("\"stroke\":\""+list.get(i).getStroke()+"\",");
@@ -846,8 +865,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		        	overlayBuff.append("\"rodOutsideDiameter4\":\""+list.get(i).getRodOutsideDiameter4()+"\",");
 		        	overlayBuff.append("\"rodInsideDiameter4\":\""+list.get(i).getRodInsideDiameter4()+"\",");
 		        	overlayBuff.append("\"rodLength4\":\""+list.get(i).getRodLength4()+"\",");
+		        	
+		        	overlayBuff.append("\"manualInterventionResultName\":\""+list.get(i).getManualInterventionResultName()+"\",");
+		        	
 		        	overlayBuff.append("\"netGrossRatio\":\""+list.get(i).getNetGrossRatio()+"\",");
 		        	overlayBuff.append("\"netGrossValue\":\""+list.get(i).getNetGrossValue()+"\",");
+		        	
+		        	overlayBuff.append("\"levelCorrectValue\":\""+list.get(i).getLevelCorrectValue()+"\",");
+		        	
 		        	overlayBuff.append("\"manufacturer\":\""+list.get(i).getManufacturer()+"\",");
 		        	overlayBuff.append("\"model\":\""+list.get(i).getModel()+"\",");
 		        	overlayBuff.append("\"stroke\":\""+list.get(i).getStroke()+"\",");
@@ -885,6 +910,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "\"reportInstanceDropdownData\":"+reportInstanceDropdownData.toString()+","
 				+ "\"alarmInstanceDropdownData\":"+alarmInstanceDropdownData.toString()+","
 				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+","
+				+ "\"resultNameDropdownData\":"+resultNameDropdownData.toString()+","
 				+ "\"pumpingModelInfo\":"+pumpingModelInfo+","
 				+ "\"columns\":"+columns+","
 				+ "\"collisionList\":"+collisionBuff+","
@@ -3056,6 +3082,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer reportInstanceDropdownData = new StringBuffer();
 		StringBuffer alarmInstanceDropdownData = new StringBuffer();
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
+		StringBuffer resultNameDropdownData = new StringBuffer();
 		String ddicName="deviceInfo_RPCDeviceBatchAdd";
 		int protocolType=0;
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
@@ -3069,18 +3096,21 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
 		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue";
+		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		String columns=service.showTableHeadersColumns(ddicName);
 		instanceDropdownData.append("[");
 		displayInstanceDropdownData.append("[");
 		reportInstanceDropdownData.append("[");
 		alarmInstanceDropdownData.append("[");
 		applicationScenariosDropdownData.append("[");
+		resultNameDropdownData.append("[");
 
 		List<?> instanceList = this.findCallSql(instanceSql);
 		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
 		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
 		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
 		List<?> applicationScenariosList = this.findCallSql(applicationScenariosSql);
+		List<?> resultList = this.findCallSql(resultSql);
 		
 		if(instanceList.size()>0){
 			instanceDropdownData.append("\"\",");
@@ -3129,11 +3159,21 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(applicationScenariosDropdownData.toString().endsWith(",")){
 			applicationScenariosDropdownData.deleteCharAt(applicationScenariosDropdownData.length() - 1);
 		}
+		
+		if(resultList.size()>0){
+			resultNameDropdownData.append("\"不干预\"");
+			for(int i=0;i<resultList.size();i++){
+				resultNameDropdownData.append(",\""+resultList.get(i).toString()+"\"");
+			}
+		}
+		
+		
 		instanceDropdownData.append("]");
 		displayInstanceDropdownData.append("]");
 		reportInstanceDropdownData.append("]");
 		alarmInstanceDropdownData.append("]");
 		applicationScenariosDropdownData.append("]");
+		resultNameDropdownData.append("]");
 		
 		String json = "";
 		result_json.append("{\"success\":true,\"totalCount\":"+recordCount+","
@@ -3141,7 +3181,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "\"displayInstanceDropdownData\":"+displayInstanceDropdownData.toString()+","
 				+ "\"reportInstanceDropdownData\":"+reportInstanceDropdownData.toString()+","
 				+ "\"alarmInstanceDropdownData\":"+alarmInstanceDropdownData.toString()+","
-				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+",");
+				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+","
+				+ "\"resultNameDropdownData\":"+resultNameDropdownData.toString()+",");
 		if(protocolType==0){
 			String pumpingModelInfo=this.getPumpingModelInfo();
 			result_json.append("\"pumpingModelInfo\":"+pumpingModelInfo+",");

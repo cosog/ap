@@ -165,6 +165,16 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                         }
                         source += "]";
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "manualInterventionResultName".toUpperCase()) {
+                        var source = "[";
+                        for (var j = 0; j < result.resultNameDropdownData.length; j++) {
+                            source += "\'" + result.resultNameDropdownData[j] + "\'";
+                            if (j < result.resultNameDropdownData.length - 1) {
+                                source += ",";
+                            }
+                        }
+                        source += "]";
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
                     }else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['使能', '失效']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {

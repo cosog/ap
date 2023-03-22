@@ -61,6 +61,7 @@ import com.cosog.model.DisplayUnit;
 import com.cosog.model.KeyParameter;
 import com.cosog.model.Org;
 import com.cosog.model.User;
+import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
@@ -1223,6 +1224,9 @@ public class BaseDao extends HibernateDaoSupport {
 							productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterCut()));
 							productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
 							productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()));
+							
+							productionData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getLevelCorrectValue()));
+							
 							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
 							
 							productionData.getPump().setPumpType(pumpType);
@@ -1269,6 +1273,12 @@ public class BaseDao extends HibernateDaoSupport {
 							
 							productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
 							productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
+							
+							int manualInterventionResultCode=0;
+							if(!"不干预".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResultName())){
+								manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(wellHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResultName());
+							}
+							productionData.getManualIntervention().setCode(manualInterventionResultCode);
 							
 							String[] balanceWeight=wellHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight().split(",");
 							String[] balancePosition=wellHandsontableChangedData.getUpdatelist().get(i).getBalancePosition().split(",");
@@ -1378,6 +1388,7 @@ public class BaseDao extends HibernateDaoSupport {
 								productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterCut()));
 								productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()));
 								productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
+								productionData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getLevelCorrectValue()));
 								productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
 								
 								productionData.getPump().setPumpType(pumpType);
@@ -1423,6 +1434,13 @@ public class BaseDao extends HibernateDaoSupport {
 								}
 								
 								productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()));
+								productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossValue()));
+								
+								int manualInterventionResultCode=0;
+								if(!"不干预".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResultName())){
+									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(wellHandsontableChangedData.getInsertlist().get(i).getManualInterventionResultName());
+								}
+								productionData.getManualIntervention().setCode(manualInterventionResultCode);
 								
 								String[] balanceWeight=wellHandsontableChangedData.getInsertlist().get(i).getBalanceWeight().split(",");
 								String[] balancePosition=wellHandsontableChangedData.getInsertlist().get(i).getBalancePosition().split(",");

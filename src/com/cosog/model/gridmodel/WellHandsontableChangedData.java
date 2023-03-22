@@ -137,9 +137,13 @@ public class WellHandsontableChangedData {
 	    
 	    private String rodLength4="";
 	    
+	    private String manualInterventionResultName="";
+	    
 	    private String netGrossRatio="";
 	    
 	    private String netGrossValue="";
+	    
+	    private String levelCorrectValue="";
 	    
 	    private String manufacturer="";
 	    
@@ -749,6 +753,22 @@ public class WellHandsontableChangedData {
 
 		public void setReportInstanceName(String reportInstanceName) {
 			this.reportInstanceName = reportInstanceName;
+		}
+
+		public String getManualInterventionResultName() {
+			return manualInterventionResultName;
+		}
+
+		public void setManualInterventionResultName(String manualInterventionResultName) {
+			this.manualInterventionResultName = manualInterventionResultName;
+		}
+
+		public String getLevelCorrectValue() {
+			return levelCorrectValue;
+		}
+
+		public void setLevelCorrectValue(String levelCorrectValue) {
+			this.levelCorrectValue = levelCorrectValue;
 		}
 	    
 	}

@@ -2130,6 +2130,30 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	
+	
+	public static int getResultCodeByName(String resultName){
+		int resultCode=0;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCWorkTypeByName".getBytes())){
+				MemoryDataManagerTask.loadRPCWorkType();
+			}
+			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
+				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+				resultCode=workType.getResultCode();
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return resultCode;
+	}
+	
 	@SuppressWarnings("resource")
 	public static AlarmShowStyle initAlarmStyle(){
 		Connection conn = null;   

@@ -152,7 +152,7 @@
 
 >   [3.7 centOS系统运行环境搭建](#3.7centOS系统运行环境搭建)
 
->   >   [3.7.1 JDK安装](#3.7.1 JDK安装)
+>   >   [3.7.1 JDK安装](#3.7.1JDK安装)
 
 >   >   [3.7.2 Tomcat安装](#3.7.2Tomcat安装)
 
@@ -176,13 +176,15 @@ jdk8、tomcat9、oracle、redis
 
 如果已分配用户，请跳过该项。
 
-打开”数据库\\createDB\\createSpaceAndUser”文件夹，编辑createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息，修改后执行此sql。
+打开”数据库\\createDB\\createSpaceAndUser”文件夹，编辑createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息，修改后以sys用户执行此sql。
 
 ![](../images/md/PNG/8aee9edd5ca2bf4186004bbdf4a8b018.png)
 
 2）创建并初始化数据库内容
 
-执行”数据库\\createDB\\createAndInitDB”文件夹下creatAndInitDB.文件，批量执行初始化数据库sql。
+以上一步创建的用户或者以分配的用户连接数据库
+
+执行”数据库\\createDB\\createAndInitDB”文件夹下creatAndInitDB.bat文件，批量执行初始化数据库sql。
 
 3、软件部署：
 
@@ -2015,11 +2017,11 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 （2）替换tomcat安装目录\\webapps\\ap\\images\\logo路径下“favicon.ico”图片，图片分辨率16\*16。
 
-如不显示图标，参考“1.3系统配置”内容进行配置。
+如不显示图标，参考“3.5 其他配置”内容进行配置。
 
 3、软件名称
 
-修改名称：见1.4.1节软件名称配置部分；
+修改名称：见3.2.1节软件名称配置部分；
 
 修改名称样式：修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
 
@@ -2205,15 +2207,15 @@ After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
 
-Type=oneshot
+Type=forking
 
-ExecStart=/usr/apache-tomcat-9.0.73/bin/startup.sh
+ExecStart=/opt/apache-tomcat-9.0.73/bin/startup.sh
 
-ExecStop=/usr/ apache-tomcat-9.0.73/bin/shutdown.sh
+ExecStop=/opt/ apache-tomcat-9.0.73/bin/shutdown.sh
 
 ExecReload=/bin/kill -s HUP \$MAINPID
 
-RemainAfterExit=yes
+PrivateTmp=true
 
 [Install]
 
@@ -2251,7 +2253,7 @@ vim /etc/init.d/oracledb_ORCLCDB-19c
 
 5、创建数据库及实例
 
-vim /etc/init.d/oracledb_ORCLCDB-19c configure
+/etc/init.d/oracledb_ORCLCDB-19c configure
 
 6、配置环境变量
 
@@ -2326,7 +2328,7 @@ requirepass "你的密码"
 
 8、开机启动
 
-1）在/usr/lib/systemd/system目录下增加tomcat9.service文件，内容如下：
+1）在/usr/lib/systemd/system目录下增加redis.service文件，内容如下：
 
 [Unit]
 
@@ -2336,15 +2338,15 @@ After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
 
-Type=oneshot
+Type=forking
 
-ExecStart=/opt/redis-7.0.9/redis-server /opt/redis/redis.conf
+ExecStart=/opt/redis-7.0.9/src/redis-server /opt/redis-7.0.9/redis.conf
 
-ExecStop=/opt/redis-7.0.9/redis-cli shutdown
+ExecStop=/opt/redis-7.0.9/src/redis-cli shutdown
 
 ExecReload=/bin/kill -s HUP \$MAINPID
 
-RemainAfterExit=yes
+PrivateTmp=true
 
 [Install]
 

@@ -37,7 +37,7 @@ html {
 }
 
 .page-login:before {
-    /*background-image: url(../images/login/login.jpg)*/
+    background-image: url(../images/login/login.jpg)
 }
 
 .page-login.page-dark.layout-full:after {

@@ -54,6 +54,8 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
 		session.setAttribute("viewProjectName", configFile.getAp().getOem().getTitle());
+		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
+		session.setAttribute("loginCSS", configFile.getAp().getOem().getLoginCSS());
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
 		return "Login";
 	}
@@ -70,6 +72,8 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
 		session.setAttribute("viewProjectName", configFile.getAp().getOem().getTitle());
+		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
+		session.setAttribute("bannerCSS", configFile.getAp().getOem().getBannerCSS());
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
 		return "app/main";
 	}

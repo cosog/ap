@@ -33,8 +33,12 @@ String path = request.getContextPath();
 String extBasePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 //boolean isConnection=isConnectInt();
 boolean isConnection=false;
+
+String bannerCSS=(String)session.getAttribute("bannerCSS");
+bannerCSS=bannerCSS.substring(bannerCSS.indexOf("/"),bannerCSS.length());
+
 %>
-<link rel="stylesheet" href="<%=path%>/styles/banner.css?timestamp=202303090940" type="text/css"/>
+<link rel="stylesheet" href="<%=path+bannerCSS%>?timestamp=202303090940" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/styles/style.css?timestamp=202303090940" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/styles/icon.css?timestamp=202303090940" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/extjs/resources/classic/ext-theme-classic/theme-classic-all.css?timestamp=202303090940"  type="text/css"/>

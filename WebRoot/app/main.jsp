@@ -7,6 +7,10 @@
 	String path = request.getContextPath();
    	String browserLang=(String)request.getAttribute("browserLang");
    	String viewProjectName=(String)session.getAttribute("viewProjectName");
+   	String favicon=(String)session.getAttribute("favicon");
+	favicon=favicon.substring(favicon.indexOf("/"),favicon.length());
+   	String bannerCSS=(String)session.getAttribute("bannerCSS");
+   	bannerCSS=bannerCSS.substring(bannerCSS.indexOf("/"),bannerCSS.length());
    	boolean showLogo=(boolean)session.getAttribute("showLogo");
    	request.setAttribute("browserLang",browserLang );
 %>
@@ -16,9 +20,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><%=viewProjectName%></title>
 <%if(showLogo){ %>
-<link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" />
-<link rel="icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" type="image/x-icon" />
-<link rel="shortcut icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" type="image/x-icon" />
+<link rel="Bookmark" href="<%=path+favicon%>?timestamp=202202231815" />
+<link rel="icon" href="<%=path+favicon%>?timestamp=202202231815" type="image/x-icon" />
+<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202202231815" type="image/x-icon" />
 <link rel="Bookmark" href="favicon.ico" />
 <%} %>
 <meta http-equiv="pragma" content="no-cache">
@@ -30,6 +34,10 @@
 <script> 
  var user_ = "${userLogin.userNo}";
  var oem = ${configFile}.ap.oem;
+ 
+ var logoImg=oem.logo;
+ logoImg=".."+logoImg.substring(logoImg.indexOf("/"),logoImg.length);
+ 
  var productionUnit = ${configFile}.ap.others.productionUnit;
  var pcpHidden = ${configFile}.ap.others.pcpHidden;
  var onlyMonitor = ${configFile}.ap.others.onlyMonitor;

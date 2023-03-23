@@ -9,6 +9,11 @@
 	String name="";
 	String password="";
 	String viewProjectName=(String)session.getAttribute("viewProjectName");
+	String favicon=(String)session.getAttribute("favicon");
+	favicon=favicon.substring(favicon.indexOf("/"),favicon.length());
+	String loginCSS=(String)session.getAttribute("loginCSS");
+	loginCSS=loginCSS.substring(loginCSS.indexOf("/"),loginCSS.length());
+	
 	boolean showLogo=(boolean)session.getAttribute("showLogo");
 	try{
 		Cookie[] cookies=request.getCookies();
@@ -57,15 +62,15 @@
     <title><%=viewProjectName%></title>
     <!-- 链接外部图标，如：中石油、中石化 -->
     <%if(showLogo){ %>
-	<link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico?timestamp=202206228050" />
-	<link rel="icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202206228050" type="image/x-icon" />
-	<link rel="shortcut icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202206228050" type="image/x-icon" />
+	<link rel="Bookmark" href="<%=path+favicon%>?timestamp=202206228050" />
+	<link rel="icon" href="<%=path+favicon%>?timestamp=202206228050" type="image/x-icon" />
+	<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202206228050" type="image/x-icon" />
 	<%} %>
     <!-- 链接css -->
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css?timestamp=202206228050" type="text/css" />
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap-select.min.css?timestamp=20220622805"" type="text/css" />
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=202206228050" type="text/css" />
-    <link rel="stylesheet" href="<%=path%>/styles/login.css?timestamp=202206228050" type="text/css"/>
+    <link rel="stylesheet" href="<%=path+loginCSS%>?timestamp=202206228050" type="text/css"/>
 
     <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=202212051400"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=202206228050"></script>
@@ -73,9 +78,11 @@
     
 
 	<script>
-	//document.getElementById("text111111").innerHTML=cosog.string.title;
-	//$("#text111111").html("<span>aaaa</span>");
 	var oem = ${configFile}.ap.oem;
+	var loginBackgroundImage=oem.loginBackgroundImage;
+	loginBackgroundImage=".."+loginBackgroundImage.substring(loginBackgroundImage.indexOf("/"),loginBackgroundImage.length);
+	
+	
 	$(function () {
 		initDisplayInformation();
 		var getUserListURL="<%=path%>/userLoginManagerController/getUserList";
@@ -111,6 +118,8 @@
 		$("#login_copy").html(oem.copy);
 		$("#login_link").text(oem.linkshow);
 		$('#login_link').attr('href',oem.linkaddress);
+		
+		$(".page-login").css("background-image", "url("+loginBackgroundImage+")");
 	}
 	
 	function userSelectpickerChange(obj){

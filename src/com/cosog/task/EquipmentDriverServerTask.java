@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -61,6 +61,11 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+		String aa="./style/logon_heichao.css";
+		int index=aa.indexOf("/");
+		String bb=aa.substring(index, aa.length());
+		
+		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();

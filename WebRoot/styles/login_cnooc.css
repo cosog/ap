@@ -9,8 +9,35 @@ html {
     overflow: hidden
 }
 
+#login_loginInfo {
+    width:52%;
+    float:right;
+    line-height: 45px;
+    font-size: 14px;
+    color:#fff;
+}
+
+#login_userlogin {
+    text-align: left;
+    font-size: 22px;
+    color: #009900;
+}
+
+#login_title {
+    text-align: left;
+    font-size: 17px;
+    color: #76838f;
+}
+
+#login_loginButton {
+    font-size: 14px;
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
 .page-login:before {
-    background-image: url(../images/login.jpg)
+    background-image: url(../images/login/login.jpg)
 }
 
 .page-login.page-dark.layout-full:after {

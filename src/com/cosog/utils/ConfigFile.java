@@ -141,6 +141,16 @@ public class ConfigFile {
 	    private String linkaddress;
 
 	    private String linkshow;
+	    
+	    private String logo;
+	    
+	    private String favicon;
+	    
+	    private String loginBackgroundImage;
+	    
+	    private String loginCSS;
+	    
+	    private String bannerCSS;
 
 	    public void setTitle(String title){
 	        this.title = title;
@@ -172,6 +182,36 @@ public class ConfigFile {
 	    public String getLinkshow(){
 	        return this.linkshow;
 	    }
+		public String getLoginCSS() {
+			return loginCSS;
+		}
+		public void setLoginCSS(String loginCSS) {
+			this.loginCSS = loginCSS;
+		}
+		public String getBannerCSS() {
+			return bannerCSS;
+		}
+		public void setBannerCSS(String bannerCSS) {
+			this.bannerCSS = bannerCSS;
+		}
+		public String getLoginBackgroundImage() {
+			return loginBackgroundImage;
+		}
+		public void setLoginBackgroundImage(String loginBackgroundImage) {
+			this.loginBackgroundImage = loginBackgroundImage;
+		}
+		public String getFavicon() {
+			return favicon;
+		}
+		public void setFavicon(String favicon) {
+			this.favicon = favicon;
+		}
+		public String getLogo() {
+			return logo;
+		}
+		public void setLogo(String logo) {
+			this.logo = logo;
+		}
 	}
 	
 	public static class SnedAccount

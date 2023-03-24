@@ -36,10 +36,6 @@ html {
     border-color: #2e6da4;
 }
 
-.page-login:before {
-    background-image: url(../images/login/login.jpg)
-}
-
 .page-login.page-dark.layout-full:after {
     background-color: rgba(38, 50, 56, .6)
 }

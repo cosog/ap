@@ -138,10 +138,6 @@
 
 >   [3.2 OEM配置](#3.2OEM配置)
 
->   >   [3.2.1 登录界面](#3.2.1登录界面)
-
->   >   [3.2.2 主界面](#3.2.2主界面)
-
 >   [3.3 视频账号配置](#3.3视频账号配置)
 
 >   [3.4 邮件发送账号配置](#3.4邮件发送账号配置)
@@ -176,13 +172,13 @@ jdk8、tomcat9、oracle、redis
 
 如果已分配用户，请跳过该项。
 
-打开”数据库\\createDB\\createSpaceAndUser”文件夹，编辑createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息，修改后以sys用户执行此sql。
+打开”数据库\\createDB\\createSpaceAndUser”文件夹，编辑createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息，修改后以sys用户连接插拔数据库执行此sql。
 
 ![](../images/md/PNG/8aee9edd5ca2bf4186004bbdf4a8b018.png)
 
 2）创建并初始化数据库内容
 
-以上一步创建的用户或者以分配的用户连接数据库
+以上一步创建的用户或者以分配的用户连接插拔数据库
 
 执行”数据库\\createDB\\createAndInitDB”文件夹下creatAndInitDB.bat文件，批量执行初始化数据库sql。
 
@@ -1979,89 +1975,27 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 先停止tomcat（如果正在运行），配置完成后再启动。如果配置未生效，需要清理浏览器缓存。
 
-### <h3><a name="3.2.1登录界面"></a>3.2.1 登录界面</h3>
+打开tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件，修改oem部分
 
-![](../images/md/PNG/6769f1d713723cf8dc21f2c38575b254.png)
+![](../images/md/PNG/1f847c35a2b7834f49f5bcac8900e1c2.png)
 
-1、软件名称及简介
+1、title：软件名称
 
-修改tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件中oem部分中的title和profile。
+2、profile：软件简介
 
-2、背景图片
+3、favicon：网页图标
 
-替换tomcat安装目录\\webapps\\ap\\images\\login路径下“login.jpg”图片，图片分辨率1920\*1000。修改后如未生效，需要清理浏览器缓存。
+4、logo：软件logo
 
-### <h3><a name="3.2.2主界面"></a>3.2.2 主界面</h3>
+5、loginBackgroundImage：登录界面背景图片
 
-![](../images/md/PNG/24e248a0157ef2130589a342283b6a7a.png)
+6、loginCSS：登录界面css，如需调整登录界面样式，修改此css文件
 
-1、banner背景色
+7、bannerCSS：主界面banner css，如需调整主界面banner样式，修改此css文件
 
-背景为从左到右渐变，修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件：
+8、helpButtonIcon：帮助按钮图标
 
-![](../images/md/PNG/20fd2b56a3799adca072231c4e54e560.png)
-
-修改后如未生效，需要清理浏览器缓存。
-
-（1）底部边框
-
-图中：2px-宽度，solid-线型为实线，\#FBC02D-边框颜色金色
-
-（2）背景色
-
-图中配置效果为从左到右渐变，\#006093-左侧颜色，\#0079A8-中间颜色，\#018AB9-右侧颜色。
-
-2、图标：
-
-（1）替换tomcat安装目录\\webapps\\ap\\images\\logo路径下“logo.jpg”图片，图片分辨率956\*921；
-
-（2）替换tomcat安装目录\\webapps\\ap\\images\\logo路径下“favicon.ico”图片，图片分辨率16\*16。
-
-如不显示图标，参考“3.5 其他配置”内容进行配置。
-
-3、软件名称
-
-修改名称：见3.2.1节软件名称配置部分；
-
-修改名称样式：修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
-
-![](../images/md/PNG/0a06e340aa355e99a04cc7323f91e788.png)
-
-（1）字体颜色；
-
-（2）bold-加粗，23px/50%-字体大小/行高，微软雅黑-字体；
-
-（3）距左侧距离，如果图标大小改变，则需要修改此处；
-
-（4）字体阴影，图中配置效果为：水平1px，竖直1px，模糊距离0px，阴影颜色白色。
-
-4、帮助按钮样式
-
-修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
-
-![](../images/md/PNG/5e79e64d2a66c6d0e614b5045a12ad29.png)
-
-（1）图标：替换tomcat安装目录\\webapps\\ap\\images路径下“help.svg”图片；
-
-（2）距右侧距离；
-
-（3）字体颜色-白色；
-
-（4）字体：bold-加粗，13px/50%-字体大小/行高，微软雅黑-字体
-
-5、退出按钮样式
-
-修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
-
-![](../images/md/PNG/b92858dcc1ba507874c898867cc3b5b4.png)
-
-（1）图标：替换tomcat安装目录\\webapps\\ap\\images路径下“exit.svg”图片；
-
-（2）距右侧距离；
-
-（3）字体颜色-白色；
-
-（4）字体：bold-加粗，13px/50%-字体大小/行高，微软雅黑-字体
+9、exitButtonIcon：退出按钮图标
 
 ## <h2><a name="3.3视频账号配置"></a>3.3 视频账号配置</h2>
 
@@ -2209,9 +2143,9 @@ After=syslog.target network.target remote-fs.target nss-lookup.target
 
 Type=forking
 
-ExecStart=/opt/apache-tomcat-9.0.73/bin/startup.sh
+ExecStart=/usr/apache-tomcat-9.0.73/bin/startup.sh
 
-ExecStop=/opt/ apache-tomcat-9.0.73/bin/shutdown.sh
+ExecStop=/usr/ apache-tomcat-9.0.73/bin/shutdown.sh
 
 ExecReload=/bin/kill -s HUP \$MAINPID
 
@@ -2340,7 +2274,7 @@ After=syslog.target network.target remote-fs.target nss-lookup.target
 
 Type=forking
 
-ExecStart=/opt/redis-7.0.9/src/redis-server /opt/redis-7.0.9/redis.conf
+ExecStart=/opt/redis-7.0.9/src/redis-server /opt/ redis-7.0.9/redis.conf
 
 ExecStop=/opt/redis-7.0.9/src/redis-cli shutdown
 

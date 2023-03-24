@@ -38,14 +38,14 @@ String bannerCSS=(String)session.getAttribute("bannerCSS");
 bannerCSS=bannerCSS.substring(bannerCSS.indexOf("/"),bannerCSS.length());
 
 %>
-<link rel="stylesheet" href="<%=path+bannerCSS%>?timestamp=202303090940" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/styles/style.css?timestamp=202303090940" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/styles/icon.css?timestamp=202303090940" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/extjs/resources/classic/ext-theme-classic/theme-classic-all.css?timestamp=202303090940"  type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/extjs/ux/classic/resources/ux-all.css?timestamp=202303090940"  type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/extjs/ux/rowEditor/RowEditing.css?timestamp=202303090940"  type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.full.min.css?timestamp=202303090940" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=202303090940" type="text/css"/>
+<link rel="stylesheet" href="<%=path+bannerCSS%>?timestamp=202303241330" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/styles/style.css?timestamp=202303241330" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/styles/icon.css?timestamp=202303241330" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/extjs/resources/classic/ext-theme-classic/theme-classic-all.css?timestamp=202303241330"  type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/extjs/ux/classic/resources/ux-all.css?timestamp=202303241330"  type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/extjs/ux/rowEditor/RowEditing.css?timestamp=202303241330"  type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.full.min.css?timestamp=202303241330" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=202303241330" type="text/css"/>
 <!-- 样式区 （结束） --> 
 <!-- 定义Extjs常量 -->
 <script type="text/javascript">
@@ -60,39 +60,39 @@ bannerCSS=bannerCSS.substring(bannerCSS.indexOf("/"),bannerCSS.length());
 	var isConnectionInternet=<%=isConnection%>;
 </script>
 <!-- Extjs 核心脚本-->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ext-all.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/Month.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimePicker.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimeField.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/RowEditing.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/CellEditing.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/message.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ext-all.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/Month.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimePicker.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimeField.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/RowEditing.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/CellEditing.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/message.js?timestamp=202303241330"></script>
 <!-- Extjs 中文脚本 -->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/locale-${browserLang}.js?timestamp=202303090940"></script> 
-<script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/app/app.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/locale-${browserLang}.js?timestamp=202303241330"></script> 
+<script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/app/app.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=202303241330"></script>
 
 <!--<script src="https://open.ys7.com/sdk/js/1.3/ezuikit.js"></script>-->
-<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit.js?timestamp=202303241330"></script>
 
-<script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=202303241330"></script>
 <!-- highcharts -->
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highstock.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/grid.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-more.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-3d.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=202303090940"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-zh_CN.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highstock.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/grid.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-more.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-3d.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=202303241330"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-zh_CN.js?timestamp=202303241330"></script>
 
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/ux.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/ux.js?timestamp=202303241330"></script>
 
 <!-- handsontable -->
-<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable.full.min.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable.full.min.js?timestamp=202303241330"></script>
 
 <!-- reconnecting-websocket -->
-<script type="text/javascript" src="<%=path%>/scripts/reconnecting-websocket/reconnecting-websocket.js?timestamp=202303090940"></script>
+<script type="text/javascript" src="<%=path%>/scripts/reconnecting-websocket/reconnecting-websocket.js?timestamp=202303241330"></script>
 <!-- JavaScript （结束） -->

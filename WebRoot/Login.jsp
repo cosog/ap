@@ -48,7 +48,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <!--<fmt:setBundle basename="config/messages" />-->
-    <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202206228050"></script>
+    <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303241330"></script>
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
@@ -62,25 +62,27 @@
     <title><%=viewProjectName%></title>
     <!-- 链接外部图标，如：中石油、中石化 -->
     <%if(showLogo){ %>
-	<link rel="Bookmark" href="<%=path+favicon%>?timestamp=202206228050" />
-	<link rel="icon" href="<%=path+favicon%>?timestamp=202206228050" type="image/x-icon" />
-	<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202206228050" type="image/x-icon" />
+	<link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303241330" />
+	<link rel="icon" href="<%=path+favicon%>?timestamp=202303241330" type="image/x-icon" />
+	<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202303241330" type="image/x-icon" />
 	<%} %>
     <!-- 链接css -->
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css?timestamp=202206228050" type="text/css" />
+    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css?timestamp=202303241330" type="text/css" />
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap-select.min.css?timestamp=20220622805"" type="text/css" />
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=202206228050" type="text/css" />
-    <link rel="stylesheet" href="<%=path+loginCSS%>?timestamp=202206228050" type="text/css"/>
+    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=202303241330" type="text/css" />
+    <link rel="stylesheet" href="<%=path+loginCSS%>?timestamp=202303241330" type="text/css"/>
 
     <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=202212051400"></script>
-    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=202206228050"></script>
-    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=202206228050"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=202303241330"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=202303241330"></script>
     
 
 	<script>
+	var context='<%=path%>'; 
+	
 	var oem = ${configFile}.ap.oem;
 	var loginBackgroundImage=oem.loginBackgroundImage;
-	loginBackgroundImage=".."+loginBackgroundImage.substring(loginBackgroundImage.indexOf("/"),loginBackgroundImage.length);
+	loginBackgroundImage=context+loginBackgroundImage.substring(loginBackgroundImage.indexOf("/"),loginBackgroundImage.length);
 	
 	
 	$(function () {
@@ -119,18 +121,17 @@
 		$("#login_link").text(oem.linkshow);
 		$('#login_link').attr('href',oem.linkaddress);
 		
-		$(".page-login").css("background-image", "url("+loginBackgroundImage+")");
+		//$(".page-login:before").css("background-image", "url("+loginBackgroundImage+")");
+		
+		$('<style>.page-login:before{background-image:url('+loginBackgroundImage+');}</style>').appendTo('head');
 	}
 	
 	function userSelectpickerChange(obj){
-		//alert(obj[obj.selectedIndex].value);
-		//alert(obj[obj.selectedIndex].dataset.password);
 		if(obj[obj.selectedIndex].value!=""){
 			verifyAutoFn(obj[obj.selectedIndex].value,obj[obj.selectedIndex].dataset.password);
 		}else{
 			$("#userId").focus();
 		}
-		
 	}
 	// 登录
 	function loginFn(){

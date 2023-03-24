@@ -1,6 +1,6 @@
 ap:
    datasource:           #数据库配置
-      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl   #对于oracle12c及以上版本，端口后是”/”，而不是”:”
+      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521/orcl   #对于oracle12c及以上版本，端口后是”/”，而不是”:”
       driver: oracle.jdbc.driver.OracleDriver
       dialect: org.hibernate.dialect.Oracle10gDialect
       user: ap
@@ -14,18 +14,18 @@ ap:
       maxWait: 10000     #连接池最大阻塞等待时间（毫秒）,负值表示没有限制
       timeOut: 10000     #连接超时时间（毫秒）
    oem:                  #oem配置 名称、简介、背景、图标、样式等
-      title: 油气生产智能监控系统 V8.3
+      title: 油气生产智能监控系统 V8.3   #软件名称
       profile: 《油气生产智能监控系统 V8.3》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、权限管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
       copy: ""
       linkaddress: ""
       linkshow: ""
       #图片及样式
       #heichao
-      favicon: "./images/logo/favicon_heichao.ico"
-      logo: "./images/logo/logo_heichao.png"
-      loginBackgroundImage: "./images/login/login.jpg"
-      loginCSS: "./styles/login_heichao.css"
-      bannerCSS: "./styles/banner_heichao.css"
+      favicon: "./images/logo/favicon_heichao.ico"      #网页图标
+      logo: "./images/logo/logo_heichao.png"            #软件logo
+      loginBackgroundImage: "./images/login/login.jpg"  #登录界面背景图片
+      loginCSS: "./styles/login_heichao.css"            #登录界面CSS
+      bannerCSS: "./styles/banner_heichao.css"          #主界面banner CSS
       #cnpc
       #favicon: "./images/logo/favicon_cnpc.ico"
       #logo: "./images/logo/logo_cnpc.png"
@@ -44,6 +44,8 @@ ap:
       #loginBackgroundImage: "./images/login/login.jpg"
       #loginCSS: "./styles/login_zhuchuang.css"
       #bannerCSS: "./styles/banner_zhuchuang.css"
+      helpButtonIcon: "./images/help.svg"             #帮助按钮图标
+      exitButtonIcon: "./images/exit.svg"             #退出按钮图标
    email:                #邮件发送账号配置
       snedAccount:
          account: 123456@126.com          #邮箱账号

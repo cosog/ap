@@ -11,7 +11,7 @@ body {
     -ms-box-sizing: border-box;
 }
 
-#imgTitle {
+#bannerDiv {
     position: absolute;
     border-bottom: 2px solid #FBC02D;
     width:100%;
@@ -38,14 +38,14 @@ body {
     -ms-align-items: center;
 }
 
-#bannertitle{
+#bannerTitle{
 	color: tomato;
 	font: bold 23px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:10px;
 	text-shadow: 1px 1px 0px white;
 }
 
-#passAndExitButton {
+#bannerToolbar {
 	width: 20px;
 	height: 16px;
 	line-height: 16px;
@@ -53,7 +53,7 @@ body {
 	color: #ff3333;
 }
 
-#banner_a1 {
+#banner_exit {
 	background:url(../images/exit.svg) no-repeat;
  	padding-left:16px;
  	height:16px; 
@@ -63,13 +63,13 @@ body {
  	color:white;
 }
 
-#banner_a1_text{
+#banner_exit_text{
 	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:1px;
 	letter-spacing: 0px;
 }
 
-#banner_a2 {
+#banner_help {
 	background:url(../images/help.svg) no-repeat;
  	padding-left:16px;
  	height:16px; 
@@ -79,27 +79,27 @@ body {
  	color:white;
 }
 
-#banner_a2_text{
+#banner_help_text{
 	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:1px;
 	letter-spacing: 0px;
 }
 
-#banner_a1,#banner_a2:link {
+#banner_exit,#banner_help:link {
  color: white;
  text-decoration: none;
 }
 
-#banner_a1,#banner_a2:visited {
+#banner_exit,#banner_help:visited {
  color: white;
  text-decoration: none;
 }
-#banner_a1,#banner_a2:hover {
+#banner_exit,#banner_help:hover {
  color: white;
  text-decoration: none;
 }
 
-#logoImg {
+#bannerLogoImg {
 	display:block;
     height: 35px;
     width: 55px;

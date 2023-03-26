@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
+	private static boolean initEnable=true;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -61,11 +61,6 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-		String aa="./style/logon_heichao.css";
-		int index=aa.indexOf("/");
-		String bb=aa.substring(index, aa.length());
-		
-		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -140,6 +135,9 @@ public class EquipmentDriverServerTask {
 					initProtocolConfig("","");
 				}
 				if(!driverProbeResponse.getInstanceInitStatus()){
+					if(!driverProbeResponse.getProtocolInitStatus()){
+						initProtocolConfig("","");
+					}
 					initInstanceConfig(null,"");
 					initSMSInstanceConfig(null,"");
 				}
@@ -147,6 +145,14 @@ public class EquipmentDriverServerTask {
 //					initSMSDevice(null,"");
 				}
 				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+					if(!driverProbeResponse.getInstanceInitStatus()){
+						if(!driverProbeResponse.getProtocolInitStatus()){
+							initProtocolConfig("","");
+						}
+						initInstanceConfig(null,"");
+						initSMSInstanceConfig(null,"");
+					}
+					
 					if(executor.isCompletedByTaskCount()){
 						//清空内存
 						AdInitMap.cleanData();

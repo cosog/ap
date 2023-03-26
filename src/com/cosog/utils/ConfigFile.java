@@ -151,6 +151,10 @@ public class ConfigFile {
 	    private String loginCSS;
 	    
 	    private String bannerCSS;
+	    
+	    private String helpButtonIcon;
+	    
+	    private String exitButtonIcon;
 
 	    public void setTitle(String title){
 	        this.title = title;
@@ -211,6 +215,18 @@ public class ConfigFile {
 		}
 		public void setLogo(String logo) {
 			this.logo = logo;
+		}
+		public String getHelpButtonIcon() {
+			return helpButtonIcon;
+		}
+		public void setHelpButtonIcon(String helpButtonIcon) {
+			this.helpButtonIcon = helpButtonIcon;
+		}
+		public String getExitButtonIcon() {
+			return exitButtonIcon;
+		}
+		public void setExitButtonIcon(String exitButtonIcon) {
+			this.exitButtonIcon = exitButtonIcon;
 		}
 	}
 	

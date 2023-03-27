@@ -18,7 +18,6 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
         		items: [{
     				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">单井日报</div>',
     				id:'PCPSingleWellDailyReportTabPanel_Id',
-    				hidden:onlyMonitor,
     				items: [PCPSingleWellDailyReportPanel],
     				layout: "fit",
     				border: false

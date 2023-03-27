@@ -154,7 +154,9 @@
 
 >   >   [3.7.3 Oracle安装](#3.7.3Oracle安装)
 
->   >   [3.7.4 Redis安装](#3.7.4Redis安装)
+>   >   [3.7.4 plsql安装配置](#3.7.4plsql安装配置)
+
+>   >   [3.7.5 Redis安装](#3.7.5Redis安装)
 
 ## <h1><a name="第1章系统介绍"></a>第1章 系统介绍</h1>  
 
@@ -2212,7 +2214,66 @@ export PATH=\$ORACLE_HOME/bin:\$PATH:\$HOME/.local/bin:\$HOME/bin
 切换oracle用户，执行sqlplus / as
 sysdba，如能成功连接，则说明数据库安装配置成功。
 
-### <h3><a name="3.7.4Redis安装"></a>3.7.4 Redis安装</h3>
+### <h3><a name="3.7.4plsql安装配置"></a>3.7.4 plsql安装配置</h3>
+
+1、在ORACLE官方下载[instant](https://so.csdn.net/so/search?q=instant&spm=1001.2101.3001.7020)
+client
+
+地址：<http://www.oracle.com/technetwork/topics/winx64soft-089540.html，以19.18>版本为例。
+
+2、下载后，解压将里面的instantclient_19\_18取出来放在本地，可以放在本地磁盘任意目录。
+
+3、在instantclient_19\_18下创建network文件夹，在network文件夹下创建admin文件夹，再admin文件夹下创建tnsnames.ora文件，内容如下：
+
+cdb =
+
+(DESCRIPTION =
+
+(ADDRESS = (PROTOCOL = TCP)(HOST = 39.98.187.157)(PORT = 1521))
+
+(CONNECT_DATA =
+
+(SERVER = DEDICATED)
+
+(SERVICE_NAME = orclcdb)
+
+)
+
+)
+
+pdb1 =
+
+(DESCRIPTION =
+
+(ADDRESS = (PROTOCOL = TCP)(HOST = 39.98.187.157)(PORT = 1521))
+
+(CONNECT_DATA =
+
+(SERVER = DEDICATED)
+
+(SERVICE_NAME = orclpdb1)
+
+)
+
+)
+
+红色信息根据自己的实际情况修改
+
+HOST为要连接的IP地址，PORT为要连接的端口，SERVICE_NAME
+为要连接的数据库名，蓝色字体为自己本地的名称(可以随便起名)。
+
+4.添加环境变量
+
+ORACLE_HOME=F:\\oracle\\instantclient_19_18 \#这是客户端根目录
+
+TNS_ADMIN=%ORACLE_HOME%\\network\\admin \# 这个是plsql用来找到ora文件所在的目录
+
+5、plsql配置
+
+运行plsql，先不进行登录，点击取消，进入主界面，点击 Configore--》
+Preferences--》，填写相应的自己的盘符的目录值。其他默认即可。配置完成后重启软件，连接数据库。
+
+### <h3><a name="3.7.5Redis安装"></a>3.7.5 Redis安装</h3>
 
 1、官网下载安装包，并保存到/opt目录下
 

@@ -780,7 +780,6 @@ values (2, 'unit2', '煤层气井报表单元一', 'CBMWell_heichao', 'CBMWell_heichaoPro
 
 insert into TBL_REPORT_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, SINGLEWELLREPORTTEMPLATE, PRODUCTIONREPORTTEMPLATE, DEVICETYPE, SORT)
 values (3, 'unit3', '螺杆泵井报表单元一', 'oilWell_ScrewPump', 'oilWell_ScrewPumpProductionReoirt', 1, 1);
-values (3, 'unit3', '螺杆泵井报表单元一', 'oilWell_ScrewPump', 'oilWell_ScrewPumpProductionReoirt', 1, 1);
 /*==============================================================*/
 /* 初始化TBL_REPORT_ITEMS2UNIT_CONF数据                                          */
 /*==============================================================*/

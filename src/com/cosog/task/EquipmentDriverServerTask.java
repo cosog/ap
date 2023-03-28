@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -71,6 +71,7 @@ public class EquipmentDriverServerTask {
 				Config.getInstance().configFile.getAd().getProbe().getInit()
 				);
 		initWellCommStatus();
+		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
 //		
 //		
@@ -1644,6 +1645,18 @@ public class EquipmentDriverServerTask {
 		try {
 			result = JDBCUtil.updateRecord(intRPCCommSql, null);
 			result = JDBCUtil.updateRecord(intPCPCommSql, null);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public static int initWellDaliyData(){
+		
+		int result=0;
+		try {
+			result = JDBCUtil.callProcedure("prd_init_device_daily", null);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

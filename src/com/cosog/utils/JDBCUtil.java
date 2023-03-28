@@ -5,6 +5,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,6 +25,7 @@ public class JDBCUtil {
     private static PreparedStatement pstmt=null;  
     private static ResultSet rs=null;  
     private static Statement stmt=null;
+    private static CallableStatement cs=null;
     private static  String driverClassName="";  
     private static  String url="";  
     private static  String userName="";  
@@ -99,13 +101,16 @@ public class JDBCUtil {
             if(rs!=null)rs.close();
             if(stmt!=null)stmt.close();
             if(pstmt!=null)pstmt.close();  
+            if(cs!=null)cs.close();  
             if(conn!=null)conn.close();  
         }catch(RuntimeException re){  
             logger.error("数据库关闭项异常："+re.getMessage(),re);  
             throw re;  
         }finally{
         	if(rs!=null)rs.close();  
+        	if(stmt!=null)stmt.close();
             if(pstmt!=null)pstmt.close();  
+            if(cs!=null)cs.close();  
             conn=null;
         }
     }
@@ -395,6 +400,39 @@ public class JDBCUtil {
         try{  
             preparePstmt(sql, params);  
             iNum=pstmt.executeUpdate();//更新成功，返回更新的记录数，没有更新返回0  
+        }catch(RuntimeException re){  
+            logger.error("更新数据库记录异常:"+re.getMessage());  
+            throw re;  
+        }finally{  
+            closeAll();  
+        }  
+        return iNum;  
+    }
+    
+    public synchronized static int callProcedure(String procedure,List<Object>params) throws SQLException{  
+        int iNum=0;  
+        try{  
+        	getConn();
+        	StringBuffer call=new StringBuffer();
+        	call.append("{call "+procedure+"(");
+        	if(params!=null && params.size()>0){
+        		for(int i=0;i<params.size();i++){
+        			call.append("?,");
+        		}
+        		if(call.toString().endsWith(",")){
+        			call.deleteCharAt(call.length() - 1);
+        		}
+        	}
+        	
+        	call.append(")}");
+        	
+        	cs=conn.prepareCall(call.toString());
+        	if(params!=null && params.size()>0){
+        		for(int i=0;i<params.size();i++){
+        			cs.setObject(i+1, params.get(i));
+        		}
+        	}
+        	iNum=cs.executeUpdate();
         }catch(RuntimeException re){  
             logger.error("更新数据库记录异常:"+re.getMessage());  
             throw re;  

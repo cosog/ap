@@ -124,6 +124,21 @@
 		//$(".page-login:before").css("background-image", "url("+loginBackgroundImage+")");
 		
 		$('<style>.page-login:before{background-image:url('+loginBackgroundImage+');}</style>').appendTo('head');
+		
+		
+		var userLoginName=localStorage.getItem("userLoginName");
+	    var userLoginPassword=localStorage.getItem("userLoginPassword");
+	    var userLoginRememberPassword=localStorage.getItem("userLoginRememberPassword");
+	    
+	    if(userLoginRememberPassword==1){
+	    	$("#userId").val(userLoginName);
+	    	$("#userPwd").val(userLoginPassword);
+	    	$("#flag").prop("checked",true);
+	    }else{
+	    	$("#userId").val('');
+	    	$("#userLoginPassword").val('');
+	    	$("#flag").prop("checked",false);
+	    }
 	}
 	
 	function userSelectpickerChange(obj){
@@ -154,8 +169,9 @@
 		var getTime=new Date();
 		var getSeconds=getTime.getMinutes()+getTime.getSeconds();
 		var getLogin_=$("#userId").val();
+		var userLoginPassword=$("#userPwd").val();
 	   	var userId_ = encodeURI(encodeURI(getLogin_));
-		var userPwd_ = encodeURI(encodeURI($("#userPwd").val()));
+		var userPwd_ = encodeURI(encodeURI(userLoginPassword));
 		var flag_=0;
 		if($("#flag").prop("checked")){
 			flag_=1;
@@ -168,6 +184,11 @@
 			cache:false,
 			success:function(data){
 			    username=getLogin_;
+			    localStorage.setItem("userLoginName",getLogin_);
+			    localStorage.setItem("userLoginPassword",userLoginPassword);
+			    localStorage.setItem("userLoginRememberPassword",flag_);
+			    
+			    
 				callback(data,username);
 			}
 		});
@@ -265,17 +286,15 @@
 								</select>
 							</div>
                             <div class="form-group">
-                                <input type="text" id="userId" class="form-control"  required="" value="<%=name%>">
+                                <input type="text" id="userId" class="form-control"  required="" value="">
                             </div>
                             <div class="form-group">
-                                <input type="password" id="userPwd" class="form-control" required="" value="<%=password%>" onkeypress="if(event.keyCode==13){loginFn();}">
+                                <input type="password" id="userPwd" class="form-control" required="" value="" onkeypress="if(event.keyCode==13){loginFn();}">
                             </div>
                             <div class="form-group clearfix">
         						<div class="checkbox-custom checkbox-inline checkbox-primary pull-left">
-            						<input type="checkbox" id="flag" name="flag"
-            						<%if(flag!=null && flag.equals("1")) 
-					       				{ %> checked="checked"<%; %>value="1" <% ;%> <%}
-					  				else { %> value="0"<%;} %>>
+            						
+					  				<input type="checkbox" id="flag" name="flag" value="0">
             						<label for="remember" id="login_rememberpassword"></label>
         						</div>
         						<a class="pull-right collapsed" data-toggle="collapse" href="#forgetPassword" aria-expanded="false" aria-controls="forgetPassword" id="login_forgerpassword">

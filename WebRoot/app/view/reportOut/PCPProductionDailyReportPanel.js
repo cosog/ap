@@ -392,7 +392,7 @@ function CreatePCPProductionDailyReportTable(){
 
 
 var PCPProductionDailyReportHelper = {
-	    createNew: function (divid, containerid,templateData,contentData,statData,columns) {
+	    createNew: function (divId, containerid,templateData,contentData,statData,columns) {
 	        var pcpProductionDailyReportHelper = {};
 	        pcpProductionDailyReportHelper.templateData=templateData;
 	        pcpProductionDailyReportHelper.contentData=contentData;
@@ -402,7 +402,7 @@ var PCPProductionDailyReportHelper = {
 	        pcpProductionDailyReportHelper.data=[];
 	        pcpProductionDailyReportHelper.sourceData=[];
 	        pcpProductionDailyReportHelper.hot = '';
-	        pcpProductionDailyReportHelper.container = document.getElementById(divid);
+	        pcpProductionDailyReportHelper.container = document.getElementById(divId);
 	        pcpProductionDailyReportHelper.columnCount=0;
 	        pcpProductionDailyReportHelper.editData={};
 	        pcpProductionDailyReportHelper.contentUpdateList = [];
@@ -1002,8 +1002,9 @@ function initPCPProductionDailyReportCurveChartFn(series, tickInterval, divId, t
         },
         exporting: {
             enabled: true,
-            filename: 'class-booking-chart',
-            url: context + '/exportHighcharsPicController/export',
+            filename: title,
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight,
             buttons: {
             	contextButton: {
             		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],

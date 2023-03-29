@@ -5,7 +5,7 @@
 @5.initModuleAndRole.sql
 @6.initDataDictionary.sql
 @7.initDriverConfig.sql
-@8.nitOthers.sql
+@8.initOthers.sql
 @9.createSequences.sql
 @10.createTriggers.sql
 @11.createJobs.sql

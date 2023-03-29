@@ -392,7 +392,7 @@ function CreateRPCProductionDailyReportTable(){
 
 
 var RPCProductionDailyReportHelper = {
-	    createNew: function (divid, containerid,templateData,contentData,statData,columns) {
+	    createNew: function (divId, containerid,templateData,contentData,statData,columns) {
 	        var rpcProductionDailyReportHelper = {};
 	        rpcProductionDailyReportHelper.templateData=templateData;
 	        rpcProductionDailyReportHelper.contentData=contentData;
@@ -402,7 +402,7 @@ var RPCProductionDailyReportHelper = {
 	        rpcProductionDailyReportHelper.data=[];
 	        rpcProductionDailyReportHelper.sourceData=[];
 	        rpcProductionDailyReportHelper.hot = '';
-	        rpcProductionDailyReportHelper.container = document.getElementById(divid);
+	        rpcProductionDailyReportHelper.container = document.getElementById(divId);
 	        rpcProductionDailyReportHelper.columnCount=0;
 	        rpcProductionDailyReportHelper.editData={};
 	        rpcProductionDailyReportHelper.contentUpdateList = [];
@@ -1002,8 +1002,9 @@ function initRPCProductionDailyReportCurveChartFn(series, tickInterval, divId, t
         },
         exporting: {
             enabled: true,
-            filename: 'class-booking-chart',
-            url: context + '/exportHighcharsPicController/export',
+            filename: title,
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight,
             buttons: {
             	contextButton: {
             		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],

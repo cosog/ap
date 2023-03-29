@@ -46,9 +46,9 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             	showPSDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
             	showASDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
             	showBalanceAnalysisCurveChart(get_rawData.crankAngle,get_rawData.loadRorque,get_rawData.crankTorque,get_rawData.currentBalanceTorque,get_rawData.currentNetTorque,
-            			"目前扭矩曲线",get_rawData.wellName+' ['+get_rawData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
+            			"目前扭矩曲线",get_rawData.wellName,get_rawData.acqTime,"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
             	showBalanceAnalysisCurveChart(get_rawData.crankAngle,get_rawData.loadRorque,get_rawData.crankTorque,get_rawData.expectedBalanceTorque,get_rawData.expectedNetTorque,
-            			expectedTorqueChartTitle,get_rawData.wellName+' ['+get_rawData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
+            			expectedTorqueChartTitle,get_rawData.wellName,get_rawData.acqTime,"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
 //            	showBalanceAnalysisMotionCurveChart(get_rawData.crankAngle,get_rawData.positionCurveData,get_rawData.polishrodV,get_rawData.polishrodA,
 //            			"运动特性曲线",get_rawData.wellName+' ['+get_rawData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id",2);
             }

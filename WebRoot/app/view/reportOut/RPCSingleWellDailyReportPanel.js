@@ -305,7 +305,7 @@ function CreateRPCSingleWellDailyReportTable(){
 
 
 var RPCSingleWellDailyReportHelper = {
-	    createNew: function (divid, containerid,templateData,contentData,columns) {
+	    createNew: function (divId, containerid,templateData,contentData,columns) {
 	        var rpcSingleWellDailyReportHelper = {};
 	        rpcSingleWellDailyReportHelper.templateData=templateData;
 	        rpcSingleWellDailyReportHelper.contentData=contentData;
@@ -314,7 +314,7 @@ var RPCSingleWellDailyReportHelper = {
 	        rpcSingleWellDailyReportHelper.data=[];
 	        rpcSingleWellDailyReportHelper.sourceData=[];
 	        rpcSingleWellDailyReportHelper.hot = '';
-	        rpcSingleWellDailyReportHelper.container = document.getElementById(divid);
+	        rpcSingleWellDailyReportHelper.container = document.getElementById(divId);
 	        rpcSingleWellDailyReportHelper.columnCount=0;
 	        rpcSingleWellDailyReportHelper.editData={};
 	        rpcSingleWellDailyReportHelper.contentUpdateList = [];
@@ -895,8 +895,9 @@ function initRPCSingleWellDailyReportCurveChartFn(series, tickInterval, divId, t
         },
         exporting: {
             enabled: true,
-            filename: 'class-booking-chart',
-            url: context + '/exportHighcharsPicController/export',
+            filename: title,
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight,
             buttons: {
             	contextButton: {
             		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],

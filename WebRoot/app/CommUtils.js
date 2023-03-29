@@ -734,8 +734,9 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 //			        },
 				exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:title,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 				plotOptions : {
 					 spline: {  
@@ -857,8 +858,9 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 //			        },
 				exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:title,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 				plotOptions : {
 					 spline: {  
@@ -992,8 +994,9 @@ function initCurveChart(years, values, tickInterval, divId) {
 //			        },
 				exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:title,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 				plotOptions : {
 					 spline: {  
@@ -1977,11 +1980,11 @@ function URLencode(sStr){
 	return encodeURI(sStr).replace(/\+/g, '%2B').replace(/\"/g,'%22').replace(/\'/g, '%27').replace(/\//g,'%2F').replace(/\#/g,'%23'); 
 }
 
-function initContinuousDiagramChart(pointdata, divid,title,subtitle,xtext,ytext,color) {
+function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,color) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
-		            renderTo : divid,
+		            renderTo : divId,
 		            borderWidth : 0,
 		            zoomType: 'xy',
 		            reflow: true
@@ -2022,8 +2025,9 @@ function initContinuousDiagramChart(pointdata, divid,title,subtitle,xtext,ytext,
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:title,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {
 		        	itemStyle:{
@@ -2132,7 +2136,7 @@ function loadElectricAnalysisData() {
 	}
 }
 
-showRealtimeWorkStastPieChart = function(store, divid,title,name) {
+showRealtimeWorkStastPieChart = function(store, divId,title,name) {
 	var list=store.proxy.reader.rawData.list;
 	var series = "[";
 	if(list!=undefined && list.length>0){
@@ -2149,7 +2153,7 @@ showRealtimeWorkStastPieChart = function(store, divid,title,name) {
 	}
 	series += "]";
 	var data = Ext.JSON.decode(series);
-	initRealtimeWorkStastPieChart(title, name, data, divid);
+	initRealtimeWorkStastPieChart(title, name, data, divId);
 	return false;
 }
 
@@ -2454,8 +2458,9 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
         },
         exporting: {
             enabled: true,
-            filename: 'class-booking-chart',
-            url: context + '/exportHighcharsPicController/export'
+            filename: title,
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
         },
         plotOptions: {
             spline: {
@@ -2606,7 +2611,7 @@ function getDateAndTime(dateStr,h,m,s){
 	return dateStr+' '+hStr+":"+mStr+':'+sStr;
 };
 
-showSurfaceCard = function(result, divid) {
+showSurfaceCard = function(result, divId) {
     var positionCurveData=result.positionCurveData.split(","); 
     var loadCurveData=result.loadCurveData.split(",");
 	var data = "["; // 功图data
@@ -2620,14 +2625,14 @@ showSurfaceCard = function(result, divid) {
 	data+="]";
 	var pointdata = Ext.JSON.decode(data);
 //	var pointdata = JSON.parse(data);
-	initSurfaceCardChart(pointdata, result, divid);
+	initSurfaceCardChart(pointdata, result, divId);
 	return false;
 }
 
 /* 
  * 在泵功图中提取光杆功图
  */
-showFSDiagramFromPumpcard = function(result, divid) {
+showFSDiagramFromPumpcard = function(result, divId) {
 	var pumpFSDiagramData=result.pumpFSDiagramData.split("#")[0];
     var gt=pumpFSDiagramData.split(","); // 功图数据：功图点数，位移1，载荷1，位移2，载荷2...
     var gtcount=(gt.length)/2; // 功图点数
@@ -2703,11 +2708,11 @@ showFSDiagramFromPumpcard = function(result, divid) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initSurfaceCardChart(pointdata,result, divid);
+	initSurfaceCardChart(pointdata,result, divId);
 	return false;
 }
 
-function initSurfaceCardChart(pointdata, gtdata, divid) {
+function initSurfaceCardChart(pointdata, gtdata, divId) {
 	var wellName=gtdata.wellName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	var upperLoadLine=gtdata.upperLoadLine;   // 理论上载荷
@@ -2742,7 +2747,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
     }
 	mychart = new Highcharts.Chart({
 				chart: {
-		            renderTo : divid,
+		            renderTo : divId,
 		            zoomType: 'xy',
 		            borderWidth : 0,
 		            reflow: true
@@ -2787,8 +2792,9 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:wellName+'-'+acqTime+'-光杆功图',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:wellName+'光杆功图-'+acqTime,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {                                                                            
 		            layout: 'vertical',                                                              
@@ -2867,7 +2873,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 	});
 }
 
-showRodPress = function(result, divid) {
+showRodPress = function(result, divId) {
 	var wellName=result.wellName;                        // 井名
 	var acqTime=result.acqTime;                    // 时间
 	var rodStressRatio1=changeTwoDecimal(parseFloat(result.rodStressRatio1)*100);              // 一级应力百分比
@@ -2900,15 +2906,15 @@ showRodPress = function(result, divid) {
 	ydata+="]";
 	var xdata2 = Ext.JSON.decode(xdata);
 	var ydata2 = Ext.JSON.decode(ydata);
-	initRodPressChart(xdata2, ydata2, wellName, acqTime, divid);
+	initRodPressChart(xdata2, ydata2, wellName, acqTime, divId);
 	return false;
 }
 
-function initRodPressChart(xdata, ydata, wellName, acqTime, divid) {
+function initRodPressChart(xdata, ydata, wellName, acqTime, divId) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'column',                      // 柱状图
-		            renderTo : divid,                    // 图形放置的位置
+		            renderTo : divId,                    // 图形放置的位置
 		            zoomType: 'xy',                    // 沿xy轴放大
 		            borderWidth : 0,
 		            options3d: {                         // 3D效果
@@ -2969,8 +2975,9 @@ function initRodPressChart(xdata, ydata, wellName, acqTime, divid) {
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:wellName+"杆柱应力-"+acqTime,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {                                                                            
 		            enabled: false
@@ -3019,7 +3026,7 @@ function SetEveryOnePointColor(chart) {      // 设置每一个数据点的颜�
     }
 }
 
-showPumpCard = function(result,divid) {
+showPumpCard = function(result,divId) {
 	var color=new Array("#00ff00","#ff0000","#ff8000","#ff06c5","#0000ff"); // 线条颜色
 	var wellName=result.wellName;                        // 井名
 	var acqTime=result.acqTime;                    // 时间
@@ -3049,15 +3056,15 @@ showPumpCard = function(result,divid) {
 	series+="]";
 	var pointdata = Ext.JSON.decode(series);
 	title = cosog.string.pumpFSDiagram;  // 泵功图
-	initMultiSurfaceCardChart(pointdata, title, wellName, acqTime, divid);
+	initMultiSurfaceCardChart(pointdata, title, wellName, acqTime, divId);
 	return false;
 }
 
-function initMultiSurfaceCardChart(series, title, wellName, acqTime, divid,upperLoadLine,lowerLoadLine) {
+function initMultiSurfaceCardChart(series, title, wellName, acqTime, divId,upperLoadLine,lowerLoadLine) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',
-		            renderTo : divid,
+		            renderTo : divId,
 		            borderWidth : 0,
 		            zoomType: 'xy'
 		        },                                                                                   
@@ -3119,8 +3126,9 @@ function initMultiSurfaceCardChart(series, title, wellName, acqTime, divid,upper
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:wellName+"泵功图-"+acqTime,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {                                                                            
 		            layout: 'vertical',                                                              
@@ -3161,7 +3169,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acqTime, divid,upper
 	});
 }
 
-showPumpEfficiency = function(bxzcData, divid) {
+showPumpEfficiency = function(bxzcData, divId) {
 	var wellName=bxzcData.wellName;           // 井名
 	var acqTime=bxzcData.acqTime;       // 时间
 	var pumpEff1=bxzcData.pumpEff1;   // 冲程损失系数
@@ -3173,12 +3181,12 @@ showPumpEfficiency = function(bxzcData, divid) {
 		ydata="[]";
 	}
 	ydata = Ext.JSON.decode(ydata);
-	initPumpEfficiencyChart(ydata, wellName, acqTime, divid);
+	initPumpEfficiencyChart(ydata, wellName, acqTime, divId);
 	return false;
 }
 
-function initPumpEfficiencyChart(ydata, wellName, acqTime, divid, title, yname) {
-	$('#'+divid).highcharts({
+function initPumpEfficiencyChart(ydata, wellName, acqTime, divId, title, yname) {
+	$('#'+divId).highcharts({
 				chart: {                                                                             
 		            type: 'column',      
 		            borderWidth : 0,
@@ -3215,8 +3223,9 @@ function initPumpEfficiencyChart(ydata, wellName, acqTime, divid, title, yname) 
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:wellName+"泵效组成-"+acqTime,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {                                                                            
 		            enabled: false
@@ -3242,7 +3251,7 @@ function initPumpEfficiencyChart(ydata, wellName, acqTime, divid, title, yname) 
     });
 }
 
-showPSDiagram = function(result, divid,title) {
+showPSDiagram = function(result, divId,title) {
 	if (!isNotVal(title)){
 		title='电功图';
 	}
@@ -3328,17 +3337,17 @@ showPSDiagram = function(result, divid,title) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divid,title,xtext,"有功功率(kW)",['#FF6633','#009999']);
+	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,"有功功率(kW)",['#FF6633','#009999']);
 	return false;
 }
 
-function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid,title,xtext,ytext,color) {
+function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color) {
 	var wellName=gtdata.wellName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
-		            renderTo : divid,
+		            renderTo : divId,
 		            borderWidth : 0,
 		            zoomType: 'xy',
 		            reflow: true
@@ -3379,8 +3388,9 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename: wellName+''+title+'-'+acqTime,
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {
 		        	itemStyle:{
@@ -3432,7 +3442,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid
 	});
 }
 
-showASDiagram = function(result, divid,title) {
+showASDiagram = function(result, divId,title) {
 	if (!isNotVal(title)){
 		title='电流图';
 	}
@@ -3520,17 +3530,17 @@ showASDiagram = function(result, divid,title) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divid,title,xtext,"电流(A)",['#CC0000','#0033FF']);
+	initASDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,"电流(A)",['#CC0000','#0033FF']);
 	return false;
 }
 
-function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid,title,xtext,ytext,color) {
+function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color) {
 	var wellName=gtdata.wellName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
-		            renderTo : divid,
+		            renderTo : divId,
 		            borderWidth : 0,
 		            zoomType: 'xy',
 		            reflow: true
@@ -3571,8 +3581,9 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename: wellName+''+title+'-'+acqTime,   
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {
 		        	itemStyle:{
@@ -3624,7 +3635,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid
 	});
 }
 
-showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balanceTorque,netTorque,title,subtitle,divId) {
+showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balanceTorque,netTorque,title,wellName,acqTime,divId) {
 	var crankAngleArr=crankAngle.split(",");
 	var loadRorqueArr=loadRorque.split(",");
 	var crankTorqueArr=crankTorque.split(",");
@@ -3665,11 +3676,11 @@ showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balan
     
     var cat1 = Ext.JSON.decode(catagories1);
 	var ser1 = Ext.JSON.decode(series1);
-	initBalanceCurveChart(cat1,ser1, divId,title,subtitle,"扭矩(kN*m)","曲柄转角(°)");
+	initBalanceCurveChart(cat1,ser1, divId,title,wellName,acqTime,"扭矩(kN*m)","曲柄转角(°)");
 	return false;
 }
 
-function initBalanceCurveChart(catagories,series,divId,title,subtitle,ytext,xtext) {
+function initBalanceCurveChart(catagories,series,divId,title,wellName,acqTime,ytext,xtext) {
 	$('#'+divId).highcharts({
 				chart : {
 //					renderTo : divId,
@@ -3678,6 +3689,12 @@ function initBalanceCurveChart(catagories,series,divId,title,subtitle,ytext,xtex
 					borderWidth : 0,
 					zoomType : 'xy'
 				},
+				exporting:{ 
+		            enabled:true,    
+		            filename: wellName+''+title+'-'+acqTime,   
+		            sourceWidth: $("#"+divId)[0].offsetWidth,
+		            sourceHeight: $("#"+divId)[0].offsetHeight
+				},
 				credits : {
 					enabled : false
 				},
@@ -3685,7 +3702,7 @@ function initBalanceCurveChart(catagories,series,divId,title,subtitle,ytext,xtex
 					text : title
 				},
 				subtitle: {
-		        	text: subtitle                                                      
+					text: wellName+' ['+acqTime+']'                                                  
 		        },
 				colors : ['#000000',// 黑
 						'#0000FF',// 蓝
@@ -4115,7 +4132,7 @@ function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,yt
 /* 
  * 拼接叠加功图曲线数据
  */
-showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
+showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	var color=new Array("#000000","#00ff00"); // 线条颜色
 	var list=get_rawData.totalRoot;
 	var upperLoadLine=null;
@@ -4234,19 +4251,19 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
     	upperlimit=null;
     }
     if(diagramType===0){//如果是功图
-    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax);
+    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.wellName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax);
 	}else {
-		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.wellName, get_rawData.calculateDate, divid);
+		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.wellName, get_rawData.calculateDate, divId);
 	}
 	
 	return false;
 }
 
-function initFSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax) {
+function initFSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
-		            renderTo : divid,
+		            renderTo : divId,
 		            borderWidth : 0,
 		            zoomType: 'xy'
 		        },                                                                                   
@@ -4288,8 +4305,9 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTi
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:title,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {                                                                            
 		            layout: 'vertical',                                                              
@@ -4330,11 +4348,11 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTi
 	});
 }
 
-function initPSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTime, divid) {
+function initPSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTime, divId) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
-		            renderTo : divid,
+		            renderTo : divId,
 		            borderWidth : 0,
 		            zoomType: 'xy'
 		        },                                                                                   
@@ -4373,8 +4391,9 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTi
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:'class-booking-chart',    
-                    url:context + '/exportHighcharsPicController/export'
+                    filename:title,    
+                    sourceWidth: $("#"+divId)[0].offsetWidth,
+                    sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {
 		            enabled: false

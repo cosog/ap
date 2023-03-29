@@ -763,7 +763,8 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
         exporting: {
             enabled: true,
             filename: title,
-            url: context + '/exportHighcharsPicController/export'
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
         },
         plotOptions: {
             spline: {

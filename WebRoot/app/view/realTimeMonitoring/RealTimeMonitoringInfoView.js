@@ -435,8 +435,9 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
         },
         exporting: {
             enabled: true,
-            filename: 'class-booking-chart',
-            url: context + '/exportHighcharsPicController/export'
+            filename: title,
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
         },
         plotOptions: {
             spline: {
@@ -612,7 +613,7 @@ function loadAndInitFESdiagramResultStat(all){
 }
 
 function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
-	var divid="RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id";
+	var divId="RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id";
 	
 	var title="工况诊断";
 	var datalist=get_rawData.totalRoot;
@@ -628,11 +629,11 @@ function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	var colors=[];
 	
-	ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divid, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, "设备数占", pieData,colors);
 };
 
-function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divid, name, data,colors) {
-	Highcharts.chart(divid, {
+function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, name, data,colors) {
+	Highcharts.chart(divId, {
 		chart : {
 			plotBackgroundColor : null,
 			plotBorderWidth : null,
@@ -696,8 +697,9 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divid, nam
 		},
 		exporting:{ 
             enabled:true,    
-            filename:'class-booking-chart',    
-            url:context + '/exportHighcharsPicController/export'
+            filename:title,   
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
 		},
 		series : [{
 					type : 'pie',
@@ -761,13 +763,13 @@ function loadAndInitCommStatusStat(all){
 
 
 function initRealTimeMonitoringStatPieOrColChat(get_rawData) {
-	var divid="RPCRealTimeMonitoringStatGraphPanelPieDiv_Id";
+	var divId="RPCRealTimeMonitoringStatGraphPanelPieDiv_Id";
 	var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 	var activeId = tabPanel.getActiveTab().id;
 	if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
-		divid="RPCRealTimeMonitoringStatGraphPanelPieDiv_Id";
+		divId="RPCRealTimeMonitoringStatGraphPanelPieDiv_Id";
 	}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
-		divid="PCPRealTimeMonitoringStatGraphPanelPieDiv_Id";
+		divId="PCPRealTimeMonitoringStatGraphPanelPieDiv_Id";
 	}
 	var title="通信状态";
 	var datalist=get_rawData.totalRoot;
@@ -792,11 +794,11 @@ function initRealTimeMonitoringStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowRealTimeMonitoringStatPieOrColChat(title,divid, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringStatPieOrColChat(title,divId, "设备数占", pieData,colors);
 };
 
-function ShowRealTimeMonitoringStatPieOrColChat(title,divid, name, data,colors) {
-	Highcharts.chart(divid, {
+function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) {
+	Highcharts.chart(divId, {
 		chart : {
 			plotBackgroundColor : null,
 			plotBorderWidth : null,
@@ -874,8 +876,9 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divid, name, data,colors) 
 		},
 		exporting:{ 
             enabled:true,    
-            filename:'class-booking-chart',    
-            url:context + '/exportHighcharsPicController/export'
+            filename:title,  
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
 		},
 		series : [{
 					type : 'pie',
@@ -937,13 +940,13 @@ function loadAndInitRunStatusStat(all){
 
 
 function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
-	var divid="RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
+	var divId="RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
 	var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 	var activeId = tabPanel.getActiveTab().id;
 	if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
-		divid="RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
+		divId="RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
 	}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
-		divid="PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
+		divId="PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
 	}
 	var title="运行状态";
 	var datalist=get_rawData.totalRoot;
@@ -968,11 +971,11 @@ function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divid, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, "设备数占", pieData,colors);
 };
 
-function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divid, name, data,colors) {
-	Highcharts.chart(divid, {
+function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data,colors) {
+	Highcharts.chart(divId, {
 		chart : {
 			plotBackgroundColor : null,
 			plotBorderWidth : null,
@@ -1050,8 +1053,9 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divid, name, data
 		},
 		exporting:{ 
             enabled:true,    
-            filename:'class-booking-chart',    
-            url:context + '/exportHighcharsPicController/export'
+            filename:title,  
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
 		},
 		series : [{
 					type : 'pie',
@@ -1109,12 +1113,12 @@ function loadAndInitDeviceTypeStat(all){
 };
 
 function initRealTimeMonitoringDeviceTypeStatPieOrColChat(get_rawData) {
-	var divid="RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id";
+	var divId="RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id";
 	var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 	if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
-		divid="RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id";
+		divId="RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id";
 	}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
-		divid="PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id";
+		divId="PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id";
 	}
 	var title="设备类型";
 	var datalist=get_rawData.totalRoot;
@@ -1130,11 +1134,11 @@ function initRealTimeMonitoringDeviceTypeStatPieOrColChat(get_rawData) {
 	pieDataStr+="]";
 	var pieData = Ext.JSON.decode(pieDataStr);
 	var colors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
-	ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divid, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, "设备数占", pieData,colors);
 };
 
-function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divid, name, data,colors) {
-	Highcharts.chart(divid, {
+function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,colors) {
+	Highcharts.chart(divId, {
 		chart : {
 			plotBackgroundColor : null,
 			plotBorderWidth : null,
@@ -1212,8 +1216,9 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divid, name, data,col
 		},
 		exporting:{ 
             enabled:true,    
-            filename:'class-booking-chart',    
-            url:context + '/exportHighcharsPicController/export'
+            filename:title,    
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
 		},
 		series : [{
 					type : 'pie',
@@ -1481,8 +1486,9 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
         },
         exporting: {
             enabled: true,
-            filename: 'class-booking-chart',
-            url: context + '/exportHighcharsPicController/export'
+            filename: title,
+            sourceWidth: $("#"+divId)[0].offsetWidth,
+            sourceHeight: $("#"+divId)[0].offsetHeight
         },
         plotOptions: {
             spline: {

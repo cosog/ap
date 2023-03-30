@@ -623,26 +623,40 @@ var PCPProductionDailyReportHelper = {
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(pcpProductionDailyReportHelper!=null&&pcpProductionDailyReportHelper.hot!=''&&pcpProductionDailyReportHelper.hot!=undefined && pcpProductionDailyReportHelper.hot.getDataAtCell!=undefined){
-	                		var rawVvalue=pcpProductionDailyReportHelper.sourceData[coords.row][coords.col];
+	                		var rawValue=pcpProductionDailyReportHelper.sourceData[coords.row][coords.col];
 	                		if(coords.row>=pcpProductionDailyReportHelper.templateData.header.length){
-//	                			TD.outerHTML='<span data-qtip="'+value+'" data-dismissDelay=10000>'+TD.innerText+'</span>';
-//	                			alert(value);
-	                			if(isNotVal(rawVvalue)){
+	                			if(isNotVal(rawValue)){
+	                				var showValue=rawValue;
+	            					var rowChar=90;
+	            					var maxWidth=rowChar*10;
+	            					if(rawValue.length>rowChar){
+	            						showValue='';
+	            						let arr = [];
+	            						let index = 0;
+	            						while(index<rawValue.length){
+	            							arr.push(rawValue.slice(index,index +=rowChar));
+	            						}
+	            						for(var i=0;i<arr.length;i++){
+	            							showValue+=arr[i];
+	            							if(i<arr.length-1){
+	            								showValue+='<br>';
+	            							}
+	            						}
+	            					}
 	                				if(!isNotVal(TD.tip)){
 	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
 			                			    target: event.target,
-			                			    html: rawVvalue,
+			                			    maxWidth:maxWidth,
+			                			    html: showValue,
 			                			    listeners: {
 			                			    	hide: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	},
 			                                	close: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	}
 			                                }
 			                			});
 	                				}else{
-	                					TD.tip.setHtml(rawVvalue);
+	                					TD.tip.setHtml(showValue);
 	                				}
 	                			}
 	                		}

@@ -48,7 +48,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <!--<fmt:setBundle basename="config/messages" />-->
-    <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303241330"></script>
+    <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303300850"></script>
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
@@ -62,19 +62,19 @@
     <title><%=viewProjectName%></title>
     <!-- 链接外部图标，如：中石油、中石化 -->
     <%if(showLogo){ %>
-	<link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303241330" />
-	<link rel="icon" href="<%=path+favicon%>?timestamp=202303241330" type="image/x-icon" />
-	<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202303241330" type="image/x-icon" />
+	<link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303300850" />
+	<link rel="icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
+	<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
 	<%} %>
     <!-- 链接css -->
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css?timestamp=202303241330" type="text/css" />
+    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css?timestamp=202303300850" type="text/css" />
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap-select.min.css?timestamp=20220622805"" type="text/css" />
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=202303241330" type="text/css" />
-    <link rel="stylesheet" href="<%=path+loginCSS%>?timestamp=202303241330" type="text/css"/>
+    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=202303300850" type="text/css" />
+    <link rel="stylesheet" href="<%=path+loginCSS%>?timestamp=202303300850" type="text/css"/>
 
     <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=202212051400"></script>
-    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=202303241330"></script>
-    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=202303241330"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=202303300850"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=202303300850"></script>
     
 
 	<script>

@@ -1457,7 +1457,7 @@ public class DriverAPIController extends BaseController{
 								
 								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 									String saveValue=rawValue;
-									if(rawValue.length()>50){
+									if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
 										saveValue=rawValue.substring(0, 50);
 									}
 									updateRealtimeData+=",t."+columnName+"='"+saveValue+"'";
@@ -2803,7 +2803,7 @@ public class DriverAPIController extends BaseController{
 								
 								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 									String saveValue=rawValue;
-									if(rawValue.length()>50){
+									if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
 										saveValue=rawValue.substring(0, 50);
 									}
 									updateRealtimeData+=",t."+columnName+"='"+saveValue+"'";

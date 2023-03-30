@@ -519,24 +519,40 @@ var PCPSingleWellDailyReportHelper = {
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(pcpSingleWellDailyReportHelper!=null&&pcpSingleWellDailyReportHelper.hot!=''&&pcpSingleWellDailyReportHelper.hot!=undefined && pcpSingleWellDailyReportHelper.hot.getDataAtCell!=undefined){
-	                		var rawVvalue=pcpSingleWellDailyReportHelper.sourceData[coords.row][coords.col];
+	                		var rawValue=pcpSingleWellDailyReportHelper.sourceData[coords.row][coords.col];
 	                		if(coords.row>=pcpSingleWellDailyReportHelper.templateData.header.length){
-	                			if(isNotVal(rawVvalue)){
+	                			if(isNotVal(rawValue)){
+	                				var showValue=rawValue;
+	            					var rowChar=90;
+	            					var maxWidth=rowChar*10;
+	            					if(rawValue.length>rowChar){
+	            						showValue='';
+	            						let arr = [];
+	            						let index = 0;
+	            						while(index<rawValue.length){
+	            							arr.push(rawValue.slice(index,index +=rowChar));
+	            						}
+	            						for(var i=0;i<arr.length;i++){
+	            							showValue+=arr[i];
+	            							if(i<arr.length-1){
+	            								showValue+='<br>';
+	            							}
+	            						}
+	            					}
 	                				if(!isNotVal(TD.tip)){
 	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
 			                			    target: event.target,
-			                			    html: rawVvalue,
+			                			    maxWidth:maxWidth,
+			                			    html: showValue,
 			                			    listeners: {
 			                			    	hide: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	},
 			                                	close: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	}
 			                                }
 			                			});
 	                				}else{
-	                					TD.tip.setHtml(rawVvalue);
+	                					TD.tip.setHtml(showValue);
 	                				}
 	                			}
 	                		}

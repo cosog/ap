@@ -21,10 +21,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><%=viewProjectName%></title>
     <%if(showLogo){ %>
-    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303241330" />
-    <link rel="icon" href="<%=path+favicon%>?timestamp=202303241330" type="image/x-icon" />
-    <link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202303241330" type="image/x-icon" />
-    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303241330" type="image/x-icon" />
+    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303300850" />
+    <link rel="icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
+    <link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
+    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
     <%} %>
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">

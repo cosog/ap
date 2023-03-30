@@ -621,21 +621,37 @@ var SingleWellReportTemplateContentHandsontableHelper = {
 	                		if(coords.col==2){
 	                			var remark=singleWellReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,10);
 	                			if(isNotVal(remark)){
+	                				var showValue=remark;
+	            					var rowChar=90;
+	            					var maxWidth=rowChar*10;
+	            					if(remark.length>rowChar){
+	            						showValue='';
+	            						let arr = [];
+	            						let index = 0;
+	            						while(index<remark.length){
+	            							arr.push(remark.slice(index,index +=rowChar));
+	            						}
+	            						for(var i=0;i<arr.length;i++){
+	            							showValue+=arr[i];
+	            							if(i<arr.length-1){
+	            								showValue+='<br>';
+	            							}
+	            						}
+	            					}
 	                				if(!isNotVal(TD.tip)){
 	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
 			                			    target: event.target,
-			                			    html: remark,
+			                			    maxWidth:maxWidth,
+			                			    html: showValue,
 			                			    listeners: {
 			                			    	hide: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	},
 			                                	close: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	}
 			                                }
 			                			});
 	                				}else{
-	                					TD.tip.setHtml(remark);
+	                					TD.tip.setHtml(showValue);
 	                				}
 	                			}
 	                		}
@@ -1115,21 +1131,37 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                		if(coords.col==2){
 	                			var remark=productionReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,13);
 	                			if(isNotVal(remark)){
+	                				var showValue=remark;
+	            					var rowChar=90;
+	            					var maxWidth=rowChar*10;
+	            					if(remark.length>rowChar){
+	            						showValue='';
+	            						let arr = [];
+	            						let index = 0;
+	            						while(index<remark.length){
+	            							arr.push(remark.slice(index,index +=rowChar));
+	            						}
+	            						for(var i=0;i<arr.length;i++){
+	            							showValue+=arr[i];
+	            							if(i<arr.length-1){
+	            								showValue+='<br>';
+	            							}
+	            						}
+	            					}
 	                				if(!isNotVal(TD.tip)){
 	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
 			                			    target: event.target,
-			                			    html: remark,
+			                			    maxWidth:maxWidth,
+			                			    html: showValue,
 			                			    listeners: {
 			                			    	hide: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	},
 			                                	close: function (thisTip, eOpts) {
-//			                			    		thisTip.destroy();
 			                                	}
 			                                }
 			                			});
 	                				}else{
-	                					TD.tip.setHtml(remark);
+	                					TD.tip.setHtml(showValue);
 	                				}
 	                			}
 	                		}

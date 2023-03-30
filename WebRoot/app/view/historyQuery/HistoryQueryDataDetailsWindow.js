@@ -264,25 +264,43 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(deviceHistoryQueryDataHandsontableHelper!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=''&&deviceHistoryQueryDataHandsontableHelper.hot!=undefined && deviceHistoryQueryDataHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var record=deviceHistoryQueryDataHandsontableHelper.sourceData[coords.row];
-	                		var rawVvalue='';
+	                		var rawValue='';
 	                		if(coords.col==0){
-	                			rawVvalue=record.name1;
+	                			rawValue=record.name1;
 	                		}else if(coords.col==1){
-	                			rawVvalue=record.value1;
+	                			rawValue=record.value1;
 	                		}else if(coords.col==2){
-	                			rawVvalue=record.name2;
+	                			rawValue=record.name2;
 	                		}else if(coords.col==3){
-	                			rawVvalue=record.value2;
+	                			rawValue=record.value2;
 	                		}else if(coords.col==4){
-	                			rawVvalue=record.name3;
+	                			rawValue=record.name3;
 	                		}else if(coords.col==5){
-	                			rawVvalue=record.value3;
+	                			rawValue=record.value3;
 	                		}
-                			if(isNotVal(rawVvalue)){
+                			if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
                 				if(!isNotVal(TD.tip)){
                 					TD.tip = Ext.create('Ext.tip.ToolTip', {
 		                			    target: event.target,
-		                			    html: rawVvalue,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
 		                			    listeners: {
 		                			    	hide: function (thisTip, eOpts) {
 		                                	},
@@ -291,7 +309,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 		                                }
 		                			});
                 				}else{
-                					TD.tip.setHtml(rawVvalue);
+                					TD.tip.setHtml(showValue);
                 				}
                 			}
 	                	}

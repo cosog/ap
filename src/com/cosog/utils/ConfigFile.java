@@ -155,6 +155,8 @@ public class ConfigFile {
 	    private String helpButtonIcon;
 	    
 	    private String exitButtonIcon;
+	    
+	    private String staticResourceTimestamp;
 
 	    public void setTitle(String title){
 	        this.title = title;
@@ -227,6 +229,12 @@ public class ConfigFile {
 		}
 		public void setExitButtonIcon(String exitButtonIcon) {
 			this.exitButtonIcon = exitButtonIcon;
+		}
+		public String getStaticResourceTimestamp() {
+			return staticResourceTimestamp;
+		}
+		public void setStaticResourceTimestamp(String staticResourceTimestamp) {
+			this.staticResourceTimestamp = staticResourceTimestamp;
 		}
 	}
 	
@@ -336,6 +344,8 @@ public class ConfigFile {
 	    private int sendCycle;
 	    
 	    private int timeDifference;
+	    
+	    private String otherStaticResourceTimestamp;
 
 	    public void setCache(boolean cache){
 	        this.cache = cache;
@@ -438,6 +448,12 @@ public class ConfigFile {
 		}
 		public void setOnlyMonitor(boolean onlyMonitor) {
 			this.onlyMonitor = onlyMonitor;
+		}
+		public String getOtherStaticResourceTimestamp() {
+			return otherStaticResourceTimestamp;
+		}
+		public void setOtherStaticResourceTimestamp(String otherStaticResourceTimestamp) {
+			this.otherStaticResourceTimestamp = otherStaticResourceTimestamp;
 		}
 	}
 	

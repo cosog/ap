@@ -12,6 +12,8 @@
    	String bannerCSS=(String)session.getAttribute("bannerCSS");
    	bannerCSS=bannerCSS.substring(bannerCSS.indexOf("/"),bannerCSS.length());
    	boolean showLogo=(boolean)session.getAttribute("showLogo");
+   	String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
+	String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
    	request.setAttribute("browserLang",browserLang );
 %>
 <html>
@@ -21,10 +23,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><%=viewProjectName%></title>
     <%if(showLogo){ %>
-    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303300850" />
-    <link rel="icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
-    <link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
-    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
+    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=<%=oemStaticResourceTimestamp%>" />
+    <link rel="icon" href="<%=path+favicon%>?timestamp=<%=oemStaticResourceTimestamp%>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<%=path+favicon%>?timestamp=<%=oemStaticResourceTimestamp%>" type="image/x-icon" />
+    <link rel="Bookmark" href="<%=path+favicon%>?timestamp=<%=oemStaticResourceTimestamp%>" type="image/x-icon" />
     <%} %>
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
@@ -53,6 +55,9 @@
         var pcpHidden = ${ configFile}.ap.others.pcpHidden;
         var onlyMonitor = ${configFile}.ap.others.onlyMonitor;
         var showLogo = ${configFile}.ap.others.showLogo;
+        
+        var oemStaticResourceTimestamp = ${configFile}.ap.oem.staticResourceTimestamp;
+        var otherStaticResourceTimestamp = ${configFile}.ap.others.otherStaticResourceTimestamp;
 
         var defaultComboxSize = ${configFile}.ap.others.defaultComboxSize;
         var defaultGraghSize = ${configFile}.ap.others.defaultGraghSize;
@@ -69,8 +74,8 @@
         }
 
         function initBannerDisplayInformation() {
-            $("#banner_exit").css("background", "url(" + helpButtonIcon + ")  no-repeat");
-            $("#banner_help").css("background", "url(" + exitButtonIcon + ")  no-repeat");
+            $("#banner_exit").css("background", "url(" + helpButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+            $("#banner_help").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
         }
 
     </script>

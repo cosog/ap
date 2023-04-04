@@ -11,7 +11,7 @@ Ext.define('AP.view.Viewport', {
             bodyStyle: {
                 'z-index': 10
             },
-            html: '<div id="bannerDiv"><img id="bannerLogoImg" ' + (showLogo ? '' : 'style="display:none;"') + ' src="' + bannerLogoImg + '?timestamp=202303300850" /><span id="bannerTitle">' + oem.title + '</span>' +
+            html: '<div id="bannerDiv"><img id="bannerLogoImg" ' + (showLogo ? '' : 'style="display:none;"') + ' src="' + bannerLogoImg + '?timestamp='+oemStaticResourceTimestamp+'" /><span id="bannerTitle">' + oem.title + '</span>' +
                 "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='userLoginOut()'><span id='banner_exit_text'>退出</span></a></div>" +
                 "<div id='bannerToolbar'><a href='#' id='banner_help' onclick='showHelpDocumentWinFn()'><span id='banner_help_text'>帮助</span></a></div>" +
                 "</div>"

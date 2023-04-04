@@ -2993,7 +2993,16 @@ public class BaseDao extends HibernateDaoSupport {
 			
 			cs.setString(6,calculateRequestData.getFESDiagram().getAcqTime());
 			cs.setInt(7, calculateRequestData.getFESDiagram().getSrc());
-			cs.setString(8,calculateRequestData.getFESDiagram().getStroke()+"");
+			
+			if(calculateResponseData!=null
+					&&calculateResponseData.getCalculationStatus().getResultStatus()==1
+					&&calculateResponseData.getCalculationStatus().getResultCode()!=1232
+					&&calculateResponseData.getFESDiagram()!=null){
+				cs.setString(8,calculateResponseData.getFESDiagram().getStroke()+"");
+			}else{
+				cs.setString(8,calculateRequestData.getFESDiagram().getStroke()+"");
+			}
+			
 			cs.setString(9,calculateRequestData.getFESDiagram().getSPM()+"");
 			
 			cs.setClob(10,diagramClob_S);

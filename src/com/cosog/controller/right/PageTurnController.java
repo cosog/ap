@@ -57,6 +57,8 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
 		session.setAttribute("loginCSS", configFile.getAp().getOem().getLoginCSS());
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
+		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
+		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
 		return "Login";
 	}
 	@RequestMapping("/toTouchLogin")
@@ -75,6 +77,8 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
 		session.setAttribute("bannerCSS", configFile.getAp().getOem().getBannerCSS());
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
+		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
+		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
 		return "app/main";
 	}
 	@RequestMapping("/toTouchMain")

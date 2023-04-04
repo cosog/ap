@@ -15,6 +15,9 @@
 	loginCSS=loginCSS.substring(loginCSS.indexOf("/"),loginCSS.length());
 	
 	boolean showLogo=(boolean)session.getAttribute("showLogo");
+	
+	String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
+	String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
 	try{
 		Cookie[] cookies=request.getCookies();
 		System.out.println(cookies.length);
@@ -62,19 +65,19 @@
     <title><%=viewProjectName%></title>
     <!-- 链接外部图标，如：中石油、中石化 -->
     <%if(showLogo){ %>
-	<link rel="Bookmark" href="<%=path+favicon%>?timestamp=202303300850" />
-	<link rel="icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
-	<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=202303300850" type="image/x-icon" />
+	<link rel="Bookmark" href="<%=path+favicon%>?timestamp=<%=oemStaticResourceTimestamp%>>" />
+	<link rel="icon" href="<%=path+favicon%>?timestamp=<%=oemStaticResourceTimestamp%>" type="image/x-icon" />
+	<link rel="shortcut icon" href="<%=path+favicon%>?timestamp=<%=oemStaticResourceTimestamp%>" type="image/x-icon" />
 	<%} %>
     <!-- 链接css -->
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css?timestamp=202303300850" type="text/css" />
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap-select.min.css?timestamp=20220622805"" type="text/css" />
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=202303300850" type="text/css" />
-    <link rel="stylesheet" href="<%=path+loginCSS%>?timestamp=202303300850" type="text/css"/>
+    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css" />
+    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap-select.min.css?timestamp=<%=otherStaticResourceTimestamp%>"" type="text/css" />
+    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css" />
+    <link rel="stylesheet" href="<%=path+loginCSS%>?timestamp=<%=oemStaticResourceTimestamp%>" type="text/css"/>
 
-    <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=202212051400"></script>
-    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=202303300850"></script>
-    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=202303300850"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     
 
 	<script>

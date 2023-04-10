@@ -25,12 +25,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
                 fieldLabel: '序号',
                 id: 'formModbusProtocol_Id',
                 anchor: '100%',
-                name: "modbusProtocol.id"
+                name: "protocolModel.id"
             },{
 				xtype : "hidden",
 				id : 'modbusProtocolDeviceType_Id',
 				value:'0',
-				name : "modbusProtocol.deviceType"
+				name : "protocolModel.deviceType"
 			},{
             	xtype : "combobox",
 				fieldLabel : '设备类型<font color=red>*</font>',
@@ -58,7 +58,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
 				}
             }, {
                 id: 'formModbusProtocolName_Id',
-                name: "modbusProtocol.name",
+                name: "protocolModel.name",
                 fieldLabel: '协议名称<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
@@ -96,7 +96,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
             }, {
             	xtype: 'numberfield',
             	id: "modbusProtocolSort_Id",
-                name: 'modbusProtocol.sort',
+                name: 'protocolModel.sort',
                 fieldLabel: '排序',
                 allowBlank: true,
                 minValue: 1,

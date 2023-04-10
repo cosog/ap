@@ -39,6 +39,7 @@ import com.cosog.model.Module;
 import com.cosog.model.ProtocolAlarmInstance;
 import com.cosog.model.ProtocolDisplayInstance;
 import com.cosog.model.ProtocolInstance;
+import com.cosog.model.ProtocolModel;
 import com.cosog.model.ProtocolReportInstance;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
@@ -143,6 +144,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	private AcquisitionUnitManagerService<RunStatusConfig> runStatusConfigManagerService;
 	
 	@Autowired
+	private AcquisitionUnitManagerService<ProtocolModel> protocolModelManagerService;
+	
+	@Autowired
 	private CommonDataService service;
 	
 	private AcquisitionUnit acquisitionUnit;
@@ -223,6 +227,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public void initBinder11(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("protocolReportInstance.");
 	}
+	
+	//添加绑定前缀 
+	@InitBinder("protocolModel")
+	public void initBinder12(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("protocolModel.");
+	}
 
 	/**<p>描述：采集类型数据显示方法</p>
 	 * @return
@@ -254,64 +264,33 @@ public class AcquisitionUnitManagerController extends BaseController {
 	}
 	
 	@RequestMapping("/doModbusProtocolAdd")
-	public String doModbusProtocolAdd() throws IOException {
+	public String doModbusProtocolAdd(@ModelAttribute ProtocolModel protocolModel) throws IOException {
 		String result = "";
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
-		String fileName="modbus.json";
-		String path=stringManagerUtils.getFilePath(fileName,"protocol/");
+//		String fileName="modbus.json";
+//		String path=stringManagerUtils.getFilePath(fileName,"protocol/");
 		PrintWriter out = response.getWriter();
 		try {
-			String name = ParamUtils.getParameter(request, "modbusProtocol.name");
-			String deviceType = ParamUtils.getParameter(request, "modbusProtocol.deviceType");
-			String sort = ParamUtils.getParameter(request, "modbusProtocol.sort");
+//			String name = ParamUtils.getParameter(request, "modbusProtocol.name");
+//			String deviceType = ParamUtils.getParameter(request, "modbusProtocol.deviceType");
+//			String sort = ParamUtils.getParameter(request, "modbusProtocol.sort");
 			
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			boolean isAdd=true;
-			if(modbusProtocolConfig!=null){
-				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					if(name.equals(modbusProtocolConfig.getProtocol().get(i).getName())){
-						modbusProtocolConfig.getProtocol().get(i).setSort(StringManagerUtils.stringToInteger(sort));
-						modbusProtocolConfig.getProtocol().get(i).setDeviceType(StringManagerUtils.stringToInteger(deviceType));
-						isAdd=false;
-						break;
-					}
-				}
-			}
-			if(isAdd){
-				ModbusProtocolConfig.Protocol protocol=new ModbusProtocolConfig.Protocol();
-				String protocolCode=name;
-				protocol.setName(name);
-				protocol.setCode(protocolCode);
-				protocol.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
-				protocol.setSort(StringManagerUtils.stringToInteger(sort));
-				protocol.setItems(new ArrayList<ModbusProtocolConfig.Items>());
-				modbusProtocolConfig.getProtocol().add(protocol);
-				
-				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
-				Jedis jedis=null;
-				try{
-					jedis = RedisUtil.jedisPool.getResource();
-					jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
-				}catch(Exception e){
-					e.printStackTrace();
-				}finally{
-					if(jedis!=null){
-						jedis.close();
-					}
-				}
-				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-						TimeUnit.SECONDS, 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-				
-				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(001);
-				dataSynchronizationThread.setParam1(protocol.getName());
-				dataSynchronizationThread.setMethod("update");
-				executor.execute(dataSynchronizationThread);
-			}
+			
+			this.protocolModelManagerService.doProtocolAdd(protocolModel);
+			MemoryDataManagerTask.loadProtocolConfig(protocolModel.getName());
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
+			
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(001);
+			dataSynchronizationThread.setParam1(protocolModel.getName());
+			dataSynchronizationThread.setMethod("update");
+			executor.execute(dataSynchronizationThread);
+		
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
@@ -1720,12 +1699,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String fileName="modbus.json";
 		String data = ParamUtils.getParameter(request, "data");
-//		StringManagerUtils.printLog(data);
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		if(modbusDriverSaveData!=null){
 			modbusDriverSaveData.dataFiltering();
-			String path=stringManagerUtils.getFilePath(fileName,"protocol/");
+//			String path=stringManagerUtils.getFilePath(fileName,"protocol/");
 			
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			if(modbusProtocolConfig==null){
@@ -1734,7 +1712,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}else if(modbusProtocolConfig.getProtocol()==null){
 				modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
 			}
-			
+//			this.protocolModelManagerService.doProtocolAdd(protocolModel);
+//			MemoryDataManagerTask.loadProtocolConfig(protocolModel.getName());
 			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 

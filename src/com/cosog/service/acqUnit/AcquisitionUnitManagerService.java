@@ -4498,6 +4498,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
+	public void doProtocolAdd(T protocolModel) throws Exception {
+		getBaseDao().addObject(protocolModel);
+	}
+	
 	public void doAcquisitionUnitAdd(T acquisitionUnit) throws Exception {
 		getBaseDao().addObject(acquisitionUnit);
 	}

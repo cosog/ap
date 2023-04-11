@@ -176,7 +176,6 @@ public class DataSynchronizationThread implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	public List<String> getUpdateList() {
 		return updateList;

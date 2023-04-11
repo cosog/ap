@@ -4341,7 +4341,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if (StringManagerUtils.isNotNull(protocolName)) {
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==deviceType && protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 					flag = true;
 					break;
 				}

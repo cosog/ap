@@ -165,7 +165,7 @@ public class MemoryDataManagerTask {
 		ModbusProtocolConfig modbusProtocolConfig=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("modbusProtocolConfig".getBytes())){
+			if(jedis.exists("modbusProtocolConfig".getBytes())){
 				modbusProtocolConfig=(ModbusProtocolConfig)SerializeObjectUnils.unserizlize(jedis.get("modbusProtocolConfig".getBytes()));
 			}
 		} catch (Exception e) {
@@ -213,6 +213,7 @@ public class MemoryDataManagerTask {
 					ModbusProtocolConfig.Protocol protocol=gson.fromJson(protocolBuff.toString(), type);
 					
 					if(protocol!=null){
+						Collections.sort(protocol.getItems());
 						boolean isExist=false;
 						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 							if(protocol.getName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName()) &&  modbusProtocolConfig.getProtocol().get(i).getDeviceType()==protocol.getDeviceType()){
@@ -234,6 +235,10 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		
+		if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null&&modbusProtocolConfig.getProtocol().size()>0){
+			Collections.sort(modbusProtocolConfig.getProtocol());
 		}
 		
 		try {

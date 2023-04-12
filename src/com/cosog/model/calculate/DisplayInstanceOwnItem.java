@@ -23,10 +23,8 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public int unitId;
 		public int showLevel;
 		public int sort;
-		public int realtimeCurve;
-		public String realtimeCurveColor;
-		public int historyCurve;
-		public String historyCurveColor;
+		public String realtimeCurveConf;
+		public String historyCurveConf;
 		public int type;
 		public int getItemId() {
 			return itemId;
@@ -70,29 +68,19 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public void setSort(int sort) {
 			this.sort = sort;
 		}
-		public int getRealtimeCurve() {
-			return realtimeCurve;
+		
+		public String getRealtimeCurveConf() {
+			return realtimeCurveConf;
 		}
-		public void setRealtimeCurve(int realtimeCurve) {
-			this.realtimeCurve = realtimeCurve;
+		public void setRealtimeCurveConf(String realtimeCurveConf) {
+			this.realtimeCurveConf = realtimeCurveConf;
 		}
-		public String getRealtimeCurveColor() {
-			return realtimeCurveColor;
+		
+		public String getHistoryCurveConf() {
+			return historyCurveConf;
 		}
-		public void setRealtimeCurveColor(String realtimeCurveColor) {
-			this.realtimeCurveColor = realtimeCurveColor;
-		}
-		public int getHistoryCurve() {
-			return historyCurve;
-		}
-		public void setHistoryCurve(int historyCurve) {
-			this.historyCurve = historyCurve;
-		}
-		public String getHistoryCurveColor() {
-			return historyCurveColor;
-		}
-		public void setHistoryCurveColor(String historyCurveColor) {
-			this.historyCurveColor = historyCurveColor;
+		public void setHistoryCurveConf(String historyCurveConf) {
+			this.historyCurveConf = historyCurveConf;
 		}
 		public int getType() {
 			return type;

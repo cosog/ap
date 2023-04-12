@@ -1315,7 +1315,9 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocoldisplayinstance t where 1=1 ";
 			String sql="select t3.code as instanceCode,t3.deviceType,t2.protocol,t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
-					+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,decode(t.sort,null,9999,t.sort) as sort,t.realtimecurve,t.realtimecurvecolor,t.historycurve,t.historycurvecolor,t.type "
+					+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,decode(t.sort,null,9999,t.sort) as sort,"
+					+ "t.realtimecurveconf,t.historycurveconf,"
+					+ "t.type "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 					+ " where t.unitid=t2.id and t2.id=t3.displayunitid";
 			if(StringManagerUtils.isNotNull(instanceId)){
@@ -1368,11 +1370,9 @@ public class MemoryDataManagerTask {
     				displayItem.setBitIndex(rs.getInt(8));
     				displayItem.setShowLevel(rs.getInt(9));
     				displayItem.setSort(rs.getInt(10));
-    				displayItem.setRealtimeCurve(rs.getInt(11));
-    				displayItem.setRealtimeCurveColor(rs.getString(12)+"");
-    				displayItem.setHistoryCurve(rs.getInt(13));
-    				displayItem.setHistoryCurveColor(rs.getString(14)+"");
-    				displayItem.setType(rs.getInt(15));
+    				displayItem.setRealtimeCurveConf(rs.getString(11)+"");
+    				displayItem.setHistoryCurveConf(rs.getString(12)+"");
+    				displayItem.setType(rs.getInt(13));
     				int index=-1;
     				for(int i=0;i<displayInstanceOwnItem.getItemList().size();i++){
     					if(displayItem.getItemCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemCode()) && displayItem.getType()==displayInstanceOwnItem.getItemList().get(i).getType()){

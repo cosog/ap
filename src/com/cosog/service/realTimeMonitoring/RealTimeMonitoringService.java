@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.CommStatus;
+import com.cosog.model.CurveConf;
 import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
@@ -56,6 +57,7 @@ import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
@@ -3835,7 +3837,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getRealTimeMonitoringCurveData(String deviceId,String deviceName,String deviceType,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
-		StringBuffer curveColorBuff = new StringBuffer();
+		StringBuffer curveConfBuff = new StringBuffer();
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
 		Jedis jedis=null;
 		UserInfo userInfo=null;
@@ -3908,12 +3910,30 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			List<String> itemNameList=new ArrayList<String>();
 			List<String> itemColumnList=new ArrayList<String>();
-			List<String> curveColorList=new ArrayList<String>();
+			List<String> curveConfList=new ArrayList<String>();
 			if(displayInstanceOwnItem!=null){
 				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
 					@Override
 					public int compare(DisplayInstanceOwnItem.DisplayItem item1,DisplayInstanceOwnItem.DisplayItem item2){
-						int diff=item1.getRealtimeCurve()-item2.getRealtimeCurve();
+						Gson gson = new Gson();
+						java.lang.reflect.Type type=null;
+						int sort1=0;
+						int sort2=0;
+						type = new TypeToken<CurveConf>() {}.getType();
+						CurveConf curveConfObj1=gson.fromJson(item1.getRealtimeCurveConf(), type);
+						
+						type = new TypeToken<CurveConf>() {}.getType();
+						CurveConf curveConfObj2=gson.fromJson(item2.getRealtimeCurveConf(), type);
+						
+						if(curveConfObj1!=null){
+							sort1=curveConfObj1.getSort();
+						}
+						
+						if(curveConfObj2!=null){
+							sort2=curveConfObj2.getSort();
+						}
+						
+						int diff=sort1-sort2;
 						if(diff>0){
 							return 1;
 						}else if(diff<0){
@@ -3928,10 +3948,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
-								if(displayInstanceOwnItem.getItemList().get(j).getRealtimeCurve()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+								Gson gson = new Gson();
+								java.lang.reflect.Type reflectType=new TypeToken<CurveConf>() {}.getType();
+								CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf(), reflectType);
+								
+								if(curveConfObj!=null && curveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 									String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
 									String bitindex=displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"";
-									String realtimecurvecolor=displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveColor();
+									String realtimecurveconf=displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf();
 									String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
 									String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
 									if("0".equalsIgnoreCase(type)){
@@ -3944,7 +3968,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else{
 													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
 												}
-												curveColorList.add(realtimecurvecolor.replaceAll("null", ""));
+												curveConfList.add(realtimecurveconf.replaceAll("null", ""));
 												break;
 											}
 										}
@@ -3965,7 +3989,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}
 										
 										itemNameList.add(itemName);
-										curveColorList.add(realtimecurvecolor.replaceAll("null", ""));
+										curveConfList.add(realtimecurveconf.replaceAll("null", ""));
 									}
 								
 								}
@@ -3977,10 +4001,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}else{
 				String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and  t.id="+deviceId;
-				String curveItemsSql="select t4.itemname,t4.bitindex,t4.realtimecurvecolor,t4.itemcode,t4.type "
+				String curveItemsSql="select t4.itemname,t4.bitindex,t4.realtimecurveconf,t4.itemcode,t4.type "
 						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
-						+ " and t.id="+deviceId+" and t4.realtimecurve>=0 "
+						+ " and t.id="+deviceId+" and t4.realtimecurveconf is not null "
 						+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userNo+"' )"
 						+ " order by t4.realtimecurve,t4.sort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
@@ -4000,7 +4024,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									Object[] itemObj=(Object[]) curveItemList.get(j);
 									String itemname=itemObj[0]+"";
 									String bitindex=itemObj[1]+"";
-									String realtimecurvecolor=itemObj[2]+"";
+									String realtimecurveconf=itemObj[2]+"";
 									String itemcode=itemObj[3]+"";
 									String type=itemObj[4]+"";
 									if("0".equalsIgnoreCase(type)){
@@ -4013,7 +4037,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else{
 													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
 												}
-												curveColorList.add(realtimecurvecolor.replaceAll("null", ""));
+												curveConfList.add(realtimecurveconf.replaceAll("null", ""));
 												break;
 											}
 										}
@@ -4034,7 +4058,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}
 										
 										itemNameList.add(itemName);
-										curveColorList.add(realtimecurvecolor.replaceAll("null", ""));
+										curveConfList.add(realtimecurveconf.replaceAll("null", ""));
 									}
 								}
 								break;
@@ -4053,16 +4077,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			itemsBuff.append("]");
 			
-			curveColorBuff.append("[");
-			for(int i=0;i<curveColorList.size();i++){
-				curveColorBuff.append("\""+curveColorList.get(i)+"\",");
+			curveConfBuff.append("[");
+			for(int i=0;i<curveConfList.size();i++){
+				curveConfBuff.append(""+curveConfList.get(i)+",");
 			}
-			if (curveColorBuff.toString().endsWith(",")) {
-				curveColorBuff.deleteCharAt(curveColorBuff.length() - 1);
+			if (curveConfBuff.toString().endsWith(",")) {
+				curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
 			}
-			curveColorBuff.append("]");
+			curveConfBuff.append("]");
 			
-			result_json.append("{\"deviceName\":\""+deviceName+"\",\"curveCount\":"+itemNameList.size()+",\"curveItems\":"+itemsBuff+",\"curveColors\":"+curveColorBuff+",\"list\":[");
+			result_json.append("{\"deviceName\":\""+deviceName+"\",\"curveCount\":"+itemNameList.size()+",\"curveItems\":"+itemsBuff+",\"curveConf\":"+curveConfBuff+",\"list\":[");
 			if(itemColumnList.size()>0){
 				String columns="";
 				for(int i=0;i<itemColumnList.size();i++){

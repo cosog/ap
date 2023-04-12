@@ -182,8 +182,8 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			if(protocolConfigAddrMappingItemsHandsontableHelper==null || protocolConfigAddrMappingItemsHandsontableHelper.hot==undefined){
 				protocolConfigAddrMappingItemsHandsontableHelper = ProtocolConfigAddrMappingItemsHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
-					+"['','',{label: '下位机部分', colspan: 5},{label: '上位机部分', colspan: 5}]," 
-					+"['序号','名称','起始地址','存储数据类型','存储数据数量','读写类型','采集模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
+					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
+					+"['序号','名称','起始地址','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
 					+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}},"
@@ -336,7 +336,7 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if (visualColIndex ==0) {
 							cellProperties.readOnly = true;
-		                }else if(visualColIndex==6){
+		                }else if(visualColIndex==8){
 		                	var IFDataType='';
 		                	if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
 		                		IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);

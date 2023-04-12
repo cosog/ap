@@ -59,9 +59,9 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
                     		Ext.getCmp('PCPHistoryQueryEndDate_Id').setValue('');
                     		Ext.getCmp('PCPHistoryQueryEndDate_Id').setRawValue('');
                     		Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(deviceId);
-                    		var gridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
-                            if (isNotVal(gridPanel)) {
-                            	gridPanel.getStore().loadPage(1);
+                    		var PCPHistoryQueryDataGridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
+                            if (isNotVal(PCPHistoryQueryDataGridPanel)) {
+                            	PCPHistoryQueryDataGridPanel.getStore().loadPage(1);
                             }else{
                             	Ext.create("AP.store.historyQuery.PCPHistoryDataStore");
                             }
@@ -87,9 +87,9 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
             }else{
             	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
             	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
-            	var gridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
-                if (isNotVal(gridPanel)) {
-                	gridPanel.getStore().loadPage(1);
+            	var PCPHistoryQueryDataGridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
+                if (isNotVal(PCPHistoryQueryDataGridPanel)) {
+                	PCPHistoryQueryDataGridPanel.getStore().loadPage(1);
                 }else{
                 	Ext.create("AP.store.historyQuery.PCPHistoryDataStore");
                 }

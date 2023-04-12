@@ -21,10 +21,8 @@ public class DisplayUnitItem implements java.io.Serializable {
 	private Integer showLevel;
 	private Integer sort;
 	private Integer bitIndex;
-	private Integer realtimeCurve;
-	private Integer historyCurve;
-	private String realtimeCurveColor;
-	private String historyCurveColor;
+	private String realtimeCurveConf;
+	private String historyCurveConf;
 	private Integer type;
 
 	public DisplayUnitItem() {
@@ -34,8 +32,8 @@ public class DisplayUnitItem implements java.io.Serializable {
 
 	/** full constructor */
 	public DisplayUnitItem(Integer id, Integer unitId, Integer itemId, String itemName, String itemCode,
-			String matrix, Integer showLevel, Integer sort, Integer bitIndex, Integer realtimeCurve,
-			Integer historyCurve, String realtimeCurveColor, String historyCurveColor) {
+			String matrix, Integer showLevel, Integer sort, Integer bitIndex,  
+			String realtimeCurveConf, String historyCurveConf) {
 		super();
 		this.id = id;
 		this.unitId = unitId;
@@ -46,10 +44,8 @@ public class DisplayUnitItem implements java.io.Serializable {
 		this.showLevel = showLevel;
 		this.sort = sort;
 		this.bitIndex = bitIndex;
-		this.realtimeCurve = realtimeCurve;
-		this.historyCurve = historyCurve;
-		this.realtimeCurveColor = realtimeCurveColor;
-		this.historyCurveColor = historyCurveColor;
+		this.realtimeCurveConf = realtimeCurveConf;
+		this.historyCurveConf = historyCurveConf;
 	}
 
 	@Id
@@ -133,40 +129,22 @@ public class DisplayUnitItem implements java.io.Serializable {
 		this.showLevel = showLevel;
 	}
 
-	@Column(name = "realtimeCurve")
-	public Integer getRealtimeCurve() {
-		return realtimeCurve;
+	@Column(name = "realtimeCurveConf", nullable = true, length = 8)
+	public String getRealtimeCurveConf() {
+		return realtimeCurveConf;
 	}
 
-	public void setRealtimeCurve(Integer realtimeCurve) {
-		this.realtimeCurve = realtimeCurve;
+	public void setRealtimeCurveConf(String realtimeCurveConf) {
+		this.realtimeCurveConf = realtimeCurveConf;
 	}
 
-	@Column(name = "historyCurve")
-	public Integer getHistoryCurve() {
-		return historyCurve;
+	@Column(name = "historyCurveConf", nullable = true, length = 8)
+	public String getHistoryCurveConf() {
+		return historyCurveConf;
 	}
 
-	public void setHistoryCurve(Integer historyCurve) {
-		this.historyCurve = historyCurve;
-	}
-
-	@Column(name = "realtimeCurveColor", nullable = true, length = 8)
-	public String getRealtimeCurveColor() {
-		return realtimeCurveColor;
-	}
-
-	public void setRealtimeCurveColor(String realtimeCurveColor) {
-		this.realtimeCurveColor = realtimeCurveColor;
-	}
-
-	@Column(name = "historyCurveColor", nullable = true, length = 8)
-	public String getHistoryCurveColor() {
-		return historyCurveColor;
-	}
-
-	public void setHistoryCurveColor(String historyCurveColor) {
-		this.historyCurveColor = historyCurveColor;
+	public void setHistoryCurveConf(String historyCurveConf) {
+		this.historyCurveConf = historyCurveConf;
 	}
 
 	@Column(name = "type")

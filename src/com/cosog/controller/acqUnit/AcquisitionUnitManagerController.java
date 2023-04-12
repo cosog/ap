@@ -740,10 +740,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-						displayUnitItem.setRealtimeCurve((StringManagerUtils.isNumber(module_[3]) && !"开关量".equalsIgnoreCase(resolutionMode))?StringManagerUtils.stringTransferInteger(module_[3]):null);
-						displayUnitItem.setRealtimeCurveColor((!"开关量".equalsIgnoreCase(resolutionMode))&&StringManagerUtils.isColor16("#"+module_[4])?module_[4]:"");
-						displayUnitItem.setHistoryCurve((StringManagerUtils.isNumber(module_[5]) && !"开关量".equalsIgnoreCase(resolutionMode))?StringManagerUtils.stringTransferInteger(module_[5]):null);
-						displayUnitItem.setHistoryCurveColor((!"开关量".equalsIgnoreCase(resolutionMode))&&StringManagerUtils.isColor16("#"+module_[6])?module_[6]:"");
+//						displayUnitItem.setRealtimeCurve((StringManagerUtils.isNumber(module_[3]) && !"开关量".equalsIgnoreCase(resolutionMode))?StringManagerUtils.stringTransferInteger(module_[3]):null);
+//						displayUnitItem.setRealtimeCurveColor((!"开关量".equalsIgnoreCase(resolutionMode))&&StringManagerUtils.isColor16("#"+module_[4])?module_[4]:"");
+//						displayUnitItem.setHistoryCurve((StringManagerUtils.isNumber(module_[5]) && !"开关量".equalsIgnoreCase(resolutionMode))?StringManagerUtils.stringTransferInteger(module_[5]):null);
+//						displayUnitItem.setHistoryCurveColor((!"开关量".equalsIgnoreCase(resolutionMode))&&StringManagerUtils.isColor16("#"+module_[6])?module_[6]:"");
 						displayUnitItem.setMatrix(module_[10]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
@@ -906,10 +906,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 					displayUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
 					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
-					displayUnitItem.setRealtimeCurve((StringManagerUtils.isNumber(module_[4]))?StringManagerUtils.stringTransferInteger(module_[4]):null);
-					displayUnitItem.setRealtimeCurveColor(StringManagerUtils.isColor16("#"+module_[5])?module_[5]:"");
-					displayUnitItem.setHistoryCurve((StringManagerUtils.isNumber(module_[6]))?StringManagerUtils.stringTransferInteger(module_[6]):null);
-					displayUnitItem.setHistoryCurveColor(StringManagerUtils.isColor16("#"+module_[7])?module_[7]:"");
+//					displayUnitItem.setRealtimeCurve((StringManagerUtils.isNumber(module_[4]))?StringManagerUtils.stringTransferInteger(module_[4]):null);
+//					displayUnitItem.setRealtimeCurveColor(StringManagerUtils.isColor16("#"+module_[5])?module_[5]:"");
+//					displayUnitItem.setHistoryCurve((StringManagerUtils.isNumber(module_[6]))?StringManagerUtils.stringTransferInteger(module_[6]):null);
+//					displayUnitItem.setHistoryCurveColor(StringManagerUtils.isColor16("#"+module_[7])?module_[7]:"");
 					displayUnitItem.setMatrix(module_[8]);
 					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 				}

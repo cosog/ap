@@ -65,9 +65,9 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
             				if(activeId=="RPCHistoryDataTabPanel"){
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
-        						var gridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");
-                                if (isNotVal(gridPanel)) {
-                                	gridPanel.getStore().loadPage(1);
+        						var RPCHistoryQueryDataGridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");
+                                if (isNotVal(RPCHistoryQueryDataGridPanel)) {
+                                	RPCHistoryQueryDataGridPanel.getStore().loadPage(1);
                                 }else{
                                 	Ext.create("AP.store.historyQuery.RPCHistoryDataStore");
                                 }
@@ -79,9 +79,9 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").hide();
         						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
         						
-        						var gridPanel = Ext.getCmp("RPCHistoryQueryFSdiagramOverlayGrid_Id");
-                                if (isNotVal(gridPanel)) {
-                                	gridPanel.getStore().load();
+        						var RPCHistoryQueryFSdiagramOverlayGrid = Ext.getCmp("RPCHistoryQueryFSdiagramOverlayGrid_Id");
+                                if (isNotVal(RPCHistoryQueryFSdiagramOverlayGrid)) {
+                                	RPCHistoryQueryFSdiagramOverlayGrid.getStore().load();
                                 }else{
                                 	Ext.create("AP.store.historyQuery.RPCHistoryQueryDiagramOverlayStore");
                                 }
@@ -111,18 +111,18 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
             	
 				var activeId = Ext.getCmp("RPCHistoryQueryTabPanel").getActiveTab().id;
 				if(activeId=="RPCHistoryDataTabPanel"){
-					var gridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");
-                    if (isNotVal(gridPanel)) {
-                    	gridPanel.getStore().loadPage(1);
+					var RPCHistoryQueryDataGridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");
+                    if (isNotVal(RPCHistoryQueryDataGridPanel)) {
+                    	RPCHistoryQueryDataGridPanel.getStore().loadPage(1);
                     }else{
                     	Ext.create("AP.store.historyQuery.RPCHistoryDataStore");
                     }
 				}else if(activeId=="RPCHistoryDiagramTabPanel"){
 					loadSurfaceCardList(1);
 				}else if(activeId=="RPCHistoryDiagramOverlayTabPanel"){
-					var gridPanel = Ext.getCmp("RPCHistoryQueryFSdiagramOverlayGrid_Id");
-                    if (isNotVal(gridPanel)) {
-                    	gridPanel.getStore().load();
+					var RPCHistoryQueryFSdiagramOverlayGrid = Ext.getCmp("RPCHistoryQueryFSdiagramOverlayGrid_Id");
+                    if (isNotVal(RPCHistoryQueryFSdiagramOverlayGrid)) {
+                    	RPCHistoryQueryFSdiagramOverlayGrid.getStore().load();
                     }else{
                     	Ext.create("AP.store.historyQuery.RPCHistoryQueryDiagramOverlayStore");
                     }

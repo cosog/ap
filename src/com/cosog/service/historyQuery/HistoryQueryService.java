@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.CurveConf;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
@@ -2541,7 +2542,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
-		StringBuffer curveColorBuff = new StringBuffer();
+		StringBuffer curveConfBuff = new StringBuffer();
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
 		Jedis jedis=null;
 		UserInfo userInfo=null;
@@ -2621,7 +2622,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			List<String> itemNameList=new ArrayList<String>();
 			List<String> itemColumnList=new ArrayList<String>();
-			List<String> curveColorList=new ArrayList<String>();
+			List<String> curveConfList=new ArrayList<String>();
 			
 			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
@@ -2630,7 +2631,25 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
 					@Override
 					public int compare(DisplayInstanceOwnItem.DisplayItem item1,DisplayInstanceOwnItem.DisplayItem item2){
-						int diff=item1.getHistoryCurve()-item2.getHistoryCurve();
+						Gson gson = new Gson();
+						java.lang.reflect.Type type=null;
+						int sort1=0;
+						int sort2=0;
+						type = new TypeToken<CurveConf>() {}.getType();
+						CurveConf historyCurveConfObj1=gson.fromJson(item1.getHistoryCurveConf(), type);
+						
+						type = new TypeToken<CurveConf>() {}.getType();
+						CurveConf historyCurveConfObj2=gson.fromJson(item2.getHistoryCurveConf(), type);
+						
+						if(historyCurveConfObj1!=null){
+							sort1=historyCurveConfObj1.getSort();
+						}
+						
+						if(historyCurveConfObj2!=null){
+							sort2=historyCurveConfObj2.getSort();
+						}
+						
+						int diff=sort1-sort2;
 						if(diff>0){
 							return 1;
 						}else if(diff<0){
@@ -2646,10 +2665,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
-								if(displayInstanceOwnItem.getItemList().get(j).getHistoryCurve()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+								Gson gson = new Gson();
+								java.lang.reflect.Type reflectType=new TypeToken<CurveConf>() {}.getType();
+								CurveConf historyCurveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf(), reflectType);
+								
+								if(historyCurveConfObj!=null && historyCurveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 									String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
 									String bitindex=displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"";
-									String historycurvecolor=displayInstanceOwnItem.getItemList().get(j).getHistoryCurveColor();
+									String historycurveconf=displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf();
 									String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
 									String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
 									if("0".equalsIgnoreCase(type)){
@@ -2662,7 +2685,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else{
 													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
 												}
-												curveColorList.add(historycurvecolor.replaceAll("null", ""));
+												curveConfList.add(historycurveconf.replaceAll("null", ""));
 												break;
 											}
 										}
@@ -2683,7 +2706,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										}
 										
 										itemNameList.add(itemName);
-										curveColorList.add(historycurvecolor.replaceAll("null", ""));
+										curveConfList.add(historycurveconf.replaceAll("null", ""));
 									}
 								
 								}
@@ -2696,10 +2719,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and  t.id="+deviceId;
 				
-				String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurvecolor "
+				String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurveconf "
 						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=0 "
-						+ " and t.id="+deviceId+" and t4.historycurve>=0 "
+						+ " and t.id="+deviceId+" and t4.historycurveconf is not null "
 						+ " order by t4.historycurve,t4.sort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
 				
@@ -2722,7 +2745,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}else{
 												itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
 											}
-											curveColorList.add((itemObj[2]+"").replaceAll("null", ""));
+											curveConfList.add((itemObj[2]+"").replaceAll("null", ""));
 											break;
 										}
 									}
@@ -2758,21 +2781,21 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			itemsCodeBuff.append("]");
 			
-			curveColorBuff.append("[");
-			for(int i=0;i<curveColorList.size();i++){
-				curveColorBuff.append("\""+curveColorList.get(i)+"\",");
+			curveConfBuff.append("[");
+			for(int i=0;i<curveConfList.size();i++){
+				curveConfBuff.append(""+curveConfList.get(i)+",");
 			}
-			if (curveColorBuff.toString().endsWith(",")) {
-				curveColorBuff.deleteCharAt(curveColorBuff.length() - 1);
+			if (curveConfBuff.toString().endsWith(",")) {
+				curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
 			}
-			curveColorBuff.append("]");
+			curveConfBuff.append("]");
 			
 			result_json.append("{\"deviceName\":\""+deviceName+"\","
 					+ "\"startDate\":\""+startDate+"\","
 					+ "\"endDate\":\""+endDate+"\","
 					+ "\"curveItems\":"+itemsBuff+","
 					+ "\"curveItemCodes\":"+itemsCodeBuff+","
-					+ "\"curveColors\":"+curveColorBuff+","
+					+ "\"curveColors\":"+curveConfBuff+","
 					+ "\"graphicSet\":"+graphicSet+","
 					+ "\"list\":[");
 			if(itemColumnList.size()>0){

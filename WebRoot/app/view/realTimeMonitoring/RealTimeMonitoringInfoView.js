@@ -1261,12 +1261,19 @@ function deviceRealtimeMonitoringCurve(deviceType){
 		success:function(response) {
 			Ext.getCmp(panelId).getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
+			var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
 		    var data = result.list;
 		    var totals=result.curveCount;
 		    var legendName =result.curveItems;
-        	var colors=result.curveColors;
-		    
-		    var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
+		    var curveConf=result.curveConf;
+		    var colors=[];
+		    for(var i=0;i<curveConf.length;i++){
+		    	if(curveConf[i].color==''){
+		    		colors.push(defaultColors[i%10]);
+		    	}else{
+		    		colors.push('#'+curveConf[i].color);
+		    	}
+		    }
 		   
 		    var tickInterval = 1;
 		    tickInterval = Math.floor(data.length / 2) + 1;
@@ -1326,9 +1333,11 @@ function deviceRealtimeMonitoringCurve(deviceType){
     		        var minValue=null;
     		        var allPositive=true;//全部是非负数
     		        var allNegative=true;//全部是负值
+    		        
+    		        var yAxisOpposite=curveConf[i].yAxisOpposite;
         		    
         		    var series = "[";
-    		        series += "{\"name\":\"" + legendName[i] + "\"," 
+    		        series += "{\"name\":\"" + legendName[i] + "\",\"lineWidth\":"+curveConf[i].lineWidth+",\"dashStyle\":\""+curveConf[i].dashStyle+"\",\"marker\":{\"enabled\": false},";
     		        series += "\"data\":[";
     		        for (var j = 0; j < data.length; j++) {
     		        	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
@@ -1353,7 +1362,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
         		    var ser = Ext.JSON.decode(series);
         		    
         		    var timeFormat='%H:%M';
-        		    initDeviceRealtimeMonitoringStockChartFn(ser, tickInterval, divId, title, subtitle, xTitle, yTitle,color,false,true,false,timeFormat,maxValue,minValue);
+        		    initDeviceRealtimeMonitoringStockChartFn(ser, tickInterval, divId, title, subtitle, xTitle, yTitle,color,false,true,false,timeFormat,maxValue,minValue,yAxisOpposite);
                 }
             }
             
@@ -1382,7 +1391,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 	});
 };
 
-function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xtitle,yTitle, color,legend,navigator,scrollbar,timeFormat,maxValue,minValue) {
+function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xtitle,yTitle, color,legend,navigator,scrollbar,timeFormat,maxValue,minValue,yAxisOpposite) {
     Highcharts.setOptions({
         global: {
             useUTC: false
@@ -1463,7 +1472,7 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 //                    color: color,
                 }
             },
-            opposite:false
+            opposite:yAxisOpposite
       },
         tooltip: {
             crosshairs: true, //十字准线

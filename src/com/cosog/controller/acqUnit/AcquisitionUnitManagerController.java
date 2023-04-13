@@ -674,13 +674,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		int dataSaveMode=1;
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		try {
-			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
 			String protocolName = ParamUtils.getParameter(request, "protocol");
 			String itemType = ParamUtils.getParameter(request, "itemType");
-			log.debug("grantAcquisitionItemsPermission params==" + params);
-			String paramsArr[] = StringManagerUtils.split(params, ",");
 			
 			ModbusProtocolConfig.Protocol protocol=null;
 			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
@@ -705,13 +702,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 				
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
-					List<String> itemsList=new ArrayList<String>();
 					for (int i = 0; i < module_matrix.length; i++) {
-						String module_[] = module_matrix[i].split("\\:");
+						String module_[] = module_matrix[i].split("##");
 						String itemName=module_[0];
-						int itemAddr=StringManagerUtils.stringTransferInteger(module_[8]);
-						String resolutionMode=module_[7];
-						String bitIndexStr=module_[9];
+						int itemAddr=StringManagerUtils.stringTransferInteger(module_[6]);
+						String resolutionMode=module_[5];
+						String bitIndexStr=module_[7];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
 							for(int j=0;j<protocol.getItems().size();j++){
@@ -728,9 +724,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 								}
 							}
 						}
-						if(StringManagerUtils.isNotNull(module_[4])){
-							StringManagerUtils.printLog("#"+module_[4]+"isColor16:"+StringManagerUtils.isColor16("#"+module_[4]));
-						}
 						
 						displayUnitItem = new DisplayUnitItem();
 						displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
@@ -740,17 +733,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-//						displayUnitItem.setRealtimeCurve((StringManagerUtils.isNumber(module_[3]) && !"开关量".equalsIgnoreCase(resolutionMode))?StringManagerUtils.stringTransferInteger(module_[3]):null);
-//						displayUnitItem.setRealtimeCurveColor((!"开关量".equalsIgnoreCase(resolutionMode))&&StringManagerUtils.isColor16("#"+module_[4])?module_[4]:"");
-//						displayUnitItem.setHistoryCurve((StringManagerUtils.isNumber(module_[5]) && !"开关量".equalsIgnoreCase(resolutionMode))?StringManagerUtils.stringTransferInteger(module_[5]):null);
-//						displayUnitItem.setHistoryCurveColor((!"开关量".equalsIgnoreCase(resolutionMode))&&StringManagerUtils.isColor16("#"+module_[6])?module_[6]:"");
-						displayUnitItem.setMatrix(module_[10]);
+						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[3]:"");
+						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[4]:"");
+						displayUnitItem.setMatrix(module_[8]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
 					
 				}
 			}
-//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -880,24 +870,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
 		try {
-			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
-			String protocolName = ParamUtils.getParameter(request, "protocol");
 			String itemType = ParamUtils.getParameter(request, "itemType");
-			log.debug("grantAcquisitionItemsPermission params==" + params);
-			String paramsArr[] = StringManagerUtils.split(params, ",");
 
 			this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
 			if (StringManagerUtils.isNotNull(matrixCodes)) {
 				String module_matrix[] = matrixCodes.split("\\|");
-				List<String> itemsList=new ArrayList<String>();
 				for (int i = 0; i < module_matrix.length; i++) {
-					String module_[] = module_matrix[i].split("\\:");
+					String module_[] = module_matrix[i].split("##");
 					
-					if(StringManagerUtils.isNotNull(module_[4])){
-						StringManagerUtils.printLog("#"+module_[4]+"isColor16:"+StringManagerUtils.isColor16("#"+module_[4]));
-					}
+					
 					String itemName=module_[0];
 					displayUnitItem = new DisplayUnitItem();
 					displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
@@ -906,11 +889,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 					displayUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
 					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
-//					displayUnitItem.setRealtimeCurve((StringManagerUtils.isNumber(module_[4]))?StringManagerUtils.stringTransferInteger(module_[4]):null);
-//					displayUnitItem.setRealtimeCurveColor(StringManagerUtils.isColor16("#"+module_[5])?module_[5]:"");
-//					displayUnitItem.setHistoryCurve((StringManagerUtils.isNumber(module_[6]))?StringManagerUtils.stringTransferInteger(module_[6]):null);
-//					displayUnitItem.setHistoryCurveColor(StringManagerUtils.isColor16("#"+module_[7])?module_[7]:"");
-					displayUnitItem.setMatrix(module_[8]);
+					displayUnitItem.setRealtimeCurveConf(module_[4]);
+					displayUnitItem.setHistoryCurveConf(module_[5]);
+					displayUnitItem.setMatrix(module_[6]);
 					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 				}
 				

@@ -194,7 +194,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName,classes,c
 			}
 			if(protocolDisplayUnitAcqItemsConfigHandsontableHelper==null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','实时曲线','历史曲线','','','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -337,21 +337,13 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 	                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
 	                		            	background: '#'+curveConfig.color,
 	                		            });
+	                				}else{
+	                					Ext.getCmp('curveConfigColor_id').setValue(value);
+	                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+	                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+	                		            	background: '#'+value
+	                		            });
 	                				}
-	                				
-//	                				var CurveColorSelectWindow=Ext.create("AP.view.acquisitionUnit.CurveColorSelectWindow");
-//	                				Ext.getCmp("curveColorSelectedTableType_Id").setValue(0);//采集项表
-//	                				Ext.getCmp("curveColorSelectedRow_Id").setValue(row);
-//	                				Ext.getCmp("curveColorSelectedCol_Id").setValue(column);
-//	                				CurveColorSelectWindow.show();
-//	                				var value=row1[column];
-//	                				if(value==null||value==''){
-//	                					value='ff0000';
-//	                				}
-//	                				Ext.getCmp('CurveColorSelectWindowColor_id').setValue(value);
-//                		        	var BackgroundColor=Ext.getCmp('CurveColorSelectWindowColor_id').color;
-//                		        	BackgroundColor.a=1;
-//                		        	Ext.getCmp('CurveColorSelectWindowColor_id').setColor(BackgroundColor);
 	                			}
 	                		}
 	                	}
@@ -385,7 +377,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','实时曲线','历史曲线','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -521,7 +513,13 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                		        	Ext.getCmp('curveConfigColor_id').setValue(curveConfig.color);
 	                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
 	                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
-	                		            	background: '#'+curveConfig.color,
+	                		            	background: '#'+curveConfig.color
+	                		            });
+	                				}else{
+	                					Ext.getCmp('curveConfigColor_id').setValue(value);
+	                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+	                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+	                		            	background: '#'+value
 	                		            });
 	                				}
 	                			}
@@ -559,7 +557,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -849,29 +847,36 @@ var grantDisplayAcqItemsPermission = function () {
         	
         	var itemShowLevel = acqItemsData[index][4];
         	var itemSort = acqItemsData[index][5];
-        	var isRealtimeCurve=acqItemsData[index][6];
-        	var realtimeCurveColor=acqItemsData[index][7];
-        	var isHistoryCurve=acqItemsData[index][8];
-        	var historyCurveColor=acqItemsData[index][9];
+        	var realtimeCurveConfigStr="";
+        	var historyCurveConfigStr="";
+        	
+        	var realtimeCurveConfig=null;
+			if(isNotVal(acqItemsData[index][6]) && isNotVal(acqItemsData[index][8])){
+				realtimeCurveConfig=acqItemsData[index][8];
+				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
+			}
+			
+			var historyCurveConfig=null;
+			if(isNotVal(acqItemsData[index][7]) && isNotVal(acqItemsData[index][9])){
+				historyCurveConfig=acqItemsData[index][9];
+				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
+			}
         	
         	var resolutionMode = acqItemsData[index][10];
         	var itemAddr = acqItemsData[index][11];
         	var bitIndex=acqItemsData[index][12];
-            
+        	
             addjson.push(itemName);
             addItemSort.push(itemSort);
             var matrix_value = '0,0,0';
-            matrixData += itemName + ":"
-            + itemSort+ ":"
-            + itemShowLevel+ ":" 
-            + isRealtimeCurve+ ":" 
-            + realtimeCurveColor+ ":" 
-            + isHistoryCurve + ":" 
-            + historyCurveColor + ":" 
-            
-            + resolutionMode+ ":"
-            + itemAddr + ":" 
-            + bitIndex +":"
+            matrixData += itemName + "##"
+            + itemSort+ "##"
+            + itemShowLevel+ "##" 
+            + realtimeCurveConfigStr+ "##" 
+            + historyCurveConfigStr + "##" 
+            + resolutionMode+ "##"
+            + itemAddr + "##" 
+            + bitIndex +"##"
             
             + matrix_value+ "|";
         }
@@ -937,24 +942,30 @@ var grantDisplayCalItemsPermission = function () {
         	
         	var itemShowLevel = calItemsData[index][4];
         	var itemSort = calItemsData[index][5];
-        	var isRealtimeCurve=calItemsData[index][6];
-        	var realtimeCurveColor=calItemsData[index][7];
-        	var isHistoryCurve=calItemsData[index][8];
-        	var historyCurveColor=calItemsData[index][9];
+
+        	var realtimeCurveConfig=null;
+			if(isNotVal(calItemsData[index][6]) && isNotVal(calItemsData[index][8])){
+				realtimeCurveConfig=calItemsData[index][8];
+				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
+			}
+			
+			var historyCurveConfig=null;
+			if(isNotVal(calItemsData[index][7]) && isNotVal(calItemsData[index][9])){
+				historyCurveConfig=calItemsData[index][9];
+				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
+			}
         	
         	var itemCode = calItemsData[index][10];
         	
             addjson.push(itemCode);
             addItemSort.push(itemSort);
             var matrix_value = '0,0,0';
-            matrixData += itemName + ":"
-            + itemCode+ ":"
-            + itemSort+ ":"
-            + itemShowLevel+ ":" 
-            + isRealtimeCurve+ ":" 
-            + realtimeCurveColor+ ":" 
-            + isHistoryCurve + ":" 
-            + historyCurveColor + ":" 
+            matrixData += itemName + "##"
+            + itemCode+ "##"
+            + itemSort+ "##"
+            + itemShowLevel+ "##" 
+            + realtimeCurveConfigStr+ "##" 
+            + historyCurveConfigStr + "##" 
             + matrix_value+ "|";
         }
     });

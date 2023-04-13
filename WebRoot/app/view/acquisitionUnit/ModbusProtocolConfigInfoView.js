@@ -574,7 +574,6 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 				for(var i=0;i<driverConfigItemsData.length;i++){
 					if(isNotVal(driverConfigItemsData[i][1])){
 						var item={};
-//						+"['序号','名称','起始地址','存储数据类型','存储数据数量','读写类型','采集模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
 						
 						item.Title=driverConfigItemsData[i][1];
 						item.Addr=parseInt(driverConfigItemsData[i][2]);

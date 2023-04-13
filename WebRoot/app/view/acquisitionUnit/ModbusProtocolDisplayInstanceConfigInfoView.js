@@ -356,17 +356,15 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceAcqItemsHandsontableHelper==null || protocolDisplayInstanceAcqItemsHandsontableHelper.hot==undefined){
 				protocolDisplayInstanceAcqItemsHandsontableHelper = ProtocolDisplayInstanceAcqItemsHandsontableHelper.createNew("ProtocolDisplayInstanceAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','显示顺序','实时曲线顺序','实时曲线颜色','历史曲线顺序','历史曲线颜色']";
+				var colHeaders="['序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'isRealtimeCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'realtimeCurveColor'},"
-						+"{data:'isHistoryCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
-						+"{data:'historyCurveColor'}"
+						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historyCurveConfShowValue'}"
 						+"]";
 				protocolDisplayInstanceAcqItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceAcqItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -417,7 +415,10 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
-	            	td.style.backgroundColor = '#'+value;
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
 	            }
 	        }
 	        
@@ -427,7 +428,7 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        	protocolDisplayInstanceAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,60,85,85,85,85],
+	        		colWidths: [50,140,80,60,60,85,85],
 	                columns:protocolDisplayInstanceAcqItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -446,7 +447,7 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6||visualColIndex==8){
+	                    if(visualColIndex==5||visualColIndex==6){
 		                	cellProperties.renderer = protocolDisplayInstanceAcqItemsHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;
@@ -474,17 +475,15 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceCalItemsHandsontableHelper==null || protocolDisplayInstanceCalItemsHandsontableHelper.hot==undefined){
 				protocolDisplayInstanceCalItemsHandsontableHelper = ProtocolDisplayInstanceCalItemsHandsontableHelper.createNew("ProtocolDisplayInstanceCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','显示顺序','实时曲线顺序','实时曲线颜色','历史曲线顺序','历史曲线颜色']";
+				var colHeaders="['序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'isRealtimeCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'realtimeCurveColor'},"
-						+"{data:'isHistoryCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
-						+"{data:'historyCurveColor'}"
+						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historyCurveConfShowValue'}"
 						+"]";
 				protocolDisplayInstanceCalItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceCalItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -536,7 +535,10 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	        protocolDisplayInstanceCalItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
-	            	td.style.backgroundColor = '#'+value;
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
 	            }
 	        }
 	        
@@ -546,7 +548,7 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	        	protocolDisplayInstanceCalItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,60,85,85,85,85],
+	        		colWidths: [50,140,80,60,60,85,85],
 	                columns:protocolDisplayInstanceCalItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -565,7 +567,7 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6||visualColIndex==8){
+	                    if(visualColIndex==5||visualColIndex==6){
 		                	cellProperties.renderer = protocolDisplayInstanceCalItemsHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;
@@ -593,7 +595,7 @@ function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceCtrlItemsHandsontableHelper==null || protocolDisplayInstanceCtrlItemsHandsontableHelper.hot==undefined){
 				protocolDisplayInstanceCtrlItemsHandsontableHelper = ProtocolDisplayInstanceCtrlItemsHandsontableHelper.createNew("ProtocolDisplayInstanceCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','显示顺序']";
+				var colHeaders="['序号','名称','单位','显示级别','数据顺序']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"

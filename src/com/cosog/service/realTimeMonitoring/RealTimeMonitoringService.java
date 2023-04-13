@@ -4004,9 +4004,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String curveItemsSql="select t4.itemname,t4.bitindex,t4.realtimecurveconf,t4.itemcode,t4.type "
 						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
-						+ " and t.id="+deviceId+" and t4.realtimecurveconf is not null "
+						+ " and t.id="+deviceId+" "
+						+ " and t4.realtimecurveconf is not null "
 						+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userNo+"' )"
-						+ " order by t4.realtimecurve,t4.sort,t4.id";
+						+ " order by t4.sort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
 				List<?> curveItemList = this.findCallSql(curveItemsSql);
 				String protocolName="";

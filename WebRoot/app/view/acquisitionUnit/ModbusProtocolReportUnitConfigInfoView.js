@@ -491,7 +491,7 @@ function CreateSingleWellReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			}
 			if(singleWellReportTemplateContentHandsontableHelper==null || singleWellReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellReportTemplateContentHandsontableHelper = SingleWellReportTemplateContentHandsontableHelper.createNew("ModbusProtocolReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','报表曲线顺序','报表曲线颜色','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -994,7 +994,7 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			}
 			if(productionReportTemplateContentHandsontableHelper==null || productionReportTemplateContentHandsontableHelper.hot==undefined){
 				productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 

@@ -493,7 +493,7 @@ function CreateSingleWellReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 			}
 			if(reportInstanceSingleWellTemplateContentHandsontableHelper==null || reportInstanceSingleWellTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellTemplateContentHandsontableHelper = ReportInstanceSingleWellTemplateContentHandsontableHelper.createNew("ModbusProtocolReportInstanceContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','显示顺序','报表曲线顺序','报表曲线颜色','','']";
+				var colHeaders="['序号','名称','单位','显示级别','数据顺序','报表曲线顺序','报表曲线颜色','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -612,7 +612,7 @@ function CreateProductionReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','显示顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','']";
+				var colHeaders="['序号','名称','单位','显示级别','数据顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"

@@ -404,12 +404,14 @@ function deviceHistoryQueryCurve(deviceType){
 		    var xTitle='采集时间';
 		    var legendName =result.curveItems;
 		    
-		    var color=result.curveColors;
-		    for(var i=0;i<color.length;i++){
-		    	if(color[i]==''){
-		    		color[i]=defaultColors[i%10];
+		    var curveConf=result.curveConf;
+		    
+		    var color=[];
+		    for(var i=0;i<curveConf.length;i++){
+		    	if(curveConf[i].color==''){
+		    		color.push(defaultColors[i%10]);
 		    	}else{
-		    		color[i]='#'+color[i];
+		    		color.push('#'+curveConf[i].color);
 		    	}
 		    }
 		    
@@ -422,7 +424,7 @@ function deviceHistoryQueryCurve(deviceType){
 		        var minValue=null;
 		        var allPositive=true;//全部是非负数
 		        var allNegative=true;//全部是负值
-		    	series += "{\"name\":\"" + legendName[i] + "\",marker:{enabled: false},"+"\"yAxis\":"+i+",";
+		    	series += "{\"name\":\"" + legendName[i] + "\",type:'spline',lineWidth:"+curveConf[i].lineWidth+",dashStyle:'"+curveConf[i].dashStyle+"',marker:{enabled: false},"+"\"yAxis\":"+i+",";
 		        series += "\"data\":[";
 		        for (var j = 0; j < data.length; j++) {
 		        	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
@@ -439,10 +441,10 @@ function deviceHistoryQueryCurve(deviceType){
 		        if (i != legendName.length - 1) {
 		            series += ",";
 		        }
-		        var opposite=false;
-		        if(i>0){
-		        	opposite=true;
-		        }
+		        var opposite=curveConf[i].yAxisOpposite;
+//		        if(i>0){
+//		        	opposite=true;
+//		        }
 		        if(allNegative){
 		        	maxValue=0;
 		        }else if(allPositive){
@@ -588,17 +590,17 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
             spline: {
 //                lineWidth: 1,
                 fillOpacity: 0.3,
-                marker: {
-                    enabled: true,
-                    radius: 3, //曲线点半径，默认是4
-                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-                    states: {
-                        hover: {
-                            enabled: true,
-                            radius: 6
-                        }
-                    }
-                },
+//                marker: {
+//                    enabled: true,
+//                    radius: 3, //曲线点半径，默认是4
+//                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+//                    states: {
+//                        hover: {
+//                            enabled: true,
+//                            radius: 6
+//                        }
+//                    }
+//                },
                 shadow: true,
                 events: {
                 	legendItemClick: function(e){

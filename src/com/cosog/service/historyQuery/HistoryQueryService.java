@@ -27,6 +27,7 @@ import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.UserInfo;
+import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.gridmodel.GraphicSetData;
@@ -2795,7 +2796,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "\"endDate\":\""+endDate+"\","
 					+ "\"curveItems\":"+itemsBuff+","
 					+ "\"curveItemCodes\":"+itemsCodeBuff+","
-					+ "\"curveColors\":"+curveConfBuff+","
+					+ "\"curveConf\":"+curveConfBuff+","
 					+ "\"graphicSet\":"+graphicSet+","
 					+ "\"list\":[");
 			if(itemColumnList.size()>0){
@@ -2850,6 +2851,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		int dataSaveMode=1;
+		List<DisplayItem> itemList=null;
 		String deviceTableName="tbl_rpcdevice";
 		String graphicSetTableName="tbl_rpcdevicegraphicset";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
@@ -2868,12 +2870,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 				+ " and  t.id="+deviceId;
 		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
-		String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurvecolor,t4.itemcode,t4.type "
+		String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurveconf,t4.itemcode,t4.type "
 				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
-				+ " and t.id="+deviceId+" and t4.historycurve>=0 "
+				+ " and t.id="+deviceId+" "
+				+ " and t4.historycurveconf is not null "
 				+ " and (t4.showlevel is null or t4.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
-				+ " order by t4.historycurve,t4.sort,t4.id";
+				+ " order by t4.sort,t4.id";
 		List<?> protocolList = this.findCallSql(protocolSql);
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		List<?> curveItemList = this.findCallSql(curveItemsSql);
@@ -2889,13 +2892,58 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			graphicSetData=gson.fromJson(graphicSet, type);
 		}
 		
-		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
-		
+		itemList=new ArrayList<DisplayItem>();
 		for(int i=0;i<curveItemList.size();i++){
 			Object[] itemObj=(Object[]) curveItemList.get(i);
-			String curveName=itemObj[0]+"";
-			String itemCode=itemObj[3]+"";
-			String itemType=itemObj[4]+"";
+			DisplayItem displayItem=new DisplayItem();
+			displayItem.setItemName(itemObj[0]+"");
+			displayItem.setItemCode(itemObj[3]+"");
+			displayItem.setType(StringManagerUtils.stringToInteger(itemObj[4]+""));
+			displayItem.setHistoryCurveConf(itemObj[2]+"");
+			itemList.add(displayItem);
+		}
+		if(itemList.size()>0){
+			Collections.sort(itemList,new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
+				@Override
+				public int compare(DisplayInstanceOwnItem.DisplayItem item1,DisplayInstanceOwnItem.DisplayItem item2){
+					Gson gson = new Gson();
+					java.lang.reflect.Type type=null;
+					int sort1=0;
+					int sort2=0;
+					type = new TypeToken<CurveConf>() {}.getType();
+					CurveConf historyCurveConfObj1=gson.fromJson(item1.getHistoryCurveConf(), type);
+					
+					type = new TypeToken<CurveConf>() {}.getType();
+					CurveConf historyCurveConfObj2=gson.fromJson(item2.getHistoryCurveConf(), type);
+					
+					if(historyCurveConfObj1!=null){
+						sort1=historyCurveConfObj1.getSort();
+					}
+					
+					if(historyCurveConfObj2!=null){
+						sort2=historyCurveConfObj2.getSort();
+					}
+					
+					int diff=sort1-sort2;
+					if(diff>0){
+						return 1;
+					}else if(diff<0){
+						return -1;
+					}
+					return 0;
+				}
+			});
+		}
+		
+		
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
+		
+		for(int i=0;i<itemList.size();i++){
+			
+			String curveName=itemList.get(i).getItemName();
+			String itemCode=itemList.get(i).getItemCode();
+			String itemType=itemList.get(i).getType()+"";
 			
 			String yAxisMaxValue="";
 			String yAxisMinValue="";

@@ -162,8 +162,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"解析模式\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"采集模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -251,9 +251,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
 				+ "{ \"header\":\"解析模式\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"采集模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线颜色\",\"dataIndex\":\"realtimeCurveColor\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线顺序\",\"dataIndex\":\"historyCurve\",width:80 ,children:[] },"
@@ -1074,7 +1074,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
 				+ "]";
@@ -1300,7 +1300,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -1471,7 +1471,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
 				+ "]";
@@ -1609,7 +1609,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -1771,7 +1771,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -1877,7 +1877,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
 				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"采集模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1961,17 +1961,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolDisplayInstanceAcqItemsConfigData(String id,String classes){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线颜色\",\"dataIndex\":\"realtimeCurveColor\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线顺序\",\"dataIndex\":\"historyCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -1981,13 +1980,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
-		List<String> realtimeCurveList=new ArrayList<String>();
-		List<String> realtimeCurveColorList=new ArrayList<String>();
-		List<String> historyCurveList=new ArrayList<String>();
-		List<String> historyCurveColorList=new ArrayList<String>();
+		List<String> realtimeCurveConfList=new ArrayList<String>();
+		List<String> historyCurveConfList=new ArrayList<String>();
 		
 		String protocolSql="select t.protocol from tbl_display_unit_conf t,tbl_protocoldisplayinstance t2 where t.id=t2.displayunitid and t2.id="+id+"";
-		String sql="select t.itemname,t.bitindex,t.sort,t.showlevel,t.realtimeCurve,t.realtimeCurveColor,historyCurve,historyCurveColor "
+		String sql="select t.itemname,t.bitindex,t.sort,t.showlevel,"
+				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=0 and t3.id= "+id
 				+ " order by t.id";
@@ -1995,16 +1993,38 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(protocolList.size()>0){
 			String protocolName=protocolList.get(0)+"";
 			List<?> list=this.findCallSql(sql);
+			
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
 				itemsSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
-				realtimeCurveList.add(obj[4]+"");
-				realtimeCurveColorList.add(obj[5]+"");
-				historyCurveList.add(obj[6]+"");
-				historyCurveColorList.add(obj[7]+"");
+				
+				String realtimeCurveConfShowValue="";
+				String historyCurveConfShowValue="";
+				
+				CurveConf realtimeCurveConfObj=null;
+				if(StringManagerUtils.isNotNull(obj[4]+"") && !"\"\"".equals(obj[4]+"")){
+					type = new TypeToken<CurveConf>() {}.getType();
+					realtimeCurveConfObj=gson.fromJson(obj[4]+"", type);
+				}
+				
+				CurveConf historyCurveConfObj=null;
+				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
+					type = new TypeToken<CurveConf>() {}.getType();
+					historyCurveConfObj=gson.fromJson(obj[5]+"", type);
+				}
+				
+				if(realtimeCurveConfObj!=null){
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+				}
+				if(historyCurveConfObj!=null){
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConfShowValue);
+				historyCurveConfList.add(historyCurveConfShowValue);
 			}
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
@@ -2016,10 +2036,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
 								String sort="";
 								String showLevel="";
-								String isRealtimeCurve="";
-								String realtimeCurveColor="";
-								String isHistoryCurve="";
-								String historyCurveColor="";
+								
+								String realtimeCurveConfShowValue="";
+								String historyCurveConfShowValue="";
 								
 								if(protocolConfig.getItems().get(j).getResolutionMode()==0
 										&&protocolConfig.getItems().get(j).getMeaning()!=null
@@ -2028,20 +2047,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
 										sort="";
 										showLevel="";
-										isRealtimeCurve="";
-										realtimeCurveColor="";
-										isHistoryCurve="";
-										historyCurveColor="";
+										realtimeCurveConfShowValue="";
+										historyCurveConfShowValue="";
 										for(int m=0;m<itemsList.size();m++){
 											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 												){
 												sort=itemsSortList.get(m);
 												showLevel=itemsShowLevelList.get(m);
-												isRealtimeCurve=realtimeCurveList.get(m);
-												realtimeCurveColor=realtimeCurveColorList.get(m);
-												isHistoryCurve=historyCurveList.get(m);
-												historyCurveColor=historyCurveColorList.get(m);
+												realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
+												historyCurveConfShowValue=historyCurveConfList.get(m);
 												break;
 											}
 										}
@@ -2052,10 +2067,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 												+ "\"showLevel\":\""+showLevel+"\","
 												+ "\"sort\":\""+sort+"\","
-												+ "\"isRealtimeCurve\":\""+isRealtimeCurve+"\","
-												+ "\"realtimeCurveColor\":\""+realtimeCurveColor+"\","
-												+ "\"isHistoryCurve\":\""+isHistoryCurve+"\","
-												+ "\"historyCurveColor\":\""+historyCurveColor+"\""
+												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 												+ "},");
 										index++;
 									}
@@ -2064,10 +2077,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
 											sort=itemsSortList.get(k);
 											showLevel=itemsShowLevelList.get(k);
-											isRealtimeCurve=realtimeCurveList.get(k);
-											realtimeCurveColor=realtimeCurveColorList.get(k);
-											isHistoryCurve=historyCurveList.get(k);
-											historyCurveColor=historyCurveColorList.get(k);
+											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+											historyCurveConfShowValue=realtimeCurveConfList.get(k);
 											break;
 										}
 									}
@@ -2077,10 +2088,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 											+ "\"showLevel\":\""+showLevel+"\","
 											+ "\"sort\":\""+sort+"\","
-											+ "\"isRealtimeCurve\":\""+isRealtimeCurve+"\","
-											+ "\"realtimeCurveColor\":\""+realtimeCurveColor+"\","
-											+ "\"isHistoryCurve\":\""+isHistoryCurve+"\","
-											+ "\"historyCurveColor\":\""+historyCurveColor+"\""
+											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 											+ "},");
 									index++;
 								}
@@ -2110,7 +2119,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -2210,6 +2219,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolDisplayInstanceCalItemsConfigData(String id,String classes,String deviceType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		String key="rpcCalItemList";
 		if("1".equalsIgnoreCase(deviceType)){
 			key="pcpCalItemList";
@@ -2235,11 +2245,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线颜色\",\"dataIndex\":\"realtimeCurveColor\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线顺序\",\"dataIndex\":\"historyCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -2250,12 +2258,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
-		List<String> realtimeCurveList=new ArrayList<String>();
-		List<String> realtimeCurveColorList=new ArrayList<String>();
-		List<String> historyCurveList=new ArrayList<String>();
-		List<String> historyCurveColorList=new ArrayList<String>();
+		List<String> realtimeCurveConfList=new ArrayList<String>();
+		List<String> historyCurveConfList=new ArrayList<String>();
 		
-		String sql="select t.itemname,t.itemcode,t.bitindex,t.sort,t.showlevel,t.realtimeCurve,t.realtimeCurveColor,historyCurve,historyCurveColor "
+		String sql="select t.itemname,t.itemcode,t.bitindex,t.sort,t.showlevel,"
+				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
 				+ " order by t.id";
@@ -2268,10 +2275,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsBitIndexList.add(obj[2]+"");
 				itemsSortList.add(obj[3]+"");
 				itemsShowLevelList.add(obj[4]+"");
-				realtimeCurveList.add(obj[5]+"");
-				realtimeCurveColorList.add(obj[6]+"");
-				historyCurveList.add(obj[7]+"");
-				historyCurveColorList.add(obj[8]+"");
+				String realtimeCurveConfShowValue="";
+				String historyCurveConfShowValue="";
+				
+				CurveConf realtimeCurveConfObj=null;
+				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
+					type = new TypeToken<CurveConf>() {}.getType();
+					realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
+				}
+				
+				CurveConf historyCurveConfObj=null;
+				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
+					type = new TypeToken<CurveConf>() {}.getType();
+					historyCurveConfObj=gson.fromJson(obj[6]+"", type);
+				}
+				
+				if(realtimeCurveConfObj!=null){
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+				}
+				if(historyCurveConfObj!=null){
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConfShowValue);
+				historyCurveConfList.add(historyCurveConfShowValue);
 			}
 			int index=1;
 			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
@@ -2279,19 +2306,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
 					String sort="";
 					String showLevel="";
-					String isRealtimeCurve="";
-					String realtimeCurveColor="";
-					String isHistoryCurve="";
-					String historyCurveColor="";
+					String realtimeCurveConfShowValue="";
+					String historyCurveConfShowValue="";
 
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 							sort=itemsSortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
-							isRealtimeCurve=realtimeCurveList.get(k);
-							realtimeCurveColor=realtimeCurveColorList.get(k);
-							isHistoryCurve=historyCurveList.get(k);
-							historyCurveColor=historyCurveColorList.get(k);
+							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+							historyCurveConfShowValue=historyCurveConfList.get(k);
 							break;
 						}
 					}
@@ -2301,10 +2324,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"unit\":\""+calItem.getUnit()+"\","
 							+ "\"showLevel\":\""+showLevel+"\","
 							+ "\"sort\":\""+sort+"\","
-							+ "\"isRealtimeCurve\":\""+isRealtimeCurve+"\","
-							+ "\"realtimeCurveColor\":\""+realtimeCurveColor+"\","
-							+ "\"isHistoryCurve\":\""+isHistoryCurve+"\","
-							+ "\"historyCurveColor\":\""+historyCurveColor+"\""
+							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 							+ "},");
 					index++;
 				}

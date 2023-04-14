@@ -922,10 +922,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String reportType = ParamUtils.getParameter(request, "reportType");
 			String saveData = ParamUtils.getParameter(request, "saveData");
 			
-			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType);
-			
 			type = new TypeToken<TotalCalItemsToReportUnitSaveData>() {}.getType();
 			TotalCalItemsToReportUnitSaveData totalCalItemsToReportUnitSaveData=gson.fromJson(saveData, type);
+			
+			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType);
+			
+			
 			if (totalCalItemsToReportUnitSaveData!=null && totalCalItemsToReportUnitSaveData.getItemList()!=null && totalCalItemsToReportUnitSaveData.getItemList().size()>0) {
 				
 				for (int i = 0; i < totalCalItemsToReportUnitSaveData.getItemList().size(); i++) {
@@ -941,8 +943,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
 					reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
 					
-					reportUnitItem.setReportCurve( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurve()!=null && (StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurve())) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurve()):null);
-					reportUnitItem.setReportCurveColor(StringManagerUtils.isColor16("#"+totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveColor())?totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveColor():"");
+					reportUnitItem.setReportCurveConf(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveConf());
 					
 					reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
 					

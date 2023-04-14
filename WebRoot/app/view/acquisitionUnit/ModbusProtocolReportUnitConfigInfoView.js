@@ -491,7 +491,7 @@ function CreateSingleWellReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			}
 			if(singleWellReportTemplateContentHandsontableHelper==null || singleWellReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellReportTemplateContentHandsontableHelper = SingleWellReportTemplateContentHandsontableHelper.createNew("ModbusProtocolReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','报表曲线顺序','报表曲线颜色','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','报表曲线','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -499,8 +499,8 @@ function CreateSingleWellReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 					 	+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellReportTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellReportTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurveColor'},"
+						+"{data:'reportCurveConfShowValue'},"
+						+"{data:'reportCurveConf'},"
 						+"{data:'code'},"
 						+"{data:'dataType'},"
 						+"{data:'remark'}"
@@ -543,7 +543,10 @@ var SingleWellReportTemplateContentHandsontableHelper = {
 	        singleWellReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
-	            	td.style.backgroundColor = '#'+value;
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
 	            }
 	        }
 	        
@@ -554,7 +557,7 @@ var SingleWellReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9,10],
+	                    columns: [7,8,9,10],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -583,7 +586,7 @@ var SingleWellReportTemplateContentHandsontableHelper = {
 	                		}else{
 	                			if (visualColIndex >=1 && visualColIndex<=3) {
 	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==7){
+	    		                }else if(visualColIndex==6){
 	    		                	cellProperties.renderer = singleWellReportTemplateContentHandsontableHelper.addCurveBg;
 	    		                }
 	                		}
@@ -593,24 +596,43 @@ var SingleWellReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(singleWellReportTemplateContentHandsontableHelper!=null && singleWellReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=singleWellReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==7)){
+		                	if(row1[0] && (column==6)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
 		                			if(selectedItem.data.classes==1){
-		                				var CurveColorSelectWindow=Ext.create("AP.view.acquisitionUnit.CurveColorSelectWindow");
-		                				Ext.getCmp("curveColorSelectedTableType_Id").setValue(21);//汇总计算项表
-		                				Ext.getCmp("curveColorSelectedRow_Id").setValue(row);
-		                				Ext.getCmp("curveColorSelectedCol_Id").setValue(column);
-		                				CurveColorSelectWindow.show();
-		                				var value=row1[column];
-		                				if(value==null||value==''){
-		                					value='ff0000';
+		                				var CurveConfigWindow=Ext.create("AP.view.acquisitionUnit.CurveConfigWindow");
+		                				
+		                				Ext.getCmp("curveConfigSelectedTableType_Id").setValue(21);//单井报表内容表
+		                				Ext.getCmp("curveConfigSelectedRow_Id").setValue(row);
+		                				Ext.getCmp("curveConfigSelectedCol_Id").setValue(column);
+		                				
+		                				CurveConfigWindow.show();
+		                				
+		                				var curveConfig=null;
+		                				if(column==6 && isNotVal(row1[7])){
+		                					curveConfig=row1[7];
 		                				}
-		                				Ext.getCmp('CurveColorSelectWindowColor_id').setValue(value);
-	                		        	var BackgroundColor=Ext.getCmp('CurveColorSelectWindowColor_id').color;
-	                		        	BackgroundColor.a=1;
-	                		        	Ext.getCmp('CurveColorSelectWindowColor_id').setColor(BackgroundColor);
+		                				var value='ff0000';
+		                				
+		                				if(isNotVal(curveConfig)){
+		                					Ext.getCmp("curveConfigSort_Id").setValue(curveConfig.sort);
+		                					Ext.getCmp("curveConfigLineWidth_Id").setValue(curveConfig.lineWidth);
+		                					Ext.getCmp("curveConfigDashStyleComb_Id").setValue(curveConfig.dashStyle);
+		                					Ext.getCmp("curveConfigYAxisOppositeComb_Id").setValue(curveConfig.yAxisOpposite);
+		                		        	
+		                		        	Ext.getCmp('curveConfigColor_id').setValue(curveConfig.color);
+		                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+		                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+		                		            	background: '#'+curveConfig.color,
+		                		            });
+		                				}else{
+		                					Ext.getCmp('curveConfigColor_id').setValue(value);
+		                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+		                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+		                		            	background: '#'+value
+		                		            });
+		                				}
 		                			}
 		                		}
 		                	}
@@ -994,7 +1016,7 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			}
 			if(productionReportTemplateContentHandsontableHelper==null || productionReportTemplateContentHandsontableHelper.hot==undefined){
 				productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','求和','求平均','报表曲线顺序','报表曲线颜色','曲线统计类型','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','求和','求平均','报表曲线','曲线统计类型','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -1006,11 +1028,11 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 						+"{data:'sumSign',type:'checkbox'}," 
 						+"{data:'averageSign',type:'checkbox'}," 
 						
-						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurveColor'},"
-						
+						+"{data:'reportCurveConfShowValue'},"
 						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},"
 						
+						+"{data:'reportCurveConf'},"
+
 						+"{data:'code'},"
 						+"{data:'dataType'},"
 						+"{data:'remark'}"
@@ -1053,7 +1075,10 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	        productionReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
-	            	td.style.backgroundColor = '#'+value;
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
 	            }
 	        }
 	        
@@ -1064,11 +1089,11 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [11,12,13],
+	                    columns: [10,11,12,13],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,30,45,85,85,70],
+	                colWidths: [25,30,140,80,60,60,30,45,85,70],
 	                columns:productionReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1093,7 +1118,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                		}else{
 	                			if (visualColIndex >=1 && visualColIndex<=3) {
 	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==9){
+	    		                }else if(visualColIndex==8){
 	    		                	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCurveBg;
 	    		                }
 	                		}
@@ -1103,24 +1128,43 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(productionReportTemplateContentHandsontableHelper!=null && productionReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=productionReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==9)){
+		                	if(row1[0] && (column==8)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
 		                			if(selectedItem.data.classes==1){
-		                				var CurveColorSelectWindow=Ext.create("AP.view.acquisitionUnit.CurveColorSelectWindow");
-		                				Ext.getCmp("curveColorSelectedTableType_Id").setValue(22);//区域报表汇总计算项表
-		                				Ext.getCmp("curveColorSelectedRow_Id").setValue(row);
-		                				Ext.getCmp("curveColorSelectedCol_Id").setValue(column);
-		                				CurveColorSelectWindow.show();
-		                				var value=row1[column];
-		                				if(value==null||value==''){
-		                					value='ff0000';
+		                				var CurveConfigWindow=Ext.create("AP.view.acquisitionUnit.CurveConfigWindow");
+		                				
+		                				Ext.getCmp("curveConfigSelectedTableType_Id").setValue(22);//区域报表内容
+		                				Ext.getCmp("curveConfigSelectedRow_Id").setValue(row);
+		                				Ext.getCmp("curveConfigSelectedCol_Id").setValue(column);
+		                				
+		                				CurveConfigWindow.show();
+		                				
+		                				var curveConfig=null;
+		                				if(column==8 && isNotVal(row1[10])){
+		                					curveConfig=row1[10];
 		                				}
-		                				Ext.getCmp('CurveColorSelectWindowColor_id').setValue(value);
-	                		        	var BackgroundColor=Ext.getCmp('CurveColorSelectWindowColor_id').color;
-	                		        	BackgroundColor.a=1;
-	                		        	Ext.getCmp('CurveColorSelectWindowColor_id').setColor(BackgroundColor);
+		                				var value='ff0000';
+		                				
+		                				if(isNotVal(curveConfig)){
+		                					Ext.getCmp("curveConfigSort_Id").setValue(curveConfig.sort);
+		                					Ext.getCmp("curveConfigLineWidth_Id").setValue(curveConfig.lineWidth);
+		                					Ext.getCmp("curveConfigDashStyleComb_Id").setValue(curveConfig.dashStyle);
+		                					Ext.getCmp("curveConfigYAxisOppositeComb_Id").setValue(curveConfig.yAxisOpposite);
+		                		        	
+		                		        	Ext.getCmp('curveConfigColor_id').setValue(curveConfig.color);
+		                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+		                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+		                		            	background: '#'+curveConfig.color,
+		                		            });
+		                				}else{
+		                					Ext.getCmp('curveConfigColor_id').setValue(value);
+		                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+		                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+		                		            	background: '#'+value
+		                		            });
+		                				}
 		                			}
 		                		}
 		                	}
@@ -1285,8 +1329,16 @@ var grantReportTotalCalItemsPermission = function () {
             	
         		item.itemShowLevel = calItemsData[index][4];
         		item.itemSort = calItemsData[index][5];
-        		item.reportCurve=calItemsData[index][6];
-        		item.reportCurveColor=calItemsData[index][7];
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(calItemsData[index][6]) && isNotVal(calItemsData[index][7])){
+    				reportCurveConfig=calItemsData[index][7];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
             	
         		item.itemCode = calItemsData[index][8];
         		item.dataType = calItemsData[index][9];
@@ -1306,17 +1358,24 @@ var grantReportTotalCalItemsPermission = function () {
         			item.averageSign='1';
         		}
         		
-        		item.reportCurve=calItemsData[index][8];
-        		item.reportCurveColor=calItemsData[index][9];
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(calItemsData[index][8]) && isNotVal(calItemsData[index][10])){
+    				reportCurveConfig=calItemsData[index][10];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
         		
-        		item.curveStatType = calItemsData[index][10];
-        		if(calItemsData[index][10]=='合计'){
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+        		
+        		item.curveStatType = calItemsData[index][9];
+        		if(calItemsData[index][9]=='合计'){
         			item.curveStatType='1';
-        		}else if(calItemsData[index][10]=='平均'){
+        		}else if(calItemsData[index][9]=='平均'){
         			item.curveStatType='2';
-        		}else if(calItemsData[index][10]=='最大值'){
+        		}else if(calItemsData[index][9]=='最大值'){
         			item.curveStatType='3';
-        		}else if(calItemsData[index][10]=='最小值'){
+        		}else if(calItemsData[index][9]=='最小值'){
         			item.curveStatType='4';
         		}
         		

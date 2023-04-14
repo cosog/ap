@@ -321,10 +321,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 	                				}else if(column==7 && isNotVal(row1[9])){
 	                					curveConfig=row1[9];
 	                				}
-	                				var value=row1[column];
-	                				if(value==null||value==''){
-	                					value='ff0000';
-	                				}
+	                				var value='ff0000';
 	                				
 	                				if(isNotVal(curveConfig)){
 	                					Ext.getCmp("curveConfigSort_Id").setValue(curveConfig.sort);

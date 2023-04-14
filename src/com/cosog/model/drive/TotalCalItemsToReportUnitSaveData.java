@@ -20,9 +20,7 @@ public class TotalCalItemsToReportUnitSaveData {
 
 	    private String averageSign;
 
-	    private String reportCurve;
-
-	    private String reportCurveColor;
+	    private String reportCurveConf;
 
 	    private String curveStatType;
 
@@ -66,18 +64,6 @@ public class TotalCalItemsToReportUnitSaveData {
 	    public String getAverageSign(){
 	        return this.averageSign;
 	    }
-	    public void setReportCurve(String reportCurve){
-	        this.reportCurve = reportCurve;
-	    }
-	    public String getReportCurve(){
-	        return this.reportCurve;
-	    }
-	    public void setReportCurveColor(String reportCurveColor){
-	        this.reportCurveColor = reportCurveColor;
-	    }
-	    public String getReportCurveColor(){
-	        return this.reportCurveColor;
-	    }
 	    public void setCurveStatType(String curveStatType){
 	        this.curveStatType = curveStatType;
 	    }
@@ -96,6 +82,12 @@ public class TotalCalItemsToReportUnitSaveData {
 	    public String getDataType(){
 	        return this.dataType;
 	    }
+		public String getReportCurveConf() {
+			return reportCurveConf;
+		}
+		public void setReportCurveConf(String reportCurveConf) {
+			this.reportCurveConf = reportCurveConf;
+		}
 	}
 
 	public List<Item> getItemList() {

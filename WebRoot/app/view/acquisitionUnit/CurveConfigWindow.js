@@ -2,6 +2,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.curveConfigWindow',
     layout: 'fit',
+    title: '曲线属性',
     iframe: true,
     id: 'curveConfigWindow_Id',
     closeAction: 'destroy',
@@ -183,12 +184,28 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 				protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),9,curveConfig);
                 			}
                 		}else if(tableType==21){//单井报表汇总计算项
-                			singleWellReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
+                			singleWellReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
+                			var curveConfig={};
+                			curveConfig.sort=sort;
+                			curveConfig.lineWidth=lineWidth;
+                			curveConfig.dashStyle=dashStyle;
+                			curveConfig.yAxisOpposite=yAxisOpposite;
+                			curveConfig.color=color;
+                			if(parseInt(col)==6){
+                				singleWellReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),7,curveConfig);
+                			}
                 		}else if(tableType==22){//区域报表汇总计算项
-                			productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
+                			productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
+                			var curveConfig={};
+                			curveConfig.sort=sort;
+                			curveConfig.lineWidth=lineWidth;
+                			curveConfig.dashStyle=dashStyle;
+                			curveConfig.yAxisOpposite=yAxisOpposite;
+                			curveConfig.color=color;
+                			if(parseInt(col)==8){
+                				productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),10,curveConfig);
+                			}
                 		}
-                		
-//                		protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
                 	}
                 	
                 	Ext.getCmp("curveConfigWindow_Id").close();

@@ -841,69 +841,87 @@ function CreatePCPProductionDailyReportCurve(){
             
 		    var data = result.list;
 		    var graphicSet=result.graphicSet;
-		    
+		    var timeFormat='%m-%d';
 		    var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
 		    var tickInterval = 1;
 		    tickInterval = Math.floor(data.length / 10) + 1;
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = "总采油曲线";
+		    var title = result.wellName + "报表曲线";
 		    var xTitle='日期';
 		    var legendName =result.curveItems;
-		    
-		    var color=result.curveColors;
-		    for(var i=0;i<color.length;i++){
-		    	if(color[i]==''){
-		    		color[i]=defaultColors[i%10];
+		    var curveConf=result.curveConf;
+		    var color=[];
+		    var color_l=[];
+		    var color_r=[];
+		    var color_all=[];
+		    for(var i=0;i<curveConf.length;i++){
+		    	var singleColor=defaultColors[i%defaultColors.length];
+		    	if(curveConf[i].color!=''){
+		    		singleColor='#'+curveConf[i].color;
+		    	}
+		    	color.push(singleColor);
+		    	
+		    	if(curveConf[i].yAxisOpposite){
+		    		color_r.push(singleColor);
 		    	}else{
-		    		color[i]='#'+color[i];
+		    		color_l.push(singleColor);
 		    	}
 		    }
 		    
-		    var yTitle=legendName[0];
-		    
-		    var series = "[";
+		    var series = [];
+		    var series_l=[];
+		    var series_r=[];
 		    var yAxis= [];
+		    var yAxis_l= [];
+		    var yAxis_r= [];
+		   		    
 		    for (var i = 0; i < legendName.length; i++) {
 		        var maxValue=null;
 		        var minValue=null;
 		        var allPositive=true;//全部是非负数
 		        var allNegative=true;//全部是负值
-		    	series += "{\"name\":\"" + legendName[i] + "\",marker:{enabled: false},"+"\"yAxis\":"+i+",";
-		        series += "\"data\":[";
+		        
+		        var singleSeries={};
+		        singleSeries.name=legendName[i];
+		        singleSeries.type='spline';
+		        singleSeries.lineWidth=curveConf[i].lineWidth;
+		        singleSeries.dashStyle=curveConf[i].dashStyle;
+		        singleSeries.marker={enabled: false};
+		        singleSeries.yAxis=i;
+		        singleSeries.data=[];
 		        for (var j = 0; j < data.length; j++) {
-		        	series += "[" + Date.parse(data[j].calDate.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
-		            if (j != data.length - 1) {
-		                series += ",";
-		            }
-		            if(parseFloat(data[j].data[i])<0){
+		        	var pointData=[];
+		        	pointData.push(Date.parse(data[j].calDate.replace(/-/g, '/')));
+		        	pointData.push(data[j].data[i]);
+		        	singleSeries.data.push(pointData);
+		        	if(parseFloat(data[j].data[i])<0){
 		            	allPositive=false;
 		            }else if(parseFloat(data[j].data[i])>=0){
 		            	allNegative=false;
 		            }
 		        }
-		        series += "]}";
-		        if (i != legendName.length - 1) {
-		            series += ",";
+		        if(curveConf[i].yAxisOpposite){
+		        	series_r.push(singleSeries);
+		        }else{
+		        	series_l.push(singleSeries);
 		        }
-		        var opposite=false;
-		        if(i>0){
-		        	opposite=true;
-		        }
+		        
+		        var opposite=curveConf[i].yAxisOpposite;
 		        if(allNegative){
 		        	maxValue=0;
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.Report) ){
-			    	for(var j=0;j<graphicSet.Report.length;j++){
-			    		if(graphicSet.Report[j].itemCode!=undefined && graphicSet.Report[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
-			    			if(isNotVal(graphicSet.Report[j].yAxisMaxValue)){
-					    		maxValue=parseFloat(graphicSet.Report[j].yAxisMaxValue);
+		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
+			    	for(var j=0;j<graphicSet.History.length;j++){
+			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
+					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
 					    	}
-					    	if(isNotVal(graphicSet.Report[j].yAxisMinValue)){
-					    		minValue=parseFloat(graphicSet.Report[j].yAxisMinValue);
+					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
+					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
 					    	}
 					    	break;
 			    		}
@@ -926,15 +944,36 @@ function CreatePCPProductionDailyReportCurve(){
 		                },
 		                opposite:opposite
 		          };
-		        yAxis.push(singleAxis);
+		        if(curveConf[i].yAxisOpposite){
+		        	yAxis_r.push(singleAxis);
+		        }else{
+		        	yAxis_l.push(singleAxis);
+		        }
 		        
 		    }
-		    series += "]";
+		    for(var i=yAxis_l.length-1;i>=0;i--){
+		    	yAxis.push(yAxis_l[i]);
+		    }
+		    for(var i=0;i<yAxis_r.length;i++){
+		    	yAxis.push(yAxis_r[i]);
+		    }
 		    
-		    var ser = Ext.JSON.decode(series);
-		    var timeFormat='%m-%d';
-//		    timeFormat='%H:%M';
-		    initPCPProductionDailyReportCurveChartFn(ser, tickInterval, 'PCPProductionDailyReportCurveDiv_Id', title, '', '', yAxis, color,true,timeFormat);
+		    for(var i=0;i<series_l.length;i++){
+		    	series_l[i].yAxis=series_l.length-1-i;
+		    	series.push(series_l[i]);
+		    }
+		    for(var i=0;i<series_r.length;i++){
+		    	series_r[i].yAxis=series_l.length+i;
+		    	series.push(series_r[i]);
+		    }
+		    
+		    for(var i=0;i<color_l.length;i++){
+		    	color_all.push(color_l[i]);
+		    }
+		    for(var i=0;i<color_r.length;i++){
+		    	color_all.push(color_r[i]);
+		    }
+		    initPCPProductionDailyReportCurveChartFn(series, tickInterval, 'PCPProductionDailyReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");

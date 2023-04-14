@@ -24,8 +24,7 @@ public class ReportUnitItem implements java.io.Serializable {
 	private Integer sumSign;
 	private Integer averageSign;
 	
-	private Integer reportCurve;
-	private String reportCurveColor;
+	private String reportCurveConf;
 	
 	private Integer curveStatType;
 	
@@ -40,7 +39,8 @@ public class ReportUnitItem implements java.io.Serializable {
 
 	/** full constructor */
 	public ReportUnitItem(Integer id, Integer itemId, String itemName, String itemCode, Integer unitId, String matrix,
-			Integer showLevel, Integer sort, Integer reportCurve, String reportCurveColor, Integer dataType, Integer reportType) {
+			Integer showLevel, Integer sort, 
+			String reportCurveConf, Integer dataType, Integer reportType) {
 		super();
 		this.id = id;
 		this.itemId = itemId;
@@ -50,8 +50,7 @@ public class ReportUnitItem implements java.io.Serializable {
 		this.matrix = matrix;
 		this.showLevel = showLevel;
 		this.sort = sort;
-		this.reportCurve = reportCurve;
-		this.reportCurveColor = reportCurveColor;
+		this.reportCurveConf = reportCurveConf;
 		this.dataType = dataType;
 		this.reportType = reportType;
 	}
@@ -120,22 +119,13 @@ public class ReportUnitItem implements java.io.Serializable {
 		this.showLevel = showLevel;
 	}
 
-	@Column(name = "reportCurve")
-	public Integer getReportCurve() {
-		return reportCurve;
+	@Column(name = "reportCurveConf", nullable = true, length = 8)
+	public String getReportCurveConf() {
+		return reportCurveConf;
 	}
 
-	public void setReportCurve(Integer reportCurve) {
-		this.reportCurve = reportCurve;
-	}
-
-	@Column(name = "reportCurveColor", nullable = true, length = 8)
-	public String getReportCurveColor() {
-		return reportCurveColor;
-	}
-
-	public void setReportCurveColor(String reportCurveColor) {
-		this.reportCurveColor = reportCurveColor;
+	public void setReportCurveConf(String reportCurveConf) {
+		this.reportCurveConf = reportCurveConf;
 	}
 	
 	@Column(name = "dataType")

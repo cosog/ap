@@ -240,6 +240,8 @@ public class EquipmentDriverServerTask {
 //				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
 //				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
+//				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*11).start();
+				
 				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*10).start();
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -2636,6 +2636,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						java.lang.reflect.Type type=null;
 						int sort1=0;
 						int sort2=0;
+						boolean yAxisOpposite1=false;
+						boolean yAxisOpposite2=false;
 						type = new TypeToken<CurveConf>() {}.getType();
 						CurveConf historyCurveConfObj1=gson.fromJson(item1.getHistoryCurveConf(), type);
 						
@@ -2644,10 +2646,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 						if(historyCurveConfObj1!=null){
 							sort1=historyCurveConfObj1.getSort();
+							yAxisOpposite1=historyCurveConfObj1.getYAxisOpposite();
 						}
 						
 						if(historyCurveConfObj2!=null){
 							sort2=historyCurveConfObj2.getSort();
+							yAxisOpposite2=historyCurveConfObj2.getYAxisOpposite();
 						}
 						
 						int diff=sort1-sort2;
@@ -2791,6 +2795,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			curveConfBuff.append("]");
 			
+			String minAcqTime="";
+			String maxAcqTime="";
 			result_json.append("{\"deviceName\":\""+deviceName+"\","
 					+ "\"startDate\":\""+startDate+"\","
 					+ "\"endDate\":\""+endDate+"\","
@@ -2815,11 +2821,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				String finalSql=sql;
 				if(rarefy>1){
-//					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
 					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 				}
 				List<?> list = this.findCallSql(finalSql);
-//				System.out.println("抽稀前曲线点数:"+total+",抽稀后曲线点数:"+list.size()+",系数:"+vacuateThreshold);
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
 					result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
@@ -2830,12 +2834,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						result_json.deleteCharAt(result_json.length() - 1);
 					}
 					result_json.append("]},");
+					if(i==0){
+						minAcqTime=obj[0]+"";
+					}
+					if(i==list.size()-1){
+						maxAcqTime=obj[0]+"";
+					}
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
 			}
-			result_json.append("]}");
+			result_json.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{

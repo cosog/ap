@@ -1326,8 +1326,6 @@ function deviceRealtimeMonitoringCurve(deviceType){
         		    color.push(colors[i]);
         		    if(color[0]==''){
         		    	color[0]=defaultColors[i%10];
-        		    }else{
-        		    	color[0]='#'+colors[i];
         		    }
         		    var maxValue=null;
     		        var minValue=null;

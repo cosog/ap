@@ -1581,6 +1581,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getReportUnitTotalCalItemsConfigData(String deviceType,String reportType,String unitId,String classes){
 		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		String key="rpcTotalCalItemList";
 		if("1".equalsIgnoreCase(deviceType)){
 			key="pcpTotalCalItemList";
@@ -1612,8 +1614,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报曲线统计类型\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
 				+ "]";
 		
@@ -1628,12 +1629,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> sumSignList=new ArrayList<String>();
 		List<String> averageSignList=new ArrayList<String>();
 		
-		List<String> reportCurveList=new ArrayList<String>();
-		List<String> reportCurveColorList=new ArrayList<String>();
+		List<String> reportCurveConfList=new ArrayList<String>();
 		
 		List<String> curveStatTypeList=new ArrayList<String>();
 		if("1".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurve,t.reportCurveColor,t.curvestattype "
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype "
 					+ " from tbl_report_items2unit_conf t "
 					+ " where t.unitid="+unitId+" and t.reportType="+reportType
 					+ " order by t.sort";
@@ -1648,10 +1648,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				sumSignList.add(obj[4]+"");
 				averageSignList.add(obj[5]+"");
 				
-				reportCurveList.add(obj[6]+"");
-				reportCurveColorList.add(obj[7]+"");
-				
-				curveStatTypeList.add(obj[8]+"");
+				String reportCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(reportCurveConf)){
+					reportCurveConf="\"\"";
+				}
+				reportCurveConfList.add(reportCurveConf);
+				curveStatTypeList.add(obj[7]+"");
 			}
 		}
 		
@@ -1667,8 +1669,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				boolean sumSign=false;
 				boolean averageSign=false;
 				
-				String isReportCurve="";
-				String reportCurveColor="";
+				String reportCurveConf="\"\"";
+				String reportCurveConfShowValue="";
 				
 				String curveStatType="";
 
@@ -1695,8 +1697,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								}
 							}
 							
-							isReportCurve=reportCurveList.get(k);
-							reportCurveColor=reportCurveColorList.get(k);
+							reportCurveConf=reportCurveConfList.get(k);
+							
+							CurveConf reportCurveConfObj=null;
+							if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+								type = new TypeToken<CurveConf>() {}.getType();
+								reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+							}
+							
+							if(reportCurveConfObj!=null){
+								reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+							}
+							
 							
 							String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
 							if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
@@ -1722,8 +1734,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"sort\":\""+sort+"\","
 						+ "\"sumSign\":"+sumSign+","
 						+ "\"averageSign\":"+averageSign+","
-						+ "\"reportCurve\":\""+isReportCurve+"\","
-						+ "\"reportCurveColor\":\""+reportCurveColor+"\","
+						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+						+ "\"reportCurveConf\":"+reportCurveConf+","
 						+ "\"curveStatType\":\""+curveStatType+"\","
 						+ "\"dataType\":"+calItem.getDataType()+","
 						+ "\"code\":\""+calItem.getCode()+"\","
@@ -1743,6 +1755,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getReportInstanceTotalCalItemsConfigData(String deviceType,String unitId,String reportType){
 		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		String key="rpcTotalCalItemList";
 		if("1".equalsIgnoreCase(deviceType)){
 			key="pcpTotalCalItemList";
@@ -1774,15 +1788,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报曲线统计类型\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurve,t.reportCurveColor,t.curvestattype "
+		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype "
 				+ " from tbl_report_items2unit_conf t "
 				+ " where t.unitid="+unitId+" and t.reportType="+reportType
 				+ " order by t.sort";
@@ -1807,8 +1820,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			boolean averageSign=false;
 			String sumSignStr=obj[4]+"";
 			String averageSignStr=obj[5]+"";
+			
+			String reportCurveConf=obj[6]+"";
+			if(!StringManagerUtils.isNotNull(reportCurveConf)){
+				reportCurveConf="\"\"";
+			}
+			String reportCurveConfShowValue="";
+			
+			CurveConf reportCurveConfObj=null;
+			if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+				type = new TypeToken<CurveConf>() {}.getType();
+				reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+			}
+			
+			if(reportCurveConfObj!=null){
+				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+			}
+			
 			String curveStatType="";
-			String curveStatTypeStr=(obj[8]+"").replaceAll("null", "");
+			String curveStatTypeStr=(obj[7]+"").replaceAll("null", "");
 			
 			if(StringManagerUtils.isNum(sumSignStr)||StringManagerUtils.isNumber(sumSignStr)){
 				if(StringManagerUtils.stringToInteger(sumSignStr)==1){
@@ -1846,8 +1876,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"sort\":\""+obj[2]+""+"\","
 					+ "\"sumSign\":"+sumSign+""+","
 					+ "\"averageSign\":"+averageSign+""+","
-					+ "\"reportCurve\":\""+obj[6]+""+"\","
-					+ "\"reportCurveColor\":\""+obj[7]+""+"\","
+					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+""+"\","
+					+ "\"reportCurveConf\":"+reportCurveConf+""+","
 					+ "\"curveStatType\":\""+curveStatType+""+"\","
 					+ "\"dataType\":"+dataType+","
 					+ "\"code\":\""+obj[1]+""+"\""

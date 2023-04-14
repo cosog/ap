@@ -5,11 +5,11 @@ public class CurveConf {
 	private String color;
 	private int lineWidth;
 	private String dashStyle;
-	private String yAxisOpposite;
+	private boolean yAxisOpposite;
 	public CurveConf() {
 		super();
 	}
-	public CurveConf(int sort, String color, int lineWidth, String dashStyle, String yAxisOpposite) {
+	public CurveConf(int sort, String color, int lineWidth, String dashStyle, boolean yAxisOpposite) {
 		super();
 		this.sort = sort;
 		this.color = color;
@@ -41,10 +41,10 @@ public class CurveConf {
 	public void setDashStyle(String dashStyle) {
 		this.dashStyle = dashStyle;
 	}
-	public String getyAxisOpposite() {
+	public boolean getYAxisOpposite() {
 		return yAxisOpposite;
 	}
-	public void setyAxisOpposite(String yAxisOpposite) {
+	public void setYAxisOpposite(boolean yAxisOpposite) {
 		this.yAxisOpposite = yAxisOpposite;
 	}
 }

@@ -4,6 +4,8 @@ import java.io.File;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +25,11 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.CellEditData;
+import com.cosog.model.CurveConf;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
 import com.cosog.model.ReportTemplate.Template;
+import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.gridmodel.GraphicSetData;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.EquipmentDriverServerTask;
@@ -1586,7 +1590,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
-		StringBuffer curveColorBuff = new StringBuffer();
+		StringBuffer curveConfBuff = new StringBuffer();
 		
 		Gson gson =new Gson();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -1611,15 +1615,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
 		}
 		
-		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype "
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
 				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
 				+ " and t3.id="+wellId
 				+ " and t.sort>=0"
 				+ " and t.reportType= "+reportType
-				+ " and t.reportcurve>0 "
+				+ " and t.reportcurveconf is not null "
 				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
-				+ " order by t.reportcurve";
+				+ " order by t.sort,t.id";
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
 		for(int i=0;i<reportCurveItemQuertList.size();i++){
@@ -1627,13 +1631,46 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			ReportUnitItem reportUnitItem=new ReportUnitItem();
 			reportUnitItem.setItemName(reportCurveItemObj[0]+"");
 			reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
-			reportUnitItem.setReportCurve(StringManagerUtils.stringToInteger(reportCurveItemObj[2]+""));
-			reportUnitItem.setReportCurveColor((reportCurveItemObj[3]+"").replaceAll("null", ""));
-			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
+			reportUnitItem.setReportCurveConf((reportCurveItemObj[2]+"").replaceAll("null", ""));
+			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
 			if(reportUnitItem.getDataType()==2){
 				reportCurveItemList.add(reportUnitItem);
 			}
 		}
+		
+		Collections.sort(reportCurveItemList,new Comparator<ReportUnitItem>(){
+			@Override
+			public int compare(ReportUnitItem item1,ReportUnitItem item2){
+				Gson gson = new Gson();
+				java.lang.reflect.Type type=null;
+				int sort1=0;
+				int sort2=0;
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj1=gson.fromJson(item1.getReportCurveConf(), type);
+				
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj2=gson.fromJson(item2.getReportCurveConf(), type);
+				
+				if(curveConfObj1!=null){
+					sort1=curveConfObj1.getSort();
+				}
+				
+				if(curveConfObj2!=null){
+					sort2=curveConfObj2.getSort();
+				}
+				
+				int diff=sort1-sort2;
+				if(diff>0){
+					return 1;
+				}else if(diff<0){
+					return -1;
+				}
+				return 0;
+			}
+		});
+		
+		
+		
 		
 		itemsBuff.append("[");
 		for(int i=0;i<reportCurveItemList.size();i++){
@@ -1653,21 +1690,21 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		itemsCodeBuff.append("]");
 		
-		curveColorBuff.append("[");
+		curveConfBuff.append("[");
 		for(int i=0;i<reportCurveItemList.size();i++){
-			curveColorBuff.append("\""+reportCurveItemList.get(i).getReportCurveColor()+"\",");
+			curveConfBuff.append(""+reportCurveItemList.get(i).getReportCurveConf()+",");
 		}
-		if (curveColorBuff.toString().endsWith(",")) {
-			curveColorBuff.deleteCharAt(curveColorBuff.length() - 1);
+		if (curveConfBuff.toString().endsWith(",")) {
+			curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
 		}
-		curveColorBuff.append("]");
+		curveConfBuff.append("]");
 		
 		result_json.append("\"wellName\":\""+wellName+"\","
 				+ "\"startDate\":\""+startDate+"\","
 				+ "\"endDate\":\""+endDate+"\","
 				+ "\"curveItems\":"+itemsBuff+","
 				+ "\"curveItemCodes\":"+itemsCodeBuff+","
-				+ "\"curveColors\":"+curveColorBuff+","
+				+ "\"curveConf\":"+curveConfBuff+","
 				+ "\"graphicSet\":"+graphicSet+","
 				+ "\"list\":[");
 		if(reportCurveItemList.size()>0){
@@ -1705,7 +1742,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
-		StringBuffer curveColorBuff = new StringBuffer();
+		StringBuffer curveConfBuff = new StringBuffer();
 		
 		Gson gson =new Gson();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -1722,22 +1759,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("{\"success\":true,");
 		
-		
-		
-//		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+wellId;
-//		List<?> graphicSetList = this.findCallSql(graphicSetSql);
-//		if(graphicSetList.size()>0){
-//			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
-//		}
-		
-		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype,t.curvestattype "
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.curvestattype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 				+ " where t.unitid= "+unitId
 				+ " and t.sort>=0"
 				+ " and t.reportType= "+reportType
-				+ " and t.reportcurve>0 "
+				+ " and t.reportcurveconf is not null "
 				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
-				+ " order by t.reportcurve";
+				+ " order by t.sort,t.id";
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
 		for(int i=0;i<reportCurveItemQuertList.size();i++){
@@ -1745,17 +1774,46 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			ReportUnitItem reportUnitItem=new ReportUnitItem();
 			reportUnitItem.setItemName(reportCurveItemObj[0]+"");
 			reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
-			reportUnitItem.setReportCurve(StringManagerUtils.stringToInteger(reportCurveItemObj[2]+""));
-			reportUnitItem.setReportCurveColor((reportCurveItemObj[3]+"").replaceAll("null", ""));
-			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
+			reportUnitItem.setReportCurveConf((reportCurveItemObj[2]+"").replaceAll("null", ""));
+			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
 			
-			String curveStatTypeStr=reportCurveItemObj[5]+"";
+			String curveStatTypeStr=reportCurveItemObj[4]+"";
 			reportUnitItem.setCurveStatType(StringManagerUtils.isNumber(curveStatTypeStr)?StringManagerUtils.stringTransferInteger(curveStatTypeStr):null);
 			if(StringManagerUtils.isNumber(curveStatTypeStr) && reportUnitItem.getDataType()==2 ){
 				reportCurveItemList.add(reportUnitItem);
 			}
-			
 		}
+		
+		Collections.sort(reportCurveItemList,new Comparator<ReportUnitItem>(){
+			@Override
+			public int compare(ReportUnitItem item1,ReportUnitItem item2){
+				Gson gson = new Gson();
+				java.lang.reflect.Type type=null;
+				int sort1=0;
+				int sort2=0;
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj1=gson.fromJson(item1.getReportCurveConf(), type);
+				
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj2=gson.fromJson(item2.getReportCurveConf(), type);
+				
+				if(curveConfObj1!=null){
+					sort1=curveConfObj1.getSort();
+				}
+				
+				if(curveConfObj2!=null){
+					sort2=curveConfObj2.getSort();
+				}
+				
+				int diff=sort1-sort2;
+				if(diff>0){
+					return 1;
+				}else if(diff<0){
+					return -1;
+				}
+				return 0;
+			}
+		});
 		
 		itemsBuff.append("[");
 		for(int i=0;i<reportCurveItemList.size();i++){
@@ -1788,21 +1846,21 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		itemsCodeBuff.append("]");
 		
-		curveColorBuff.append("[");
+		curveConfBuff.append("[");
 		for(int i=0;i<reportCurveItemList.size();i++){
-			curveColorBuff.append("\""+reportCurveItemList.get(i).getReportCurveColor()+"\",");
+			curveConfBuff.append(""+reportCurveItemList.get(i).getReportCurveConf()+",");
 		}
-		if (curveColorBuff.toString().endsWith(",")) {
-			curveColorBuff.deleteCharAt(curveColorBuff.length() - 1);
+		if (curveConfBuff.toString().endsWith(",")) {
+			curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
 		}
-		curveColorBuff.append("]");
+		curveConfBuff.append("]");
 		
 		result_json.append("\"wellName\":\""+wellName+"\","
 				+ "\"startDate\":\""+startDate+"\","
 				+ "\"endDate\":\""+endDate+"\","
 				+ "\"curveItems\":"+itemsBuff+","
 				+ "\"curveItemCodes\":"+itemsCodeBuff+","
-				+ "\"curveColors\":"+curveColorBuff+","
+				+ "\"curveConf\":"+curveConfBuff+","
 				+ "\"graphicSet\":"+graphicSet+","
 				+ "\"list\":[");
 		if(reportCurveItemList.size()>0){

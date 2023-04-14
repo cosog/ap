@@ -500,8 +500,8 @@ function CreateSingleWellReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 					 	+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurveColor'},"
+						+"{data:'reportCurveConfShowValue'},"
+						+"{data:'reportCurveConf'},"
 						+"{data:'code'},"
 						+"{data:'dataType'}"
 						+"]";
@@ -542,7 +542,10 @@ var ReportInstanceSingleWellTemplateContentHandsontableHelper = {
 	        reportInstanceSingleWellTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
-	            	td.style.backgroundColor = '#'+value;
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
 	            }
 	        }
 	        
@@ -553,7 +556,7 @@ var ReportInstanceSingleWellTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7,8],
+	                    columns: [6,7,8],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -575,7 +578,7 @@ var ReportInstanceSingleWellTemplateContentHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6){
+	                    if(visualColIndex==5){
 		                	cellProperties.renderer = reportInstanceSingleWellTemplateContentHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;
@@ -623,10 +626,11 @@ function CreateProductionReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 						+"{data:'sumSign',type:'checkbox'}," 
 						+"{data:'averageSign',type:'checkbox'}," 
 						
-						+"{data:'reportCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
-						+"{data:'reportCurveColor'},"
+						+"{data:'reportCurveConfShowValue'},"
 						
 						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},"
+						
+						+"{data:'reportCurveConf'},"
 						
 						+"{data:'code'},"
 						+"{data:'dataType'}"
@@ -668,7 +672,10 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	        reportInstanceProductionTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
-	            	td.style.backgroundColor = '#'+value;
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
 	            }
 	        }
 	        
@@ -679,7 +686,7 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [10,11],
+	                    columns: [9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -701,7 +708,7 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==8){
+	                    if(visualColIndex==7){
 		                	cellProperties.renderer = reportInstanceProductionTemplateContentHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;

@@ -2920,6 +2920,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					java.lang.reflect.Type type=null;
 					int sort1=0;
 					int sort2=0;
+					boolean yAxisOpposite1=false,yAxisOpposite2=false;
+					int diff=0;
 					type = new TypeToken<CurveConf>() {}.getType();
 					CurveConf historyCurveConfObj1=gson.fromJson(item1.getHistoryCurveConf(), type);
 					
@@ -2928,13 +2930,31 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					
 					if(historyCurveConfObj1!=null){
 						sort1=historyCurveConfObj1.getSort();
+						yAxisOpposite1=historyCurveConfObj1.getYAxisOpposite();
 					}
 					
 					if(historyCurveConfObj2!=null){
 						sort2=historyCurveConfObj2.getSort();
+						yAxisOpposite2=historyCurveConfObj2.getYAxisOpposite();
 					}
 					
-					int diff=sort1-sort2;
+					if(yAxisOpposite1==yAxisOpposite2){
+//						if(yAxisOpposite1){//如果都在右侧
+//							diff=sort1-sort2;//按序号升序
+//						}else{//如果都在左侧
+//							diff=sort2-sort1;//按序号降序
+//						}
+						diff=sort1-sort2;//按序号升序
+					}else{
+						if(yAxisOpposite1){
+							diff=1;
+						}else{
+							diff=-1;
+						}
+					}
+					
+					
+//					diff=sort1-sort2;
 					if(diff>0){
 						return 1;
 					}else if(diff<0){

@@ -1670,8 +1670,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		});
 		
 		
-		
-		
 		itemsBuff.append("[");
 		for(int i=0;i<reportCurveItemList.size();i++){
 			itemsBuff.append("\""+reportCurveItemList.get(i).getItemName()+"\",");
@@ -1922,17 +1920,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			graphicSetTableName="tbl_pcpdevicegraphicset";
 		}
 		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
-		String curveItemsSql="select t.itemname,t.itemcode,t.reportcurve,t.reportcurvecolor,t.datatype "
+		String curveItemsSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
 				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
 				+ " and t3.id="+deviceId
 				+ " and t.sort>=0"
 				+ " and t.reportType="+reportType
-				+ " and t.reportcurve>0 "
+				+ " and t.reportcurveconf is not null "
 				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
-				+ " order by t.reportcurve";
+				+ " order by t.sort";
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		List<?> curveItemList = this.findCallSql(curveItemsSql);
+		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		GraphicSetData graphicSetData=null;
 		if(graphicSetList.size()>0){
 			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
@@ -1940,13 +1939,55 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			graphicSetData=gson.fromJson(graphicSet, type);
 		}
 		
-		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
 		for(int i=0;i<curveItemList.size();i++){
-			Object[] itemObj=(Object[]) curveItemList.get(i);
-			String curveName=itemObj[0]+"";
-			String itemCode=itemObj[1]+"";
+			Object[] reportCurveItemObj=(Object[]) curveItemList.get(i);
+			ReportUnitItem reportUnitItem=new ReportUnitItem();
+			reportUnitItem.setItemName(reportCurveItemObj[0]+"");
+			reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
+			reportUnitItem.setReportCurveConf((reportCurveItemObj[2]+"").replaceAll("null", ""));
+			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
+			if(reportUnitItem.getDataType()==2){
+				reportCurveItemList.add(reportUnitItem);
+			}
+		}
+		
+		Collections.sort(reportCurveItemList,new Comparator<ReportUnitItem>(){
+			@Override
+			public int compare(ReportUnitItem item1,ReportUnitItem item2){
+				Gson gson = new Gson();
+				java.lang.reflect.Type type=null;
+				int sort1=0;
+				int sort2=0;
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj1=gson.fromJson(item1.getReportCurveConf(), type);
+				
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj2=gson.fromJson(item2.getReportCurveConf(), type);
+				
+				if(curveConfObj1!=null){
+					sort1=curveConfObj1.getSort();
+				}
+				
+				if(curveConfObj2!=null){
+					sort2=curveConfObj2.getSort();
+				}
+				
+				int diff=sort1-sort2;
+				if(diff>0){
+					return 1;
+				}else if(diff<0){
+					return -1;
+				}
+				return 0;
+			}
+		});
+		
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
+		for(int i=0;i<reportCurveItemList.size();i++){
+			String curveName=reportCurveItemList.get(i).getItemName();
+			String itemCode=reportCurveItemList.get(i).getItemCode();
 			String itemType="3";//3-汇总项
-			
 			String yAxisMaxValue="";
 			String yAxisMinValue="";
 			result_json.append("{\"curveName\":\"" + curveName + "\",\"itemCode\":\"" + itemCode + "\",\"itemType\":\""+itemType+"\",");

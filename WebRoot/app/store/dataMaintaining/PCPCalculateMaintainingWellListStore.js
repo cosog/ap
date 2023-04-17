@@ -34,15 +34,15 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                     forceFit: false,
 //                    selType: 'checkboxmodel',
 //                    multiSelect: false,
-                    selModel:{
-                    	selType: 'checkboxmodel',
-                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-                    	checkOnly:false,
-                    	allowDeselect:true,
-                    	onHdMouseDown:function(e,t){
-                    		alert("全选/全不选");
-                    	}
-                    },
+//                    selModel:{
+//                    	selType: 'checkboxmodel',
+//                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+//                    	checkOnly:false,
+//                    	allowDeselect:true,
+//                    	onHdMouseDown:function(e,t){
+//                    		alert("全选/全不选");
+//                    	}
+//                    },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },
@@ -50,21 +50,11 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                     columns: newColumns,
                     listeners: {
                     	selectionchange: function (view, selected, o) {
-                    		if(selected.length>0){
-                    			Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setValue(selected[0].data.wellName);
-                            	Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setRawValue(selected[0].data.wellName);
-                    		}else{
-                    			Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setValue('');
-                            	Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setRawValue('');
-                    		}
-
-                    		var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
-    						if (isNotVal(gridPanel)) {
-    							gridPanel.getStore().load();
-    						}else{
-    							Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
-    						}
-    						var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
+                    	},
+                    	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").setValue(index);
+                    		resetPCPCalculateMaintainingQueryParams();
+                    		var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
     	        			if(activeId=="PCPCalculateMaintainingPanel"){
     	        				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
     	        				if (isNotVal(bbar)) {
@@ -85,9 +75,6 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
     	        	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
     	        	            }
     	        			}
-                    	},
-                    	select: function(grid, record, index, eOpts) {
-                    		
                         }
                     }
                 });
@@ -96,6 +83,30 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);
+            	gridPanel.getSelectionModel().select(0, true);
+            }else{
+            	Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").setValue(-1);
+            	var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
+    			if(activeId=="PCPCalculateMaintainingPanel"){
+    				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
+    				if (isNotVal(bbar)) {
+    					if(bbar.getStore().isEmptyStore){
+    						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+    						bbar.setStore(PCPCalculateMaintainingDataStore);
+    					}else{
+    						bbar.getStore().loadPage(1);
+    					}
+    				}else{
+    					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+    				}
+    			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
+    				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
+    	            if (isNotVal(gridPanel)) {
+    	            	gridPanel.getStore().loadPage(1);
+    	            }else{
+    	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
+    	            }
+    			}
             }
         },
         beforeload: function (store, options) {

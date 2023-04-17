@@ -59,14 +59,33 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 	graphicSetData.History=[];
                 	
                 	Ext.Array.each(curveSetData, function (name, index, countriesItSelf) {
-                		var maxValue=null,minValue=0;
+                		var maxValue=null,minValue=null;
                 		if(isNotVal(curveSetData[index][1])){
                 			maxValue=parseFloat(curveSetData[index][1]);
                 		}
                 		if(isNotVal(curveSetData[index][2])){
                 			minValue=parseFloat(curveSetData[index][2]);
                 		}
-                		chart.yAxis[index].update({max: maxValue,min: minValue});
+                		
+                		for(var i=0;i<chart.yAxis.length;i++){
+                			var match=false;
+                			if(chart.yAxis[i].series.length>0){
+                				for(var j=0;j<chart.yAxis[i].series.length;j++){
+                					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
+                					if(serieName==curveSetData[index][0]){
+                						match=true;
+                						chart.yAxis[i].update({max: maxValue,min: minValue});
+                						break;
+                					}
+                				}
+                			}
+                			
+                			if(match){
+                				break;
+                			}
+                		}
+                		
+                		
                 		var graphicInfo={};
                 		graphicInfo.yAxisMaxValue=isNotVal(curveSetData[index][1])?curveSetData[index][1]:"";
                 		graphicInfo.yAxisMinValue=isNotVal(curveSetData[index][2])?curveSetData[index][2]:"";
@@ -170,53 +189,6 @@ function CreateDeviceHistoryCurveSetTable(){
 		url:context + '/historyQueryController/getHistoryQueryCurveSetData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-//			result={
-//				    "success": true,
-//				    "totalCount": 7,
-//				    "totalRoot": [{
-//				        "curveName": "井下压力计-压力",
-//				        "itemCode": "c_jxyljyl",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "20",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "井口套压",
-//				        "itemCode": "c_jkty",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "6",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "产气量瞬时",
-//				        "itemCode": "c_cqlss",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "",
-//				        "yAxisMinValue": ""
-//				    }, {
-//				        "curveName": "产水量瞬时",
-//				        "itemCode": "c_cslss",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "",
-//				        "yAxisMinValue": ""
-//				    }, {
-//				        "curveName": "变频器输出",
-//				        "itemCode": "c_bpqscdl",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "200",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "修正后井底流压",
-//				        "itemCode": "c_xzhjdly",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "20",
-//				        "yAxisMinValue": "0"
-//				    }, {
-//				        "curveName": "冲次",
-//				        "itemCode": "c_cc",
-//				        "itemType": "0",
-//				        "yAxisMaxValue": "5",
-//				        "yAxisMinValue": "0"
-//				    }]
-//				};
 			if(deviceHistoryCurveSetHandsontableHelper==null || deviceHistoryCurveSetHandsontableHelper.hot==undefined){
 				deviceHistoryCurveSetHandsontableHelper = DeviceHistoryCurveSetHandsontableHelper.createNew("HistoryCurveSetTableDiv_Id");
 				var colHeaders="['曲线','Y轴预设最大值','Y轴预设最小值','项编码','项类型']";

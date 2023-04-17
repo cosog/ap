@@ -79,7 +79,6 @@ public class CalculateDataManagerTask {
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(cron = "1 0 0/24 * * ?")
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=0";

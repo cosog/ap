@@ -408,7 +408,7 @@ function deviceHistoryQueryCurve(deviceType){
 		    var title = result.deviceName + "趋势曲线";
 		    var xTitle='采集时间';
 		    var legendName =result.curveItems;
-		    
+		    var legendCode =result.curveItemCodes;
 		    var curveConf=result.curveConf;
 		    
 		    var color=[];
@@ -442,8 +442,9 @@ function deviceHistoryQueryCurve(deviceType){
 		        var allPositive=true;//全部是非负数
 		        var allNegative=true;//全部是负值
 		        
-		        var singleSeries={};
+		        var singleSeries={};legendCode
 		        singleSeries.name=legendName[i];
+		        singleSeries.code=legendCode[i];
 		        singleSeries.type='spline';
 		        singleSeries.lineWidth=curveConf[i].lineWidth;
 		        singleSeries.dashStyle=curveConf[i].dashStyle;
@@ -511,6 +512,7 @@ function deviceHistoryQueryCurve(deviceType){
 		        var singleAxis={
 		        		max:maxValue,
 		        		min:minValue,
+		        		code:legendCode[i],
 		        		title: {
 		                    text: legendName[i],
 		                    style: {

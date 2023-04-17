@@ -89,7 +89,13 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var wellName = Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
+        	var wellName='';
+        	var wellId=0;
+        	var selectRow= Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").getValue();
+        	if(selectRow>=0){
+        		wellName = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		wellId=Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	}
         	
         	var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id').rawValue;
             var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id').rawValue;
@@ -99,6 +105,7 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
             var new_params = {
             		orgId: orgId,
             		wellName: wellName,
+            		wellId:wellId,
                     startDate:startDate,
                     endDate:endDate,
                     deviceType:deviceType,

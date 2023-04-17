@@ -206,6 +206,11 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         	layout: 'border',
             border: false,
             tbar:[{
+                id: 'RPCCalculateMaintainingDeviceListSelectRow_Id',
+                xtype: 'textfield',
+                value: -1,
+                hidden: true
+            },{
                 xtype: 'button',
                 text: cosog.string.refresh,
                 iconCls: 'note-refresh',
@@ -1127,26 +1132,26 @@ function refreshRPCCalculateMaintainingData(){
 	}else{
 		Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
 	}
-	var secondTabPanel = Ext.getCmp("RPCCalculateMaintainingTabPanel");
-	var secondActiveId = secondTabPanel.getActiveTab().id;
-	if(secondActiveId=="RPCCalculateMaintainingPanel"){
-		var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
-		if (isNotVal(bbar)) {
-			if(bbar.getStore().isEmptyStore){
-				var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-				bbar.setStore(RPCCalculateMaintainingDataStore);
-			}else{
-				bbar.getStore().loadPage(1);
-			}
-		}else{
-			Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-		}
-	}else if(secondActiveId=="RPCTotalCalculateMaintainingPanel"){
-		var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
-        if (isNotVal(gridPanel)) {
-        	gridPanel.getStore().loadPage(1);
-        }else{
-        	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
-        }
-	}
+//	var secondTabPanel = Ext.getCmp("RPCCalculateMaintainingTabPanel");
+//	var secondActiveId = secondTabPanel.getActiveTab().id;
+//	if(secondActiveId=="RPCCalculateMaintainingPanel"){
+//		var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
+//		if (isNotVal(bbar)) {
+//			if(bbar.getStore().isEmptyStore){
+//				var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
+//				bbar.setStore(RPCCalculateMaintainingDataStore);
+//			}else{
+//				bbar.getStore().loadPage(1);
+//			}
+//		}else{
+//			Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
+//		}
+//	}else if(secondActiveId=="RPCTotalCalculateMaintainingPanel"){
+//		var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
+//        if (isNotVal(gridPanel)) {
+//        	gridPanel.getStore().loadPage(1);
+//        }else{
+//        	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
+//        }
+//	}
 }

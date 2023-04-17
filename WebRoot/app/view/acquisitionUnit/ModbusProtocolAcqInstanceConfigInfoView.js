@@ -409,7 +409,14 @@ function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolInstanceConfigItemsHandsontableHelper==null || protocolInstanceConfigItemsHandsontableHelper.hot==undefined){
 				protocolInstanceConfigItemsHandsontableHelper = ProtocolInstanceConfigItemsHandsontableHelper.createNew("ModbusProtocolInstanceItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','起始地址','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']";
+//				var colHeaders="['序号','名称','起始地址','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']";
+				
+				
+				var colHeaders="[" 
+					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
+					+"['序号','名称','起始地址','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
+					+"]";
+				
 				var columns="[{data:'id'},{data:'title'},"
 				 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}},"
 				 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
@@ -479,7 +486,8 @@ var ProtocolInstanceConfigItemsHandsontableHelper = {
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:protocolInstanceConfigItemsHandsontableHelper.colHeaders,//显示列头
+//	                colHeaders:protocolInstanceConfigItemsHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:protocolInstanceConfigItemsHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动

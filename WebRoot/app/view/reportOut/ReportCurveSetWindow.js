@@ -59,14 +59,31 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 	graphicSetData.Report=[];
                 	
                 	Ext.Array.each(curveSetData, function (name, index, countriesItSelf) {
-                		var maxValue=null,minValue=0;
+                		var maxValue=null,minValue=null;
                 		if(isNotVal(curveSetData[index][1])){
                 			maxValue=parseFloat(curveSetData[index][1]);
                 		}
                 		if(isNotVal(curveSetData[index][2])){
                 			minValue=parseFloat(curveSetData[index][2]);
                 		}
-                		chart.yAxis[index].update({max: maxValue,min: minValue});
+                		for(var i=0;i<chart.yAxis.length;i++){
+                			var match=false;
+                			if(chart.yAxis[i].series.length>0){
+                				for(var j=0;j<chart.yAxis[i].series.length;j++){
+                					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
+                					if(serieName==curveSetData[index][0]){
+                						match=true;
+                						chart.yAxis[i].update({max: maxValue,min: minValue});
+                						break;
+                					}
+                				}
+                			}
+                			
+                			if(match){
+                				break;
+                			}
+                		}
+                		
                 		var graphicInfo={};
                 		graphicInfo.yAxisMaxValue=isNotVal(curveSetData[index][1])?curveSetData[index][1]:"";
                 		graphicInfo.yAxisMinValue=isNotVal(curveSetData[index][2])?curveSetData[index][2]:"";

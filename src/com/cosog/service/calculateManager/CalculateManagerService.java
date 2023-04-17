@@ -72,13 +72,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private CalculateDataService calculateDataService;
-	public String getCalculateResultData(String orgId, String wellName, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getCalculateResultData(String orgId, String wellName,String wellId, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)){
-			json=this.getFESDiagramCalculateResultData(orgId, wellName, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getFESDiagramCalculateResultData(orgId, wellName,wellId, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}else if("2".equals(calculateType)){
-			json=this.getRPMCalculateResultData(orgId, wellName, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getRPMCalculateResultData(orgId, wellName,wellId, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}else if("5".equals(calculateType)){//电参反演地面功图
 			json=this.getElecInverCalculateResultData(orgId, wellName, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}
@@ -98,7 +98,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getFESDiagramCalculateResultData(String orgId, String wellName, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getFESDiagramCalculateResultData(String orgId, String wellName,String wellId, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -296,7 +296,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getRPMCalculateResultData(String orgId, String wellName, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getRPMCalculateResultData(String orgId, String wellName,String wellId, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();

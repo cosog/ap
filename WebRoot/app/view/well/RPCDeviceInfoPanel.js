@@ -742,21 +742,23 @@ var RPCDeviceInfoHandsontableHelper = {
                         	endRow=row;
                     	}
                     	
+                    	var selectedRow=Ext.getCmp("RPCDeviceSelectRow_Id").getValue();
+                    	if(selectedRow!=startRow){
+                    		var row1=rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(startRow);
+                        	var recordId=0;
+                        	var deviceName='';
+                        	if(isNotVal(row1[0])){
+                        		recordId=row1[0];
+                        	}
+                        	if(isNotVal(row1[1])){
+                        		deviceName=row1[1];
+                        	}
+                        	CreateAndLoadRPCPumoingModelInfoTable(recordId,deviceName);
+                        	CreateAndLoadRPCProductionDataTable(recordId,deviceName);
+                        	CreateAndLoadRPCVideoInfoTable(recordId,deviceName);
+                    	}
                     	Ext.getCmp("RPCDeviceSelectRow_Id").setValue(startRow);
                     	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(endRow);
-                    	
-                    	var row1=rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(startRow);
-                    	var recordId=0;
-                    	var deviceName='';
-                    	if(isNotVal(row1[0])){
-                    		recordId=row1[0];
-                    	}
-                    	if(isNotVal(row1[1])){
-                    		deviceName=row1[1];
-                    	}
-                    	CreateAndLoadRPCPumoingModelInfoTable(recordId,deviceName);
-                    	CreateAndLoadRPCProductionDataTable(recordId,deviceName);
-                    	CreateAndLoadRPCVideoInfoTable(recordId,deviceName);
                 	}
                 },
                 afterDestroy: function () {
@@ -790,15 +792,6 @@ var RPCDeviceInfoHandsontableHelper = {
                             params.push(changes[i][2]);
                             params.push(changes[i][3]);
 
-                            if ("edit" == source && params[1] == "wellName") { //编辑井名单元格
-                                var data = "{\"oldWellName\":\"" + params[2] + "\",\"newWellName\":\"" + params[3] + "\"}";
-                                rpcDeviceInfoHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
-                            }
-
-                            if (params[1] == "protocolName" && params[3] == "Kafka协议") {
-                                rpcDeviceInfoHandsontableHelper.hot.getCell(index, 6).source = ['modbus-tcp', 'modbus-rtu'];
-                            }
-
                             //仅当单元格发生改变的时候,id!=null,说明是更新
                             if (params[2] != params[3] && params[0] != null && params[0] > 0) {
                                 var data = "{";
@@ -810,6 +803,16 @@ var RPCDeviceInfoHandsontableHelper = {
                                 }
                                 data += "}"
                                 rpcDeviceInfoHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
+                                
+                                if(params[1] == "applicationScenariosName"){
+                                	var hiddenRows=[];
+                                	if(params[3] == "煤层气井"){
+                                		hiddenRows=[0,3,10];
+                                	}
+                                	const plugin = rpcProductionHandsontableHelper.hot.getPlugin('hiddenRows');
+                                	plugin.hideRows(hiddenRows);
+                                	rpcProductionHandsontableHelper.hot.render();
+                                }
                             }
                         }
                     
@@ -1383,6 +1386,7 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("RPCProductionDataInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
+			var applicationScenarios=result.applicationScenarios;
 			var panelTitle='生产数据';
 			if(isNotVal(deviceName)){
 				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】生产数据";
@@ -1412,6 +1416,14 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 					rpcProductionHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
+			
+			var hiddenRows=[];
+			if(applicationScenarios==0){
+				hiddenRows=[0,3,10];
+			}
+			const plugin = rpcProductionHandsontableHelper.hot.getPlugin('hiddenRows');
+        	plugin.hideRows(hiddenRows);
+        	rpcProductionHandsontableHelper.hot.render();
 		},
 		failure:function(){
 			Ext.getCmp("RPCProductionDataInfoPanel_Id").getEl().unmask();
@@ -1449,15 +1461,21 @@ var RPCProductionHandsontableHelper = {
 	            rpcProductionHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: data,
+	            	colWidths: [50,100,100],
 	                hiddenColumns: {
 	                    columns: [0],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: [],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
 	                columns: rpcProductionHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true, //显示行头
+	                rowHeaders: false, //显示行头
 	                colHeaders: rpcProductionHandsontableHelper.colHeaders, //显示列头
 	                columnSorting: true, //允许排序
 	                sortIndicator: true,

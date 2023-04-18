@@ -29,6 +29,12 @@ begin
 end;
 /
 
+CREATE OR REPLACE TRIGGER trg_b_protocol_i   before  insert on tbl_protocol FOR EACH ROW
+BEGIN
+  SELECT seq_protocol.nextval,'protocol' || seq_protocol.nextval INTO :new.id, :new.code FROM dual;
+end;
+/
+
 create or replace trigger trg_b_acq_group2unit_conf_i   before  insert on TBL_ACQ_group2unit_conf FOR EACH ROW
 BEGIN
   SELECT SEQ_ACQ_UNIT_GROUP.nextval INTO :new.id FROM dual;

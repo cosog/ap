@@ -216,7 +216,7 @@ public class MemoryDataManagerTask {
 						Collections.sort(protocol.getItems());
 						boolean isExist=false;
 						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-							if(protocol.getName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName()) &&  modbusProtocolConfig.getProtocol().get(i).getDeviceType()==protocol.getDeviceType()){
+							if(protocol.getCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode()) &&  modbusProtocolConfig.getProtocol().get(i).getDeviceType()==protocol.getDeviceType()){
 								isExist=true;
 								modbusProtocolConfig.getProtocol().set(i, protocol);
 								break;

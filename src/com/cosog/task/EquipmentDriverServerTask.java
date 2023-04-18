@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -240,7 +240,7 @@ public class EquipmentDriverServerTask {
 //				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
 //				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
-//				new ExampleDataManageThread("rpc11",60,timeDifference*0).start();
+				new ExampleDataManageThread("rpc11",10,timeDifference*0).start();
 				
 				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*10).start();
 			} catch (Exception e) {
@@ -334,7 +334,7 @@ public class EquipmentDriverServerTask {
 			
 			Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
 			String sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=0 order by t.id";
-			if(rpcDeviceAcquisitionItemColumns!=null){
+			if(rpcDeviceAcquisitionItemColumns!=null&&rpcDeviceAcquisitionItemColumns.size()>0){
 				//同步抽油机井字段映射表
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();
@@ -355,6 +355,7 @@ public class EquipmentDriverServerTask {
 						}else{
 							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=0";
 						}
+						System.out.println("同步协议映射表："+deleteSql);
 						pstmt = conn.prepareStatement(deleteSql);
 						pstmt.executeUpdate();
 						result++;
@@ -370,6 +371,7 @@ public class EquipmentDriverServerTask {
 						}else{
 							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+rpcDeviceAcquisitionItemColumns.get(key)+"',0,"+dataSaveMode+")";
 						}
+						System.out.println("同步协议映射表："+addSql);
 						pstmt = conn.prepareStatement(addSql);
 						pstmt.executeUpdate();
 						result++;
@@ -378,7 +380,7 @@ public class EquipmentDriverServerTask {
 			}
 			
 			
-			if(pcpDeviceAcquisitionItemColumns!=null){
+			if(pcpDeviceAcquisitionItemColumns!=null&&pcpDeviceAcquisitionItemColumns.size()>0){
 				//同步螺杆泵井字段映射表
 				sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=1 order by t.id";
 				pstmt = conn.prepareStatement(sql);
@@ -400,6 +402,7 @@ public class EquipmentDriverServerTask {
 						}else{
 							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=1";
 						}
+						System.out.println("同步协议映射表："+deleteSql);
 						pstmt = conn.prepareStatement(deleteSql);
 						pstmt.executeUpdate();
 						result++;
@@ -414,6 +417,7 @@ public class EquipmentDriverServerTask {
 						}else{
 							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+pcpDeviceAcquisitionItemColumns.get(key)+"',1,"+dataSaveMode+")";
 						}
+						System.out.println("同步协议映射表："+addSql);
 						pstmt = conn.prepareStatement(addSql);
 						pstmt.executeUpdate();
 						result++;
@@ -461,40 +465,8 @@ public class EquipmentDriverServerTask {
 	
 
 	public static int loadAcquisitionItemColumns(){
-		int dataSaveMode=1;
-		if(dataSaveMode==0){
-			loadAcquisitionItemAddrColumns();
-		}else{
-			loadAcquisitionItemNameColumns();
-		}
+		loadAcquisitionItemNameColumns();
 		syncDataMappingTable();
-		return 0;
-	}
-	
-	public static int loadAcquisitionItemAddrColumns(){
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		Map<String,String> rpcDeviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
-		Map<String,String> pcpDeviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
-		
-		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns, "ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr(),false)){
-						rpcDeviceAcquisitionItemColumns.put("ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr(), modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-					}
-				}
-			}else{
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns, "ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr(),false)){
-						pcpDeviceAcquisitionItemColumns.put("ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr(), modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-					}
-				}
-			}
-		}
-		acquisitionItemColumnsMap.put("rpcDeviceAcquisitionItemColumns", rpcDeviceAcquisitionItemColumns);
-		acquisitionItemColumnsMap.put("pcpDeviceAcquisitionItemColumns", pcpDeviceAcquisitionItemColumns);
 		return 0;
 	}
 	
@@ -554,38 +526,8 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int loadAcquisitionItemColumns(int deviceType){
-		int dataSaveMode=1;
-		if(dataSaveMode==0){
-			loadAcquisitionItemAddrColumns(deviceType);
-		}else{
-			loadAcquisitionItemNameColumns(deviceType);
-		}
+		loadAcquisitionItemNameColumns(deviceType);
 		syncDataMappingTable();
-		return 0;
-	}
-	
-	public static int loadAcquisitionItemAddrColumns(int deviceType){
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		
-		Collections.sort(modbusProtocolConfig.getProtocol());
-		
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		Map<String,String> acquisitionItemColumns=new LinkedHashMap<String,String>();
-		
-		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==deviceType){
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					if(!StringManagerUtils.existOrNot(acquisitionItemColumns, "ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr(),false)){
-						acquisitionItemColumns.put("ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr(), modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-					}
-				}
-			}
-			if(deviceType==0){
-				acquisitionItemColumnsMap.put("rpcDeviceAcquisitionItemColumns", acquisitionItemColumns);
-			}else{
-				acquisitionItemColumnsMap.put("pcpDeviceAcquisitionItemColumns", acquisitionItemColumns);
-			}
-		}
 		return 0;
 	}
 	

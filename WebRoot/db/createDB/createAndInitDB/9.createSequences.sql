@@ -5,6 +5,13 @@ start with 137115
 increment by 1
 cache 20;
 
+create sequence SEQ_PROTOCOL
+minvalue 1
+maxvalue 9999999999999999999999999
+start with 5
+increment by 1
+cache 20;
+
 create sequence SEQ_ACQUISITIONGROUP
 minvalue 1
 maxvalue 9999999999999999999999999

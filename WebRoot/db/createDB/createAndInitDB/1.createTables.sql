@@ -219,6 +219,30 @@ alter table TBL_CODE
 /
 
 /*==============================================================*/
+/* Table: TBL_PROTOCOL                                    */
+/*==============================================================*/
+create table TBL_PROTOCOL
+(
+  id         NUMBER(10) not null,
+  name       VARCHAR2(50),
+  code       VARCHAR2(50),
+  devicetype NUMBER(1) default 0,
+  items      CLOB,
+  sort       NUMBER(10)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_PROTOCOL
+  add constraint PK_PROTOCOL primary key (ID)
+/
+
+/*==============================================================*/
 /* Table: TBL_DATAMAPPING                                    */
 /*==============================================================*/
 create table TBL_DATAMAPPING
@@ -431,10 +455,8 @@ create table TBL_DISPLAY_ITEMS2UNIT_CONF
   sort               NUMBER(10),
   bitindex           NUMBER(3),
   showlevel          NUMBER(10),
-  realtimecurve      NUMBER(10),
-  historycurve       NUMBER(10),
-  realtimecurvecolor VARCHAR2(20),
-  historycurvecolor  VARCHAR2(20),
+  realtimecurveconf VARCHAR2(4000),
+  historycurveconf  VARCHAR2(4000),
   type               NUMBER(1) default 0,
   matrix             VARCHAR2(8)
 )
@@ -463,8 +485,7 @@ create table TBL_REPORT_ITEMS2UNIT_CONF
   showlevel        NUMBER(10),
   sumsign          NUMBER(1) default 0,
   averagesign      NUMBER(1) default 0,
-  reportcurve      NUMBER(10),
-  reportcurvecolor VARCHAR2(20),
+  reportcurveconf  VARCHAR2(4000),
   curvestattype    NUMBER(1),
   datatype         NUMBER(10),
   reporttype       NUMBER(1) default 0,

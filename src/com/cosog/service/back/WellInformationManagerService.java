@@ -2584,17 +2584,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				deviceTableName="tbl_pcpdevice";
 			}
 			String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
-			String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') "
+			String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss'),t.applicationscenarios "
 					+ " from "+deviceTableName+" t "
 					+ " where t.id="+deviceId;
 			
 			List<?> list = this.findCallSql(sql);
 			result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
 			resultNameBuff.append("[");
+			String applicationScenarios="";
 			if(list.size()>0){
 				Object[] obj = (Object[]) list.get(0);
 				String productionData=obj[0]+"";
 				String updateTime=obj[1]+"";
+				applicationScenarios=obj[2]+"";
+				
+				String reservoirShow="油层";
+				if("0".equalsIgnoreCase(applicationScenarios)){
+					reservoirShow="煤层";
+				}
+				
 				if(StringManagerUtils.stringToInteger(deviceType)>=100 && StringManagerUtils.stringToInteger(deviceType)<200){
 					resultNameBuff.append("\"不干预\"");
 					List<?> resultList = this.findCallSql(resultSql);
@@ -2609,8 +2617,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":3,\"itemName\":\"天然气相对密度\",\"itemValue\":\""+(rpcProductionData.getFluidPVT()!=null?rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
 						result_json.append("{\"id\":4,\"itemName\":\"饱和压力(MPa)\",\"itemValue\":\""+(rpcProductionData.getFluidPVT()!=null?rpcProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\"油层中部深度(m)\",\"itemValue\":\""+(rpcProductionData.getReservoir()!=null?rpcProductionData.getReservoir().getDepth():"")+"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\"油层中部温度(℃)\",\"itemValue\":\""+(rpcProductionData.getReservoir()!=null?rpcProductionData.getReservoir().getTemperature():"")+"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+reservoirShow+"中部深度(m)\",\"itemValue\":\""+(rpcProductionData.getReservoir()!=null?rpcProductionData.getReservoir().getDepth():"")+"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+reservoirShow+"中部温度(℃)\",\"itemValue\":\""+(rpcProductionData.getReservoir()!=null?rpcProductionData.getReservoir().getTemperature():"")+"\"},");
 						
 						result_json.append("{\"id\":7,\"itemName\":\"油压(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getTubingPressure():"")+"\"},");
 						result_json.append("{\"id\":8,\"itemName\":\"套压(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getCasingPressure():"")+"\"},");
@@ -2719,8 +2727,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":3,\"itemName\":\"天然气相对密度\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":4,\"itemName\":\"饱和压力(MPa)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\"油层中部深度(m)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\"油层中部温度(℃)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+reservoirShow+"中部深度(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+reservoirShow+"中部温度(℃)\",\"itemValue\":\"\"},");
 						
 						result_json.append("{\"id\":7,\"itemName\":\"油压(MPa)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":8,\"itemName\":\"套压(MPa)\",\"itemValue\":\"\"},");
@@ -2775,8 +2783,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":3,\"itemName\":\"天然气相对密度\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
 						result_json.append("{\"id\":4,\"itemName\":\"饱和压力(MPa)\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\"油层中部深度(m)\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getDepth():"")+"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\"油层中部温度(℃)\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getTemperature():"")+"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+reservoirShow+"中部深度(m)\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getDepth():"")+"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+reservoirShow+"中部温度(℃)\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getTemperature():"")+"\"},");
 						
 						result_json.append("{\"id\":7,\"itemName\":\"油压(MPa)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getTubingPressure():"")+"\"},");
 						result_json.append("{\"id\":8,\"itemName\":\"套压(MPa)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getCasingPressure():"")+"\"},");
@@ -2852,8 +2860,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":3,\"itemName\":\"天然气相对密度\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":4,\"itemName\":\"饱和压力(MPa)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\"油层中部深度(m)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\"油层中部温度(℃)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+reservoirShow+"中部深度(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+reservoirShow+"中部温度(℃)\",\"itemValue\":\"\"},");
 						
 						result_json.append("{\"id\":7,\"itemName\":\"油压(MPa)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":8,\"itemName\":\"套压(MPa)\",\"itemValue\":\"\"},");
@@ -2900,6 +2908,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("]");
 			resultNameBuff.append("]");
 			result_json.append(",\"resultNameList\":"+resultNameBuff);
+			result_json.append(",\"applicationScenarios\":\""+applicationScenarios+"\"");
 			result_json.append("}");
 		}catch(Exception e){
 			e.printStackTrace();

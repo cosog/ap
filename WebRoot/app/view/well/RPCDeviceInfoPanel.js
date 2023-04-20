@@ -113,22 +113,26 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-                    var fields = "";
-                    var heads = "";
-                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellInformationName = Ext.getCmp('rpcDeviceListComb_Id').getValue();
-                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
-                    for (var i = 0; i < rpcDeviceInfoHandsontableHelper.colHeaders.length; i++) {
-                        fields += rpcDeviceInfoHandsontableHelper.columns[i].data + ",";
-                        heads += rpcDeviceInfoHandsontableHelper.colHeaders[i] + ","
-                    }
-                    if (isNotVal(fields)) {
-                        fields = fields.substring(0, fields.length - 1);
-                        heads = heads.substring(0, heads.length - 1);
-                    }
-
-                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=101&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机井")) + "&title=" + URLencode(URLencode("抽油机井"));
-                    openExcelWindow(url + '?flag=true' + param);
+//                    var fields = "";
+//                    var heads = "";
+//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+//                    var wellInformationName = Ext.getCmp('rpcDeviceListComb_Id').getValue();
+//                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
+//                    for (var i = 0; i < rpcDeviceInfoHandsontableHelper.colHeaders.length; i++) {
+//                        fields += rpcDeviceInfoHandsontableHelper.columns[i].data + ",";
+//                        heads += rpcDeviceInfoHandsontableHelper.colHeaders[i] + ","
+//                    }
+//                    if (isNotVal(fields)) {
+//                        fields = fields.substring(0, fields.length - 1);
+//                        heads = heads.substring(0, heads.length - 1);
+//                    }
+//
+//                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=101&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机井")) + "&title=" + URLencode(URLencode("抽油机井"));
+//                    openExcelWindow(url + '?flag=true' + param);
+                	
+                	var window = Ext.create("AP.view.well.ExportDeviceInfoWindow");
+                    Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(101);
+                    window.show();
                 }
             },'-',{
                 id: 'RPCDeviceTotalCount_Id',
@@ -805,17 +809,21 @@ var RPCDeviceInfoHandsontableHelper = {
                                 rpcDeviceInfoHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
                                 
                                 if(params[1] == "applicationScenariosName"){
-                                	var hiddenRows=[];
-                                	if(params[3] == "煤层气井"){
-                                		hiddenRows=[0,3,10];
-                                	}
                                 	const plugin = rpcProductionHandsontableHelper.hot.getPlugin('hiddenRows');
-                                	plugin.hideRows(hiddenRows);
+                                	var hiddenRows=[0,3,10];
+                                	if(params[3] == "煤层气井"){
+                                		plugin.hideRows(hiddenRows);
+                                		rpcProductionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
+                                		rpcProductionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+                                	}else{
+                                		plugin.showRows(hiddenRows);
+                                		rpcProductionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
+                                		rpcProductionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+                                	}
                                 	rpcProductionHandsontableHelper.hot.render();
                                 }
                             }
                         }
-                    
                     }
                 }
             });
@@ -858,6 +866,21 @@ var RPCDeviceInfoHandsontableHelper = {
                 var RPCDeviceSelectRow= Ext.getCmp("RPCDeviceSelectRow_Id").getValue();
                 var rowdata = rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(RPCDeviceSelectRow);
             	var deviceId=rowdata[0];
+            	var applicationScenariosIndex=-1;
+            	var applicationScenarios=1;
+            	
+            	for (var i = 0; i < rpcDeviceInfoHandsontableHelper.columns.length; i++) {
+            		if(rpcDeviceInfoHandsontableHelper.columns[i].data.toUpperCase()=='applicationScenariosName'.toUpperCase()){
+            			applicationScenariosIndex=i;
+            			break;
+            		}
+            	}
+            	if(applicationScenariosIndex>=0){
+            		var applicationScenariosName=rowdata[applicationScenariosIndex];
+            		if(applicationScenariosName==="煤层气井"){
+            			applicationScenarios=0;
+            		}
+            	}
             	
                 //生产数据
                 var deviceProductionData={};
@@ -865,7 +888,7 @@ var RPCDeviceInfoHandsontableHelper = {
                 if(rpcProductionHandsontableHelper!=null && rpcProductionHandsontableHelper.hot!=undefined){
             		var productionHandsontableData=rpcProductionHandsontableHelper.hot.getData();
             		deviceProductionData.FluidPVT={};
-            		if(isNumber(parseFloat(productionHandsontableData[0][2]))){
+            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
             			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
             		}
             		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
@@ -874,7 +897,7 @@ var RPCDeviceInfoHandsontableHelper = {
             		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
             			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
             		}
-            		if(isNumber(parseFloat(productionHandsontableData[3][2]))){
+            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[3][2]))){
             			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
             		}
             		
@@ -896,7 +919,7 @@ var RPCDeviceInfoHandsontableHelper = {
             		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
             			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
             		}
-            		if(isNumber(parseFloat(productionHandsontableData[9][2]))){
+            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
             			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
             		}
             		if(isNumber(parseFloat(productionHandsontableData[10][2]))){

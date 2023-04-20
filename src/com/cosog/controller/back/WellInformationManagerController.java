@@ -281,6 +281,19 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getApplicationScenariosList")
+	public String getApplicationScenariosList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String json = this.wellInformationManagerService.getApplicationScenariosList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/changeDeviceOrg")
 	public String changeDeviceOrg() throws Exception {
 		this.pager=new Page("pageForm",request);
@@ -446,6 +459,40 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getExportDeviceInfo")
+	public String getExportDeviceInfo() throws IOException {
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
+		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
+		int offset = (intPage - 1) * pageSize + 1;
+		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		
+		
+		String json="";
+		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+			json = this.wellInformationManagerService.getExportRPCDeviceInfo(orgId,deviceType,applicationScenarios);
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+			json = this.wellInformationManagerService.getExportPCPDeviceInfo(orgId,deviceType,applicationScenarios);
+		}
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getBatchAddDeviceTableInfo")
 	public String getBatchAddDeviceTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -455,6 +502,7 @@ public class WellInformationManagerController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
+		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
@@ -463,7 +511,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount);
+		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,applicationScenarios,recordCount);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -708,6 +756,7 @@ public class WellInformationManagerController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		wellInformationName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellInformationName"),"utf-8");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		orgId=ParamUtils.getParameter(request, "orgId");
@@ -733,9 +782,9 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(response,fileName,title, orgId,wellInformationName);
+			bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(response,fileName,title, orgId,applicationScenarios,wellInformationName);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			bool = this.wellInformationManagerService.exportPCPDeviceInfoDetailsData(response,fileName,title, orgId,wellInformationName);
+			bool = this.wellInformationManagerService.exportPCPDeviceInfoDetailsData(response,fileName,title, orgId,applicationScenarios,wellInformationName);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 //			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}
@@ -925,6 +974,7 @@ public class WellInformationManagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String orgId = ParamUtils.getParameter(request, "orgId");
+		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		String json="";
@@ -932,9 +982,9 @@ public class WellInformationManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			json=this.wellInformationManagerService.batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
+			json=this.wellInformationManagerService.batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),applicationScenarios,isCheckout,user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			json=this.wellInformationManagerService.batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
+			json=this.wellInformationManagerService.batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),applicationScenarios,isCheckout,user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}

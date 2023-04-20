@@ -614,20 +614,22 @@ var PCPDeviceInfoHandsontableHelper = {
                         	endRow=row;
                     	}
                     	
+                    	var selectedRow=Ext.getCmp("PCPDeviceSelectRow_Id").getValue();
+                    	if(selectedRow!=startRow){
+                    		var row1=pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(startRow);
+                        	var recordId=0;
+                        	var deviceName='';
+                        	if(isNotVal(row1[0])){
+                        		recordId=row1[0];
+                        	}
+                        	if(isNotVal(row1[1])){
+                        		deviceName=row1[1];
+                        	}
+                        	CreateAndLoadPCPProductionDataTable(recordId,deviceName);
+                        	CreateAndLoadPCPVideoInfoTable(recordId,deviceName);
+                    	}
                     	Ext.getCmp("PCPDeviceSelectRow_Id").setValue(startRow);
                     	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(endRow);
-                    	
-                    	var row1=pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(startRow);
-                    	var recordId=0;
-                    	var deviceName='';
-                    	if(isNotVal(row1[0])){
-                    		recordId=row1[0];
-                    	}
-                    	if(isNotVal(row1[1])){
-                    		deviceName=row1[1];
-                    	}
-                    	CreateAndLoadPCPProductionDataTable(recordId,deviceName);
-                    	CreateAndLoadPCPVideoInfoTable(recordId,deviceName);
                 	}
                 },
                 afterDestroy: function () {
@@ -647,11 +649,6 @@ var PCPDeviceInfoHandsontableHelper = {
                 afterChange: function (changes, source) {
                     //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
                     if (changes != null) {
-//                        var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-//                        if (IframeViewSelection.length > 0 && IframeViewSelection[0].isLeaf()) {} else {
-//                            Ext.MessageBox.alert("信息", "编辑前，请先在左侧选择对应组织节点");
-//                        }
-
                         for (var i = 0; i < changes.length; i++) {
                             var params = [];
                             var index = changes[i][0]; //行号码
@@ -660,15 +657,6 @@ var PCPDeviceInfoHandsontableHelper = {
                             params.push(changes[i][1]);
                             params.push(changes[i][2]);
                             params.push(changes[i][3]);
-
-                            if ("edit" == source && params[1] == "wellName") { //编辑井名单元格
-                                var data = "{\"oldWellName\":\"" + params[2] + "\",\"newWellName\":\"" + params[3] + "\"}";
-                                pcpDeviceInfoHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
-                            }
-
-                            if (params[1] == "protocolName" && params[3] == "Kafka协议") {
-                                pcpDeviceInfoHandsontableHelper.hot.getCell(index, 6).source = ['modbus-tcp', 'modbus-rtu'];
-                            }
 
                             //仅当单元格发生改变的时候,id!=null,说明是更新
                             if (params[2] != params[3] && params[0] != null && params[0] > 0) {
@@ -681,6 +669,21 @@ var PCPDeviceInfoHandsontableHelper = {
                                 }
                                 data += "}"
                                 pcpDeviceInfoHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
+                            }
+                            
+                            if(params[1] == "applicationScenariosName"){
+                            	const plugin = pcpProductionHandsontableHelper.hot.getPlugin('hiddenRows');
+                            	var hiddenRows=[0,3,10];
+                            	if(params[3] == "煤层气井"){
+                            		plugin.hideRows(hiddenRows);
+                            		pcpProductionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
+                            		pcpProductionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+                            	}else{
+                            		plugin.showRows(hiddenRows);
+                            		pcpProductionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
+                            		pcpProductionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+                            	}
+                            	pcpProductionHandsontableHelper.hot.render();
                             }
                         }
                     
@@ -726,12 +729,26 @@ var PCPDeviceInfoHandsontableHelper = {
                 var PCPDeviceSelectRow= Ext.getCmp("PCPDeviceSelectRow_Id").getValue();
                 var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(PCPDeviceSelectRow);
             	var deviceId=rowdata[0];
+            	var applicationScenariosIndex=-1;
+            	var applicationScenarios=1;
+            	for (var i = 0; i < pcpDeviceInfoHandsontableHelper.columns.length; i++) {
+            		if(pcpDeviceInfoHandsontableHelper.columns[i].data.toUpperCase()=='applicationScenariosName'.toUpperCase()){
+            			applicationScenariosIndex=i;
+            			break;
+            		}
+            	}
+            	if(applicationScenariosIndex>=0){
+            		var applicationScenariosName=rowdata[applicationScenariosIndex];
+            		if(applicationScenariosName==="煤层气井"){
+            			applicationScenarios=0;
+            		}
+            	}
                 //生产数据
                 var deviceProductionData={};
                 if(pcpProductionHandsontableHelper!=null && pcpProductionHandsontableHelper.hot!=undefined){
             		var productionHandsontableData=pcpProductionHandsontableHelper.hot.getData();
             		deviceProductionData.FluidPVT={};
-            		if(isNumber(parseFloat(productionHandsontableData[0][2]))){
+            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
             			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
             		}
             		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
@@ -740,7 +757,7 @@ var PCPDeviceInfoHandsontableHelper = {
             		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
             			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
             		}
-            		if(isNumber(parseFloat(productionHandsontableData[3][2]))){
+            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[3][2]))){
             			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
             		}
             		
@@ -765,7 +782,7 @@ var PCPDeviceInfoHandsontableHelper = {
             		if(isNumber(parseFloat(productionHandsontableData[9][2]))){
             			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
             		}
-            		if(isNumber(parseFloat(productionHandsontableData[10][2]))){
+            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[10][2]))){
             			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
             		}
             		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
@@ -1058,6 +1075,7 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("PCPProductionDataInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
+			var applicationScenarios=result.applicationScenarios;
 			var panelTitle='生产数据';
 			if(isNotVal(deviceName)){
 				panelTitle="螺杆泵井【<font color='red'>"+deviceName+"</font>】生产数据";
@@ -1085,6 +1103,14 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 					pcpProductionHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
+			
+			var hiddenRows=[];
+			if(applicationScenarios==0){
+				hiddenRows=[0,3,10];
+			}
+			const plugin = pcpProductionHandsontableHelper.hot.getPlugin('hiddenRows');
+        	plugin.hideRows(hiddenRows);
+        	pcpProductionHandsontableHelper.hot.render();
 		},
 		failure:function(){
 			Ext.getCmp("PCPProductionDataInfoPanel_Id").getEl().unmask();
@@ -1122,6 +1148,11 @@ var PCPProductionHandsontableHelper = {
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: [],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

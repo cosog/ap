@@ -39,13 +39,17 @@ Ext.define("AP.view.well.ExportDeviceInfoWindow", {
                   var deviceType = Ext.getCmp('ExportDeviceInfoDeviceType_Id').getValue();
                   var wellInformationName='';
                   var applicationScenarios=0;
-                  var deviceTypeName='抽油机井';
-                  if(parseInt(deviceType)>=200 && parseInt(deviceType)<300){
-                	  deviceTypeName='螺杆泵井';
-                  }
                   var gridPanel = Ext.getCmp("ExportDeviceInfoApplicationScenariosListGridPanel_Id");
                   if (isNotVal(gridPanel)) {
                   	applicationScenarios = Ext.getCmp("ExportDeviceInfoApplicationScenariosListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+                  }
+                  var deviceTypeName='抽油机井';
+                  var applicationScenariosName='油井';
+                  if(parseInt(deviceType)>=200 && parseInt(deviceType)<300){
+                	  deviceTypeName='螺杆泵井';
+                  }
+                  if(parseInt(applicationScenarios)==0){
+                	  applicationScenariosName='煤层气井';
                   }
                   var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
                   for (var i = 0; i < exportDeviceInfoHandsontableHelper.colHeaders.length; i++) {
@@ -64,7 +68,7 @@ Ext.define("AP.view.well.ExportDeviceInfoWindow", {
                   + "&applicationScenarios="+applicationScenarios
                   + "&wellInformationName=" + URLencode(URLencode(wellInformationName)) 
                   + "&recordCount=10000" 
-                  + "&fileName=" + URLencode(URLencode(deviceTypeName)) + "&title=" + URLencode(URLencode(deviceTypeName));
+                  + "&fileName=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName)) + "&title=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName));
                   openExcelWindow(url + '?flag=true' + param);
                 }
             }],

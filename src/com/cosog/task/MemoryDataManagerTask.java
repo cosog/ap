@@ -199,7 +199,6 @@ public class MemoryDataManagerTask {
 					if(!StringManagerUtils.isNotNull(itemsStr)){
 						itemsStr="[]";
 					}
-					
 					protocolBuff=new StringBuffer();
 					protocolBuff.append("{");
 					protocolBuff.append("\"Name\":\""+rs.getString(2)+"\",");

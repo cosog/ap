@@ -2565,7 +2565,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		return result_json.toString().replaceAll("null", "");
 	}
-	
+	              
 	public String getRPCDeviceControlandInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
@@ -2587,7 +2587,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		RPCDeviceInfo deviceInfo=null;
 		UserInfo userInfo=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		String protocolCode="";
+		String protocolName="";
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
@@ -2610,7 +2610,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				if(jedis!=null&&deviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
-					protocolCode=displayInstanceOwnItem.getProtocol();
+					protocolName=displayInstanceOwnItem.getProtocol();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -2631,7 +2631,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 								if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
@@ -3056,7 +3056,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		RPCDeviceInfo deviceInfo=null;
 		UserInfo userInfo=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		String protocolCode="";
+		String protocolName="";
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
@@ -3079,7 +3079,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				if(jedis!=null&&deviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
-					protocolCode=displayInstanceOwnItem.getProtocol();
+					protocolName=displayInstanceOwnItem.getProtocol();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -3098,7 +3098,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 								if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
@@ -3212,7 +3212,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		UserInfo userInfo=null;
 
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		String protocolCode="";
+		String protocolName="";
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
@@ -3236,7 +3236,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				if(jedis!=null&&deviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
-					protocolCode=displayInstanceOwnItem.getProtocol();
+					protocolName=displayInstanceOwnItem.getProtocol();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -3257,7 +3257,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 								if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
@@ -3596,7 +3596,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		UserInfo userInfo=null;
 
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		String protocolCode="";
+		String protocolName="";
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
@@ -3620,7 +3620,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				if(jedis!=null&&deviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
-					protocolCode=displayInstanceOwnItem.getProtocol();
+					protocolName=displayInstanceOwnItem.getProtocol();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -3638,7 +3638,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 								if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
@@ -3729,49 +3729,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 		}
 		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String loadCurveTypeComboxList(String wellName,String deviceType)throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		List<String> controlItems=new ArrayList<String>();
-		List<String> controlColumns=new ArrayList<String>();
-		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			deviceTableName="tbl_pcpdevice";
-		}
-		
-		
-		String protocolSql="select upper(t.protocolcode) from "+deviceTableName+" t where t.wellname='"+wellName+"'";
-		List<?> protocolList = this.findCallSql(protocolSql);
-		String protocolCode="";
-		if(protocolList.size()>0){
-			protocolCode=protocolList.get(0)+"";
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getIFDataType().contains("float")||modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getIFDataType().contains("int")){//如果float或者int
-								controlItems.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-								controlColumns.add("ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr());
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
-		
-		result_json.append("{\"totals\":"+controlColumns.size()+",\"list\":[");
-		for(int i=0;i<controlColumns.size();i++){
-			result_json.append("{boxkey:\"" + controlColumns.get(i) + "\",");
-			result_json.append("boxval:\"" + controlItems.get(i) + "\"},");
-		}
-		if (result_json.toString().endsWith(",")) {
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString();
 	}
 	
 	

@@ -1929,8 +1929,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			result_json = new StringBuffer();
-			
 			String videoUrl=obj[12]+"";
 			String productionDataStr=obj[15]+"";
 			String videoUrl1="",videoUrl2="";
@@ -4017,8 +4015,21 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String columns[]=field.split(",");
 			
 			List<Object> headRow = new ArrayList<>();
+			List<String> realColumns=new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
-				headRow.add(heads[i]);
+				if(StringManagerUtils.stringToInteger(applicationScenarios)==0){
+					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) || "saturationPressure".equalsIgnoreCase(columns[i]) || "productionGasOilRatio".equalsIgnoreCase(columns[i]) ) ){
+						String thishead=heads[i];
+						if("reservoirDepth".equalsIgnoreCase(columns[i]) || "reservoirTemperature".equalsIgnoreCase(columns[i])){
+							thishead=thishead.replace("油层", "煤层");
+						}
+						headRow.add(thishead);
+						realColumns.add(columns[i]);
+					}
+				}else{
+					headRow.add(heads[i]);
+					realColumns.add(columns[i]);
+				}
 			}
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
@@ -4243,9 +4254,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"balancePosition\":\""+balancePosition+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
-				for (int j = 0; j < columns.length; j++) {
-					if(jsonObject.has(columns[j])){
-						record.add(jsonObject.getString(columns[j]));
+				for (int j = 0; j < realColumns.size(); j++) {
+					if(jsonObject.has(realColumns.get(j))){
+						record.add(jsonObject.getString(realColumns.get(j)));
 					}else{
 						record.add("");
 					}
@@ -4278,8 +4289,21 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String columns[]=field.split(",");
 			
 			List<Object> headRow = new ArrayList<>();
+			List<String> realColumns=new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
-				headRow.add(heads[i]);
+				if(StringManagerUtils.stringToInteger(applicationScenarios)==0){
+					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) || "saturationPressure".equalsIgnoreCase(columns[i]) || "productionGasOilRatio".equalsIgnoreCase(columns[i]) ) ){
+						String thishead=heads[i];
+						if("reservoirDepth".equalsIgnoreCase(columns[i]) || "reservoirTemperature".equalsIgnoreCase(columns[i])){
+							thishead=thishead.replace("油层", "煤层");
+						}
+						headRow.add(thishead);
+						realColumns.add(columns[i]);
+					}
+				}else{
+					headRow.add(heads[i]);
+					realColumns.add(columns[i]);
+				}
 			}
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
@@ -4456,9 +4480,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"netGrossRatio\":\""+netGrossRatio+"\",");
 				result_json.append("\"netGrossValue\":\""+netGrossValue+"\"}");
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
-				for (int j = 0; j < columns.length; j++) {
-					if(jsonObject.has(columns[j])){
-						record.add(jsonObject.getString(columns[j]));
+				for (int j = 0; j < realColumns.size(); j++) {
+					if(jsonObject.has(realColumns.get(j))){
+						record.add(jsonObject.getString(realColumns.get(j)));
 					}else{
 						record.add("");
 					}

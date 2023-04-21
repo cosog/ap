@@ -110,22 +110,26 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-                    var fields = "";
-                    var heads = "";
-                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellInformationName = Ext.getCmp('pcpDeviceListComb_Id').getValue();
-                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
-                    for (var i = 0; i < pcpDeviceInfoHandsontableHelper.colHeaders.length; i++) {
-                        fields += pcpDeviceInfoHandsontableHelper.columns[i].data + ",";
-                        heads += pcpDeviceInfoHandsontableHelper.colHeaders[i] + ","
-                    }
-                    if (isNotVal(fields)) {
-                        fields = fields.substring(0, fields.length - 1);
-                        heads = heads.substring(0, heads.length - 1);
-                    }
-
-                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=201&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("螺杆泵井")) + "&title=" + URLencode(URLencode("螺杆泵井"));
-                    openExcelWindow(url + '?flag=true' + param);
+//                    var fields = "";
+//                    var heads = "";
+//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+//                    var wellInformationName = Ext.getCmp('pcpDeviceListComb_Id').getValue();
+//                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
+//                    for (var i = 0; i < pcpDeviceInfoHandsontableHelper.colHeaders.length; i++) {
+//                        fields += pcpDeviceInfoHandsontableHelper.columns[i].data + ",";
+//                        heads += pcpDeviceInfoHandsontableHelper.colHeaders[i] + ","
+//                    }
+//                    if (isNotVal(fields)) {
+//                        fields = fields.substring(0, fields.length - 1);
+//                        heads = heads.substring(0, heads.length - 1);
+//                    }
+//
+//                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=201&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("螺杆泵井")) + "&title=" + URLencode(URLencode("螺杆泵井"));
+//                    openExcelWindow(url + '?flag=true' + param);
+                	
+                	var window = Ext.create("AP.view.well.ExportDeviceInfoWindow");
+                    Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(201);
+                    window.show();
                 }
             },'-', {
                 id: 'PCPDeviceTotalCount_Id',

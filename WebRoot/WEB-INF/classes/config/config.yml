@@ -88,7 +88,7 @@ ap:
       timeDifference: 60              #模拟数据井之间发送间隔，单位：秒
       otherStaticResourceTimestamp: 20230404150330  #其他静态资源时间戳，修改此项重新加载资源
 ac:                                                    #AC程序配置 一般只需配置ip即可
-   ip: 8.142.92.84                                       #ip或域名
+   ip: 39.98.187.157                                       #ip或域名
    port: 18100                                         #端口
    probe:                                              #状态监测
       app: api/probe/app                               #运行状态监测

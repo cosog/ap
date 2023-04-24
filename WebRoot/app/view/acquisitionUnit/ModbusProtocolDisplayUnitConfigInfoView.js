@@ -939,6 +939,9 @@ var grantDisplayCalItemsPermission = function () {
         	
         	var itemShowLevel = calItemsData[index][4];
         	var itemSort = calItemsData[index][5];
+        	
+        	var realtimeCurveConfigStr="";
+        	var historyCurveConfigStr="";
 
         	var realtimeCurveConfig=null;
 			if(isNotVal(calItemsData[index][6]) && isNotVal(calItemsData[index][8])){

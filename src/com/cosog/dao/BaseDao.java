@@ -1225,9 +1225,7 @@ public class BaseDao extends HibernateDaoSupport {
 							productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterCut()));
 							productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
 							productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()));
-							
-							productionData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getLevelCorrectValue()));
-							
+														
 							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
 							
 							productionData.getPump().setPumpType(pumpType);
@@ -1280,6 +1278,8 @@ public class BaseDao extends HibernateDaoSupport {
 								manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(wellHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResultName());
 							}
 							productionData.getManualIntervention().setCode(manualInterventionResultCode);
+							
+							productionData.getManualIntervention().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getLevelCorrectValue()));
 							
 							String[] balanceWeight=wellHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight().split(",");
 							String[] balancePosition=wellHandsontableChangedData.getUpdatelist().get(i).getBalancePosition().split(",");
@@ -1389,7 +1389,6 @@ public class BaseDao extends HibernateDaoSupport {
 								productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterCut()));
 								productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()));
 								productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
-								productionData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getLevelCorrectValue()));
 								productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
 								
 								productionData.getPump().setPumpType(pumpType);
@@ -1442,6 +1441,8 @@ public class BaseDao extends HibernateDaoSupport {
 									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(wellHandsontableChangedData.getInsertlist().get(i).getManualInterventionResultName());
 								}
 								productionData.getManualIntervention().setCode(manualInterventionResultCode);
+								productionData.getManualIntervention().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getLevelCorrectValue()));
+								
 								
 								String[] balanceWeight=wellHandsontableChangedData.getInsertlist().get(i).getBalanceWeight().split(",");
 								String[] balancePosition=wellHandsontableChangedData.getInsertlist().get(i).getBalancePosition().split(",");

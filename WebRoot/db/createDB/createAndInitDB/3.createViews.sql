@@ -26,7 +26,7 @@ t.alarminstancecode,t3.name as alarminstancename,
 t.displayinstancecode,t5.name as displayinstancename,
 t.reportinstancecode,t7.name as reportinstancename,
 t.status,decode(t.status,1,'Ê¹ÄÜ','Ê§Ð§') as statusName,
-t.productiondata,t.balanceinfo,t.stroke,t.levelcorrectvalue,
+t.productiondata,t.balanceinfo,t.stroke,
 t.pumpingmodelid,t6.manufacturer,t6.model,t6.crankrotationdirection,t6.offsetangleofcrank,t6.crankgravityradius,t6.singlecrankweight,t6.singlecrankpinweight,t6.structuralunbalance,
 t.sortnum
 from tbl_rpcdevice t

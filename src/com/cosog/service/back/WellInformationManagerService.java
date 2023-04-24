@@ -3090,14 +3090,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 								barrelType="整筒泵";
 							}
 						}
-						result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\""+pumpType+"\"},");
-						result_json.append("{\"id\":15,\"itemName\":\"泵筒类型\",\"itemValue\":\""+barrelType+"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\"泵级别\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPumpGrade():"")+"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\"泵径(mm)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?(rpcProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":18,\"itemName\":\"柱塞长(m)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPlungerLength():"")+"\"},");
+//						result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\""+pumpType+"\"},");
+						result_json.append("{\"id\":14,\"itemName\":\"泵筒类型\",\"itemValue\":\""+barrelType+"\"},");
+						result_json.append("{\"id\":15,\"itemName\":\"泵级别\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPumpGrade():"")+"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\"泵径(mm)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?(rpcProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\"柱塞长(m)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPlungerLength():"")+"\"},");
 						
-						result_json.append("{\"id\":19,\"itemName\":\"油管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getTubingString()!=null&&rpcProductionData.getTubingString().getEveryTubing()!=null&&rpcProductionData.getTubingString().getEveryTubing().size()>0?(rpcProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":20,\"itemName\":\"套管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getCasingString()!=null&&rpcProductionData.getCasingString().getEveryCasing()!=null&&rpcProductionData.getCasingString().getEveryCasing().size()>0?(rpcProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\"油管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getTubingString()!=null&&rpcProductionData.getTubingString().getEveryTubing()!=null&&rpcProductionData.getTubingString().getEveryTubing().size()>0?(rpcProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\"套管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getCasingString()!=null&&rpcProductionData.getCasingString().getEveryCasing()!=null&&rpcProductionData.getCasingString().getEveryCasing().size()>0?(rpcProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
 						
 						String rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -3129,25 +3129,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 								rodLength4=rpcProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}
-						result_json.append("{\"id\":21,\"itemName\":\"一级杆级别\",\"itemValue\":\""+rodGrade1+"\"},");
-						result_json.append("{\"id\":22,\"itemName\":\"一级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter1+"\"},");
-						result_json.append("{\"id\":23,\"itemName\":\"一级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter1+"\"},");
-						result_json.append("{\"id\":24,\"itemName\":\"一级杆长度(m)\",\"itemValue\":\""+rodLength1+"\"},");
+						result_json.append("{\"id\":20,\"itemName\":\"一级杆级别\",\"itemValue\":\""+rodGrade1+"\"},");
+						result_json.append("{\"id\":21,\"itemName\":\"一级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter1+"\"},");
+						result_json.append("{\"id\":22,\"itemName\":\"一级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter1+"\"},");
+						result_json.append("{\"id\":23,\"itemName\":\"一级杆长度(m)\",\"itemValue\":\""+rodLength1+"\"},");
 						
-						result_json.append("{\"id\":25,\"itemName\":\"二级杆级别\",\"itemValue\":\""+rodGrade2+"\"},");
-						result_json.append("{\"id\":26,\"itemName\":\"二级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter2+"\"},");
-						result_json.append("{\"id\":27,\"itemName\":\"二级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter2+"\"},");
-						result_json.append("{\"id\":28,\"itemName\":\"二级杆长度(m)\",\"itemValue\":\""+rodLength2+"\"},");
+						result_json.append("{\"id\":24,\"itemName\":\"二级杆级别\",\"itemValue\":\""+rodGrade2+"\"},");
+						result_json.append("{\"id\":25,\"itemName\":\"二级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter2+"\"},");
+						result_json.append("{\"id\":26,\"itemName\":\"二级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter2+"\"},");
+						result_json.append("{\"id\":27,\"itemName\":\"二级杆长度(m)\",\"itemValue\":\""+rodLength2+"\"},");
 						
-						result_json.append("{\"id\":29,\"itemName\":\"三级杆级别\",\"itemValue\":\""+rodGrade3+"\"},");
-						result_json.append("{\"id\":30,\"itemName\":\"三级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter3+"\"},");
-						result_json.append("{\"id\":31,\"itemName\":\"三级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter3+"\"},");
-						result_json.append("{\"id\":32,\"itemName\":\"三级杆长度(m)\",\"itemValue\":\""+rodLength3+"\"},");
+						result_json.append("{\"id\":28,\"itemName\":\"三级杆级别\",\"itemValue\":\""+rodGrade3+"\"},");
+						result_json.append("{\"id\":39,\"itemName\":\"三级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter3+"\"},");
+						result_json.append("{\"id\":30,\"itemName\":\"三级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter3+"\"},");
+						result_json.append("{\"id\":31,\"itemName\":\"三级杆长度(m)\",\"itemValue\":\""+rodLength3+"\"},");
 						
-						result_json.append("{\"id\":33,\"itemName\":\"四级杆级别\",\"itemValue\":\""+rodGrade4+"\"},");
-						result_json.append("{\"id\":34,\"itemName\":\"四级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter4+"\"},");
-						result_json.append("{\"id\":35,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
-						result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\""+rodLength4+"\"},");
+						result_json.append("{\"id\":32,\"itemName\":\"四级杆级别\",\"itemValue\":\""+rodGrade4+"\"},");
+						result_json.append("{\"id\":33,\"itemName\":\"四级杆外径(mm)\",\"itemValue\":\""+rodOutsideDiameter4+"\"},");
+						result_json.append("{\"id\":34,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
+						result_json.append("{\"id\":35,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\""+rodLength4+"\"},");
 						
 						
 						String manualInterventionName="不干预";
@@ -3163,10 +3163,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 								}
 							}
 						}
-						result_json.append("{\"id\":37,\"itemName\":\"工况干预\",\"itemValue\":\""+manualInterventionName+"\"},");
-						result_json.append("{\"id\":38,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
-						result_json.append("{\"id\":39,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
-						result_json.append("{\"id\":40,\"itemName\":\"反演液面校正值(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getLevelCorrectValue():"")+"\"},");
+						result_json.append("{\"id\":36,\"itemName\":\"工况干预\",\"itemValue\":\""+manualInterventionName+"\"},");
+						result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
+						result_json.append("{\"id\":38,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
+						result_json.append("{\"id\":39,\"itemName\":\"反演液面校正值(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"},");
 					}else{
 						result_json.append("{\"id\":1,\"itemName\":\"原油密度(g/cm^3)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":2,\"itemName\":\"水密度(g/cm^3)\",\"itemValue\":\"\"},");
@@ -3184,42 +3184,42 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":12,\"itemName\":\"动液面(m)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":13,\"itemName\":\"泵挂(m)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":15,\"itemName\":\"泵筒类型\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\"泵级别\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\"泵径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":18,\"itemName\":\"柱塞长(m)\",\"itemValue\":\"\"},");
+//						result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":14,\"itemName\":\"泵筒类型\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":15,\"itemName\":\"泵级别\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\"泵径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\"柱塞长(m)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":19,\"itemName\":\"油管内径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":20,\"itemName\":\"套管内径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\"油管内径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\"套管内径(mm)\",\"itemValue\":\"\"},");
 						
 						
-						result_json.append("{\"id\":21,\"itemName\":\"一级杆级别\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":22,\"itemName\":\"一级杆外径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":23,\"itemName\":\"一级杆内径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":24,\"itemName\":\"一级杆长度(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":20,\"itemName\":\"一级杆级别\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":21,\"itemName\":\"一级杆外径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":22,\"itemName\":\"一级杆内径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":23,\"itemName\":\"一级杆长度(m)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":25,\"itemName\":\"二级杆级别\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":26,\"itemName\":\"二级杆外径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":27,\"itemName\":\"二级杆内径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":28,\"itemName\":\"二级杆长度(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":24,\"itemName\":\"二级杆级别\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":25,\"itemName\":\"二级杆外径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":26,\"itemName\":\"二级杆内径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":27,\"itemName\":\"二级杆长度(m)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":29,\"itemName\":\"三级杆级别\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":30,\"itemName\":\"三级杆外径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":31,\"itemName\":\"三级杆内径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":32,\"itemName\":\"三级杆长度(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":28,\"itemName\":\"三级杆级别\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":29,\"itemName\":\"三级杆外径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":30,\"itemName\":\"三级杆内径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":31,\"itemName\":\"三级杆长度(m)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":33,\"itemName\":\"四级杆级别\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":34,\"itemName\":\"四级杆外径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":35,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":32,\"itemName\":\"四级杆级别\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":33,\"itemName\":\"四级杆外径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":34,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":35,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":37,\"itemName\":\"工况干预\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":38,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":39,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":40,\"itemName\":\"反演液面校正值(MPa)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":36,\"itemName\":\"工况干预\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":38,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":39,\"itemName\":\"反演液面校正值(MPa)\",\"itemValue\":\"\"},");
 					}
-					result_json.append("{\"id\":41,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
+					result_json.append("{\"id\":40,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 				}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
 					type = new TypeToken<PCPProductionData>() {}.getType();
 					PCPProductionData pcpProductionData=gson.fromJson(productionData, type);

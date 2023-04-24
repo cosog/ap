@@ -185,7 +185,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String result="";
 		try{
-			String productionData=object[10].toString(); 
+			String productionData=object[9].toString(); 
 			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 			RPCCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			if(calculateRequestData==null){
@@ -253,21 +253,21 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        calculateRequestData.getFESDiagram().setWatt(Watt);
 	        calculateRequestData.getFESDiagram().setI(I);
 	        
-	        calculateRequestData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[9]+""));
+//	        calculateRequestData.getManualIntervention().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[9]+""));
 	        
-	        if(object.length>11){
-	        	int pumpingModelId=StringManagerUtils.stringToInteger(object[11]+"");
+	        if(object.length>10){
+	        	int pumpingModelId=StringManagerUtils.stringToInteger(object[10]+"");
 	        	if(pumpingModelId>0){
 	        		calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
-	        		calculateRequestData.getPumpingUnit().setManufacturer(object[12]+"");
-	        		calculateRequestData.getPumpingUnit().setModel(object[13]+"");
-	        		calculateRequestData.getPumpingUnit().setCrankRotationDirection(object[14]+"");
-	        		calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(object[15]+""));
-					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(object[16]+""));
-					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(object[17]+""));
-					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[18]+""));
-					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[19]+""));
-					String balanceInfo=object[20]+"";
+	        		calculateRequestData.getPumpingUnit().setManufacturer(object[11]+"");
+	        		calculateRequestData.getPumpingUnit().setModel(object[12]+"");
+	        		calculateRequestData.getPumpingUnit().setCrankRotationDirection(object[13]+"");
+	        		calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(object[14]+""));
+					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(object[15]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(object[16]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[17]+""));
+					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[18]+""));
+					String balanceInfo=object[19]+"";
 					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
 					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 					if(balance!=null){

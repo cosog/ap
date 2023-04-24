@@ -718,8 +718,6 @@ public class RPCCalculateRequestData implements Serializable {
 	    private float ProducingfluidLevel;
 
 	    private float PumpSettingDepth;
-	    
-	    private float LevelCorrectValue;
 
 	    public void setWaterCut(float WaterCut){
 	        this.WaterCut = WaterCut;
@@ -763,12 +761,6 @@ public class RPCCalculateRequestData implements Serializable {
 	    public float getPumpSettingDepth(){
 	        return this.PumpSettingDepth;
 	    }
-		public float getLevelCorrectValue() {
-			return LevelCorrectValue;
-		}
-		public void setLevelCorrectValue(float levelCorrectValue) {
-			LevelCorrectValue = levelCorrectValue;
-		}
 		public float getWeightWaterCut() {
 			return WeightWaterCut;
 		}
@@ -1148,6 +1140,8 @@ public class RPCCalculateRequestData implements Serializable {
 	    private float NetGrossRatio;
 	    
 	    private float NetGrossValue;
+	    
+	    private float LevelCorrectValue;
 
 	    public void setCode(int Code){
 	        this.Code = Code;
@@ -1166,6 +1160,12 @@ public class RPCCalculateRequestData implements Serializable {
 		}
 		public void setNetGrossValue(float netGrossValue) {
 			NetGrossValue = netGrossValue;
+		}
+		public float getLevelCorrectValue() {
+			return LevelCorrectValue;
+		}
+		public void setLevelCorrectValue(float levelCorrectValue) {
+			LevelCorrectValue = levelCorrectValue;
 		}
 	}
 

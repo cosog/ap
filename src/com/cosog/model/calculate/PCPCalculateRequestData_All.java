@@ -4,41 +4,62 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PCPCalculateRequestData  implements Serializable {
+import com.cosog.model.calculate.RPCCalculateRequestData.CasingString;
+import com.cosog.model.calculate.RPCCalculateRequestData.EveryCasing;
+import com.cosog.model.calculate.RPCCalculateRequestData.EveryRod;
+import com.cosog.model.calculate.RPCCalculateRequestData.EveryTubing;
+import com.cosog.model.calculate.RPCCalculateRequestData.FluidPVT;
+import com.cosog.model.calculate.RPCCalculateRequestData.ManualIntervention;
+import com.cosog.model.calculate.RPCCalculateRequestData.Production;
+import com.cosog.model.calculate.RPCCalculateRequestData.Pump;
+import com.cosog.model.calculate.RPCCalculateRequestData.Reservoir;
+import com.cosog.model.calculate.RPCCalculateRequestData.RodString;
+import com.cosog.model.calculate.RPCCalculateRequestData.TubingString;
+public class PCPCalculateRequestData_All  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String AKString;                                              //秘钥
 	private String WellName;                                              //井名
+	private int LiftingType;											  //举升类型
 	private String AcqTime;                                       //采集时间
 	private float RPM;                                                    //螺杆泵井转速
 	private FluidPVT FluidPVT;                                            //流体PVT物性
 	private Reservoir Reservoir;                                          //油藏物性
+	private WellboreTrajectory WellboreTrajectory;                        //井深轨迹
 	private RodString RodString;                                          //抽油杆参数
 	private TubingString TubingString;                                    //油管参数
 	private Pump Pump;                                                    //抽油泵参数
+	private TailTubingString TailTubingString;		                      //尾管参数
 	private CasingString CasingString;                                    //套管参数
 	private Production Production;                      //生产数据
+	private SystemEfficiency SystemEfficiency;                            //系统效率
 	private ManualIntervention ManualIntervention;                        //人工干预
 	
-	public PCPCalculateRequestData(String aKString, String WellName,
-			com.cosog.model.calculate.PCPCalculateRequestData.FluidPVT fluidPVT,
-			com.cosog.model.calculate.PCPCalculateRequestData.Reservoir reservoir,
-			com.cosog.model.calculate.PCPCalculateRequestData.RodString rodString,
-			com.cosog.model.calculate.PCPCalculateRequestData.TubingString tubingString,
-			com.cosog.model.calculate.PCPCalculateRequestData.Pump pump,
-			com.cosog.model.calculate.PCPCalculateRequestData.CasingString casingString,
-			com.cosog.model.calculate.PCPCalculateRequestData.Production production,
-			com.cosog.model.calculate.PCPCalculateRequestData.ManualIntervention manualIntervention) {
+	public PCPCalculateRequestData_All(String aKString, String WellName,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.FluidPVT fluidPVT,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.Reservoir reservoir,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.WellboreTrajectory wellboreTrajectory,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.RodString rodString,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.TubingString tubingString,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.Pump pump,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.TailTubingString tailTubingString,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.CasingString casingString,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.Production production,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.SystemEfficiency systemEfficiency,
+			com.cosog.model.calculate.PCPCalculateRequestData_All.ManualIntervention manualIntervention) {
 		super();
 		AKString = aKString;
 		this.WellName = WellName;
 		FluidPVT = fluidPVT;
 		Reservoir = reservoir;
+		WellboreTrajectory = wellboreTrajectory;
 		RodString = rodString;
 		TubingString = tubingString;
 		Pump = pump;
+		TailTubingString = tailTubingString;
 		CasingString = casingString;
 		Production = production;
+		SystemEfficiency=systemEfficiency;
 		ManualIntervention = manualIntervention;
 	}
 
@@ -73,7 +94,7 @@ public class PCPCalculateRequestData  implements Serializable {
 	}
 
 
-	public PCPCalculateRequestData() {
+	public PCPCalculateRequestData_All() {
 		super();
 	}
 
@@ -108,6 +129,16 @@ public class PCPCalculateRequestData  implements Serializable {
 	}
 
 
+	public WellboreTrajectory getWellboreTrajectory() {
+		return WellboreTrajectory;
+	}
+
+
+	public void setWellboreTrajectory(WellboreTrajectory wellboreTrajectory) {
+		WellboreTrajectory = wellboreTrajectory;
+	}
+
+
 	public RodString getRodString() {
 		return RodString;
 	}
@@ -138,6 +169,16 @@ public class PCPCalculateRequestData  implements Serializable {
 	}
 
 
+	public TailTubingString getTailTubingString() {
+		return TailTubingString;
+	}
+
+
+	public void setTailTubingString(TailTubingString tailTubingString) {
+		TailTubingString = tailTubingString;
+	}
+
+
 	public CasingString getCasingString() {
 		return CasingString;
 	}
@@ -156,6 +197,15 @@ public class PCPCalculateRequestData  implements Serializable {
 	public void setProduction(Production production) {
 		Production = production;
 	}
+	
+	public SystemEfficiency getSystemEfficiency() {
+		return SystemEfficiency;
+	}
+
+
+	public void setSystemEfficiency(SystemEfficiency systemEfficiency) {
+		SystemEfficiency = systemEfficiency;
+	}
 
 	public ManualIntervention getManualIntervention() {
 		return ManualIntervention;
@@ -164,6 +214,16 @@ public class PCPCalculateRequestData  implements Serializable {
 	public void setManualIntervention(ManualIntervention manualIntervention) {
 		ManualIntervention = manualIntervention;
 	}
+	
+	public int getLiftingType() {
+		return LiftingType;
+	}
+
+
+	public void setLiftingType(int liftingType) {
+		LiftingType = liftingType;
+	}
+
 
 	public String getAcqTime() {
 		return AcqTime;
@@ -270,6 +330,7 @@ public class PCPCalculateRequestData  implements Serializable {
 	
 	public static class EveryRod implements Serializable {
 		private static final long serialVersionUID = 1L;
+	    private int Type;
 
 	    private String Grade;
 
@@ -279,6 +340,14 @@ public class PCPCalculateRequestData  implements Serializable {
 
 	    private float InsideDiameter;
 
+	    private float Density;
+
+	    public void setType(int Type){
+	        this.Type = Type;
+	    }
+	    public int getType(){
+	        return this.Type;
+	    }
 	    public void setGrade(String Grade){
 	        this.Grade = Grade;
 	    }
@@ -303,6 +372,12 @@ public class PCPCalculateRequestData  implements Serializable {
 	    public float getInsideDiameter(){
 	        return this.InsideDiameter;
 	    }
+	    public void setDensity(float Density){
+	        this.Density = Density;
+	    }
+	    public float getDensity(){
+	        return this.Density;
+	    }
 	}
 	
 	public static class RodString implements Serializable {
@@ -319,23 +394,54 @@ public class PCPCalculateRequestData  implements Serializable {
 	
 	public static class EveryTubing implements Serializable {
 		private static final long serialVersionUID = 1L;
+	    private String Grade;
 
-		private float OutsideDiameter;
-		
+	    private float length;
+
+	    private float OutsideDiameter;
+
 	    private float InsideDiameter;
-	    
+
+	    private float Density;
+
+	    private float WeightPerMeter;
+
+	    public void setGrade(String Grade){
+	        this.Grade = Grade;
+	    }
+	    public String getGrade(){
+	        return this.Grade;
+	    }
+	    public void setLength(float length){
+	        this.length = length;
+	    }
+	    public float getLength(){
+	        return this.length;
+	    }
+	    public void setOutsideDiameter(float OutsideDiameter){
+	        this.OutsideDiameter = OutsideDiameter;
+	    }
+	    public float getOutsideDiameter(){
+	        return this.OutsideDiameter;
+	    }
 	    public void setInsideDiameter(float InsideDiameter){
 	        this.InsideDiameter = InsideDiameter;
 	    }
 	    public float getInsideDiameter(){
 	        return this.InsideDiameter;
 	    }
-		public float getOutsideDiameter() {
-			return OutsideDiameter;
-		}
-		public void setOutsideDiameter(float outsideDiameter) {
-			OutsideDiameter = outsideDiameter;
-		}
+	    public void setDensity(float Density){
+	        this.Density = Density;
+	    }
+	    public float getDensity(){
+	        return this.Density;
+	    }
+	    public void setWeightPerMeter(float WeightPerMeter){
+	        this.WeightPerMeter = WeightPerMeter;
+	    }
+	    public float getWeightPerMeter(){
+	        return this.WeightPerMeter;
+	    }
 	}
 	
 	public static class TubingString implements Serializable {
@@ -470,14 +576,45 @@ public class PCPCalculateRequestData  implements Serializable {
 	
 	public static class EveryCasing implements Serializable {
 		private static final long serialVersionUID = 1L;
+	    private float OutsideDiameter;//套管外径
 
 	    private float InsideDiameter;//套管内径
 
+	    private float Length;//套管长度
+
+	    private float Density;//套管密度
+	    
+	    private float WeightPerMeter;//每米管重
+
+	    public float getWeightPerMeter() {
+			return WeightPerMeter;
+		}
+		public void setWeightPerMeter(float weightPerMeter) {
+			WeightPerMeter = weightPerMeter;
+		}
+		public void setOutsideDiameter(float OutsideDiameter){
+	        this.OutsideDiameter = OutsideDiameter;
+	    }
+	    public float getOutsideDiameter(){
+	        return this.OutsideDiameter;
+	    }
 	    public void setInsideDiameter(float InsideDiameter){
 	        this.InsideDiameter = InsideDiameter;
 	    }
 	    public float getInsideDiameter(){
 	        return this.InsideDiameter;
+	    }
+	    public void setLength(float Length){
+	        this.Length = Length;
+	    }
+	    public float getLength(){
+	        return this.Length;
+	    }
+	    public void setDensity(float Density){
+	        this.Density = Density;
+	    }
+	    public float getDensity(){
+	        return this.Density;
 	    }
 	}
 
@@ -512,7 +649,15 @@ public class PCPCalculateRequestData  implements Serializable {
 	    private float ProducingfluidLevel;//动液面
 
 	    private float PumpSettingDepth;//泵挂
+	    
+	    private float Submergence;//沉没度
 
+	    public float getSubmergence() {
+			return Submergence;
+		}
+		public void setSubmergence(float submergence) {
+			Submergence = submergence;
+		}
 		public void setWaterCut(float WaterCut){
 	        this.WaterCut = WaterCut;
 	    }

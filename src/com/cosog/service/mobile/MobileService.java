@@ -2435,7 +2435,7 @@ public class MobileService<T> extends BaseService<T> {
 				String crudeOilDensity="",waterDensity="",naturalGasRelativeDensity="",saturationPressure="",
 						reservoirDepth="",reservoirTemperature="",
 						tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",productionGasOilRatio="",producingfluidLevel="",pumpSettingDepth="",
-						pumpType="",barrelType="",pumpGrade="",pumpBoreDiameter="",plungerLength="",
+						barrelType="",pumpGrade="",pumpBoreDiameter="",plungerLength="",
 						tubingStringInsideDiameter="",casingStringInsideDiameter="",
 						rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="",
 						rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="",
@@ -2478,11 +2478,6 @@ public class MobileService<T> extends BaseService<T> {
 							pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
 						}
 						if(productionData.getPump()!=null){
-							if("T".equalsIgnoreCase(productionData.getPump().getPumpType())){
-								pumpType="管式泵";
-							}else{
-								pumpType="杆式泵";
-							}
 							if("L".equalsIgnoreCase(productionData.getPump().getBarrelType())){
 								barrelType="组合泵";
 							}else{
@@ -2530,8 +2525,8 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				if(StringManagerUtils.isNotNull(balanceInfo)){
-					type = new TypeToken<RPCProductionData.Balance>() {}.getType();
-					RPCProductionData.Balance balance=gson.fromJson(balanceInfo, type);
+					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
+					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 					if(balance!=null && balance.getEveryBalance().size()>0){
 						for(int j=0;j<balance.getEveryBalance().size();j++){
 							balanceWeight+=balance.getEveryBalance().get(j).getWeight()+"";
@@ -2577,7 +2572,6 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"ProductionGasOilRatio\":\""+productionGasOilRatio+"\",");
 				result_json.append("\"ProducingfluidLevel\":\""+producingfluidLevel+"\",");
 				result_json.append("\"PumpSettingDepth\":\""+pumpSettingDepth+"\",");
-				result_json.append("\"PumpType\":\""+pumpType+"\",");
 				result_json.append("\"BarrelType\":\""+barrelType+"\",");
 				result_json.append("\"PumpGrade\":\""+pumpGrade+"\",");
 				result_json.append("\"PumpBoreDiameter\":\""+pumpBoreDiameter+"\",");

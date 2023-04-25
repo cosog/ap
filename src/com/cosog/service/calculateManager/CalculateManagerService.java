@@ -213,15 +213,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						result_json.append("\"pumpSettingDepth\":\""+rpcProductionData.getProduction().getPumpSettingDepth()+"\",");
 					}
 					if(rpcProductionData.getPump()!=null){
-						String pumpType="";
 						String barrelType="";
-						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getPumpType()!=null){
-							if("R".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
-								pumpType="杆式泵";
-							}else if("T".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
-								pumpType="管式泵";
-							}
-						}
 						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getBarrelType()!=null){
 							if("L".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
 								barrelType="组合泵";
@@ -229,7 +221,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 								barrelType="整筒泵";
 							}
 						}
-						result_json.append("\"pumpTypeName\":\""+pumpType+"\",");
 						result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
 						result_json.append("\"pumpGrade\":\""+rpcProductionData.getPump().getPumpGrade()+"\",");
 						result_json.append("\"pumpboreDiameter\":\""+rpcProductionData.getPump().getPumpBoreDiameter()*1000+"\",");
@@ -760,20 +751,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
 					production.setWeightWaterCut(weightWaterCut);
 					
-					String pumpType="";
 					String barrelType="";
-					if("杆式泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
-						pumpType="R";
-					}else if("管式泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
-						pumpType="T";
-					}
 					if("组合泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
 						barrelType="L";
 					}else if("整筒泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
 						barrelType="H";
 					}
 					
-					pump.setPumpType(pumpType);
 					pump.setBarrelType(barrelType);
 					pump.setPumpGrade(StringManagerUtils.stringToInteger(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
 					pump.setPumpBoreDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter())*0.001));

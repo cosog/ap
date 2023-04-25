@@ -1,20 +1,10 @@
 package com.cosog.model.calculate;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.Gson;
-
-public class RPCCalculateRequestData implements Serializable {
+public class RPCCalculateRequestData_All implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String WellName;
@@ -22,6 +12,8 @@ public class RPCCalculateRequestData implements Serializable {
     private FluidPVT FluidPVT;
 
     private Reservoir Reservoir;
+
+    private WellboreTrajectory WellboreTrajectory;
 
     private RodString RodString;
 
@@ -95,6 +87,12 @@ public class RPCCalculateRequestData implements Serializable {
     }
     public Reservoir getReservoir(){
         return this.Reservoir;
+    }
+    public void setWellboreTrajectory(WellboreTrajectory WellboreTrajectory){
+        this.WellboreTrajectory = WellboreTrajectory;
+    }
+    public WellboreTrajectory getWellboreTrajectory(){
+        return this.WellboreTrajectory;
     }
     public void setRodString(RodString RodString){
         this.RodString = RodString;
@@ -244,6 +242,7 @@ public class RPCCalculateRequestData implements Serializable {
 	
 	public static class EveryRod implements Serializable {
 		private static final long serialVersionUID = 1L;
+	    private int Type;
 
 	    private String Grade;
 
@@ -253,6 +252,14 @@ public class RPCCalculateRequestData implements Serializable {
 
 	    private float InsideDiameter;
 
+	    private float Density;
+
+	    public void setType(int Type){
+	        this.Type = Type;
+	    }
+	    public int getType(){
+	        return this.Type;
+	    }
 	    public void setGrade(String Grade){
 	        this.Grade = Grade;
 	    }
@@ -277,6 +284,12 @@ public class RPCCalculateRequestData implements Serializable {
 	    public float getInsideDiameter(){
 	        return this.InsideDiameter;
 	    }
+	    public void setDensity(float Density){
+	        this.Density = Density;
+	    }
+	    public float getDensity(){
+	        return this.Density;
+	    }
 	}
 	
 	public static class RodString implements Serializable {
@@ -293,23 +306,54 @@ public class RPCCalculateRequestData implements Serializable {
 	
 	public static class EveryTubing implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
-		private float OutsideDiameter;
-		
-		private float InsideDiameter;
-	    
+	    private String Grade;
+
+	    private float length;
+
+	    private float OutsideDiameter;
+
+	    private float InsideDiameter;
+
+	    private float Density;
+
+	    private float WeightPerMeter;
+
+	    public void setGrade(String Grade){
+	        this.Grade = Grade;
+	    }
+	    public String getGrade(){
+	        return this.Grade;
+	    }
+	    public void setLength(float length){
+	        this.length = length;
+	    }
+	    public float getLength(){
+	        return this.length;
+	    }
+	    public void setOutsideDiameter(float OutsideDiameter){
+	        this.OutsideDiameter = OutsideDiameter;
+	    }
+	    public float getOutsideDiameter(){
+	        return this.OutsideDiameter;
+	    }
 	    public void setInsideDiameter(float InsideDiameter){
 	        this.InsideDiameter = InsideDiameter;
 	    }
 	    public float getInsideDiameter(){
 	        return this.InsideDiameter;
 	    }
-		public float getOutsideDiameter() {
-			return OutsideDiameter;
-		}
-		public void setOutsideDiameter(float outsideDiameter) {
-			OutsideDiameter = outsideDiameter;
-		}
+	    public void setDensity(float Density){
+	        this.Density = Density;
+	    }
+	    public float getDensity(){
+	        return this.Density;
+	    }
+	    public void setWeightPerMeter(float WeightPerMeter){
+	        this.WeightPerMeter = WeightPerMeter;
+	    }
+	    public float getWeightPerMeter(){
+	        return this.WeightPerMeter;
+	    }
 	}
 	
 	public static class TubingString implements Serializable {
@@ -326,15 +370,28 @@ public class RPCCalculateRequestData implements Serializable {
 	
 	public static class Pump implements Serializable {
 		private static final long serialVersionUID = 1L;
+	    private String PumpType;
 
 	    private String BarrelType;
 
 	    private int PumpGrade;
 
+	    private int BarrelLength;
+
 	    private float PlungerLength;
 
 	    private float PumpBoreDiameter;
-	    
+
+	    private float Clearance;
+
+	    private float AntiImpactStroke;
+
+	    public void setPumpType(String PumpType){
+	        this.PumpType = PumpType;
+	    }
+	    public String getPumpType(){
+	        return this.PumpType;
+	    }
 	    public void setBarrelType(String BarrelType){
 	        this.BarrelType = BarrelType;
 	    }
@@ -347,7 +404,12 @@ public class RPCCalculateRequestData implements Serializable {
 	    public int getPumpGrade(){
 	        return this.PumpGrade;
 	    }
-	    
+	    public void setBarrelLength(int BarrelLength){
+	        this.BarrelLength = BarrelLength;
+	    }
+	    public int getBarrelLength(){
+	        return this.BarrelLength;
+	    }
 	    public void setPlungerLength(float PlungerLength){
 	        this.PlungerLength = PlungerLength;
 	    }
@@ -360,18 +422,69 @@ public class RPCCalculateRequestData implements Serializable {
 	    public float getPumpBoreDiameter(){
 	        return this.PumpBoreDiameter;
 	    }
+	    public void setClearance(float Clearance){
+	        this.Clearance = Clearance;
+	    }
+	    public float getClearance(){
+	        return this.Clearance;
+	    }
+	    public void setAntiImpactStroke(float AntiImpactStroke){
+	        this.AntiImpactStroke = AntiImpactStroke;
+	    }
+	    public float getAntiImpactStroke(){
+	        return this.AntiImpactStroke;
+	    }
 	}
 	
 	public static class EveryCasing implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+	    private String Grade;
+
+	    private float OutsideDiameter;
+
 	    private float InsideDiameter;
 
+	    private float Length;
+
+	    private float Density;
+
+	    private float WeightPerMeter;
+
+	    public void setGrade(String Grade){
+	        this.Grade = Grade;
+	    }
+	    public String getGrade(){
+	        return this.Grade;
+	    }
+	    public void setOutsideDiameter(float OutsideDiameter){
+	        this.OutsideDiameter = OutsideDiameter;
+	    }
+	    public float getOutsideDiameter(){
+	        return this.OutsideDiameter;
+	    }
 	    public void setInsideDiameter(float InsideDiameter){
 	        this.InsideDiameter = InsideDiameter;
 	    }
 	    public float getInsideDiameter(){
 	        return this.InsideDiameter;
+	    }
+	    public void setLength(float Length){
+	        this.Length = Length;
+	    }
+	    public float getLength(){
+	        return this.Length;
+	    }
+	    public void setDensity(float Density){
+	        this.Density = Density;
+	    }
+	    public float getDensity(){
+	        return this.Density;
+	    }
+	    public void setWeightPerMeter(float WeightPerMeter){
+	        this.WeightPerMeter = WeightPerMeter;
+	    }
+	    public float getWeightPerMeter(){
+	        return this.WeightPerMeter;
 	    }
 	}
 	
@@ -1056,32 +1169,4 @@ public class RPCCalculateRequestData implements Serializable {
 		}
 	}
 
-//	public String toString(){
-//		Gson gson = new Gson();
-//		String result=gson.toJson(this);
-//		try {
-//			ObjectMapper objectMapper = new ObjectMapper();
-//			ObjectNode jsonNodes;
-//			jsonNodes = objectMapper.readValue(result, ObjectNode.class);
-//			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
-//	        while (iterator.hasNext()) {
-//	            Entry<String, JsonNode> entry = iterator.next();
-//	            if("Production".equalsIgnoreCase(entry.getKey())){
-//	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
-//	            	break;
-//	            }
-//	        }
-//	        result = objectMapper.writeValueAsString(jsonNodes);
-//		} catch (JsonParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//        return result;
-//	}
 }

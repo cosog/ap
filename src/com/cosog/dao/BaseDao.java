@@ -1228,7 +1228,7 @@ public class BaseDao extends HibernateDaoSupport {
 														
 							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
 							
-							productionData.getPump().setPumpType(pumpType);
+//							productionData.getPump().setPumpType(pumpType);
 							productionData.getPump().setBarrelType(barrelType);
 							productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
 							productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpBoreDiameter())*0.001));
@@ -1391,7 +1391,7 @@ public class BaseDao extends HibernateDaoSupport {
 								productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
 								productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
 								
-								productionData.getPump().setPumpType(pumpType);
+//								productionData.getPump().setPumpType(pumpType);
 								productionData.getPump().setBarrelType(barrelType);
 								productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpGrade()));
 								productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpBoreDiameter())*0.001));

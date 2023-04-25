@@ -2732,16 +2732,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					deviceInfoDataList.append("{\"name\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProducingfluidLevel():"")+"\"},");
 				}else if("pumpSettingDepth".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"name\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getPumpSettingDepth():"")+"\"},");
-				}else if("pumpType".equalsIgnoreCase(fields.get(i))){
-					String pumpType="";
-					if(deviceInfo!=null&&deviceInfo.getPump()!=null&&deviceInfo.getPump().getPumpType()!=null){
-						if("R".equalsIgnoreCase(deviceInfo.getPump().getPumpType())){
-							pumpType="杆式泵";
-						}else if("T".equalsIgnoreCase(deviceInfo.getPump().getPumpType())){
-							pumpType="管式泵";
-						}
-					}
-					deviceInfoDataList.append("{\"name\":\""+heads.get(i)+"\","+ "\"value\":\""+pumpType+"\"},");
 				}else if("barrelType".equalsIgnoreCase(fields.get(i))){
 					String barrelType="";
 					if(deviceInfo!=null&&deviceInfo.getPump()!=null&&deviceInfo.getPump().getBarrelType()!=null){
@@ -2939,16 +2929,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProducingfluidLevel():"")+"\"},");
 				}else if("pumpSettingDepth".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getPumpSettingDepth():"")+"\"},");
-				}else if("pumpType".equalsIgnoreCase(fields.get(i))){
-					String pumpType="";
-					if(deviceInfo!=null&&deviceInfo.getPump()!=null&&deviceInfo.getPump().getPumpType()!=null){
-						if("R".equalsIgnoreCase(deviceInfo.getPump().getPumpType())){
-							pumpType="杆式泵";
-						}else if("T".equalsIgnoreCase(deviceInfo.getPump().getPumpType())){
-							pumpType="管式泵";
-						}
-					}
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+pumpType+"\"},");
 				}else if("barrelType".equalsIgnoreCase(fields.get(i))){
 					String barrelType="";
 					if(deviceInfo!=null&&deviceInfo.getPump()!=null&&deviceInfo.getPump().getBarrelType()!=null){

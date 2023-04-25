@@ -1708,7 +1708,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String crudeOilDensity="",waterDensity="",naturalGasRelativeDensity="",saturationPressure="",
 					reservoirDepth="",reservoirTemperature="",
 					tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",productionGasOilRatio="",producingfluidLevel="",pumpSettingDepth="",
-					pumpType="",barrelType="",pumpGrade="",pumpBoreDiameter="",plungerLength="",
+					barrelType="",pumpGrade="",pumpBoreDiameter="",plungerLength="",
 					tubingStringInsideDiameter="",casingStringInsideDiameter="",
 					rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="",
 					rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="",
@@ -1751,11 +1751,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
 					}
 					if(productionData.getPump()!=null){
-						if("T".equalsIgnoreCase(productionData.getPump().getPumpType())){
-							pumpType="管式泵";
-						}else{
-							pumpType="杆式泵";
-						}
 						if("L".equalsIgnoreCase(productionData.getPump().getBarrelType())){
 							barrelType="组合泵";
 						}else{
@@ -1803,8 +1798,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 			
 			if(StringManagerUtils.isNotNull(balanceInfo)){
-				type = new TypeToken<RPCProductionData.Balance>() {}.getType();
-				RPCProductionData.Balance balance=gson.fromJson(balanceInfo, type);
+				type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
+				RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 				if(balance!=null && balance.getEveryBalance().size()>0){
 					for(int j=0;j<balance.getEveryBalance().size();j++){
 						balanceWeight+=balance.getEveryBalance().get(j).getWeight()+"";
@@ -1851,7 +1846,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
 			result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
-			result_json.append("\"pumpType\":\""+pumpType+"\",");
 			result_json.append("\"barrelType\":\""+barrelType+"\",");
 			result_json.append("\"pumpGrade\":\""+pumpGrade+"\",");
 			result_json.append("\"pumpBoreDiameter\":\""+pumpBoreDiameter+"\",");
@@ -2949,8 +2943,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			stroke=obj[0]+"";
 			balanceInfo=obj[1]+"";
 		}
-		type = new TypeToken<RPCProductionData.Balance>() {}.getType();
-		RPCProductionData.Balance balance=gson.fromJson(balanceInfo, type);
+		type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
+		RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 		if(balance!=null&&balance.getEveryBalance()!=null&&balance.getEveryBalance().size()>0){
 			if(balance.getEveryBalance().size()>0){
 				weight1=balance.getEveryBalance().get(0).getWeight()+"";
@@ -3074,15 +3068,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":12,\"itemName\":\"动液面(m)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getProducingfluidLevel():"")+"\"},");
 						result_json.append("{\"id\":13,\"itemName\":\"泵挂(m)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getPumpSettingDepth():"")+"\"},");
 						
-						String pumpType="";
 						String barrelType="";
-						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getPumpType()!=null){
-							if("R".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
-								pumpType="杆式泵";
-							}else if("T".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
-								pumpType="管式泵";
-							}
-						}
 						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getBarrelType()!=null){
 							if("L".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
 								barrelType="组合泵";
@@ -4069,7 +4055,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				String crudeOilDensity="",waterDensity="",naturalGasRelativeDensity="",saturationPressure="",
 						reservoirDepth="",reservoirTemperature="",
 						tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",productionGasOilRatio="",producingfluidLevel="",pumpSettingDepth="",
-						pumpType="",barrelType="",pumpGrade="",pumpBoreDiameter="",plungerLength="",
+						barrelType="",pumpGrade="",pumpBoreDiameter="",plungerLength="",
 						tubingStringInsideDiameter="",casingStringInsideDiameter="",
 						rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="",
 						rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="",
@@ -4112,11 +4098,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
 						}
 						if(productionData.getPump()!=null){
-							if("T".equalsIgnoreCase(productionData.getPump().getPumpType())){
-								pumpType="管式泵";
-							}else{
-								pumpType="杆式泵";
-							}
 							if("L".equalsIgnoreCase(productionData.getPump().getBarrelType())){
 								barrelType="组合泵";
 							}else{
@@ -4164,8 +4145,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				}
 				
 				if(StringManagerUtils.isNotNull(balanceInfo)){
-					type = new TypeToken<RPCProductionData.Balance>() {}.getType();
-					RPCProductionData.Balance balance=gson.fromJson(balanceInfo, type);
+					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
+					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 					if(balance!=null && balance.getEveryBalance().size()>0){
 						for(int j=0;j<balance.getEveryBalance().size();j++){
 							balanceWeight+=balance.getEveryBalance().get(j).getWeight()+"";
@@ -4212,7 +4193,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
 				result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
 				result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
-				result_json.append("\"pumpType\":\""+pumpType+"\",");
 				result_json.append("\"barrelType\":\""+barrelType+"\",");
 				result_json.append("\"pumpGrade\":\""+pumpGrade+"\",");
 				result_json.append("\"pumpBoreDiameter\":\""+pumpBoreDiameter+"\",");

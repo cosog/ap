@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.engine.jdbc.SerializableBlobProxy;
@@ -39,6 +40,9 @@ import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -185,13 +189,28 @@ public class CalculateDataService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String result="";
 		try{
-			String productionData=object[9].toString(); 
+			String productionData=object[9].toString();
+			
 			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 			RPCCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			if(calculateRequestData==null){
 				calculateRequestData=new RPCCalculateRequestData();
 				calculateRequestData.init();
 			}
+			
+//			String productionStr=gson.toJson(calculateRequestData.getProduction());
+//			
+//			ObjectMapper objectMapper = new ObjectMapper();
+//			 
+//			ObjectNode jsonNodes = objectMapper.readValue(productionStr, ObjectNode.class);
+//			jsonNodes.remove("WeightWaterCut");
+//			String newJson = objectMapper.writeValueAsString(jsonNodes);
+//			type = new TypeToken<RPCCalculateRequestData.Production>() {}.getType();
+//			RPCCalculateRequestData.Production production=gson.fromJson(newJson, type);
+//			
+//			calculateRequestData.setProduction(production);
+			
+			
 			calculateRequestData.setWellName(object[0]+"");
 			//功图数据
 			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
@@ -280,6 +299,19 @@ public class CalculateDataService<T> extends BaseService<T> {
         		calculateRequestData.setPumpingUnit(null);
         	}
 	        result=gson.toJson(calculateRequestData);
+	        
+	        
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
+	        while (iterator.hasNext()) {
+	            Entry<String, JsonNode> entry = iterator.next();
+	            if("Production".equalsIgnoreCase(entry.getKey())){
+	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
+	            	break;
+	            }
+	        }
+	        result = objectMapper.writeValueAsString(jsonNodes);
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";
@@ -304,6 +336,18 @@ public class CalculateDataService<T> extends BaseService<T> {
 			calculateRequestData.setRPM(StringManagerUtils.stringToFloat(object[2]+""));
 	        
 	        result=gson.toJson(calculateRequestData);
+	        
+	        ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
+	        while (iterator.hasNext()) {
+	            Entry<String, JsonNode> entry = iterator.next();
+	            if("Production".equalsIgnoreCase(entry.getKey())){
+	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
+	            	break;
+	            }
+	        }
+	        result = objectMapper.writeValueAsString(jsonNodes);
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";

@@ -207,7 +207,7 @@ function factor(opts ,count,current) {
 		_zTree: null,
 		_headers: [],
 		_header_offsets: [],
-		_header_nodes: [{ id:1, pId:0, name:"Table of Content",open:true}],
+		_header_nodes: [],
 		debug: true,
 		highlight_offset: 0,
 		highlight_on_scroll: true,

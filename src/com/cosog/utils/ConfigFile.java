@@ -157,6 +157,10 @@ public class ConfigFile {
 	    private String exitButtonIcon;
 	    
 	    private String staticResourceTimestamp;
+	    
+	    private String helpDocument;
+	    
+	    private String helpDocumentTimestamp;
 
 	    public void setTitle(String title){
 	        this.title = title;
@@ -235,6 +239,18 @@ public class ConfigFile {
 		}
 		public void setStaticResourceTimestamp(String staticResourceTimestamp) {
 			this.staticResourceTimestamp = staticResourceTimestamp;
+		}
+		public String getHelpDocument() {
+			return helpDocument;
+		}
+		public void setHelpDocument(String helpDocument) {
+			this.helpDocument = helpDocument;
+		}
+		public String getHelpDocumentTimestamp() {
+			return helpDocumentTimestamp;
+		}
+		public void setHelpDocumentTimestamp(String helpDocumentTimestamp) {
+			this.helpDocumentTimestamp = helpDocumentTimestamp;
 		}
 	}
 	

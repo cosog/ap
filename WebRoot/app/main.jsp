@@ -59,6 +59,10 @@
         var oemStaticResourceTimestamp = ${configFile}.ap.oem.staticResourceTimestamp;
         var otherStaticResourceTimestamp = ${configFile}.ap.others.otherStaticResourceTimestamp;
 
+        var helpDocumentUrl=oem.helpDocument;
+        var helpDocumentTimestamp=oem.helpDocumentTimestamp;
+        helpDocumentUrl = context + helpDocumentUrl.substring(helpDocumentUrl.indexOf("/"), helpDocumentUrl.length);
+        
         var defaultComboxSize = ${configFile}.ap.others.defaultComboxSize;
         var defaultGraghSize = ${configFile}.ap.others.defaultGraghSize;
 

@@ -969,8 +969,8 @@ function showHelpDocumentWinFn() {
     var tabPanel = Ext.getCmp("frame_center_ids");
     var getTabId = tabPanel.getComponent("HelpDocPanel");
     if (!getTabId) {
-//        var url=context+'/readme/ap/ap.html';//\ap\readme\ap
-        var url=context+'/errorinfo.html';
+        var url=context+'/readme/ap/ap.html';//\ap\readme\ap
+//        var url=context+'/test.html';
     	tabPanel.add(Ext.create("AP.view.help.HelpDocPanel", {
             id: 'HelpDocPanel',
             closable: true,
@@ -979,10 +979,10 @@ function showHelpDocumentWinFn() {
             title: '帮助',
 //            html:"<iframe src='"+url+"' width=100% height=100%></iframe>",
 //            html: "<iframe src='https://www.baidu.com' width=100% height=100%></iframe>",
-            loader: {
-                url: url,
-                autoLoad: true
-            },
+//            loader: {
+//                url: url,
+//                autoLoad: true
+//            },
             listeners: {
                 afterrender: function () {},
                 delay: 150

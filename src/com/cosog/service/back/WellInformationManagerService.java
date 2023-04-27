@@ -367,7 +367,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getApplicationScenariosList() throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where t.itemcode='APPLICATIONSCENARIOS' order by t.itemvalue";
+		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where t.itemcode='APPLICATIONSCENARIOS' order by t.itemvalue desc";
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\",width:120 ,children:[] }"
@@ -678,7 +678,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype=0 order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype=0 order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype=0 order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue";
+		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		instanceDropdownData.append("[");
 		displayInstanceDropdownData.append("[");
@@ -988,7 +988,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype=1 order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype=1 order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype=1 order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue";
+		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		instanceDropdownData.append("[");
 		displayInstanceDropdownData.append("[");
 		reportInstanceDropdownData.append("[");
@@ -1559,7 +1559,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype="+protocolType+" order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue";
+		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		
 		
 		instanceDropdownData.append("[");
@@ -2246,7 +2246,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype="+protocolType+" order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue";
+		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		
 		instanceDropdownData.append("[");
 		displayInstanceDropdownData.append("[");
@@ -3536,7 +3536,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype="+protocolType+" order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue";
+		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		String columns=service.showTableHeadersColumns(ddicName);
 		instanceDropdownData.append("[");

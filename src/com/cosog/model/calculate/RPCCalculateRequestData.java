@@ -1056,32 +1056,34 @@ public class RPCCalculateRequestData implements Serializable {
 		}
 	}
 
-//	public String toString(){
-//		Gson gson = new Gson();
-//		String result=gson.toJson(this);
-//		try {
-//			ObjectMapper objectMapper = new ObjectMapper();
-//			ObjectNode jsonNodes;
-//			jsonNodes = objectMapper.readValue(result, ObjectNode.class);
-//			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
-//	        while (iterator.hasNext()) {
-//	            Entry<String, JsonNode> entry = iterator.next();
-//	            if("Production".equalsIgnoreCase(entry.getKey())){
-//	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
-//	            	break;
-//	            }
-//	        }
-//	        result = objectMapper.writeValueAsString(jsonNodes);
-//		} catch (JsonParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//        return result;
-//	}
+	public String toString(){
+		Gson gson = new Gson();
+		String result="";
+		try {
+			result=gson.toJson(this);
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode jsonNodes;
+			jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
+	        while (iterator.hasNext()) {
+	            Entry<String, JsonNode> entry = iterator.next();
+	            if("Production".equalsIgnoreCase(entry.getKey())){
+	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
+	            }else if("FESDiagram".equalsIgnoreCase(entry.getKey())){
+	            	((ObjectNode)entry.getValue()).remove("Src");
+	            }
+	        }
+	        result = objectMapper.writeValueAsString(jsonNodes);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return result;
+	}
 }

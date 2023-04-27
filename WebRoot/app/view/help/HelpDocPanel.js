@@ -4,11 +4,12 @@ Ext.define('AP.view.help.HelpDocPanel', {
     layout: "fit",
     border: false,
     initComponent: function () {
+    	var url=helpDocumentUrl+'?timestamp='+helpDocumentTimestamp;
     	Ext.apply(this, {
     		items:{
     			id:'HelpDocPanel_Id',
-    			autoScroll: true,
-    			html:''
+    			autoScroll: false,
+    			html:"<iframe src='"+url+"' width=100% height=100%></iframe>"
     		}
     	})
     	this.callParent(arguments);

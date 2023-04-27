@@ -1,7 +1,17 @@
 package com.cosog.model.calculate;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 
 public class PCPProductionData {
 	
@@ -106,5 +116,33 @@ public class PCPProductionData {
 		ManualIntervention = manualIntervention;
 	}
 
-	
+	public String toString(){
+		Gson gson = new Gson();
+		String result="";
+		try {
+			result=gson.toJson(this);
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode jsonNodes;
+			jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
+	        while (iterator.hasNext()) {
+	            Entry<String, JsonNode> entry = iterator.next();
+	            if("Production".equalsIgnoreCase(entry.getKey())){
+	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
+	            	break;
+	            }
+	        }
+	        result = objectMapper.writeValueAsString(jsonNodes);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return result;
+	}
 }

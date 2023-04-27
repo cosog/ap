@@ -198,19 +198,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 				calculateRequestData.init();
 			}
 			
-//			String productionStr=gson.toJson(calculateRequestData.getProduction());
-//			
-//			ObjectMapper objectMapper = new ObjectMapper();
-//			 
-//			ObjectNode jsonNodes = objectMapper.readValue(productionStr, ObjectNode.class);
-//			jsonNodes.remove("WeightWaterCut");
-//			String newJson = objectMapper.writeValueAsString(jsonNodes);
-//			type = new TypeToken<RPCCalculateRequestData.Production>() {}.getType();
-//			RPCCalculateRequestData.Production production=gson.fromJson(newJson, type);
-//			
-//			calculateRequestData.setProduction(production);
-			
-			
 			calculateRequestData.setWellName(object[0]+"");
 			//功图数据
 			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
@@ -298,20 +285,21 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        }else{
         		calculateRequestData.setPumpingUnit(null);
         	}
-	        result=gson.toJson(calculateRequestData);
+	        result=calculateRequestData.toString();
 	        
-	        
-			ObjectMapper objectMapper = new ObjectMapper();
-			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
-			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
-	        while (iterator.hasNext()) {
-	            Entry<String, JsonNode> entry = iterator.next();
-	            if("Production".equalsIgnoreCase(entry.getKey())){
-	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
-	            	break;
-	            }
-	        }
-	        result = objectMapper.writeValueAsString(jsonNodes);
+//	        result=gson.toJson(calculateRequestData);
+//			ObjectMapper objectMapper = new ObjectMapper();
+//			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+//			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
+//	        while (iterator.hasNext()) {
+//	            Entry<String, JsonNode> entry = iterator.next();
+//	            if("Production".equalsIgnoreCase(entry.getKey())){
+//	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
+//	            }else if("FESDiagram".equalsIgnoreCase(entry.getKey())){
+//	            	((ObjectNode)entry.getValue()).remove("Src");
+//	            }
+//	        }
+//	        result = objectMapper.writeValueAsString(jsonNodes);
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";
@@ -334,20 +322,22 @@ public class CalculateDataService<T> extends BaseService<T> {
 			calculateRequestData.setWellName(object[0]+"");
 			calculateRequestData.setAcqTime(object[1]+"");
 			calculateRequestData.setRPM(StringManagerUtils.stringToFloat(object[2]+""));
-	        
-	        result=gson.toJson(calculateRequestData);
-	        
-	        ObjectMapper objectMapper = new ObjectMapper();
-			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
-			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
-	        while (iterator.hasNext()) {
-	            Entry<String, JsonNode> entry = iterator.next();
-	            if("Production".equalsIgnoreCase(entry.getKey())){
-	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
-	            	break;
-	            }
-	        }
-	        result = objectMapper.writeValueAsString(jsonNodes);
+			
+			result=calculateRequestData.toString();
+			
+//	        result=gson.toJson(calculateRequestData);
+//	        
+//	        ObjectMapper objectMapper = new ObjectMapper();
+//			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+//			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
+//	        while (iterator.hasNext()) {
+//	            Entry<String, JsonNode> entry = iterator.next();
+//	            if("Production".equalsIgnoreCase(entry.getKey())){
+//	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
+//	            	break;
+//	            }
+//	        }
+//	        result = objectMapper.writeValueAsString(jsonNodes);
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";

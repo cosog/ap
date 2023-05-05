@@ -189,12 +189,8 @@ public class CalculateThread extends Thread{
 						runStatus=StringManagerUtils.stringToInteger(resuleObj[32]+"")==1;
 						runTime=StringManagerUtils.stringToFloat(resuleObj[33]+"");
 						runTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[34]+"");
-						try {
-							commRange=StringManagerUtils.CLOBObjectToString(resuleObj[31]);
-							runRange=StringManagerUtils.CLOBObjectToString(resuleObj[35]);
-						} catch (SQLException | IOException e) {
-							e.printStackTrace();
-						}
+						commRange=StringManagerUtils.CLOBObjectToString(resuleObj[31]);
+						runRange=StringManagerUtils.CLOBObjectToString(resuleObj[35]);
 						
 						acqTimeList.add(fesdiagramAcqtime);
 						commStatusList.add(commStatus?1:0);
@@ -439,12 +435,8 @@ public class CalculateThread extends Thread{
 						runStatus=StringManagerUtils.stringToInteger(resuleObj[20]+"")==1;
 						runTime=StringManagerUtils.stringToFloat(resuleObj[21]+"");
 						runTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[22]+"");
-						try {
-							commRange=StringManagerUtils.CLOBObjectToString(resuleObj[19]);
-							runRange=StringManagerUtils.CLOBObjectToString(resuleObj[23]);
-						} catch (SQLException | IOException e) {
-							e.printStackTrace();
-						}
+						commRange=StringManagerUtils.CLOBObjectToString(resuleObj[19]);
+						runRange=StringManagerUtils.CLOBObjectToString(resuleObj[23]);
 						
 						acqTimeList.add(acqtime);
 						commStatusList.add(commStatus?1:0);

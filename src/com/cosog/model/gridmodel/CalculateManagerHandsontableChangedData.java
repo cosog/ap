@@ -126,6 +126,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String netGrossValue="0";
 
 	    private String resultStatus;
+	    
+	    private String levelCorrectValue="0";
 
 		public String getId() {
 			return id;
@@ -517,6 +519,14 @@ public class CalculateManagerHandsontableChangedData {
 
 		public void setQpr(String qpr) {
 			this.qpr = qpr;
+		}
+
+		public String getLevelCorrectValue() {
+			return levelCorrectValue;
+		}
+
+		public void setLevelCorrectValue(String levelCorrectValue) {
+			this.levelCorrectValue = levelCorrectValue;
 		}
 	}
 }

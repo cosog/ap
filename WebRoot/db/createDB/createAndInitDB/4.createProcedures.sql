@@ -995,6 +995,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
 
        v_LevelCorrectValue in NUMBER,v_ProducingfluidLevel in NUMBER,
+       
+       v_Submergence in NUMBER,
 
        v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
        v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
@@ -1044,6 +1046,7 @@ begin
           t.availableplungerstrokeprod_w=v_AvailablePlungerStrokeProd_W,t.pumpclearanceleakprod_w=v_PumpClearanceLeakProd_W,
           t.tvleakweightproduction=v_TVLeakWeightProduction,t.svleakweightproduction=v_SVLeakWeightProduction,t.gasinfluenceprod_w=v_GasInfluenceProd_W,
           t.levelcorrectvalue=v_LevelCorrectValue,t.inverproducingfluidlevel=v_ProducingfluidLevel,
+          t.submergence=v_Submergence,
           t.averagewatt=v_averagewatt,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
           t.surfacesystemefficiency=v_SurfaceSystemEfficiency,t.welldownsystemefficiency=v_WellDownSystemEfficiency,t.systemefficiency=v_SystemEfficiency,
           t.energyper100mlift=v_energyper100mlift,t.area=v_area,
@@ -1084,6 +1087,7 @@ begin
           t.availableplungerstrokeprod_w=v_AvailablePlungerStrokeProd_W,t.pumpclearanceleakprod_w=v_PumpClearanceLeakProd_W,
           t.tvleakweightproduction=v_TVLeakWeightProduction,t.svleakweightproduction=v_SVLeakWeightProduction,t.gasinfluenceprod_w=v_GasInfluenceProd_W,
           t.levelcorrectvalue=v_LevelCorrectValue,t.inverproducingfluidlevel=v_ProducingfluidLevel,
+          t.submergence=v_Submergence,
           t.averagewatt=v_averagewatt,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
           t.surfacesystemefficiency=v_SurfaceSystemEfficiency,t.welldownsystemefficiency=v_WellDownSystemEfficiency,t.systemefficiency=v_SystemEfficiency,
           t.energyper100mlift=v_energyper100mlift,t.area=v_area,
@@ -1129,6 +1133,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramcaldata (
        v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
 
        v_LevelCorrectValue in NUMBER,v_ProducingfluidLevel in NUMBER,
+       
+       v_Submergence in NUMBER,
 
        v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
        v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
@@ -1172,6 +1178,7 @@ begin
           t.availableplungerstrokeprod_w=v_AvailablePlungerStrokeProd_W,t.pumpclearanceleakprod_w=v_PumpClearanceLeakProd_W,
           t.tvleakweightproduction=v_TVLeakWeightProduction,t.svleakweightproduction=v_SVLeakWeightProduction,t.gasinfluenceprod_w=v_GasInfluenceProd_W,
           t.levelcorrectvalue=v_LevelCorrectValue,t.inverproducingfluidlevel=v_ProducingfluidLevel,
+          t.submergence=v_Submergence,
           t.averagewatt=v_averagewatt,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
           t.surfacesystemefficiency=v_SurfaceSystemEfficiency,t.welldownsystemefficiency=v_WellDownSystemEfficiency,t.systemefficiency=v_SystemEfficiency,
           t.energyper100mlift=v_energyper100mlift,t.area=v_area,

@@ -1,7 +1,7 @@
 <html>
   <head>
 	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>i5ting_ztree_toc:ap</title>
+    <title>i5ting_ztree_toc:help</title>
 		<link href="toc/style/github-bf51422f4bb36427d391e4b75a1daa083c2d840e.css" media="all" rel="stylesheet" type="text/css"/>
 		<link href="toc/style/github2-d731afd4f624c99a4b19ad69f3083cd6d02b81d5.css" media="all" rel="stylesheet" type="text/css"/>
 		<link href="toc/css/zTreeStyle/zTreeStyle.css" media="all" rel="stylesheet" type="text/css"/>
@@ -80,12 +80,12 @@
 <h2 id="1-4-oem-">1.4 OEM配置</h2>
 <p>配置完成后重启tomcat</p>
 <p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，修改oem部分，oem内容修改后，修改静态资源时间戳（首次部署不需要），无需清理浏览器缓存即可生效。</p>
-<p><img src="media/290cc9ddbed826fd6e5c1460f0bdbb3f.png" alt=""></p>
+<p><img src="media/8ed4b34f8f1b14a50c2188ccc269e731.png" alt=""></p>
 <h2 id="1-5-">1.5 软件启停</h2>
 <h3 id="1-5-1-">1.5.1 手动启停</h3>
 <p>1、单井计算开发包ac</p>
 <p>启动：</p>
-<p>nohup /usr/local/ac -o file&amp;</p>
+<p>nohup /usr/local/ac -o close&amp;</p>
 <p>停止：</p>
 <p>1）查看进程</p>
 <p>ps –e</p>
@@ -94,7 +94,7 @@
 <p>kill -9 26630</p>
 <p>2、协议通ad</p>
 <p>启动：</p>
-<p>nohup /usr/local/ad -o file&amp;</p>
+<p>nohup /usr/local/ad -o close&amp;</p>
 <p>停止：</p>
 <p>1）查看进程</p>
 <p>ps –e</p>
@@ -296,6 +296,13 @@ immediate;”关闭oracle例程后，执行“startup”启动数据库。</p>
 <p>alter tablespace ap_data add datafile
 &#39;/opt/oracle/oradata/ORCLCDB/ORCLPDB1/ap_data02.DBF&#39; size 350M autoextend on
 next 50M Maxsize UNLIMITED;</p>
+<h2 id="3-5-">3.5 数据库备份</h2>
+<p>使用exp命令备份数据库，命令如下：</p>
+<p>exp ap/ap123#@ORCLPDB file=d:/ap.dmp full=y;</p>
+<p>其中：</p>
+<p>ap/ap123#@ORCLPDB 是用户名/密码@数据库名</p>
+<p>file=d:/ap.dmp 是导出的路径</p>
+<p>full=y 是导出全库</p>
 
           	</article>
         </div>

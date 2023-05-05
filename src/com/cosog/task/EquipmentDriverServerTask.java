@@ -992,7 +992,8 @@ public class EquipmentDriverServerTask {
 					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//8~10
 					+ " t.packetsendinterval,"//11
 					+ " t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"//12~16
-					+ " listagg(t5.itemname, ',') within group(order by t5.id ) key "//17
+//					+ " listagg(t5.itemname, ',') within group(order by t5.id ) key "//17
+					+ " rtrim(xmlagg(xmlparse(content t5.itemname || ',' wellformed) order by t5.id).getclobval(),',' ) key"
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
 					+ " left outer join tbl_acq_group2unit_conf t3 on t2.id=t3.unitid "
@@ -1048,8 +1049,15 @@ public class EquipmentDriverServerTask {
 						group.setGroupTimingInterval(rs.getInt(15));
 						group.setAddr(new ArrayList<Integer>());
 						int groupType=rs.getInt(16);
-						if(StringManagerUtils.isNotNull(rs.getString(17))){
-							String[] itemsArr=rs.getString(17).split(",");
+						String itemsStr="";
+						try {
+							itemsStr=StringManagerUtils.CLOBtoString2(rs.getClob(17));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						if(StringManagerUtils.isNotNull(itemsStr)){
+							String[] itemsArr=itemsStr.split(",");
 							for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(12))){
 									for(int j=0;j<itemsArr.length;j++){

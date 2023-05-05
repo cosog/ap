@@ -3252,6 +3252,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		DataDictionary ddic = null;
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		
 		String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
@@ -3294,13 +3296,29 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.resultcode,t2.resultname,"
-					+ " t.stroke,t.spm,"
-					+ " t.fmax,t.fmin,"
-					+ " t.upperloadline,t.lowerloadline,"+prodCol+", "
-					+ " t.iDegreeBalance,t.wattDegreeBalance,"
-					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"
+			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
+					
+					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
+					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停抽')) as runStatusName,"//8~9
+					+ "t.runtime,t.runtimeefficiency,t.runrange,"//10~12
+					
+					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
+					
+					+ " t.stroke,t.spm,"//16~17
+					+ " t.fmax,t.fmin,t.fullnessCoefficient,"//18~20
+					+ " t.upperloadline,t.lowerloadline,"//21~22
+					+ prodCol+", "//23~24
+					+ " t.productiondata,t.submergence,"//25~26
+					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//27~28
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
+					+ " t.pumpEff*100 as pumpEff,"//36
+					+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//37~39
+					+ " t.todayKWattH,"//40
+					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//41~44
 					+ " from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
 					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
@@ -3308,6 +3326,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.wellid="+deviceId+" "
 					+ " order by t.fesdiagramacqtime desc";
+			
 			String countSql="select count(1) from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
 					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
@@ -3339,54 +3358,86 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						Object[] obj = (Object[]) list.get(i);
 						StringBuffer alarmInfo = new StringBuffer();
 						String positionCurveData="",loadCurveData="",powerCurveData="",currentCurveData="";
-						int resultAlarmLevel=0;
-						String resultCode=obj[3]+"";
+						String commStatusName=(obj[4]+"").replaceAll("null", "");
+						String runStatusName=(obj[9]+"").replaceAll("null", "");
+						String resultCode=(obj[13]+"").replaceAll("null", "");;
+						int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+						String productionDataStr=(obj[25]+"").replaceAll("null", "");
+						
+						
+						type = new TypeToken<RPCDeviceInfo>() {}.getType();
+						RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
+						
 						if(alarmInstanceOwnItem!=null){
-							for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
-								if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultCode)){
+							for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+								if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
+									commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+								}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
+									runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+								}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultCode)){
 									resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-									break;
 								}
 							}
 						}
-						SerializableClobProxy   proxy=null;
-						CLOB realClob=null;
-						if(obj[14]!=null){
-							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[15]);
-							realClob = (CLOB) proxy.getWrappedClob(); 
-							positionCurveData=StringManagerUtils.CLOBtoString(realClob);
-						}
-						if(obj[15]!=null){
-							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
-							realClob = (CLOB) proxy.getWrappedClob(); 
-							loadCurveData=StringManagerUtils.CLOBtoString(realClob);
-						}
-						if(obj[16]!=null){
-							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
-							realClob = (CLOB) proxy.getWrappedClob(); 
-							powerCurveData=StringManagerUtils.CLOBtoString(realClob);
-						}
-						if(obj[17]!=null){
-							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
-							realClob = (CLOB) proxy.getWrappedClob(); 
-							currentCurveData=StringManagerUtils.CLOBtoString(realClob);
-						}
+						
+						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[41]);
+						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[42]);
+						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[43]);
+						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[44]);
+						
 						dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
 						dataBuff.append("\"wellName\":\"" + obj[1] + "\",");
 						dataBuff.append("\"acqTime\":\"" + obj[2] + "\",");
+						dataBuff.append("\"commStatus\":"+obj[3]+",");
+						dataBuff.append("\"commStatusName\":\""+commStatusName+"\",");
+						dataBuff.append("\"commTime\":\""+obj[5]+"\",");
+						dataBuff.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
+						dataBuff.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
+						dataBuff.append("\"commAlarmLevel\":"+commAlarmLevel+",");
+						dataBuff.append("\"runStatus\":"+obj[8]+",");
+						dataBuff.append("\"runStatusName\":\""+runStatusName+"\",");
+						dataBuff.append("\"runTime\":\""+obj[10]+"\",");
+						dataBuff.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+						dataBuff.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+						dataBuff.append("\"runAlarmLevel\":"+runAlarmLevel+",");
+						
 						dataBuff.append("\"resultCode\":\""+resultCode+"\",");
-						dataBuff.append("\"resultName\":\""+obj[4]+"\",");
-						dataBuff.append("\"resultAlarmLevel\":\""+resultAlarmLevel+"\",");
-						dataBuff.append("\"stroke\":\""+obj[5]+"\",");
-						dataBuff.append("\"spm\":\""+obj[6]+"\",");
-						dataBuff.append("\"fmax\":\""+obj[7]+"\",");
-						dataBuff.append("\"fmin\":\""+obj[8]+"\",");
-						dataBuff.append("\"upperLoadLine\":\""+obj[9]+"\",");
-						dataBuff.append("\"lowerLoadLine\":\""+obj[10]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[11]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[12]+"\",");
-						dataBuff.append("\"iDegreeBalance\":\"" + obj[13] + "\",");
-						dataBuff.append("\"wattDegreeBalance\":\"" + obj[14] + "\",");
+						dataBuff.append("\"resultName\":\""+obj[14]+"\",");
+						dataBuff.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+						dataBuff.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
+						
+						dataBuff.append("\"stroke\":\""+obj[16]+"\",");
+						dataBuff.append("\"spm\":\""+obj[17]+"\",");
+						dataBuff.append("\"fmax\":\""+obj[18]+"\",");
+						dataBuff.append("\"fmin\":\""+obj[19]+"\",");
+						dataBuff.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
+						dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
+						dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
+						
+						
+						dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
+						dataBuff.append("\"inverProducingfluidLevel\":\""+obj[28]+"\",");
+						dataBuff.append("\"levelCorrectValue\":\""+obj[27]+"\",");
+						dataBuff.append("\"submergence\":\""+obj[26]+"\",");
+						
+						dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
+						dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
+						dataBuff.append("\"waterPower\":\""+obj[21]+"\",");
+						
+						dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
+						dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
+						dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
+						
+						dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
+						dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
+						
+						dataBuff.append("\"iDegreeBalance\":\"" + obj[37] + "\",");
+						dataBuff.append("\"wattDegreeBalance\":\"" + obj[38] + "\",");
+						dataBuff.append("\"deltaradius\":\""+obj[39]+"\",");
+						dataBuff.append("\"todayKWattH\":\""+obj[40]+"\",");
+						
 						dataBuff.append("\"positionCurveData\":\"" + positionCurveData + "\",");
 						dataBuff.append("\"loadCurveData\":\"" + loadCurveData + "\",");
 						dataBuff.append("\"powerCurveData\":\"" + powerCurveData + "\",");
@@ -3455,58 +3506,137 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	
 	@SuppressWarnings("deprecation")
 	public String getFESDiagramOverlayExportData(String orgId,String deviceId,String deviceName,Page pager) throws SQLException, IOException {
-		StringBuffer dynSbf = new StringBuffer();
+		StringBuffer dataBuff = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		
+		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
 		
-		String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-				+ " t.resultcode,t2.resultname,"
-				+ " t.stroke,t.spm,"
-				+ " t.fmax,t.fmin,"
-				+ prodCol+", "
-				+ " t.iDegreeBalance,t.wattDegreeBalance"
-				+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
-				+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
-				+ " and t.wellid="+deviceId+" "
+		String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
+				
+				+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+				+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
+				+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停抽')) as runStatusName,"//8~9
+				+ "t.runtime,t.runtimeefficiency,t.runrange,"//10~12
+				
+				+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
+				
+				+ " t.stroke,t.spm,"//16~17
+				+ " t.fmax,t.fmin,t.fullnessCoefficient,"//18~20
+				+ " t.upperloadline,t.lowerloadline,"//21~22
+				+ prodCol+", "//23~24
+				+ " t.productiondata,t.submergence,"//25~26
+				+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//27~28
+				+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
+				+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
+				+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
+				+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
+				+ " t.pumpEff*100 as pumpEff,"//36
+				+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//37~39
+				+ " t.todayKWattH"//40
+				+ " from tbl_rpcacqdata_hist t"
+				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
+				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.wellid="+deviceId+" "
 				+ " order by t.fesdiagramacqtime desc";
 		
-		List<?> list=this.findCallSql(sql);
+		String countSql="select count(1) from tbl_rpcacqdata_hist t"
+				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.wellid="+deviceId;
+		int total=this.getTotalCountRows(countSql);
+		int rarefy=total/vacuateThreshold+1;
+		String finalSql=sql;
+		if(rarefy>1){
+			finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+		}
 		
-		dynSbf.append("[");
+		List<?> list=this.findCallSql(finalSql);
+		
+		dataBuff.append("[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Object[] obj = (Object[]) list.get(i);
-				dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
-				dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
-				dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
-				dynSbf.append("\"resultCode\":\""+obj[3]+"\",");
-				dynSbf.append("\"resultName\":\""+obj[4]+"\",");
-				dynSbf.append("\"stroke\":\""+obj[5]+"\",");
-				dynSbf.append("\"spm\":\""+obj[6]+"\",");
-				dynSbf.append("\"fmax\":\""+obj[7]+"\",");
-				dynSbf.append("\"fmin\":\""+obj[8]+"\",");
-				dynSbf.append("\""+prodCol.split(",")[0]+"\":\""+obj[9]+"\",");
-				dynSbf.append("\""+prodCol.split(",")[1]+"\":\""+obj[10]+"\",");
-				dynSbf.append("\"iDegreeBalance\":\"" + obj[11] + "\",");
-				dynSbf.append("\"wattDegreeBalance\":\"" + obj[12] + "\"},");
+				String commStatusName=(obj[4]+"").replaceAll("null", "");
+				String runStatusName=(obj[9]+"").replaceAll("null", "");
+				String resultCode=(obj[13]+"").replaceAll("null", "");
+				String productionDataStr=(obj[25]+"").replaceAll("null", "");
+				
+				type = new TypeToken<RPCDeviceInfo>() {}.getType();
+				RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
+				
+				dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
+				dataBuff.append("\"wellName\":\"" + obj[1] + "\",");
+				dataBuff.append("\"acqTime\":\"" + obj[2] + "\",");
+				dataBuff.append("\"commStatus\":"+obj[3]+",");
+				dataBuff.append("\"commStatusName\":\""+commStatusName+"\",");
+				dataBuff.append("\"commTime\":\""+obj[5]+"\",");
+				dataBuff.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
+				dataBuff.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
+				dataBuff.append("\"runStatus\":"+obj[8]+",");
+				dataBuff.append("\"runStatusName\":\""+runStatusName+"\",");
+				dataBuff.append("\"runTime\":\""+obj[10]+"\",");
+				dataBuff.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+				dataBuff.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+				
+				dataBuff.append("\"resultCode\":\""+resultCode+"\",");
+				dataBuff.append("\"resultName\":\""+obj[14]+"\",");
+				dataBuff.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+				
+				dataBuff.append("\"stroke\":\""+obj[16]+"\",");
+				dataBuff.append("\"spm\":\""+obj[17]+"\",");
+				dataBuff.append("\"fmax\":\""+obj[18]+"\",");
+				dataBuff.append("\"fmin\":\""+obj[19]+"\",");
+				dataBuff.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
+				dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
+				dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
+				dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
+				dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
+				
+				
+				dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
+				dataBuff.append("\"inverProducingfluidLevel\":\""+obj[28]+"\",");
+				dataBuff.append("\"levelCorrectValue\":\""+obj[27]+"\",");
+				dataBuff.append("\"submergence\":\""+obj[26]+"\",");
+				
+				dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
+				dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
+				dataBuff.append("\"waterPower\":\""+obj[21]+"\",");
+				
+				dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
+				dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
+				dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
+				
+				dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
+				dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
+				
+				dataBuff.append("\"iDegreeBalance\":\"" + obj[37] + "\",");
+				dataBuff.append("\"wattDegreeBalance\":\"" + obj[38] + "\",");
+				dataBuff.append("\"deltaradius\":\""+obj[39]+"\",");
+				dataBuff.append("\"todayKWattH\":\""+obj[40]+"\"},");
 			}
-			if(dynSbf.toString().endsWith(",")){
-				dynSbf.deleteCharAt(dynSbf.length() - 1);
+			if(dataBuff.toString().endsWith(",")){
+				dataBuff.deleteCharAt(dataBuff.length() - 1);
 			}
 		}
-		dynSbf.append("]");
-		return dynSbf.toString().replaceAll("null", "");
+		dataBuff.append("]");
+		return dataBuff.toString().replaceAll("null", "");
 	}
 	
 	public boolean exportFESDiagramOverlayData(HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,Page pager){
 		try{
 			StringBuffer result_json = new StringBuffer();
+			Gson gson = new Gson();
+			java.lang.reflect.Type type=null;
 			ConfigFile configFile=Config.getInstance().configFile;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3526,16 +3656,34 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				prodCol="liquidWeightProduction,liquidWeightProduction_L";
 			}
 			
-			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.resultcode,t2.resultname,"
-					+ " t.stroke,t.spm,"
-					+ " t.fmax,t.fmin,"
-					+ prodCol+", "
-					+ " t.iDegreeBalance,t.wattDegreeBalance"
-					+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
-					+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
-					+ " and t.wellid="+deviceId+" "
-					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
+					
+					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
+					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停抽')) as runStatusName,"//8~9
+					+ "t.runtime,t.runtimeefficiency,t.runrange,"//10~12
+					
+					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
+					
+					+ " t.stroke,t.spm,"//16~17
+					+ " t.fmax,t.fmin,t.fullnessCoefficient,"//18~20
+					+ " t.upperloadline,t.lowerloadline,"//21~22
+					+ prodCol+", "//23~24
+					+ " t.productiondata,t.submergence,"//25~26
+					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//27~28
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
+					+ " t.pumpEff*100 as pumpEff,"//36
+					+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//37~39
+					+ " t.todayKWattH"//40
+					+ " from tbl_rpcacqdata_hist t"
+					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
+					+ " where  1=1 "
+					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.wellid="+deviceId+" ";
 			int total=this.getTotalCountRows(sql);
 			int rarefy=total/vacuateThreshold+1;
 			sql+= " order by t.fesdiagramacqtime desc";
@@ -3556,19 +3704,63 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				obj=(Object[]) list.get(i);
 				result_json = new StringBuffer();
 				record = new ArrayList<>();
-				result_json.append("{ \"id\":\"" + (i+1) + "\",");
+				String commStatusName=(obj[4]+"").replaceAll("null", "");
+				String runStatusName=(obj[9]+"").replaceAll("null", "");
+				String resultCode=(obj[13]+"").replaceAll("null", "");
+				String productionDataStr=(obj[25]+"").replaceAll("null", "");
+				
+				type = new TypeToken<RPCDeviceInfo>() {}.getType();
+				RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
+				
+				result_json.append("{ \"id\":\"" + (1+i) + "\",");
 				result_json.append("\"wellName\":\"" + obj[1] + "\",");
 				result_json.append("\"acqTime\":\"" + obj[2] + "\",");
-				result_json.append("\"resultCode\":\""+obj[3]+"\",");
-				result_json.append("\"resultName\":\""+obj[4]+"\",");
-				result_json.append("\"stroke\":\""+obj[5]+"\",");
-				result_json.append("\"spm\":\""+obj[6]+"\",");
-				result_json.append("\"fmax\":\""+obj[7]+"\",");
-				result_json.append("\"fmin\":\""+obj[8]+"\",");
-				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[9]+"\",");
-				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[10]+"\",");
-				result_json.append("\"iDegreeBalance\":\"" + obj[11] + "\",");
-				result_json.append("\"wattDegreeBalance\":\"" + obj[12] + "\"}");
+				result_json.append("\"commStatus\":"+obj[3]+",");
+				result_json.append("\"commStatusName\":\""+commStatusName+"\",");
+				result_json.append("\"commTime\":\""+obj[5]+"\",");
+				result_json.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
+				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
+				result_json.append("\"runStatus\":"+obj[8]+",");
+				result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+				result_json.append("\"runTime\":\""+obj[10]+"\",");
+				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+				
+				result_json.append("\"resultCode\":\""+resultCode+"\",");
+				result_json.append("\"resultName\":\""+obj[14]+"\",");
+				result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+				
+				result_json.append("\"stroke\":\""+obj[16]+"\",");
+				result_json.append("\"spm\":\""+obj[17]+"\",");
+				result_json.append("\"fmax\":\""+obj[18]+"\",");
+				result_json.append("\"fmin\":\""+obj[19]+"\",");
+				result_json.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
+				result_json.append("\"upperLoadLine\":\""+obj[21]+"\",");
+				result_json.append("\"lowerLoadLine\":\""+obj[22]+"\",");
+				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
+				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
+				
+				
+				result_json.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
+				result_json.append("\"inverProducingfluidLevel\":\""+obj[28]+"\",");
+				result_json.append("\"levelCorrectValue\":\""+obj[27]+"\",");
+				result_json.append("\"submergence\":\""+obj[26]+"\",");
+				
+				result_json.append("\"averageWatt\":\""+obj[29]+"\",");
+				result_json.append("\"polishrodPower\":\""+obj[30]+"\",");
+				result_json.append("\"waterPower\":\""+obj[21]+"\",");
+				
+				result_json.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
+				result_json.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[34]+"\",");
+				
+				result_json.append("\"energyper100mlift\":\""+obj[35]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[36]+"\",");
+				
+				result_json.append("\"iDegreeBalance\":\"" + obj[37] + "\",");
+				result_json.append("\"wattDegreeBalance\":\"" + obj[38] + "\",");
+				result_json.append("\"deltaradius\":\""+obj[39]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[40]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

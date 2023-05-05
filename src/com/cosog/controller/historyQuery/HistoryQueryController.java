@@ -373,7 +373,12 @@ public class HistoryQueryController extends BaseController  {
 		}
 		if(user!=null){
 			if(!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId="+deviceId;
+//				String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId="+deviceId;
+				
+				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.wellId= "+deviceId+")";
+				
+				
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();
@@ -457,7 +462,9 @@ public class HistoryQueryController extends BaseController  {
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId= "+deviceId;
+//				String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId= "+deviceId;
+				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.wellId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();
@@ -533,7 +540,9 @@ public class HistoryQueryController extends BaseController  {
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId= "+deviceId;
+//				String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId= "+deviceId;
+				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.wellId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();
@@ -590,7 +599,9 @@ public class HistoryQueryController extends BaseController  {
 		
 		String tableName="tbl_rpcacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId= "+deviceId;
+//			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId= "+deviceId;
+			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.wellId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

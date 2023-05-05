@@ -1,4 +1,4 @@
-**油气生产智能监控系统 V8.2**
+**油气生产智能监控系统 V8.5**
 
 **数据库手册**
 
@@ -6,139 +6,149 @@
 
 **目 录**
 
-[一、表	1](#_Toc119317129)
+[一、表	1](#_Toc134209124)
 
->   [1.1 概览	1](#_Toc119317130)
+>   [1.1 概览	1](#_Toc134209125)
 
->   [1.2 详述	3](#_Toc119317131)
+>   [1.2 详述	3](#_Toc134209126)
 
->   [1.2.1 tbl_org	3](#_Toc119317132)
+>   [1.2.1 tbl_org	3](#_Toc134209127)
 
->   [1.2.2 tbl_user	4](#_Toc119317133)
+>   [1.2.2 tbl_user	4](#_Toc134209128)
 
->   [1.2.3 tbl_role	5](#_Toc119317134)
+>   [1.2.3 tbl_role	5](#_Toc134209129)
 
->   [1.2.4 tbl_module	5](#_Toc119317135)
+>   [1.2.4 tbl_module	5](#_Toc134209130)
 
->   [1.2.5 tbl_module2role	6](#_Toc119317136)
+>   [1.2.5 tbl_module2role	6](#_Toc134209131)
 
->   [1.2.6 tbl_dist_name	6](#_Toc119317137)
+>   [1.2.6 tbl_dist_name	6](#_Toc134209132)
 
->   [1.2.7 tbl_dist_item	7](#_Toc119317138)
+>   [1.2.7 tbl_dist_item	7](#_Toc134209133)
 
->   [1.2.8 tbl_code	8](#_Toc119317139)
+>   [1.2.8 tbl_code	8](#_Toc134209134)
 
->   [1.2.9 tbl_datamapping	8](#_Toc119317140)
+>   [1.2.9 tbl_protocol	8](#_Toc134209135)
 
->   [1.2.10 tbl_acq_unit_conf	9](#_Toc119317141)
+>   [1.2.10 tbl_datamapping	8](#_Toc134209136)
 
->   [1.2.11 tbl_acq_group_conf	9](#_Toc119317142)
+>   [1.2.11 tbl_runstatusconfig	9](#_Toc134209137)
 
->   [1.2.12 tbl_acq_item2group_conf	9](#_Toc119317143)
+>   [1.2.12 tbl_acq_unit_conf	10](#_Toc134209138)
 
->   [1.2.13 tbl_acq_group2unit_conf	11](#_Toc119317144)
+>   [1.2.13 tbl_acq_group_conf	10](#_Toc134209139)
 
->   [1.2.14 tbl_alarm_unit_conf	11](#_Toc119317145)
+>   [1.2.14 tbl_acq_item2group_conf	10](#_Toc134209140)
 
->   [1.2.15 tbl_alarm_item2unit_conf	11](#_Toc119317146)
+>   [1.2.15 tbl_acq_group2unit_conf	12](#_Toc134209141)
 
->   [1.2.16 tbl_display_unit_conf	12](#_Toc119317147)
+>   [1.2.16 tbl_alarm_unit_conf	12](#_Toc134209142)
 
->   [1.2.17 tbl_display_item2unit_conf	12](#_Toc119317148)
+>   [1.2.17 tbl_alarm_item2unit_conf	12](#_Toc134209143)
 
->   [1.2.18 tbl_protocolinstance	14](#_Toc119317149)
+>   [1.2.18 tbl_display_unit_conf	13](#_Toc134209144)
 
->   [1.2.19 tbl_protocolalarminstance	14](#_Toc119317150)
+>   [1.2.19 tbl_display_item2unit_conf	13](#_Toc134209145)
 
->   [1.2.20 tbl_protocoldisplayinstance	15](#_Toc119317151)
+>   [1.2.20 tbl_report_unit_conf	14](#_Toc134209146)
 
->   [1.2.21 tbl_protocolsmsinstance	15](#_Toc119317152)
+>   [1.2.21 tbl_report_items2unit_conf	14](#_Toc134209147)
 
->   [1.2.22 tbl_rpcdevice	16](#_Toc119317153)
+>   [1.2.22 tbl_protocolinstance	16](#_Toc134209148)
 
->   [1.2.23 tbl_pcpdevice	17](#_Toc119317154)
+>   [1.2.23 tbl_protocolalarminstance	16](#_Toc134209149)
 
->   [1.2.24 tbl_smsdevice	18](#_Toc119317155)
+>   [1.2.24 tbl_protocoldisplayinstance	17](#_Toc134209150)
 
->   [1.2.25 tbl_pumpingmodel	18](#_Toc119317156)
+>   [1.2.25 tbl_protocolreportinstance	17](#_Toc134209151)
 
->   [1.2.26 tbl_rpc_worktype	18](#_Toc119317157)
+>   [1.2.26 tbl_protocolsmsinstance	17](#_Toc134209152)
 
->   [1.2.27 tbl_rpcacqdata_latest	19](#_Toc119317158)
+>   [1.2.27 tbl_rpcdevice	18](#_Toc134209153)
 
->   [1.2.28 tbl_rpcacqdata_hist	23](#_Toc119317159)
+>   [1.2.28 tbl_pcpdevice	19](#_Toc134209154)
 
->   [1.2.29 tbl_rpcacqrawdata	24](#_Toc119317160)
+>   [1.2.29 tbl_smsdevice	20](#_Toc134209155)
 
->   [1.2.30 tbl_rpcalarminfo_latest	25](#_Toc119317161)
+>   [1.2.30 tbl_pumpingmodel	20](#_Toc134209156)
 
->   [1.2.31 tbl_rpcalarminfo_hist	25](#_Toc119317162)
+>   [1.2.31 tbl_rpc_worktype	20](#_Toc134209157)
 
->   [1.2.32 tbl_rpcdailycalculationdata	25](#_Toc119317163)
+>   [1.2.32 tbl_rpcacqdata_latest	21](#_Toc134209158)
 
->   [1.2.33 tbl_rpcdevicegraphicset	27](#_Toc119317164)
+>   [1.2.33 tbl_rpcacqdata_hist	25](#_Toc134209159)
 
->   [1.2.34 tbl_pcpacqdata_latest	28](#_Toc119317165)
+>   [1.2.34 tbl_rpcacqrawdata	26](#_Toc134209160)
 
->   [1.2.35 tbl_pcpacqdata_hist	30](#_Toc119317166)
+>   [1.2.35 tbl_rpcalarminfo_latest	27](#_Toc134209161)
 
->   [1.2.36 tbl_pcpacqrawdata	31](#_Toc119317167)
+>   [1.2.36 tbl_rpcalarminfo_hist	27](#_Toc134209162)
 
->   [1.2.37 tbl_pcpalarminfo_latest	32](#_Toc119317168)
+>   [1.2.37 tbl_rpcdailycalculationdata	27](#_Toc134209163)
 
->   [1.2.38 tbl_pcpalarminfo_hist	32](#_Toc119317169)
+>   [1.2.38 tbl_rpcdevicegraphicset	29](#_Toc134209164)
 
->   [1.2.39 tbl_pcpdailycalculationdata	32](#_Toc119317170)
+>   [1.2.39 tbl_pcpacqdata_latest	30](#_Toc134209165)
 
->   [1.2.40 tbl_pcpdevicegraphicset	34](#_Toc119317171)
+>   [1.2.40 tbl_pcpacqdata_hist	32](#_Toc134209166)
 
->   [1.2.41 tbl_deviceoperationlog	35](#_Toc119317172)
+>   [1.2.41 tbl_pcpacqrawdata	33](#_Toc134209167)
 
->   [1.2.42 tbl_systemlog	35](#_Toc119317173)
+>   [1.2.42 tbl_pcpalarminfo_latest	34](#_Toc134209168)
 
->   [1.2.43 tbl_resourcemonitoring	36](#_Toc119317174)
+>   [1.2.43 tbl_pcpalarminfo_hist	34](#_Toc134209169)
 
-[二、视图	37](#_Toc119317175)
+>   [1.2.44 tbl_pcpdailycalculationdata	34](#_Toc134209170)
 
->   [2.1 概览	37](#_Toc119317176)
+>   [1.2.45 tbl_pcpdevicegraphicset	36](#_Toc134209171)
 
->   [2.2 详述	38](#_Toc119317177)
+>   [1.2.46 tbl_deviceoperationlog	37](#_Toc134209172)
 
->   [2.2.1 viw_org	38](#_Toc119317178)
+>   [1.2.47 tbl_systemlog	37](#_Toc134209173)
 
->   [2.2.2 viw_rpcdevice	39](#_Toc119317179)
+>   [1.2.48 tbl_resourcemonitoring	38](#_Toc134209174)
 
->   [2.2.3 viw_pcpdevice	40](#_Toc119317180)
+[二、视图	39](#_Toc134209175)
 
->   [2.2.4 viw_smsdevice	40](#_Toc119317181)
+>   [2.1 概览	39](#_Toc134209176)
 
->   [2.2.5 viw_rpcacqrawdata	41](#_Toc119317182)
+>   [2.2 详述	40](#_Toc134209177)
 
->   [2.2.6 viw_pcpacqrawdata	41](#_Toc119317183)
+>   [2.2.1 viw_org	40](#_Toc134209178)
 
->   [2.2.7 viw_rpcalarminfo_latest	42](#_Toc119317184)
+>   [2.2.2 viw_rpcdevice	41](#_Toc134209179)
 
->   [2.2.8 viw_rpcalarminfo_hist	42](#_Toc119317185)
+>   [2.2.3 viw_pcpdevice	42](#_Toc134209180)
 
->   [2.2.9 viw_pcpalarminfo_latest	43](#_Toc119317186)
+>   [2.2.4 viw_smsdevice	42](#_Toc134209181)
 
->   [2.2.10 viw_pcpalarminfo_hist	43](#_Toc119317187)
+>   [2.2.5 viw_rpcacqrawdata	43](#_Toc134209182)
 
->   [2.2.11 viw_deviceoperationlog	44](#_Toc119317188)
+>   [2.2.6 viw_pcpacqrawdata	43](#_Toc134209183)
 
->   [2.2.12 viw_systemlog	44](#_Toc119317189)
+>   [2.2.7 viw_rpcalarminfo_latest	44](#_Toc134209184)
 
->   [2.2.13 viw_rpcdailycalculationdata	44](#_Toc119317190)
+>   [2.2.8 viw_rpcalarminfo_hist	44](#_Toc134209185)
 
->   [2.2.14 viw_pcpdailycalculationdata	46](#_Toc119317191)
+>   [2.2.9 viw_pcpalarminfo_latest	45](#_Toc134209186)
 
->   [2.2.15 viw_rpc_calculatemain	47](#_Toc119317192)
+>   [2.2.10 viw_pcpalarminfo_hist	45](#_Toc134209187)
 
->   [2.2.16 viw_pcp_calculatemain	47](#_Toc119317193)
+>   [2.2.11 viw_deviceoperationlog	46](#_Toc134209188)
 
-[三、存储过程	48](#_Toc119317194)
+>   [2.2.12 viw_systemlog	46](#_Toc134209189)
 
-[四、触发器	49](#_Toc119317195)
+>   [2.2.13 viw_rpcdailycalculationdata	46](#_Toc134209190)
+
+>   [2.2.14 viw_pcpdailycalculationdata	48](#_Toc134209191)
+
+>   [2.2.15 viw_rpc_calculatemain	49](#_Toc134209192)
+
+>   [2.2.16 viw_pcp_calculatemain	49](#_Toc134209193)
+
+[三、存储过程	50](#_Toc134209194)
+
+[四、触发器	51](#_Toc134209195)
 
 # 一、表
 
@@ -156,41 +166,46 @@
 | 6        | tbl_dist_name               | 字典名称表             |
 | 7        | tbl_dist_item               | 字典数据项表           |
 | 8        | tbl_code                    | 代码表                 |
-| 9        | tbl_datamapping             | 字段映射表             |
-| 10       | tbl_acq\_unit\_conf         | 采控单元表             |
-| 11       | tbl_acq_group_conf          | 采控组表               |
-| 12       | tbl_acq_item2group_conf     | 采控组和采控项关系表   |
-| 13       | tbl_acq_group2unit_conf     | 采控单元和采控组关系表 |
-| 14       | tbl_alarm_unit_conf         | 报警单元表             |
-| 15       | tbl_alarm_item2unit_conf    | 报警单元和报警项关系表 |
-| 16       | tbl_display_unit_conf       | 显示单元表             |
-| 17       | tbl_display_items2unit_conf | 显示单元和显示项关系表 |
-| 18       | tbl_protocolinstance        | 采控实例表             |
-| 19       | tbl_protocolalarminstance   | 报警实例表             |
-| 20       | tbl_protocoldisplayinstance | 显示实例表             |
-| 21       | tbl_protocolsmsinstance     | 短信实例表             |
-| 22       | tbl_rpcdevice               | 抽油机信息表           |
-| 23       | tbl_pcpdevice               | 螺杆泵信息表           |
-| 24       | tbl\_smsdevice              | 短信设备信息表         |
-| 25       | tbl_pumpingmodel            | 抽油机型号表           |
-| 26       | tbl_rpc_worktype            | 工况表                 |
-| 27       | tbl\_rpcacqdata_latest      | 抽油机实时数据表       |
-| 28       | tbl\_rpcacqdata_hist        | 抽油机历史数据表       |
-| 29       | tbl\_rpcacqrawdata          | 抽油机原始采集数据表   |
-| 30       | tbl\_rpcalarminfo_latest    | 抽油机报警实时数据表   |
-| 31       | tbl\_rpcalarminfo_hist      | 抽油机报警历史数据表   |
-| 32       | tbl_rpcdailycalculationdata | 抽油机汇总数据表       |
-| 33       | tbl\_rpcdevicegraphicset    | 抽油机图形设置表       |
-| 34       | tbl\_pcpacqdata_latest      | 螺杆泵实时数据表       |
-| 35       | tbl\_pcpacqdata\_ hist      | 螺杆泵历史数据表       |
-| 36       | tbl\_pcpacqrawdata          | 螺杆泵原始采集数据表   |
-| 37       | tbl\_pcpalarminfo_latest    | 螺杆泵报警实时数据表   |
-| 38       | tbl\_pcpalarminfo_hist      | 螺杆泵报警历史数据表   |
-| 39       | tbl_pcpdailycalculationdata | 螺杆泵汇总数据表       |
-| 40       | tbl\_pcpdevicegraphicset    | 螺杆泵图形设置表       |
-| 41       | tbl_deviceoperationlog      | 设备操作日志表         |
-| 42       | tbl_systemlog               | 系统日志表             |
-| 43       | tbl_resourcemonitoring      | 资源监测数据表         |
+| 9        | tbl_protocol                | 协议表                 |
+| 10       | tbl_datamapping             | 字段映射表             |
+| 11       | tbl_runstatusconfig         | 运行状态配置表         |
+| 12       | tbl_acq\_unit\_conf         | 采控单元表             |
+| 13       | tbl_acq_group_conf          | 采控组表               |
+| 14       | tbl_acq_item2group_conf     | 采控组和采控项关系表   |
+| 15       | tbl_acq_group2unit_conf     | 采控单元和采控组关系表 |
+| 16       | tbl_alarm_unit_conf         | 报警单元表             |
+| 17       | tbl_alarm_item2unit_conf    | 报警单元和报警项关系表 |
+| 18       | tbl_display_unit_conf       | 显示单元表             |
+| 19       | tbl_display_items2unit_conf | 显示单元和显示项关系表 |
+| 20       | tbl_report_unit_conf        | 报表单元表             |
+| 21       | tbl_report_items2unit_conf  | 报表单元和报表项关系表 |
+| 22       | tbl_protocolinstance        | 采控实例表             |
+| 23       | tbl_protocolalarminstance   | 报警实例表             |
+| 24       | tbl_protocoldisplayinstance | 显示实例表             |
+| 25       | tbl_protocolreportinstance  | 报表实例表             |
+| 26       | tbl_protocolsmsinstance     | 短信实例表             |
+| 27       | tbl_rpcdevice               | 抽油机信息表           |
+| 28       | tbl_pcpdevice               | 螺杆泵信息表           |
+| 29       | tbl\_smsdevice              | 短信设备信息表         |
+| 30       | tbl_pumpingmodel            | 抽油机型号表           |
+| 31       | tbl_rpc_worktype            | 工况表                 |
+| 32       | tbl\_rpcacqdata_latest      | 抽油机实时数据表       |
+| 33       | tbl\_rpcacqdata_hist        | 抽油机历史数据表       |
+| 34       | tbl\_rpcacqrawdata          | 抽油机原始采集数据表   |
+| 35       | tbl\_rpcalarminfo_latest    | 抽油机报警实时数据表   |
+| 36       | tbl\_rpcalarminfo_hist      | 抽油机报警历史数据表   |
+| 37       | tbl_rpcdailycalculationdata | 抽油机汇总数据表       |
+| 38       | tbl\_rpcdevicegraphicset    | 抽油机图形设置表       |
+| 39       | tbl\_pcpacqdata_latest      | 螺杆泵实时数据表       |
+| 40       | tbl\_pcpacqdata\_ hist      | 螺杆泵历史数据表       |
+| 41       | tbl\_pcpacqrawdata          | 螺杆泵原始采集数据表   |
+| 42       | tbl\_pcpalarminfo_latest    | 螺杆泵报警实时数据表   |
+| 43       | tbl\_pcpalarminfo_hist      | 螺杆泵报警历史数据表   |
+| 44       | tbl_pcpdailycalculationdata | 螺杆泵汇总数据表       |
+| 45       | tbl\_pcpdevicegraphicset    | 螺杆泵图形设置表       |
+| 46       | tbl_deviceoperationlog      | 设备操作日志表         |
+| 47       | tbl_systemlog               | 系统日志表             |
+| 48       | tbl_resourcemonitoring      | 资源监测数据表         |
 
 ## 1.2 详述
 
@@ -320,9 +335,22 @@
 | 6        | STATE     | 状态       | NUMBER(10)    |          | Y        |        |          |
 | 7        | REMARK    | 备注       | VARCHAR2(200) |          | Y        |        |          |
 
-### 1.2.9 tbl_datamapping
+### 1.2.9 tbl_protocol
 
-表1-10 字段映射表
+表1-10 协议表
+
+| **序号** | **代码**   | **名称**   | **类型**     | **单位** | **为空** | **键** | **备注** |
+|----------|------------|------------|--------------|----------|----------|--------|----------|
+| 1        | ID         | 记录编号   | NUMBER(10)   |          | N        | 主键   |          |
+| 2        | NAME       | 协议名称   | VARCHAR2(50) |          | N        |        |          |
+| 3        | CODE       | 协议代码   | VARCHAR2(50) |          | Y        |        |          |
+|          | DEVICETYPE | 设备类型   | NUMBER(1)    |          | Y        |        |          |
+| 4        | ITEMS      | 协议地址项 | CLOB         |          | Y        |        |          |
+| 5        | SORT       | 排序编号   | NUMBER(10)   |          | Y        |        |          |
+
+### 1.2.10 tbl_datamapping
+
+表1-11 字段映射表
 
 | **序号** | **代码**        | **名称**       | **类型**     | **单位** | **为空** | **键** | **备注**                  |
 |----------|-----------------|----------------|--------------|----------|----------|--------|---------------------------|
@@ -334,9 +362,23 @@
 | 6        | REPETITIONTIMES | 重复次数       | NUMBER(2)    |          | Y        |        |                           |
 | 7        | MAPPINGMODE     | 映射模式       | NUMBER(1)    |          | Y        |        | 0-以地址为准 1-以名称为准 |
 
-### 1.2.10 tbl_acq_unit_conf
+### 1.2.11 tbl_runstatusconfig
 
-表1-11 采控单元名称表
+表1-12 运行状态配置表
+
+| **序号** | **代码**          | **名称**   | **类型**     | **单位** | **为空** | **键** | **备注**                  |
+|----------|-------------------|------------|--------------|----------|----------|--------|---------------------------|
+| 1        | ID                | 记录编号   | NUMBER(10)   |          | N        | 主键   |                           |
+| 2        | PROTOCOL          | 协议编码   | VARCHAR2(50) |          | Y        |        |                           |
+| 3        | ITEMNAME          | 项名称     | VARCHAR2(50) |          | Y        |        |                           |
+| 4        | ITEMMAPPINGCOLUMN | 项映射字段 | VARCHAR2(50) |          | Y        |        |                           |
+| 5        | RUNVALUE          | 运行值     | VARCHAR2(50) |          | Y        |        |                           |
+| 6        | STOPVALUE         | 停止值     | VARCHAR2(50) |          | Y        |        |                           |
+| 7        | PROTOCOLTYPE      | 协议类型   | NUMBER(1)    |          | Y        |        | 0-抽油机协议 1-螺杆泵协议 |
+
+### 1.2.12 tbl_acq_unit_conf
+
+表1-13 采控单元名称表
 
 | **序号** | **代码**  | **名称** | **类型**       | **单位** | **为空** | **键** | **备注** |
 |----------|-----------|----------|----------------|----------|----------|--------|----------|
@@ -346,9 +388,9 @@
 | 4        | PROTOCOL  | 协议     | VARCHAR2(50)   |          | Y        |        |          |
 | 5        | REMARK    | 单元描述 | VARCHAR2(2000) |          | Y        |        |          |
 
-### 1.2.11 tbl_acq_group_conf
+### 1.2.13 tbl_acq_group_conf
 
-表1-12 采控组名称表
+表1-14 采控组名称表
 
 | **序号** | **代码**   | **名称** | **类型**       | **单位** | **为空** | **键** | **备注**          |
 |----------|------------|----------|----------------|----------|----------|--------|-------------------|
@@ -361,9 +403,9 @@
 | 7        | TYPE       | 类型     | NUMBER(1)      |          | Y        |        | 0-采集组 1-控制组 |
 | 8        | REMARK     | 组描述   | VARCHAR2(2000) |          | Y        |        |                   |
 
-### 1.2.12 tbl_acq_item2group_conf
+### 1.2.14 tbl_acq_item2group_conf
 
-表1-13 采控组和采集项关系表
+表1-15 采控组和采集项关系表
 
 | **序号** | **代码** | **名称**   | **类型**      | **单位** | **为空** | **键** | **备注**         |
 |----------|----------|------------|---------------|----------|----------|--------|------------------|
@@ -375,9 +417,9 @@
 | 6        | BITINDEX | 位索引     | NUMBER(10)    |          | Y        |        | 位数组中的位索引 |
 | 7        | MATRIX   | 阵列       | VARCHAR2(8)   |          | Y        |        |                  |
 
-### 1.2.13 tbl_acq_group2unit_conf
+### 1.2.15 tbl_acq_group2unit_conf
 
-表1-14 采控单元和采集采控组关系表
+表1-16 采控单元和采集采控组关系表
 
 | **序号** | **代码** | **名称**     | **类型**    | **单位** | **为空** | **键** | **备注**                          |
 |----------|----------|--------------|-------------|----------|----------|--------|-----------------------------------|
@@ -386,9 +428,9 @@
 | 3        | GROUPID  | 采控组编号   | NUMBER(10)  |          | N        |        | 对应tbl_acq_group_conf表中id字段  |
 | 4        | MATRIX   | 阵列         | VARCHAR2(8) |          | N        |        |                                   |
 
-### 1.2.14 tbl\_alarm\_unit_conf
+### 1.2.16 tbl\_alarm\_unit_conf
 
-表1-15 报警单元名称表
+表1-17 报警单元名称表
 
 | **序号** | **代码**  | **名称** | **类型**       | **单位** | **为空** | **键** | **备注** |
 |----------|-----------|----------|----------------|----------|----------|--------|----------|
@@ -398,9 +440,9 @@
 | 4        | PROTOCOL  | 协议     | VARCHAR2(50)   |          | Y        |        |          |
 | 5        | REMARK    | 单元描述 | VARCHAR2(2000) |          | Y        |        |          |
 
-### 1.2.15 tbl_alarm_item2unit_conf
+### 1.2.17 tbl_alarm_item2unit_conf
 
-表1-16 报警单元和报警项关系表
+表1-18 报警单元和报警项关系表
 
 | **序号** | **代码**      | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注**       |
 |----------|---------------|--------------|---------------|----------|----------|--------|----------------|
@@ -422,9 +464,9 @@
 | 16       | ISSENDMESSAGE | 是否发送短信 | NUMBER(1)     |          | Y        |        | 0-否 1-是      |
 | 17       | ISSENDMAIL    | 是否发送邮件 | NUMBER(1)     |          | Y        |        | 0-否 1-是      |
 
-### 1.2.16 tbl\_display\_unit_conf
+### 1.2.18 tbl\_display\_unit_conf
 
-表1-16 显示单元名称表
+表1-19 显示单元名称表
 
 | **序号** | **代码**  | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注** |
 |----------|-----------|--------------|----------------|----------|----------|--------|----------|
@@ -435,30 +477,63 @@
 | 5        | ACQUNITID | 采集单元编号 | NUMBER(10)     |          |          |        |          |
 | 6        | REMARK    | 单元描述     | VARCHAR2(2000) |          | Y        |        |          |
 
-### 1.2.17 tbl\_display\_item2unit_conf
+### 1.2.19 tbl\_display\_item2unit_conf
 
-表1-17 显示单元和显示项关系表
+表1-20 显示单元和显示项关系表
 
-| **序号** | **代码**           | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注**                   |
-|----------|--------------------|--------------|---------------|----------|----------|--------|----------------------------|
-| 1        | ID                 | 记录编号     | NUMBER(10)    |          | N        | 主键   |                            |
-| 2        | UNITID             | 单元编号     | NUMBER(10)    |          | N        |        |                            |
-| 3        | ITEMID             | 项编号       | NUMBER(10)    |          | Y        |        |                            |
-| 4        | ITEMNAME           | 项名称       | VARCHAR2(100) |          | Y        |        |                            |
-| 5        | ITEMCODE           | 项代码       | VARCHAR2(100) |          | Y        |        |                            |
-| 6        | SORT               | 排序序号     | NUMBER(10)    |          | Y        |        |                            |
-| 7        | BITINDEX           | 位索引       | NUMBER(10)    |          | Y        |        | 位数组中的位索引           |
-| 8        | SHOWLEVEL          | 显示级别     | NUMBER(10)    |          | Y        |        |                            |
-| 9        | REALTIMECURVE      | 实时曲线顺序 | NUMBER(10)    |          | Y        |        | 为空不显示曲线             |
-| 10       | HISTORYCURVE       | 历史曲线顺序 | NUMBER(10)    |          | Y        |        | 为空不显示曲线             |
-| 11       | REALTIMECURVECOLOR | 实时曲线颜色 | VARCHAR2(20)  |          | Y        |        |                            |
-| 12       | HISTORYCURVECOLOR  | 历史曲线颜色 | VARCHAR2(20)  |          | Y        |        |                            |
-| 13       | TYPE               | 项类型       | NUMBER(1)     |          | Y        |        | 0-采集项 1-计算项 2-控制项 |
-| 14       | MATRIX             | 阵列         | VARCHAR2(8)   |          | Y        |        |                            |
+| **序号** | **代码**          | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注**                   |
+|----------|-------------------|--------------|----------------|----------|----------|--------|----------------------------|
+| 1        | ID                | 记录编号     | NUMBER(10)     |          | N        | 主键   |                            |
+| 2        | UNITID            | 单元编号     | NUMBER(10)     |          | N        |        |                            |
+| 3        | ITEMID            | 项编号       | NUMBER(10)     |          | Y        |        |                            |
+| 4        | ITEMNAME          | 项名称       | VARCHAR2(100)  |          | Y        |        |                            |
+| 5        | ITEMCODE          | 项代码       | VARCHAR2(100)  |          | Y        |        |                            |
+| 6        | SORT              | 排序序号     | NUMBER(10)     |          | Y        |        |                            |
+| 7        | BITINDEX          | 位索引       | NUMBER(10)     |          | Y        |        | 位数组中的位索引           |
+| 8        | SHOWLEVEL         | 显示级别     | NUMBER(10)     |          | Y        |        |                            |
+| 9        | REALTIMECURVECONF | 实时曲线配置 | VARCHAR2(4000) |          | Y        |        | 为空不显示曲线             |
+| 10       | HISTORYCURVECONF  | 历史曲线配置 | VARCHAR2(4000) |          | Y        |        | 为空不显示曲线             |
+| 13       | TYPE              | 项类型       | NUMBER(1)      |          | Y        |        | 0-采集项 1-计算项 2-控制项 |
+| 14       | MATRIX            | 阵列         | VARCHAR2(8)    |          | Y        |        |                            |
 
-### 1.2.18 tbl_protocolinstance
+### 1.2.20 tbl_report_unit_conf
 
-表1-18 采控实例表
+表1-21 报表单元名称表
+
+| **序号** | **代码**                 | **名称**     | **类型**     | **单位** | **为空** | **键** | **备注** |
+|----------|--------------------------|--------------|--------------|----------|----------|--------|----------|
+| 1        | ID                       | 记录编号     | NUMBER(10)   |          | N        | 主键   |          |
+| 2        | UNIT_CODE                | 单元代码     | VARCHAR2(50) |          | N        |        |          |
+| 3        | UNIT_NAME                | 单元名称     | VARCHAR2(50) |          | Y        |        |          |
+| 4        | SINGLEWELLREPORTTEMPLATE | 单井报表模板 | VARCHAR2(50) |          | Y        |        |          |
+| 5        | PRODUCTIONREPORTTEMPLATE | 区域报表模板 | VARCHAR2(50) |          |          |        |          |
+|          | DEVICETYPE               | 设备类型     | NUMBER(1)    |          |          |        |          |
+| 6        | SORT                     | 排序编号     | NUMBER(10)   |          | Y        |        |          |
+
+### 1.2.21 tbl_report_items2unit_conf
+
+表1-22 报表单元和报表项关系表
+
+| **序号** | **代码**        | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注** |
+|----------|-----------------|--------------|----------------|----------|----------|--------|----------|
+| 1        | ID              | 记录编号     | NUMBER(10)     |          | N        | 主键   |          |
+| 2        | UNITID          | 单元编号     | NUMBER(10)     |          | N        |        |          |
+| 3        | ITEMID          | 项编号       | NUMBER(10)     |          | Y        |        |          |
+| 4        | ITEMNAME        | 项名称       | VARCHAR2(100)  |          | Y        |        |          |
+| 5        | ITEMCODE        | 项代码       | VARCHAR2(100)  |          | Y        |        |          |
+| 6        | SORT            | 排序序号     | NUMBER(10)     |          | Y        |        |          |
+| 7        | SHOWLEVEL       | 显示级别     | NUMBER(10)     |          | Y        |        |          |
+| 8        | SUMSIGN         | 是否求和     | NUMBER(1)      |          |          |        |          |
+| 9        | AVERAGESIGN     | 是否求平均   | NUMBER(1)      |          | Y        |        |          |
+| 10       | CURVESTATTYPE   | 曲线统计类型 | NUMBER(1)      |          | Y        |        |          |
+| 11       | DATATYPE        | 数据类型     | NUMBER(10)     |          | Y        |        |          |
+| 12       | REPORTTYPE      | 报表类型     | NUMBER(1)      |          | Y        |        |          |
+| 13       | REPORTCURVECONF | 报表曲线配置 | VARCHAR2(4000) |          | Y        |        |          |
+| 14       | MATRIX          | 阵列         | VARCHAR2(8)    |          | Y        |        |          |
+
+### 1.2.22 tbl_protocolinstance
+
+表1-23 采控实例表
 
 | **序号** | **代码**           | **名称**     | **类型**     | **单位** | **为空** | **键** | **备注**          |
 |----------|--------------------|--------------|--------------|----------|----------|--------|-------------------|
@@ -477,9 +552,9 @@
 | 13       | DEVICETYPE         | 设备类型     | NUMBER(1)    |          | Y        |        | 0-抽油机 1-螺杆泵 |
 | 14       | SORT               | 排序编号     | NUMBER(10)   |          | Y        |        |                   |
 
-### 1.2.19 tbl_protocolalarminstance
+### 1.2.23 tbl_protocolalarminstance
 
-表1-19 报警实例表
+表1-24 报警实例表
 
 | **序号** | **代码**    | **名称**     | **类型**     | **单位** | **为空** | **键** | **备注**          |
 |----------|-------------|--------------|--------------|----------|----------|--------|-------------------|
@@ -490,9 +565,9 @@
 | 5        | DEVICETYPE  | 设备类型     | NUMBER(1)    |          | Y        |        | 0-抽油机 1-螺杆泵 |
 | 6        | SORT        | 排序编号     | NUMBER(10)   |          | Y        |        |                   |
 
-### 1.2.20 tbl_protocoldisplayinstance
+### 1.2.24 tbl_protocoldisplayinstance
 
-表1-20 显示实例表
+表1-25 显示实例表
 
 | **序号** | **代码**      | **名称**     | **类型**     | **单位** | **为空** | **键** | **备注**          |
 |----------|---------------|--------------|--------------|----------|----------|--------|-------------------|
@@ -503,9 +578,22 @@
 | 5        | DEVICETYPE    | 设备类型     | NUMBER(1)    |          | Y        |        | 0-抽油机 1-螺杆泵 |
 | 6        | SORT          | 排序编号     | NUMBER(10)   |          | Y        |        |                   |
 
-### 1.2.21 tbl_protocolsmsinstance
+### 1.2.25 tbl_protocolreportinstance
 
-表1-21 短信实例表
+表1-26 报表实例表
+
+| **序号** | **代码**   | **名称**     | **类型**     | **单位** | **为空** | **键** | **备注**          |
+|----------|------------|--------------|--------------|----------|----------|--------|-------------------|
+| 1        | ID         | 记录编号     | NUMBER(10)   |          | N        | 主键   |                   |
+| 2        | NAME       | 实例名称     | VARCHAR2(50) |          | Y        |        |                   |
+| 3        | CODE       | 实例代码     | VARCHAR2(50) |          | Y        |        |                   |
+| 4        | UNITID     | 报表单元编号 | NUMBER(10)   |          | N        |        |                   |
+| 5        | DEVICETYPE | 设备类型     | NUMBER(1)    |          | Y        |        | 0-抽油机 1-螺杆泵 |
+| 6        | SORT       | 排序编号     | NUMBER(10)   |          | Y        |        |                   |
+
+### 1.2.26 tbl_protocolsmsinstance
+
+表1-27 短信实例表
 
 | **序号** | **代码**         | **名称**     | **类型**     | **单位** | **为空** | **键** | **备注** |
 |----------|------------------|--------------|--------------|----------|----------|--------|----------|
@@ -516,38 +604,9 @@
 | 5        | CTRLPROTOCOLTYPE | 控制协议类型 | VARCHAR2(50) |          | Y        |        |          |
 | 6        | SORT             | 排序编号     | NUMBER(10)   |          | Y        |        |          |
 
-### 1.2.22 tbl\_rpcdevice
+### 1.2.27 tbl\_rpcdevice
 
-表1-20 抽油机信息表
-
-| **序号** | **代码**                 | **名称**         | **类型**       | **单位** | **为空** | **键** | **备注**                 |
-|----------|--------------------------|------------------|----------------|----------|----------|--------|--------------------------|
-| 1        | ID                       | 记录编号         | NUMBER(10)     |          | N        | 主键   |                          |
-| 2        | ORGID                    | 单位编号         | NUMBER(10)     |          | Y        |        |                          |
-| 3        | WELLNAME                 | 设备名称         | VARCHAR2(200)  |          | Y        |        |                          |
-| 4        | DEVICETYPE               | 设备类型         | NUMBER(1)      |          | Y        |        |                          |
-| 5        | APPLICATIONSCENARIOS     | 应用场景         | NUMBER(2)      |          | Y        |        |                          |
-| 6        | TCPTYPE                  | 下位机TCP类型    | VARCHAR2(20)   |          | Y        |        | TCP Server或者TCP Client |
-| 7        | SIGNINID                 | 注册包ID         | VARCHAR2(200)  |          | N        |        |                          |
-| 8        | SLAVE                    | 设备从地址       | VARCHAR2(200)  |          | Y        |        |                          |
-| 9        | PEAKDELAY                | 错峰延时         | NUMBER(10)     | s        | Y        |        |                          |
-| 10       | INSTANCECODE             | 采控实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
-| 11       | ALARMINSTANCECODE        | 报警实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
-| 12       | DISPLAYINSTANCECODE      | 显示实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
-| 13       | VIDEOURL                 | 视频监控路径     | VARCHAR2(400)  |          | Y        |        | 多个以;隔开              |
-| 14       | VIDEOACCESSTOKEN         | 视频访问令牌     | VARCHAR2(400)  |          | Y        |        | 预留多个以;隔开          |
-| 15       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
-| 16       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
-| 17       | PUMPINGMODELID           | 抽油机型号ID     | NUMBER(10)     |          | Y        |        |                          |
-| 18       | STROKE                   | 铭牌冲程         | NUMBER(8,2)    |          | Y        |        |                          |
-| 19       | LEVELCORRECTVALUE        | 反演液面校正值   | NUMBER(8,2)    |          | Y        |        |                          |
-| 20       | BALANCEINFO              | 平衡块信息       | VARCHAR2(400)  |          | Y        |        | json格式字符串           |
-| 21       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
-| 22       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
-
-### 1.2.23 tbl\_pcpdevice
-
-表1-23 螺杆泵信息表
+表1-28 抽油机信息表
 
 | **序号** | **代码**                 | **名称**         | **类型**       | **单位** | **为空** | **键** | **备注**                 |
 |----------|--------------------------|------------------|----------------|----------|----------|--------|--------------------------|
@@ -557,22 +616,53 @@
 | 4        | DEVICETYPE               | 设备类型         | NUMBER(1)      |          | Y        |        |                          |
 | 5        | APPLICATIONSCENARIOS     | 应用场景         | NUMBER(2)      |          | Y        |        |                          |
 | 6        | TCPTYPE                  | 下位机TCP类型    | VARCHAR2(20)   |          | Y        |        | TCP Server或者TCP Client |
-| 7        | SIGNINID                 | 注册包ID         | VARCHAR2(200)  |          | N        |        |                          |
+| 7        | SIGNINID                 | 注册包ID         | VARCHAR2(200)  |          | Y        |        |                          |
+| 8        | IPPORT                   | 下位机IP端口     | VARCHAR2(200)  |          | Y        |        |                          |
+| 9        | SLAVE                    | 设备从地址       | VARCHAR2(200)  |          | Y        |        |                          |
+| 10       | PEAKDELAY                | 错峰延时         | NUMBER(10)     | s        | Y        |        |                          |
+| 11       | INSTANCECODE             | 采控实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
+| 12       | ALARMINSTANCECODE        | 报警实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
+| 13       | DISPLAYINSTANCECODE      | 显示实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
+| 14       | REPORTINSTANCECODE       | 报表实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
+| 15       | VIDEOURL                 | 视频监控路径     | VARCHAR2(400)  |          | Y        |        | 多个以;隔开              |
+| 16       | VIDEOACCESSTOKEN         | 视频访问令牌     | VARCHAR2(400)  |          | Y        |        | 预留多个以;隔开          |
+| 17       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
+| 18       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
+| 19       | PUMPINGMODELID           | 抽油机型号ID     | NUMBER(10)     |          | Y        |        |                          |
+| 20       | STROKE                   | 铭牌冲程         | NUMBER(8,2)    |          | Y        |        |                          |
+| 21       | BALANCEINFO              | 平衡块信息       | VARCHAR2(400)  |          | Y        |        | json格式字符串           |
+| 22       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
+| 23       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
+
+### 1.2.28 tbl\_pcpdevice
+
+表1-29 螺杆泵信息表
+
+| **序号** | **代码**                 | **名称**         | **类型**       | **单位** | **为空** | **键** | **备注**                 |
+|----------|--------------------------|------------------|----------------|----------|----------|--------|--------------------------|
+| 1        | ID                       | 记录编号         | NUMBER(10)     |          | N        | 主键   |                          |
+| 2        | ORGID                    | 单位编号         | NUMBER(10)     |          | Y        |        |                          |
+| 3        | WELLNAME                 | 设备名称         | VARCHAR2(200)  |          | Y        |        |                          |
+| 4        | DEVICETYPE               | 设备类型         | NUMBER(1)      |          | Y        |        |                          |
+| 5        | APPLICATIONSCENARIOS     | 应用场景         | NUMBER(2)      |          | Y        |        |                          |
+| 6        | TCPTYPE                  | 下位机TCP类型    | VARCHAR2(20)   |          | Y        |        | TCP Server或者TCP Client |
+| 7        | SIGNINID                 | 注册包ID         | VARCHAR2(200)  |          | Y        |        |                          |
 | 8        | SLAVE                    | 设备从地址       | VARCHAR2(200)  |          | Y        |        |                          |
 | 9        | PEAKDELAY                | 错峰延时         | NUMBER(10)     | s        | Y        |        |                          |
 | 10       | INSTANCECODE             | 采控实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
 | 11       | ALARMINSTANCECODE        | 报警实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
 | 12       | DISPLAYINSTANCECODE      | 显示实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
-| 13       | VIDEOURL                 | 视频地址         | VARCHAR2(400)  |          | Y        |        |                          |
-| 14       | VIDEOACCESSTOKEN         | 视频访问令牌     | VARCHAR2(400)  |          | Y        |        | 预留多个以;隔开          |
-| 15       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
-| 16       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
-| 17       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
-| 18       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
+| 13       | REPORTINSTANCECODE       | 报表实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
+| 14       | VIDEOURL                 | 视频地址         | VARCHAR2(400)  |          | Y        |        |                          |
+| 15       | VIDEOACCESSTOKEN         | 视频访问令牌     | VARCHAR2(400)  |          | Y        |        | 预留多个以;隔开          |
+| 16       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
+| 17       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
+| 18       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
+| 19       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
 
-### 1.2.24 tbl\_smsdevice
+### 1.2.29 tbl\_smsdevice
 
-表1-24 短信设备信息表
+表1-30 短信设备信息表
 
 | **序号** | **代码**     | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|--------------|--------------|---------------|----------|----------|--------|----------|
@@ -583,9 +673,9 @@
 | 5        | INSTANCECODE | 短信实例代码 | VARCHAR2(50)  |          | Y        |        |          |
 | 6        | SORTNUM      | 排序编号     | NUMBER(10)    |          | Y        |        |          |
 
-### 1.2.25 tbl_pumpingmodel
+### 1.2.30 tbl_pumpingmodel
 
-表1-25 抽油机型号表
+表1-31 抽油机型号表
 
 | **序号** | **代码**               | **名称**       | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|------------------------|----------------|---------------|----------|----------|--------|----------|
@@ -602,9 +692,9 @@
 | 11       | BALANCEWEIGHT          | 平衡块重量     | VARCHAR2(200) |          | Y        |        |          |
 | 12       | PRTF                   | 位置扭矩因数   | CLOB          |          | Y        |        |          |
 
-### 1.2.26 tbl_rpc_worktype
+### 1.2.31 tbl_rpc_worktype
 
-表1-26 工况表
+表1-32 工况表
 
 | **序号** | **代码**               | **名称** | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|------------------------|----------|---------------|----------|----------|--------|----------|
@@ -616,9 +706,9 @@
 | 6        | OPTIMIZATIONSUGGESTION | 优化建议 | VARCHAR2(200) |          | Y        |        |          |
 | 7        | REMARK                 | 备注     | VARCHAR2(200) |          | Y        |        |          |
 
-### 1.2.27 tbl\_rpcacqdata_latest
+### 1.2.32 tbl\_rpcacqdata_latest
 
-表1-27 抽油机实时数据表
+表1-33 抽油机实时数据表
 
 | **序号** | **代码**                       | **名称**                 | **类型**       | **单位** | **为空** | **键** | **备注**               |
 |----------|--------------------------------|--------------------------|----------------|----------|----------|--------|------------------------|
@@ -738,13 +828,13 @@
 | …        | …                              | …                        |                |          | Y        |        | 根据驱动自动生成的字段 |
 | …        | …                              | …                        |                |          | Y        |        |                        |
 
-### 1.2.28 tbl\_rpcacqdata_hist
+### 1.2.33 tbl\_rpcacqdata_hist
 
 同tbl\_rpcacqdata\_latest
 
-### 1.2.29 tbl\_rpcacqrawdata
+### 1.2.34 tbl\_rpcacqrawdata
 
-表1-28 抽油机原始采集数据表
+表1-34 抽油机原始采集数据表
 
 | **序号** | **代码** | **名称** | **类型**       | **单位** | **为空** | **键** | **备注**                               |
 |----------|----------|----------|----------------|----------|----------|--------|----------------------------------------|
@@ -753,9 +843,9 @@
 | 3        | ACQTIME  | 采集时间 | DATE           |          | Y        |        |                                        |
 | 4        | RAWDATA  | 原始数据 | VARCHAR2(4000) |          | Y        |        | 设备采集的未解析原始数据，16进制字符串 |
 
-### 1.2.30 tbl\_rpcalarminfo_latest
+### 1.2.35 tbl\_rpcalarminfo_latest
 
-表1-29 抽油机报警实时数据表
+表1-35 抽油机报警实时数据表
 
 | **序号** | **代码**      | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注**                                        |
 |----------|---------------|--------------|---------------|----------|----------|--------|-------------------------------------------------|
@@ -773,13 +863,13 @@
 | 12       | ISSENDMESSAGE | 是否发送短信 | NUMBER(1)     |          | Y        |        | 0-否 1-是                                       |
 | 13       | ISSENDMAIL    | 是否发送邮件 | NUMBER(1)     |          | Y        |        | 0-否 1-是                                       |
 
-### 1.2.31 tbl\_rpcalarminfo_hist
+### 1.2.36 tbl\_rpcalarminfo_hist
 
 同tbl\_rpcalarminfo_latest
 
-### 1.2.32 tbl_rpcdailycalculationdata
+### 1.2.37 tbl_rpcdailycalculationdata
 
-表1-30 抽油机汇总数据表
+表1-36 抽油机汇总数据表
 
 | **序号** | **代码**                   | **名称**       | **类型**     | **单位** | **为空** | **键** | **备注**      |
 |----------|----------------------------|----------------|--------------|----------|----------|--------|---------------|
@@ -827,9 +917,9 @@
 | 42       | EXTENDEDDAYS               | 沿用天数       | NUMBER(5)    |          | Y        |        |               |
 | 43       | RESULTSTATUS               | 计算状态       | NUMBER(2)    |          | Y        |        |               |
 
-### 1.2.33 tbl\_rpcdevicegraphicset
+### 1.2.38 tbl\_rpcdevicegraphicset
 
-表1-31 抽油机图形设置表
+表1-37 抽油机图形设置表
 
 | **序号** | **代码**     | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注**       |
 |----------|--------------|--------------|----------------|----------|----------|--------|----------------|
@@ -837,9 +927,9 @@
 | 2        | WELLID       | 设备编号     | NUMBER(10)     |          | N        |        |                |
 | 3        | GRAPHICSTYLE | 图形设置内容 | VARCHAR2(4000) |          | Y        |        | json格式字符串 |
 
-### 1.2.34 tbl\_pcpacqdata_latest
+### 1.2.39 tbl\_pcpacqdata_latest
 
-表1-32 螺杆泵实时数据表
+表1-38 螺杆泵实时数据表
 
 | **序号** | **代码**                     | **名称**           | **类型**       | **单位** | **为空** | **键** | **备注**               |
 |----------|------------------------------|--------------------|----------------|----------|----------|--------|------------------------|
@@ -896,13 +986,13 @@
 | …        | …                            | …                  |                |          | Y        |        | 根据驱动自动生成的字段 |
 | …        | …                            | …                  |                |          | Y        |        |                        |
 
-### 1.2.35 tbl\_pcpacqdata_hist
+### 1.2.40 tbl\_pcpacqdata_hist
 
 同tbl\_pcpacqdata\_latest
 
-### 1.2.36 tbl\_pcpacqrawdata
+### 1.2.41 tbl\_pcpacqrawdata
 
-表1-33 螺杆泵原始采集数据表
+表1-39 螺杆泵原始采集数据表
 
 | **序号** | **代码** | **名称** | **类型**       | **单位** | **为空** | **键** | **备注**                               |
 |----------|----------|----------|----------------|----------|----------|--------|----------------------------------------|
@@ -911,9 +1001,9 @@
 | 3        | ACQTIME  | 采集时间 | DATE           |          | Y        |        |                                        |
 | 4        | RAWDATA  | 原始数据 | VARCHAR2(4000) |          | Y        |        | 设备采集的未解析原始数据，16进制字符串 |
 
-### 1.2.37 tbl\_pcpalarminfo_latest
+### 1.2.42 tbl\_pcpalarminfo_latest
 
-表1-34 抽油机报警实时数据表
+表1-40 抽油机报警实时数据表
 
 | **序号** | **代码**      | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注**                                        |
 |----------|---------------|--------------|---------------|----------|----------|--------|-------------------------------------------------|
@@ -931,13 +1021,13 @@
 | 12       | ISSENDMESSAGE | 是否发送短信 | NUMBER(1)     |          | Y        |        | 0-否 1-是                                       |
 | 13       | ISSENDMAIL    | 是否发送邮件 | NUMBER(1)     |          | Y        |        | 0-否 1-是                                       |
 
-### 1.2.38 tbl\_pcpalarminfo_hist
+### 1.2.43 tbl\_pcpalarminfo_hist
 
 同tbl\_pcpalarminfo_latest
 
-### 1.2.39 tbl_pcpdailycalculationdata
+### 1.2.44 tbl_pcpdailycalculationdata
 
-表1-35 螺杆泵汇总数据表
+表1-41 螺杆泵汇总数据表
 
 | **序号** | **代码**                   | **名称**       | **类型**     | **单位** | **为空** | **键** | **备注**      |
 |----------|----------------------------|----------------|--------------|----------|----------|--------|---------------|
@@ -973,9 +1063,9 @@
 | 30       | EXTENDEDDAYS               | 沿用天数       | NUMBER(5)    |          | Y        |        |               |
 | 31       | RESULTSTATUS               | 计算状态       | NUMBER(2)    |          | Y        |        |               |
 
-### 1.2.40 tbl\_pcpdevicegraphicset
+### 1.2.45 tbl\_pcpdevicegraphicset
 
-表1-36 螺杆泵图形设置表
+表1-42 螺杆泵图形设置表
 
 | **序号** | **代码**     | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注**       |
 |----------|--------------|--------------|----------------|----------|----------|--------|----------------|
@@ -983,9 +1073,9 @@
 | 2        | WELLID       | 设备编号     | NUMBER(10)     |          | N        |        |                |
 | 3        | GRAPHICSTYLE | 图形设置内容 | VARCHAR2(4000) |          | Y        |        | json格式字符串 |
 
-### 1.2.41 tbl_deviceoperationlog
+### 1.2.46 tbl_deviceoperationlog
 
-表1-37 设备操作日志表
+表1-43 设备操作日志表
 
 | **序号** | **代码**   | **名称**     | **类型** | **单位** | **为空** | **键** | **备注**                                    |
 |----------|------------|--------------|----------|----------|----------|--------|---------------------------------------------|
@@ -998,9 +1088,9 @@
 | 7        | DEVICETYPE | 设备类型     | NUMBER   |          | Y        |        | 0-抽油机 1-螺杆泵                           |
 | 8        | REMARK     | 备注         | VARCHAR2 |          | Y        |        |                                             |
 
-### 1.2.42 tbl_systemlog
+### 1.2.47 tbl_systemlog
 
-表1-38 系统日志表
+表1-44 系统日志表
 
 | **序号** | **代码**   | **名称** | **类型**      | **单位** | **为空** | **键** | **备注**              |
 |----------|------------|----------|---------------|----------|----------|--------|-----------------------|
@@ -1011,9 +1101,9 @@
 | 5        | ACTION     | 操作     | NUMBER(2)     | 次/min   | Y        |        | 0-用户登录 1-用户退出 |
 | 6        | REMARK     | 备注     | VARCHAR2(200) | kN       | Y        |        |                       |
 
-### 1.2.43 tbl_resourcemonitoring
+### 1.2.48 tbl_resourcemonitoring
 
-表1-39 资源监测数据表
+表1-45 资源监测数据表
 
 | **序号** | **代码**       | **名称**         | **类型**     | **单位** | **为空** | **键** | **备注** |
 |----------|----------------|------------------|--------------|----------|----------|--------|----------|
@@ -1096,22 +1186,23 @@
 | 19       | ALARMINSTANCENAME        | 报警实例名称   | VARCHAR2 |               |
 | 20       | DISPLAYINSTANCECODE      | 显示实例编码   | VARCHAR2 |               |
 | 21       | DISPLAYINSTANCENAME      | 显示实例名称   | VARCHAR2 |               |
-| 22       | STATUS                   | 状态           | NUMBER   | 0-失效 1-使能 |
-| 23       | STATUSNAME               | 状态名称       | VARCHAR2 | 失效或使能    |
-| 24       | PRODUCTIONDATA           | 生产数据       | VARCHAR2 |               |
-| 25       | BALANCEINFO              | 平衡块数据     | VARCHAR2 |               |
-| 26       | STROKE                   | 铭牌冲程       | NUMBER   |               |
-| 27       | LEVELCORRECTVALUE        | 反演液面校正值 | NUMBER   |               |
-| 28       | PUMPINGMODELID           | 抽油机型号编号 | NUMBER   |               |
-| 29       | MANUFACTURER             | 抽油机厂家     | VARCHAR2 |               |
-| 30       | MODEL                    | 抽油机型号     | VARCHAR2 |               |
-| 31       | CRANKROTATIONDIRECTION   | 曲柄旋转方向   | VARCHAR2 |               |
-| 32       | OFFSETANGLEOFCRANK       | 曲柄偏置角     | NUMBER   |               |
-| 33       | CRANKGRAVITYRADIUS       | 曲柄重心半径   | NUMBER   |               |
-| 34       | SINGLECRANKWEIGHT        | 单块曲柄重要   | NUMBER   |               |
-| 35       | SINGLECRANKPINWEIGHT     | 单块曲柄销重量 | NUMBER   |               |
-| 36       | STRUCTURALUNBALANCE      | 结构不平衡重   | NUMBER   |               |
-| 37       | SORTNUM                  | 排序编号       | NUMBER   |               |
+| 22       | REPORTINSTANCECODE       | 报表实例编码   | VARCHAR2 |               |
+| 23       | REPORTINSTANCENAME       | 报表实例名称   | VARCHAR2 |               |
+| 24       | STATUS                   | 状态           | NUMBER   | 0-失效 1-使能 |
+| 25       | STATUSNAME               | 状态名称       | VARCHAR2 | 失效或使能    |
+| 26       | PRODUCTIONDATA           | 生产数据       | VARCHAR2 |               |
+| 27       | BALANCEINFO              | 平衡块数据     | VARCHAR2 |               |
+| 28       | STROKE                   | 铭牌冲程       | NUMBER   |               |
+| 29       | PUMPINGMODELID           | 抽油机型号编号 | NUMBER   |               |
+| 30       | MANUFACTURER             | 抽油机厂家     | VARCHAR2 |               |
+| 31       | MODEL                    | 抽油机型号     | VARCHAR2 |               |
+| 32       | CRANKROTATIONDIRECTION   | 曲柄旋转方向   | VARCHAR2 |               |
+| 33       | OFFSETANGLEOFCRANK       | 曲柄偏置角     | NUMBER   |               |
+| 34       | CRANKGRAVITYRADIUS       | 曲柄重心半径   | NUMBER   |               |
+| 35       | SINGLECRANKWEIGHT        | 单块曲柄重要   | NUMBER   |               |
+| 36       | SINGLECRANKPINWEIGHT     | 单块曲柄销重量 | NUMBER   |               |
+| 37       | STRUCTURALUNBALANCE      | 结构不平衡重   | NUMBER   |               |
+| 38       | SORTNUM                  | 排序编号       | NUMBER   |               |
 
 ### 2.2.3 viw\_pcpdevice
 
@@ -1140,10 +1231,12 @@
 | 19       | ALARMINSTANCENAME        | 报警实例名称  | VARCHAR2 |               |
 | 20       | DISPLAYINSTANCECODE      | 显示实例编码  | VARCHAR2 |               |
 | 21       | DISPLAYINSTANCENAME      | 显示实例名称  | VARCHAR2 |               |
-| 22       | STATUS                   | 状态          | NUMBER   | 0-失效 1-使能 |
-| 23       | STATUSNAME               | 状态名称      | VARCHAR2 | 失效或使能    |
-| 24       | PRODUCTIONDATA           | 生产数据      | VARCHAR2 |               |
-| 25       | SORTNUM                  | 排序编号      | NUMBER   |               |
+| 22       | REPORTINSTANCECODE       | 报表实例编码  | VARCHAR2 |               |
+| 23       | REPORTINSTANCENAME       | 报表实例名称  | VARCHAR2 |               |
+| 24       | STATUS                   | 状态          | NUMBER   | 0-失效 1-使能 |
+| 25       | STATUSNAME               | 状态名称      | VARCHAR2 | 失效或使能    |
+| 26       | PRODUCTIONDATA           | 生产数据      | VARCHAR2 |               |
+| 27       | SORTNUM                  | 排序编号      | NUMBER   |               |
 
 ### 2.2.4 viw\_smsdevice
 

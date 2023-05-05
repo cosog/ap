@@ -1597,16 +1597,21 @@ public class StringManagerUtils {
     }
 
     //CLOB转字符串
-    public static String CLOBObjectToString(Object obj) throws SQLException, IOException {
-        if (obj == null) {
-            return "";
+    public static String CLOBObjectToString(Object obj) {
+        String result="";
+    	if (obj == null) {
+    		result= "";
+        }else{
+        	SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj);
+            CLOB realClob = (CLOB) proxy.getWrappedClob(); 
+            try {
+				result= CLOBtoString(realClob);
+			} catch (SQLException | IOException e) {
+				result= "";
+				e.printStackTrace();
+			}
         }
-        SerializableClobProxy proxy = (SerializableClobProxy) Proxy.getInvocationHandler(obj);
-        CLOB clob = (CLOB) proxy.getWrappedClob();
-        char[] buffer = null;
-        buffer = new char[(int) clob.length()];
-        clob.getCharacterStream().read(buffer);
-        return String.valueOf(buffer);
+		return result;
     }
 
     //Clob转字符串

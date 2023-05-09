@@ -983,7 +983,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		int overCount=0;
 		String ddicName="deviceInfo_PCPDeviceBatchAdd";
 		String columns=service.showTableHeadersColumns(ddicName);
-		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
+		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,applicationScenarios,isCheckout,user);
 		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype=1 order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype=1 order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype=1 order by t.sort";
@@ -4004,7 +4004,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			List<String> realColumns=new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
 				if(StringManagerUtils.stringToInteger(applicationScenarios)==0){
-					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) || "saturationPressure".equalsIgnoreCase(columns[i]) || "productionGasOilRatio".equalsIgnoreCase(columns[i]) ) ){
+					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) 
+							|| "saturationPressure".equalsIgnoreCase(columns[i]) 
+							|| "waterCut".equalsIgnoreCase(columns[i]) 
+							|| "weightWaterCut".equalsIgnoreCase(columns[i]) 
+							|| "productionGasOilRatio".equalsIgnoreCase(columns[i]) 
+							) ){
 						String thishead=heads[i];
 						if("reservoirDepth".equalsIgnoreCase(columns[i]) || "reservoirTemperature".equalsIgnoreCase(columns[i])){
 							thishead=thishead.replace("油层", "煤层");
@@ -4272,7 +4277,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			List<String> realColumns=new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
 				if(StringManagerUtils.stringToInteger(applicationScenarios)==0){
-					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) || "saturationPressure".equalsIgnoreCase(columns[i]) || "productionGasOilRatio".equalsIgnoreCase(columns[i]) ) ){
+					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) 
+							|| "saturationPressure".equalsIgnoreCase(columns[i]) 
+							|| "waterCut".equalsIgnoreCase(columns[i]) 
+							|| "weightWaterCut".equalsIgnoreCase(columns[i]) 
+							|| "productionGasOilRatio".equalsIgnoreCase(columns[i]) 
+							) ){
 						String thishead=heads[i];
 						if("reservoirDepth".equalsIgnoreCase(columns[i]) || "reservoirTemperature".equalsIgnoreCase(columns[i])){
 							thishead=thishead.replace("油层", "煤层");

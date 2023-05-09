@@ -51,10 +51,12 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var wellName='';
         	var wellId=0;
+        	var applicationScenarios=0;
         	var selectRow= Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").getValue();
         	if(selectRow>=0){
         		wellName = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		wellId=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		applicationScenarios=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
         	}
             var startDate=Ext.getCmp('PCPCalculateMaintainingStartDate_Id').rawValue;
             var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
@@ -71,6 +73,7 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
             		orgId: orgId,
             		wellName: wellName,
             		wellId:wellId,
+            		applicationScenarios:applicationScenarios,
             		startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
                     calculateSign:calculateSign,

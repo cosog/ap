@@ -9,6 +9,7 @@ import com.cosog.utils.StringManagerUtils;
 public  class PCPCalculateResponseData implements Serializable , Comparable<PCPCalculateResponseData>{
 	private static final long serialVersionUID = 1L;
 	private String WellName;
+	private String Scene;
 	private String AcqTime;
 	private float RPM;
 	private int RunStatus;
@@ -819,6 +820,14 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 			e.printStackTrace();
 		}
 		return (int)(to-from);   // 根据值或者位升序排列，降序修改相减顺序即可
+	}
+
+	public String getScene() {
+		return Scene;
+	}
+
+	public void setScene(String scene) {
+		Scene = scene;
 	}
 
 }

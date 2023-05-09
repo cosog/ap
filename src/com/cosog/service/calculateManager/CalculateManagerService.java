@@ -72,13 +72,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private CalculateDataService calculateDataService;
-	public String getCalculateResultData(String orgId, String wellName,String wellId, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getCalculateResultData(String orgId, String wellName,String wellId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)){
-			json=this.getFESDiagramCalculateResultData(orgId, wellName,wellId, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getFESDiagramCalculateResultData(orgId, wellName,wellId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}else if("2".equals(calculateType)){
-			json=this.getRPMCalculateResultData(orgId, wellName,wellId, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getRPMCalculateResultData(orgId, wellName,wellId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}else if("5".equals(calculateType)){//电参反演地面功图
 			json=this.getElecInverCalculateResultData(orgId, wellName, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}
@@ -98,7 +98,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getFESDiagramCalculateResultData(String orgId, String wellName,String wellId, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getFESDiagramCalculateResultData(String orgId, String wellName,String wellId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -166,6 +166,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			List<?> list = this.findCallSql(finalSql);
 			
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+			result_json.append("\"applicationScenarios\":"+applicationScenarios+",");
 			result_json.append("\"start_date\":\""+startDate+"\",");
 			result_json.append("\"end_date\":\""+endDate+"\",");
 			result_json.append("\"totalCount\":"+totals+",");
@@ -288,7 +289,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getRPMCalculateResultData(String orgId, String wellName,String wellId, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getRPMCalculateResultData(String orgId, String wellName,String wellId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -334,6 +335,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(finalSql);
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"applicationScenarios\":"+applicationScenarios+",");
 		result_json.append("\"start_date\":\""+startDate+"\",");
 		result_json.append("\"end_date\":\""+endDate+"\",");
 		result_json.append("\"totalCount\":"+totals+",");
@@ -445,11 +447,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:3 ,children:[] },"
+				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\",flex:3 ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
 				+ "]";
-		sql="select well.id,well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus "
-				+ " from "+tableName+" t,"+deviceTableName+" well "
-				+ " where t.wellid=well.id  and well.orgid in("+orgId+") ";
+		sql="select well.id,well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus,well.applicationscenarios,c1.itemname as applicationScenariosName "
+				+ " from "+tableName+" t,"+deviceTableName+" well,tbl_code c1 "
+				+ " where t.wellid=well.id "
+				+ " and c1.itemcode='APPLICATIONSCENARIOS' and well.applicationscenarios=c1.itemvalue  "
+				+ " and well.orgid in("+orgId+") ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  well.wellName = '" + wellName.trim() + "' ";
 		}
@@ -472,7 +477,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
-			result_json.append("\"acqTime\":\""+obj[2]+"\"},");
+			result_json.append("\"acqTime\":\""+obj[2]+"\",");
+			result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
+			result_json.append("\"applicationScenariosName\":\""+obj[5]+"\"},");
 			
 		}
 		if(result_json.toString().endsWith(",")){
@@ -693,7 +700,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public void saveReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData) throws Exception {
+	public void saveReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData,int applicationScenarios) throws Exception {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
@@ -730,10 +737,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					RPCCalculateRequestData.ManualIntervention manualIntervention=new RPCCalculateRequestData.ManualIntervention();
 					
-					fluidPVT.setCrudeOilDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity()));
+					if(applicationScenarios!=0){
+						fluidPVT.setCrudeOilDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity()));
+						fluidPVT.setSaturationPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
+					}
 					fluidPVT.setWaterDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
 					fluidPVT.setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
-					fluidPVT.setSaturationPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
+					
 					
 					reservoir.setDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
 					reservoir.setTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
@@ -744,13 +754,23 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					production.setTubingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
 					production.setCasingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
 					production.setWellHeadTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature()));
-					production.setWaterCut(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut()));
-					production.setProductionGasOilRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
+					if(applicationScenarios!=0){
+						production.setWaterCut(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut()));
+						production.setProductionGasOilRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
+					}else{
+						production.setWaterCut(100);
+					}
+					
 					production.setProducingfluidLevel(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel()));
 					production.setPumpSettingDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
 					
-					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
-					production.setWeightWaterCut(weightWaterCut);
+					if(applicationScenarios!=0){
+						float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
+						production.setWeightWaterCut(weightWaterCut);
+					}else{
+						production.setWeightWaterCut(100);
+					}
+					
 					
 					String barrelType="";
 					if("组合泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
@@ -847,7 +867,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public void saveRPMReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData) throws Exception {
+	public void saveRPMReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData,int applicationScenarios) throws Exception {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
@@ -874,10 +894,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				PCPCalculateRequestData.ManualIntervention manualIntervention=new PCPCalculateRequestData.ManualIntervention();
 				
-				fluidPVT.setCrudeOilDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity()));
+				if(applicationScenarios!=0){
+					fluidPVT.setCrudeOilDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity()));
+					fluidPVT.setSaturationPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
+				}
 				fluidPVT.setWaterDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
 				fluidPVT.setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
-				fluidPVT.setSaturationPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
+				
 				
 				reservoir.setDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
 				reservoir.setTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
@@ -888,12 +911,22 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				production.setTubingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
 				production.setCasingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
 				production.setWellHeadTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature()));
-				production.setWaterCut(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut()));
-				production.setProductionGasOilRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
+				if(applicationScenarios!=0){
+					production.setWaterCut(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut()));
+					production.setProductionGasOilRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
+				}else{
+					production.setWaterCut(100);
+				}
+				
 				production.setProducingfluidLevel(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel()));
 				production.setPumpSettingDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
-				float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
-				production.setWeightWaterCut(weightWaterCut);
+				
+				if(applicationScenarios!=0){
+					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
+					production.setWeightWaterCut(weightWaterCut);
+				}else{
+					production.setWeightWaterCut(100);
+				}
 				
 				pump.setBarrelLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()));
 				pump.setBarrelSeries(StringManagerUtils.stringToInteger(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries()));
@@ -1078,7 +1111,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	public String getFSDiagramCalculateRequestData(String recordId,String wellName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		String sql=""
-				+ " select t2.wellname,"
+				+ " select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 				+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
@@ -1101,7 +1134,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	public String getRPMCalculateRequestData(String recordId,String wellName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		String sql=""
-				+ " select t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
+				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.rpm,t.productiondata"
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2"
 				+ " where t.wellid=t2.id  "

@@ -2904,13 +2904,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
 					}
 				}else if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+					}
 				}else if("waterDensity".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getWaterDensity():"")+"\"},");
 				}else if("naturalGasRelativeDensity".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
 				}else if("saturationPressure".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getSaturationPressure():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getSaturationPressure():"")+"\"},");
+					}
 				}else if("reservoirDepth".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getReservoir()!=null?deviceInfo.getReservoir().getDepth():"")+"\"},");
 				}else if("reservoirTemperature".equalsIgnoreCase(fields.get(i))){
@@ -2922,9 +2926,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}else if("wellHeadTemperature".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWellHeadTemperature():"")+"\"},");
 				}else if("waterCut".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWaterCut():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWaterCut():"")+"\"},");
+					}
 				}else if("productionGasOilRatio".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProductionGasOilRatio():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProductionGasOilRatio():"")+"\"},");
+					}
 				}else if("producingfluidLevel".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProducingfluidLevel():"")+"\"},");
 				}else if("pumpSettingDepth".equalsIgnoreCase(fields.get(i))){
@@ -3451,13 +3459,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			//设备信息
 			for(int i=0;i<fields.size();i++){
 				if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+					}
 				}else if("waterDensity".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getWaterDensity():"")+"\"},");
 				}else if("naturalGasRelativeDensity".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
 				}else if("saturationPressure".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getSaturationPressure():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getSaturationPressure():"")+"\"},");
+					}
 				}else if("reservoirDepth".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getReservoir()!=null?deviceInfo.getReservoir().getDepth():"")+"\"},");
 				}else if("reservoirTemperature".equalsIgnoreCase(fields.get(i))){
@@ -3469,9 +3481,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}else if("wellHeadTemperature".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWellHeadTemperature():"")+"\"},");
 				}else if("waterCut".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWaterCut():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWaterCut():"")+"\"},");
+					}
 				}else if("productionGasOilRatio".equalsIgnoreCase(fields.get(i))){
-					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProductionGasOilRatio():"")+"\"},");
+					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
+						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProductionGasOilRatio():"")+"\"},");
+					}
 				}else if("producingfluidLevel".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProducingfluidLevel():"")+"\"},");
 				}else if("pumpSettingDepth".equalsIgnoreCase(fields.get(i))){

@@ -81,40 +81,12 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                         },
                         select: function (combo, record, index) {
                         	calculateSignComb.clearValue();
-                			var activeId = Ext.getCmp("RPCCalculateMaintainingTabPanel").getActiveTab().id;
-                			if(activeId=="RPCCalculateMaintainingPanel"){
-                				var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
-                				}else{
-                					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
-                				}
-                				
-                				var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
-                				if (isNotVal(bbar)) {
-                					if(bbar.getStore().isEmptyStore){
-                						var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-                						bbar.setStore(RPCCalculateMaintainingDataStore);
-                					}else{
-                						bbar.getStore().loadPage(1);
-                					}
-                				}else{
-                					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-                				}
-                			}else if(activeId=="RPCTotalCalculateMaintainingPanel"){
-                				var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
-                				}else{
-                					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
-                				}
-                				var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
-                	            if (isNotVal(gridPanel)) {
-                	            	gridPanel.getStore().loadPage(1);
-                	            }else{
-                	            	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
-                	            }
-                			}
+                        	var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
+            				if (isNotVal(gridPanel)) {
+            					gridPanel.getStore().load();
+            				}else{
+            					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
+            				}
                         }
                     }
                 });
@@ -659,7 +631,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             }],
         	items: [{
         		region: 'west',
-            	width: '25%',
+            	width: '30%',
             	title: '设备列表',
             	id: 'RPCCalculateMaintainingWellListPanel_Id',
             	collapsible: true, // 是否可折叠
@@ -753,28 +725,46 @@ function CreateAndLoadRPCCalculateMaintainingTable(isNew,result,divid){
         rpcFESDiagramCalculateMaintainingHandsontableHelper=null;
 	}
 	
+	var applicationScenarios=result.applicationScenarios;
+	
 	if(rpcFESDiagramCalculateMaintainingHandsontableHelper==null){
 		rpcFESDiagramCalculateMaintainingHandsontableHelper = RPCFESDiagramCalculateMaintainingHandsontableHelper.createNew(divid);
 		var colHeaders="[";
         var columns="[";
         
         for(var i=0;i<result.columns.length;i++){
-        	colHeaders+="'"+result.columns[i].header+"'";
+        	var colHeader="'" + result.columns[i].header + "'";
+            var dataIndex=result.columns[i].dataIndex;
+            
+            if(applicationScenarios==0){
+            	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
+            		continue;
+            	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
+            		colHeader=colHeader.replace('油层','煤层');
+            	}
+            }
         	
-        	columns+="{data:'"+result.columns[i].dataIndex+"'";
-        	if(result.columns[i].dataIndex.toUpperCase()=="id".toUpperCase()){
+        	
+            colHeaders += colHeader;
+        	
+        	columns+="{data:'"+dataIndex+"'";
+        	if(dataIndex.toUpperCase()=="id".toUpperCase()){
         		columns+=",type: 'checkbox'";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="wellName".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="acqTime".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="resultName".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="wellName".toUpperCase()||dataIndex.toUpperCase()==="acqTime".toUpperCase()||dataIndex.toUpperCase()==="resultName".toUpperCase()){
     			
-    		}else if(result.columns[i].dataIndex==="anchoringStateName"){
+    		}else if(dataIndex==="anchoringStateName"){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['1', '2','3', '4','5']";
-        	}else if (result.columns[i].dataIndex.toUpperCase() === "manualInterventionResult".toUpperCase()) {
+        	}else if (dataIndex.toUpperCase() === "manualInterventionResult".toUpperCase()) {
                 var source = "[";
                 for (var j = 0; j < result.resultNameList.length; j++) {
                     source += "\'" + result.resultNameList[j] + "\'";
@@ -784,7 +774,7 @@ function CreateAndLoadRPCCalculateMaintainingTable(isNew,result,divid){
                 }
                 source += "]";
                 columns+=",type:'dropdown',strict:true,allowInvalid:false,source:" + source + "";
-            }else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
+            }else if(dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','A','B','C','D','K','KD','HL','HY'], validator: function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,rpcFESDiagramCalculateMaintainingHandsontableHelper);}";
         	}else{
     			columns+=",type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,rpcFESDiagramCalculateMaintainingHandsontableHelper);}";
@@ -983,6 +973,13 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	            	var bbarId="RPCFESDiagramCalculateMaintainingBbar";
 	            	var deviceType=0;
 	            	var calculateType=1;//1-抽油机诊断计产 2-螺杆泵诊断计产 3-抽油机汇总计算  4-螺杆泵汇总计算 5-电参反演地面功图计算
+	            	
+	            	var applicationScenarios=0;
+	            	var selectRow= Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").getValue();
+	            	if(selectRow>=0){
+	            		applicationScenarios=Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+	            	}
+	            	
 	            	Ext.Ajax.request({
 	            		method:'POST',
 	            		url:context + '/calculateManagerController/saveRecalculateData',
@@ -1005,6 +1002,7 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	            		params: {
 	                    	data: JSON.stringify(rpcFESDiagramCalculateMaintainingHandsontableHelper.AllData),
 	                    	deviceType: deviceType,
+	                    	applicationScenarios: applicationScenarios,
 	                    	calculateType: calculateType
 	                    }
 	            	}); 

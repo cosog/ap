@@ -80,39 +80,12 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                         },
                         select: function (combo, record, index) {
                         	calculateSignComb.clearValue();
-                			var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
-                			if(activeId=="PCPCalculateMaintainingPanel"){
-                				var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
-                				}else{
-                					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
-                				}
-                				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
-                				if (isNotVal(bbar)) {
-                					if(bbar.getStore().isEmptyStore){
-                						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-                						bbar.setStore(PCPCalculateMaintainingDataStore);
-                					}else{
-                						bbar.getStore().loadPage(1);
-                					}
-                				}else{
-                					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-                				}
-                			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
-                				var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
-                				}else{
-                					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
-                				}
-                				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
-                	            if (isNotVal(gridPanel)) {
-                	            	gridPanel.getStore().loadPage(1);
-                	            }else{
-                	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
-                	            }
-                			}
+                			var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
+            				if (isNotVal(gridPanel)) {
+            					gridPanel.getStore().load();
+            				}else{
+            					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
+            				}
                         }
                     }
                 });
@@ -653,7 +626,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             }],
         	items: [{
         		region: 'west',
-            	width: '25%',
+            	width: '30%',
             	title: '设备列表',
             	id: 'PCPCalculateMaintainingWellListPanel_Id',
             	collapsible: true, // 是否可折叠
@@ -753,31 +726,45 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
         }
         pcpRPMCalculateMaintainingHandsontableHelper=null;
 	}
-	
+	var applicationScenarios=result.applicationScenarios;
 	if(pcpRPMCalculateMaintainingHandsontableHelper==null){
 		pcpRPMCalculateMaintainingHandsontableHelper = PCPRPMCalculateMaintainingHandsontableHelper.createNew(divid);
 		var colHeaders="[";
         var columns="[";
         for(var i=0;i<result.columns.length;i++){
-        	colHeaders+="'"+result.columns[i].header+"'";
-        	columns+="{data:'"+result.columns[i].dataIndex+"'";
-        	if(result.columns[i].dataIndex.toUpperCase()=="id".toUpperCase()){
+        	var colHeader="'" + result.columns[i].header + "'";
+            var dataIndex=result.columns[i].dataIndex;
+            
+            if(applicationScenarios==0){
+            	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
+            			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
+            		continue;
+            	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
+            		colHeader=colHeader.replace('油层','煤层');
+            	}
+            }
+            colHeaders += colHeader;
+        	columns+="{data:'"+dataIndex+"'";
+        	if(dataIndex.toUpperCase()=="id".toUpperCase()){
         		columns+=",type: 'checkbox'";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="wellName".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="acqTime".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="resultName".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="wellName".toUpperCase()||dataIndex.toUpperCase()==="acqTime".toUpperCase()||dataIndex.toUpperCase()==="resultName".toUpperCase()){
     			
-    		}else if(result.columns[i].dataIndex==="anchoringStateName"){
+    		}else if(dataIndex==="anchoringStateName"){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['1', '2','3', '4','5']";
         	}
-//        	else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
+//        	else if(dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
 //        		columns+=",type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_PumpGrade(val, callback,this.row, this.col,pcpRPMCalculateMaintainingHandsontableHelper);}";
 //        	}
-        	else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
+        	else if(dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','A','B','C','D','K','KD','HL','HY'], validator: function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,pcpRPMCalculateMaintainingHandsontableHelper);}";
         	}else{
     			columns+=",type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pcpRPMCalculateMaintainingHandsontableHelper);}";
@@ -955,6 +942,13 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	            	var bbarId="PCPFESDiagramCalculateMaintainingBbar";
 	            	var deviceType=1;
 	            	var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
+	            	
+	            	var applicationScenarios=0;
+	            	var selectRow= Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").getValue();
+	            	if(selectRow>=0){
+	            		applicationScenarios=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+	            	}
+	            	
 	            	Ext.Ajax.request({
 	            		method:'POST',
 	            		url:context + '/calculateManagerController/saveRecalculateData',
@@ -977,6 +971,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	            		params: {
 	                    	data: JSON.stringify(pcpRPMCalculateMaintainingHandsontableHelper.AllData),
 	                    	deviceType: deviceType,
+	                    	applicationScenarios: applicationScenarios,
 	                    	calculateType: calculateType
 	                    }
 	            	}); 

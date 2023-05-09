@@ -18,6 +18,8 @@ public class RPCCalculateRequestData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String WellName;
+	
+	private String Scene;
 
     private FluidPVT FluidPVT;
 
@@ -1085,5 +1087,17 @@ public class RPCCalculateRequestData implements Serializable {
 			e.printStackTrace();
 		}
         return result;
+	}
+
+
+
+	public String getScene() {
+		return Scene;
+	}
+
+
+
+	public void setScene(String scene) {
+		Scene = scene;
 	}
 }

@@ -65,6 +65,7 @@ public class CalculateManagerController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		wellName = ParamUtils.getParameter(request, "wellName");
 		String wellId = ParamUtils.getParameter(request, "wellId");
+		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
 		
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
@@ -102,7 +103,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getCalculateResultData(orgId, wellName,wellId, pager,deviceType,startDate,endDate,calculateSign,calculateType);
+		String json = calculateManagerService.getCalculateResultData(orgId, wellName,wellId,applicationScenarios, pager,deviceType,startDate,endDate,calculateSign,calculateType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -163,6 +164,7 @@ public class CalculateManagerController extends BaseController {
 		String orgid=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		Gson gson = new Gson();
 		String json ="{success:true}";
@@ -170,9 +172,9 @@ public class CalculateManagerController extends BaseController {
 			java.lang.reflect.Type type = new TypeToken<CalculateManagerHandsontableChangedData>() {}.getType();
 			CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData=gson.fromJson(data, type);
 			if("0".equals(deviceType)){
-				this.calculateManagerService.saveReCalculateData(calculateManagerHandsontableChangedData);
+				this.calculateManagerService.saveReCalculateData(calculateManagerHandsontableChangedData,StringManagerUtils.stringToInteger(applicationScenarios));
 			}else if("1".equals(deviceType)){
-				this.calculateManagerService.saveRPMReCalculateData(calculateManagerHandsontableChangedData);
+				this.calculateManagerService.saveRPMReCalculateData(calculateManagerHandsontableChangedData,StringManagerUtils.stringToInteger(applicationScenarios));
 			}
 			json ="{success:true}";
 		}else if("5".equals(calculateType)){

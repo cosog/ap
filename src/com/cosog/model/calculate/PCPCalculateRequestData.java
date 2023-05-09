@@ -9,6 +9,7 @@ public class PCPCalculateRequestData  implements Serializable {
 	
 	private String AKString;                                              //秘钥
 	private String WellName;                                              //井名
+	private String Scene;
 	private String AcqTime;                                       //采集时间
 	private float RPM;                                                    //螺杆泵井转速
 	private FluidPVT FluidPVT;                                            //流体PVT物性
@@ -608,5 +609,13 @@ public class PCPCalculateRequestData  implements Serializable {
 	    public float getMotorInputWatt(){
 	        return this.MotorInputWatt;
 	    }
+	}
+
+	public String getScene() {
+		return Scene;
+	}
+
+	public void setScene(String scene) {
+		Scene = scene;
 	}
 }

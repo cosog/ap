@@ -58,30 +58,7 @@ Ext.define('AP.store.well.BatchAddDeviceApplicationScenariosListStore', {
                     }],
                     listeners: {
                     	select: function(grid, record, index, eOpts) {
-//                    		alert(record.data.applicationScenarios+":"+record.data.applicationScenariosName);
                     		CreateAndLoadBatchAddDeviceTable(true);
-                    		
-//                    		 if (batchAddDeviceHandsontableHelper == null || batchAddDeviceHandsontableHelper.hot == null || batchAddDeviceHandsontableHelper.hot == undefined) {
-//                    			 CreateAndLoadBatchAddDeviceTable();
-//                    		 }else{
-//                    			 if(record.data.applicationScenarios==0){
-//                    				 const plugin = batchAddDeviceHandsontableHelper.hot.getPlugin('hiddenColumns');
-//                    				 plugin.hideColumns([15,18,25]);
-//                    				 
-//                    				 batchAddDeviceHandsontableHelper.hot.setDataAtCell(-1,19,'煤层中部深度(m)');
-//                    				 batchAddDeviceHandsontableHelper.hot.setDataAtCell(-1,20,'煤层中部温度(℃)');
-//                    				 
-//                    				 batchAddDeviceHandsontableHelper.hot.render();
-//                    			 }else{
-//                    				 const plugin = batchAddDeviceHandsontableHelper.hot.getPlugin('hiddenColumns');
-//                    				 plugin.showColumns([15,18,25]);
-//                    				 
-//                    				 batchAddDeviceHandsontableHelper.hot.setDataAtCell(-1,19,'油层中部深度(m)');
-//                    				 batchAddDeviceHandsontableHelper.hot.setDataAtCell(-1,20,'油层中部温度(℃)');
-//                    				 
-//                    				 batchAddDeviceHandsontableHelper.hot.render();
-//                    			 }
-//                    		 }
                     	}
                     }
                 });

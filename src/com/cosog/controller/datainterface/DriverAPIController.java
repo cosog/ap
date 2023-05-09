@@ -2720,6 +2720,11 @@ public class DriverAPIController extends BaseController{
 					PCPCalculateRequestData pcpCalculateRequestData=new PCPCalculateRequestData();
 					pcpCalculateRequestData.init();
 					
+					if(pcpDeviceInfo.getApplicationScenarios()==0){
+						pcpCalculateRequestData.setScene("cbm");
+					}else{
+						pcpCalculateRequestData.setScene("oil");
+					}
 					
 					pcpCalculateRequestData.setWellName(pcpDeviceInfo.getWellName());
 					pcpCalculateRequestData.setAcqTime(acqTime);
@@ -3961,6 +3966,13 @@ public class DriverAPIController extends BaseController{
 	
 	public void updateRequestData(RPCCalculateRequestData calculateRequestData,RPCDeviceInfo deviceInfo){
 		calculateRequestData.setWellName(deviceInfo.getWellName());
+		
+		if(deviceInfo.getApplicationScenarios()==0){
+			calculateRequestData.setScene("cbm");
+		}else{
+			calculateRequestData.setScene("oil");
+		}
+		
 		calculateRequestData.setFluidPVT(deviceInfo.getFluidPVT());
 		calculateRequestData.setReservoir(deviceInfo.getReservoir());
 		calculateRequestData.setRodString(deviceInfo.getRodString());

@@ -6,13 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cosog.model.calculate.RPCCalculateRequestData.CasingString;
-import com.cosog.model.calculate.RPCCalculateRequestData.EveryCasing;
-import com.cosog.model.calculate.RPCCalculateRequestData.EveryRod;
-import com.cosog.model.calculate.RPCCalculateRequestData.EveryTubing;
-import com.cosog.model.calculate.RPCCalculateRequestData.RodString;
-import com.cosog.model.calculate.RPCCalculateRequestData.TubingString;
-import com.cosog.model.drive.ModbusProtocolConfig.ItemsMeaning;
 import com.cosog.utils.StringManagerUtils;
 
 public class RPCCalculateResponseData implements Serializable, Comparable<RPCCalculateResponseData>{
@@ -20,6 +13,8 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 	private static final long serialVersionUID = 1L;
 	
 	 private String WellName;
+	 
+	 private String Scene;
 
 	 private CalculationStatus CalculationStatus;
 
@@ -1419,5 +1414,13 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 			e.printStackTrace();
 		}
 		return (int)(to-from);   // 根据值或者位升序排列，降序修改相减顺序即可
+	}
+
+	public String getScene() {
+		return Scene;
+	}
+
+	public void setScene(String scene) {
+		Scene = scene;
 	}
 }

@@ -189,7 +189,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String result="";
 		try{
-			String productionData=object[9].toString();
+			String productionData=object[10].toString();
 			
 			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 			RPCCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
@@ -199,12 +199,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 			}
 			
 			calculateRequestData.setWellName(object[0]+"");
+			calculateRequestData.setScene(object[1]+"");
+
 			//功图数据
 			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
-	        calculateRequestData.getFESDiagram().setAcqTime(object[1]+"");
-	        calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[2]+""));
-	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[3]+""));
-	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[4]+""));
+	        calculateRequestData.getFESDiagram().setAcqTime(object[2]+"");
+	        calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[3]+""));
+	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[4]+""));
+	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[5]+""));
 			
 	        List<Float> F=new ArrayList<Float>();
 	        List<Float> S=new ArrayList<Float>();
@@ -214,8 +216,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        CLOB realClob =null;
 	        String clobStr="";
 	        String[] curveData=null;
-	        if(object[5]!=null){//位移曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[5]);
+	        if(object[6]!=null){//位移曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[6]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				curveData=clobStr.split(",");
@@ -223,8 +225,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					S.add(StringManagerUtils.stringToFloat(curveData[i]));
 				}
 	        }
-	        if(object[6]!=null){//载荷曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[6]);
+	        if(object[7]!=null){//载荷曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[7]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				curveData=clobStr.split(",");
@@ -232,8 +234,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					F.add(StringManagerUtils.stringToFloat(curveData[i]));
 				}
 	        }
-	        if(object[7]!=null){//功率曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[7]);
+	        if(object[8]!=null){//功率曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[8]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(clobStr)){
@@ -243,8 +245,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					}
 				}
 	        }
-	        if(object[8]!=null){//电流曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[8]);
+	        if(object[9]!=null){//电流曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[9]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(clobStr)){
@@ -261,19 +263,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        
 //	        calculateRequestData.getManualIntervention().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[9]+""));
 	        
-	        if(object.length>10){
-	        	int pumpingModelId=StringManagerUtils.stringToInteger(object[10]+"");
+	        if(object.length>11){
+	        	int pumpingModelId=StringManagerUtils.stringToInteger(object[11]+"");
 	        	if(pumpingModelId>0){
 	        		calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
-	        		calculateRequestData.getPumpingUnit().setManufacturer(object[11]+"");
-	        		calculateRequestData.getPumpingUnit().setModel(object[12]+"");
-	        		calculateRequestData.getPumpingUnit().setCrankRotationDirection(object[13]+"");
-	        		calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(object[14]+""));
-					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(object[15]+""));
-					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(object[16]+""));
-					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[17]+""));
-					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[18]+""));
-					String balanceInfo=object[19]+"";
+	        		calculateRequestData.getPumpingUnit().setManufacturer(object[12]+"");
+	        		calculateRequestData.getPumpingUnit().setModel(object[13]+"");
+	        		calculateRequestData.getPumpingUnit().setCrankRotationDirection(object[14]+"");
+	        		calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(object[15]+""));
+					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(object[16]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(object[17]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[18]+""));
+					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[19]+""));
+					String balanceInfo=object[20]+"";
 					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
 					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 					if(balance!=null){
@@ -287,19 +289,6 @@ public class CalculateDataService<T> extends BaseService<T> {
         	}
 	        result=calculateRequestData.toString();
 	        
-//	        result=gson.toJson(calculateRequestData);
-//			ObjectMapper objectMapper = new ObjectMapper();
-//			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
-//			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
-//	        while (iterator.hasNext()) {
-//	            Entry<String, JsonNode> entry = iterator.next();
-//	            if("Production".equalsIgnoreCase(entry.getKey())){
-//	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
-//	            }else if("FESDiagram".equalsIgnoreCase(entry.getKey())){
-//	            	((ObjectNode)entry.getValue()).remove("Src");
-//	            }
-//	        }
-//	        result = objectMapper.writeValueAsString(jsonNodes);
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";
@@ -312,7 +301,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String result="";
 		try{
-			String productionData=object[3].toString();
+			String productionData=object[4].toString();
 			type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 			PCPCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			if(calculateRequestData==null){
@@ -320,24 +309,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 				calculateRequestData.init();
 			}
 			calculateRequestData.setWellName(object[0]+"");
-			calculateRequestData.setAcqTime(object[1]+"");
-			calculateRequestData.setRPM(StringManagerUtils.stringToFloat(object[2]+""));
+			calculateRequestData.setScene(object[1]+"");
+			
+			
+			calculateRequestData.setAcqTime(object[2]+"");
+			calculateRequestData.setRPM(StringManagerUtils.stringToFloat(object[3]+""));
 			
 			result=calculateRequestData.toString();
-			
-//	        result=gson.toJson(calculateRequestData);
-//	        
-//	        ObjectMapper objectMapper = new ObjectMapper();
-//			ObjectNode jsonNodes = objectMapper.readValue(result, ObjectNode.class);
-//			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
-//	        while (iterator.hasNext()) {
-//	            Entry<String, JsonNode> entry = iterator.next();
-//	            if("Production".equalsIgnoreCase(entry.getKey())){
-//	            	((ObjectNode)entry.getValue()).remove("WeightWaterCut");
-//	            	break;
-//	            }
-//	        }
-//	        result = objectMapper.writeValueAsString(jsonNodes);
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";

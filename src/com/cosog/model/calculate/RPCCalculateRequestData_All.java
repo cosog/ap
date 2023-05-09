@@ -8,6 +8,8 @@ public class RPCCalculateRequestData_All implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String WellName;
+	
+	private String Scene;
 
     private FluidPVT FluidPVT;
 
@@ -1167,6 +1169,16 @@ public class RPCCalculateRequestData_All implements Serializable {
 		public void setLevelCorrectValue(float levelCorrectValue) {
 			LevelCorrectValue = levelCorrectValue;
 		}
+	}
+
+	public String getScene() {
+		return Scene;
+	}
+
+
+
+	public void setScene(String scene) {
+		Scene = scene;
 	}
 
 }

@@ -4,22 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cosog.model.calculate.RPCCalculateRequestData.CasingString;
-import com.cosog.model.calculate.RPCCalculateRequestData.EveryCasing;
-import com.cosog.model.calculate.RPCCalculateRequestData.EveryRod;
-import com.cosog.model.calculate.RPCCalculateRequestData.EveryTubing;
-import com.cosog.model.calculate.RPCCalculateRequestData.FluidPVT;
-import com.cosog.model.calculate.RPCCalculateRequestData.ManualIntervention;
-import com.cosog.model.calculate.RPCCalculateRequestData.Production;
-import com.cosog.model.calculate.RPCCalculateRequestData.Pump;
-import com.cosog.model.calculate.RPCCalculateRequestData.Reservoir;
-import com.cosog.model.calculate.RPCCalculateRequestData.RodString;
-import com.cosog.model.calculate.RPCCalculateRequestData.TubingString;
 public class PCPCalculateRequestData_All  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String AKString;                                              //秘钥
 	private String WellName;                                              //井名
+	private String Scene;
 	private int LiftingType;											  //举升类型
 	private String AcqTime;                                       //采集时间
 	private float RPM;                                                    //螺杆泵井转速
@@ -753,5 +743,13 @@ public class PCPCalculateRequestData_All  implements Serializable {
 	    public float getMotorInputWatt(){
 	        return this.MotorInputWatt;
 	    }
+	}
+
+	public String getScene() {
+		return Scene;
+	}
+
+	public void setScene(String scene) {
+		Scene = scene;
 	}
 }

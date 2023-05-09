@@ -677,7 +677,7 @@ var PCPDeviceInfoHandsontableHelper = {
                             
                             if(params[1] == "applicationScenariosName"){
                             	const plugin = pcpProductionHandsontableHelper.hot.getPlugin('hiddenRows');
-                            	var hiddenRows=[0,3,10];
+                            	var hiddenRows=[0,3,9,10];
                             	if(params[3] == "煤层气井"){
                             		plugin.hideRows(hiddenRows);
                             		pcpProductionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
@@ -783,7 +783,9 @@ var PCPDeviceInfoHandsontableHelper = {
             		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
             			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
             		}
-            		if(isNumber(parseFloat(productionHandsontableData[9][2]))){
+            		if(applicationScenarios==0){
+            			deviceProductionData.Production.WaterCut=100;
+            		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
             			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
             		}
             		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[10][2]))){
@@ -1110,7 +1112,7 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 			
 			var hiddenRows=[];
 			if(applicationScenarios==0){
-				hiddenRows=[0,3,10];
+				hiddenRows=[0,3,9,10];
 			}
 			const plugin = pcpProductionHandsontableHelper.hot.getPlugin('hiddenRows');
         	plugin.hideRows(hiddenRows);
@@ -1163,7 +1165,7 @@ var PCPProductionHandsontableHelper = {
 	                columns: pcpProductionHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true, //显示行头
+	                rowHeaders: false, //显示行头
 	                colHeaders: pcpProductionHandsontableHelper.colHeaders, //显示列头
 	                columnSorting: true, //允许排序
 	                sortIndicator: true,
@@ -1277,7 +1279,7 @@ var PCPVideoInfoHandsontableHelper = {
 	                columns: pcpVideoInfoHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true, //显示行头
+	                rowHeaders: false, //显示行头
 	                colHeaders: pcpVideoInfoHandsontableHelper.colHeaders, //显示列头
 	                columnSorting: true, //允许排序
 	                sortIndicator: true,

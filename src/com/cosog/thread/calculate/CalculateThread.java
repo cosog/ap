@@ -60,7 +60,7 @@ public class CalculateThread extends Thread{
 				if(acqDateList.get(i)!=null){
 					String acqDate=acqDateList.get(i).toString();
 					String minAcqTime="";
-					String sql="select t2.wellname,"
+					String sql="select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 							+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
 							+ " t.stroke,t.spm,"
 							+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
@@ -331,7 +331,8 @@ public class CalculateThread extends Thread{
 				if(acqDateList.get(i)!=null){
 					String acqDate=acqDateList.get(i).toString();
 					String minAcqTime="";
-					String sql="select t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+					String sql="select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
+							+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 							+ " t.rpm,t.productiondata,"
 							+ " t.id"
 							+ " from tbl_pcpacqdata_hist t"

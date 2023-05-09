@@ -150,7 +150,11 @@ function CreateAndLoadExportDeviceInfoTable(isNew) {
                     var dataIndex=result.columns[i].dataIndex;
                     
                     if(applicationScenarios==0){
-                    	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() || dataIndex.toUpperCase() === "saturationPressure".toUpperCase() || dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
+                    	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
+                    			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
+                    			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
+                    			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
+                    			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
                     		continue;
                     	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
                     		colHeader=colHeader.replace('油层','煤层');

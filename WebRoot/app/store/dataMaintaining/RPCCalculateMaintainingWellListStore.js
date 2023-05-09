@@ -32,17 +32,6 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
                     autoLoad: false,
                     columnLines: true,
                     forceFit: false,
-//                    selType: 'checkboxmodel',
-//                    multiSelect: false,
-//                    selModel:{
-//                    	selType: 'checkboxmodel',
-//                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-//                    	checkOnly:false,
-//                    	allowDeselect:true,
-//                    	onHdMouseDown:function(e,t){
-//                    		alert("全选/全不选");
-//                    	}
-//                    },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },
@@ -50,42 +39,7 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
                     columns: newColumns,
                     listeners: {
                     	selectionchange: function (view, selected, o) {
-//                    		if(selected.length>0){
-//                    			Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').setValue(selected[0].data.wellName);
-//                            	Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').setRawValue(selected[0].data.wellName);
-//                    		}else{
-//                    			Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').setValue('');
-//                            	Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').setRawValue('');
-//                    		}
-//                    		
-//                    		var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
-//    						if (isNotVal(gridPanel)) {
-//    							gridPanel.getStore().load();
-//    						}else{
-//    							Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
-//    						}
-    						
-//    						var activeId = Ext.getCmp("RPCCalculateMaintainingTabPanel").getActiveTab().id;
-//    	        			if(activeId=="RPCCalculateMaintainingPanel"){
-//    	        				var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
-//    	        				if (isNotVal(bbar)) {
-//    	        					if(bbar.getStore().isEmptyStore){
-//    	        						var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-//    	        						bbar.setStore(RPCCalculateMaintainingDataStore);
-//    	        					}else{
-//    	        						bbar.getStore().loadPage(1);
-//    	        					}
-//    	        				}else{
-//    	        					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-//    	        				}
-//    	        			}else if(activeId=="RPCTotalCalculateMaintainingPanel"){
-//    	        				var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
-//    	        	            if (isNotVal(gridPanel)) {
-//    	        	            	gridPanel.getStore().loadPage(1);
-//    	        	            }else{
-//    	        	            	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
-//    	        	            }
-//    	        			}
+                    		
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").setValue(index);

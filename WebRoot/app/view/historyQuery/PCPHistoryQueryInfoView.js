@@ -66,7 +66,6 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                         },
                         select: function (combo, record, index) {
                         	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
                         	Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id").getStore().loadPage(1);
                         }
                     }
@@ -96,11 +95,6 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                             value: -1,
                             hidden: true
                         },{
-                        	id: 'PCPHistoryQueryInfoDeviceListSelectedDevice_Id',
-                        	xtype: 'textfield',
-                            value: 0,
-                            hidden: true
-                         },{
                             id: 'PCPHistoryQueryStatSelectCommStatus_Id',
                             xtype: 'textfield',
                             value: '',
@@ -145,7 +139,7 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                             	var currentPage=pagingToolbar.getStore().currentPage;
                             	var pageSize=pagingToolbar.getStore().pageSize;
                     			var loadPage=1;
-                    			var selectedDeviceId=parseInt(Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").getValue());
+                    			var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
                     			
                     			if(selectedDeviceId>0){
                     				loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,1,pageSize);

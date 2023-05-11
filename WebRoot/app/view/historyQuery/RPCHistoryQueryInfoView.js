@@ -66,7 +66,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         },
                         select: function (combo, record, index) {
                         	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
                         	Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id").getStore().loadPage(1);
                         }
                     }
@@ -96,11 +95,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                             value: -1,
                             hidden: true
                         },{
-                        	id: 'RPCHistoryQueryInfoDeviceListSelectedDevice_Id',
-                        	xtype: 'textfield',
-                            value: 0,
-                            hidden: true
-                         },{
                         	id: 'RPCHistoryQueryStatSelectFESdiagramResult_Id',
                         	xtype: 'textfield',
                             value: '',
@@ -157,7 +151,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                             	var currentPage=pagingToolbar.getStore().currentPage;
                             	var pageSize=pagingToolbar.getStore().pageSize;
                     			var loadPage=1;
-                    			var selectedDeviceId=parseInt(Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").getValue());
+                    			var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
                     			
                     			if(selectedDeviceId>0){
                     				loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,0,pageSize);

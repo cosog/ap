@@ -2,7 +2,7 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.pcpHistoryQueryWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
-    autoLoad: true,
+    autoLoad: false,
     pageSize: 50,
     proxy: {
         type: 'ajax',
@@ -58,7 +58,7 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
                     		Ext.getCmp('PCPHistoryQueryStartDate_Id').setRawValue('');
                     		Ext.getCmp('PCPHistoryQueryEndDate_Id').setValue('');
                     		Ext.getCmp('PCPHistoryQueryEndDate_Id').setRawValue('');
-                    		Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(deviceId);
+                    		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
                     		var PCPHistoryQueryDataGridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
                             if (isNotVal(PCPHistoryQueryDataGridPanel)) {
                             	PCPHistoryQueryDataGridPanel.getStore().loadPage(1);
@@ -73,7 +73,7 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;
-            	var selectedDeviceId=parseInt(Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").getValue());
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
     			if(selectedDeviceId>0){
     				for(var i=0;i<store.data.items.length;i++){
             			if(selectedDeviceId==store.data.items[i].data.id){
@@ -86,7 +86,7 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+            	Ext.getCmp("selectedPCPDeviceId_global").setValue(0);
             	var PCPHistoryQueryDataGridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
                 if (isNotVal(PCPHistoryQueryDataGridPanel)) {
                 	PCPHistoryQueryDataGridPanel.getStore().loadPage(1);

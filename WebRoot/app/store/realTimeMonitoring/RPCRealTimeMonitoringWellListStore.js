@@ -3,7 +3,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
     alias: 'widget.rpcRealTimeMonitoringWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: 5,
     proxy: {
         type: 'ajax',
         url: context + '/realTimeMonitoringController/getDeviceRealTimeOverview',
@@ -56,7 +56,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                     		var deviceName=record.data.wellName;
                     		var deviceId=record.data.id;
                     		var deviceType=0;
-                    		Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(deviceId);
+                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
                     		
                     		var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
@@ -94,7 +94,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;
-            	var selectedDeviceId=parseInt(Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").getValue());
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
     			if(selectedDeviceId>0){
     				for(var i=0;i<store.data.items.length;i++){
             			if(selectedDeviceId==store.data.items[i].data.id){
@@ -112,7 +112,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
 					rpcDeviceRealTimeMonitoringDataHandsontableHelper=null;
 				}
             	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
+            	Ext.getCmp("selectedRPCDeviceId_global").setValue(0);
             	
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');

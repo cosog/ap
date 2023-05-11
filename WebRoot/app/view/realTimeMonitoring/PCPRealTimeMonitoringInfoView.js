@@ -67,7 +67,6 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                         },
                         select: function (combo, record, index) {
                         	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                         	Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getStore().loadPage(1);
                         }
                     }
@@ -91,11 +90,6 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                         	id: 'PCPRealTimeMonitoringInfoDeviceListSelectRow_Id',
                         	xtype: 'textfield',
                             value: -1,
-                            hidden: true
-                         },{
-                        	id: 'PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id',
-                        	xtype: 'textfield',
-                            value: 0,
                             hidden: true
                          },{
                         	id: 'PCPRealTimeMonitoringStatSelectCommStatus_Id',
@@ -136,7 +130,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                             	var currentPage=pagingToolbar.getStore().currentPage;
                             	var pageSize=pagingToolbar.getStore().pageSize;
                     			var loadPage=1;
-                    			var selectedDeviceId=parseInt(Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").getValue());
+                    			var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
                     			
                     			if(selectedDeviceId>0){
                     				loadPage=getDeviceRealTimeOverviewDataPage(selectedDeviceId,1,pageSize);

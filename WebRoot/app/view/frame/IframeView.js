@@ -319,6 +319,16 @@ Ext.define('AP.view.frame.IframeView', {
                     xtype: 'textfield',
                     value: '',
                     hidden: true
+                }, {
+                    id: 'selectedRPCDeviceId_global',
+                    xtype: 'textfield',
+                    value: '0',
+                    hidden: true
+                }, {
+                    id: 'selectedPCPDeviceId_global',
+                    xtype: 'textfield',
+                    value: '0',
+                    hidden: true
                 }]
             },
             listeners: {

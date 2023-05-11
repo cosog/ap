@@ -667,7 +667,6 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 				events: {
 					click: function(e) {
 						Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                    	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                     	
 						var statSelectFESdiagramResultId="RPCRealTimeMonitoringStatSelectFESdiagramResult_Id";
 						var deviceListComb_Id="RealTimeMonitoringRPCDeviceListComb_Id";
@@ -838,7 +837,6 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 						var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 						if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
 							Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                         	
 							statSelectCommStatusId="RPCRealTimeMonitoringStatSelectCommStatus_Id";
 							deviceListComb_Id="RealTimeMonitoringRPCDeviceListComb_Id";
@@ -846,7 +844,6 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 							store="AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore";
 						}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
 							Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
 							
 							statSelectCommStatusId="PCPRealTimeMonitoringStatSelectCommStatus_Id";
 							deviceListComb_Id="RealTimeMonitoringPCPDeviceListComb_Id";
@@ -1015,7 +1012,6 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 						var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 						if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
 							Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                         	
 							statSelectRunStatusId="RPCRealTimeMonitoringStatSelectRunStatus_Id";
 							deviceListComb_Id="RealTimeMonitoringRPCDeviceListComb_Id";
@@ -1023,7 +1019,6 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 							store="AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore";
 						}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
 							Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                         	
                         	statSelectRunStatusId="PCPRealTimeMonitoringStatSelectRunStatus_Id";
 							deviceListComb_Id="RealTimeMonitoringPCPDeviceListComb_Id";
@@ -1178,7 +1173,6 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 						var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 						if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
 							Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                         	
 							statSelectDeviceType_Id="RPCRealTimeMonitoringStatSelectDeviceType_Id";
 							deviceListComb_Id="RealTimeMonitoringRPCDeviceListComb_Id";
@@ -1186,7 +1180,6 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 							store="AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore";
 						}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
 							Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                        	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                         	
 							statSelectDeviceType_Id="PCPRealTimeMonitoringStatSelectDeviceType_Id";
 							deviceListComb_Id="RealTimeMonitoringPCPDeviceListComb_Id";

@@ -2728,7 +2728,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=0 "
 						+ " and t.id="+deviceId+" and t4.historycurveconf is not null "
-						+ " order by t4.historycurve,t4.sort,t4.id";
+						+ " order by t4.sort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
 				
 				List<?> curveItemList = this.findCallSql(curveItemsSql);

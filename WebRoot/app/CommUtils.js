@@ -4166,13 +4166,14 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	var minValue=null;
 	var series = "[";
 	for (var i =0; i < list.length; i++){
-		if(list[i].upperLoadLine!="" && parseFloat(list[i].upperLoadLine)>0){
-			upperLoadLine=list[i].upperLoadLine;
+		if(i==0){
+			if(list[i].upperLoadLine!="" && parseFloat(list[i].upperLoadLine)>0){
+				upperLoadLine=list[i].upperLoadLine;
+			}
+			if(list[i].lowerLoadLine!="" && parseFloat(list[i].lowerLoadLine)>0){
+				lowerLoadLine=list[i].lowerLoadLine;
+			}
 		}
-		if(list[i].lowerLoadLine!="" && parseFloat(list[i].lowerLoadLine)>0){
-			lowerLoadLine=list[i].lowerLoadLine;
-		}
-		
 		
 		if(parseFloat(list[i].fmax)>fmax){
 			fmax=parseFloat(list[i].fmax);

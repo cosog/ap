@@ -2,8 +2,8 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.rpcHistoryQueryWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
-    autoLoad: true,
-    pageSize: 50,
+    autoLoad: false,
+    pageSize: 5,
     proxy: {
         type: 'ajax',
         url: context + '/historyQueryController/getHistoryQueryDeviceList',
@@ -58,7 +58,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
                     		Ext.getCmp('RPCHistoryQueryStartDate_Id').setRawValue('');
                     		Ext.getCmp('RPCHistoryQueryEndDate_Id').setValue('');
                     		Ext.getCmp('RPCHistoryQueryEndDate_Id').setRawValue('');
-                    		Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(deviceId);
+                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
                     		
                     		var tabPanel = Ext.getCmp("RPCHistoryQueryTabPanel");
             				var activeId = tabPanel.getActiveTab().id;
@@ -94,7 +94,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;
-            	var selectedDeviceId=parseInt(Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").getValue());
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
     			if(selectedDeviceId>0){
     				for(var i=0;i<store.data.items.length;i++){
             			if(selectedDeviceId==store.data.items[i].data.id){
@@ -107,7 +107,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+            	Ext.getCmp("selectedRPCDeviceId_global").setValue(0);
             	
 				var activeId = Ext.getCmp("RPCHistoryQueryTabPanel").getActiveTab().id;
 				if(activeId=="RPCHistoryDataTabPanel"){

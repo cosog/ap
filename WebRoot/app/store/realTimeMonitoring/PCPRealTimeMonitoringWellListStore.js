@@ -56,7 +56,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                     		var deviceName=record.data.wellName;
                     		var deviceId=record.data.id;
                     		var deviceType=1;
-                    		Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(deviceId);
+                    		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
                     		var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
                     		if(activeId=="PCPRealTimeMonitoringCurveTabPanel_Id"){
@@ -92,7 +92,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;
-            	var selectedDeviceId=parseInt(Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").getValue());
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
     			if(selectedDeviceId>0){
     				for(var i=0;i<store.data.items.length;i++){
             			if(selectedDeviceId==store.data.items[i].data.id){
@@ -110,7 +110,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
 					pcpDeviceRealTimeMonitoringDataHandsontableHelper=null;
 				}
             	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
+            	Ext.getCmp("selectedPCPDeviceId_global").setValue(0);
             	
             	$("#pcpRealTimeMonitoringCurveContainer").html('');
             	$("#PCPRealTimeMonitoringInfoDataTableInfoContainer").html('');

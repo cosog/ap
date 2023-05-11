@@ -2704,7 +2704,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							deviceInfoDataList.append("{\"name\":\"平衡块"+(j+1)+"位置重量\","+ "\"value\":\""+(deviceInfo.getPumpingUnit().getBalance().getEveryBalance().get(j).getPosition()+","+deviceInfo.getPumpingUnit().getBalance().getEveryBalance().get(j).getWeight())+"\"},");
 						}
 					}else{
-						deviceInfoDataList.append("{\"name\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
+//						deviceInfoDataList.append("{\"name\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
 					}
 				}else if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
 					deviceInfoDataList.append("{\"name\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getCrudeOilDensity():"")+"\"},");
@@ -2901,7 +2901,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							deviceInfoDataList.append("{\"item\":\"平衡块"+(j+1)+"位置重量\","+ "\"value\":\""+(deviceInfo.getPumpingUnit().getBalance().getEveryBalance().get(j).getPosition()+","+deviceInfo.getPumpingUnit().getBalance().getEveryBalance().get(j).getWeight())+"\"},");
 						}
 					}else{
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
 					}
 				}else if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
 					if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){

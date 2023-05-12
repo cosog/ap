@@ -2,8 +2,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.rpcRealTimeMonitoringWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
-    autoLoad: true,
-    pageSize: 5,
+    autoLoad: false,
+    pageSize: 50,
     proxy: {
         type: 'ajax',
         url: context + '/realTimeMonitoringController/getDeviceRealTimeOverview',

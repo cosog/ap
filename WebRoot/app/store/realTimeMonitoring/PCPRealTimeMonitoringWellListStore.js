@@ -2,7 +2,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.pcpRealTimeMonitoringWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
-    autoLoad: true,
+    autoLoad: false,
     pageSize: 50,
     proxy: {
         type: 'ajax',

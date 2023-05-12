@@ -42,6 +42,8 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCSingleWellDailyReportDeviceListSelectRow_Id").setValue(index);
+                    		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
                     		CreateRPCSingleWellDailyReportTable();
                     		CreateRPCSingleWellDailyReportCurve();
                         }
@@ -51,10 +53,21 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
                 RPCSingleWellDailyReportWellListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
             	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
+            	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("RPCSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
+            	Ext.getCmp("selectedRPCDeviceId_global").setValue(0);
             	if(rpcSingleWellDailyReportHelper!=null){
     				if(rpcSingleWellDailyReportHelper.hot!=undefined){
     					rpcSingleWellDailyReportHelper.hot.destroy();

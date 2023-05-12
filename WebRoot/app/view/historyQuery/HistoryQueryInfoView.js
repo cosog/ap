@@ -43,27 +43,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         							loadAndInitHistoryQueryDeviceTypeStat(true);
         						}
         						
-        						var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
-        						var loadPage=1;
-        						
-        						
-        						var gridPanel = Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id");
-        						if (isNotVal(gridPanel)) {
-        							var pagingToolbar=Ext.getCmp('RPCHistoryQueryDeviceListGridPagingToolbar');
-        				        	var currentPage=pagingToolbar.getStore().currentPage;
-        				        	var pageSize=pagingToolbar.getStore().pageSize;
-        							if(selectedDeviceId>0){
-        								loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,0,pageSize);
-        							}
-        							
-        							gridPanel.getStore().loadPage(loadPage);
-        						}else{
-        							var RPCHistoryQueryWellListStore=Ext.create('AP.store.historyQuery.RPCHistoryQueryWellListStore');
-        							if(selectedDeviceId>0){
-        								loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,0,RPCHistoryQueryWellListStore.getPageSize());
-        							}
-        							RPCHistoryQueryWellListStore.loadPage(loadPage);
-        						}
+        						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.RPCHistoryQueryWellListStore');
         					}else if(newCard.id=="PCPHistoryQueryInfoPanel_Id"){
         						var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
         						if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
@@ -74,26 +54,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         							loadAndInitHistoryQueryDeviceTypeStat(true);
         						}
         						
-        						var loadPage=1;
-        						var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
-        						
-        						var gridPanel = Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id");
-        						if (isNotVal(gridPanel)) {
-        							var pagingToolbar=Ext.getCmp('PCPHistoryQueryDeviceListGridPagingToolbar');
-        			            	var currentPage=pagingToolbar.getStore().currentPage;
-        			            	var pageSize=pagingToolbar.getStore().pageSize;
-        			    			
-        			    			if(selectedDeviceId>0){
-        			    				loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,1,pageSize);
-        			    			}
-        							gridPanel.getStore().loadPage(loadPage);
-        						}else{
-        							var PCPHistoryQueryWellListStore=Ext.create('AP.store.historyQuery.PCPHistoryQueryWellListStore');
-        							if(selectedDeviceId>0){
-        								loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,1,PCPHistoryQueryWellListStore.getPageSize());
-        							}
-        							PCPHistoryQueryWellListStore.loadPage(loadPage);
-        						}
+        						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
         					}
         				}
         			}
@@ -844,7 +805,9 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 						var statSelectCommStatusId="RPCHistoryQueryStatSelectCommStatus_Id";
 						var deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 						var gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
-						var store="AP.store.realTimeMonitoring.RPCHistoryQueryWellListStore";
+						var store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
+						var selectedDeviceId_global="selectedRPCDeviceId_global";
+						var deviceType=0;
 						var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
 						if(activeId=="RPCHistoryQueryInfoPanel_Id"){
 							Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
@@ -853,6 +816,8 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 							deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 							gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
+							selectedDeviceId_global="selectedRPCDeviceId_global";
+							deviceType=0;
 						}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
 							Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
 			            	
@@ -860,6 +825,8 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 							deviceListComb_Id="HistoryQueryPCPDeviceListComb_Id";
 							gridPanel_Id="PCPHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.PCPHistoryQueryWellListStore";
+							selectedDeviceId_global="selectedPCPDeviceId_global";
+							deviceType=1;
 						}
 						
 						if(!e.point.selected){//如果没被选中,则本次是选中
@@ -870,13 +837,8 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 						
 						Ext.getCmp(deviceListComb_Id).setValue('');
 						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						var gridPanel = Ext.getCmp(gridPanel_Id);
-						if (isNotVal(gridPanel)) {
-							gridPanel.getSelectionModel().deselectAll(true);
-							gridPanel.getStore().load();
-						}else{
-							Ext.create(store);
-						}
+
+						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 					}
 				},
 				showInLegend : true
@@ -1018,7 +980,9 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 						var statSelectRunStatusId="RPCHistoryQueryStatSelectRunStatus_Id";
 						var deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 						var gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
-						var store="AP.store.realTimeMonitoring.RPCHistoryQueryWellListStore";
+						var store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
+						var selectedDeviceId_global="selectedRPCDeviceId_global";
+						var deviceType=0;
 						var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
 						if(activeId=="RPCHistoryQueryInfoPanel_Id"){
 							Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
@@ -1027,6 +991,8 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 							deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 							gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
+							selectedDeviceId_global="selectedRPCDeviceId_global";
+							deviceType=0;
 						}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
 							Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
 			            	
@@ -1034,6 +1000,8 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 							deviceListComb_Id="HistoryQueryPCPDeviceListComb_Id";
 							gridPanel_Id="PCPHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.PCPHistoryQueryWellListStore";
+							selectedDeviceId_global="selectedPCPDeviceId_global";
+							deviceType=1;
 						}
 						
 						if(!e.point.selected){//如果没被选中,则本次是选中
@@ -1044,13 +1012,7 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 						
 						Ext.getCmp(deviceListComb_Id).setValue('');
 						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						var gridPanel = Ext.getCmp(gridPanel_Id);
-						if (isNotVal(gridPanel)) {
-							gridPanel.getSelectionModel().deselectAll(true);
-							gridPanel.getStore().load();
-						}else{
-							Ext.create(store);
-						}
+						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 					}
 				},
 				showInLegend : true
@@ -1315,6 +1277,8 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 						var deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 						var gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 						var store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
+						var selectedDeviceId_global="selectedRPCDeviceId_global";
+						var deviceType=0;
 						var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
 						if(activeId=="RPCHistoryQueryInfoPanel_Id"){
 							Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
@@ -1323,6 +1287,8 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 							deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 							gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
+							selectedDeviceId_global="selectedRPCDeviceId_global";
+							deviceType=0;
 						}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
 							Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
 			            	
@@ -1330,6 +1296,8 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 							deviceListComb_Id="HistoryQueryPCPDeviceListComb_Id";
 							gridPanel_Id="PCPHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.PCPHistoryQueryWellListStore";
+							selectedDeviceId_global="selectedPCPDeviceId_global";
+							deviceType=1;
 						}
 						
 						if(!e.point.selected){//如果没被选中,则本次是选中
@@ -1340,13 +1308,7 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 						
 						Ext.getCmp(deviceListComb_Id).setValue('');
 						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						var gridPanel = Ext.getCmp(gridPanel_Id);
-						if (isNotVal(gridPanel)) {
-							gridPanel.getSelectionModel().deselectAll(true);
-							gridPanel.getStore().load();
-						}else{
-							Ext.create(store);
-						}
+						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 					}
 				},
 				showInLegend : true

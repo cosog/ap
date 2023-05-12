@@ -133,23 +133,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                     				loadAndInitDeviceTypeStat(true);
                     			}
                     			
-                    			var pagingToolbar=Ext.getCmp('RPCRealTimeMonitoringListGridPagingToolbar');
-                            	var currentPage=pagingToolbar.getStore().currentPage;
-                            	var pageSize=pagingToolbar.getStore().pageSize;
-                    			var loadPage=1;
-                    			var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
-                    			
-                    			if(selectedDeviceId>0){
-                    				loadPage=getDeviceRealTimeOverviewDataPage(selectedDeviceId,0,pageSize);
-                    			}
-                            	 
-                    			var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
-                    			if (isNotVal(gridPanel)) {
-                    				gridPanel.getSelectionModel().deselectAll(true);
-                    				gridPanel.getStore().loadPage(loadPage);
-                    			}else{
-                    				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
-                    			}
+                    			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp('RPCRealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
                     		}
                  		},'-',rpcDeviceCombo,'-', {
                              xtype: 'button',
@@ -300,13 +284,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
             					}
             					Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setValue('');
         						Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setRawValue('');
-        						var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
-        						if (isNotVal(gridPanel)) {
-        							gridPanel.getSelectionModel().deselectAll(true);
-        							gridPanel.getStore().load();
-        						}else{
-        							Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
-        						}
+        						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp('RPCRealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
             				}
             			}
                     }]

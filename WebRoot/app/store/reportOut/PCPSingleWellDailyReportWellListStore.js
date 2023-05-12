@@ -41,6 +41,8 @@ Ext.define('AP.store.reportOut.PCPSingleWellDailyReportWellListStore', {
                     	selectionchange: function (view, selected, o) {
                     	},
                     	select: function(grid, record, index, eOpts) {
+                    		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
                     		Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").setValue(index);
                     		CreatePCPSingleWellDailyReportTable();
                     		CreatePCPSingleWellDailyReportCurve();
@@ -51,10 +53,21 @@ Ext.define('AP.store.reportOut.PCPSingleWellDailyReportWellListStore', {
                 PCPSingleWellDailyReportWellListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
             	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
+            	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
+            	Ext.getCmp("selectedPCPDeviceId_global").setValue(0);
             	if(pcpSingleWellDailyReportHelper!=null){
     				if(pcpSingleWellDailyReportHelper.hot!=undefined){
     					pcpSingleWellDailyReportHelper.hot.destroy();

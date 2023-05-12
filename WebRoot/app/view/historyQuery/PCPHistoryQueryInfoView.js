@@ -135,23 +135,7 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                     				loadAndInitHistoryQueryDeviceTypeStat(true);
                     			}
                     			
-                    			var pagingToolbar=Ext.getCmp('PCPHistoryQueryDeviceListGridPagingToolbar');
-                            	var currentPage=pagingToolbar.getStore().currentPage;
-                            	var pageSize=pagingToolbar.getStore().pageSize;
-                    			var loadPage=1;
-                    			var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
-                    			
-                    			if(selectedDeviceId>0){
-                    				loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,1,pageSize);
-                    			}
-                    			
-                    			var gridPanel = Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id");
-                    			if (isNotVal(gridPanel)) {
-                    				gridPanel.getSelectionModel().deselectAll(true);
-                    				gridPanel.getStore().loadPage(loadPage);
-                    			}else{
-                    				Ext.create('AP.store.historyQuery.PCPHistoryQueryWellListStore');
-                    			}
+                    			refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
                     		}
                 		},'-',pcpDeviceCombo,'-', {
                             xtype: 'button',
@@ -257,12 +241,7 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
             					}
             					Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setValue('');
             					Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setRawValue('');
-            					var gridPanel = Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id");
-            					if (isNotVal(gridPanel)) {
-            						gridPanel.getStore().load();
-            					}else{
-            						Ext.create('AP.store.historyQuery.PCPHistoryQueryWellListStore');
-            					}
+            					refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
             				}
             			}
                     }]

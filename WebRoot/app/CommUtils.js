@@ -4588,3 +4588,42 @@ function highchartsResize(divId){
 		}
 	}
 }
+
+function refreshRealtimeDeviceListDataByPage(selectedDeviceId,deviceType,gridPanel,storeName){
+	var loadPage=1;
+	var pageSize=50;
+	var gridStore=null;
+	
+	if (isNotVal(gridPanel)) {
+		gridStore=gridPanel.getStore();
+		gridPanel.getSelectionModel().deselectAll(true);
+	}else{
+		gridStore=Ext.create(storeName);
+	}
+	pageSize=gridStore.getPageSize();
+	if(selectedDeviceId>0){
+		loadPage=getDeviceRealTimeOverviewDataPage(selectedDeviceId,deviceType,pageSize);
+	}
+	if(gridStore!=null){
+		gridStore.loadPage(loadPage);
+	}
+}
+
+function refreshHistoryDeviceListDataByPage(selectedDeviceId,deviceType,gridPanel,storeName){
+	var loadPage=1;
+	var pageSize=50;
+	var gridStore=null;
+	
+	if (isNotVal(gridPanel)) {
+		gridStore=gridPanel.getStore();
+	}else{
+		gridStore=Ext.create(storeName);
+	}
+	pageSize=gridStore.getPageSize();
+	if(selectedDeviceId>0){
+		loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,deviceType,pageSize);
+	}
+	if(gridStore!=null){
+		gridStore.loadPage(loadPage);
+	}
+}

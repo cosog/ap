@@ -51,12 +51,14 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                     listeners: {
                     	selectionchange: function (view, selected, o) {
                     	},
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
+                    		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
+                    	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		var deviceName=record.data.wellName;
-                    		var deviceId=record.data.id;
                     		var deviceType=1;
-                    		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
                     		var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
                     		if(activeId=="PCPRealTimeMonitoringCurveTabPanel_Id"){
@@ -110,7 +112,6 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
 					pcpDeviceRealTimeMonitoringDataHandsontableHelper=null;
 				}
             	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("selectedPCPDeviceId_global").setValue(0);
             	
             	$("#pcpRealTimeMonitoringCurveContainer").html('');
             	$("#PCPRealTimeMonitoringInfoDataTableInfoContainer").html('');

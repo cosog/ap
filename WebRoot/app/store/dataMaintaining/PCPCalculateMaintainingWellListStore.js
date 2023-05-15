@@ -51,6 +51,10 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                     listeners: {
                     	selectionchange: function (view, selected, o) {
                     	},
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
+                    		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
+                    	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").setValue(index);
                     		resetPCPCalculateMaintainingQueryParams();
@@ -82,8 +86,18 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                 wellListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
             	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
+            	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").setValue(-1);
             	var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;

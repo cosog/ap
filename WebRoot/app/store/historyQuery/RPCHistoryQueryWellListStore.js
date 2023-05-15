@@ -51,14 +51,16 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
                     	selectionchange: function (view, selected, o) {},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     	},
-                    	select: function(grid, record, index, eOpts) {
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
                     		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
+                    	},
+                    	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(index);
                     		Ext.getCmp('RPCHistoryQueryStartDate_Id').setValue('');
                     		Ext.getCmp('RPCHistoryQueryStartDate_Id').setRawValue('');
                     		Ext.getCmp('RPCHistoryQueryEndDate_Id').setValue('');
                     		Ext.getCmp('RPCHistoryQueryEndDate_Id').setRawValue('');
-                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
                     		
                     		var tabPanel = Ext.getCmp("RPCHistoryQueryTabPanel");
             				var activeId = tabPanel.getActiveTab().id;
@@ -107,7 +109,6 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("selectedRPCDeviceId_global").setValue(0);
             	
 				var activeId = Ext.getCmp("RPCHistoryQueryTabPanel").getActiveTab().id;
 				if(activeId=="RPCHistoryDataTabPanel"){

@@ -41,6 +41,10 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
                     	selectionchange: function (view, selected, o) {
                     		
                     	},
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
+                    		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
+                    	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").setValue(index);
                     		resetRPCCalculateMaintainingQueryParams();
@@ -72,8 +76,19 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
                 wellListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
+            	
             	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
+            	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").setValue(-1);
             	var activeId = Ext.getCmp("RPCCalculateMaintainingTabPanel").getActiveTab().id;

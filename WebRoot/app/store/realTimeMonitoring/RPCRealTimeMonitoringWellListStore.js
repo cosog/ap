@@ -51,12 +51,16 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                     listeners: {
                     	selectionchange: function (view, selected, o) {
                     	},
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
+                    		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
+                    	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
-                    		var deviceName=record.data.wellName;
-                    		var deviceId=record.data.id;
                     		var deviceType=0;
-                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
+                    		var deviceName=record.data.wellName;
+//                    		var deviceId=record.data.id;
+//                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
                     		
                     		var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
@@ -112,7 +116,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
 					rpcDeviceRealTimeMonitoringDataHandsontableHelper=null;
 				}
             	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("selectedRPCDeviceId_global").setValue(0);
+//            	Ext.getCmp("selectedRPCDeviceId_global").setValue(0);
             	
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');

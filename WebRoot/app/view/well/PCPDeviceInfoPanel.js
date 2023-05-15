@@ -515,8 +515,16 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
             	CreateAndLoadPCPProductionDataTable(0,'');
             	CreateAndLoadPCPVideoInfoTable(0,'');
             }else{
-            	var selectedRow=Ext.getCmp("PCPDeviceSelectRow_Id").getValue();
-            	var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(selectedRow);
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
+            	var selectRow=0;
+            	for(var i=0;i<result.totalRoot.length;i++){
+            		if(result.totalRoot[i].id==selectedDeviceId){
+            			selectRow=i;
+            			break;
+            		}
+            	}
+            	Ext.getCmp("PCPDeviceSelectRow_Id").setValue(selectRow);
+            	var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(selectRow);
             	CreateAndLoadPCPProductionDataTable(rowdata[0],rowdata[1]);
             	CreateAndLoadPCPVideoInfoTable(rowdata[0],rowdata[1]);
             }
@@ -631,6 +639,7 @@ var PCPDeviceInfoHandsontableHelper = {
                         	}
                         	CreateAndLoadPCPProductionDataTable(recordId,deviceName);
                         	CreateAndLoadPCPVideoInfoTable(recordId,deviceName);
+                        	Ext.getCmp("selectedPCPDeviceId_global").setValue(recordId);
                     	}
                     	Ext.getCmp("PCPDeviceSelectRow_Id").setValue(startRow);
                     	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(endRow);

@@ -40,9 +40,11 @@ Ext.define('AP.store.reportOut.PCPSingleWellDailyReportWellListStore', {
                     listeners: {
                     	selectionchange: function (view, selected, o) {
                     	},
-                    	select: function(grid, record, index, eOpts) {
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
                     		var deviceId=record.data.id;
                     		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
+                    	},
+                    	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").setValue(index);
                     		CreatePCPSingleWellDailyReportTable();
                     		CreatePCPSingleWellDailyReportCurve();
@@ -67,7 +69,6 @@ Ext.define('AP.store.reportOut.PCPSingleWellDailyReportWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("selectedPCPDeviceId_global").setValue(0);
             	if(pcpSingleWellDailyReportHelper!=null){
     				if(pcpSingleWellDailyReportHelper.hot!=undefined){
     					pcpSingleWellDailyReportHelper.hot.destroy();

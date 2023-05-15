@@ -605,8 +605,16 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
             	CreateAndLoadRPCProductionDataTable(0,'');
             	CreateAndLoadRPCVideoInfoTable(0,'');
             }else{
-            	var selectedRow=Ext.getCmp("RPCDeviceSelectRow_Id").getValue();
-            	var rowdata = rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(selectedRow);
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
+            	var selectRow=0;
+            	for(var i=0;i<result.totalRoot.length;i++){
+            		if(result.totalRoot[i].id==selectedDeviceId){
+            			selectRow=i;
+            			break;
+            		}
+            	}
+            	Ext.getCmp("RPCDeviceSelectRow_Id").setValue(selectRow);
+            	var rowdata = rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(selectRow);
             	CreateAndLoadRPCPumoingModelInfoTable(rowdata[0],rowdata[1]);
             	CreateAndLoadRPCProductionDataTable(rowdata[0],rowdata[1]);
             	CreateAndLoadRPCVideoInfoTable(rowdata[0],rowdata[1]);
@@ -757,9 +765,12 @@ var RPCDeviceInfoHandsontableHelper = {
                         	if(isNotVal(row1[1])){
                         		deviceName=row1[1];
                         	}
+                        	
                         	CreateAndLoadRPCPumoingModelInfoTable(recordId,deviceName);
                         	CreateAndLoadRPCProductionDataTable(recordId,deviceName);
                         	CreateAndLoadRPCVideoInfoTable(recordId,deviceName);
+                        	
+                        	Ext.getCmp("selectedRPCDeviceId_global").setValue(recordId);
                     	}
                     	Ext.getCmp("RPCDeviceSelectRow_Id").setValue(startRow);
                     	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(endRow);

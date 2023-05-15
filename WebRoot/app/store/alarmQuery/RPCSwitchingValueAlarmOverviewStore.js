@@ -47,6 +47,10 @@ Ext.define('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore', {
                     store: store,
                     columns: newColumns,
                     listeners: {
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
+                    		var deviceId=record.data.id;
+                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
+                    	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCSwitchingValueAlarmOverviewSelectRow_Id").setValue(index);
                     		Ext.getCmp('RPCSwitchingValueAlarmQueryStartDate_Id').setValue('');
@@ -70,11 +74,20 @@ Ext.define('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore', {
                 panel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
-            	if(gridPanel.getSelectionModel().getSelection().length>0){
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
+    			if(gridPanel.getSelectionModel().getSelection().length>0){
             		gridPanel.getSelectionModel().deselectAll(true);
             	}
-            	var index=Ext.getCmp("RPCSwitchingValueAlarmOverviewSelectRow_Id").getValue();
-            	gridPanel.getSelectionModel().select(parseInt(index), true);
+            	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {

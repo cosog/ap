@@ -40,10 +40,12 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
                     listeners: {
                     	selectionchange: function (view, selected, o) {
                     	},
-                    	select: function(grid, record, index, eOpts) {
-                    		Ext.getCmp("RPCSingleWellDailyReportDeviceListSelectRow_Id").setValue(index);
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
                     		var deviceId=record.data.id;
                     		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
+                    	},
+                    	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("RPCSingleWellDailyReportDeviceListSelectRow_Id").setValue(index);
                     		CreateRPCSingleWellDailyReportTable();
                     		CreateRPCSingleWellDailyReportCurve();
                         }
@@ -67,7 +69,6 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("RPCSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
-            	Ext.getCmp("selectedRPCDeviceId_global").setValue(0);
             	if(rpcSingleWellDailyReportHelper!=null){
     				if(rpcSingleWellDailyReportHelper.hot!=undefined){
     					rpcSingleWellDailyReportHelper.hot.destroy();

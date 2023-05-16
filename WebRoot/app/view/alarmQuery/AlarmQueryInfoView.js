@@ -32,6 +32,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         					if(newCard.id=="RPCAlarmQueryPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(0); 
         						var secondTabPanel = Ext.getCmp("RPCAlarmQueryTabPanel");
         						var secondActiveId = secondTabPanel.getActiveTab().id;
         						if(secondActiveId=="RPCFESDiagramResultAlarmInfoPanel_Id"){
@@ -78,6 +79,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         							}
         						}
         					}else if(newCard.id=="PCPAlarmQueryPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(1); 
         						var secondTabPanel = Ext.getCmp("PCPAlarmQueryTabPanel");
         						var secondActiveId = secondTabPanel.getActiveTab().id;
         						if(secondActiveId=="PCPRunStatusAlarmInfoPanel_Id"){

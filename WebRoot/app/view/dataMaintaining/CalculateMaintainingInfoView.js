@@ -32,8 +32,10 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         					if(newCard.id=="RPCCalculateMaintainingInfoPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(0); 
         						refreshRPCCalculateMaintainingData();
         					}else if(newCard.id=="PCPCalculateMaintainingInfoPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(1); 
         						refreshPCPCalculateMaintainingData();
         					}
         				}

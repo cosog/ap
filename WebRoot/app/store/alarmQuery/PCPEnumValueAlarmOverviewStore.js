@@ -53,6 +53,12 @@ Ext.define('AP.store.alarmQuery.PCPEnumValueAlarmOverviewStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("PCPEnumValueAlarmOverviewSelectRow_Id").setValue(index);
+                    		
+                    		var combDeviceName=Ext.getCmp('PCPEnumValueAlarmDeviceListComb_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedPCPDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
                     		Ext.getCmp('PCPEnumValueAlarmQueryStartDate_Id').setValue('');
                         	Ext.getCmp('PCPEnumValueAlarmQueryStartTime_Hour_Id').setValue('');
                         	Ext.getCmp('PCPEnumValueAlarmQueryStartTime_Minute_Id').setValue('');

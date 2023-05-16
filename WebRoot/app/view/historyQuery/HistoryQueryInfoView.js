@@ -32,6 +32,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         					if(newCard.id=="RPCHistoryQueryInfoPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(0); 
         						var statTabActiveId = Ext.getCmp("RPCHistoryQueryStatTabPanel").getActiveTab().id;
         						if(statTabActiveId=="RPCHistoryQueryFESdiagramResultStatGraphPanel_Id"){
             						loadAndInitHistoryQueryFESdiagramResultStat(true);
@@ -45,6 +46,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         						
         						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.RPCHistoryQueryWellListStore');
         					}else if(newCard.id=="PCPHistoryQueryInfoPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(1); 
         						var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
         						if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
         							loadAndInitHistoryQueryCommStatusStat(true);

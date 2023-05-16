@@ -31,6 +31,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                 listeners: {
                     tabchange: function (tabPanel, newCard,oldCard, obj) {
                     	if(newCard.id=="RPCDailyReportPanel_Id"){
+                    		Ext.getCmp("selectedDeviceType_global").setValue(0); 
                     		var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
                 			if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
                 				Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
@@ -52,6 +53,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                     			}
                 			}
                     	}else if(newCard.id=="PCPDailyReportPanel_Id"){
+                    		Ext.getCmp("selectedDeviceType_global").setValue(1); 
                     		var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
                 			if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
                 				Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');

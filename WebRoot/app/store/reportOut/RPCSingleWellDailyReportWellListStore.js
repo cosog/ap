@@ -46,6 +46,12 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCSingleWellDailyReportDeviceListSelectRow_Id").setValue(index);
+                    		
+                    		var combDeviceName=Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedRPCDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
                     		CreateRPCSingleWellDailyReportTable();
                     		CreateRPCSingleWellDailyReportCurve();
                         }
@@ -84,6 +90,7 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
         	var wellName = Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
             var new_params = {
                     orgId: orgId,
+                    wellName:wellName,
                     deviceType:0
                 };
             Ext.apply(store.proxy.extraParams, new_params);

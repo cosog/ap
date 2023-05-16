@@ -59,6 +59,12 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                     		Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		var deviceName=record.data.wellName;
                     		var deviceType=1;
+                    		
+                    		var combDeviceName=Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedPCPDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
                     		var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
                     		if(activeId=="PCPRealTimeMonitoringCurveTabPanel_Id"){
@@ -103,6 +109,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
             			}
             		}
     			}
+    			gridPanel.getSelectionModel().deselectAll(true);
     			gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	if(pcpDeviceRealTimeMonitoringDataHandsontableHelper!=null){

@@ -46,7 +46,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
             'Ext.form.field.ComboBox', {
                 fieldLabel: cosog.string.wellName,
                 id: 'PCPSingleWellDailyReportPanelWellListCombo_Id',
-                hidden:true,
+                hidden:false,
                 store: wellListCombStore,
                 labelWidth: 35,
                 width: 145,
@@ -70,8 +70,8 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                         onEnterKeyDownFN(field, e, 'PCPSingleWellDailyReportPanel_Id');
                     },
                     select: function (combo, record, index) {
-                    	CreatePCPSingleWellDailyReportTable();
-                    	CreatePCPSingleWellDailyReportCurve();
+                    	Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
+                    	Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getStore().load();
                     }
                 }
             });
@@ -89,7 +89,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
         				Ext.create('AP.store.reportOut.PCPSingleWellDailyReportWellListStore');
         			}
                 }
-    		},'-',wellListCombo, {
+    		},'-',wellListCombo,'-', {
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: '日期',

@@ -140,6 +140,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         					if(newCard.id=="RPCRealTimeMonitoringInfoPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(0); 
+        						
         						if(videoPlayrHelper.pcp.player1!=null && videoPlayrHelper.pcp.player1.pluginStatus.state.play){
                     				videoPlayrHelper.pcp.player1.stop();
                     			}
@@ -162,6 +164,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         						
         						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
         					}else if(newCard.id=="PCPRealTimeMonitoringInfoPanel_Id"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(1); 
         						if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
                     				videoPlayrHelper.rpc.player1.stop();
                     			}

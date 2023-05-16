@@ -54,6 +54,11 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore', {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCFESDiagramResultAlarmOverviewSelectRow_Id").setValue(index);
                     		
+                    		var combDeviceName=Ext.getCmp('RPCFESDiagramResultAlarmDeviceListComb_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedRPCDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
                     		Ext.getCmp('RPCFESDiagramResultAlarmQueryStartDate_Id').setValue('');
                         	Ext.getCmp('RPCFESDiagramResultAlarmQueryStartTime_Hour_Id').setValue('');
                         	Ext.getCmp('RPCFESDiagramResultAlarmQueryStartTime_Minute_Id').setValue('');

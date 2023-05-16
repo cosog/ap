@@ -32,8 +32,10 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); //
         					if(newCard.id=="RPCDeviceManagerPanel"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(0); 
         						CreateAndLoadRPCDeviceInfoTable();
         					}else if(newCard.id=="PCPDeviceManagerPanel"){
+        						Ext.getCmp("selectedDeviceType_global").setValue(1); 
         						CreateAndLoadPCPDeviceInfoTable();
         					}
         				}

@@ -290,16 +290,27 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}
 	else if(module_Code == "WellInformation"){
+		var tabChange=false;
+		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
 		var tabPanel = Ext.getCmp("DeviceManagerTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="RPCDeviceManagerPanel"){
-			Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
-	    	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(0);
-			CreateAndLoadRPCDeviceInfoTable(true);
-		}else if(activeId=="PCPDeviceManagerPanel"){
-			Ext.getCmp("PCPDeviceSelectRow_Id").setValue(0);
-	    	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(0);
-			CreateAndLoadPCPDeviceInfoTable(true);
+		if(selectedDeviceType_global==0 && activeId!='RPCDeviceManagerPanel'){
+			tabPanel.setActiveTab("RPCDeviceManagerPanel");
+			tabChange=true;
+		}else if(selectedDeviceType_global==1 && activeId!='PCPDeviceManagerPanel'){
+			tabPanel.setActiveTab("PCPDeviceManagerPanel");
+			tabChange=true;
+		}
+		if(!tabChange){
+			if(activeId=="RPCDeviceManagerPanel"){
+				Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
+		    	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(0);
+				CreateAndLoadRPCDeviceInfoTable(true);
+			}else if(activeId=="PCPDeviceManagerPanel"){
+				Ext.getCmp("PCPDeviceSelectRow_Id").setValue(0);
+		    	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(0);
+				CreateAndLoadPCPDeviceInfoTable(true);
+			}
 		}
 	}else if(module_Code == "RPCDeviceManager"){
 		Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
@@ -314,124 +325,159 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 	}else if(module_Code == "PumpingModelManagement"){
 		CreateAndLoadPumpingModelInfoTable(true);
 	}else if(module_Code == "DeviceRealTimeMonitoring"){
+		var tabChange=false;
+		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
 		var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
-			Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-			var statTabActiveId = Ext.getCmp("RPCRealTimeMonitoringStatTabPanel").getActiveTab().id;
-			if(statTabActiveId=="RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-				loadAndInitFESdiagramResultStat(true);
-			}else if(statTabActiveId=="RPCRealTimeMonitoringStatGraphPanel_Id"){
-				loadAndInitCommStatusStat(true);
-			}else if(statTabActiveId=="RPCRealTimeMonitoringRunStatusStatGraphPanel_Id"){
-				loadAndInitRunStatusStat(true);
-			}else if(statTabActiveId=="RPCRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-				loadAndInitDeviceTypeStat(true);
+		if(selectedDeviceType_global==0 && activeId!='RPCRealTimeMonitoringInfoPanel_Id'){
+			tabPanel.setActiveTab("RPCRealTimeMonitoringInfoPanel_Id");
+			tabChange=true;
+		}else if(selectedDeviceType_global==1 && activeId!='PCPRealTimeMonitoringInfoPanel_Id'){
+			tabPanel.setActiveTab("PCPRealTimeMonitoringInfoPanel_Id");
+			tabChange=true;
+		}
+		if(!tabChange){
+			if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
+				Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+				var statTabActiveId = Ext.getCmp("RPCRealTimeMonitoringStatTabPanel").getActiveTab().id;
+				if(statTabActiveId=="RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+					loadAndInitFESdiagramResultStat(true);
+				}else if(statTabActiveId=="RPCRealTimeMonitoringStatGraphPanel_Id"){
+					loadAndInitCommStatusStat(true);
+				}else if(statTabActiveId=="RPCRealTimeMonitoringRunStatusStatGraphPanel_Id"){
+					loadAndInitRunStatusStat(true);
+				}else if(statTabActiveId=="RPCRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+					loadAndInitDeviceTypeStat(true);
+				}
+				Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setValue('');
+				Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setRawValue('');
+				
+				refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
+			}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
+				var statTabActiveId = Ext.getCmp("PCPRealTimeMonitoringStatTabPanel").getActiveTab().id;
+				if(statTabActiveId=="PCPRealTimeMonitoringStatGraphPanel_Id"){
+					loadAndInitCommStatusStat(true);
+				}else if(statTabActiveId=="PCPRealTimeMonitoringRunStatusStatGraphPanel_Id"){
+					loadAndInitRunStatusStat(true);
+				}else if(statTabActiveId=="PCPRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+					loadAndInitDeviceTypeStat(true);
+				}
+				Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setValue('');
+				Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setRawValue('');
+				
+				refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore');
 			}
-			Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setValue('');
-			Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setRawValue('');
-			
-			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
-		}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
-			var statTabActiveId = Ext.getCmp("PCPRealTimeMonitoringStatTabPanel").getActiveTab().id;
-			if(statTabActiveId=="PCPRealTimeMonitoringStatGraphPanel_Id"){
-				loadAndInitCommStatusStat(true);
-			}else if(statTabActiveId=="PCPRealTimeMonitoringRunStatusStatGraphPanel_Id"){
-				loadAndInitRunStatusStat(true);
-			}else if(statTabActiveId=="PCPRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-				loadAndInitDeviceTypeStat(true);
-			}
-			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setValue('');
-			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setRawValue('');
-			
-			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore');
 		}
 	}else if(module_Code == "DeviceHistoryQuery"){
-		var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
-		var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
-		if(activeId=="RPCHistoryQueryInfoPanel_Id"){
-			Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-			var statTabActiveId = Ext.getCmp("RPCHistoryQueryStatTabPanel").getActiveTab().id;
-			if(statTabActiveId=="RPCHistoryQueryFESdiagramResultStatGraphPanel_Id"){
-				loadAndInitHistoryQueryFESdiagramResultStat(true);
-			}else if(statTabActiveId=="RPCHistoryQueryStatGraphPanel_Id"){
-				loadAndInitHistoryQueryCommStatusStat(true);
-			}else if(statTabActiveId=="RPCHistoryQueryRunStatusStatGraphPanel_Id"){
-				loadAndInitHistoryQueryRunStatusStat(true);
-			}else if(statTabActiveId=="RPCHistoryQueryDeviceTypeStatGraphPanel_Id"){
-				loadAndInitHistoryQueryDeviceTypeStat(true);
-			}
+		var tabChange=false;
+		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
+		var tabPanel = Ext.getCmp("HistoryQueryTabPanel");
+		var activeId = tabPanel.getActiveTab().id;
+		if(selectedDeviceType_global==0 && activeId!='RPCHistoryQueryInfoPanel_Id'){
+			tabPanel.setActiveTab("RPCHistoryQueryInfoPanel_Id");
+			tabChange=true;
+		}else if(selectedDeviceType_global==1 && activeId!='PCPHistoryQueryInfoPanel_Id'){
+			tabPanel.setActiveTab("PCPHistoryQueryInfoPanel_Id");
+			tabChange=true;
+		}
+		if(!tabChange){
+			var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
 			
-			if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
-				Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
-			}else{
-				Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').setValue('');
-				Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').setRawValue('');
+			if(activeId=="RPCHistoryQueryInfoPanel_Id"){
+				Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+				var statTabActiveId = Ext.getCmp("RPCHistoryQueryStatTabPanel").getActiveTab().id;
+				if(statTabActiveId=="RPCHistoryQueryFESdiagramResultStatGraphPanel_Id"){
+					loadAndInitHistoryQueryFESdiagramResultStat(true);
+				}else if(statTabActiveId=="RPCHistoryQueryStatGraphPanel_Id"){
+					loadAndInitHistoryQueryCommStatusStat(true);
+				}else if(statTabActiveId=="RPCHistoryQueryRunStatusStatGraphPanel_Id"){
+					loadAndInitHistoryQueryRunStatusStat(true);
+				}else if(statTabActiveId=="RPCHistoryQueryDeviceTypeStatGraphPanel_Id"){
+					loadAndInitHistoryQueryDeviceTypeStat(true);
+				}
+				
+				if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
+					Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
+				}else{
+					Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').setValue('');
+					Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').setRawValue('');
+				}
+				
+				refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.RPCHistoryQueryWellListStore');
+			}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
+				Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+				var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
+				if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
+					loadAndInitHistoryQueryCommStatusStat(true);
+				}else if(statTabActiveId=="PCPHistoryQueryRunStatusStatGraphPanel_Id"){
+					loadAndInitHistoryQueryRunStatusStat(true);
+				}else if(statTabActiveId=="PCPHistoryQueryDeviceTypeStatGraphPanel_Id"){
+					loadAndInitHistoryQueryDeviceTypeStat(true);
+				}
+				if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
+					Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
+				}else{
+					Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setValue('');
+					Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setRawValue('');
+				}
+				refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
 			}
-			
-			refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.RPCHistoryQueryWellListStore');
-		}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
-			Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-			var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
-			if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
-				loadAndInitHistoryQueryCommStatusStat(true);
-			}else if(statTabActiveId=="PCPHistoryQueryRunStatusStatGraphPanel_Id"){
-				loadAndInitHistoryQueryRunStatusStat(true);
-			}else if(statTabActiveId=="PCPHistoryQueryDeviceTypeStatGraphPanel_Id"){
-				loadAndInitHistoryQueryDeviceTypeStat(true);
-			}
-			if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
-				Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
-			}else{
-				Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setValue('');
-				Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setRawValue('');
-			}
-			refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
 		}
 	}else if(module_Code == "DailyReport"){
+		var tabChange=false;
+		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
 		var tabPanel = Ext.getCmp("ProductionWellDailyReportPanel_Id");
 		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="RPCDailyReportPanel_Id"){
-			var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
-			if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
-				Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
-				Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setValue('');
-				var gridPanel = Ext.getCmp("RPCSingleWellDailyReportGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
-				}else{
-					Ext.create('AP.store.reportOut.RPCSingleWellDailyReportWellListStore');
+		if(selectedDeviceType_global==0 && activeId!='RPCDailyReportPanel_Id'){
+			tabPanel.setActiveTab("RPCDailyReportPanel_Id");
+			tabChange=true;
+		}else if(selectedDeviceType_global==1 && activeId!='PCPDailyReportPanel_Id'){
+			tabPanel.setActiveTab("PCPDailyReportPanel_Id");
+			tabChange=true;
+		}
+		if(!tabChange){
+			if(activeId=="RPCDailyReportPanel_Id"){
+				var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
+				if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
+					Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+					Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setValue('');
+					var gridPanel = Ext.getCmp("RPCSingleWellDailyReportGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().load();
+					}else{
+						Ext.create('AP.store.reportOut.RPCSingleWellDailyReportWellListStore');
+					}
+				}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
+					Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+					Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setValue('');
+					var gridPanel = Ext.getCmp("RPCProductionDailyReportGridPanel_Id");
+	    			if (isNotVal(gridPanel)) {
+	    				gridPanel.getStore().load();
+	    			}else{
+	    				Ext.create('AP.store.reportOut.RPCProductionDailyReportInstanceListStore');
+	    			}
 				}
-			}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
-				Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setRawValue('');
-				Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setValue('');
-				var gridPanel = Ext.getCmp("RPCProductionDailyReportGridPanel_Id");
-    			if (isNotVal(gridPanel)) {
-    				gridPanel.getStore().load();
-    			}else{
-    				Ext.create('AP.store.reportOut.RPCProductionDailyReportInstanceListStore');
-    			}
-			}
-		}else if(activeId=="PCPDailyReportPanel_Id"){
-			var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
-			if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
-				Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
-				Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setValue('');
-				var gridPanel = Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
-				}else{
-					Ext.create('AP.store.reportOut.PCPSingleWellDailyReportWellListStore');
+			}else if(activeId=="PCPDailyReportPanel_Id"){
+				var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
+				if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
+					Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+					Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setValue('');
+					var gridPanel = Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().load();
+					}else{
+						Ext.create('AP.store.reportOut.PCPSingleWellDailyReportWellListStore');
+					}
+				}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
+					Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+					Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setValue('');
+					var gridPanel = Ext.getCmp("PCPProductionDailyReportGridPanel_Id");
+	    			if (isNotVal(gridPanel)) {
+	    				gridPanel.getStore().load();
+	    			}else{
+	    				Ext.create('AP.store.reportOut.PCPProductionDailyReportInstanceListStore');
+	    			}
 				}
-			}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
-				Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setRawValue('');
-				Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setValue('');
-				var gridPanel = Ext.getCmp("PCPProductionDailyReportGridPanel_Id");
-    			if (isNotVal(gridPanel)) {
-    				gridPanel.getStore().load();
-    			}else{
-    				Ext.create('AP.store.reportOut.PCPProductionDailyReportInstanceListStore');
-    			}
 			}
 		}
 	}else if(module_Code == "LogQuery"){
@@ -453,146 +499,157 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			}
 		}
 	}else if(module_Code == "AlarmQuery"){
+		var tabChange=false;
+		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
 		var tabPanel = Ext.getCmp("AlarmQueryTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="RPCAlarmQueryPanel_Id"){
-			var secondTabPanel = Ext.getCmp("RPCAlarmQueryTabPanel");
-			var secondActiveId = secondTabPanel.getActiveTab().id;
-			if(secondActiveId=="RPCFESDiagramResultAlarmInfoPanel_Id"){
-				Ext.getCmp("RPCFESDiagramResultAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("RPCFESDiagramResultAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("RPCFESDiagramResultAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("RPCFESDiagramResultAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("RPCFESDiagramResultAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore');
+		if(selectedDeviceType_global==0 && activeId!='RPCAlarmQueryPanel_Id'){
+			tabPanel.setActiveTab("RPCAlarmQueryPanel_Id");
+			tabChange=true;
+		}else if(selectedDeviceType_global==1 && activeId!='PCPAlarmQueryPanel_Id'){
+			tabPanel.setActiveTab("PCPAlarmQueryPanel_Id");
+			tabChange=true;
+		}
+		if(!tabChange){
+			if(activeId=="RPCAlarmQueryPanel_Id"){
+				var secondTabPanel = Ext.getCmp("RPCAlarmQueryTabPanel");
+				var secondActiveId = secondTabPanel.getActiveTab().id;
+				if(secondActiveId=="RPCFESDiagramResultAlarmInfoPanel_Id"){
+					Ext.getCmp("RPCFESDiagramResultAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("RPCFESDiagramResultAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("RPCFESDiagramResultAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("RPCFESDiagramResultAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("RPCFESDiagramResultAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="RPCRunStatusAlarmInfoPanel_Id"){
+					Ext.getCmp("RPCRunStatusAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("RPCRunStatusAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("RPCRunStatusAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("RPCRunStatusAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("RPCRunStatusAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.RPCRunStatusAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="RPCCommunicationAlarmInfoPanel_Id"){
+					Ext.getCmp("RPCCommunicationAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("RPCCommunicationAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("RPCCommunicationAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("RPCCommunicationAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("RPCCommunicationAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="RPCNumericValueAlarmInfoPanel_Id"){
+					Ext.getCmp("RPCNumericValueAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("RPCNumericValueAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("RPCNumericValueAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("RPCNumericValueAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("RPCNumericValueAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("RPCNumericValueAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.RPCNumericValueAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="RPCEnumValueAlarmInfoPanel_Id"){
+					Ext.getCmp("RPCEnumValueAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("RPCEnumValueAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("RPCEnumValueAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("RPCEnumValueAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("RPCEnumValueAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("RPCEnumValueAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.RPCEnumValueAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="RPCSwitchingValueAlarmInfoPanel_Id"){
+					Ext.getCmp("RPCSwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("RPCSwitchingValueAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("RPCSwitchingValueAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("RPCSwitchingValueAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("RPCSwitchingValueAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore');
+					}
 				}
-			}else if(secondActiveId=="RPCRunStatusAlarmInfoPanel_Id"){
-				Ext.getCmp("RPCRunStatusAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("RPCRunStatusAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("RPCRunStatusAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("RPCRunStatusAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("RPCRunStatusAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.RPCRunStatusAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="RPCCommunicationAlarmInfoPanel_Id"){
-				Ext.getCmp("RPCCommunicationAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("RPCCommunicationAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("RPCCommunicationAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("RPCCommunicationAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("RPCCommunicationAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="RPCNumericValueAlarmInfoPanel_Id"){
-				Ext.getCmp("RPCNumericValueAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("RPCNumericValueAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("RPCNumericValueAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("RPCNumericValueAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("RPCNumericValueAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("RPCNumericValueAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.RPCNumericValueAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="RPCEnumValueAlarmInfoPanel_Id"){
-				Ext.getCmp("RPCEnumValueAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("RPCEnumValueAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("RPCEnumValueAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("RPCEnumValueAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("RPCEnumValueAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("RPCEnumValueAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.RPCEnumValueAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="RPCSwitchingValueAlarmInfoPanel_Id"){
-				Ext.getCmp("RPCSwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("RPCSwitchingValueAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("RPCSwitchingValueAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("RPCSwitchingValueAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("RPCSwitchingValueAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore');
-				}
-			}
-		}else if(activeId=="PCPAlarmQueryPanel_Id"){
-			var secondTabPanel = Ext.getCmp("PCPAlarmQueryTabPanel");
-			var secondActiveId = secondTabPanel.getActiveTab().id;
-			if(secondActiveId=="PCPCommunicationAlarmInfoPanel_Id"){
-				Ext.getCmp("PCPCommunicationAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("PCPCommunicationAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("PCPCommunicationAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("PCPCommunicationAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("PCPCommunicationAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="PCPRunStatusAlarmInfoPanel_Id"){
-				Ext.getCmp("PCPRunStatusAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("PCPRunStatusAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("PCPRunStatusAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("PCPRunStatusAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("PCPRunStatusAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.PCPRunStatusAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="PCPNumericValueAlarmInfoPanel_Id"){
-				Ext.getCmp("PCPNumericValueAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("PCPNumericValueAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("PCPNumericValueAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("PCPNumericValueAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("PCPNumericValueAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.PCPNumericValueAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="PCPEnumValueAlarmInfoPanel_Id"){
-				Ext.getCmp("PCPEnumValueAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("PCPEnumValueAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("PCPEnumValueAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("PCPEnumValueAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("PCPEnumValueAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.PCPEnumValueAlarmOverviewStore');
-				}
-			}else if(secondActiveId=="PCPSwitchingValueAlarmInfoPanel_Id"){
-				Ext.getCmp("PCPSwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
-				Ext.getCmp("PCPSwitchingValueAlarmDeviceListComb_Id").setValue('');
-				Ext.getCmp("PCPSwitchingValueAlarmDeviceListComb_Id").setRawValue('');
-				Ext.getCmp("PCPSwitchingValueAlarmLevelComb_Id").setValue('');
-				Ext.getCmp("PCPSwitchingValueAlarmLevelComb_Id").setRawValue('');
-				var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id");
-				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().loadPage(1);
-				}else{
-					Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore');
+			}else if(activeId=="PCPAlarmQueryPanel_Id"){
+				var secondTabPanel = Ext.getCmp("PCPAlarmQueryTabPanel");
+				var secondActiveId = secondTabPanel.getActiveTab().id;
+				if(secondActiveId=="PCPCommunicationAlarmInfoPanel_Id"){
+					Ext.getCmp("PCPCommunicationAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("PCPCommunicationAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("PCPCommunicationAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("PCPCommunicationAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("PCPCommunicationAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="PCPRunStatusAlarmInfoPanel_Id"){
+					Ext.getCmp("PCPRunStatusAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("PCPRunStatusAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("PCPRunStatusAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("PCPRunStatusAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("PCPRunStatusAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.PCPRunStatusAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="PCPNumericValueAlarmInfoPanel_Id"){
+					Ext.getCmp("PCPNumericValueAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("PCPNumericValueAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("PCPNumericValueAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("PCPNumericValueAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("PCPNumericValueAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.PCPNumericValueAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="PCPEnumValueAlarmInfoPanel_Id"){
+					Ext.getCmp("PCPEnumValueAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("PCPEnumValueAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("PCPEnumValueAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("PCPEnumValueAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("PCPEnumValueAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.PCPEnumValueAlarmOverviewStore');
+					}
+				}else if(secondActiveId=="PCPSwitchingValueAlarmInfoPanel_Id"){
+					Ext.getCmp("PCPSwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
+					Ext.getCmp("PCPSwitchingValueAlarmDeviceListComb_Id").setValue('');
+					Ext.getCmp("PCPSwitchingValueAlarmDeviceListComb_Id").setRawValue('');
+					Ext.getCmp("PCPSwitchingValueAlarmLevelComb_Id").setValue('');
+					Ext.getCmp("PCPSwitchingValueAlarmLevelComb_Id").setRawValue('');
+					var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id");
+					if (isNotVal(gridPanel)) {
+						gridPanel.getStore().loadPage(1);
+					}else{
+						Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore');
+					}
 				}
 			}
 		}
@@ -606,12 +663,23 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			Ext.create('AP.store.well.UpstreamAndDownstreamInteractionWellListStore');
 		}
 	}else if(module_Code == "CalculateMaintaining"){
+		var tabChange=false;
+		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
 		var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
-			refreshRPCCalculateMaintainingData();
-		}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
-			refreshPCPCalculateMaintainingData();
+		if(selectedDeviceType_global==0 && activeId!='RPCCalculateMaintainingInfoPanel_Id'){
+			tabPanel.setActiveTab("RPCCalculateMaintainingInfoPanel_Id");
+			tabChange=true;
+		}else if(selectedDeviceType_global==1 && activeId!='PCPCalculateMaintainingInfoPanel_Id'){
+			tabPanel.setActiveTab("PCPCalculateMaintainingInfoPanel_Id");
+			tabChange=true;
+		}
+		if(!tabChange){
+			if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
+				refreshRPCCalculateMaintainingData();
+			}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
+				refreshPCPCalculateMaintainingData();
+			}
 		}
 	}
 	if(module_Code != "DeviceRealTimeMonitoring"){

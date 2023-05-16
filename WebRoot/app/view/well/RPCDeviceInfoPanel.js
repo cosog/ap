@@ -615,6 +615,12 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
             	}
             	Ext.getCmp("RPCDeviceSelectRow_Id").setValue(selectRow);
             	var rowdata = rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(selectRow);
+            	
+            	var combDeviceName=Ext.getCmp('rpcDeviceListComb_Id').getValue();
+        		if(combDeviceName!=''){
+            		Ext.getCmp("selectedRPCDeviceId_global").setValue(rowdata[0]);
+        		}
+
             	CreateAndLoadRPCPumoingModelInfoTable(rowdata[0],rowdata[1]);
             	CreateAndLoadRPCProductionDataTable(rowdata[0],rowdata[1]);
             	CreateAndLoadRPCVideoInfoTable(rowdata[0],rowdata[1]);

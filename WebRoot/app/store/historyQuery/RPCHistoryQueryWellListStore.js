@@ -57,6 +57,13 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(index);
+                    		
+                    		var combDeviceName=Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedRPCDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
+                    		
                     		Ext.getCmp('RPCHistoryQueryStartDate_Id').setValue('');
                     		Ext.getCmp('RPCHistoryQueryStartDate_Id').setRawValue('');
                     		Ext.getCmp('RPCHistoryQueryEndDate_Id').setValue('');

@@ -57,6 +57,12 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").setValue(index);
+                    		
+                    		var combDeviceName=Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedPCPDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
                     		resetPCPCalculateMaintainingQueryParams();
                     		var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
     	        			if(activeId=="PCPCalculateMaintainingPanel"){

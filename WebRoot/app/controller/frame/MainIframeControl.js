@@ -29,8 +29,6 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
                 var getTabId = tabPanel.getComponent(module_Id_);
                 // tab是否已打开panl
                 if (getTabId) {
-                    //addPanelEps(rec.data.viewsrc, rec.data.mdCode,rec.data.md_icon);
-                    //alert("11");
                     Ext.getCmp("topModule_Id").setValue(rec.data.mdCode);
                     tabPanel.setActiveTab(module_Id_);
                 } else {

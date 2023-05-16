@@ -59,8 +59,11 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                     		Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		var deviceType=0;
                     		var deviceName=record.data.wellName;
-//                    		var deviceId=record.data.id;
-//                    		Ext.getCmp("selectedRPCDeviceId_global").setValue(deviceId);
+                    		
+                    		var combDeviceName=Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedRPCDeviceId_global").setValue(record.data.id);
+                    		}
                     		
                     		var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
@@ -107,6 +110,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
             			}
             		}
     			}
+    			gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	if(rpcDeviceRealTimeMonitoringDataHandsontableHelper!=null){

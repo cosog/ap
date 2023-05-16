@@ -525,7 +525,13 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
             	}
             	Ext.getCmp("PCPDeviceSelectRow_Id").setValue(selectRow);
             	var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(selectRow);
-            	CreateAndLoadPCPProductionDataTable(rowdata[0],rowdata[1]);
+            	
+            	var combDeviceName=Ext.getCmp('pcpDeviceListComb_Id').getValue();
+        		if(combDeviceName!=''){
+            		Ext.getCmp("selectedPCPDeviceId_global").setValue(rowdata[0]);
+        		}
+        		
+        		CreateAndLoadPCPProductionDataTable(rowdata[0],rowdata[1]);
             	CreateAndLoadPCPVideoInfoTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("PCPDeviceTotalCount_Id").update({

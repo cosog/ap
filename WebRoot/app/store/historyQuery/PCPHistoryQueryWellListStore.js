@@ -57,6 +57,12 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(index);
+                    		
+                    		var combDeviceName=Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedPCPDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
                     		Ext.getCmp('PCPHistoryQueryStartDate_Id').setValue('');
                     		Ext.getCmp('PCPHistoryQueryStartDate_Id').setRawValue('');
                     		Ext.getCmp('PCPHistoryQueryEndDate_Id').setValue('');

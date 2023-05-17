@@ -58,6 +58,24 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         });
                         window.show();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导出',
+        			iconCls: 'export',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.acquisitionUnit.ProtocolExportWindow");
+                        window.show();
+        			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导入',
+        			iconCls: 'import',
+        			handler: function (v, o) {
+//        				var window = Ext.create("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
+//                            title: '存储字段表'
+//                        });
+//                        window.show();
+        			}
                 }],
                 layout: "border",
                 items: [{

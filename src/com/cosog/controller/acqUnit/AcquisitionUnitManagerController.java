@@ -1425,9 +1425,39 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportAcqUnitTreeData")
+	public String exportAcqUnitTreeData() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = acquisitionUnitItemManagerService.exportAcqUnitTreeData(deviceType,protocolName,protocolCode);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/displayUnitTreeData")
 	public String displayUnitTreeData() throws IOException {
 		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportDisplayUnitTreeData")
+	public String exportDisplayUnitTreeData() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = acquisitionUnitItemManagerService.exportDisplayUnitTreeData(deviceType,protocolName,protocolCode);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1529,12 +1559,40 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	
+	@RequestMapping("/exportProtocolAlarmUnitTreeData")
+	public String exportProtocolAlarmUnitTreeData() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = acquisitionUnitItemManagerService.exportProtocolAlarmUnitTreeData(deviceType,protocolName,protocolCode);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 	
 	
 	@RequestMapping("/modbusInstanceConfigTreeData")
 	public String modbusInstanceConfigTreeData() throws IOException {
 		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolAcqInstanceTreeData")
+	public String exportProtocolAcqInstanceTreeData() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = acquisitionUnitItemManagerService.exportProtocolAcqInstanceTreeData(deviceType,protocolName,protocolCode);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1580,6 +1638,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportProtocolDisplayInstanceTreeData")
+	public String exportProtocolDisplayInstanceTreeData() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = acquisitionUnitItemManagerService.exportProtocolDisplayInstanceTreeData(deviceType,protocolName,protocolCode);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/modbusReportInstanceConfigTreeData")
 	public String modbusReportInstanceConfigTreeData() throws IOException {
 		String json = protocolReportInstanceManagerService.modbusReportInstanceConfigTreeData();
@@ -1595,6 +1668,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusAlarmInstanceConfigTreeData")
 	public String modbusAlarmInstanceConfigTreeData() throws IOException {
 		String json = acquisitionUnitItemManagerService.getModbusAlarmProtocolInstanceConfigTreeData();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolAlarmInstanceTreeData")
+	public String exportProtocolAlarmInstanceTreeData() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String json = acquisitionUnitItemManagerService.exportProtocolAlarmInstanceTreeData(deviceType,protocolName,protocolCode);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

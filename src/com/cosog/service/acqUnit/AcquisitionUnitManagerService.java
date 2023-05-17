@@ -3020,6 +3020,66 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String exportAcqUnitTreeData(String deviceType,String protocolName,String protocolCode){
+		StringBuffer result_json = new StringBuffer();
+		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
+				+ "from tbl_acq_unit_conf t "
+				+ " where t.protocol='"+protocolName+"'"
+				+ " order by t.protocol,t.id";
+		String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t3.protocol,t3.type,t2.id as unitId "
+				+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3 "
+				+ " where t.unitid=t2.id and t.groupid=t3.id "
+				+ " and t2.protocol='"+protocolName+"'"
+				+ " order by t3.protocol,t2.unit_code,t3.type,t3.id";
+		List<?> unitList=this.findCallSql(unitSql);
+		List<?> groupList=this.findCallSql(groupSql);
+		
+		result_json.append("[");
+		for(int j=0;j<unitList.size();j++){
+			Object[] unitObj = (Object[]) unitList.get(j);
+
+			result_json.append("{\"classes\":2,");
+			result_json.append("\"id\":"+unitObj[0]+",");
+			result_json.append("\"code\":\""+unitObj[1]+"\",");
+			result_json.append("\"text\":\""+unitObj[2]+"\",");
+			result_json.append("\"remark\":\""+unitObj[3]+"\",");
+			result_json.append("\"protocol\":\""+unitObj[4]+"\",");
+			result_json.append("\"iconCls\": \"acqUnit\",");
+			result_json.append("\"expanded\": true,");
+			result_json.append("\"children\": [");
+			for(int k=0;k<groupList.size();k++){
+				Object[] groupObj = (Object[]) groupList.get(k);
+				if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
+					result_json.append("{\"classes\":3,");
+					result_json.append("\"id\":"+groupObj[0]+",");
+					result_json.append("\"code\":\""+groupObj[1]+"\",");
+					result_json.append("\"text\":\""+groupObj[2]+"\",");
+					result_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
+					result_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
+					result_json.append("\"remark\":\""+groupObj[5]+"\",");
+					result_json.append("\"protocol\":\""+groupObj[6]+"\",");
+					result_json.append("\"type\":"+groupObj[7]+",");
+					result_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
+					result_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
+					result_json.append("\"iconCls\": \"acqGroup\",");
+					result_json.append("\"leaf\": true");
+					result_json.append("},");
+				}
+			}
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]},");
+		}
+		
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getDisplayUnitTreeData(){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rpcTree_json = new StringBuffer();
@@ -3114,6 +3174,36 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
 		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String exportDisplayUnitTreeData(String deviceType,String protocolName,String protocolCode){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname "
+				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
+				+ " where t.acqunitid=t2.id  and t2.protocol='"+protocolName+"'"
+				+ " order by t.protocol,t.id";
+		List<?> unitList=this.findCallSql(unitSql);
+		
+		for(int j=0;j<unitList.size();j++){
+			Object[] unitObj = (Object[]) unitList.get(j);
+			result_json.append("{\"classes\":2,");
+			result_json.append("\"id\":"+unitObj[0]+",");
+			result_json.append("\"code\":\""+unitObj[1]+"\",");
+			result_json.append("\"text\":\""+unitObj[2]+"\",");
+			result_json.append("\"remark\":\""+unitObj[3]+"\",");
+			result_json.append("\"protocol\":\""+unitObj[4]+"\",");
+			result_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
+			result_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
+			result_json.append("\"iconCls\": \"acqUnit\",");
+			result_json.append("\"leaf\": true");
+			result_json.append("},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -3576,6 +3666,36 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String exportProtocolAlarmUnitTreeData(String deviceType,String protocolName,String protocolCode){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol"
+				+ " from tbl_alarm_unit_conf t "
+				+ " where t.protocol='"+protocolName+"' "
+				+ " order by t.protocol,t.unit_code";
+		List<?> unitList=this.findCallSql(unitSql);
+		
+		for(int j=0;j<unitList.size();j++){
+			Object[] unitObj = (Object[]) unitList.get(j);
+			result_json.append("{\"classes\":3,");
+			result_json.append("\"id\":"+unitObj[0]+",");
+			result_json.append("\"deviceType\":"+0+",");
+			result_json.append("\"code\":\""+unitObj[1]+"\",");
+			result_json.append("\"text\":\""+unitObj[2]+"\",");
+			result_json.append("\"remark\":\""+unitObj[3]+"\",");
+			result_json.append("\"protocol\":\""+unitObj[4]+"\",");
+			result_json.append("\"iconCls\": \"acqGroup\",");
+			result_json.append("\"leaf\": true");
+			result_json.append("},");
+		}
+	
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getAcqUnitList(){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rpcUnit_json = new StringBuffer();
@@ -3797,6 +3917,54 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String exportProtocolAcqInstanceTreeData(String deviceType,String protocolName,String protocolCode){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
+				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
+				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
+				+ " t.packetsendinterval,"//12
+				+ " t.devicetype,t.sort,t.unitid,t2.unit_name "//13~16
+				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2 "
+				+ " where t.unitid=t2.id and t2.protocol='"+protocolName+"'"
+				+ " order by t.devicetype,t.sort";
+		
+		List<?> list=this.findCallSql(sql);
+		
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+
+			result_json.append("{\"classes\":1,");
+			result_json.append("\"id\":\""+obj[0]+"\",");
+			result_json.append("\"text\":\""+obj[1]+"\",");
+			result_json.append("\"code\":\""+obj[2]+"\",");
+			result_json.append("\"acqProtocolType\":\""+obj[3]+"\",");
+			result_json.append("\"ctrlProtocolType\":\""+obj[4]+"\",");
+			
+			result_json.append("\"signInPrefixSuffixHex\":\""+obj[5]+"\",");
+			result_json.append("\"signInPrefix\":\""+obj[6]+"\",");
+			result_json.append("\"signInSuffix\":\""+obj[7]+"\",");
+			result_json.append("\"signInIDHex\":\""+obj[8]+"\",");
+			
+			result_json.append("\"heartbeatPrefixSuffixHex\":\""+obj[9]+"\",");
+			result_json.append("\"heartbeatPrefix\":\""+obj[10]+"\",");
+			result_json.append("\"heartbeatSuffix\":\""+obj[11]+"\",");
+			
+			result_json.append("\"packetSendInterval\":\""+obj[12]+"\",");
+			result_json.append("\"deviceType\":"+obj[13]+",");
+			result_json.append("\"sort\":\""+obj[14]+"\",");
+			result_json.append("\"iconCls\": \"protocol\",");
+			result_json.append("\"leaf\": true},");
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getModbusDisplayProtocolInstanceConfigTreeData(){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rpcTree_json = new StringBuffer();
@@ -3864,6 +4032,36 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
 		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String exportProtocolDisplayInstanceTreeData(String deviceType,String protocolName,String protocolCode){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.devicetype,t.sort   "
+				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2 "
+				+ " where t.displayUnitId=t2.id "
+				+ " and t2.protocol='"+protocolName+"'"
+				+ " order by t.devicetype,t.sort";
+		List<?> list=this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"classes\":1,");
+			result_json.append("\"id\":\""+obj[0]+"\",");
+			result_json.append("\"text\":\""+obj[1]+"\",");
+			result_json.append("\"code\":\""+obj[2]+"\",");
+			result_json.append("\"displayUnitId\":"+obj[3]+",");
+			result_json.append("\"displayUnitName\":\""+obj[4]+"\",");
+			result_json.append("\"deviceType\":"+obj[5]+",");
+			result_json.append("\"sort\":\""+obj[6]+"\",");
+			result_json.append("\"iconCls\": \"protocol\",");
+			result_json.append("\"leaf\": true},");
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4023,6 +4221,37 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\"抽油机井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
 		result_json.append("{\"classes\":0,\"deviceType\":1,\"text\":\"螺杆泵井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
 		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String exportProtocolAlarmInstanceTreeData(String deviceType,String protocolName,String protocolCode){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.devicetype,t.sort   "
+				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2 "
+				+ " where t.alarmunitid=t2.id and t2.protocol='"+protocolName+"'"
+				+ " order by t.devicetype,t.sort";
+		List<?> list=this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"classes\":1,");
+			result_json.append("\"id\":\""+obj[0]+"\",");
+			result_json.append("\"text\":\""+obj[1]+"\",");
+			result_json.append("\"code\":\""+obj[2]+"\",");
+			result_json.append("\"alarmUnitId\":"+obj[3]+",");
+			result_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
+			result_json.append("\"deviceType\":"+obj[5]+",");
+			result_json.append("\"sort\":\""+obj[6]+"\",");
+			result_json.append("\"iconCls\": \"protocol\",");
+			result_json.append("\"leaf\": true},");
+		
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		
 		return result_json.toString().replaceAll("null", "");
 	}
 	

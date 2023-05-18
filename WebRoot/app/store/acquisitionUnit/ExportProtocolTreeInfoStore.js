@@ -61,9 +61,9 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	if(record.data.classes==1){
-                        		
+                        		Ext.getCmp('ExportProtocolWindowExportBtn_Id').enable();
                         	}else{
-                        		
+                        		Ext.getCmp('ExportProtocolWindowExportBtn_Id').disable();
                         	}
                         	var exportProtocolAcqUnitTreeGridPanel = Ext.getCmp("ExportProtocolAcqUnitTreeGridPanel_Id");
                         	if (isNotVal(exportProtocolAcqUnitTreeGridPanel)) {

@@ -178,7 +178,9 @@ public class ModbusProtocolConfig implements Serializable{
 		
 		private static final long serialVersionUID = 1L;
 		
-	    private String Name;
+		private int Id;
+	    
+		private String Name;
 
 	    private String Code;
 	    
@@ -222,6 +224,12 @@ public class ModbusProtocolConfig implements Serializable{
 		}
 		public void setDeviceType(int deviceType) {
 			DeviceType = deviceType;
+		}
+		public int getId() {
+			return Id;
+		}
+		public void setId(int id) {
+			Id = id;
 		}
 	}
 }

@@ -33,6 +33,7 @@ import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.data.DataDictionary;
+import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
@@ -4812,6 +4813,122 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		return flag;
+	}
+	
+	public String exportProtocolConfigData(String deviceType,String protocolName,String protocolCode,
+			String acqUnitStr,String acqGroupStr) {
+		String result="";
+		if(StringManagerUtils.isNotNull(protocolCode)){
+			Gson gson = new Gson();
+			java.lang.reflect.Type type=null;
+			String sql="select t.id,t.name,t.code,t.devicetype,t.items,t.sort from TBL_PROTOCOL t "
+					+ " where t.devicetype= "+deviceType
+					+ " and t.code='"+protocolCode+"'";
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[])list.get(0);
+				ExportProtocolConfig exportProtocolConfig=new ExportProtocolConfig();
+				exportProtocolConfig.init();
+				
+				String itemsStr=StringManagerUtils.CLOBObjectToString(obj[4]);
+				if(!StringManagerUtils.isNotNull(itemsStr)){
+					itemsStr="[]";
+				}
+				StringBuffer protocolBuff=new StringBuffer();
+				protocolBuff.append("{");
+				protocolBuff.append("\"Id\":\""+obj[0]+"\",");
+				protocolBuff.append("\"Name\":\""+obj[1]+"\",");
+				protocolBuff.append("\"Code\":\""+obj[2]+"\",");
+				protocolBuff.append("\"DeviceType\":"+obj[3]+",");
+				protocolBuff.append("\"Sort\":"+obj[5]+",");
+				protocolBuff.append("\"Items\":"+itemsStr+"");
+				protocolBuff.append("}");
+
+				type = new TypeToken<ModbusProtocolConfig.Protocol>() {}.getType();
+				ModbusProtocolConfig.Protocol protocol=gson.fromJson(protocolBuff.toString(), type);
+
+				if(protocol!=null){
+					Collections.sort(protocol.getItems());//排序
+				}
+				exportProtocolConfig.setProtocol(protocol);
+				
+				if(StringManagerUtils.isNotNull(acqUnitStr)){
+					String acqUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark from TBL_ACQ_UNIT_CONF t where t.id in ("+acqUnitStr+") order by t.id";
+					List<?> acqUnitQueryList = this.findCallSql(acqUnitSql);
+					if(acqUnitQueryList.size()>0){
+						exportProtocolConfig.setAcqUnitList(new ArrayList<ExportProtocolConfig.AcqUnit>());
+						for(int i=0;i<acqUnitQueryList.size();i++){
+							Object[] acqUnitObj=(Object[])acqUnitQueryList.get(0);
+							ExportProtocolConfig.AcqUnit acqUnit=new ExportProtocolConfig.AcqUnit();
+							acqUnit.setId(StringManagerUtils.stringToInteger(acqUnitObj[0]+""));
+							acqUnit.setUnitCode(acqUnitObj[1]+"");
+							acqUnit.setUnitName(acqUnitObj[2]+"");
+							acqUnit.setProtocol(acqUnitObj[3]+"");
+							acqUnit.setRemark(acqUnitObj[4]+"");
+							acqUnit.setAcqGroupList(new ArrayList<ExportProtocolConfig.AcqGroup>());
+							exportProtocolConfig.getAcqUnitList().add(acqUnit);
+						}
+						
+						if(StringManagerUtils.isNotNull(acqGroupStr)){
+							String acqGroupSql="select t.id,t.group_code,t.group_name,t.grouptiminginterval,t.groupsavinginterval,t.protocol,t.type,t.remark,t3.id as unitid "
+									+ " from tbl_acq_group_conf t,tbl_acq_group2unit_conf t2,tbl_acq_unit_conf t3 "
+									+ " where t.id=t2.groupid and t2.unitid=t3.id "
+									+ " and t.id in ("+acqGroupStr+") and t3.id in ("+acqUnitStr+") "
+									+ " order by t3.id,t.id";
+							String acqItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.groupid,t.bitindex,t.matrix "
+									+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
+									+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id "
+									+ " and t2.id in ("+acqGroupStr+") and t4.id in ("+acqUnitStr+") "
+									+ " order by t4.id,t2.id,t.id";
+							List<?> acqGroupQueryList = this.findCallSql(acqGroupSql);
+							List<?> acqItemQueryList = this.findCallSql(acqItemSql);
+							for(int i=0;i<exportProtocolConfig.getAcqUnitList().size();i++){
+								for(int j=0;j<acqGroupQueryList.size();j++){
+									Object[] acqGroupObj=(Object[])acqGroupQueryList.get(j);
+									if(StringManagerUtils.stringToInteger(acqGroupObj[8]+"")==exportProtocolConfig.getAcqUnitList().get(i).getId()){
+										ExportProtocolConfig.AcqGroup acqGroup=new ExportProtocolConfig.AcqGroup();
+										acqGroup.setId(StringManagerUtils.stringToInteger(acqGroupObj[0]+""));
+										acqGroup.setGroupCode(acqGroupObj[1]+"");
+										acqGroup.setGroupName(acqGroupObj[2]+"");
+										acqGroup.setGroupTimingInterval(StringManagerUtils.stringToInteger(acqGroupObj[3]+""));
+										acqGroup.setGroupSavingInterval(StringManagerUtils.stringToInteger(acqGroupObj[4]+""));
+										acqGroup.setProtocol(acqGroupObj[5]+"");
+										acqGroup.setType(StringManagerUtils.stringToInteger(acqGroupObj[6]+""));
+										acqGroup.setRemark((acqGroupObj[7]+"").replaceAll("null", ""));
+										acqGroup.setAcqItemList(new ArrayList<ExportProtocolConfig.AcqItem>());
+										
+										for(int k=0;k<acqItemQueryList.size();k++){
+											Object[] acqItemObj=(Object[])acqItemQueryList.get(k);
+											if(StringManagerUtils.stringToInteger(acqItemObj[4]+"")==acqGroup.getId()){
+												ExportProtocolConfig.AcqItem acqItem=new ExportProtocolConfig.AcqItem();
+												acqItem.setId(StringManagerUtils.stringToInteger(acqItemObj[0]+""));
+												acqItem.setItemId(StringManagerUtils.stringToInteger(acqItemObj[1]+""));
+												acqItem.setItemName((acqItemObj[2]+"").replaceAll("null", ""));
+												acqItem.setItemCode((acqItemObj[3]+"").replaceAll("null", ""));
+												acqItem.setGroupId(acqGroup.getId());
+												
+												if(StringManagerUtils.isInteger(acqItemObj[5]+"")){
+													acqItem.setBitIndex(StringManagerUtils.stringToInteger(acqItemObj[5]+""));
+												}else{
+													acqItem.setBitIndex(-99);
+												}
+												acqItem.setMatrix((acqItemObj[6]+"").replaceAll("null", ""));
+												acqGroup.getAcqItemList().add(acqItem);
+											}
+										}
+										
+										exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().add(acqGroup);
+									}
+								}
+							}
+						}
+					}
+				}
+				result=gson.toJson(exportProtocolConfig);
+			}
+				
+		}
+		return result;
 	}
 	
 	public void doAcquisitionGroupAdd(AcquisitionGroup acquisitionGroup) throws Exception {

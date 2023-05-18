@@ -1,7 +1,13 @@
 package com.cosog.controller.acqUnit;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -3216,6 +3222,63 @@ public class AcquisitionUnitManagerController extends BaseController {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	/**
+	 * <p>
+	 * 描述：导出协议配置数据
+	 * </p>
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/exportProtocolConfigData")
+	public String exportProtocolConfigData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd_HHmmss");//设置日期格式
+		
+		String protocolName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "protocolName"),"utf-8");
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String protocolCode=ParamUtils.getParameter(request, "protocolCode");
+		
+		String acqUnit=ParamUtils.getParameter(request, "acqUnit");
+		String acqGroup=ParamUtils.getParameter(request, "acqGroup");
+		
+		String displayUnit=ParamUtils.getParameter(request, "displayUnit");
+		String alarmUnit=ParamUtils.getParameter(request, "alarmUnit");
+		String acqInstance=ParamUtils.getParameter(request, "acqInstance");
+		String displayInstance=ParamUtils.getParameter(request, "displayInstance");
+		String alarmInstance=ParamUtils.getParameter(request, "alarmInstance");
+		
+		String json=acquisitionUnitManagerService.exportProtocolConfigData(deviceType,protocolName,protocolCode,acqUnit,acqGroup);
+		
+		String fileName=protocolName;
+		if(!fileName.endsWith("协议")){
+			fileName+="协议";
+		}
+		
+		fileName+="导出数据"+".json";
+		
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFile(json, path);
+		try {
+        	response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            InputStream in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            OutputStream out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+            in.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+		StringManagerUtils.deleteFile(path);
 		return null;
 	}
 

@@ -4816,7 +4816,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	public String exportProtocolConfigData(String deviceType,String protocolName,String protocolCode,
-			String acqUnitStr,String acqGroupStr) {
+			String acqUnitStr,String acqGroupStr,
+			String displayUnitStr,
+			String alarmUnitStr,
+			String acqInstanceStr,
+			String displayInstanceStr,
+			String alarmInstanceStr) {
 		String result="";
 		if(StringManagerUtils.isNotNull(protocolCode)){
 			Gson gson = new Gson();
@@ -4922,11 +4927,261 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								}
 							}
 						}
+						
+						if(StringManagerUtils.isNotNull(displayUnitStr)){
+							String displayUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.acqunitid,t.remark "
+									+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
+									+ " where t.acqunitid=t2.id and t.id in ("+displayUnitStr+") and t2.id in("+acqUnitStr+") "
+									+ " order by t2.id,t.id";
+							String displayItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.sort,t.bitindex,t.showlevel,t.realtimecurveconf,t.historycurveconf,t.type,t.matrix,t.unitid "
+									+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2,tbl_acq_unit_conf t3 "
+									+ " where t.unitid=t2.id and t2.acqunitid=t3.id "
+									+ " and t2.id in ("+displayUnitStr+") and t3.id in("+acqUnitStr+") "
+									+ " order by t3.id,t2.id,t.type,t.id";
+							List<?> displayUnitQueryList = this.findCallSql(displayUnitSql);
+							List<?> displayItemQueryList = this.findCallSql(displayItemSql);
+							
+							if(displayUnitQueryList.size()>0){
+								exportProtocolConfig.setDisplayUnitList(new ArrayList<ExportProtocolConfig.DisplayUnit>());
+								for(int i=0;i<displayUnitQueryList.size();i++){
+									Object[] displayUnitObj=(Object[])displayUnitQueryList.get(i);
+									ExportProtocolConfig.DisplayUnit displayUnit=new ExportProtocolConfig.DisplayUnit();
+									displayUnit.setId(StringManagerUtils.stringToInteger(displayUnitObj[0]+""));
+									displayUnit.setUnitCode(displayUnitObj[1]+"");
+									displayUnit.setUnitName(displayUnitObj[2]+"");
+									displayUnit.setProtocol(displayUnitObj[3]+"");
+									displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(displayUnitObj[4]+""));
+									displayUnit.setRemark((displayUnitObj[5]+"").replaceAll("null", ""));
+									displayUnit.setDisplayItemList(new ArrayList<ExportProtocolConfig.DisplayItem>());
+									
+									for(int j=0;j<displayItemQueryList.size();j++){
+										Object[] displayItemObj=(Object[])displayItemQueryList.get(j);
+										if(StringManagerUtils.stringToInteger(displayItemObj[11]+"")==displayUnit.getId()){
+											ExportProtocolConfig.DisplayItem displayItem=new ExportProtocolConfig.DisplayItem();
+											displayItem.setId(StringManagerUtils.stringToInteger(displayItemObj[0]+""));
+											if(StringManagerUtils.isInteger(displayItemObj[1]+"")){
+												displayItem.setItemId(StringManagerUtils.stringToInteger(displayItemObj[1]+""));
+											}else{
+												displayItem.setItemId(-99);
+											}
+											displayItem.setItemName(displayItemObj[2]+"");
+											displayItem.setItemCode(displayItemObj[3]+"");
+											
+											if(StringManagerUtils.isInteger(displayItemObj[4]+"")){
+												displayItem.setSort(StringManagerUtils.stringToInteger(displayItemObj[4]+""));
+											}else{
+												displayItem.setSort(-99);
+											}
+											
+											if(StringManagerUtils.isInteger(displayItemObj[5]+"")){
+												displayItem.setBitIndex(StringManagerUtils.stringToInteger(displayItemObj[5]+""));
+											}else{
+												displayItem.setBitIndex(-99);
+											}
+											
+											if(StringManagerUtils.isInteger(displayItemObj[6]+"")){
+												displayItem.setShowLevel(StringManagerUtils.stringToInteger(displayItemObj[6]+""));
+											}else{
+												displayItem.setShowLevel(-99);
+											}
+											
+											displayItem.setRealtimeCurveConf((displayItemObj[7]+"").replaceAll("null", ""));
+											displayItem.setHistoryCurveConf((displayItemObj[8]+"").replaceAll("null", ""));
+											
+											displayItem.setType(StringManagerUtils.stringToInteger(displayItemObj[9]+""));
+											
+											displayItem.setMatrix((displayItemObj[10]+"").replaceAll("null", ""));
+											
+											displayItem.setUnitId(StringManagerUtils.stringToInteger(displayItemObj[11]+""));
+											
+											displayUnit.getDisplayItemList().add(displayItem);
+										}
+									}
+									
+									exportProtocolConfig.getDisplayUnitList().add(displayUnit);
+								}
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(acqInstanceStr)){
+							String acqInstanceSql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"
+									+ "t.signinprefixsuffixhex,t.signinprefix,t.signinsuffix,t.signinidhex,"
+									+ "t.heartbeatprefixsuffixhex,t.heartbeatprefix,t.heartbeatsuffix,"
+									+ "t.packetsendinterval,t.devicetype,t.sort,t.unitid "
+									+ " from TBL_PROTOCOLINSTANCE t "
+									+ " where t.id in("+acqInstanceStr+") and t.unitid in ("+acqUnitStr+") "
+									+ " order by t.id";
+							List<?> acqInstanceQueryList = this.findCallSql(acqInstanceSql);
+							if(acqInstanceQueryList.size()>0){
+								exportProtocolConfig.setAcqInstanceList(new ArrayList<ExportProtocolConfig.AcqInstance>());
+								for(int i=0;i<acqInstanceQueryList.size();i++){
+									Object[] acqInstanceObj=(Object[])acqInstanceQueryList.get(i);
+									ExportProtocolConfig.AcqInstance acqInstance=new ExportProtocolConfig.AcqInstance();
+									acqInstance.setId(StringManagerUtils.stringToInteger(acqInstanceObj[0]+""));
+									acqInstance.setName(acqInstanceObj[1]+"");
+									acqInstance.setCode(acqInstanceObj[2]+"");
+									acqInstance.setAcqProtocolType(acqInstanceObj[3]+"");
+									acqInstance.setCtrlProtocolType(acqInstanceObj[4]+"");
+									acqInstance.setSignInPrefixSuffixHex(StringManagerUtils.stringToInteger(acqInstanceObj[5]+""));
+									acqInstance.setSignInPrefix((acqInstanceObj[6]+"").replaceAll("null", ""));
+									acqInstance.setSignInSuffix((acqInstanceObj[7]+"").replaceAll("null", ""));
+									acqInstance.setSignInIDHex(StringManagerUtils.stringToInteger(acqInstanceObj[8]+""));
+									acqInstance.setHeartbeatPrefixSuffixHex(StringManagerUtils.stringToInteger(acqInstanceObj[9]+""));
+									acqInstance.setHeartbeatPrefix((acqInstanceObj[10]+"").replaceAll("null", ""));
+									acqInstance.setHeartbeatSuffix((acqInstanceObj[11]+"").replaceAll("null", ""));
+
+									if(StringManagerUtils.isInteger(acqInstanceObj[12]+"")){
+										acqInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(acqInstanceObj[12]+""));
+									}else{
+										acqInstance.setPacketSendInterval(-99);
+									}
+									
+									acqInstance.setDeviceType(StringManagerUtils.stringToInteger(acqInstanceObj[13]+""));
+
+									if(StringManagerUtils.isInteger(acqInstanceObj[14]+"")){
+										acqInstance.setSort(StringManagerUtils.stringToInteger(acqInstanceObj[14]+""));
+									}else{
+										acqInstance.setSort(-99);
+									}
+									
+									acqInstance.setUnitId(StringManagerUtils.stringToInteger(acqInstanceObj[15]+""));
+									
+									exportProtocolConfig.getAcqInstanceList().add(acqInstance);
+								}
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(displayInstanceStr) &&  StringManagerUtils.isNotNull(displayUnitStr)){
+							String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t.devicetype,t.sort "
+									+ " from TBL_PROTOCOLDISPLAYINSTANCE t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3 "
+									+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id "
+									+ " and t.id in("+displayInstanceStr+") and t2.id in("+displayUnitStr+") and t3.id in ("+acqUnitStr+") "
+									+ " order by t.displayunitid,t.id";
+							List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
+							if(displayInstanceQueryList.size()>0){
+								exportProtocolConfig.setDisplayInstanceList(new ArrayList<ExportProtocolConfig.DisplayInstance>());
+								for(int i=0;i<displayInstanceQueryList.size();i++){
+									Object[] displayInstanceObj=(Object[])displayInstanceQueryList.get(i);
+									ExportProtocolConfig.DisplayInstance displayInstance=new ExportProtocolConfig.DisplayInstance();
+									displayInstance.setId(StringManagerUtils.stringToInteger(displayInstanceObj[0]+""));
+									displayInstance.setName(displayInstanceObj[1]+"");
+									displayInstance.setCode(displayInstanceObj[2]+"");
+									displayInstance.setDisplayUnitId(StringManagerUtils.stringToInteger(displayInstanceObj[3]+""));
+									displayInstance.setDeviceType(StringManagerUtils.stringToInteger(displayInstanceObj[4]+""));
+									
+									if(StringManagerUtils.isInteger(displayInstanceObj[5]+"")){
+										displayInstance.setSort(StringManagerUtils.stringToInteger(displayInstanceObj[5]+""));
+									}else{
+										displayInstance.setSort(-99);
+									}
+									
+									exportProtocolConfig.getDisplayInstanceList().add(displayInstance);
+									
+								}
+							}
+						}
+					}
+				}
+				
+				if(StringManagerUtils.isNotNull(alarmUnitStr)){
+					String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark from TBL_ALARM_UNIT_CONF t where t.protocol='"+protocol.getName()+"'";
+					String alarmItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.itemaddr,t.value,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+							+ " t.alarmlevel,t.alarmsign,t.type,t.bitindex,t.issendmessage,t.issendmail,t.unitid "
+							+ " from tbl_alarm_item2unit_conf t,  TBL_ALARM_UNIT_CONF t2 "
+							+ " where t.unitid=t2.id "
+							+ " and t2.protocol='"+protocol.getName()+"' "
+							+ " order by t2.id,t.id";
+					List<?> alarmUnitQueryList = this.findCallSql(alarmUnitSql);
+					List<?> alarmItemQueryList = this.findCallSql(alarmItemSql);
+					
+					if(alarmUnitQueryList.size()>0){
+						exportProtocolConfig.setAlarmUnitList(new ArrayList<ExportProtocolConfig.AlarmUnit>());
+						for(int i=0;i<alarmUnitQueryList.size();i++){
+							Object[] alarmUnitObj=(Object[])alarmUnitQueryList.get(i);
+							ExportProtocolConfig.AlarmUnit alarmUnit=new ExportProtocolConfig.AlarmUnit();
+							alarmUnit.setId(StringManagerUtils.stringToInteger(alarmUnitObj[0]+""));
+							alarmUnit.setUnitCode(alarmUnitObj[1]+"");
+							alarmUnit.setUnitName(alarmUnitObj[2]+"");
+							alarmUnit.setProtocol(alarmUnitObj[3]+"");
+							alarmUnit.setRemark((alarmUnitObj[4]+"").replaceAll("null", ""));
+							alarmUnit.setAlarmItemList(new ArrayList<ExportProtocolConfig.AlarmItem>());
+							for(int j=0;j<alarmItemQueryList.size();j++){
+								Object[] alarmItemObj=(Object[])alarmItemQueryList.get(j);
+								if(StringManagerUtils.stringToInteger(alarmItemObj[16]+"")==alarmUnit.getId()){
+									ExportProtocolConfig.AlarmItem  alarmItem=new ExportProtocolConfig.AlarmItem();
+									alarmItem.setId(StringManagerUtils.stringToInteger(alarmItemObj[0]+""));
+									if(StringManagerUtils.isInteger(alarmItemObj[1]+"")){
+										alarmItem.setItemId(StringManagerUtils.stringToInteger(alarmItemObj[1]+""));
+									}else{
+										alarmItem.setItemId(-99);
+									}
+									alarmItem.setItemName(alarmItemObj[2]+"");
+									alarmItem.setItemCode(alarmItemObj[3]+"");
+									if(StringManagerUtils.isInteger(alarmItemObj[4]+"")){
+										alarmItem.setItemAddr(StringManagerUtils.stringToInteger(alarmItemObj[4]+""));
+									}else{
+										alarmItem.setItemAddr(-99);
+									}
+									alarmItem.setValue(StringManagerUtils.stringToFloat(alarmItemObj[5]+""));
+									alarmItem.setUpperLimit(StringManagerUtils.stringToFloat(alarmItemObj[6]+""));
+									alarmItem.setLowerLimit(StringManagerUtils.stringToFloat(alarmItemObj[7]+""));
+									alarmItem.setHystersis(StringManagerUtils.stringToFloat(alarmItemObj[8]+""));
+									alarmItem.setDelay(StringManagerUtils.stringToInteger(alarmItemObj[9]+""));
+									
+									alarmItem.setAlarmLevel(StringManagerUtils.stringToInteger(alarmItemObj[10]+""));
+									alarmItem.setAlarmSign(StringManagerUtils.stringToInteger(alarmItemObj[11]+""));
+									alarmItem.setType(StringManagerUtils.stringToInteger(alarmItemObj[12]+""));
+									
+									if(StringManagerUtils.isInteger(alarmItemObj[13]+"")){
+										alarmItem.setBitIndex(StringManagerUtils.stringToInteger(alarmItemObj[13]+""));
+									}else{
+										alarmItem.setBitIndex(-99);
+									}
+									
+									alarmItem.setIsSendMessage(StringManagerUtils.stringToInteger(alarmItemObj[14]+""));
+									alarmItem.setIsSendMail(StringManagerUtils.stringToInteger(alarmItemObj[15]+""));
+									
+									alarmItem.setUnitId(StringManagerUtils.stringToInteger(alarmItemObj[16]+""));
+									
+									alarmUnit.getAlarmItemList().add(alarmItem);
+								}
+							}
+							
+							exportProtocolConfig.getAlarmUnitList().add(alarmUnit);
+						}
+						
+						if(StringManagerUtils.isNotNull(alarmInstanceStr)){
+							String alarmInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t.devicetype,t.sort "
+									+ " from TBL_PROTOCOLALARMINSTANCE t,tbl_alarm_unit_conf t2 "
+									+ " where t.alarmunitid=t2.id "
+									+ " and t.id in ("+alarmInstanceStr+") and t2.id in ("+alarmUnitStr+") "
+									+ " order by t.alarmunitid,t.id";
+							List<?> alarmInstanceQueryList = this.findCallSql(alarmInstanceSql);
+							if(alarmInstanceQueryList.size()>0){
+								exportProtocolConfig.setAlarmInstanceList(new ArrayList<ExportProtocolConfig.AlarmInstance>());
+								for(int i=0;i<alarmInstanceQueryList.size();i++){
+									Object[] alarmInstanceObj=(Object[])alarmInstanceQueryList.get(i);
+									ExportProtocolConfig.AlarmInstance alarmInstance=new ExportProtocolConfig.AlarmInstance();
+									alarmInstance.setId(StringManagerUtils.stringToInteger(alarmInstanceObj[0]+""));
+									alarmInstance.setName(alarmInstanceObj[1]+"");
+									alarmInstance.setCode(alarmInstanceObj[2]+"");
+									alarmInstance.setAlarmUnitId(StringManagerUtils.stringToInteger(alarmInstanceObj[3]+""));
+									alarmInstance.setDeviceType(StringManagerUtils.stringToInteger(alarmInstanceObj[4]+""));
+									
+									if(StringManagerUtils.isInteger(alarmInstanceObj[5]+"")){
+										alarmInstance.setSort(StringManagerUtils.stringToInteger(alarmInstanceObj[5]+""));
+									}else{
+										alarmInstance.setSort(-99);
+									}
+									
+									exportProtocolConfig.getAlarmInstanceList().add(alarmInstance);
+								}
+							}
+						}
 					}
 				}
 				result=gson.toJson(exportProtocolConfig);
 			}
-				
 		}
 		return result;
 	}

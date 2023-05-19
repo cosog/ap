@@ -3252,7 +3252,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String displayInstance=ParamUtils.getParameter(request, "displayInstance");
 		String alarmInstance=ParamUtils.getParameter(request, "alarmInstance");
 		
-		String json=acquisitionUnitManagerService.exportProtocolConfigData(deviceType,protocolName,protocolCode,acqUnit,acqGroup);
+		String json=acquisitionUnitManagerService.exportProtocolConfigData(deviceType,protocolName,protocolCode,acqUnit,acqGroup,displayUnit,alarmUnit,acqInstance,displayInstance,alarmInstance);
 		
 		String fileName=protocolName;
 		if(!fileName.endsWith("协议")){

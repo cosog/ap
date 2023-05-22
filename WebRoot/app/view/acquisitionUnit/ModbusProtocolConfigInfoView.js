@@ -71,10 +71,8 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			text: '导入',
         			iconCls: 'import',
         			handler: function (v, o) {
-//        				var window = Ext.create("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
-//                            title: '存储字段表'
-//                        });
-//                        window.show();
+        				var window = Ext.create("AP.view.acquisitionUnit.ProtocolImportWindow");
+                        window.show();
         			}
                 }],
                 layout: "border",

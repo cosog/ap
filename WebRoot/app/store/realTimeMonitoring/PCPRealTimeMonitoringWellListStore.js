@@ -59,6 +59,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                     		Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		var deviceName=record.data.wellName;
                     		var deviceType=1;
+                    		var deviceId=record.data.id;
                     		
                     		var combDeviceName=Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').getValue();
                     		if(combDeviceName!=''){

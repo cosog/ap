@@ -105,6 +105,7 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
+import org.springframework.web.multipart.MultipartFile;
 
 import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
@@ -2407,6 +2408,7 @@ public class StringManagerUtils {
         path = path + path0 + index4Str;
         return path;
     }
+
 
     public static byte[] subBytes(byte[] src, int begin, int count) {
         byte[] bs = new byte[count];

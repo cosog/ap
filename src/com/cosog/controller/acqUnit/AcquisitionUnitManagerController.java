@@ -1,7 +1,9 @@
 package com.cosog.controller.acqUnit;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -31,6 +34,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.AcquisitionGroup;
@@ -55,6 +60,7 @@ import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
 import com.cosog.model.RunStatusConfig;
 import com.cosog.model.User;
+import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmInstanceSaveData;
@@ -81,6 +87,7 @@ import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.BackModuleRecursion;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
+import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
@@ -92,6 +99,8 @@ import com.cosog.utils.TcpServerConfigMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import jxl.Sheet;
+import jxl.Workbook;
 import redis.clients.jedis.Jedis;
 
 /** <p>描述：角色维护管理Action</p>
@@ -3279,6 +3288,71 @@ public class AcquisitionUnitManagerController extends BaseController {
             e.printStackTrace();
         }
 		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/getImportedProtocolFile")
+	public String getImportedProtocolFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String protocolName="";
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		if(exportProtocolConfig!=null){
+			map.remove("importedProtocolFileMap");
+			exportProtocolConfig=null;
+		}
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+//		System.out.println(fileContent);
+		
+		type = new TypeToken<ExportProtocolConfig>() {}.getType();
+		exportProtocolConfig=gson.fromJson(fileContent, type);
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && StringManagerUtils.isNotNull(exportProtocolConfig.getProtocol().getName())){
+			flag=true;
+			protocolName=exportProtocolConfig.getProtocol().getName();
+			map.put("importedProtocolFileMap", exportProtocolConfig);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+",\"protocolName\":\""+protocolName+"\"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportedProtocolContentTreeData")
+	public String getImportedProtocolContentTreeData() throws IOException {
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && StringManagerUtils.isNotNull(exportProtocolConfig.getProtocol().getName())){
+			
+		}
+		result_json.append("]");
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json=result_json.toString();
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 

@@ -32,6 +32,12 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     rootVisible: false,
                     autoScroll: true,
                     forceFit: true,
+                    selModel: {
+                    	selType: 'checkboxmodel',
+                    	mode:'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	checkOnly:true,
+                    	allowDeselect:true
+                    },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
                         forceFit: true
@@ -54,14 +60,27 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         dataIndex: 'id'
                     }],
                     listeners: {
+                    	rowclick: function( grid, record, element, index, e, eOpts) {
+//                    		alert(record.data.classes);
+                    		if(record.data.classes>0){
+                    			var type=0;
+                    			if(record.data.classes==1){
+                    				type=record.parentNode.data.type;
+                    			}
+                    			
+                    			CreateImportProtocolContentInfoTable(record.data.id,record.data.classes,type);
+                    		}
+                    	},
                     	checkchange: function (node, checked) {
                     		
                         },
                         selectionchange ( view, selected, eOpts ){
                         	
-                        },select( v, record, index, eOpts ){
+                        },
+                        select( v, record, index, eOpts ){
                         	
-                        },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+                        },
+                        beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
                         }
                     }
@@ -70,6 +89,8 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                 var panel = Ext.getCmp("importPootocolTreePanel_Id");
                 panel.add(treeGridPanel);
             }
+            treeGridPanel.getSelectionModel().deselectAll(true);
+            treeGridPanel.getSelectionModel().selectAll(true);
             
 //            var selectRow=0;
 //            for(var i=0;i<store.data.items.length;i++){

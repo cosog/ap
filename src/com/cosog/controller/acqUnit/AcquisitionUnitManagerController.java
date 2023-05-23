@@ -3339,16 +3339,201 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getImportedProtocolContentTreeData")
 	public String getImportedProtocolContentTreeData() throws IOException {
 		StringBuffer result_json = new StringBuffer();
+		StringBuffer acqUnit_json = new StringBuffer();
+		StringBuffer displayUnit_json = new StringBuffer();
+		StringBuffer alarmUnit_json = new StringBuffer();
+		StringBuffer acqInstance_json = new StringBuffer();
+		StringBuffer displayInstance_json = new StringBuffer();
+		StringBuffer alarmInstance_json = new StringBuffer();
+		
+		
 		result_json.append("[");
+		acqUnit_json.append("[");
+		displayUnit_json.append("[");
+		alarmUnit_json.append("[");
+		acqInstance_json.append("[");
+		displayInstance_json.append("[");
+		alarmInstance_json.append("[");
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && StringManagerUtils.isNotNull(exportProtocolConfig.getProtocol().getName())){
+			if(exportProtocolConfig.getAcqUnitList()!=null && exportProtocolConfig.getAcqUnitList().size()>0){
+				for(int i=0;i<exportProtocolConfig.getAcqUnitList().size();i++){
+					acqUnit_json.append("{\"classes\":1,");
+					acqUnit_json.append("\"id\":"+exportProtocolConfig.getAcqUnitList().get(i).getId()+",");
+					acqUnit_json.append("\"code\":\""+exportProtocolConfig.getAcqUnitList().get(i).getUnitCode()+"\",");
+					acqUnit_json.append("\"text\":\""+exportProtocolConfig.getAcqUnitList().get(i).getUnitName()+"\",");
+					acqUnit_json.append("\"remark\":\""+exportProtocolConfig.getAcqUnitList().get(i).getRemark()+"\",");
+					acqUnit_json.append("\"protocol\":\""+exportProtocolConfig.getAcqUnitList().get(i).getProtocol()+"\",");
+					acqUnit_json.append("\"iconCls\": \"acqUnit\",");
+					acqUnit_json.append("\"expanded\": true,");
+					acqUnit_json.append("\"children\": [");
+					
+					if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList()!=null && exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().size()>0){
+						for(int j=0;j<exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().size();j++){
+							acqUnit_json.append("{\"classes\":2,");
+							acqUnit_json.append("\"id\":"+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getId()+",");
+							acqUnit_json.append("\"code\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getGroupCode()+"\",");
+							acqUnit_json.append("\"text\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getGroupName()+"\",");
+							acqUnit_json.append("\"groupTimingInterval\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getGroupTimingInterval()+"\",");
+							acqUnit_json.append("\"groupSavingInterval\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getGroupSavingInterval()+"\",");
+							acqUnit_json.append("\"remark\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getRemark()+"\",");
+							acqUnit_json.append("\"protocol\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getProtocol()+"\",");
+							acqUnit_json.append("\"type\":"+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getType()+",");
+							acqUnit_json.append("\"typeName\":\""+(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getType()==0?"采集组":"控制组")+"\",");
+							acqUnit_json.append("\"iconCls\": \"acqGroup\",");
+							acqUnit_json.append("\"leaf\": true");
+							acqUnit_json.append("},");
+						}
+					}
+					if(acqUnit_json.toString().endsWith(",")){
+						acqUnit_json.deleteCharAt(acqUnit_json.length() - 1);
+					}
+					acqUnit_json.append("]},");
+				}
+			}
 			
+			if(exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0){
+				for(int i=0;i<exportProtocolConfig.getDisplayUnitList().size();i++){
+					displayUnit_json.append("{\"classes\":1,");
+					displayUnit_json.append("\"id\":"+exportProtocolConfig.getDisplayUnitList().get(i).getId()+",");
+					displayUnit_json.append("\"code\":\""+exportProtocolConfig.getDisplayUnitList().get(i).getUnitCode()+"\",");
+					displayUnit_json.append("\"text\":\""+exportProtocolConfig.getDisplayUnitList().get(i).getUnitName()+"\",");
+					displayUnit_json.append("\"remark\":\""+exportProtocolConfig.getDisplayUnitList().get(i).getRemark()+"\",");
+					displayUnit_json.append("\"protocol\":\""+exportProtocolConfig.getDisplayUnitList().get(i).getProtocol()+"\",");
+					displayUnit_json.append("\"acqUnitId\":\""+exportProtocolConfig.getDisplayUnitList().get(i).getAcqUnitId()+"\",");
+					displayUnit_json.append("\"iconCls\": \"acqUnit\",");
+					displayUnit_json.append("\"leaf\": true");
+					displayUnit_json.append("},");
+				}
+			}
+			
+			if(exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					alarmUnit_json.append("{\"classes\":1,");
+					alarmUnit_json.append("\"id\":"+exportProtocolConfig.getAlarmUnitList().get(i).getId()+",");
+					alarmUnit_json.append("\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getUnitCode()+"\",");
+					alarmUnit_json.append("\"text\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getUnitName()+"\",");
+					alarmUnit_json.append("\"remark\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getRemark()+"\",");
+					alarmUnit_json.append("\"protocol\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getProtocol()+"\",");
+					alarmUnit_json.append("\"iconCls\": \"acqGroup\",");
+					alarmUnit_json.append("\"leaf\": true");
+					alarmUnit_json.append("},");
+				}
+			}
+			
+			if(exportProtocolConfig.getAcqInstanceList()!=null && exportProtocolConfig.getAcqInstanceList().size()>0){
+				for(int i=0;i<exportProtocolConfig.getAcqInstanceList().size();i++){
+					acqInstance_json.append("{\"classes\":1,");
+					acqInstance_json.append("\"id\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getId()+"\",");
+					acqInstance_json.append("\"text\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getName()+"\",");
+					acqInstance_json.append("\"code\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getCode()+"\",");
+					acqInstance_json.append("\"acqProtocolType\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getAcqProtocolType()+"\",");
+					acqInstance_json.append("\"ctrlProtocolType\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getCtrlProtocolType()+"\",");
+					
+					acqInstance_json.append("\"signInPrefixSuffixHex\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getSignInPrefixSuffixHex()+"\",");
+					acqInstance_json.append("\"signInPrefix\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getSignInPrefix()+"\",");
+					acqInstance_json.append("\"signInSuffix\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getSignInSuffix()+"\",");
+					acqInstance_json.append("\"signInIDHex\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getSignInIDHex()+"\",");
+					
+					acqInstance_json.append("\"heartbeatPrefixSuffixHex\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getHeartbeatPrefixSuffixHex()+"\",");
+					acqInstance_json.append("\"heartbeatPrefix\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getHeartbeatPrefix()+"\",");
+					acqInstance_json.append("\"heartbeatSuffix\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getHeartbeatSuffix()+"\",");
+					
+					acqInstance_json.append("\"packetSendInterval\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getPacketSendInterval()+"\",");
+					acqInstance_json.append("\"deviceType\":"+exportProtocolConfig.getAcqInstanceList().get(i).getDeviceType()+",");
+					acqInstance_json.append("\"sort\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getSort()+"\",");
+					acqInstance_json.append("\"iconCls\": \"acqGroup\",");
+					acqInstance_json.append("\"leaf\": true},");
+				}
+			}
+			
+			if(exportProtocolConfig.getDisplayInstanceList()!=null && exportProtocolConfig.getDisplayInstanceList().size()>0){
+				for(int i=0;i<exportProtocolConfig.getDisplayInstanceList().size();i++){
+					displayInstance_json.append("{\"classes\":1,");
+					displayInstance_json.append("\"id\":\""+exportProtocolConfig.getDisplayInstanceList().get(i).getId()+"\",");
+					displayInstance_json.append("\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(i).getName()+"\",");
+					displayInstance_json.append("\"code\":\""+exportProtocolConfig.getDisplayInstanceList().get(i).getCode()+"\",");
+					displayInstance_json.append("\"displayUnitId\":"+exportProtocolConfig.getDisplayInstanceList().get(i).getDisplayUnitId()+",");
+					displayInstance_json.append("\"deviceType\":"+exportProtocolConfig.getDisplayInstanceList().get(i).getDeviceType()+",");
+					displayInstance_json.append("\"sort\":\""+exportProtocolConfig.getDisplayInstanceList().get(i).getSort()+"\",");
+					displayInstance_json.append("\"iconCls\": \"protocol\",");
+					displayInstance_json.append("\"leaf\": true},");
+				}
+			}
+			
+			if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+					alarmInstance_json.append("{\"classes\":1,");
+					alarmInstance_json.append("\"id\":\""+exportProtocolConfig.getAlarmInstanceList().get(i).getId()+"\",");
+					alarmInstance_json.append("\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(i).getName()+"\",");
+					alarmInstance_json.append("\"code\":\""+exportProtocolConfig.getAlarmInstanceList().get(i).getCode()+"\",");
+					alarmInstance_json.append("\"alarmUnitId\":"+exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId()+",");
+					alarmInstance_json.append("\"deviceType\":"+exportProtocolConfig.getAlarmInstanceList().get(i).getDeviceType()+",");
+					alarmInstance_json.append("\"sort\":\""+exportProtocolConfig.getAlarmInstanceList().get(i).getSort()+"\",");
+					alarmInstance_json.append("\"iconCls\": \"protocol\",");
+					alarmInstance_json.append("\"leaf\": true},");
+				}
+			}
 		}
+		if(acqUnit_json.toString().endsWith(",")){
+			acqUnit_json.deleteCharAt(acqUnit_json.length() - 1);
+		}
+		acqUnit_json.append("]");
+		
+		if(displayUnit_json.toString().endsWith(",")){
+			displayUnit_json.deleteCharAt(displayUnit_json.length() - 1);
+		}
+		displayUnit_json.append("]");
+		
+		if(alarmUnit_json.toString().endsWith(",")){
+			alarmUnit_json.deleteCharAt(alarmUnit_json.length() - 1);
+		}
+		alarmUnit_json.append("]");
+		
+		if(acqInstance_json.toString().endsWith(",")){
+			acqInstance_json.deleteCharAt(acqInstance_json.length() - 1);
+		}
+		acqInstance_json.append("]");
+		
+		if(displayInstance_json.toString().endsWith(",")){
+			displayInstance_json.deleteCharAt(displayInstance_json.length() - 1);
+		}
+		displayInstance_json.append("]");
+		
+		if(alarmInstance_json.toString().endsWith(",")){
+			alarmInstance_json.deleteCharAt(alarmInstance_json.length() - 1);
+		}
+		alarmInstance_json.append("]");
+		
+		result_json.append("{\"classes\":0,\"type\":0,\"text\":\"采控单元\",\"iconCls\": \"protocol\",\"expanded\": true,\"children\": "+acqUnit_json+"},");
+		result_json.append("{\"classes\":0,\"type\":1,\"text\":\"显示单元\",\"iconCls\": \"protocol\",\"expanded\": true,\"children\": "+displayUnit_json+"},");
+		result_json.append("{\"classes\":0,\"type\":2,\"text\":\"报警单元\",\"iconCls\": \"protocol\",\"expanded\": true,\"children\": "+alarmUnit_json+"},");
+		result_json.append("{\"classes\":0,\"type\":3,\"text\":\"采控实例\",\"iconCls\": \"protocol\",\"expanded\": true,\"children\": "+acqInstance_json+"},");
+		result_json.append("{\"classes\":0,\"type\":4,\"text\":\"显示实例\",\"iconCls\": \"protocol\",\"expanded\": true,\"children\": "+displayInstance_json+"},");
+		result_json.append("{\"classes\":0,\"type\":5,\"text\":\"报警实例\",\"iconCls\": \"protocol\",\"expanded\": true,\"children\": "+alarmInstance_json+"}");
+		
 		result_json.append("]");
+		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json=result_json.toString();
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportProtocolContentData")
+	public String getImportProtocolContentData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolContentData(id,classes,type);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
 		pw.flush();

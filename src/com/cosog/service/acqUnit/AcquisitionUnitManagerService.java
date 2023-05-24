@@ -5208,75 +5208,123 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		List<String> itemsList=new ArrayList<String>();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		
-		String protocolSql="select t.protocol from tbl_acq_unit_conf t,tbl_protocolinstance t2 where t2.unitid=t.id and t2.id="+id+"";
-		String itemsSql="select distinct(t.itemname) "
-				+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_protocolinstance t5 "
-				+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t5.id="+id+"";
-		if("1".equals(classes) && "0".equals(type)){//采控单元
-			protocolSql="select t.protocol from tbl_acq_unit_conf t where t.id="+id+"";
-			itemsSql="select distinct(t.itemname) "
-					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
-					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+id+"";
-		}else if("2".equals(classes)){//采控组
-			protocolSql="select t.protocol from tbl_acq_group_conf t where t.id="+id+"";
-			itemsSql="select distinct(t.itemname) "
-					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2 "
-					+ " where t.groupid=t2.id and t2.id="+id+"";
-		}else if("1".equals(classes) && "3".equals(type)){//采控实例
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
+			ModbusProtocolConfig.Protocol protocolConfig=exportProtocolConfig.getProtocol();
 			
-		}
-		List<?> protocolList=this.findCallSql(protocolSql);
-		if(protocolList.size()>0){
-			String protocolName=protocolList.get(0)+"";
-			List<?> list=this.findCallSql(itemsSql);
-			for(int i=0;i<list.size();i++){
-				itemsList.add(list.get(i)+"");
-			}
-			if(modbusProtocolConfig!=null){
-				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					ModbusProtocolConfig.Protocol protocolConfig=modbusProtocolConfig.getProtocol().get(i);
-					if(protocolName.equalsIgnoreCase(protocolConfig.getName())){
-						Collections.sort(protocolConfig.getItems());
-						for(int j=0;j<protocolConfig.getItems().size();j++){
-							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
-//								if(RWType.equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){}
-								String RWTypeName="只读";
-								if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-									RWTypeName="只读";
-								}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-									RWTypeName="只写";
-								}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-									RWTypeName="读写";
+			if("1".equals(classes) && "0".equals(type) && exportProtocolConfig.getAcqUnitList()!=null && exportProtocolConfig.getAcqUnitList().size()>0){//采控单元
+				for(int i=0;i<exportProtocolConfig.getAcqUnitList().size();i++){
+					if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAcqUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList()!=null){
+							for(int j=0;j<exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().size();j++){
+								if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList()!=null){
+									for(int k=0;k<exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().size();k++){
+										if(!StringManagerUtils.existOrNot(itemsList, exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().get(k).getItemName(),false)){
+											itemsList.add(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().get(k).getItemName());
+										}
+									}
 								}
 								
-								String resolutionMode="数据量";
-								if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-									resolutionMode="开关量";
-								}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-									resolutionMode="枚举量";
-								}
 								
-								result_json.append("{\"id\":"+index+","
-										+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-										+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
-										+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
-										+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
-										+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
-										+ "\"prec\":"+(protocolConfig.getItems().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?protocolConfig.getItems().get(j).getPrec():"\"\"")+","
-										+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
-										+ "\"RWType\":\""+RWTypeName+"\","
-										+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-										+ "\"resolutionMode\":\""+resolutionMode+"\","
-										+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
-								index++;
 							}
 						}
+						
 						break;
 					}
 				}
+			}else if("1".equals(classes) && "3".equals(type) && exportProtocolConfig.getAcqInstanceList()!=null && exportProtocolConfig.getAcqInstanceList().size()>0){//采控实例
+				int acqUnitId=0;
+				for(int i=0;i<exportProtocolConfig.getAcqInstanceList().size();i++){
+					if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAcqInstanceList().get(i).getId()){
+						acqUnitId=exportProtocolConfig.getAcqInstanceList().get(i).getUnitId();
+						break;
+					}
+				}
+				
+				if(exportProtocolConfig.getAcqUnitList()!=null && exportProtocolConfig.getAcqUnitList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAcqUnitList().size();i++){
+						if(acqUnitId==exportProtocolConfig.getAcqUnitList().get(i).getId()){
+							if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList()!=null){
+								for(int j=0;j<exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().size();j++){
+									if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList()!=null){
+										for(int k=0;k<exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().size();k++){
+											if(!StringManagerUtils.existOrNot(itemsList, exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().get(k).getItemName(),false)){
+												itemsList.add(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().get(k).getItemName());
+											}
+										}
+									}
+								}
+							}
+							break;
+						}
+					}
+				}
+			}else if("2".equals(classes) && "0".equals(type)){//采控组
+				if(exportProtocolConfig.getAcqUnitList()!=null && exportProtocolConfig.getAcqUnitList().size()>0){
+					
+					for(int i=0;i<exportProtocolConfig.getAcqUnitList().size();i++){
+						boolean match=false;
+						if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList()!=null){
+							if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList()!=null){
+								for(int j=0;j<exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().size();j++){
+									if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getId()){
+										match=true;
+										if(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList()!=null){
+											for(int k=0;k<exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().size();k++){
+												if(!StringManagerUtils.existOrNot(itemsList, exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().get(k).getItemName(),false)){
+													itemsList.add(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getAcqItemList().get(k).getItemName());
+												}
+											}
+										}
+										break;
+									}
+								}
+							}
+						}
+						if(match){
+							break;
+						}
+					}
+					
+				}
 			}
-			
+
+			Collections.sort(protocolConfig.getItems());
+			for(int j=0;j<protocolConfig.getItems().size();j++){
+				if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
+					String RWTypeName="只读";
+					if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+						RWTypeName="只读";
+					}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+						RWTypeName="只写";
+					}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+						RWTypeName="读写";
+					}
+					
+					String resolutionMode="数据量";
+					if(protocolConfig.getItems().get(j).getResolutionMode()==0){
+						resolutionMode="开关量";
+					}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
+						resolutionMode="枚举量";
+					}
+					
+					result_json.append("{\"id\":"+index+","
+							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+							+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
+							+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
+							+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
+							+ "\"prec\":"+(protocolConfig.getItems().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?protocolConfig.getItems().get(j).getPrec():"\"\"")+","
+							+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
+							+ "\"RWType\":\""+RWTypeName+"\","
+							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+							+ "\"resolutionMode\":\""+resolutionMode+"\","
+							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
+					index++;
+				}
+			}
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

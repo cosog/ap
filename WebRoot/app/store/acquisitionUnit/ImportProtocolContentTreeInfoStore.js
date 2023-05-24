@@ -66,9 +66,13 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     			var type=0;
                     			if(record.data.classes==1){
                     				type=record.parentNode.data.type;
+                    			}else if(record.data.classes==2){
+                    				type=record.parentNode.parentNode.data.type;
                     			}
                     			
                     			CreateImportProtocolContentInfoTable(record.data.id,record.data.classes,type);
+                    		}else{
+                    			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").removeAll();
                     		}
                     	},
                     	checkchange: function (node, checked) {

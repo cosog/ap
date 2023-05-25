@@ -1277,12 +1277,42 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getImportProtocolDisplayInstanceAcqItemsConfigData")
+	public String getImportProtocolDisplayInstanceAcqItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceAcqItemsConfigData(id,type);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolDisplayInstanceCtrlItemsConfigData")
 	public String getProtocolDisplayInstanceCtrlItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCtrlItemsConfigData(id,classes);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportProtocolDisplayInstanceCtrlItemsConfigData")
+	public String getImportProtocolDisplayInstanceCtrlItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceCtrlItemsConfigData(id,type);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1308,6 +1338,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getImportProtocolDisplayInstanceCalItemsConfigData")
+	public String getImportProtocolDisplayInstanceCalItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceCalItemsConfigData(id,type);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolAlarmInstanceNumItemsConfigData")
 	public String getProtocolAlarmInstanceNumItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
@@ -1316,6 +1361,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceNumItemsConfigData(id,classes,resolutionMode);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportProtocolAlarmContentNumItemsConfigData")
+	public String getImportProtocolAlarmContentNumItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentNumItemsConfigData(id,type);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1343,6 +1403,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getImportProtocolAlarmContentCalNumItemsConfigData")
+	public String getImportProtocolAlarmContentCalNumItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentCalNumItemsConfigData(id,type);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolAlarmInstanceSwitchItemsConfigData")
 	public String getProtocolAlarmInstanceSwitchItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
@@ -1351,6 +1426,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceSwitchItemsConfigData(id,classes,resolutionMode);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportProtocolAlarmContentSwitchItemsConfigData")
+	public String getImportProtocolAlarmContentSwitchItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentSwitchItemsConfigData(id,type);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1377,6 +1467,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getImportProtocolAlarmContentEnumItemsConfigData")
+	public String getImportProtocolAlarmContentEnumItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentEnumItemsConfigData(id,type);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolAlarmInstanceFESDiagramResultItemsConfigData")
 	public String getProtocolAlarmInstanceFESDiagramResultItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
@@ -1385,6 +1490,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceFESDiagramResultItemsConfigData(id,classes,resolutionMode);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportProtocolAlarmContentFESDiagramResultItemsConfigData")
+	public String getImportProtocolAlarmContentFESDiagramResultItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentFESDiagramResultItemsConfigData(id,type);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1411,6 +1531,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getImportProtocolAlarmContentRunStatusItemsConfigData")
+	public String getImportProtocolAlarmContentRunStatusItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentRunStatusItemsConfigData(id,type);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolAlarmInstanceCommStatusItemsConfigData")
 	public String getProtocolAlarmInstanceCommStatusItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
@@ -1419,6 +1554,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceCommStatusItemsConfigData(id,classes,resolutionMode);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportProtocolAlarmContentCommStatusItemsConfigData")
+	public String getImportProtocolAlarmContentCommStatusItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentCommStatusItemsConfigData(id,type);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

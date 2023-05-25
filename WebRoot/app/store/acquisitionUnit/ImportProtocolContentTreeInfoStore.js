@@ -63,15 +63,22 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     	rowclick: function( grid, record, element, index, e, eOpts) {
 //                    		alert(record.data.classes);
                     		if(record.data.classes>0){
-                    			var type=0;
+                    			var selectedType=parseInt(Ext.getCmp("ImportProtocolSelectItemType_Id").getValue());
+                    			var typeChange=false;
+                    			var type=-99;
                     			if(record.data.classes==1){
                     				type=record.parentNode.data.type;
                     			}else if(record.data.classes==2){
                     				type=record.parentNode.parentNode.data.type;
                     			}
-                    			
-                    			CreateImportProtocolContentInfoTable(record.data.id,record.data.classes,type);
+                    			typeChange=(selectedType==type);
+//                    			typeChange=!(selectedType==type || (selectedType+type)==3  );
+                    			Ext.getCmp("ImportProtocolSelectItemType_Id").setValue(type);
+                    			Ext.getCmp("ImportProtocolSelectItemId_Id").setValue(record.data.id);
+                    			CreateImportProtocolContentInfoTable(record.data.id,record.data.classes,type,typeChange);
                     		}else{
+                    			Ext.getCmp("ImportProtocolSelectItemType_Id").setValue(-99);
+                    			Ext.getCmp("ImportProtocolSelectItemId_Id").setValue(-99);
                     			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").removeAll();
                     		}
                     	},

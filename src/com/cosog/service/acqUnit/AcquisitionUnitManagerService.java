@@ -2630,7 +2630,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getProtocolAlarmInstanceEnumItemsConfigData(String id,String classes,String resolutionMode){
 		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -5189,9 +5188,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getImportProtocolContentData(String id,String classes,String type){
 		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
 		int index=1;
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
@@ -5332,6 +5329,966 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append("}");
 		return result_json.toString();
+	}
+	
+	public String getImportProtocolDisplayInstanceAcqItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "]";
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		List<String> itemsList=new ArrayList<String>();
+		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsBitIndexList=new ArrayList<String>();
+		List<String> itemsShowLevelList=new ArrayList<String>();
+		List<String> realtimeCurveConfList=new ArrayList<String>();
+		List<String> historyCurveConfList=new ArrayList<String>();
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==1){//显示单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==4){//显示实例
+				if(exportProtocolConfig.getDisplayInstanceList()!=null && exportProtocolConfig.getDisplayInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getDisplayInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getDisplayInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getDisplayInstanceList().get(i).getDisplayUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getDisplayUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getDisplayUnitList().get(i).getId()){
+						if(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList()!=null){
+							for(int j=0;j<exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().size();j++){
+								if(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getType()==0){
+									itemsList.add(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getItemName());
+									itemsBitIndexList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getBitIndex()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getBitIndex())+"");
+									itemsSortList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getSort()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getSort())+"");
+									itemsShowLevelList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getShowLevel()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getShowLevel())+"");
+									
+									String realtimeCurveConfShowValue="";
+									String historyCurveConfShowValue="";
+									
+									CurveConf realtimeCurveConfObj=null;
+									if(StringManagerUtils.isNotNull(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getRealtimeCurveConf()) && !"\"\"".equals(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getRealtimeCurveConf())){
+										type = new TypeToken<CurveConf>() {}.getType();
+										realtimeCurveConfObj=gson.fromJson(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getRealtimeCurveConf(), type);
+									}
+									
+									CurveConf historyCurveConfObj=null;
+									if(StringManagerUtils.isNotNull(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getHistoryCurveConf()) && !"\"\"".equals(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getHistoryCurveConf())){
+										type = new TypeToken<CurveConf>() {}.getType();
+										historyCurveConfObj=gson.fromJson(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getHistoryCurveConf(), type);
+									}
+									
+									if(realtimeCurveConfObj!=null){
+										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+									}
+									if(historyCurveConfObj!=null){
+										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+									}
+									
+									realtimeCurveConfList.add(realtimeCurveConfShowValue);
+									historyCurveConfList.add(historyCurveConfShowValue);
+								}
+							}
+						}
+						
+						break;
+					}
+				}
+			}
+
+			ModbusProtocolConfig.Protocol protocolConfig=exportProtocolConfig.getProtocol();
+			Collections.sort(protocolConfig.getItems());
+			int index=1;
+			for(int j=0;j<protocolConfig.getItems().size();j++){
+				if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
+					String sort="";
+					String showLevel="";
+					
+					String realtimeCurveConfShowValue="";
+					String historyCurveConfShowValue="";
+					
+					if(protocolConfig.getItems().get(j).getResolutionMode()==0
+							&&protocolConfig.getItems().get(j).getMeaning()!=null
+							&&protocolConfig.getItems().get(j).getMeaning().size()>0){
+						Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
+						for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+							sort="";
+							showLevel="";
+							realtimeCurveConfShowValue="";
+							historyCurveConfShowValue="";
+							for(int m=0;m<itemsList.size();m++){
+								if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+										&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
+									){
+									sort=itemsSortList.get(m);
+									showLevel=itemsShowLevelList.get(m);
+									realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
+									historyCurveConfShowValue=historyCurveConfList.get(m);
+									break;
+								}
+							}
+							
+							result_json.append("{"
+									+ "\"id\":"+(index)+","
+									+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+									+ "\"showLevel\":\""+showLevel+"\","
+									+ "\"sort\":\""+sort+"\","
+									+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+									+ "},");
+							index++;
+						}
+					}else{
+						for(int k=0;k<itemsList.size();k++){
+							if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
+								sort=itemsSortList.get(k);
+								showLevel=itemsShowLevelList.get(k);
+								realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+								historyCurveConfShowValue=realtimeCurveConfList.get(k);
+								break;
+							}
+						}
+						result_json.append("{"
+								+ "\"id\":"+(index)+","
+								+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+								+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+								+ "\"showLevel\":\""+showLevel+"\","
+								+ "\"sort\":\""+sort+"\","
+								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+								+ "},");
+						index++;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolDisplayInstanceCalItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		List<byte[]> rpcCalItemSet=null;
+		
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "]";
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		List<String> itemsList=new ArrayList<String>();
+		List<String> itemsCodeList=new ArrayList<String>();
+		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsBitIndexList=new ArrayList<String>();
+		List<String> itemsShowLevelList=new ArrayList<String>();
+		List<String> realtimeCurveConfList=new ArrayList<String>();
+		List<String> historyCurveConfList=new ArrayList<String>();
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0 ){
+			String key="rpcCalItemList";
+			if(exportProtocolConfig.getProtocol().getDeviceType()==1){
+				key="pcpCalItemList";
+			}
+			Jedis jedis=null;
+			
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+				if(!jedis.exists(key.getBytes())){
+					MemoryDataManagerTask.loadRPCCalculateItem();
+				}
+				
+				rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				if(jedis!=null){
+					jedis.close();
+				}
+			}
+			
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==1){//显示单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==4){//显示实例
+				if(exportProtocolConfig.getDisplayInstanceList()!=null && exportProtocolConfig.getDisplayInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getDisplayInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getDisplayInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getDisplayInstanceList().get(i).getDisplayUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getDisplayUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getDisplayUnitList().get(i).getId()){
+						if(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList()!=null){
+							for(int j=0;j<exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().size();j++){
+								if(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getType()==1){
+									itemsList.add(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getItemName());
+									itemsCodeList.add(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getItemCode());
+									itemsBitIndexList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getBitIndex()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getBitIndex())+"");
+									itemsSortList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getSort()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getSort())+"");
+									itemsShowLevelList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getShowLevel()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getShowLevel())+"");
+									
+									String realtimeCurveConfShowValue="";
+									String historyCurveConfShowValue="";
+									
+									CurveConf realtimeCurveConfObj=null;
+									if(StringManagerUtils.isNotNull(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getRealtimeCurveConf()) && !"\"\"".equals(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getRealtimeCurveConf())){
+										type = new TypeToken<CurveConf>() {}.getType();
+										realtimeCurveConfObj=gson.fromJson(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getRealtimeCurveConf(), type);
+									}
+									
+									CurveConf historyCurveConfObj=null;
+									if(StringManagerUtils.isNotNull(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getHistoryCurveConf()) && !"\"\"".equals(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getHistoryCurveConf())){
+										type = new TypeToken<CurveConf>() {}.getType();
+										historyCurveConfObj=gson.fromJson(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getHistoryCurveConf(), type);
+									}
+									
+									if(realtimeCurveConfObj!=null){
+										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+									}
+									if(historyCurveConfObj!=null){
+										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+									}
+									
+									realtimeCurveConfList.add(realtimeCurveConfShowValue);
+									historyCurveConfList.add(historyCurveConfShowValue);
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(rpcCalItemSet!=null){
+			int index=1;
+			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
+					String sort="";
+					String showLevel="";
+					String realtimeCurveConfShowValue="";
+					String historyCurveConfShowValue="";
+
+					for(int k=0;k<itemsList.size();k++){
+						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+							sort=itemsSortList.get(k);
+							showLevel=itemsShowLevelList.get(k);
+							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+							historyCurveConfShowValue=historyCurveConfList.get(k);
+							break;
+						}
+					}
+					result_json.append("{"
+							+ "\"id\":"+index+","
+							+ "\"title\":\""+calItem.getName()+"\","
+							+ "\"unit\":\""+calItem.getUnit()+"\","
+							+ "\"showLevel\":\""+showLevel+"\","
+							+ "\"sort\":\""+sort+"\","
+							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+							+ "},");
+					index++;
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolDisplayInstanceCtrlItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "]";
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		List<String> itemsList=new ArrayList<String>();
+		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsBitIndexList=new ArrayList<String>();
+		List<String> itemsShowLevelList=new ArrayList<String>();
+
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==1){//显示单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==4){//显示实例
+				if(exportProtocolConfig.getDisplayInstanceList()!=null && exportProtocolConfig.getDisplayInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getDisplayInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getDisplayInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getDisplayInstanceList().get(i).getDisplayUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getDisplayUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getDisplayUnitList().get(i).getId()){
+						if(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList()!=null){
+							for(int j=0;j<exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().size();j++){
+								if(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getType()==2){
+									itemsList.add(exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getItemName());
+									itemsBitIndexList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getBitIndex()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getBitIndex())+"");
+									itemsSortList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getSort()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getSort())+"");
+									itemsShowLevelList.add((exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getShowLevel()==-99?"":exportProtocolConfig.getDisplayUnitList().get(i).getDisplayItemList().get(j).getShowLevel())+"");
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		ModbusProtocolConfig.Protocol protocolConfig=exportProtocolConfig.getProtocol();
+
+//		Collections.sort(protocolConfig.getItems());
+		int index=1;
+		for(int j=0;j<protocolConfig.getItems().size();j++){
+			if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
+				String sort="";
+				String showLevel="";
+				if(protocolConfig.getItems().get(j).getResolutionMode()==0
+						&&protocolConfig.getItems().get(j).getMeaning()!=null
+						&&protocolConfig.getItems().get(j).getMeaning().size()>0){
+					Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
+					for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+						sort="";
+						showLevel="";
+						for(int m=0;m<itemsList.size();m++){
+							if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+									&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
+								){
+								sort=itemsSortList.get(m);
+								showLevel=itemsShowLevelList.get(m);
+								break;
+							}
+						}
+						
+						result_json.append("{"
+								+ "\"id\":"+(index)+","
+								+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+								+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+								+ "\"showLevel\":\""+showLevel+"\","
+								+ "\"sort\":\""+sort+"\""
+								+ "},");
+						index++;
+					}
+				}else{
+					for(int k=0;k<itemsList.size();k++){
+						if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
+							sort=itemsSortList.get(k);
+							showLevel=itemsShowLevelList.get(k);
+							break;
+						}
+					}
+					result_json.append("{"
+							+ "\"id\":"+(index)+","
+							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+							+ "\"showLevel\":\""+showLevel+"\","
+							+ "\"sort\":\""+sort+"\""
+							+ "},");
+					index++;
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolAlarmContentNumItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
+				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==5){//报警实例
+				if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAlarmInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getAlarmUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList()!=null){
+							int index=1;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
+								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==2){
+									result_json.append("{\"id\":"+(index)+","
+											+ "\"title\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemName()+"\","
+											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
+											+ "\"addr\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemAddr()+"\","
+											+ "\"upperLimit\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getUpperLimit()+"\","
+											+ "\"lowerLimit\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getLowerLimit()+"\","
+											+ "\"hystersis\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getHystersis()+"\","
+											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
+											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+									index++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolAlarmContentCalNumItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		List<byte[]> calItemSet=null;
+		
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
+				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
+			Jedis jedis=null;
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+				if(exportProtocolConfig.getProtocol().getDeviceType()==0){
+					if(!jedis.exists("rpcCalItemList".getBytes())){
+						MemoryDataManagerTask.loadRPCCalculateItem();
+					}
+					calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
+				}else{
+					if(!jedis.exists("pcpCalItemList".getBytes())){
+						MemoryDataManagerTask.loadPCPCalculateItem();
+					}
+					calItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				if(jedis!=null){
+					jedis.close();
+				}
+			}
+			
+			
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==5){//报警实例
+				if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAlarmInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getAlarmUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList()!=null){
+							int index=1;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
+								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==5){
+									String unit="";
+									if(calItemSet!=null){
+										for(byte[] rpcCalItemByteArr:calItemSet){
+											CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+											if(calItem.getDataType()==2&&(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()).equalsIgnoreCase(calItem.getCode())){
+												unit=calItem.getUnit();
+												break;
+											}
+										}
+									}
+									result_json.append("{\"id\":"+(index)+","
+											+ "\"title\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemName()+"\","
+											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
+											+ "\"unit\":\""+unit+"\","
+											+ "\"upperLimit\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getUpperLimit()+"\","
+											+ "\"lowerLimit\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getLowerLimit()+"\","
+											+ "\"hystersis\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getHystersis()+"\","
+											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
+											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+									index++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolAlarmContentSwitchItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"位\",\"dataIndex\":\"bitIndex\",width:80 ,children:[] },"
+				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\"触发状态\",\"dataIndex\":\"value\",width:80 ,children:[] },"
+				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==5){//报警实例
+				if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAlarmInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getAlarmUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList()!=null){
+							int index=1;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
+								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==0){
+									int itemAddr=exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemAddr();
+									int bitIndex=exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getBitIndex();
+									String meaning="";
+									for(int k=0;k<exportProtocolConfig.getProtocol().getItems().size();k++){
+										if(itemAddr==exportProtocolConfig.getProtocol().getItems().get(k).getAddr()&&exportProtocolConfig.getProtocol().getItems().get(k).getMeaning()!=null&&exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().size()>0){
+											for(int l=0;l<exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().size();k++){
+												if(bitIndex==exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().get(l).getValue()){
+													meaning=exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().get(l).getMeaning();
+													break;
+												}
+											}
+											break;
+										}
+									}
+									
+									result_json.append("{\"id\":"+(index)+","
+											+ "\"title\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemName()+"\","
+											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
+											+ "\"addr\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemAddr()+"\","
+											+ "\"bitIndex\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getBitIndex()==-99?"":exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getBitIndex())+""+"\","
+											+ "\"meaning\":\""+meaning+"\","
+											+ "\"value\":\""+("1".equalsIgnoreCase(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getValue()+"")?"开":"关")+"\","
+											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
+											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+									index++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolAlarmContentEnumItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",width:80 ,children:[] },"
+				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==5){//报警实例
+				if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAlarmInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getAlarmUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList()!=null){
+							int index=1;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
+								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==1){
+									int itemAddr=exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemAddr();
+									int value=StringManagerUtils.stringToInteger(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getValue()+"");
+									String meaning="";
+									for(int k=0;k<exportProtocolConfig.getProtocol().getItems().size();k++){
+										if(itemAddr==exportProtocolConfig.getProtocol().getItems().get(k).getAddr()&&exportProtocolConfig.getProtocol().getItems().get(k).getMeaning()!=null&&exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().size()>0){
+											for(int l=0;l<exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().size();k++){
+												if(value==exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().get(l).getValue()){
+													meaning=exportProtocolConfig.getProtocol().getItems().get(k).getMeaning().get(l).getMeaning();
+													break;
+												}
+											}
+											break;
+										}
+									}
+									
+									result_json.append("{\"id\":"+(index)+","
+											+ "\"title\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemName()+"\","
+											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
+											+ "\"addr\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemAddr()+"\","
+											+ "\"value\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getValue()+""+"\","
+											+ "\"meaning\":\""+meaning+"\","
+											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
+											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+									index++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolAlarmContentFESDiagramResultItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==5){//报警实例
+				if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAlarmInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getAlarmUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList()!=null){
+							int index=1;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
+								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==4){
+									result_json.append("{\"id\":"+(index)+","
+											+ "\"title\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemName()+"\","
+											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
+											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
+											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+									index++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolAlarmContentRunStatusItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==5){//报警实例
+				if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAlarmInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getAlarmUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList()!=null){
+							int index=1;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
+								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==6){
+									result_json.append("{\"id\":"+(index)+","
+											+ "\"title\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemName()+"\","
+											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
+											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
+											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+									index++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getImportProtocolAlarmContentCommStatusItemsConfigData(String id,String typeStr){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
+			int unitId=0;
+			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
+				unitId=StringManagerUtils.stringToInteger(id);
+			}else if(StringManagerUtils.stringToInteger(typeStr)==5){//报警实例
+				if(exportProtocolConfig.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList().size()>0){
+					for(int i=0;i<exportProtocolConfig.getAlarmInstanceList().size();i++){
+						if(StringManagerUtils.stringToInteger(id)==exportProtocolConfig.getAlarmInstanceList().get(i).getId()){
+							unitId=exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId();
+							break;
+						}
+					}
+				}
+			}
+			if(unitId>0){
+				for(int i=0;i<exportProtocolConfig.getAlarmUnitList().size();i++){
+					if(unitId==exportProtocolConfig.getAlarmUnitList().get(i).getId()){
+						if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList()!=null){
+							int index=1;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
+								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==3){
+									result_json.append("{\"id\":"+(index)+","
+											+ "\"title\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemName()+"\","
+											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
+											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
+											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+									index++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public void doAcquisitionGroupAdd(AcquisitionGroup acquisitionGroup) throws Exception {

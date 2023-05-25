@@ -59,7 +59,17 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
                         	submitImportedProtocolFile();
                         }
                     }
-        	    }]
+        	    },{
+                    id: 'ImportProtocolSelectItemType_Id', 
+                    xtype: 'textfield',
+                    value: '-99',
+                    hidden: true
+                },{
+                    id: 'ImportProtocolSelectItemId_Id', 
+                    xtype: 'textfield',
+                    value: '-99',
+                    hidden: true
+                }]
     		},'->',{
     	    	xtype: 'button',
                 text: cosog.string.save,
@@ -84,74 +94,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
             }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
-                	if(importProtocolContentHandsontableHelper!=null){
-    					if(importProtocolContentHandsontableHelper.hot!=undefined){
-    						importProtocolContentHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolContentHandsontableHelper=null;
-    				}
-                	
-                	if(importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper!=null){
-    					if(importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper.hot!=undefined){
-    						importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper!=null){
-    					if(importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.hot!=undefined){
-    						importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper!=null){
-    					if(importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.hot!=undefined){
-    						importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper=null;
-    				}
-                	
-                	if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper!=null){
-    					if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
-    						importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper!=null){
-    					if(importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
-    						importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper!=null){
-    					if(importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
-    						importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper!=null){
-    					if(importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
-    						importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper!=null){
-    					if(importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
-    						importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper!=null){
-    					if(importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
-    						importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper=null;
-    				}
-                	if(importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper!=null){
-    					if(importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
-    						importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot.destroy();
-    					}
-    					importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper=null;
-    				}
+                	clearImportProtocolHandsontable();
                 },
                 minimize: function (win, opts) {
                     win.collapse();
@@ -162,7 +105,79 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
     }
 });
 
+function clearImportProtocolHandsontable(){
+	if(importProtocolContentHandsontableHelper!=null){
+		if(importProtocolContentHandsontableHelper.hot!=undefined){
+			importProtocolContentHandsontableHelper.hot.destroy();
+		}
+		importProtocolContentHandsontableHelper=null;
+	}
+	
+	if(importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper!=null){
+		if(importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper.hot!=undefined){
+			importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper=null;
+	}
+	if(importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper!=null){
+		if(importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.hot!=undefined){
+			importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper=null;
+	}
+	if(importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper!=null){
+		if(importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.hot!=undefined){
+			importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper=null;
+	}
+	
+	if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper=null;
+	}
+	if(importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper=null;
+	}
+	if(importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper=null;
+	}
+	if(importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper=null;
+	}
+	if(importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
+	}
+	if(importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper=null;
+	}
+	if(importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper=null;
+	}
+}
+
 function submitImportedProtocolFile() {
+	clearImportProtocolHandsontable();
 	var form = Ext.getCmp("ProtocolImportForm_Id");
     if(form.isValid()) {
         form.submit({
@@ -194,7 +209,8 @@ function submitImportedProtocolFile() {
     return false;
 };
 
-function CreateImportProtocolContentInfoTable(id,classes,type){
+function CreateImportProtocolContentInfoTable(id,classes,type,typeChange){
+	clearImportProtocolHandsontable();
 	var importedProtocolItemInfoTablePanel=Ext.getCmp("importedProtocolItemInfoTablePanel_Id");
 	var importProtocolContentPanel=null;
 	if(type==0 || type==3){
@@ -320,7 +336,6 @@ function CreateImportProtocolContentInfoTable(id,classes,type){
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper!=null && importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
-//                        		importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot.refreshDimensions();
                         		var newWidth=width;
                         		var newHeight=height;
                         		var header=thisPanel.getHeader();
@@ -473,81 +488,18 @@ function CreateImportProtocolContentInfoTable(id,classes,type){
             }],
             listeners: {
             	tabchange: function (tabPanel, newCard, oldCard, obj) {
-//            		var selectRow= Ext.getCmp("ImportProtocolAlarmUnitAndInstanceTreeSelectRow_Id").getValue();
-//        			var selectedItem=Ext.getCmp("ImportProtocolAlarmUnitAndInstanceConfigTreeGridPanel_Id").getStore().getAt(selectRow);
-//            		if(newCard.id=="ImportProtocolAlarmUnitAndInstanceNumItemsTableInfoPanel_Id"){
-//            			if(selectedItem.data.classes==0){
-//                    		if(isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
-//                    			CreateProtocolAlarmInstanceNumItemsConfigInfoTable(selectedItem.data.children[0].id,selectedItem.data.children[0].text,selectedItem.data.children[0].classes);
-//                    			CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(selectedItem.data.children[0].id,selectedItem.data.children[0].text,selectedItem.data.children[0].classes,selectedItem.data.children[0].deviceType);
-//                    		}else{
-//                    			CreateProtocolAlarmInstanceNumItemsConfigInfoTable(-1,'',1);
-//                    			CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(-1,'',1,selectedItem.data.deviceType);
-//                    		}
-//                    	}else{
-//                    		CreateProtocolAlarmInstanceNumItemsConfigInfoTable(selectedItem.data.id,selectedItem.data.text,selectedItem.data.classes);
-//                    		CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(selectedItem.data.id,selectedItem.data.text,selectedItem.data.classes,selectedItem.data.deviceType);
-//                    	}
-//                	}else if(newCard.id=="ImportProtocolAlarmUnitAndInstanceSwitchItemsTableInfoPanel_Id"){
-//                		if(selectedItem.data.classes==0){
-//                    		if(isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
-//                    			CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(selectedItem.data.children[0].id,selectedItem.data.children[0].text,selectedItem.data.children[0].classes);
-//                    		}else{
-//                    			CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(-1,'',1);
-//                    		}
-//                    	}else{
-//                    		CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(selectedItem.data.id,selectedItem.data.text,selectedItem.data.classes);
-//                    	}
-//                	}else if(newCard.id=="ImportProtocolAlarmUnitAndInstanceEnumItemsTableInfoPanel_Id"){
-//                		if(selectedItem.data.classes==0){
-//                    		if(isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
-//                    			CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(selectedItem.data.children[0].id,selectedItem.data.children[0].text,selectedItem.data.children[0].classes);
-//                    		}else{
-//                    			CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(-1,'',1);
-//                    		}
-//                    	}else{
-//                    		CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(selectedItem.data.id,selectedItem.data.text,selectedItem.data.classes);
-//                    	}
-//                	}else if(newCard.id=="ImportProtocolAlarmUnitAndInstanceFESDiagramResultItemsTableInfoPanel_Id"){
-//                		if(selectedItem.data.classes==0){
-//                    		if(isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
-//                    			CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(selectedItem.data.children[0].id,selectedItem.data.children[0].text,selectedItem.data.children[0].classes);
-//                    		}else{
-//                    			CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(-1,'',1);
-//                    		}
-//                    	}else{
-//                    		CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(selectedItem.data.id,selectedItem.data.text,selectedItem.data.classes);
-//                    	}
-//                	}else if(newCard.id=="ImportProtocolAlarmUnitAndInstanceRunStatusItemsTableInfoPanel_Id"){
-//                		if(selectedItem.data.classes==0){
-//                    		if(isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
-//                    			CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(selectedItem.data.children[0].id,selectedItem.data.children[0].text,selectedItem.data.children[0].classes);
-//                    		}else{
-//                    			CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(-1,'',1);
-//                    		}
-//                    	}else{
-//                    		CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(selectedItem.data.id,selectedItem.data.text,selectedItem.data.classes);
-//                    	}
-//                	}else if(newCard.id=="ImportProtocolAlarmUnitAndInstanceCommStatusItemsTableInfoPanel_Id"){
-//                		if(selectedItem.data.classes==0){
-//                    		if(isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
-//                    			CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(selectedItem.data.children[0].id,selectedItem.data.children[0].text,selectedItem.data.children[0].classes);
-//                    		}else{
-//                    			CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(-1,'',1);
-//                    		}
-//                    	}else{
-//                    		CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(selectedItem.data.id,selectedItem.data.text,selectedItem.data.classes);
-//                    	}
-//                	}
+            		var id  = Ext.getCmp("ImportProtocolSelectItemId_Id").getValue();
+                	var type  = Ext.getCmp("ImportProtocolSelectItemType_Id").getValue();
+            		CreateImportProtocolAlarmContentTable(id,type);
             	}
             }
         });
 	}
 	
 	
-	
 	importedProtocolItemInfoTablePanel.removeAll();
 	importedProtocolItemInfoTablePanel.add(importProtocolContentPanel);
+	
 	if(type==0 || type==3){
 		importedProtocolItemInfoTablePanel.el.mask(cosog.string.updatewait).show();
 		if(importProtocolContentHandsontableHelper!=null){
@@ -606,11 +558,13 @@ function CreateImportProtocolContentInfoTable(id,classes,type){
 	        }
 		});
 	}else if(type==1 || type==4){
-		CreateImportProtocolDisplayUnitAndInstanceAcqItemsInfoTable(id);
-		CreateImportProtocolDisplayUnitAndInstanceCalItemsInfoTable(id);
-		CreateImportProtocolDisplayUnitAndInstanceCtrlItemsInfoTable(id);
+		importedProtocolItemInfoTablePanel.el.mask(cosog.string.updatewait).show();
+		CreateImportProtocolDisplayUnitAndInstanceAcqItemsInfoTable(id,type);
+		CreateImportProtocolDisplayUnitAndInstanceCalItemsInfoTable(id,type);
+		CreateImportProtocolDisplayUnitAndInstanceCtrlItemsInfoTable(id,type);
+		importedProtocolItemInfoTablePanel.getEl().unmask();
 	}else if(type==2 || type==5){
-		
+		CreateImportProtocolAlarmContentTable(id,type);
 	}else{
 		
 	}
@@ -672,19 +626,19 @@ var ImportProtocolContentHandsontableHelper = {
 	    }
 };
 
-function CreateImportProtocolDisplayUnitAndInstanceAcqItemsInfoTable(id,instanceName,classes){
+function CreateImportProtocolDisplayUnitAndInstanceAcqItemsInfoTable(id,type){
 	if(importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper!=null){
 		if(importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper.hot!=undefined){
 			importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper.hot.destroy();
 		}
 		importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper=null;
 	}
-	Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceAcqItemsTablePanel_Id").el.mask(cosog.string.updatewait).show();
+//	Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceAcqItemsTablePanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceAcqItemsConfigData',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolDisplayInstanceAcqItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceAcqItemsTablePanel_Id").getEl().unmask();
+//			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceAcqItemsTablePanel_Id").getEl().unmask();
 			
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper==null || importProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper.hot==undefined){
@@ -715,12 +669,12 @@ function CreateImportProtocolDisplayUnitAndInstanceAcqItemsInfoTable(id,instance
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceAcqItemsTablePanel_Id").getEl().unmask();
+//			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceAcqItemsTablePanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
 			id:id,
-			classes:classes
+			type:type
         }
 	});
 };
@@ -793,19 +747,19 @@ var PmportProtocolDisplayUnitAndInstanceAcqItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportProtocolDisplayUnitAndInstanceCalItemsInfoTable(id,instanceName,classes,deviceType){
+function CreateImportProtocolDisplayUnitAndInstanceCalItemsInfoTable(id,type){
 	if(importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper!=null){
 		if(importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.hot!=undefined){
 			importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.hot.destroy();
 		}
 		importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper=null;
 	}
-	Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCalItemsTablePanel_Id").el.mask(cosog.string.updatewait).show();
+//	Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCalItemsTablePanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceCalItemsConfigData',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolDisplayInstanceCalItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCalItemsTablePanel_Id").getEl().unmask();
+//			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCalItemsTablePanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper==null || importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.hot==undefined){
 				importProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper = ImportProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper.createNew("ImportedProtocolDisplayUnitAndInstanceCalItemsTableDiv_id");
@@ -835,13 +789,12 @@ function CreateImportProtocolDisplayUnitAndInstanceCalItemsInfoTable(id,instance
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCalItemsTablePanel_Id").getEl().unmask();
+//			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCalItemsTablePanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
 			id:id,
-			classes:classes,
-			deviceType:deviceType
+			type:type
         }
 	});
 };
@@ -914,19 +867,19 @@ var ImportProtocolDisplayUnitAndInstanceCalItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportProtocolDisplayUnitAndInstanceCtrlItemsInfoTable(id,instanceName,classes){
+function CreateImportProtocolDisplayUnitAndInstanceCtrlItemsInfoTable(id,type){
 	if(importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper!=null){
 		if(importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.hot!=undefined){
 			importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.hot.destroy();
 		}
 		importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper=null;
 	}
-	Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCtrlItemsTablePanel_Id").el.mask(cosog.string.updatewait).show();
+//	Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCtrlItemsTablePanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceCtrlItemsConfigData',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolDisplayInstanceCtrlItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCtrlItemsTablePanel_Id").getEl().unmask();
+//			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCtrlItemsTablePanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper==null || importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.hot==undefined){
 				importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper = ImportProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper.createNew("ImportedProtocolDisplayUnitAndInstanceCtrlItemsTableDiv_id");
@@ -954,12 +907,12 @@ function CreateImportProtocolDisplayUnitAndInstanceCtrlItemsInfoTable(id,instanc
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCtrlItemsTablePanel_Id").getEl().unmask();
+//			Ext.getCmp("ImportedProtocolDisplayUnitAndInstanceCtrlItemsTablePanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
 			id:id,
-			classes:classes
+			type:type
         }
 	});
 };
@@ -1015,5 +968,786 @@ var ImportProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper = {
 	        	});
 	        }
 	        return importProtocolDisplayUnitAndInstanceCtrlItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportProtocolAlarmContentTable(id,type){
+	var activeId = Ext.getCmp("ImportProtocolAlarmUnitAndInstanceItemsTabPanel_Id").getActiveTab().id;
+	if(activeId=="ImportProtocolAlarmUnitAndInstanceNumItemsTableInfoPanel_Id"){
+		CreateImportProtocolAlarmInstanceNumItemsConfigInfoTable(id,type);
+		CreateImportProtocolAlarmInstanceCalNumItemsConfigInfoTable(id,type);
+	}else if(activeId=="ImportProtocolAlarmUnitAndInstanceSwitchItemsTableInfoPanel_Id"){
+		CreateImportProtocolAlarmInstanceSwitchItemsConfigInfoTable(id,type);
+	}else if(activeId=="ImportProtocolAlarmUnitAndInstanceEnumItemsTableInfoPanel_Id"){
+		CreateImportProtocolAlarmInstanceEnumItemsConfigInfoTable(id,type);
+	}else if(activeId=="ImportProtocolAlarmUnitAndInstanceFESDiagramResultItemsTableInfoPanel_Id"){
+		CreateImportProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(id,type);
+	}else if(activeId=="ImportProtocolAlarmUnitAndInstanceRunStatusItemsTableInfoPanel_Id"){
+		CreateImportProtocolAlarmInstanceRunStatusItemsConfigInfoTable(id,type);
+	}else if(activeId=="ImportProtocolAlarmUnitAndInstanceCommStatusItemsTableInfoPanel_Id"){
+		CreateImportProtocolAlarmInstanceCommStatusItemsConfigInfoTable(id,type);
+	}
+
+}
+
+
+function CreateImportProtocolAlarmInstanceNumItemsConfigInfoTable(id,type){
+	if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper=null;
+	}
+	Ext.getCmp("ImportProtocolAlarmUnitAndInstanceNumItemsConfigTableInfoPanel_id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolAlarmContentNumItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceNumItemsConfigTableInfoPanel_id").getEl().unmask();
+			
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper==null || importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot==undefined){
+				importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper = ImportProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.createNew("ImportProtocolAlarmUnitAndInstanceNumItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','地址','上限','下限','回差','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var columns="[{data:'id'},{data:'title'},"
+					 	+"{data:'addr'},"
+						+"{data:'upperLimit'},"
+						+"{data:'lowerLimit'}," 
+						+"{data:'hystersis'}," 
+						+"{data:'delay'}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"]";
+				importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceNumItemsConfigTableInfoPanel_id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			type:type
+        }
+	});
+};
+
+var ImportProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper = {};
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot1 = '';
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.divid = divid;
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.validresult=true;//数据校验
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.colHeaders=[];
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.columns=[];
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.AllData=[];
+	        
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.divid);
+	        	importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,120,80,80,80,80,80,80,80,80,80],
+	                columns:importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return importProtocolAlarmUnitAndInstanceConfigNumItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportProtocolAlarmInstanceCalNumItemsConfigInfoTable(id,type){
+	if(importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper=null;
+	}
+	
+	Ext.getCmp("ImportProtocolAlarmUnitAndInstanceCalNumItemsConfigTableInfoPanel_id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolAlarmContentCalNumItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
+			
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper==null || importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot==undefined){
+				importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper = ImportProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.createNew("ImportProtocolAlarmUnitAndInstanceCalNumItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','单位','上限','下限','回差','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var columns="[{data:'id'},{data:'title'},"
+					 	+"{data:'unit'},"
+						+"{data:'upperLimit'},"
+						+"{data:'lowerLimit'}," 
+						+"{data:'hystersis'}," 
+						+"{data:'delay'}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']},"
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"]";
+				importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			type:type,
+			resolutionMode:5
+        }
+	});
+};
+
+var ImportProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper = {};
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot1 = '';
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.divid = divid;
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.validresult=true;//数据校验
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.colHeaders=[];
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.columns=[];
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.AllData=[];
+	        
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.divid);
+	        	importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,120,80,80,80,80,80,80,80,80,80],
+	                columns:importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return importProtocolAlarmUnitAndInstanceConfigCalNumItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportProtocolAlarmInstanceSwitchItemsConfigInfoTable(id,type){
+	if(importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper=null;
+	}
+	Ext.getCmp("ImportProtocolAlarmUnitAndInstanceSwitchItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolAlarmContentSwitchItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceSwitchItemsTableInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper==null || importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot==undefined){
+				importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper = ImportProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.createNew("ImportProtocolAlarmUnitAndInstanceSwitchItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','地址','位','含义','触发状态','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var columns="[{data:'id'},{data:'title'},"
+					 	+"{data:'addr'},"
+						+"{data:'bitIndex'},"
+						+"{data:'meaning'}," 
+						+"{data:'value'}," 
+						+"{data:'delay'}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"]";
+				importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceSwitchItemsTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			type:type,
+			resolutionMode:0
+        }
+	});
+};
+
+var ImportProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper = {};
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot1 = '';
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.divid = divid;
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.validresult=true;//数据校验
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.colHeaders=[];
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.columns=[];
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.AllData=[];
+	        
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.divid);
+	        	importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,120,80,80,80,80,80,80,80,80,80],
+	                columns:importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return importProtocolAlarmUnitAndInstanceConfigSwitchItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportProtocolAlarmInstanceEnumItemsConfigInfoTable(id,type){
+	if(importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper=null;
+	}
+	Ext.getCmp("ImportProtocolAlarmUnitAndInstanceEnumItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolAlarmContentEnumItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceEnumItemsTableInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper==null || importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot==undefined){
+				importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper = ImportProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.createNew("ImportProtocolAlarmUnitAndInstanceEnumItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','地址','值','含义','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var columns="[{data:'id'},{data:'title'},"
+					 	+"{data:'addr'},"
+					 	+"{data:'value'}," 
+						+"{data:'meaning'},"
+						+"{data:'delay'}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"]";
+				importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceEnumItemsTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			type:type,
+			resolutionMode:1
+        }
+	});
+};
+
+var ImportProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper = {};
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot1 = '';
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.divid = divid;
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.validresult=true;//数据校验
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.colHeaders=[];
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.columns=[];
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.AllData=[];
+	        
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.divid);
+	        	importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,120,80,80,80,80,80,80,80,80],
+	                columns:importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return importProtocolAlarmUnitAndInstanceConfigEnumItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(id,type){
+	if(importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
+	}
+	Ext.getCmp("ImportProtocolAlarmUnitAndInstanceFESDiagramResultItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolAlarmContentFESDiagramResultItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceFESDiagramResultItemsTableInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper==null || importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot==undefined){
+				importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper = ImportProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.createNew("ImportProtocolAlarmUnitAndInstanceFESDiagramResultItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var columns="[{data:'id'},{data:'title'},"
+					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"]";
+				importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceFESDiagramResultItemsTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			type:type,
+			resolutionMode:4
+        }
+	});
+};
+
+var ImportProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper = {};
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot1 = '';
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.divid = divid;
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.validresult=true;//数据校验
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.colHeaders=[];
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.columns=[];
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.AllData=[];
+	        
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.divid);
+	        	importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,80,80,80,80,80,80],
+	                columns:importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportProtocolAlarmInstanceRunStatusItemsConfigInfoTable(id,type){
+	if(importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper=null;
+	}
+	Ext.getCmp("ImportProtocolAlarmUnitAndInstanceRunStatusItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolAlarmContentRunStatusItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceRunStatusItemsTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(name+"/工况诊断报警项");
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper==null || importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot==undefined){
+				importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper = ImportProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.createNew("ImportProtocolAlarmUnitAndInstanceRunStatusItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var columns="[{data:'id'},{data:'title'},"
+					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"]";
+				importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceRunStatusItemsTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			type:type,
+			resolutionMode:6
+        }
+	});
+};
+
+var ImportProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper = {};
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot1 = '';
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.divid = divid;
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.validresult=true;//数据校验
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.colHeaders=[];
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.columns=[];
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.AllData=[];
+	        
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.divid);
+	        	importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,80,80,80,80,80,80],
+	                columns:importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportProtocolAlarmInstanceCommStatusItemsConfigInfoTable(id,type){
+	if(importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper!=null){
+		if(importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+			importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot.destroy();
+		}
+		importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper=null;
+	}
+	Ext.getCmp("ImportProtocolAlarmUnitAndInstanceCommStatusItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportProtocolAlarmContentCommStatusItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceCommStatusItemsTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(name+"/工况诊断报警项");
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper==null || importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot==undefined){
+				importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper = ImportProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.createNew("ImportProtocolAlarmUnitAndInstanceCommStatusItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var columns="[{data:'id'},{data:'title'},"
+					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"]";
+				importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ImportProtocolAlarmUnitAndInstanceCommStatusItemsTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			type:type,
+			resolutionMode:3
+        }
+	});
+};
+
+var ImportProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper = {};
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot1 = '';
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.divid = divid;
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.validresult=true;//数据校验
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.colHeaders=[];
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.columns=[];
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.AllData=[];
+	        
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.divid);
+	        	importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,80,80,80,80,80,80],
+	                columns:importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper;
 	    }
 };

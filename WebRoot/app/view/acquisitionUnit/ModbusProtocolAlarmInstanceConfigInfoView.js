@@ -716,6 +716,7 @@ function CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(id,name,classes){
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmInstanceSwitchItemsTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

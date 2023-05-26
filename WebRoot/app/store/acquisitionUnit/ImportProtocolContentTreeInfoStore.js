@@ -32,12 +32,12 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     rootVisible: false,
                     autoScroll: true,
                     forceFit: true,
-                    selModel: {
-                    	selType: 'checkboxmodel',
-                    	mode:'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
-                    	checkOnly:true,
-                    	allowDeselect:true
-                    },
+//                    selModel: {
+//                    	selType: 'checkboxmodel',
+//                    	mode:'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
+//                    	checkOnly:true,
+//                    	allowDeselect:true
+//                    },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
                         forceFit: true
@@ -61,7 +61,6 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     }],
                     listeners: {
                     	rowclick: function( grid, record, element, index, e, eOpts) {
-//                    		alert(record.data.classes);
                     		if(record.data.classes>0){
                     			var selectedType=parseInt(Ext.getCmp("ImportProtocolSelectItemType_Id").getValue());
                     			var typeChange=false;
@@ -93,6 +92,9 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         },
                         beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
+                        },
+                        checkchange: function (node, checked) {
+                            listenerCheck(node, checked);
                         }
                     }
 
@@ -100,18 +102,12 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                 var panel = Ext.getCmp("importPootocolTreePanel_Id");
                 panel.add(treeGridPanel);
             }
-            treeGridPanel.getSelectionModel().deselectAll(true);
-            treeGridPanel.getSelectionModel().selectAll(true);
+    		var getNode = store.root.childNodes;
+    		importProtocolContentTreeSelectAll(getNode);
             
-//            var selectRow=0;
-//            for(var i=0;i<store.data.items.length;i++){
-//    			if(store.data.items[i].data.classes==1){
-//    				selectRow=i;
-//    				break;
-//    			}
-//    		}
+            
 //            treeGridPanel.getSelectionModel().deselectAll(true);
-//            treeGridPanel.getSelectionModel().select(selectRow, true);
+//            treeGridPanel.getSelectionModel().selectAll(true);
         }
     }
 });

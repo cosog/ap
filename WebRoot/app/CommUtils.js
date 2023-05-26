@@ -1351,6 +1351,16 @@ var listenerCheck = function(node, checked) {
 //		parentCheck(parentNode, checked);
 	}
 };
+
+//添加监听 设置树的节点选择的级联关系
+var listenerTreeCheckAssociatedParentNode = function(node, checked) {
+	childHasChecked(node, checked);
+	var parentNode = node.parentNode;
+	if (parentNode != null) {
+		parentCheck(parentNode, checked);
+	}
+};
+
 // 级联选中父节点
 var parentCheck = function(node, checked) {
 	var childNodes = node.childNodes;

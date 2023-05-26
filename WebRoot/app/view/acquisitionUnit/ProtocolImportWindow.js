@@ -75,7 +75,53 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
                 text: cosog.string.save,
                 iconCls: 'save',
                 handler: function (v, o) {
-                	
+                	var treeGridPanel = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id");
+                	if(isNotVal(treeGridPanel)){
+//                		var _record = treeGridPanel.store.data.items;
+                		var _record = treeGridPanel.getChecked();
+                		var addContent=[];
+                		Ext.Array.each(_record, function (name, index, countriesItSelf) {
+                			var classes=_record[index].data.classes;
+                			if(classes>0){
+                				var type=-99;
+                				if(classes==1){
+                    				type=_record[index].parentNode.data.type;
+                    			}else if(classes==2){
+                    				type=_record[index].parentNode.parentNode.data.type;
+                    			}
+                				
+                				var content={};
+                				content.id=_record[index].data.id;
+                				content.type=type;
+                				content.classes=classes;
+                				addContent.push(content);
+                			}
+                	    });
+//                		if(addContent.length>0){
+//                			alert(JSON.stringify(addContent));
+//                		}else{
+//                			Ext.MessageBox.alert("信息", "无记录可导入！");
+//                		}
+                		
+                		Ext.Ajax.request({
+                            method: 'POST',
+                            url: context + '/acquisitionUnitManagerController/saveImportProtocolData',
+                            success: function (response) {
+                            	rdata = Ext.JSON.decode(response.responseText);
+                            	if (rdata.success) {
+                            		Ext.MessageBox.alert("信息", "协议及关联内容导入成功！");
+                            	}else{
+                            		Ext.MessageBox.alert("信息", "协议及关联内容导入失败！");
+                            	}
+                            },
+                            failure: function () {
+                                Ext.MessageBox.alert("信息", "请求失败");
+                            },
+                            params: {
+                            	data: JSON.stringify(addContent)
+                            }
+                        });
+                	}
                 }
     	    }],
             layout: 'border',
@@ -174,6 +220,26 @@ function clearImportProtocolHandsontable(){
 		}
 		importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper=null;
 	}
+}
+
+function importProtocolContentTreeSelectClear(node){
+	var chlidArray = node;
+	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
+		childArrNode.set('checked', false);
+		if (childArrNode.childNodes != null) {
+			importProtocolContentTreeSelectClear(childArrNode.childNodes);
+        }
+	});
+}
+
+function importProtocolContentTreeSelectAll(node){
+	var chlidArray = node;
+	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
+		childArrNode.set('checked', true);
+		if (childArrNode.childNodes != null) {
+			importProtocolContentTreeSelectAll(childArrNode.childNodes);
+        }
+	});
 }
 
 function submitImportedProtocolFile() {

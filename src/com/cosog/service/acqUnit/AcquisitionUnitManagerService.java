@@ -34,6 +34,7 @@ import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ExportProtocolConfig;
+import com.cosog.model.drive.ImportProtocolContent;
 import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
@@ -6290,6 +6291,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
+	
+	public String importProtocolCheck(String data){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		
+		type = new TypeToken<ImportProtocolContent>() {}.getType();
+		ImportProtocolContent importProtocolContent=gson.fromJson(data, type);
+		
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
+			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getDeviceType(),exportProtocolConfig.getProtocol().getName());
+			if(!protocolExist){
+				
+			}
+		}
+		
+		
+		return "";
+	}
+	
+	
+	
 	
 	public void doAcquisitionGroupAdd(AcquisitionGroup acquisitionGroup) throws Exception {
 		getBaseDao().addObject(acquisitionGroup);

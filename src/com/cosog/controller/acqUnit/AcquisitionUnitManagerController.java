@@ -3691,8 +3691,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveImportProtocolData() throws Exception {
 		String json ="{success:true}";
 		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String check=ParamUtils.getParameter(request, "check");
 		System.out.println("协议导入内容"+data);
-//		json = acquisitionUnitItemManagerService.saveImportProtocolData(data);
+		
+		if("1".equals(check)){
+			json = acquisitionUnitItemManagerService.importProtocolCheck(data);
+		}else{
+//			json = acquisitionUnitItemManagerService.saveImportProtocolData(data);
+		}
+		
+		json ="{success:true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

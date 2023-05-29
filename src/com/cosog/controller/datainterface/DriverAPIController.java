@@ -2065,12 +2065,14 @@ public class DriverAPIController extends BaseController{
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("日产水量","日产水量",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"","","waterVolumetricProduction","","","","m^3/d",1));
 					}
 					
-//					//更新液面反演校正值
-//					if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
-//							&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
-//							&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0){
+					//更新液面反演值
+					if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
+							&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
+							&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0){
 //						rpcDeviceInfo.getManualIntervention().setLevelCorrectValue(rpcCalculateResponseData.getProduction().getLevelCorrectValue());
-//					}
+						
+						updateTotalDataSql+=",t.producingfluidLevel= "+rpcCalculateResponseData.getProduction().getProducingfluidLevel();
+					}
 					
 					//同时进行了时率计算和功图计算，则进行功图汇总计算
 					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1 && deviceTodayData!=null){

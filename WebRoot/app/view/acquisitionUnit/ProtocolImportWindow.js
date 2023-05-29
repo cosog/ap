@@ -79,29 +79,58 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
                 	if(isNotVal(treeGridPanel)){
 //                		var _record = treeGridPanel.store.data.items;
                 		var _record = treeGridPanel.getChecked();
-                		var addContent=[];
+                		var addContent={};
+                		addContent.acqUnitList=[];
+                		addContent.displayUnitList=[];
+                		addContent.alarmUnitList=[];
+
+                		addContent.acqInstanceList=[];
+                		addContent.displayInstanceList=[];
+                		addContent.alarmInstanceList=[];
+                		
                 		Ext.Array.each(_record, function (name, index, countriesItSelf) {
                 			var classes=_record[index].data.classes;
-                			if(classes>0){
-                				var type=-99;
-                				if(classes==1){
-                    				type=_record[index].parentNode.data.type;
-                    			}else if(classes==2){
-                    				type=_record[index].parentNode.parentNode.data.type;
-                    			}
+                			if(classes==1){
+                				var type=_record[index].parentNode.data.type;
+                				if(type==0){//采控单元
+                					var acqUnit={};
+                					acqUnit.id=_record[index].data.id;
+                					acqUnit.acqGroupList=[];
+                					if(_record[index].childNodes!=null && _record[index].childNodes.length>0){
+                						for(var i=0;i<_record[index].childNodes.length;i++){
+                							acqUnit.acqGroupList.push(_record[index].childNodes[i].data.id); 
+                						}
+                					}
+                					addContent.acqUnitList.push(acqUnit);
+                				}else if(type==1){//显示单元
+                					addContent.displayUnitList.push(_record[index].data.id);
+                				}else if(type==2){//报警单元
+                					addContent.alarmUnitList.push(_record[index].data.id);
+                				}else if(type==3){//采控实例
+                					addContent.acqInstanceList.push(_record[index].data.id);
+                				}else if(type==4){//显示实例
+                					addContent.displayInstanceList.push(_record[index].data.id);
+                				}else if(type==5){//报警实例
+                					addContent.alarmInstanceList.push(_record[index].data.id);
+                				}
                 				
-                				var content={};
-                				content.id=_record[index].data.id;
-                				content.type=type;
-                				content.classes=classes;
-                				addContent.push(content);
+                				
+//                				var type=-99;
+//                				if(classes==1){
+//                    				
+//                    			}else if(classes==2){
+//                    				type=_record[index].parentNode.parentNode.data.type;
+//                    			}
+//                				
+//                				var content={};
+//                				content.id=_record[index].data.id;
+//                				content.type=type;
+//                				content.classes=classes;
+//                				addContent.push(content);
                 			}
                 	    });
-//                		if(addContent.length>0){
-//                			alert(JSON.stringify(addContent));
-//                		}else{
-//                			Ext.MessageBox.alert("信息", "无记录可导入！");
-//                		}
+                		
+                		alert(JSON.stringify(addContent));
                 		
                 		Ext.Ajax.request({
                             method: 'POST',

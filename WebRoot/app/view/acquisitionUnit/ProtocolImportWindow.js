@@ -113,24 +113,8 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
                 				}else if(type==5){//报警实例
                 					addContent.alarmInstanceList.push(_record[index].data.id);
                 				}
-                				
-                				
-//                				var type=-99;
-//                				if(classes==1){
-//                    				
-//                    			}else if(classes==2){
-//                    				type=_record[index].parentNode.parentNode.data.type;
-//                    			}
-//                				
-//                				var content={};
-//                				content.id=_record[index].data.id;
-//                				content.type=type;
-//                				content.classes=classes;
-//                				addContent.push(content);
                 			}
                 	    });
-                		
-                		alert(JSON.stringify(addContent));
                 		
                 		Ext.Ajax.request({
                             method: 'POST',
@@ -147,7 +131,8 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
                                 Ext.MessageBox.alert("信息", "请求失败");
                             },
                             params: {
-                            	data: JSON.stringify(addContent)
+                            	data: JSON.stringify(addContent),
+                            	check: 1
                             }
                         });
                 	}

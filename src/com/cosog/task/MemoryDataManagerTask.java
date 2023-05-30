@@ -2395,18 +2395,19 @@ public class MemoryDataManagerTask {
 				wells=StringManagerUtils.joinStringArr2(wellList, ",");
 			}	
 					
-			String sql="select t2.id as wellId,t2.wellname,"//2
-					+ "to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//3
-					+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,t.resultcode,"//9
-					+ "t.theoreticalproduction,"//10
-					+ "t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"//13
-					+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"//16
-					+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"//19
-					+ "t.systemefficiency,t.surfacesystemefficiency,t.welldownsystemefficiency,t.energyper100mlift,"//23
-					+ "t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,t.pumpeff,"//28
-					+ "t.productiondata "//29
-					+ "from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-					+ "where t.wellid=t2.id  "
+			String sql=" select t2.id as wellId,t2.wellname,"//2
+					+ " to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//3
+					+ " t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,t.resultcode,"//9
+					+ " t.theoreticalproduction,"//10
+					+ " t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"//13
+					+ " t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"//16
+					+ " t.wattdegreebalance,t.idegreebalance,t.deltaradius,"//19
+					+ " t.systemefficiency,t.surfacesystemefficiency,t.welldownsystemefficiency,t.energyper100mlift,"//23
+					+ " t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,t.pumpeff,"//28
+					+ " t.productiondata, "//29
+					+"  t.inverproducingfluidlevel "//30
+					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
+					+ " where t.wellid=t2.id  "
 					+ " and t.resultstatus=1"
 					+ " and t.fesdiagramacqtime between to_date('"+currentDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')+1 ";
 			if(StringManagerUtils.isNotNull(wells)){
@@ -2464,8 +2465,13 @@ public class MemoryDataManagerTask {
 					RPCDeviceInfo rpcProductionData=gson.fromJson(productionData, type);
 					if(rpcProductionData!=null){
 						responseData.getProduction().setWaterCut(rpcProductionData.getProduction().getWaterCut());
+						responseData.getProduction().setTubingPressure(rpcProductionData.getProduction().getTubingPressure());
+						responseData.getProduction().setCasingPressure(rpcProductionData.getProduction().getCasingPressure());
 					}
 				}
+				
+				responseData.getProduction().setProducingfluidLevel(rs.getFloat(30));
+				
 				if(jedis.hexists("RPCDeviceTodayData".getBytes(), key.getBytes())){
 					RPCDeviceTodayData deviceTodayData =(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), key.getBytes()));
 					deviceTodayData.getRPCCalculateList().add(responseData);
@@ -2565,6 +2571,8 @@ public class MemoryDataManagerTask {
 					PCPDeviceInfo pcpProductionData=gson.fromJson(productionData, type);
 					if(pcpProductionData!=null){
 						responseData.getProduction().setWaterCut(pcpProductionData.getProduction().getWaterCut());
+						responseData.getProduction().setTubingPressure(pcpProductionData.getProduction().getTubingPressure());
+						responseData.getProduction().setCasingPressure(pcpProductionData.getProduction().getCasingPressure());
 					}
 				}
 				

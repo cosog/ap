@@ -2080,6 +2080,10 @@ public class DriverAPIController extends BaseController{
 						Collections.sort(deviceTodayData.getRPCCalculateList());
 						totalRequestData=CalculateUtils.getFESDiagramTotalRequestData(date, rpcDeviceInfo,deviceTodayData);
 						
+						if("ZJS-17-4D".equalsIgnoreCase(rpcDeviceInfo.getWellName())){
+							System.out.println("实时汇总请求数据："+totalRequestData);
+						}
+						
 						type = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 						totalAnalysisRequestData = gson.fromJson(totalRequestData, type);
 						

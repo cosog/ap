@@ -799,6 +799,9 @@ function saveDisplayUnitConfigData(displayUnitSaveData,protocol,deviceType){
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
             	Ext.MessageBox.alert("信息","保存成功");
+            	if(displayUnitSaveData.delidslist!=undefined && displayUnitSaveData.delidslist.length>0){
+            		Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
+            	}
             	Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
             } else {
             	Ext.MessageBox.alert("信息","采控单元数据保存失败");

@@ -325,8 +325,12 @@ function SaveModbusProtocolDisplayInstanceData(saveData){
 		success:function(response) {
 			data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
+				Ext.MessageBox.alert("信息","保存成功");
+				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
+					Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").setValue(0);
+				}
 				Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().load();
-            	Ext.MessageBox.alert("信息","保存成功");
+            	
             } else {
             	Ext.MessageBox.alert("信息","显示实例数据保存失败");
             }

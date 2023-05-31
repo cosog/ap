@@ -636,6 +636,12 @@ function saveModbusProtocolAddrMappingConfigData(configInfo){
 			if (data.success) {
 				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
 				Ext.MessageBox.alert("信息","保存成功");
+				
+				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){//如果删除
+					Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
+            		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
+				}
+				
             	Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
             } else {
             	Ext.MessageBox.alert("信息","数据保存失败");

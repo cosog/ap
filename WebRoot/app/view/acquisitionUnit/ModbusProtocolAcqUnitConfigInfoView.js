@@ -513,6 +513,9 @@ function saveAcquisitionUnitConfigData(acqUnitSaveData,protocol,deviceType){
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
             	Ext.MessageBox.alert("信息","保存成功");
+            	if(acqUnitSaveData.delidslist!=undefined && acqUnitSaveData.delidslist.length>0){//如果删除
+            		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
+            	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
             	Ext.MessageBox.alert("信息","采控单元数据保存失败");
@@ -538,6 +541,9 @@ function saveAcquisitionGroupConfigData(acqGroupSaveData,protocol,unitId){
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
             	Ext.MessageBox.alert("信息","保存成功");
+            	if(acqGroupSaveData.delidslist.length>0){//如果删除
+            		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
+            	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
             	Ext.MessageBox.alert("信息","采控组数据保存失败");

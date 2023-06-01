@@ -116,8 +116,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
                 var ModbusProtocolInstanceConfigPanel = Ext.getCmp("ModbusProtocolInstanceConfigPanel_Id");
                 ModbusProtocolInstanceConfigPanel.add(treeGridPanel);
             }
+            var selectedRow=parseInt(Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").getValue());
             treeGridPanel.getSelectionModel().deselectAll(true);
-            treeGridPanel.getSelectionModel().select(0, true);
+            treeGridPanel.getSelectionModel().select(selectedRow, true);
         }
     }
 });

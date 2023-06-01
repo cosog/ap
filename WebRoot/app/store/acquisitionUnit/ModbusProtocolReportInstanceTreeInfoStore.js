@@ -154,8 +154,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                 var panel = Ext.getCmp("ModbusProtocolReportInstanceConfigPanel_Id");
                 panel.add(treeGridPanel);
             }
+            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").getValue());
             treeGridPanel.getSelectionModel().deselectAll(true);
-            treeGridPanel.getSelectionModel().select(0, true);
+            treeGridPanel.getSelectionModel().select(selectedRow, true);
         }
     }
 });

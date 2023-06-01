@@ -1550,8 +1550,12 @@ function SaveModbusProtocolAlarmUnitConfigData(saveData){
 		success:function(response) {
 			data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
+				Ext.MessageBox.alert("信息","保存成功");
+				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
+					Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(0);
+				}
 				Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().load();
-            	Ext.MessageBox.alert("信息","保存成功");
+            	
             } else {
             	Ext.MessageBox.alert("信息","采控单元数据保存失败");
             }

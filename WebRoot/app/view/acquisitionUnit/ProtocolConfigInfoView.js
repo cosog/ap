@@ -38,6 +38,9 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){
+                    		Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
+                    		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
+                    		
                     		var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
                             if (isNotVal(treeGridPanel)) {
                             	treeGridPanel.getStore().load();
@@ -47,6 +50,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                     	}else if(newCard.id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
                     		var activeId = Ext.getCmp("ModbusProtocolUnitConfigTabPanel_Id").getActiveTab().id;
                     		if(activeId=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
+                    			Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
                     			var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
                         		if(isNotVal(treePanel)){
                         			treePanel.getStore().load();
@@ -54,6 +58,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
                         		}
                         	}else if(activeId=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
+                        		Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(0);
                         		var treePanel=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
                         		if(isNotVal(treePanel)){
                         			treePanel.getStore().load();
@@ -61,6 +66,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore');
                         		}
                         	}else if(activeId=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
+                        		Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
                         		var treePanel=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
                         		if(isNotVal(treePanel)){
                         			treePanel.getStore().load();
@@ -68,6 +74,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
                         		}
                         	}else if(activeId=="ModbusProtocolReportUnitConfigTabPanel_Id"){
+                        		Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(0);
                         		var treeGridPanel = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id");
                                 if (isNotVal(treeGridPanel)) {
                                 	treeGridPanel.getStore().load();
@@ -78,13 +85,15 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                     	}else if(newCard.id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
                     		var activeId = Ext.getCmp("ModbusProtocolInstanceConfigTabPanel_Id").getActiveTab().id;
                     		if(activeId=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
-                        		var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
+                    			Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(0);
+                    			var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
                         		if(isNotVal(treePanel)){
                         			treePanel.getStore().load();
                         		}else{
                         			Ext.create('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore');
                         		}
                         	}else if(activeId=="ModbusProtocolDisplayInstanceConfigTabPanel_Id"){
+                        		Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").setValue(0);
                         		var treePanel=Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id");
                         		if(isNotVal(treePanel)){
                         			treePanel.getStore().load();
@@ -92,6 +101,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore');
                         		}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceConfigTabPanel_Id"){
+                        		Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").setValue(0);
                         		var treePanel=Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
                         		if(isNotVal(treePanel)){
                         			treePanel.getStore().load();
@@ -99,6 +109,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore');
                         		}
                         	}else if(activeId=="ModbusProtocolSMSInstanceConfigTabPanel_Id"){
+                        		Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").setValue(0);
                         		var gridPanel=Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id");
                         		if(isNotVal(gridPanel)){
                         			gridPanel.getStore().load();

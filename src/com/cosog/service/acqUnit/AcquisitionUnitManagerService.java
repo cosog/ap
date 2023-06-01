@@ -5,11 +5,13 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,18 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.AcquisitionGroup;
 import com.cosog.model.AcquisitionGroupItem;
+import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.AlarmUnit;
+import com.cosog.model.AlarmUnitItem;
 import com.cosog.model.CurveConf;
+import com.cosog.model.DisplayUnit;
+import com.cosog.model.DisplayUnitItem;
 import com.cosog.model.ProtocolAlarmInstance;
+import com.cosog.model.ProtocolDisplayInstance;
+import com.cosog.model.ProtocolInstance;
+import com.cosog.model.ProtocolModel;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.User;
@@ -46,7 +56,10 @@ import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
+import com.cosog.thread.calculate.DataSynchronizationThread;
+import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
+import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
@@ -5110,33 +5123,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								if(StringManagerUtils.stringToInteger(alarmItemObj[16]+"")==alarmUnit.getId()){
 									ExportProtocolConfig.AlarmItem  alarmItem=new ExportProtocolConfig.AlarmItem();
 									alarmItem.setId(StringManagerUtils.stringToInteger(alarmItemObj[0]+""));
-									if(StringManagerUtils.isInteger(alarmItemObj[1]+"")){
-										alarmItem.setItemId(StringManagerUtils.stringToInteger(alarmItemObj[1]+""));
-									}else{
-										alarmItem.setItemId(-99);
-									}
+									alarmItem.setItemId(StringManagerUtils.isInteger(alarmItemObj[1]+"")?StringManagerUtils.stringToInteger(alarmItemObj[1]+""):null);
 									alarmItem.setItemName(alarmItemObj[2]+"");
 									alarmItem.setItemCode(alarmItemObj[3]+"");
-									if(StringManagerUtils.isInteger(alarmItemObj[4]+"")){
-										alarmItem.setItemAddr(StringManagerUtils.stringToInteger(alarmItemObj[4]+""));
-									}else{
-										alarmItem.setItemAddr(-99);
-									}
+									alarmItem.setItemAddr(StringManagerUtils.isInteger(alarmItemObj[4]+"")?StringManagerUtils.stringToInteger(alarmItemObj[4]+""):null);
 									alarmItem.setValue(StringManagerUtils.stringToFloat(alarmItemObj[5]+""));
-									alarmItem.setUpperLimit(StringManagerUtils.stringToFloat(alarmItemObj[6]+""));
-									alarmItem.setLowerLimit(StringManagerUtils.stringToFloat(alarmItemObj[7]+""));
-									alarmItem.setHystersis(StringManagerUtils.stringToFloat(alarmItemObj[8]+""));
+									alarmItem.setUpperLimit(StringManagerUtils.isNotNull(alarmItemObj[6]+"")?StringManagerUtils.stringToFloat(alarmItemObj[6]+""):null);
+									alarmItem.setLowerLimit(StringManagerUtils.isNotNull(alarmItemObj[7]+"")?StringManagerUtils.stringToFloat(alarmItemObj[7]+""):null);
+									alarmItem.setHystersis(StringManagerUtils.isNotNull(alarmItemObj[8]+"")?StringManagerUtils.stringToFloat(alarmItemObj[8]+""):null);
 									alarmItem.setDelay(StringManagerUtils.stringToInteger(alarmItemObj[9]+""));
 									
 									alarmItem.setAlarmLevel(StringManagerUtils.stringToInteger(alarmItemObj[10]+""));
 									alarmItem.setAlarmSign(StringManagerUtils.stringToInteger(alarmItemObj[11]+""));
 									alarmItem.setType(StringManagerUtils.stringToInteger(alarmItemObj[12]+""));
 									
-									if(StringManagerUtils.isInteger(alarmItemObj[13]+"")){
-										alarmItem.setBitIndex(StringManagerUtils.stringToInteger(alarmItemObj[13]+""));
-									}else{
-										alarmItem.setBitIndex(-99);
-									}
+									alarmItem.setBitIndex(StringManagerUtils.isInteger(alarmItemObj[13]+"")?StringManagerUtils.stringToInteger(alarmItemObj[13]+""):null);
 									
 									alarmItem.setIsSendMessage(StringManagerUtils.stringToInteger(alarmItemObj[14]+""));
 									alarmItem.setIsSendMail(StringManagerUtils.stringToInteger(alarmItemObj[15]+""));
@@ -6294,6 +6295,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String importProtocolCheck(String data){
 		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"success\":true,\"overlayList\":[");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -6304,12 +6306,408 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
 			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getDeviceType(),exportProtocolConfig.getProtocol().getName());
-			if(!protocolExist){
-				
+			if(!protocolExist){//如果协议不存在，则不存在冲突
+				//添加协议
+				ProtocolModel protocolModel=new ProtocolModel();
+				protocolModel.setId(exportProtocolConfig.getProtocol().getId());
+				protocolModel.setCode(exportProtocolConfig.getProtocol().getCode());
+				protocolModel.setName(exportProtocolConfig.getProtocol().getName());
+				protocolModel.setDeviceType(exportProtocolConfig.getProtocol().getDeviceType());
+				protocolModel.setSort(exportProtocolConfig.getProtocol().getSort());
+				this.getBaseDao().addObject(protocolModel);
+				//添加后，查询自动生成的id和code
+				String addProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"' and t.devicetype="+exportProtocolConfig.getProtocol().getDeviceType();
+				List<?> addProtocolList=this.findCallSql(addProtocolSql.toString());
+				if(addProtocolList.size()>0){//添加成功，更新地址项
+					Object[] addProtocolObj = (Object[]) addProtocolList.get(0);
+					int addProtocolId=StringManagerUtils.stringToInteger(addProtocolObj[0]+"");
+					String addProtocolCode=addProtocolObj[1]+"";
+					String updateProtocolItemsClobSql="update TBL_PROTOCOL t set t.items=? where t.code='"+addProtocolCode+"'";
+					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(gson.toJson(exportProtocolConfig.getProtocol().getItems()));
+					service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
+					
+					
+					ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+							Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+							Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
+							TimeUnit.SECONDS, 
+							Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
+					//更新内存及初始化
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(003);
+					dataSynchronizationThread.setParam1(exportProtocolConfig.getProtocol().getName());
+					dataSynchronizationThread.setMethod("update");
+					executor.execute(dataSynchronizationThread);
+					
+					//添加协议相关配置
+					if(importProtocolContent!=null){
+						//采控单元、采控组及采控实例
+						Map<Integer,Integer> acqUnitIdMapping=new HashMap<>();
+						Map<Integer,Integer> displayUnitIdMapping=new HashMap<>();
+						Map<Integer,Integer> alarmUnitIdMapping=new HashMap<>();
+						
+						if(importProtocolContent.getAcqUnitList()!=null && importProtocolContent.getAcqUnitList().size()>0 && exportProtocolConfig.getAcqUnitList()!=null ){
+							for(int i=0;i<importProtocolContent.getAcqUnitList().size();i++){
+								ExportProtocolConfig.AcqUnit acqUnit=null;
+								for(int j=0;j<exportProtocolConfig.getAcqUnitList().size();j++){
+									if(importProtocolContent.getAcqUnitList().get(i).getId()==exportProtocolConfig.getAcqUnitList().get(j).getId()){
+										acqUnit=exportProtocolConfig.getAcqUnitList().get(j);
+										break;
+									}
+								}
+								if(acqUnit!=null){
+									AcquisitionUnit acquisitionUnit=new AcquisitionUnit();
+									acquisitionUnit.setId(acqUnit.getId());
+									acquisitionUnit.setUnitName(acqUnit.getUnitName());
+									acquisitionUnit.setUnitCode(acqUnit.getUnitCode());
+									acquisitionUnit.setProtocol(acqUnit.getProtocol());
+									acquisitionUnit.setRemark(acqUnit.getRemark());
+									getBaseDao().addObject(acquisitionUnit);
+									//添加后，获取自动生成的单元id、code
+									String addAcqUnitSql="select t.id,t.unit_code from TBL_ACQ_UNIT_CONF t where t.protocol='"+acqUnit.getProtocol()+"' and t.unit_name='"+acqUnit.getUnitName()+"'";
+									List<?> addAcqUnitList=this.findCallSql(addAcqUnitSql);
+									if(addAcqUnitList.size()>0){//采控单元添加成功
+										Object[] addAcqUnitObj = (Object[]) addAcqUnitList.get(0);
+										int addAcqUnitId=StringManagerUtils.stringToInteger(addAcqUnitObj[0]+"");
+										String addAcqUnitCode=addAcqUnitObj[1]+"";
+										//将采集单元id变化记录下来
+										acqUnitIdMapping.put(acqUnit.getId(), addAcqUnitId);
+										//添加采控组
+										if(acqUnit.getAcqGroupList()!=null && acqUnit.getAcqGroupList().size()>0){
+											for(int j=0;j<acqUnit.getAcqGroupList().size();j++){
+												if(StringManagerUtils.existOrNot(importProtocolContent.getAcqUnitList().get(i).getAcqGroupList(), acqUnit.getAcqGroupList().get(j).getId())){
+													AcquisitionGroup acquisitionGroup=new AcquisitionGroup();
+													acquisitionGroup.setId(acqUnit.getAcqGroupList().get(j).getId());
+													acquisitionGroup.setGroupCode(acqUnit.getAcqGroupList().get(j).getGroupCode());
+													acquisitionGroup.setGroupName(acqUnit.getAcqGroupList().get(j).getGroupName());
+													acquisitionGroup.setGroupTimingInterval(acqUnit.getAcqGroupList().get(j).getGroupTimingInterval());
+													acquisitionGroup.setGroupSavingInterval(acqUnit.getAcqGroupList().get(j).getGroupSavingInterval());
+													acquisitionGroup.setProtocol(acqUnit.getAcqGroupList().get(j).getProtocol());
+													acquisitionGroup.setType(acqUnit.getAcqGroupList().get(j).getType());
+													acquisitionGroup.setRemark(acqUnit.getAcqGroupList().get(j).getRemark());
+													getBaseDao().addObject(acquisitionGroup);
+													//添加后，获取自动生成的单元id、code
+													String addAcqGroupSql="select t.id,t.group_code from TBL_ACQ_GROUP_CONF t "
+															+ " where t.group_name='"+acquisitionGroup.getGroupName()+"' and t.protocol='"+acquisitionGroup.getProtocol()+"'"
+															+ " order by t.id desc";
+													List<?> addAcqGroupList=this.findCallSql(addAcqGroupSql);
+													if(addAcqGroupList.size()>0){
+														Object[] addAcqGroupObj = (Object[]) addAcqGroupList.get(0);
+														int addAcqGroupId=StringManagerUtils.stringToInteger(addAcqGroupObj[0]+"");
+														String addAcqGroupCode=addAcqGroupObj[1]+"";
+														//采控单元、采控组授权
+														AcquisitionUnitGroup acquisitionUnitGroup = new AcquisitionUnitGroup();
+														acquisitionUnitGroup.setUnitId(addAcqUnitId);
+														acquisitionUnitGroup.setGroupId(addAcqGroupId);
+														acquisitionUnitGroup.setMatrix("0,0,0");
+														getBaseDao().addObject(acquisitionUnitGroup);
+														//添加采控项
+														if(acqUnit.getAcqGroupList().get(j).getAcqItemList()!=null && acqUnit.getAcqGroupList().get(j).getAcqItemList().size()>0){
+															for(int k=0;k<acqUnit.getAcqGroupList().get(j).getAcqItemList().size();k++){
+																AcquisitionGroupItem acquisitionGroupItem = new AcquisitionGroupItem();
+																acquisitionGroupItem.setId(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getId());
+																if(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getItemId()>0){
+																	acquisitionGroupItem.setItemId(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getItemId());
+																}else{
+																	acquisitionGroupItem.setItemId(null);
+																}
+																acquisitionGroupItem.setItemName(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getItemName());
+																acquisitionGroupItem.setItemCode(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getItemCode());
+																acquisitionGroupItem.setGroupId(addAcqGroupId);
+																acquisitionGroupItem.setMatrix(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getMatrix());
+																if(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getBitIndex()>=0){
+																	acquisitionGroupItem.setBitIndex(acqUnit.getAcqGroupList().get(j).getAcqItemList().get(k).getBitIndex());
+																}else{
+																	acquisitionGroupItem.setBitIndex(null);
+																}
+																getBaseDao().addObject(acquisitionGroupItem);
+															}
+														}
+													}
+												}
+											}
+										}
+										//添加采控实例
+										if(exportProtocolConfig.getAcqInstanceList()!=null && importProtocolContent.getAcqInstanceList()!=null && importProtocolContent.getAcqInstanceList().size()>0){
+											for(int j=0;j<importProtocolContent.getAcqInstanceList().size();j++){
+												ExportProtocolConfig.AcqInstance acqInstance=null;
+												for(int k=0;k<exportProtocolConfig.getAcqInstanceList().size();k++){
+													if(importProtocolContent.getAcqInstanceList().get(j)==exportProtocolConfig.getAcqInstanceList().get(k).getId() ){
+														acqInstance=exportProtocolConfig.getAcqInstanceList().get(k);
+														break;
+													}
+												}
+												if(acqInstance!=null){
+													ProtocolInstance protocolInstance=new ProtocolInstance();
+													protocolInstance.setId(acqInstance.getId());
+													protocolInstance.setName(acqInstance.getName());
+													protocolInstance.setCode(acqInstance.getCode());
+													protocolInstance.setAcqProtocolType(acqInstance.getAcqProtocolType());
+													protocolInstance.setCtrlProtocolType(acqInstance.getCtrlProtocolType());
+													protocolInstance.setSignInPrefixSuffixHex(acqInstance.getSignInPrefixSuffixHex());
+													protocolInstance.setSignInPrefix(acqInstance.getSignInPrefix());
+													protocolInstance.setSignInSuffix(acqInstance.getSignInSuffix());
+													protocolInstance.setSignInIDHex(acqInstance.getSignInIDHex());
+													protocolInstance.setHeartbeatPrefixSuffixHex(acqInstance.getHeartbeatPrefixSuffixHex());
+													protocolInstance.setHeartbeatPrefix(acqInstance.getHeartbeatPrefix());
+													protocolInstance.setHeartbeatSuffix(acqInstance.getHeartbeatSuffix());
+													protocolInstance.setPacketSendInterval(acqInstance.getPacketSendInterval());
+													protocolInstance.setDeviceType(acqInstance.getDeviceType());
+													protocolInstance.setSort(acqInstance.getSort());
+													protocolInstance.setUnitId(addAcqUnitId);
+													
+													getBaseDao().addObject(protocolInstance);
+													
+													//初始化及同步内存
+													List<String> instanceList=new ArrayList<String>();
+													instanceList.add(protocolInstance.getName());
+													dataSynchronizationThread=new DataSynchronizationThread();
+													dataSynchronizationThread.setSign(051);
+													dataSynchronizationThread.setParam1(protocolInstance.getName());
+													dataSynchronizationThread.setMethod("update");
+													dataSynchronizationThread.setInitWellList(instanceList);
+													executor.execute(dataSynchronizationThread);
+												}
+											}
+										}
+									}else{
+										
+									}
+								}
+							}
+						}
+						
+						//添加显示单元和显示实例
+						if(importProtocolContent.getDisplayUnitList()!=null && importProtocolContent.getDisplayUnitList().size()>0 && exportProtocolConfig.getDisplayUnitList()!=null){
+							for(int i=0;i<importProtocolContent.getDisplayUnitList().size();i++){
+								ExportProtocolConfig.DisplayUnit displayUnit=null;
+								for(int j=0;j<exportProtocolConfig.getDisplayUnitList().size();j++){
+									if(importProtocolContent.getDisplayUnitList().get(i)==exportProtocolConfig.getDisplayUnitList().get(j).getId()  ){
+										displayUnit=exportProtocolConfig.getDisplayUnitList().get(j);
+										break;
+									}
+								}
+								if(displayUnit!=null && acqUnitIdMapping.containsKey(displayUnit.getAcqUnitId())){
+									DisplayUnit saveDisplayUnit=new DisplayUnit();
+									saveDisplayUnit.setId(displayUnit.getId());
+									saveDisplayUnit.setUnitCode(displayUnit.getUnitCode());
+									saveDisplayUnit.setUnitName(displayUnit.getUnitName());
+									saveDisplayUnit.setProtocol(displayUnit.getProtocol());
+									saveDisplayUnit.setRemark(displayUnit.getRemark());
+									saveDisplayUnit.setAcqUnitId(acqUnitIdMapping.get(displayUnit.getAcqUnitId()));
+									getBaseDao().addObject(saveDisplayUnit);
+									
+									//添加后，获取自动生成的单元id、code
+									String addDisplayUnitSql="select t.id,t.unit_code from TBL_DISPLAY_UNIT_CONF t where t.unit_name='"+saveDisplayUnit.getUnitName()+"' and t.acqunitid="+saveDisplayUnit.getAcqUnitId()+" order by t.id desc";
+									List<?> addDisplayUnitList=this.findCallSql(addDisplayUnitSql);
+									if(addDisplayUnitList.size()>0){//采控单元添加成功
+										Object[] addDisplayUnitObj = (Object[]) addDisplayUnitList.get(0);
+										int addDisplayUnitId=StringManagerUtils.stringToInteger(addDisplayUnitObj[0]+"");
+										String addDisplayUnitCode=addDisplayUnitObj[1]+"";
+										//将显示单元id变化记录下来
+										displayUnitIdMapping.put(displayUnit.getId(), addDisplayUnitId);
+										//添加显示项
+										if(displayUnit.getDisplayItemList()!=null && displayUnit.getDisplayItemList().size()>0){
+											for(int j=0;j<displayUnit.getDisplayItemList().size();j++){
+												DisplayUnitItem displayUnitItem = new DisplayUnitItem();
+												displayUnitItem.setId(displayUnit.getDisplayItemList().get(j).getId());
+												displayUnitItem.setItemId(displayUnit.getDisplayItemList().get(j).getItemId()>0?displayUnit.getDisplayItemList().get(j).getItemId():null);
+												displayUnitItem.setItemName(displayUnit.getDisplayItemList().get(j).getItemName());
+												displayUnitItem.setItemCode(displayUnit.getDisplayItemList().get(j).getItemCode());
+												displayUnitItem.setSort(displayUnit.getDisplayItemList().get(j).getSort());
+												displayUnitItem.setBitIndex(displayUnit.getDisplayItemList().get(j).getBitIndex()>=0?displayUnit.getDisplayItemList().get(j).getBitIndex():null);
+												displayUnitItem.setShowLevel(displayUnit.getDisplayItemList().get(j).getShowLevel()>=0?displayUnit.getDisplayItemList().get(j).getShowLevel():null);
+												displayUnitItem.setType(displayUnit.getDisplayItemList().get(j).getType());
+												displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(j).getRealtimeCurveConf());
+												displayUnitItem.setHistoryCurveConf(displayUnit.getDisplayItemList().get(j).getHistoryCurveConf());
+												displayUnitItem.setUnitId(addDisplayUnitId);
+												getBaseDao().addObject(displayUnitItem);
+											}
+										}
+										
+										
+										//添加显示实例
+										if(importProtocolContent.getDisplayInstanceList()!=null && importProtocolContent.getDisplayInstanceList().size()>0 && exportProtocolConfig.getDisplayInstanceList()!=null){
+											for(int j=0;j<importProtocolContent.getDisplayInstanceList().size();j++){
+												ExportProtocolConfig.DisplayInstance displayInstance=null;
+												for(int k=0;k<exportProtocolConfig.getDisplayInstanceList().size();k++){
+													if(importProtocolContent.getDisplayInstanceList().get(j)==exportProtocolConfig.getDisplayInstanceList().get(k).getId() ){
+														displayInstance=exportProtocolConfig.getDisplayInstanceList().get(k);
+														break;
+													}
+												}
+												if(displayInstance!=null && displayUnitIdMapping.containsKey(displayInstance.getDisplayUnitId())){
+													ProtocolDisplayInstance protocolDisplayInstance=new ProtocolDisplayInstance();
+													protocolDisplayInstance.setId(displayInstance.getId());
+													protocolDisplayInstance.setName(displayInstance.getName());
+													protocolDisplayInstance.setCode(displayInstance.getCode());
+													protocolDisplayInstance.setDeviceType(displayInstance.getDeviceType());
+													protocolDisplayInstance.setSort(displayInstance.getSort());
+													protocolDisplayInstance.setDisplayUnitId(displayUnitIdMapping.get(displayInstance.getDisplayUnitId()));
+													getBaseDao().addObject(protocolDisplayInstance);
+												}
+											}
+										}
+										
+										//更新内存
+										dataSynchronizationThread=new DataSynchronizationThread();
+										dataSynchronizationThread.setSign(042);
+										dataSynchronizationThread.setParam1(addDisplayUnitId+"");
+										dataSynchronizationThread.setMethod("update");
+										executor.execute(dataSynchronizationThread);
+									}
+								}
+							}
+						}
+						
+						//添加报警单元和报警实例
+						if(importProtocolContent.getAlarmUnitList()!=null && importProtocolContent.getAlarmUnitList().size()>0 && exportProtocolConfig.getAlarmUnitList()!=null){
+							for(int i=0;i<importProtocolContent.getAlarmUnitList().size();i++){
+								ExportProtocolConfig.AlarmUnit alarmUnit=null;
+								for(int j=0;j<exportProtocolConfig.getAlarmUnitList().size();j++){
+									if(importProtocolContent.getAlarmUnitList().get(i)==exportProtocolConfig.getAlarmUnitList().get(j).getId()  ){
+										alarmUnit=exportProtocolConfig.getAlarmUnitList().get(j);
+										break;
+									}
+								}
+								if(alarmUnit!=null){
+									AlarmUnit saveAlarmUnit=new AlarmUnit();
+									saveAlarmUnit.setId(alarmUnit.getId());
+									saveAlarmUnit.setUnitCode(alarmUnit.getUnitCode());
+									saveAlarmUnit.setUnitName(alarmUnit.getUnitName());
+									saveAlarmUnit.setProtocol(alarmUnit.getProtocol());
+									saveAlarmUnit.setRemark(alarmUnit.getRemark());
+									getBaseDao().addObject(saveAlarmUnit);
+									//添加后，获取自动生成的单元id、code
+									String addAlarmUnitSql="select t.id,t.unit_code from TBL_ALARM_UNIT_CONF t where t.unit_name='"+saveAlarmUnit.getUnitName()+"' and t.protocol='"+saveAlarmUnit.getProtocol()+"' order by t.id desc";
+									List<?> addAlarmUnitList=this.findCallSql(addAlarmUnitSql);
+									if(addAlarmUnitList.size()>0){//采控单元添加成功
+										Object[] addAlarmUnitObj = (Object[]) addAlarmUnitList.get(0);
+										int addAlarmUnitId=StringManagerUtils.stringToInteger(addAlarmUnitObj[0]+"");
+										String addAlarmUnitCode=addAlarmUnitObj[1]+"";
+										//将报警单元id变化记录下来
+										alarmUnitIdMapping.put(alarmUnit.getId(), addAlarmUnitId);
+										
+										//添加报警项
+										if(alarmUnit.getAlarmItemList()!=null && alarmUnit.getAlarmItemList().size()>0){
+											for(int j=0;j<alarmUnit.getAlarmItemList().size();j++){
+												AlarmUnitItem alarmUnitItem=new AlarmUnitItem();
+												alarmUnitItem.setId(alarmUnit.getAlarmItemList().get(j).getId());
+												alarmUnitItem.setUnitId(addAlarmUnitId);
+												alarmUnitItem.setItemId(alarmUnit.getAlarmItemList().get(j).getItemId());
+												alarmUnitItem.setItemName(alarmUnit.getAlarmItemList().get(j).getItemName());
+												alarmUnitItem.setItemCode(alarmUnit.getAlarmItemList().get(j).getItemCode());
+												alarmUnitItem.setItemAddr(alarmUnit.getAlarmItemList().get(j).getItemAddr());
+												alarmUnitItem.setBitIndex(alarmUnit.getAlarmItemList().get(j).getBitIndex());
+												alarmUnitItem.setValue(alarmUnit.getAlarmItemList().get(j).getValue());
+												alarmUnitItem.setUpperLimit(alarmUnit.getAlarmItemList().get(j).getUpperLimit());
+												alarmUnitItem.setLowerLimit(alarmUnit.getAlarmItemList().get(j).getLowerLimit());
+												alarmUnitItem.setHystersis(alarmUnit.getAlarmItemList().get(j).getHystersis());
+												alarmUnitItem.setDelay(alarmUnit.getAlarmItemList().get(j).getDelay());
+												alarmUnitItem.setAlarmLevel(alarmUnit.getAlarmItemList().get(j).getAlarmLevel());
+												alarmUnitItem.setAlarmSign(alarmUnit.getAlarmItemList().get(j).getAlarmSign());
+												alarmUnitItem.setType(alarmUnit.getAlarmItemList().get(j).getType());
+												alarmUnitItem.setIsSendMessage(alarmUnit.getAlarmItemList().get(j).getIsSendMessage());
+												alarmUnitItem.setIsSendMail(alarmUnit.getAlarmItemList().get(j).getIsSendMail());
+												getBaseDao().addObject(alarmUnitItem);
+											}
+										}
+										
+										//添加报警实例
+										if(importProtocolContent.getAlarmInstanceList()!=null && importProtocolContent.getAlarmInstanceList().size()>0 && exportProtocolConfig.getAlarmInstanceList()!=null){
+											for(int j=0;j<importProtocolContent.getAlarmInstanceList().size();j++){
+												ExportProtocolConfig.AlarmInstance alarmInstance=null;
+												for(int k=0;k<exportProtocolConfig.getAlarmInstanceList().size();k++){
+													if(importProtocolContent.getAlarmInstanceList().get(j)==exportProtocolConfig.getAlarmInstanceList().get(k).getId() ){
+														alarmInstance=exportProtocolConfig.getAlarmInstanceList().get(k);
+														break;
+													}
+												}
+												if(alarmInstance!=null && alarmUnitIdMapping.containsKey(alarmInstance.getAlarmUnitId())){
+													ProtocolAlarmInstance protocolAlarmInstance=new ProtocolAlarmInstance();
+													protocolAlarmInstance.setId(alarmInstance.getId());
+													protocolAlarmInstance.setName(alarmInstance.getName());
+													protocolAlarmInstance.setCode(alarmInstance.getCode());
+													protocolAlarmInstance.setDeviceType(alarmInstance.getDeviceType());
+													protocolAlarmInstance.setSort(alarmInstance.getSort());
+													protocolAlarmInstance.setAlarmUnitId(alarmUnitIdMapping.get(alarmInstance.getAlarmUnitId()));
+													getBaseDao().addObject(protocolAlarmInstance);
+												}
+											}
+										}
+										
+										//更新内存
+										dataSynchronizationThread=new DataSynchronizationThread();
+										dataSynchronizationThread.setSign(032);
+										dataSynchronizationThread.setParam1(addAlarmUnitId+"");
+										dataSynchronizationThread.setMethod("update");
+										executor.execute(dataSynchronizationThread);
+									}
+								}
+							}
+						}
+					}
+				}else{//添加失败
+					
+				}
+			}else{//如果协议已存在
+				result_json.append("{\"classes\":0},");
+				//判断采控单元是否存在
+				if(importProtocolContent.getAcqUnitList()!=null && importProtocolContent.getAcqUnitList().size()>0 && exportProtocolConfig.getAcqUnitList()!=null ){
+					for(int i=0;i<importProtocolContent.getAcqUnitList().size();i++){
+						ExportProtocolConfig.AcqUnit acqUnit=null;
+						for(int j=0;j<exportProtocolConfig.getAcqUnitList().size();j++){
+							if(importProtocolContent.getAcqUnitList().get(i).getId()==exportProtocolConfig.getAcqUnitList().get(j).getId()){
+								acqUnit=exportProtocolConfig.getAcqUnitList().get(j);
+								break;
+							}
+						}
+						if(acqUnit!=null){
+							String addAcqUnitSql="select t.id,t.unit_code from TBL_ACQ_UNIT_CONF t where t.protocol='"+acqUnit.getProtocol()+"' and t.unit_name='"+acqUnit.getUnitName()+"'";
+							List<?> addAcqUnitList=this.findCallSql(addAcqUnitSql);
+							if(addAcqUnitList.size()>0){//采控单元已存在
+								Object[] existAcqUnitObj = (Object[]) addAcqUnitList.get(0);
+								int existAcqUnitId=StringManagerUtils.stringToInteger(existAcqUnitObj[0]+"");
+								String existAcqUnitCode=existAcqUnitObj[1]+"";
+								
+								result_json.append("{\"classes\":1,\"type\":0,\"id\":"+acqUnit.getId()+",\"text\":\""+acqUnit.getUnitName()+"\"},");
+								//判断采控组是否存在
+								if(acqUnit.getAcqGroupList()!=null && acqUnit.getAcqGroupList().size()>0){
+									for(int j=0;j<acqUnit.getAcqGroupList().size();j++){
+										if(StringManagerUtils.existOrNot(importProtocolContent.getAcqUnitList().get(i).getAcqGroupList(), acqUnit.getAcqGroupList().get(j).getId())){
+											String addAcqGroupSql="select t.id,t.group_code from TBL_ACQ_GROUP_CONF t,tbl_acq_group2unit_conf t2,tbl_acq_unit_conf t3 "
+													+ " where t.id=t2.groupid and t2.unitid=t3.id "
+													+ " and t3.protocol='"+acqUnit.getAcqGroupList().get(j).getProtocol()+"' "
+													+ " and t3.id="+existAcqUnitId
+													+ " and t.group_name='"+acqUnit.getAcqGroupList().get(j).getGroupName()+"'";
+											
+											List<?> addAcqGroupList=this.findCallSql(addAcqGroupSql);
+											if(addAcqGroupList.size()>0){//采控组已存在
+												Object[] existAcqGroupObj = (Object[]) addAcqGroupList.get(0);
+												int existAcqGroupId=StringManagerUtils.stringToInteger(existAcqGroupObj[0]+"");
+												result_json.append("{\"classes\":2,\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\"},");
+												//判断采控项
+												
+											}else{//采控组不存在
+												
+											}
+										}
+									}
+								}
+								
+							}else{//采控单元不存在
+								
+							}
+						}
+					}
+				}
 			}
 		}
-		
-		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
 		return "";
 	}
 	

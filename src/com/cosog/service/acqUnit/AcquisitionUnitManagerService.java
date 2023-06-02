@@ -4707,12 +4707,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public boolean judgeProtocolExistOrNot(int deviceType,String protocolName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(protocolName)) {
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-					flag = true;
-					break;
-				}
+//			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+//				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+//					flag = true;
+//					break;
+//				}
+//			}
+			String sql = "select t.id from TBL_PROTOCOL t where t.name='"+protocolName+"'";
+			List<?> list = this.findCallSql(sql);
+			if (list.size() > 0) {
+				flag = true;
 			}
 		}
 		return flag;
@@ -6293,7 +6298,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String importProtocolCheck(String data){
+	public String saveImportProtocolData(String data){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"success\":true,\"overlayList\":[");
 		Gson gson = new Gson();
@@ -6306,6 +6311,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
 			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getDeviceType(),exportProtocolConfig.getProtocol().getName());
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
+			DataSynchronizationThread dataSynchronizationThread=null;
 			if(!protocolExist){//如果协议不存在，则不存在冲突
 				//添加协议
 				ProtocolModel protocolModel=new ProtocolModel();
@@ -6328,13 +6339,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
 					
 					
-					ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-							Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-							Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-							TimeUnit.SECONDS, 
-							Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 					//更新内存及初始化
-					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(003);
 					dataSynchronizationThread.setParam1(exportProtocolConfig.getProtocol().getName());
 					dataSynchronizationThread.setMethod("update");
@@ -6433,7 +6439,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											for(int j=0;j<importProtocolContent.getAcqInstanceList().size();j++){
 												ExportProtocolConfig.AcqInstance acqInstance=null;
 												for(int k=0;k<exportProtocolConfig.getAcqInstanceList().size();k++){
-													if(importProtocolContent.getAcqInstanceList().get(j)==exportProtocolConfig.getAcqInstanceList().get(k).getId() ){
+													if(importProtocolContent.getAcqInstanceList().get(j)==exportProtocolConfig.getAcqInstanceList().get(k).getId()
+															&& exportProtocolConfig.getAcqInstanceList().get(k).getUnitId()==acqUnit.getId()){
 														acqInstance=exportProtocolConfig.getAcqInstanceList().get(k);
 														break;
 													}
@@ -6582,7 +6589,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									//添加后，获取自动生成的单元id、code
 									String addAlarmUnitSql="select t.id,t.unit_code from TBL_ALARM_UNIT_CONF t where t.unit_name='"+saveAlarmUnit.getUnitName()+"' and t.protocol='"+saveAlarmUnit.getProtocol()+"' order by t.id desc";
 									List<?> addAlarmUnitList=this.findCallSql(addAlarmUnitSql);
-									if(addAlarmUnitList.size()>0){//采控单元添加成功
+									if(addAlarmUnitList.size()>0){//报警单元添加成功
 										Object[] addAlarmUnitObj = (Object[]) addAlarmUnitList.get(0);
 										int addAlarmUnitId=StringManagerUtils.stringToInteger(addAlarmUnitObj[0]+"");
 										String addAlarmUnitCode=addAlarmUnitObj[1]+"";
@@ -6652,52 +6659,395 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					
 				}
 			}else{//如果协议已存在
-				result_json.append("{\"classes\":0},");
-				//判断采控单元是否存在
-				if(importProtocolContent.getAcqUnitList()!=null && importProtocolContent.getAcqUnitList().size()>0 && exportProtocolConfig.getAcqUnitList()!=null ){
-					for(int i=0;i<importProtocolContent.getAcqUnitList().size();i++){
-						ExportProtocolConfig.AcqUnit acqUnit=null;
-						for(int j=0;j<exportProtocolConfig.getAcqUnitList().size();j++){
-							if(importProtocolContent.getAcqUnitList().get(i).getId()==exportProtocolConfig.getAcqUnitList().get(j).getId()){
-								acqUnit=exportProtocolConfig.getAcqUnitList().get(j);
-								break;
+				try {
+					result_json.append("{\"classes\":0},");
+					String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
+					List<?> existProtocolList=this.findCallSql(existProtocolSql);
+					if(existProtocolList.size()>0){
+						Object[] existProtocolObj = (Object[]) existProtocolList.get(0);
+						int existProtocolId=StringManagerUtils.stringToInteger(existProtocolObj[0]+"");
+						String existProtocolCode=existProtocolObj[1]+"";
+						
+						//更新协议内容
+						String updateSql="update TBL_PROTOCOL t set t.name='"+exportProtocolConfig.getProtocol().getName()+"',"
+								+ " t.deviceType="+exportProtocolConfig.getProtocol().getDeviceType()+","
+								+ " t.sort="+exportProtocolConfig.getProtocol().getSort()
+								+" where t.id="+existProtocolId;
+
+						service.updateSql(updateSql);
+						String updateProtocolItemsClobSql="update TBL_PROTOCOL t set t.items=? where t.id="+existProtocolId;
+						List<String> clobCont=new ArrayList<String>();
+						clobCont.add(gson.toJson(exportProtocolConfig.getProtocol().getItems()));
+						service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
+						//更新内存及初始化
+						dataSynchronizationThread=new DataSynchronizationThread();
+						dataSynchronizationThread.setSign(003);
+						dataSynchronizationThread.setParam1(exportProtocolConfig.getProtocol().getName());
+						dataSynchronizationThread.setMethod("update");
+						executor.execute(dataSynchronizationThread);
+						
+						
+						
+						Map<Integer,Integer> acqUnitIdMapping=new HashMap<>();
+						Map<Integer,Integer> displayUnitIdMapping=new HashMap<>();
+						Map<Integer,Integer> alarmUnitIdMapping=new HashMap<>();
+						//判断采控单元是否存在
+						if(importProtocolContent.getAcqUnitList()!=null && importProtocolContent.getAcqUnitList().size()>0 && exportProtocolConfig.getAcqUnitList()!=null ){
+							for(int i=0;i<importProtocolContent.getAcqUnitList().size();i++){
+								ExportProtocolConfig.AcqUnit acqUnit=null;
+								for(int j=0;j<exportProtocolConfig.getAcqUnitList().size();j++){
+									if(importProtocolContent.getAcqUnitList().get(i).getId()==exportProtocolConfig.getAcqUnitList().get(j).getId()){
+										acqUnit=exportProtocolConfig.getAcqUnitList().get(j);
+										break;
+									}
+								}
+								if(acqUnit!=null){
+									String addAcqUnitSql="select t.id,t.unit_code from TBL_ACQ_UNIT_CONF t where t.protocol='"+acqUnit.getProtocol()+"' and t.unit_name='"+acqUnit.getUnitName()+"'";
+									List<?> addAcqUnitList=this.findCallSql(addAcqUnitSql);
+									if(addAcqUnitList.size()>0){//采控单元已存在
+										Object[] existAcqUnitObj = (Object[]) addAcqUnitList.get(0);
+										int existAcqUnitId=StringManagerUtils.stringToInteger(existAcqUnitObj[0]+"");
+										String existAcqUnitCode=existAcqUnitObj[1]+"";
+										result_json.append("{\"classes\":1,\"type\":0,\"id\":"+acqUnit.getId()+",\"text\":\""+acqUnit.getUnitName()+"\"},");
+										//判断采控组是否存在
+										if(acqUnit.getAcqGroupList()!=null && acqUnit.getAcqGroupList().size()>0){
+											for(int j=0;j<acqUnit.getAcqGroupList().size();j++){
+												if(StringManagerUtils.existOrNot(importProtocolContent.getAcqUnitList().get(i).getAcqGroupList(), acqUnit.getAcqGroupList().get(j).getId())){
+													String addAcqGroupSql="select t.id,t.group_code from TBL_ACQ_GROUP_CONF t,tbl_acq_group2unit_conf t2,tbl_acq_unit_conf t3 "
+															+ " where t.id=t2.groupid and t2.unitid=t3.id "
+															+ " and t3.protocol='"+acqUnit.getAcqGroupList().get(j).getProtocol()+"' "
+															+ " and t3.id="+existAcqUnitId
+															+ " and t.group_name='"+acqUnit.getAcqGroupList().get(j).getGroupName()+"'";
+													
+													List<?> addAcqGroupList=this.findCallSql(addAcqGroupSql);
+													if(addAcqGroupList.size()>0){//采控组已存在
+														Object[] existAcqGroupObj = (Object[]) addAcqGroupList.get(0);
+														int existAcqGroupId=StringManagerUtils.stringToInteger(existAcqGroupObj[0]+"");
+														result_json.append("{\"classes\":2,\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\"},");
+														//判断采控项
+														
+													}else{//采控组不存在
+														
+													}
+												}
+											}
+										}
+										//判断采控实例是否存在
+										if(importProtocolContent.getAcqInstanceList()!=null && importProtocolContent.getAcqInstanceList().size()>0){
+											for(int j=0;i<importProtocolContent.getAcqInstanceList().size();j++){
+												ExportProtocolConfig.AcqInstance acqInstance=null;
+												for(int k=0;k<exportProtocolConfig.getAcqInstanceList().size();k++){
+													if(importProtocolContent.getAcqInstanceList().get(j)==exportProtocolConfig.getAcqInstanceList().get(k).getId()
+															&& exportProtocolConfig.getAcqInstanceList().get(k).getUnitId()==acqUnit.getId()){
+														acqInstance=exportProtocolConfig.getAcqInstanceList().get(k);
+														break;
+													}
+												}
+												if(acqInstance!=null){
+													String addAcqInstanceSql="select t.id,t.code from TBL_PROTOCOLINSTANCE t where t.name='"+acqInstance.getName()+"' and t.unitid="+existAcqUnitId;
+													List<?> addAcqInstanceList=this.findCallSql(addAcqInstanceSql);
+													if(addAcqInstanceList.size()>0){//采控实例已存在
+														Object[] existAcqInstanceObj = (Object[]) addAcqInstanceList.get(0);
+														int existAcqInstanceId=StringManagerUtils.stringToInteger(existAcqInstanceObj[0]+"");
+														result_json.append("{\"classes\":1,\"type\":3,\"id\":"+acqInstance.getId()+",\"text\":\""+acqInstance.getName()+"\"},");
+													}else{//采控实例不存在
+														
+													}
+												}
+											}
+										}
+										
+										//判断显示单元
+										if(importProtocolContent.getDisplayUnitList()!=null && importProtocolContent.getDisplayUnitList().size()>0){
+											for(int j=0;j<importProtocolContent.getDisplayUnitList().size();j++){
+												ExportProtocolConfig.DisplayUnit displayUnit=null;
+												for(int k=0;k<exportProtocolConfig.getDisplayUnitList().size();k++){
+													if(exportProtocolConfig.getDisplayUnitList().get(k).getAcqUnitId()==acqUnit.getId()
+															&& exportProtocolConfig.getDisplayUnitList().get(k).getId()==importProtocolContent.getDisplayUnitList().get(j)){
+														displayUnit=exportProtocolConfig.getDisplayUnitList().get(k);
+														break;
+													}
+												}
+												if(displayUnit!=null){
+													String addDisplayUnitSql="select t.id,t.unit_code from TBL_DISPLAY_UNIT_CONF t where t.unit_name='"+displayUnit.getUnitName()+"' and t.acqunitid= "+existAcqUnitId;
+													List<?> addDisplayUnitList=this.findCallSql(addDisplayUnitSql);
+													if(addDisplayUnitList.size()>0){//显示单元已存在
+														Object[] existDisplayUnitObj = (Object[]) addDisplayUnitList.get(0);
+														int existDisplayUnitId=StringManagerUtils.stringToInteger(existDisplayUnitObj[0]+"");
+														result_json.append("{\"classes\":1,\"type\":1,\"id\":"+displayUnit.getId()+",\"text\":\""+displayUnit.getUnitName()+"\"},");
+														
+														//如果显示单元存在，判断改单元对应的显示实例是否存在
+														if(importProtocolContent.getDisplayInstanceList()!=null && importProtocolContent.getDisplayInstanceList().size()>0 ){
+															for(int m=0;m<exportProtocolConfig.getDisplayInstanceList().size();m++){
+																if(StringManagerUtils.existOrNot(importProtocolContent.getDisplayInstanceList(), exportProtocolConfig.getDisplayInstanceList().get(m).getId())
+																		&& exportProtocolConfig.getDisplayInstanceList().get(m).getDisplayUnitId()==displayUnit.getId()){
+																	String addDisplayInstanceSql="select t.id,t.code from TBL_PROTOCOLDISPLAYINSTANCE t where t.name='"+exportProtocolConfig.getDisplayInstanceList().get(m).getName()+"' and t.displayunitid="+existDisplayUnitId;
+																	List<?> addDisplayInstanceList=this.findCallSql(addDisplayInstanceSql);
+																	if(addDisplayInstanceList.size()>0){//显示实例已存在
+																		Object[] existDisplayInstanceObj = (Object[]) addDisplayInstanceList.get(0);
+																		int existDisplayInstanceId=StringManagerUtils.stringToInteger(existDisplayInstanceObj[0]+"");
+																		result_json.append("{\"classes\":1,\"type\":4,\"id\":"+exportProtocolConfig.getDisplayInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(m).getName()+"\"},");
+																	}else{//显示实例不存在
+																		
+																	}
+																}
+															}
+														}
+													}else{//显示单元不存在
+														
+													}
+												}
+											}
+										}
+									}else{//采控单元不存在
+										
+									}
+								}
 							}
 						}
-						if(acqUnit!=null){
-							String addAcqUnitSql="select t.id,t.unit_code from TBL_ACQ_UNIT_CONF t where t.protocol='"+acqUnit.getProtocol()+"' and t.unit_name='"+acqUnit.getUnitName()+"'";
-							List<?> addAcqUnitList=this.findCallSql(addAcqUnitSql);
-							if(addAcqUnitList.size()>0){//采控单元已存在
-								Object[] existAcqUnitObj = (Object[]) addAcqUnitList.get(0);
-								int existAcqUnitId=StringManagerUtils.stringToInteger(existAcqUnitObj[0]+"");
-								String existAcqUnitCode=existAcqUnitObj[1]+"";
-								
-								result_json.append("{\"classes\":1,\"type\":0,\"id\":"+acqUnit.getId()+",\"text\":\""+acqUnit.getUnitName()+"\"},");
-								//判断采控组是否存在
-								if(acqUnit.getAcqGroupList()!=null && acqUnit.getAcqGroupList().size()>0){
-									for(int j=0;j<acqUnit.getAcqGroupList().size();j++){
-										if(StringManagerUtils.existOrNot(importProtocolContent.getAcqUnitList().get(i).getAcqGroupList(), acqUnit.getAcqGroupList().get(j).getId())){
-											String addAcqGroupSql="select t.id,t.group_code from TBL_ACQ_GROUP_CONF t,tbl_acq_group2unit_conf t2,tbl_acq_unit_conf t3 "
-													+ " where t.id=t2.groupid and t2.unitid=t3.id "
-													+ " and t3.protocol='"+acqUnit.getAcqGroupList().get(j).getProtocol()+"' "
-													+ " and t3.id="+existAcqUnitId
-													+ " and t.group_name='"+acqUnit.getAcqGroupList().get(j).getGroupName()+"'";
-											
-											List<?> addAcqGroupList=this.findCallSql(addAcqGroupSql);
-											if(addAcqGroupList.size()>0){//采控组已存在
-												Object[] existAcqGroupObj = (Object[]) addAcqGroupList.get(0);
-												int existAcqGroupId=StringManagerUtils.stringToInteger(existAcqGroupObj[0]+"");
-												result_json.append("{\"classes\":2,\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\"},");
-												//判断采控项
+						//判断报警单元
+						if(importProtocolContent.getAlarmUnitList()!=null && importProtocolContent.getAlarmUnitList().size()>0 && exportProtocolConfig.getAlarmUnitList()!=null){
+							for(int i=0;i<importProtocolContent.getAlarmUnitList().size();i++){
+								ExportProtocolConfig.AlarmUnit alarmUnit=null;
+								for(int j=0;j<exportProtocolConfig.getAlarmUnitList().size();j++){
+									if(importProtocolContent.getAlarmUnitList().get(i)==exportProtocolConfig.getAlarmUnitList().get(j).getId()  ){
+										alarmUnit=exportProtocolConfig.getAlarmUnitList().get(j);
+										break;
+									}
+								}
+								if(alarmUnit!=null){
+									//添加后，获取自动生成的单元id、code
+									String addAlarmUnitSql="select t.id,t.unit_code from TBL_ALARM_UNIT_CONF t where t.unit_name='"+alarmUnit.getUnitName()+"' and t.protocol='"+alarmUnit.getProtocol()+"' order by t.id desc";
+									List<?> addAlarmUnitList=this.findCallSql(addAlarmUnitSql);
+									if(addAlarmUnitList.size()>0){//报警单元已存在
+										Object[] addAlarmUnitObj = (Object[]) addAlarmUnitList.get(0);
+										int existAlarmUnitId=StringManagerUtils.stringToInteger(addAlarmUnitObj[0]+"");
+										String existAlarmUnitCode=addAlarmUnitObj[1]+"";
+										result_json.append("{\"classes\":1,\"type\":2,\"id\":"+alarmUnit.getId()+",\"text\":\""+alarmUnit.getUnitName()+"\"},");
+										
+										//如果报警单元存在，判断对应的报警实例是否存在
+										if(importProtocolContent.getAlarmInstanceList()!=null && importProtocolContent.getAlarmInstanceList().size()>0 && exportProtocolConfig.getAlarmInstanceList()!=null){
+											for(int m=0;m<exportProtocolConfig.getAlarmInstanceList().size();m++){
+												if(StringManagerUtils.existOrNot(importProtocolContent.getAlarmInstanceList(), exportProtocolConfig.getAlarmInstanceList().get(m).getId())
+														&& exportProtocolConfig.getAlarmInstanceList().get(m).getAlarmUnitId()==alarmUnit.getId()){
+													String addAlarmInstanceSql="select t.id,t.code from TBL_PROTOCOLALARMINSTANCE t where t.name='"+exportProtocolConfig.getAlarmInstanceList().get(m).getName()+"' and t.alarmunitid="+existAlarmUnitId;
+													List<?> addAlarmInstanceList=this.findCallSql(addAlarmInstanceSql);
+													if(addAlarmInstanceList.size()>0){//报警实例已存在
+														Object[] addAlarmInstanceObj = (Object[]) addAlarmInstanceList.get(0);
+														int existAlarmInstanceId=StringManagerUtils.stringToInteger(addAlarmInstanceObj[0]+"");
+														String existAlarmInstanceCode=addAlarmInstanceObj[1]+"";
+														result_json.append("{\"classes\":1,\"type\":5,\"id\":"+exportProtocolConfig.getAlarmInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(m).getName()+"\"},");
+													}else{//报警实例不存在
+														
+													}
+												}
+											}
+										}
+									}else{//报警单元不存在
+										
+									}
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return "";
+	}
+	
+	
+	public String importProtocolCheck(String data){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"success\":true,\"overlayList\":[");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		
+		type = new TypeToken<ImportProtocolContent>() {}.getType();
+		ImportProtocolContent importProtocolContent=gson.fromJson(data, type);
+		
+		Map<String, Object> map = DataModelMap.getMapObject();
+		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
+			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getDeviceType(),exportProtocolConfig.getProtocol().getName());
+			if(!protocolExist){//如果协议不存在，则不存在冲突
+				
+			}else{//如果协议已存在
+				result_json.append("{\"classes\":0},");
+				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
+				List<?> existProtocolList=this.findCallSql(existProtocolSql);
+				if(existProtocolList.size()>0){
+					Object[] existProtocolObj = (Object[]) existProtocolList.get(0);
+					int existProtocolId=StringManagerUtils.stringToInteger(existProtocolObj[0]+"");
+					String existProtocolCode=existProtocolObj[1]+"";
+
+					
+					
+					Map<Integer,Integer> acqUnitIdMapping=new HashMap<>();
+					Map<Integer,Integer> displayUnitIdMapping=new HashMap<>();
+					Map<Integer,Integer> alarmUnitIdMapping=new HashMap<>();
+					//判断采控单元是否存在
+					if(importProtocolContent.getAcqUnitList()!=null && importProtocolContent.getAcqUnitList().size()>0 && exportProtocolConfig.getAcqUnitList()!=null ){
+						for(int i=0;i<importProtocolContent.getAcqUnitList().size();i++){
+							ExportProtocolConfig.AcqUnit acqUnit=null;
+							for(int j=0;j<exportProtocolConfig.getAcqUnitList().size();j++){
+								if(importProtocolContent.getAcqUnitList().get(i).getId()==exportProtocolConfig.getAcqUnitList().get(j).getId()){
+									acqUnit=exportProtocolConfig.getAcqUnitList().get(j);
+									break;
+								}
+							}
+							if(acqUnit!=null){
+								String addAcqUnitSql="select t.id,t.unit_code from TBL_ACQ_UNIT_CONF t where t.protocol='"+acqUnit.getProtocol()+"' and t.unit_name='"+acqUnit.getUnitName()+"'";
+								List<?> addAcqUnitList=this.findCallSql(addAcqUnitSql);
+								if(addAcqUnitList.size()>0){//采控单元已存在
+									Object[] existAcqUnitObj = (Object[]) addAcqUnitList.get(0);
+									int existAcqUnitId=StringManagerUtils.stringToInteger(existAcqUnitObj[0]+"");
+									String existAcqUnitCode=existAcqUnitObj[1]+"";
+									result_json.append("{\"classes\":1,\"type\":0,\"id\":"+acqUnit.getId()+",\"text\":\""+acqUnit.getUnitName()+"\"},");
+									//判断采控组是否存在
+									if(acqUnit.getAcqGroupList()!=null && acqUnit.getAcqGroupList().size()>0){
+										for(int j=0;j<acqUnit.getAcqGroupList().size();j++){
+											if(StringManagerUtils.existOrNot(importProtocolContent.getAcqUnitList().get(i).getAcqGroupList(), acqUnit.getAcqGroupList().get(j).getId())){
+												String addAcqGroupSql="select t.id,t.group_code from TBL_ACQ_GROUP_CONF t,tbl_acq_group2unit_conf t2,tbl_acq_unit_conf t3 "
+														+ " where t.id=t2.groupid and t2.unitid=t3.id "
+														+ " and t3.protocol='"+acqUnit.getAcqGroupList().get(j).getProtocol()+"' "
+														+ " and t3.id="+existAcqUnitId
+														+ " and t.group_name='"+acqUnit.getAcqGroupList().get(j).getGroupName()+"'";
 												
-											}else{//采控组不存在
-												
+												List<?> addAcqGroupList=this.findCallSql(addAcqGroupSql);
+												if(addAcqGroupList.size()>0){//采控组已存在
+													Object[] existAcqGroupObj = (Object[]) addAcqGroupList.get(0);
+													int existAcqGroupId=StringManagerUtils.stringToInteger(existAcqGroupObj[0]+"");
+													result_json.append("{\"classes\":2,\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\"},");
+													//判断采控项
+													
+												}else{//采控组不存在
+													
+												}
 											}
 										}
 									}
+									//判断采控实例是否存在
+									if(importProtocolContent.getAcqInstanceList()!=null && importProtocolContent.getAcqInstanceList().size()>0){
+										for(int j=0;i<importProtocolContent.getAcqInstanceList().size();j++){
+											ExportProtocolConfig.AcqInstance acqInstance=null;
+											for(int k=0;k<exportProtocolConfig.getAcqInstanceList().size();k++){
+												if(importProtocolContent.getAcqInstanceList().get(j)==exportProtocolConfig.getAcqInstanceList().get(k).getId()
+														&& exportProtocolConfig.getAcqInstanceList().get(k).getUnitId()==acqUnit.getId()){
+													acqInstance=exportProtocolConfig.getAcqInstanceList().get(k);
+													break;
+												}
+											}
+											if(acqInstance!=null){
+												String addAcqInstanceSql="select t.id,t.code from TBL_PROTOCOLINSTANCE t where t.name='"+acqInstance.getName()+"' and t.unitid="+existAcqUnitId;
+												List<?> addAcqInstanceList=this.findCallSql(addAcqInstanceSql);
+												if(addAcqInstanceList.size()>0){//采控实例已存在
+													Object[] existAcqInstanceObj = (Object[]) addAcqInstanceList.get(0);
+													int existAcqInstanceId=StringManagerUtils.stringToInteger(existAcqInstanceObj[0]+"");
+													result_json.append("{\"classes\":1,\"type\":3,\"id\":"+acqInstance.getId()+",\"text\":\""+acqInstance.getName()+"\"},");
+												}else{//采控实例不存在
+													
+												}
+											}
+										}
+									}
+									
+									//判断显示单元
+									if(importProtocolContent.getDisplayUnitList()!=null && importProtocolContent.getDisplayUnitList().size()>0){
+										for(int j=0;j<importProtocolContent.getDisplayUnitList().size();j++){
+											ExportProtocolConfig.DisplayUnit displayUnit=null;
+											for(int k=0;k<exportProtocolConfig.getDisplayUnitList().size();k++){
+												if(exportProtocolConfig.getDisplayUnitList().get(k).getAcqUnitId()==acqUnit.getId()
+														&& exportProtocolConfig.getDisplayUnitList().get(k).getId()==importProtocolContent.getDisplayUnitList().get(j)){
+													displayUnit=exportProtocolConfig.getDisplayUnitList().get(k);
+													break;
+												}
+											}
+											if(displayUnit!=null){
+												String addDisplayUnitSql="select t.id,t.unit_code from TBL_DISPLAY_UNIT_CONF t where t.unit_name='"+displayUnit.getUnitName()+"' and t.acqunitid= "+existAcqUnitId;
+												List<?> addDisplayUnitList=this.findCallSql(addDisplayUnitSql);
+												if(addDisplayUnitList.size()>0){//显示单元已存在
+													Object[] existDisplayUnitObj = (Object[]) addDisplayUnitList.get(0);
+													int existDisplayUnitId=StringManagerUtils.stringToInteger(existDisplayUnitObj[0]+"");
+													result_json.append("{\"classes\":1,\"type\":1,\"id\":"+displayUnit.getId()+",\"text\":\""+displayUnit.getUnitName()+"\"},");
+													
+													//如果显示单元存在，判断改单元对应的显示实例是否存在
+													if(importProtocolContent.getDisplayInstanceList()!=null && importProtocolContent.getDisplayInstanceList().size()>0 ){
+														for(int m=0;m<exportProtocolConfig.getDisplayInstanceList().size();m++){
+															if(StringManagerUtils.existOrNot(importProtocolContent.getDisplayInstanceList(), exportProtocolConfig.getDisplayInstanceList().get(m).getId())
+																	&& exportProtocolConfig.getDisplayInstanceList().get(m).getDisplayUnitId()==displayUnit.getId()){
+																String addDisplayInstanceSql="select t.id,t.code from TBL_PROTOCOLDISPLAYINSTANCE t where t.name='"+exportProtocolConfig.getDisplayInstanceList().get(m).getName()+"' and t.displayunitid="+existDisplayUnitId;
+																List<?> addDisplayInstanceList=this.findCallSql(addDisplayInstanceSql);
+																if(addDisplayInstanceList.size()>0){//显示实例已存在
+																	Object[] existDisplayInstanceObj = (Object[]) addDisplayInstanceList.get(0);
+																	int existDisplayInstanceId=StringManagerUtils.stringToInteger(existDisplayInstanceObj[0]+"");
+																	result_json.append("{\"classes\":1,\"type\":4,\"id\":"+exportProtocolConfig.getDisplayInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(m).getName()+"\"},");
+																}else{//显示实例不存在
+																	
+																}
+															}
+														}
+													}
+												}else{//显示单元不存在
+													
+												}
+											}
+										}
+									}
+								}else{//采控单元不存在
+									
 								}
-								
-							}else{//采控单元不存在
-								
+							}
+						}
+					}
+					//判断报警单元
+					if(importProtocolContent.getAlarmUnitList()!=null && importProtocolContent.getAlarmUnitList().size()>0 && exportProtocolConfig.getAlarmUnitList()!=null){
+						for(int i=0;i<importProtocolContent.getAlarmUnitList().size();i++){
+							ExportProtocolConfig.AlarmUnit alarmUnit=null;
+							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().size();j++){
+								if(importProtocolContent.getAlarmUnitList().get(i)==exportProtocolConfig.getAlarmUnitList().get(j).getId()  ){
+									alarmUnit=exportProtocolConfig.getAlarmUnitList().get(j);
+									break;
+								}
+							}
+							if(alarmUnit!=null){
+								//添加后，获取自动生成的单元id、code
+								String addAlarmUnitSql="select t.id,t.unit_code from TBL_ALARM_UNIT_CONF t where t.unit_name='"+alarmUnit.getUnitName()+"' and t.protocol='"+alarmUnit.getProtocol()+"' order by t.id desc";
+								List<?> addAlarmUnitList=this.findCallSql(addAlarmUnitSql);
+								if(addAlarmUnitList.size()>0){//报警单元已存在
+									Object[] addAlarmUnitObj = (Object[]) addAlarmUnitList.get(0);
+									int existAlarmUnitId=StringManagerUtils.stringToInteger(addAlarmUnitObj[0]+"");
+									String existAlarmUnitCode=addAlarmUnitObj[1]+"";
+									result_json.append("{\"classes\":1,\"type\":2,\"id\":"+alarmUnit.getId()+",\"text\":\""+alarmUnit.getUnitName()+"\"},");
+									
+									//如果报警单元存在，判断对应的报警实例是否存在
+									if(importProtocolContent.getAlarmInstanceList()!=null && importProtocolContent.getAlarmInstanceList().size()>0 && exportProtocolConfig.getAlarmInstanceList()!=null){
+										for(int m=0;m<exportProtocolConfig.getAlarmInstanceList().size();m++){
+											if(StringManagerUtils.existOrNot(importProtocolContent.getAlarmInstanceList(), exportProtocolConfig.getAlarmInstanceList().get(m).getId())
+													&& exportProtocolConfig.getAlarmInstanceList().get(m).getAlarmUnitId()==alarmUnit.getId()){
+												String addAlarmInstanceSql="select t.id,t.code from TBL_PROTOCOLALARMINSTANCE t where t.name='"+exportProtocolConfig.getAlarmInstanceList().get(m).getName()+"' and t.alarmunitid="+existAlarmUnitId;
+												List<?> addAlarmInstanceList=this.findCallSql(addAlarmInstanceSql);
+												if(addAlarmInstanceList.size()>0){//报警实例已存在
+													Object[] addAlarmInstanceObj = (Object[]) addAlarmInstanceList.get(0);
+													int existAlarmInstanceId=StringManagerUtils.stringToInteger(addAlarmInstanceObj[0]+"");
+													String existAlarmInstanceCode=addAlarmInstanceObj[1]+"";
+													result_json.append("{\"classes\":1,\"type\":5,\"id\":"+exportProtocolConfig.getAlarmInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(m).getName()+"\"},");
+												}else{//报警实例不存在
+													
+												}
+											}
+										}
+									}
+								}else{//报警单元不存在
+									
+								}
 							}
 						}
 					}
@@ -6710,9 +7060,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("]}");
 		return "";
 	}
-	
-	
-	
 	
 	public void doAcquisitionGroupAdd(AcquisitionGroup acquisitionGroup) throws Exception {
 		getBaseDao().addObject(acquisitionGroup);

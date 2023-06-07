@@ -81,12 +81,14 @@ public class CalculateThread extends Thread{
 							+ " order by t.fesdiagramacqTime ";
 					String fesDiagramSql="select t2.id as wellid, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 							+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
-							+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
+							+ "t.theoreticalproduction,"
+							+ "t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 							+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 							+ "t.productiondata,"
 							+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 							+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 							+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
+							+ "t.inverproducingfluidlevel,"//28
 							+ "t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
 							+ "t.runstatus,t.runtime,t.runtimeefficiency,t.runrange,"
 							+ "t.id as recordId"
@@ -172,7 +174,9 @@ public class CalculateThread extends Thread{
 					List<Float> systemEfficiencyList=new ArrayList<Float>();
 					List<Float> energyPer100mLiftList=new ArrayList<Float>();
 					
-
+					List<Float> producingfluidLevelList=new ArrayList<Float>();
+					List<Float> tubingPressureList=new ArrayList<Float>();
+					List<Float> casingPressureList=new ArrayList<Float>();
 					
 					for(int j=0;j<fesDiagramList.size();j++){
 						Object[] resuleObj=(Object[]) fesDiagramList.get(j);
@@ -182,15 +186,15 @@ public class CalculateThread extends Thread{
 						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 						RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 						
-						commStatus=StringManagerUtils.stringToInteger(resuleObj[28]+"")==1;
-						commTime=StringManagerUtils.stringToFloat(resuleObj[29]+"");
-						commTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[30]+"");
+						commStatus=StringManagerUtils.stringToInteger(resuleObj[29]+"")==1;
+						commTime=StringManagerUtils.stringToFloat(resuleObj[30]+"");
+						commTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[31]+"");
+						commRange=StringManagerUtils.CLOBObjectToString(resuleObj[32]);
 						
-						runStatus=StringManagerUtils.stringToInteger(resuleObj[32]+"")==1;
-						runTime=StringManagerUtils.stringToFloat(resuleObj[33]+"");
-						runTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[34]+"");
-						commRange=StringManagerUtils.CLOBObjectToString(resuleObj[31]);
-						runRange=StringManagerUtils.CLOBObjectToString(resuleObj[35]);
+						runStatus=StringManagerUtils.stringToInteger(resuleObj[33]+"")==1;
+						runTime=StringManagerUtils.stringToFloat(resuleObj[34]+"");
+						runTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[35]+"");
+						runRange=StringManagerUtils.CLOBObjectToString(resuleObj[36]);
 						
 						acqTimeList.add(fesdiagramAcqtime);
 						commStatusList.add(commStatus?1:0);
@@ -221,6 +225,14 @@ public class CalculateThread extends Thread{
 							weightWaterCutList.add(0.0f);
 						}
 						
+						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+							tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
+							casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
+						}else{
+							tubingPressureList.add(0.0f);
+							casingPressureList.add(0.0f);
+						}
+						
 						pumpEffList.add(StringManagerUtils.stringToFloat(resuleObj[16]+""));
 						pumpEff1List.add(StringManagerUtils.stringToFloat(resuleObj[17]+""));
 						pumpEff2List.add(StringManagerUtils.stringToFloat(resuleObj[18]+""));
@@ -235,6 +247,8 @@ public class CalculateThread extends Thread{
 						wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
 						systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[26]+""));
 						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[27]+""));
+						
+						producingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
 						
 						long timeDifference=StringManagerUtils.getTimeDifference(minAcqTime, fesdiagramAcqtime+"", "yyyy-MM-dd HH:mm:ss");
 						if(timeDifference>=0){
@@ -278,7 +292,12 @@ public class CalculateThread extends Thread{
 							dataSbf.append("\"PumpEff4\":["+StringUtils.join(pumpEff4List, ",")+"],");
 							dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
 							dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
-							dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"]");
+							dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
+							
+							dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+							dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+							dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"]");
+							
 							dataSbf.append("}");
 							
 							type = new TypeToken<TotalAnalysisRequestData>() {}.getType();
@@ -419,7 +438,9 @@ public class CalculateThread extends Thread{
 					List<Float> systemEfficiencyList=new ArrayList<Float>();
 					List<Float> energyPer100mLiftList=new ArrayList<Float>();
 					
-
+					List<Float> producingfluidLevelList=new ArrayList<Float>();
+					List<Float> tubingPressureList=new ArrayList<Float>();
+					List<Float> casingPressureList=new ArrayList<Float>();
 					
 					for(int j=0;j<singleRecordList.size();j++){
 						Object[] resuleObj=(Object[]) singleRecordList.get(j);
@@ -465,6 +486,16 @@ public class CalculateThread extends Thread{
 							weightWaterCutList.add(0.0f);
 						}
 						
+						if(pcpProductionData!=null&&pcpProductionData.getProduction()!=null){
+							tubingPressureList.add(pcpProductionData.getProduction().getTubingPressure());
+							casingPressureList.add(pcpProductionData.getProduction().getCasingPressure());
+							producingfluidLevelList.add(pcpProductionData.getProduction().getProducingfluidLevel());
+						}else{
+							tubingPressureList.add(0.0f);
+							casingPressureList.add(0.0f);
+							producingfluidLevelList.add(0.0f);
+						}
+						
 						pumpEffList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
 						pumpEff1List.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
 						pumpEff2List.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
@@ -489,6 +520,11 @@ public class CalculateThread extends Thread{
 							dataSbf.append("\"RunTimeEfficiency\":"+runTimeEfficiency+",");
 							dataSbf.append("\"RunRange\":\""+runRange+"\",");
 							dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"],");
+							
+							dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+							dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+							dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+							
 							dataSbf.append("\"TheoreticalProduction\":["+StringUtils.join(theoreticalProductionList, ",")+"],");
 							dataSbf.append("\"LiquidVolumetricProduction\":["+StringUtils.join(liquidVolumetricProductionList, ",")+"],");
 							dataSbf.append("\"OilVolumetricProduction\":["+StringUtils.join(oilVolumetricProductionList, ",")+"],");

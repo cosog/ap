@@ -72,7 +72,7 @@ public class DataSynchronizationThread implements Runnable{
 			else if(sign==022){//删除采控组
 				EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(param1,method);
 				MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(param1,method);
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(param1,method);
+				MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqUnitId(param1,method);
 			}
 			else if(sign==031){//删除报警单元
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(param1,method);

@@ -121,10 +121,30 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
                             url: context + '/acquisitionUnitManagerController/saveImportProtocolData',
                             success: function (response) {
                             	rdata = Ext.JSON.decode(response.responseText);
-                            	if (rdata.success) {
-                            		Ext.MessageBox.alert("信息", "协议及关联内容导入成功！");
+                            	if (rdata.overlayList.length==0) {//无冲突
+                            		Ext.Ajax.request({
+                                        method: 'POST',
+                                        url: context + '/acquisitionUnitManagerController/saveImportProtocolData',
+                                        success: function (response) {
+                                        	rdata = Ext.JSON.decode(response.responseText);
+                                        	if (rdata.success) {
+                                        		Ext.MessageBox.alert("信息", "协议及关联内容导入成功！");
+                                        	}else{
+                                        		Ext.MessageBox.alert("信息", "协议及关联内容导入失败！");
+                                        	}
+                                        },
+                                        failure: function () {
+                                            Ext.MessageBox.alert("信息", "请求失败");
+                                        },
+                                        params: {
+                                        	data: JSON.stringify(addContent),
+                                        	check: 0
+                                        }
+                                    });
                             	}else{
-                            		Ext.MessageBox.alert("信息", "协议及关联内容导入失败！");
+                            		var PrototolImportOverlayDataWindow = Ext.create("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow");
+                            		PrototolImportOverlayDataWindow.show();
+                            		CreateProtocolImportOverlayTable(rdata);
                             	}
                             },
                             failure: function () {

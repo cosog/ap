@@ -2182,11 +2182,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
 					
-//					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-//					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-//					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-//					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-//					this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(acquisitionUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
 				}
 			}
 			if(acquisitionUnitHandsontableChangeData.getUpdatelist()!=null){
@@ -2344,7 +2339,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(displayUnitHandsontableChangeData.getInsertlist()!=null){
 				for(int i=0;i<displayUnitHandsontableChangeData.getInsertlist().size();i++){
 					DisplayUnit displayUnit=new DisplayUnit();
-					acquisitionUnit.setProtocol(protocol);
+					displayUnit.setProtocol(protocol);
 					displayUnit.setUnitCode(displayUnitHandsontableChangeData.getInsertlist().get(i).getUnitCode());
 					displayUnit.setUnitName(displayUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
 					displayUnit.setRemark(displayUnitHandsontableChangeData.getInsertlist().get(i).getRemark());
@@ -2493,7 +2488,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 								alarmUnitItem.setType(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getType());
 								
 								alarmUnitItem.setBitIndex(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getBitIndex());
-								alarmUnitItem.setValue(StringManagerUtils.stringToFloat(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getValue()));
 								alarmUnitItem.setValue(StringManagerUtils.stringToFloat(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getValue()));
 								
 								if(StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getUpperLimit())){
@@ -3697,10 +3691,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if("1".equals(check)){
 			json = acquisitionUnitItemManagerService.importProtocolCheck(data);
 		}else{
-//			json = acquisitionUnitItemManagerService.saveImportProtocolData(data);
+			json = acquisitionUnitItemManagerService.saveImportProtocolData(data);
 		}
 		
-		json ="{success:true}";
+//		json ="{success:true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

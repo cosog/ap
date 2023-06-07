@@ -1459,7 +1459,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ "t.productiondata,"
 						+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 						+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
-						+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift "
+						+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
+						+ "t.inverproducingfluidlevel "
 						+ " from tbl_rpcacqdata_hist t "
 						+ " where t.wellid="+wellId+" "
 						+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
@@ -1510,6 +1511,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					List<Float> systemEfficiencyList=new ArrayList<Float>();
 					List<Float> energyPer100mLiftList=new ArrayList<Float>();
 					
+					List<Float> producingfluidLevelList=new ArrayList<Float>();
+					List<Float> tubingPressureList=new ArrayList<Float>();
+					List<Float> casingPressureList=new ArrayList<Float>();
+					
 					for(int j=0;j<fesDiagramList.size();j++){
 						Object[] obj=(Object[])fesDiagramList.get(j);
 						
@@ -1550,6 +1555,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 							weightWaterCutList.add(0.0f);
 						}
 						
+						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+							tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
+							casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
+						}else{
+							tubingPressureList.add(0.0f);
+							casingPressureList.add(0.0f);
+						}
+						
 						pumpEffList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 						pumpEff1List.add(StringManagerUtils.stringToFloat(obj[16]+""));
 						pumpEff2List.add(StringManagerUtils.stringToFloat(obj[17]+""));
@@ -1564,6 +1577,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(obj[24]+""));
 						systemEfficiencyList.add(StringManagerUtils.stringToFloat(obj[25]+""));
 						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(obj[26]+""));
+						
+						producingfluidLevelList.add(StringManagerUtils.stringToFloat(obj[27]+""));
 					}
 					dataSbf.append("{\"AKString\":\"\",");
 					dataSbf.append("\"WellName\":\""+wellName+"\",");
@@ -1604,7 +1619,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					dataSbf.append("\"PumpEff4\":["+StringUtils.join(pumpEff4List, ",")+"],");
 					dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
 					dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
-					dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"]");
+					dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
+					dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+					dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+					dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 					dataSbf.append("}");
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
@@ -1674,6 +1692,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					List<Float> systemEfficiencyList=new ArrayList<Float>();
 					List<Float> energyPer100mLiftList=new ArrayList<Float>();
 					
+					List<Float> producingfluidLevelList=new ArrayList<Float>();
+					List<Float> tubingPressureList=new ArrayList<Float>();
+					List<Float> casingPressureList=new ArrayList<Float>();
+					
 					for(int j=0;j<rpmResultList.size();j++){
 						Object[] obj=(Object[])rpmResultList.get(j);
 						
@@ -1707,6 +1729,16 @@ public class CalculateManagerService<T> extends BaseService<T> {
 							weightWaterCutList.add(pcpProductionData.getProduction().getWeightWaterCut());
 						}else{
 							weightWaterCutList.add(0.0f);
+						}
+						
+						if(pcpProductionData!=null&&pcpProductionData.getProduction()!=null){
+							tubingPressureList.add(pcpProductionData.getProduction().getTubingPressure());
+							casingPressureList.add(pcpProductionData.getProduction().getCasingPressure());
+							producingfluidLevelList.add(pcpProductionData.getProduction().getProducingfluidLevel());
+						}else{
+							tubingPressureList.add(0.0f);
+							casingPressureList.add(0.0f);
+							producingfluidLevelList.add(0.0f);
 						}
 						
 						pumpEffList.add(StringManagerUtils.stringToFloat(obj[10]+""));
@@ -1743,7 +1775,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 					dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
 					dataSbf.append("\"PumpEff1\":["+StringUtils.join(pumpEff1List, ",")+"],");
-					dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"]");
+					dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
+					dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+					dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+					dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 					dataSbf.append("}");
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());

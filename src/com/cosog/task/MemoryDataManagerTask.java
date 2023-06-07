@@ -1434,9 +1434,35 @@ public class MemoryDataManagerTask {
         	return;
         }
 		try {
-			String sql="select t4.id from tbl_acq_unit_conf t,tbl_acq_group2unit_conf t2,tbl_acq_group_conf t3,tbl_protocoldisplayinstance t4 "
-					+ " where t.id=t2.unitid and t2.groupid=t3.id and t4.displayunitid=t.id"
+			String sql="select t4.id "
+					+ " from tbl_acq_unit_conf t,tbl_acq_group2unit_conf t2,tbl_acq_group_conf t3,tbl_protocoldisplayinstance t4,tbl_display_unit_conf t5 "
+					+ " where t.id=t2.unitid and t2.groupid=t3.id and t5.acqunitid=t.id and t4.displayunitid=t5.id"
 					+ " and t3.id="+groupId+"";
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void loadDisplayInstanceOwnItemByAcqUnitId(String unitId,String method){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		try {
+			String sql="select t2.id "
+					+ " from tbl_acq_unit_conf t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3 "
+					+ " where t3.acqunitid=t.id and t2.displayunitid=t3.id"
+					+ " and t.id="+unitId+"";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){

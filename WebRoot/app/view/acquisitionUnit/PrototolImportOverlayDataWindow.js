@@ -1,10 +1,11 @@
 var protocolImportOverlayHandsontableHelper=null;
+var protocolImportErrorHandsontableHelper=null;
 Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.prototolImportOverlayDataWindow',
     id: 'PrototolImportOverlayDataWindow_Id',
     layout: 'fit',
-    title:'覆盖内容',
+    title:'冲突窗口',
     border: false,
     hidden: false,
     collapsible: true,
@@ -16,21 +17,21 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
     minimizable: true,
     width: 700,
     minWidth: 600,
-    height: 400,
+    height: 600,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     padding:0,
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
-            loyout:'border',
+            layout:'border',
             tbar:[{
                 xtype: 'label',
-                margin: '0 0 0 0',
+                margin: '0 0 0 5',
                 html: '<font color=red>以下导入内容已存在，继续保存将覆盖已有记录</font>'
             },'->',{
                 xtype: 'button',
-                text: '继续保存',
+                text: '保存',
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var treeGridPanel = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id");
@@ -102,12 +103,11 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
                 handler: function () {
                 	Ext.getCmp("PrototolImportOverlayDataWindow_Id").close();
                 }
-         }],
+            }],
         	items:[{
         		region: 'center',
         		layout: 'fit',
-        		padding:0,
-//                autoScroll: true,
+        		id: "ProtocolImportOverlayTablePanel_Id",
         		html: '<div id="ProtocolImportOverlayTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -122,10 +122,31 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
                     			width:newWidth,
                     			height:newHeight
                     		});
-                    	}else{
-//                  			CreateProtocolImportOverlayTable();
                     	}
                     }
+        		}
+        	},{
+        		region: 'south',
+        		layout: 'fit',
+        		id: "ProtocolImportErrorTablePanel_Id",
+        		height: '50%',
+        		title: '错误数据',
+        		html: '<div id="ProtocolImportErrorTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
+        		listeners: {
+        			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+        				if(protocolImportErrorHandsontableHelper!=null&&protocolImportErrorHandsontableHelper.hot!=null&&protocolImportErrorHandsontableHelper.hot!=undefined){
+                    		var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		protocolImportErrorHandsontableHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
+                    	}
+        			}
         		}
         	}],
             listeners: {
@@ -135,6 +156,12 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
     						protocolImportOverlayHandsontableHelper.hot.destroy();
     					}
     					protocolImportOverlayHandsontableHelper=null;
+    				}
+                	if(protocolImportErrorHandsontableHelper!=null){
+    					if(protocolImportErrorHandsontableHelper.hot!=undefined){
+    						protocolImportErrorHandsontableHelper.hot.destroy();
+    					}
+    					protocolImportErrorHandsontableHelper=null;
     				}
                 },
                 minimize: function (win, opts) {
@@ -148,11 +175,97 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
 
 
 function CreateProtocolImportOverlayTable(result){
+	var sourceDataObject={};
+	var protocolOverlayData={};
+	protocolOverlayData.category="协议";
+	protocolOverlayData.text=null;
+	protocolOverlayData.__children=[];
+	
+	var acqUnitOverlayData={};
+	acqUnitOverlayData.category="采控单元或采控组";
+	acqUnitOverlayData.text=null;
+	acqUnitOverlayData.__children=[];
+	
+	var displayUnitOverlayData={};
+	displayUnitOverlayData.category="显示单元";
+	displayUnitOverlayData.text=null;
+	displayUnitOverlayData.__children=[];
+	
+	var alarmUnitOverlayData={};
+	alarmUnitOverlayData.category="报警单元";
+	alarmUnitOverlayData.text=null;
+	alarmUnitOverlayData.__children=[];
+	
+	var acqInstanceOverlayData={};
+	acqInstanceOverlayData.category="采控实例";
+	acqInstanceOverlayData.text=null;
+	acqInstanceOverlayData.__children=[];
+	
+	var displayInstanceOverlayData={};
+	displayInstanceOverlayData.category="显示实例";
+	displayInstanceOverlayData.text=null;
+	displayInstanceOverlayData.__children=[];
+	
+	var alarmInstanceOverlayData={};
+	alarmInstanceOverlayData.category="报警实例";
+	alarmInstanceOverlayData.text=null;
+	alarmInstanceOverlayData.__children=[];
+	
+	sourceDataObject.data=[];
+	if(result.overlayList.length>0){
+		for(var i=0;i<result.overlayList.length;i++){
+			var overlayData={};
+			overlayData.text=result.overlayList[i].text;
+			overlayData.classes=result.overlayList[i].classes;
+			overlayData.type=result.overlayList[i].type;
+			overlayData.id=result.overlayList[i].id;
+			
+			if(result.overlayList[i].classes==0){
+				protocolOverlayData.__children.push(overlayData);
+			}else{
+				if(result.overlayList[i].type==0){//采控单元和采控组
+					acqUnitOverlayData.__children.push(overlayData);
+				}else if(result.overlayList[i].type==1){//显示单元
+					displayUnitOverlayData.__children.push(overlayData);
+				}else if(result.overlayList[i].type==2){//报警单元
+					alarmUnitOverlayData.__children.push(overlayData);
+				}else if(result.overlayList[i].type==3){//采控实例
+					acqInstanceOverlayData.__children.push(overlayData);
+				}else if(result.overlayList[i].type==4){//显示实例
+					displayInstanceOverlayData.__children.push(overlayData);
+				}else if(result.overlayList[i].type==5){//报警实例
+					alarmInstanceOverlayData.__children.push(overlayData);
+				}
+			}
+		}
+	}
+	if(protocolOverlayData.__children.length>0){
+		sourceDataObject.data.push(protocolOverlayData);
+	}
+	if(acqUnitOverlayData.__children.length>0){
+		sourceDataObject.data.push(acqUnitOverlayData);
+	}
+	if(displayUnitOverlayData.__children.length>0){
+		sourceDataObject.data.push(displayUnitOverlayData);
+	}
+	if(alarmUnitOverlayData.__children.length>0){
+		sourceDataObject.data.push(alarmUnitOverlayData);
+	}
+	if(acqInstanceOverlayData.__children.length>0){
+		sourceDataObject.data.push(acqInstanceOverlayData);
+	}
+	if(displayInstanceOverlayData.__children.length>0){
+		sourceDataObject.data.push(displayInstanceOverlayData);
+	}
+	if(alarmInstanceOverlayData.__children.length>0){
+		sourceDataObject.data.push(alarmInstanceOverlayData);
+	}
+	
 	if(protocolImportOverlayHandsontableHelper==null || protocolImportOverlayHandsontableHelper.hot==undefined){
 		protocolImportOverlayHandsontableHelper = ProtocolImportOverlayHandsontableHelper.createNew("ProtocolImportOverlayTableDiv_Id");
-		var colHeaders="['覆盖内容','名称','classes','type','id']";
+		var colHeaders="['冲突类别','冲突内容','classes','type','id']";
 		var columns="[" 
-				+"{data:'typeName'}," 
+				+"{data:'category'}," 
 				+"{data:'text'}," 
 				+"{data:'classes'},"
 				+"{data:'type'},"
@@ -160,9 +273,9 @@ function CreateProtocolImportOverlayTable(result){
 				+"]";
 		protocolImportOverlayHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolImportOverlayHandsontableHelper.columns=Ext.JSON.decode(columns);
-		protocolImportOverlayHandsontableHelper.createTable(result.overlayList);
+		protocolImportOverlayHandsontableHelper.createTable(sourceDataObject.data);
 	}else{
-		protocolImportOverlayHandsontableHelper.hot.loadData(result.overlayList);
+		protocolImportOverlayHandsontableHelper.hot.loadData(sourceDataObject.data);
 	}
 };
 
@@ -207,18 +320,29 @@ var ProtocolImportOverlayHandsontableHelper = {
 	                    copyPasteEnabled: false
 	                },
 	                columns:protocolImportOverlayHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+//	                
 	                rowHeaders: true,//显示行头
 	                colHeaders: protocolImportOverlayHandsontableHelper.colHeaders,
-	                colWidths: [1,1,1,1,1],
-	                columnSorting: true, //允许排序
-	                allowInsertRow:false,
-	                sortIndicator: true,
+//	                colWidths: [1,1,1,1,1],
+//	                
+//	                
 	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                filters: true,
+	                
+	                
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                preventOverflow: 'horizontal',
+	                colWidths: [1,1,1,1,1],
+	                rowHeaders: true,
+	                nestedRows: true,
+	                contextMenu: true,
+	                bindRowsWithHeaders: true,
+//	                search: true,
 	                renderAllRows: true,
-	                search: true,
+	                columnSorting: false, //允许排序
+	                allowInsertRow:false,
+	                sortIndicator: true,
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -230,5 +354,97 @@ var ProtocolImportOverlayHandsontableHelper = {
 	        	});
 	        }
 	        return protocolImportOverlayHandsontableHelper;
+	    }
+};
+
+function CreateProtocolImportErrorTable(result){
+	if(protocolImportErrorHandsontableHelper==null || protocolImportErrorHandsontableHelper.hot==undefined){
+		protocolImportErrorHandsontableHelper = ProtocolImportErrorHandsontableHelper.createNew("ProtocolImportErrorTableDiv_Id");
+		var colHeaders="['错误类别','错误内容','错误信息','classes','type','id']";
+		var columns="[" 
+				+"{data:'typeName'}," 
+				+"{data:'text'}," 
+				+"{data:'errorInfo'}," 
+				+"{data:'classes'},"
+				+"{data:'type'},"
+				+"{data:'id'}"
+				+"]";
+		protocolImportErrorHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+		protocolImportErrorHandsontableHelper.columns=Ext.JSON.decode(columns);
+		protocolImportErrorHandsontableHelper.createTable(result.errorDataList);
+	}else{
+		protocolImportErrorHandsontableHelper.hot.loadData(result.errorDataList);
+	}
+};
+
+var ProtocolImportErrorHandsontableHelper = {
+		createNew: function (divid) {
+	        var protocolImportErrorHandsontableHelper = {};
+	        protocolImportErrorHandsontableHelper.divid = divid;
+	        protocolImportErrorHandsontableHelper.validresult=true;//数据校验
+	        protocolImportErrorHandsontableHelper.colHeaders=[];
+	        protocolImportErrorHandsontableHelper.columns=[];
+	        
+	        
+	        
+	        protocolImportErrorHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = '#DC2828';   
+	             td.style.color='#FFFFFF';
+	        }
+	        
+	        protocolImportErrorHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        protocolImportErrorHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	td.style.fontWeight = 'bold';
+		        td.style.fontSize = '20px';
+		        td.style.fontFamily = 'SimSun';
+		        td.style.height = '40px';
+	        }
+	        
+	        protocolImportErrorHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolImportErrorHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolImportErrorHandsontableHelper.divid);
+	        	protocolImportErrorHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		hiddenColumns: {
+	                    columns: [3,4,5],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                columns:protocolImportErrorHandsontableHelper.columns,
+	                rowHeaders: true,//显示行头
+	                colHeaders: protocolImportErrorHandsontableHelper.colHeaders,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                preventOverflow: 'horizontal',
+	                colWidths: [1,1,1,1,1],
+	                rowHeaders: true,
+	                nestedRows: true,
+	                contextMenu: true,
+	                bindRowsWithHeaders: true,
+//	                search: true,
+	                renderAllRows: true,
+	                columnSorting: false, //允许排序
+	                allowInsertRow:false,
+	                sortIndicator: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}
+	        	});
+	        }
+	        return protocolImportErrorHandsontableHelper;
 	    }
 };

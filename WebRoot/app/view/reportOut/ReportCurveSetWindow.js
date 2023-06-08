@@ -23,7 +23,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
-            loyout:'border',
+        	layout:'border',
             tbar:[{
                 xtype: 'label',
                 margin: '0 0 0 0',
@@ -118,8 +118,6 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
         	items:[{
         		region: 'center',
         		layout: 'fit',
-        		padding:0,
-//                autoScroll: true,
         		html: '<div id="ReportCurveSetTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {

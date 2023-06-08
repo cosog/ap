@@ -7313,6 +7313,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String importProtocolCheck(String data){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"success\":true,\"overlayList\":[");
+		StringBuffer  errorDataBuff=new StringBuffer ();
+		errorDataBuff.append("[");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -7326,6 +7328,63 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(protocolExist){//如果协议已存在
 				result_json.append("{\"classes\":0,\"typeName\":\"协议\",\"type\":0,\"id\":"+exportProtocolConfig.getProtocol().getId()+",\"text\":\""+exportProtocolConfig.getProtocol().getName()+"\"},");
 				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
+				
+				List<Integer> acqUnitIdList=new ArrayList<>();
+				if(importProtocolContent.getAcqUnitList()!=null){
+					for(int i=0;i<importProtocolContent.getAcqUnitList().size();i++){
+						acqUnitIdList.add(importProtocolContent.getAcqUnitList().get(i).getId());
+					}
+				}
+				//数据校验
+				//校验采控实例
+				if(importProtocolContent.getAcqInstanceList()!=null && exportProtocolConfig.getAcqUnitList()!=null && exportProtocolConfig.getAcqInstanceList()!=null){
+					for(int i=0;i<importProtocolContent.getAcqInstanceList().size();i++){
+						for(int j=0;j<exportProtocolConfig.getAcqInstanceList().size();j++){
+							if(importProtocolContent.getAcqInstanceList().get(i)==exportProtocolConfig.getAcqInstanceList().get(j).getId()){
+								if(!StringManagerUtils.existOrNot(acqUnitIdList, exportProtocolConfig.getAcqInstanceList().get(j).getUnitId())){
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\"采控实例\",\"type\":3,\"id\":"+exportProtocolConfig.getAcqInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getAcqInstanceList().get(j).getName()+"\",\"errorInfo\":\"未选择采控实例对应的采控单元\"},");
+								}
+							}
+						}
+					}
+				}
+				//校验显示单元
+				if(importProtocolContent.getDisplayUnitList()!=null && exportProtocolConfig.getAcqUnitList()!=null && exportProtocolConfig.getDisplayUnitList()!=null){
+					for(int i=0;i<importProtocolContent.getDisplayUnitList().size();i++){
+						for(int j=0;j<exportProtocolConfig.getDisplayUnitList().size();j++){
+							if(importProtocolContent.getDisplayUnitList().get(i)==exportProtocolConfig.getDisplayUnitList().get(j).getId()){
+								if(!StringManagerUtils.existOrNot(acqUnitIdList, exportProtocolConfig.getDisplayUnitList().get(j).getAcqUnitId())){
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\"显示单元\",\"type\":1,\"id\":"+exportProtocolConfig.getDisplayUnitList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getDisplayUnitList().get(j).getUnitName()+"\",\"errorInfo\":\"未选择显示单元对应的采控单元\"},");
+								}
+							}
+						}
+					}
+				}
+				//检验显示实例
+				if(importProtocolContent.getDisplayInstanceList()!=null && exportProtocolConfig.getDisplayInstanceList()!=null){
+					for(int i=0;i<importProtocolContent.getDisplayInstanceList().size();i++){
+						for(int j=0;j<exportProtocolConfig.getDisplayInstanceList().size();j++){
+							if(importProtocolContent.getDisplayInstanceList().get(i)==exportProtocolConfig.getDisplayInstanceList().get(j).getId()){
+								if(!StringManagerUtils.existOrNot(importProtocolContent.getDisplayUnitList(), exportProtocolConfig.getDisplayInstanceList().get(j).getDisplayUnitId())){
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\"显示实例\",\"type\":4,\"id\":"+exportProtocolConfig.getDisplayInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(j).getName()+"\",\"errorInfo\":\"未选择显示实例对应的显示单元\"},");
+								}
+							}
+						}
+					}
+				}
+				//检验报警实例
+				if(importProtocolContent.getAlarmInstanceList()!=null && exportProtocolConfig.getAlarmInstanceList()!=null){
+					for(int i=0;i<importProtocolContent.getAlarmInstanceList().size();i++){
+						for(int j=0;j<exportProtocolConfig.getAlarmInstanceList().size();j++){
+							if(importProtocolContent.getAlarmInstanceList().get(i)==exportProtocolConfig.getAlarmInstanceList().get(j).getId()){
+								if(!StringManagerUtils.existOrNot(importProtocolContent.getAlarmUnitList(), exportProtocolConfig.getAlarmInstanceList().get(j).getAlarmUnitId())){
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\"报警实例\",\"type\":5,\"id\":"+exportProtocolConfig.getAlarmInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(j).getName()+"\",\"errorInfo\":\"未选择报警实例对应的报警单元\"},");
+								}
+							}
+						}
+					}
+				}
+				
 				List<?> existProtocolList=this.findCallSql(existProtocolSql);
 				if(existProtocolList.size()>0){
 					Object[] existProtocolObj = (Object[]) existProtocolList.get(0);
@@ -7489,7 +7548,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
-		result_json.append("]}");
+		if(errorDataBuff.toString().endsWith(",")){
+			errorDataBuff.deleteCharAt(errorDataBuff.length() - 1);
+		}
+		errorDataBuff.append("]");
+		result_json.append("],\"errorDataList\":"+ errorDataBuff+"}");
 		return result_json.toString();
 	}
 	

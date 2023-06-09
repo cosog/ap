@@ -143,24 +143,25 @@ Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
                                     });
                             	}else{
                             		var PrototolImportOverlayDataWindow = Ext.create("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow");
-//                            		if(rdata.overlayList.length==0){
-//                            			Ext.getCmp("ProtocolImportOverlayTablePanel_Id").hide();
-//                                    	Ext.getCmp("ProtocolImportErrorTablePanel_Id").setHeight('100%');
-//                                    }else if(rdata.errorDataList.length==0){
-//                                    	Ext.getCmp("ProtocolImportErrorTablePanel_Id").hide();
-//                                    	Ext.getCmp("ProtocolImportOverlayTablePanel_Id").setHeight('100%');
-//                                    }
+                            		if(rdata.overlayList.length==0){
+                            			Ext.getCmp("ProtocolImportOverlayTablePanel_Id").hide();
+                                    	Ext.getCmp("ProtocolImportErrorTablePanel_Id").setHeight('100%');
+                                    }else if(rdata.errorDataList.length==0){
+                                    	Ext.getCmp("ProtocolImportErrorTablePanel_Id").hide();
+                                    	Ext.getCmp("ProtocolImportErrorTablePanel_Id").setHeight('0%');
+                                    	Ext.getCmp("ProtocolImportOverlayTablePanel_Id").setHeight('100%');
+                                    }
                             		
                             		PrototolImportOverlayDataWindow.show();
-//                            		if(rdata.overlayList.length>0){
-//                            			CreateProtocolImportOverlayTable(rdata);
-//                            		}
-//                            		if(rdata.errorDataList.length>0){
-//                            			CreateProtocolImportErrorTable(rdata);
-//                            		}
-                            		
-                            		CreateProtocolImportOverlayTable(rdata);
-                            		CreateProtocolImportErrorTable(rdata);
+                            		if(rdata.overlayList.length>0){
+                            			CreateProtocolImportOverlayTreeTable(rdata);
+                            		}
+                            		if(rdata.errorDataList.length>0){
+                            			CreateProtocolImportErrorTable(rdata);
+                            		}
+//                            		CreateProtocolImportOverlayTreeTable(rdata);
+//                            		CreateProtocolImportOverlayTable(rdata);
+//                            		CreateProtocolImportErrorTable(rdata);
                             	}
                             },
                             failure: function () {

@@ -107,24 +107,24 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
         	items:[{
         		region: 'center',
         		layout: 'fit',
-        		id: "ProtocolImportOverlayTablePanel_Id",
-        		html: '<div id="ProtocolImportOverlayTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
-        		listeners: {
-        			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(protocolImportOverlayHandsontableHelper!=null&&protocolImportOverlayHandsontableHelper.hot!=null&&protocolImportOverlayHandsontableHelper.hot!=undefined){
-                    		var newWidth=width;
-                    		var newHeight=height;
-                    		var header=thisPanel.getHeader();
-                    		if(header){
-                    			newHeight=newHeight-header.lastBox.height-2;
-                    		}
-                    		protocolImportOverlayHandsontableHelper.hot.updateSettings({
-                    			width:newWidth,
-                    			height:newHeight
-                    		});
-                    	}
-                    }
-        		}
+        		id: "ProtocolImportOverlayTablePanel_Id"
+//        		html: '<div id="ProtocolImportOverlayTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
+//        		listeners: {
+//        			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                    	if(protocolImportOverlayHandsontableHelper!=null&&protocolImportOverlayHandsontableHelper.hot!=null&&protocolImportOverlayHandsontableHelper.hot!=undefined){
+//                    		var newWidth=width;
+//                    		var newHeight=height;
+//                    		var header=thisPanel.getHeader();
+//                    		if(header){
+//                    			newHeight=newHeight-header.lastBox.height-2;
+//                    		}
+//                    		protocolImportOverlayHandsontableHelper.hot.updateSettings({
+//                    			width:newWidth,
+//                    			height:newHeight
+//                    		});
+//                    	}
+//                    }
+//        		}
         	},{
         		region: 'south',
         		layout: 'fit',
@@ -151,12 +151,12 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
         	}],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
-                	if(protocolImportOverlayHandsontableHelper!=null){
-    					if(protocolImportOverlayHandsontableHelper.hot!=undefined){
-    						protocolImportOverlayHandsontableHelper.hot.destroy();
-    					}
-    					protocolImportOverlayHandsontableHelper=null;
-    				}
+//                	if(protocolImportOverlayHandsontableHelper!=null){
+//    					if(protocolImportOverlayHandsontableHelper.hot!=undefined){
+//    						protocolImportOverlayHandsontableHelper.hot.destroy();
+//    					}
+//    					protocolImportOverlayHandsontableHelper=null;
+//    				}
                 	if(protocolImportErrorHandsontableHelper!=null){
     					if(protocolImportErrorHandsontableHelper.hot!=undefined){
     						protocolImportErrorHandsontableHelper.hot.destroy();
@@ -172,6 +172,188 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
         me.callParent(arguments);
     }
 });
+
+function CreateProtocolImportOverlayTreeTable(result){
+	var data=[];
+	
+	var protocolParentData={};
+	protocolParentData.text='协议';
+	protocolParentData.iconCls='protocol';
+	protocolParentData.expanded=true;
+	protocolParentData.children=[];
+	
+	var acqUnitParentData={};
+	acqUnitParentData.text='采控单元';
+	acqUnitParentData.iconCls='protocol';
+	acqUnitParentData.expanded=true;
+	acqUnitParentData.children=[];
+	
+	var displayUnitParentData={};
+	displayUnitParentData.text='显示单元';
+	displayUnitParentData.iconCls='protocol';
+	displayUnitParentData.expanded=true;
+	displayUnitParentData.children=[];
+	
+	var alarmUnitParentData={};
+	alarmUnitParentData.text='报警单元';
+	alarmUnitParentData.iconCls='protocol';
+	alarmUnitParentData.expanded=true;
+	alarmUnitParentData.children=[];
+	
+	var acqInstanceParentData={};
+	acqInstanceParentData.text='采控实例';
+	acqInstanceParentData.iconCls='protocol';
+	acqInstanceParentData.expanded=true;
+	acqInstanceParentData.children=[];
+	
+	var displayInstanceParentData={};
+	displayInstanceParentData.text='显示实例';
+	displayInstanceParentData.iconCls='protocol';
+	displayInstanceParentData.expanded=true;
+	displayInstanceParentData.children=[];
+	
+	var alarmInstanceParentData={};
+	alarmInstanceParentData.text='报警实例';
+	alarmInstanceParentData.iconCls='protocol';
+	alarmInstanceParentData.expanded=true;
+	alarmInstanceParentData.children=[];
+	
+	
+	if(result.overlayList.length>0){
+		for(var i=0;i<result.overlayList.length;i++){
+			if(result.overlayList[i].classes==0){//协议
+				var protocolData={};
+				protocolData.text=result.overlayList[i].text;
+				protocolData.iconCls='acqUnit';
+				protocolData.expanded=true;
+				protocolParentData.children.push(protocolData);
+			}else if(result.overlayList[i].type==0){
+				if(result.overlayList[i].classes==1){
+					var acqUnitData={};
+					var acqUnitId=result.overlayList[i].id;
+//					acqUnitData.id=result.overlayList[i].id;
+					acqUnitData.text=result.overlayList[i].text;
+					acqUnitData.iconCls='acqUnit';
+					acqUnitData.expanded=true;
+					acqUnitData.children=[];
+					for(var j=0;j<result.overlayList.length;j++){
+						if(result.overlayList[j].type==0 && result.overlayList[j].classes==2 && result.overlayList[j].unitId==acqUnitId){
+							var acqGroupData={};
+//							acqGroupData.id=result.overlayList[j].id;
+							acqGroupData.text=result.overlayList[j].text;
+							acqGroupData.iconCls='acqGroup';
+							acqGroupData.leaf=true;
+							acqUnitData.children.push(acqGroupData);
+						}
+					}
+					acqUnitParentData.children.push(acqUnitData);
+				}
+			}else{
+				var otherData={};
+//				otherData.id=result.overlayList[i].id;
+				otherData.text=result.overlayList[i].text;
+				otherData.iconCls='acqUnit';
+				otherData.leaf=true;
+				if(result.overlayList[i].type==1){
+					displayUnitParentData.children.push(otherData);
+				}else if(result.overlayList[i].type==2){
+					alarmUnitParentData.children.push(otherData);
+				}else if(result.overlayList[i].type==3){
+					acqInstanceParentData.children.push(otherData);
+				}else if(result.overlayList[i].type==4){
+					displayInstanceParentData.children.push(otherData);
+				}else if(result.overlayList[i].type==5){
+					alarmInstanceParentData.children.push(otherData);
+				}
+			}
+		}
+	}
+	if(protocolParentData.children.length>0){
+		data.push(protocolParentData);
+	}
+	if(acqUnitParentData.children.length>0){
+		data.push(acqUnitParentData);
+	}
+	if(displayUnitParentData.children.length>0){
+		data.push(displayUnitParentData);
+	}
+	if(alarmUnitParentData.children.length>0){
+		data.push(alarmUnitParentData);
+	}
+	if(acqInstanceParentData.children.length>0){
+		data.push(acqInstanceParentData);
+	}
+	if(displayInstanceParentData.children.length>0){
+		data.push(displayInstanceParentData);
+	}
+	if(alarmInstanceParentData.children.length>0){
+		data.push(alarmInstanceParentData);
+	}
+	
+	var store = Ext.create('Ext.data.TreeStore', {
+	    root: {
+	        expanded: true,
+	        children: data
+	    }
+	});
+	
+
+	var treeGridPanel = Ext.create('Ext.tree.Panel', {
+        id: "ImportProtocolContentOverlayTreeGridPanel_Id",
+        border: false,
+        animate: true,
+        enableDD: false,
+        useArrows: false,
+        rootVisible: false,
+        autoScroll: true,
+        forceFit: true,
+        viewConfig: {
+            emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+            forceFit: true
+        },
+        store: store,
+        columns: [{
+        	xtype: 'treecolumn',
+        	text: '冲突内容',
+            flex: 8,
+            align: 'left',
+            dataIndex: 'text',
+            renderer: function (value) {
+                if (isNotVal(value)) {
+                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                }
+            }
+        },{
+            header: 'id',
+            hidden: true,
+            dataIndex: 'id'
+        }],
+        listeners: {
+        	rowclick: function( grid, record, element, index, e, eOpts) {
+        		
+        	},
+        	checkchange: function (node, checked) {
+        		
+            },
+            selectionchange ( view, selected, eOpts ){
+            	
+            },
+            select( v, record, index, eOpts ){
+            	
+            },
+            beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+            	
+            },
+            checkchange: function (node, checked) {
+            	
+            }
+        }
+
+    });
+    var panel = Ext.getCmp("ProtocolImportOverlayTablePanel_Id");
+    panel.add(treeGridPanel);
+
+}
 
 
 function CreateProtocolImportOverlayTable(result){
@@ -395,7 +577,7 @@ var ProtocolImportErrorHandsontableHelper = {
 	        
 	        protocolImportErrorHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.color = '#ff0000';
 	        }
 	        
 	        protocolImportErrorHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -440,6 +622,9 @@ var ProtocolImportErrorHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
+	                    if(prop.toUpperCase()=='errorInfo'.toUpperCase()){
+	                    	cellProperties.renderer = protocolImportErrorHandsontableHelper.addBoldBg;
+	                    }
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}

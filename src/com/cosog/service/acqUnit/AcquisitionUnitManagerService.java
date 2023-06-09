@@ -7327,6 +7327,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getDeviceType(),exportProtocolConfig.getProtocol().getName());
 			if(protocolExist){//如果协议已存在
 				result_json.append("{\"classes\":0,\"typeName\":\"协议\",\"type\":0,\"id\":"+exportProtocolConfig.getProtocol().getId()+",\"text\":\""+exportProtocolConfig.getProtocol().getName()+"\"},");
+				
 				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
 				
 				List<Integer> acqUnitIdList=new ArrayList<>();
@@ -7425,7 +7426,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												if(addAcqGroupList.size()>0){//采控组已存在
 													Object[] existAcqGroupObj = (Object[]) addAcqGroupList.get(0);
 													int existAcqGroupId=StringManagerUtils.stringToInteger(existAcqGroupObj[0]+"");
-													result_json.append("{\"classes\":2,\"typeName\":\"采控组\",\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\"},");
+													result_json.append("{\"classes\":2,\"typeName\":\"采控组\",\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\",\"unitId\":"+acqUnit.getId()+"},");
 												}
 											}
 										}

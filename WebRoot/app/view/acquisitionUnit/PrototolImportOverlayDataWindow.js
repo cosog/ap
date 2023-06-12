@@ -131,6 +131,8 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
         		id: "ProtocolImportErrorTablePanel_Id",
         		height: '50%',
         		title: '错误数据',
+        		split: true,
+                collapsible: true,
         		html: '<div id="ProtocolImportErrorTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {

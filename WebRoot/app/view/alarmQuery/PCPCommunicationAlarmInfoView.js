@@ -422,8 +422,8 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
             	width: '30%',
     			title: '设备列表',
     			id: 'PCPCommunicationAlarmOverviewPanel_Id',
-    			autoScroll: true,
-                scrollable: true,
+    			autoScroll: false,
+                scrollable: false,
                 split: true,
                 collapsible: true,
     			layout: 'fit'
@@ -431,7 +431,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
     			region: 'center',
     			title: '报警数据',
     			id: 'PCPCommunicationAlarmDetailsPanel_Id',
-                autoScroll: true,
+                autoScroll: false,
                 layout: 'fit'
     		}]
         });

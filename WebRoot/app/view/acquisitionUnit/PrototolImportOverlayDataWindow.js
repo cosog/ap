@@ -602,23 +602,18 @@ var ProtocolImportErrorHandsontableHelper = {
 	                    copyPasteEnabled: false
 	                },
 	                columns:protocolImportErrorHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                rowHeaders: true,//显示行头
 	                colHeaders: protocolImportErrorHandsontableHelper.colHeaders,
+	                colWidths: [1,1,2,1,1,1],
+	                columnSorting: true, //允许排序
+	                allowInsertRow:false,
+	                sortIndicator: true,
 	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                filters: true,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                preventOverflow: 'horizontal',
-	                colWidths: [1,1,1,1,1],
-	                rowHeaders: true,
-	                nestedRows: true,
-	                contextMenu: true,
-	                bindRowsWithHeaders: true,
-//	                search: true,
 	                renderAllRows: true,
-	                columnSorting: false, //允许排序
-	                allowInsertRow:false,
-	                sortIndicator: true,
+	                search: true,
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);

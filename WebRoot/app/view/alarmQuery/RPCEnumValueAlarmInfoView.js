@@ -453,8 +453,8 @@ Ext.define('AP.view.alarmQuery.RPCEnumValueAlarmInfoView', {
             	width: '30%',
     			title: '设备列表',
     			id: 'RPCEnumValueAlarmOverviewPanel_Id',
-    			autoScroll: true,
-                scrollable: true,
+    			autoScroll: false,
+                scrollable: false,
                 split: true,
                 collapsible: true,
     			layout: 'fit'
@@ -462,7 +462,7 @@ Ext.define('AP.view.alarmQuery.RPCEnumValueAlarmInfoView', {
     			region: 'center',
     			title: '报警数据',
     			id: 'RPCEnumValueAlarmDetailsPanel_Id',
-                autoScroll: true,
+                autoScroll: false,
                 layout: 'fit'
     		}]
         });

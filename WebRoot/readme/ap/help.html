@@ -82,47 +82,7 @@
 <p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，修改oem部分，oem内容修改后，修改静态资源时间戳（首次部署不需要），无需清理浏览器缓存即可生效。</p>
 <p><img src="media/8ed4b34f8f1b14a50c2188ccc269e731.png" alt=""></p>
 <h2 id="1-5-">1.5 软件启停</h2>
-<h3 id="1-5-1-">1.5.1 手动启停</h3>
-<p>1、单井计算开发包ac</p>
-<p>启动：</p>
-<p>nohup /usr/local/ac -o close&amp;</p>
-<p>停止：</p>
-<p>1）查看进程</p>
-<p>ps –e</p>
-<p><img src="media/f53c7d36002dcfcadaa82e002652355d.png" alt=""></p>
-<p>2）杀掉ac进程</p>
-<p>kill -9 26630</p>
-<p>2、协议通ad</p>
-<p>启动：</p>
-<p>nohup /usr/local/ad -o close&amp;</p>
-<p>停止：</p>
-<p>1）查看进程</p>
-<p>ps –e</p>
-<p><img src="media/1118918a60727aeaf5e405b3143e6c86.png" alt=""></p>
-<p>2）杀掉ad进程</p>
-<p>kill -9 22030</p>
-<p>3、缓存数据库redis</p>
-<p>启动：</p>
-<p>nohup /opt/redis-7.0.9/src/redis-server /opt/redis-7.0.9/redis.conf&amp;</p>
-<p>停止：</p>
-<p>/opt/redis-7.0.9/src/redis-cli shutdown</p>
-<p>4、oracle数据库</p>
-<p>启动：</p>
-<p>1）启动oracle监听</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl start&quot;</p>
-<p>2）启动oracle服务</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbstart&quot;</p>
-<p>停止：</p>
-<p>1）停止oracle监听</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl stop&quot;</p>
-<p>2）停止oracle服务</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbshut &quot;</p>
-<p>5、tomcat</p>
-<p>启动：</p>
-<p>/opt/apache-tomcat-9.0.73/bin/startup.sh</p>
-<p>停止：</p>
-<p>/opt/apache-tomcat-9.0.73/bin/shutdown.sh</p>
-<h3 id="1-5-2-">1.5.2 开机启动</h3>
+<h3 id="1-5-1-">1.5.1 开机自启动</h3>
 <p><strong>1、root用户修改/etc/rc.d/rc.local文件</strong></p>
 <p>su root</p>
 <p>vim /etc/rc.d/rc.local</p>
@@ -154,12 +114,62 @@
 <p>su - oracle</p>
 <p>cd \$ORACLE_HOME/bin</p>
 <p>vim dbstart</p>
-<p>修改#ORACLE_HOME_LISTNER=\$为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
+<p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
 <p>vim dbshut</p>
 <p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
-<p>全部配置成功后，reboot重启服务器</p>
+<h3 id="1-5-2-">1.5.2 手动启停</h3>
+<p><strong>1、单井计算开发包ac</strong></p>
+<p><strong>启动：</strong></p>
+<p>nohup /usr/local/ac -o close&amp;</p>
+<p><strong>停止：</strong></p>
+<p>1）查看进程</p>
+<p>ps –e</p>
+<p><img src="media/f53c7d36002dcfcadaa82e002652355d.png" alt=""></p>
+<p>2）杀掉ac进程</p>
+<p>kill -9 26630</p>
+<p><strong>2、协议通ad</strong></p>
+<p><strong>启动：</strong></p>
+<p>nohup /usr/local/ad -o close&amp;</p>
+<p><strong>停止：</strong></p>
+<p>1）查看进程</p>
+<p>ps –e</p>
+<p><img src="media/1118918a60727aeaf5e405b3143e6c86.png" alt=""></p>
+<p>2）杀掉ad进程</p>
+<p>kill -9 22030</p>
+<p><strong>3、缓存数据库redis</strong></p>
+<p><strong>启动：</strong></p>
+<p>nohup /opt/redis-7.0.9/src/redis-server /opt/redis-7.0.9/redis.conf&amp;</p>
+<p><strong>停止：</strong></p>
+<p>/opt/redis-7.0.9/src/redis-cli shutdown</p>
+<p><strong>4、oracle数据库</strong></p>
+<p>使用dbstart及dbshut文件启停数据库，需配置以下内容（仅需配置一次即可）：</p>
+<p>1）root用户修改 /etc/oratab文件, 将N改为Y</p>
 <p>su root</p>
-<p>reboot</p>
+<p>vi /etc/oratab</p>
+<p>将N改成Y</p>
+<p>orcl:/data1/opt/oracle/app/oracle/product/19/dbhome_1:N</p>
+<p>2）oracle用户修改dbstart及dbshut文件</p>
+<p>su - oracle</p>
+<p>cd \$ORACLE_HOME/bin</p>
+<p>vim dbstart</p>
+<p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
+<p>vim dbshut</p>
+<p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
+<p><strong>启动：</strong></p>
+<p>1）启动oracle监听</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl start&quot;</p>
+<p>2）启动oracle服务</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbstart&quot;</p>
+<p><strong>停止：</strong></p>
+<p>1）停止oracle监听</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl stop&quot;</p>
+<p>2）停止oracle服务</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbshut &quot;</p>
+<p><strong>5、tomcat</strong></p>
+<p><strong>启动：</strong></p>
+<p>/opt/apache-tomcat-9.0.73/bin/startup.sh</p>
+<p><strong>停止：</strong></p>
+<p>/opt/apache-tomcat-9.0.73/bin/shutdown.sh</p>
 <h1 id="-2-">第2章 应用示例</h1>
 <h2 id="2-1-">2.1 驱动配置</h2>
 <p>包括协议配置、单元配置、实例配置。</p>
@@ -219,6 +229,15 @@
 <p><img src="media/39dff6785bf4c81035602fce8e344709.png" alt=""></p>
 <h3 id="2-1-10-">2.1.10 删除操作</h3>
 <p>在相应的列表中选中要删除的项，右键→删除</p>
+<h3 id="2-1-11-">2.1.11 协议导入导出</h3>
+<p>导出：</p>
+<p>在协议配置界面点击“导出”按钮，在弹出的窗口中，选择要导出的协议及其相关内容，点击“导出”，即可导出协议json数据。</p>
+<p><img src="media/2012145e7a29fbe8c7a73619699f4ec1.png" alt=""></p>
+<p>导入：</p>
+<p>在协议配置界面点击“导入”按钮，在弹出的窗口中，选择要导入的协议及其相关内容的json文件，勾选要导入的协议相关内容，保存。</p>
+<p><img src="media/7a670520080bc32ec1a8698ffcdbe826.png" alt=""></p>
+<p>如果协议导入数据无冲突且验证无问题，直接保存成功，否则会弹出冲突和错误信息。</p>
+<p><img src="media/b2502bf99cedbeebcae68afcd30a5cd4.png" alt=""></p>
 <h2 id="2-2-">2.2 设备管理</h2>
 <h3 id="2-2-1-">2.2.1 井名信息</h3>
 <p>按照2.1节中添加好驱动相关的数据后，在该模块添加设备。</p>

@@ -456,8 +456,8 @@ Ext.define('AP.view.alarmQuery.RPCCommunicationAlarmInfoView', {
             	width: '30%',
     			title: '设备列表',
     			id: 'RPCCommunicationAlarmOverviewPanel_Id',
-    			autoScroll: true,
-                scrollable: true,
+    			autoScroll: false,
+                scrollable: false,
                 split: true,
                 collapsible: true,
     			layout: 'fit'
@@ -465,7 +465,7 @@ Ext.define('AP.view.alarmQuery.RPCCommunicationAlarmInfoView', {
     			region: 'center',
     			title: '报警数据',
     			id: 'RPCCommunicationAlarmDetailsPanel_Id',
-                autoScroll: true,
+                autoScroll: false,
                 layout: 'fit'
     		}]
         });

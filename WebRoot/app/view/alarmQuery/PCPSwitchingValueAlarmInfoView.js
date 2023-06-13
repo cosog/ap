@@ -449,8 +449,8 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
             	width: '30%',
     			title: '设备列表',
     			id: 'PCPSwitchingValueAlarmOverviewPanel_Id',
-    			autoScroll: true,
-                scrollable: true,
+    			autoScroll: false,
+                scrollable: false,
                 split: true,
                 collapsible: true,
     			layout: 'fit'
@@ -458,7 +458,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
     			region: 'center',
     			title: '报警数据',
     			id: 'PCPSwitchingValueAlarmDetailsPanel_Id',
-                autoScroll: true,
+                autoScroll: false,
                 layout: 'fit'
     		}]
         });

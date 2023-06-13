@@ -288,7 +288,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                     xtype: 'tabpanel',
                     id:"RPCHistoryQueryTabPanel",
             		activeTab: 0,
-            		autoScroll: true,
+            		autoScroll: false,
                     split: true,
                     collapsible: true,
             		border: false,
@@ -719,9 +719,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
             		items: [{
             			title: '趋势曲线',
             			id:"RPCHistoryDataTabPanel",
-                        autoScroll: true,
-                        split: true,
-                        collapsible: true,
                         layout: 'border',
                         border: false,
                         items: [{

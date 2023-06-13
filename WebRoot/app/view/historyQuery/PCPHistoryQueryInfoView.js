@@ -249,7 +249,7 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                 	region: 'center',
                 	layout: 'border',
                     title: '趋势曲线',
-                    autoScroll: true,
+                    autoScroll: false,
                     split: true,
                     collapsible: true,
                     layout: 'border',

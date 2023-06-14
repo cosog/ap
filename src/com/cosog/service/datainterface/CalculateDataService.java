@@ -350,12 +350,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.wellid=t2.id "
 				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1 "
 				+ " and t.resultstatus=1 ";
-		String statusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
-				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
+		String commStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
-		
+		String runStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
+				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
+				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 				+ " from tbl_rpcdailycalculationdata t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
@@ -363,18 +365,25 @@ public class CalculateDataService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellId)){
 			sql+=" and t.id in ("+wellId+")";
 			fesDiagramSql+=" and t2.id in ("+wellId+")";
-			statusSql+=" and t2.id in("+wellId+")";
+			commStatusSql+=" and t2.id in("+wellId+")";
+			runStatusSql+=" and t2.id in("+wellId+")";
 			totalStatusSql+=" and t2.id in ("+wellId+")";
 		}
 		sql+=" order by t.id";
 		fesDiagramSql+= " order by t2.id,t.fesdiagramacqtime";
-		statusSql+=" order by t2.id";
+		commStatusSql+=" order by t2.id";
+		runStatusSql+=" order by t2.id";
 		totalStatusSql+=" order by t2.id";
 		List<?> welllist = findCallSql(sql);
 		List<?> singleresultlist = findCallSql(fesDiagramSql);
 		List<?> statusList=null;
+		
+		List<?> commStatusQueryList=null;
+		List<?> runStatusQueryList=null;
+		
 		if(!StringManagerUtils.isNotNull(tatalDate)){//如果是跨天汇总
-			statusList = findCallSql(statusSql);
+			commStatusQueryList = findCallSql(commStatusSql);
+			runStatusQueryList = findCallSql(runStatusSql);
 		}else{
 			statusList = findCallSql(totalStatusSql);
 		}
@@ -397,26 +406,22 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String runRange="";
 				
 				if(!StringManagerUtils.isNotNull(tatalDate)){//如果是跨天汇总
-					for(int j=0;j<statusList.size();j++){
-						Object[] statusObj=(Object[]) statusList.get(j);
-						if(deviceId.equals(statusObj[0].toString())){
-							
-							if(statusObj[3]!=null&&StringManagerUtils.stringToInteger(statusObj[3]+"")>=1){
+					for(int j=0;j<commStatusQueryList.size();j++){
+						Object[] commStatusObj=(Object[]) commStatusQueryList.get(j);
+						if(deviceId.equals(commStatusObj[0].toString())){
+							if(commStatusObj[3]!=null&&StringManagerUtils.stringToInteger(commStatusObj[3]+"")>=1){
 								commStatus=true;
-							}
-							if(statusObj[7]!=null&&StringManagerUtils.stringToInteger(statusObj[7]+"")==1){
-								runStatus=true;
 							}
 							String commTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
 									+ "\"Last\":{"
-									+ "\"AcqTime\": \""+statusObj[2]+"\","
+									+ "\"AcqTime\": \""+commStatusObj[2]+"\","
 									+ "\"CommStatus\": "+commStatus+","
 									+ "\"CommEfficiency\": {"
-									+ "\"Efficiency\": "+statusObj[4]+","
-									+ "\"Time\": "+statusObj[5]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[6]))+""
+									+ "\"Efficiency\": "+commStatusObj[4]+","
+									+ "\"Time\": "+commStatusObj[5]+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(commStatusObj[6]))+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -424,16 +429,33 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"CommStatus\":true"
 									+ "}"
 									+ "}";
+							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
+							if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
+								commStatus=commResponseData.getDaily().getCommStatus();
+								commTime=commResponseData.getDaily().getCommEfficiency().getTime();
+								commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
+								commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+							}
+							break;
+						}
+					}
+					
+					for(int j=0;j<runStatusQueryList.size();j++){
+						Object[] runStatusObj=(Object[]) runStatusQueryList.get(j);
+						if(deviceId.equals(runStatusObj[0].toString())){		
+							if(runStatusObj[3]!=null&&StringManagerUtils.stringToInteger(runStatusObj[3]+"")>=1){
+								runStatus=true;
+							}
 							String runTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
 									+ "\"Last\":{"
-									+ "\"AcqTime\": \""+statusObj[2]+"\","
+									+ "\"AcqTime\": \""+runStatusObj[2]+"\","
 									+ "\"RunStatus\": "+runStatus+","
 									+ "\"RunEfficiency\": {"
-									+ "\"Efficiency\": "+statusObj[8]+","
-									+ "\"Time\": "+statusObj[9]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[10]))+""
+									+ "\"Efficiency\": "+runStatusObj[4]+","
+									+ "\"Time\": "+runStatusObj[5]+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(runStatusObj[6]))+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -441,15 +463,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"RunStatus\":true"
 									+ "}"
 									+ "}";
-							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 							timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
-							if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
-								commStatus=commResponseData.getDaily().getCommStatus();
-								commTime=commResponseData.getDaily().getCommEfficiency().getTime();
-								commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
-								commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
-							}
-
 							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
 								runStatus=timeEffResponseData.getDaily().getRunStatus();
 								runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
@@ -670,11 +684,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.wellid=t2.id "
 				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1 "
 				+ " and t.resultstatus=1 ";
-		String statusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+		String commStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
-				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
+		
+		String runStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
+				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
+				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
 		
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 				+ " from tbl_pcpdailycalculationdata t,tbl_pcpdevice t2 "
@@ -683,21 +701,28 @@ public class CalculateDataService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellId)){
 			sql+=" and t.id in ("+wellId+")";
 			fesDiagramSql+=" and t2.id in ("+wellId+")";
-			statusSql+=" and t2.id in("+wellId+")";
+			commStatusSql+=" and t2.id in("+wellId+")";
+			runStatusSql+=" and t2.id in("+wellId+")";
 			totalStatusSql+=" and t2.id in ("+wellId+")";
 		}
 		sql+=" order by t.id";
 		fesDiagramSql+= " order by t2.id,t.acqtime";
-		statusSql+=" order by t2.id";
+		commStatusSql+=" order by t2.id";
+		runStatusSql+=" order by t2.id";
 		totalStatusSql+=" order by t2.id";
 		List<?> welllist = findCallSql(sql);
 		List<?> singleresultlist = findCallSql(fesDiagramSql);
 		List<?> statusList=null;
+		List<?> commStatusQueryList=null;
+		List<?> runStatusQueryList=null;
+		
 		if(!StringManagerUtils.isNotNull(tatalDate)){//如果是跨天汇总
-			statusList = findCallSql(statusSql);
+			commStatusQueryList = findCallSql(commStatusSql);
+			runStatusQueryList = findCallSql(runStatusSql);
 		}else{
 			statusList = findCallSql(totalStatusSql);
 		}
+		
 		for(int i=0;i<welllist.size();i++){
 			try{
 				Object[] wellObj=(Object[]) welllist.get(i);
@@ -717,26 +742,22 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String runRange="";
 				
 				if(!StringManagerUtils.isNotNull(tatalDate)){//如果是跨天汇总
-					for(int j=0;j<statusList.size();j++){
-						Object[] statusObj=(Object[]) statusList.get(j);
-						if(deviceId.equals(statusObj[0].toString())){
-							
-							if(statusObj[3]!=null&&StringManagerUtils.stringToInteger(statusObj[3]+"")>=1){
+					for(int j=0;j<commStatusQueryList.size();j++){
+						Object[] commStatusObj=(Object[]) commStatusQueryList.get(j);
+						if(deviceId.equals(commStatusObj[0].toString())){
+							if(commStatusObj[3]!=null&&StringManagerUtils.stringToInteger(commStatusObj[3]+"")>=1){
 								commStatus=true;
-							}
-							if(statusObj[7]!=null&&StringManagerUtils.stringToInteger(statusObj[7]+"")==1){
-								runStatus=true;
 							}
 							String commTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
 									+ "\"Last\":{"
-									+ "\"AcqTime\": \""+statusObj[2]+"\","
+									+ "\"AcqTime\": \""+commStatusObj[2]+"\","
 									+ "\"CommStatus\": "+commStatus+","
 									+ "\"CommEfficiency\": {"
-									+ "\"Efficiency\": "+statusObj[4]+","
-									+ "\"Time\": "+statusObj[5]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[6]))+""
+									+ "\"Efficiency\": "+commStatusObj[4]+","
+									+ "\"Time\": "+commStatusObj[5]+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(commStatusObj[6]))+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -744,16 +765,33 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"CommStatus\":true"
 									+ "}"
 									+ "}";
+							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
+							if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
+								commStatus=commResponseData.getDaily().getCommStatus();
+								commTime=commResponseData.getDaily().getCommEfficiency().getTime();
+								commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
+								commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+							}
+							break;
+						}
+					}
+					
+					for(int j=0;j<runStatusQueryList.size();j++){
+						Object[] runStatusObj=(Object[]) runStatusQueryList.get(j);
+						if(deviceId.equals(runStatusObj[0].toString())){		
+							if(runStatusObj[3]!=null&&StringManagerUtils.stringToInteger(runStatusObj[3]+"")>=1){
+								runStatus=true;
+							}
 							String runTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
 									+ "\"Last\":{"
-									+ "\"AcqTime\": \""+statusObj[2]+"\","
+									+ "\"AcqTime\": \""+runStatusObj[2]+"\","
 									+ "\"RunStatus\": "+runStatus+","
 									+ "\"RunEfficiency\": {"
-									+ "\"Efficiency\": "+statusObj[8]+","
-									+ "\"Time\": "+statusObj[9]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[10]))+""
+									+ "\"Efficiency\": "+runStatusObj[4]+","
+									+ "\"Time\": "+runStatusObj[5]+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(runStatusObj[6]))+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -761,15 +799,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"RunStatus\":true"
 									+ "}"
 									+ "}";
-							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 							timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
-							if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
-								commStatus=commResponseData.getDaily().getCommStatus();
-								commTime=commResponseData.getDaily().getCommEfficiency().getTime();
-								commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
-								commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
-							}
-
 							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
 								runStatus=timeEffResponseData.getDaily().getRunStatus();
 								runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();

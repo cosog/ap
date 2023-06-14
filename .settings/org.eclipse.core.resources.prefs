@@ -1,5 +1,7 @@
 eclipse.preferences.version=1
+encoding//WebRoot/example/test3.json=UTF-8
 encoding//WebRoot/protocol/modbus.json=UTF-8
+encoding//WebRoot/reportTemplate/reportTemplate.json=UTF-8
 encoding//WebRoot/styles/banner.css=UTF-8
 encoding//WebRoot/styles/banner_cnooc.css=UTF-8
 encoding//WebRoot/styles/banner_cnpc.css=UTF-8

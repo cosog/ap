@@ -1581,7 +1581,7 @@ color16ToRgba = function(sColor,Opacity){
 	 	var tipval=val;
 	 	var alarmLevel=p.data.runAlarmLevel==undefined?0:p.data.runAlarmLevel;
 	 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
-		if (commStatus == 0) {
+		if (commStatus == 0 || commStatus == 2 || val=='') {
 //			o.css='pendingColor';
 			return '';
 		} else {

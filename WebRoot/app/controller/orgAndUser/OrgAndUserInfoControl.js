@@ -44,7 +44,7 @@ var SaveOrgDataInfoSubmitBtnForm = function () {
                 	Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】," + cosog.string.dataInfo + "");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, cosog.string.failInfo + "。");
                 }
             },
             failure: function () {
@@ -76,8 +76,7 @@ function UpdateOrgDataInfoSubmitBtnForm() {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "");
+                    Ext.Msg.alert(cosog.string.ts,cosog.string.updatefail + "");
                 }
             },
             failure: function () {
@@ -170,7 +169,7 @@ function delOrgInfo() {
         					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ result.deleteCount + "条数据信息。");
         				}
         				if (result.flag == false) {
-        					Ext.Msg.alert('提示', "<font color=red>SORRY！删除失败。</font>");
+        					Ext.Msg.alert('提示', "<font color=red>删除失败。</font>");
         				}
         				Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
         			},
@@ -431,7 +430,7 @@ function delUserInfo() {
             					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
             				}
             				if (result.flag == false) {
-            					Ext.Msg.alert('提示', "<font color=red>SORRY！删除失败。</font>");
+            					Ext.Msg.alert('提示', "<font color=red>删除失败。</font>");
             				}
             				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
             			},
@@ -488,7 +487,7 @@ function delUserInfoByGridBtn(record) {
       					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
       				}
       				if (result.flag == false) {
-      					Ext.Msg.alert('提示', "<font color=red>SORRY！删除失败。</font>");
+      					Ext.Msg.alert('提示', "<font color=red>删除失败。</font>");
       				}
       				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
       			},
@@ -540,7 +539,7 @@ function updateUserInfoByGridBtn(record) {
 			}else if (result.success==true && result.flag == false) {
 				Ext.Msg.alert('提示', "<font color=red>用户账号已存在,保存失败。</font>");
 			}else {
-				Ext.Msg.alert('提示', "<font color=red>SORRY！保存失败。</font>");
+				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
 			}
 			Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
 		},
@@ -568,7 +567,7 @@ var SaveUserDataInfoSubmitBtnForm = function () {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, cosog.string.failInfo + "。");
 
                 }
             },
@@ -601,8 +600,7 @@ function UpdateUserDataInfoSubmitBtnForm() {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                    Ext.Msg.alert(cosog.string.ts, cosog.string.updatefail + "。");
                 }
             },
             failure: function () {
@@ -632,7 +630,7 @@ function EditUserPasswordSubmitBtnForm() {
                 	Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
                 	Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
                 }else if (action.result.flag == false) {
-                    Ext.Msg.alert(cosog.string.ts,"<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                    Ext.Msg.alert(cosog.string.ts,cosog.string.updatefail + "。");
                 }
             },
             failure: function () {

@@ -1890,7 +1890,11 @@ public class DriverAPIController extends BaseController{
 								responseResultData.getProduction().setOilWeightProduction(rpcCalculateResponseData.getProduction().getOilWeightProduction());
 								responseResultData.getProduction().setWaterWeightProduction(rpcCalculateResponseData.getProduction().getWaterWeightProduction());
 								responseResultData.getProduction().setWaterCut(rpcCalculateResponseData.getProduction().getWaterCut());
+								
+								responseResultData.getProduction().setPumpSettingDepth(rpcCalculateResponseData.getProduction().getPumpSettingDepth());
 								responseResultData.getProduction().setProducingfluidLevel(rpcCalculateResponseData.getProduction().getProducingfluidLevel());
+								responseResultData.getProduction().setSubmergence(rpcCalculateResponseData.getProduction().getSubmergence());
+								
 								responseResultData.getProduction().setTubingPressure(rpcCalculateResponseData.getProduction().getTubingPressure());
 								responseResultData.getProduction().setCasingPressure(rpcCalculateResponseData.getProduction().getCasingPressure());
 								if(rpcCalculateRequestData.getProduction()!=null){
@@ -3129,7 +3133,9 @@ public class DriverAPIController extends BaseController{
 								responseResultData.getProduction().setWaterWeightProduction(pcpCalculateResponseData.getProduction().getWaterWeightProduction());
 								responseResultData.getProduction().setWaterCut(pcpCalculateResponseData.getProduction().getWaterCut());
 								
+								responseResultData.getProduction().setPumpSettingDepth(pcpCalculateResponseData.getProduction().getPumpSettingDepth());
 								responseResultData.getProduction().setProducingfluidLevel(pcpCalculateResponseData.getProduction().getProducingfluidLevel());
+								responseResultData.getProduction().setSubmergence(pcpCalculateResponseData.getProduction().getSubmergence());
 								responseResultData.getProduction().setTubingPressure(pcpCalculateResponseData.getProduction().getTubingPressure());
 								responseResultData.getProduction().setCasingPressure(pcpCalculateResponseData.getProduction().getCasingPressure());
 								

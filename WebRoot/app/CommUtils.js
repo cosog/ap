@@ -1581,7 +1581,7 @@ color16ToRgba = function(sColor,Opacity){
 	 	var tipval=val;
 	 	var alarmLevel=p.data.runAlarmLevel==undefined?0:p.data.runAlarmLevel;
 	 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
-		if (commStatus == 0) {
+		if (commStatus == 0 || commStatus == 2 || val=='') {
 //			o.css='pendingColor';
 			return '';
 		} else {
@@ -2921,7 +2921,7 @@ showRodPress = function(result, divId) {
 }
 
 function initRodPressChart(xdata, ydata, wellName, acqTime, divId) {
-	mychart = new Highcharts.Chart({
+	var rodStressChart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'column',                      // 柱状图
 		            renderTo : divId,                    // 图形放置的位置
@@ -2958,7 +2958,7 @@ function initRodPressChart(xdata, ydata, wellName, acqTime, divId) {
 		        subtitle: {                                                                          
 		            text: wellName+' ['+acqTime+']'
 		        },
-		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
+		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
 		        credits: {
 		            enabled: false
 		        },
@@ -3017,7 +3017,7 @@ function initRodPressChart(xdata, ydata, wellName, acqTime, divId) {
 		            }
 		        }] 
 	});
-	SetEveryOnePointColor(mychart);           //设置每一个数据点的颜色值
+	SetEveryOnePointColor(rodStressChart);           //设置每一个数据点的颜色值
 }
 
 function SetEveryOnePointColor(chart) {      // 设置每一个数据点的颜色横向渐变

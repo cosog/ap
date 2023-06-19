@@ -169,7 +169,10 @@ public class CalculateUtils {
 		List<Float> systemEfficiencyList=new ArrayList<Float>();
 		List<Float> energyPer100mLiftList=new ArrayList<Float>();
 		
+		List<Float> pumpSettingDepthList=new ArrayList<Float>();
 		List<Float> producingfluidLevelList=new ArrayList<Float>();
+		List<Float> submergenceList=new ArrayList<Float>();
+		
 		List<Float> tubingPressureList=new ArrayList<Float>();
 		List<Float> casingPressureList=new ArrayList<Float>();
 		
@@ -208,7 +211,10 @@ public class CalculateUtils {
 				waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
 				weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
 				
+				
+				pumpSettingDepthList.add(responseData.getProduction().getPumpSettingDepth());
 				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
+				submergenceList.add(responseData.getProduction().getSubmergence());
 				tubingPressureList.add(responseData.getProduction().getTubingPressure());
 				casingPressureList.add(responseData.getProduction().getCasingPressure());
 				
@@ -253,7 +259,7 @@ public class CalculateUtils {
 			dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 			dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 			dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//			dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+			dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 			dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
 			dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
 			dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
@@ -271,7 +277,9 @@ public class CalculateUtils {
 			dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
 			dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
 			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
+			dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 			dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+			dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 			dataSbf.append("}");
@@ -314,7 +322,10 @@ public class CalculateUtils {
 		List<Float> systemEfficiencyList=new ArrayList<Float>();
 		List<Float> energyPer100mLiftList=new ArrayList<Float>();
 		
+		List<Float> pumpSettingDepthList=new ArrayList<Float>();
 		List<Float> producingfluidLevelList=new ArrayList<Float>();
+		List<Float> submergenceList=new ArrayList<Float>();
+		
 		List<Float> tubingPressureList=new ArrayList<Float>();
 		List<Float> casingPressureList=new ArrayList<Float>();
 		
@@ -337,7 +348,9 @@ public class CalculateUtils {
 				waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
 				weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
 				
+				pumpSettingDepthList.add(responseData.getProduction().getPumpSettingDepth());
 				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
+				submergenceList.add(responseData.getProduction().getSubmergence());
 				tubingPressureList.add(responseData.getProduction().getTubingPressure());
 				casingPressureList.add(responseData.getProduction().getCasingPressure());
 				
@@ -374,13 +387,15 @@ public class CalculateUtils {
 		dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 		dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 		dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//		dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+		dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 		dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
 		dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 		dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
 		dataSbf.append("\"PumpEff1\":["+StringUtils.join(pumpEff1List, ",")+"],");
 		dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
+		dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 		dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+		dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 		dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 		dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 		dataSbf.append("}");

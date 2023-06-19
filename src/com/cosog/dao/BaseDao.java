@@ -3830,7 +3830,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,"
-					+ "?,?,?,"
+					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,"
@@ -3876,22 +3876,24 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(30, totalAnalysisResponseData.getWattDegreeBalance().getValue());
 			cs.setFloat(31, totalAnalysisResponseData.getDeltaRadius().getValue());
 			
-			cs.setFloat(32, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(33, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(34, totalAnalysisResponseData.getTubingFlexLength().getValue());
+			cs.setFloat(32, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(34, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(35, totalAnalysisResponseData.getCasingPressure().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getTubingPressure().getValue());
 			
-			cs.setInt(35,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
-			cs.setFloat(36, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(37, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(38,commRanceClob);
+			cs.setInt(37,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(38, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(39, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(40,commRanceClob);
 			
-			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
-			cs.setFloat(40, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(41, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(42,runRanceClob);
+			cs.setInt(41,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(42, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(43, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(44,runRanceClob);
 			
-			cs.setString(43, date);
-			cs.setInt(44, recordCount);
+			cs.setString(45, date);
+			cs.setInt(46, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3934,7 +3936,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,"
-					+ "?,?,?,"
+					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,"
@@ -3980,22 +3982,24 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(30, totalAnalysisResponseData.getWattDegreeBalance().getValue());
 			cs.setFloat(31, totalAnalysisResponseData.getDeltaRadius().getValue());
 			
-			cs.setFloat(32, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(33, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setFloat(34, totalAnalysisResponseData.getTubingPressure().getValue());
+			cs.setFloat(32, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(34, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(35, totalAnalysisResponseData.getCasingPressure().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getTubingPressure().getValue());
 			
-			cs.setInt(35,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
-			cs.setFloat(36, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(37, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(38,commRanceClob);
+			cs.setInt(37,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(38, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(39, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(40,commRanceClob);
 			
-			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
-			cs.setFloat(40, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(41, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(42,runRanceClob);
+			cs.setInt(41,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(42, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(43, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(44,runRanceClob);
 			
-			cs.setString(43, date);
-			cs.setInt(44, recordCount);
+			cs.setString(45, date);
+			cs.setInt(46, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4030,7 +4034,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,"
-					+ "?,?,?"
+					+ "?,?,?,?,?"
 					+ ")}");
 			cs.setInt(1,StringManagerUtils.stringToInteger(recordId));
 			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
@@ -4072,11 +4076,14 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(30, totalAnalysisResponseData.getWattDegreeBalance().getValue());
 			cs.setFloat(31, totalAnalysisResponseData.getDeltaRadius().getValue());
 			
-			cs.setFloat(32, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(33, totalAnalysisResponseData.getTubingPressure().getValue());
-			cs.setFloat(34, totalAnalysisResponseData.getCasingPressure().getValue());
+			cs.setFloat(32, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(34, totalAnalysisResponseData.getSubmergence().getValue());
 			
-			cs.setInt(35, recordCount);
+			cs.setFloat(35, totalAnalysisResponseData.getTubingPressure().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getCasingPressure().getValue());
+			
+			cs.setInt(37, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4111,15 +4118,14 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,"
 					+ "?,"
 					+ "?,"
-					+ "?,"
-					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,"
-					+ "?,?,?,"
+					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
-					+ "?"
+					+ "?,?,?,?,"
+					+ "?,?"
 					+ ")}");
 			cs.setInt(1,pcpDeviceInfo.getId());
 			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
@@ -4147,22 +4153,24 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(17, totalAnalysisResponseData.getSystemEfficiency().getValue());
 			cs.setFloat(18, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
 			
-			cs.setFloat(19, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(20, totalAnalysisResponseData.getTubingPressure().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getCasingPressure().getValue());
+			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
+			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
 			
-			cs.setInt(22,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
-			cs.setFloat(23, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(24, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(25,commRanceClob);
+			cs.setInt(24,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(25, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(26, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(27,commRanceClob);
 			
-			cs.setInt(26,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
-			cs.setFloat(27, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(28, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(29,runRanceClob);
+			cs.setInt(28,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(29, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(30, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(31,runRanceClob);
 			
-			cs.setString(30, date);
-			cs.setInt(31, recordCount);
+			cs.setString(32, date);
+			cs.setInt(33, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4197,15 +4205,14 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,"
 					+ "?,"
 					+ "?,"
-					+ "?,"
-					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,"
-					+ "?,?,?,"
+					+ "?,?,?,?,?,"
 					+ "?,?,?,?,"
-					+ "?"
+					+ "?,?,?,?,"
+					+ "?,?"
 					+ ")}");
 			cs.setInt(1,StringManagerUtils.stringToInteger(totalAnalysisRequestData.getWellName()));
 			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
@@ -4233,22 +4240,24 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(17, totalAnalysisResponseData.getSystemEfficiency().getValue());
 			cs.setFloat(18, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
 			
-			cs.setFloat(19, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(20, totalAnalysisResponseData.getTubingPressure().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getCasingPressure().getValue());
+			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
+			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
 			
-			cs.setInt(22,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
-			cs.setFloat(23, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(24, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(25,commRanceClob);
+			cs.setInt(24,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(25, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(26, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(27,commRanceClob);
 			
-			cs.setInt(26,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
-			cs.setFloat(27, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(28, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(29,runRanceClob);
+			cs.setInt(28,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(29, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(30, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(31,runRanceClob);
 			
-			cs.setString(30, date);
-			cs.setInt(31, recordCount);
+			cs.setString(32, date);
+			cs.setInt(33, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4272,12 +4281,11 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,"
 					+ "?,"
 					+ "?,"
-					+ "?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,"
-					+ "?,?,?,"
-					+ "?,?"
+					+ "?,?,"
+					+ "?,?,?,?,?,?"
 					+ ")}");
 			cs.setInt(1,StringManagerUtils.stringToInteger(recordId));
 			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
@@ -4305,10 +4313,12 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(17, totalAnalysisResponseData.getSystemEfficiency().getValue());
 			cs.setFloat(18, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
 			
-			cs.setFloat(19, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(20, totalAnalysisResponseData.getTubingPressure().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getCasingPressure().getValue());
-			cs.setInt(22, recordCount);
+			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
+			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
+			cs.setInt(24, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -92,14 +92,14 @@ cache 20;
 create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 140
+start with 136
 increment by 1
 cache 20;
 
 create sequence SEQ_REPORT_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 110
+start with 94
 increment by 1
 cache 20;
 

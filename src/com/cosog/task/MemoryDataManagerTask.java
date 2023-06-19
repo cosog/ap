@@ -1990,12 +1990,15 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcTotalCalItemList".getBytes(),40, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2,"累计产气量,当日最新采集数据")));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),41, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2,"累计产水量,当日最新采集数据")));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),47, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
+			
+			jedis.zadd("rpcTotalCalItemList".getBytes(),48, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -2049,12 +2052,15 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpTotalCalItemList".getBytes(),27, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2,"累计产气量,当日最新采集数据")));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),28, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2,"累计产水量,当日最新采集数据")));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),29, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),30, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),32, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),29, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),30, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),32, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
+			
+			jedis.zadd("pcpTotalCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -2431,7 +2437,8 @@ public class MemoryDataManagerTask {
 					+ " t.systemefficiency,t.surfacesystemefficiency,t.welldownsystemefficiency,t.energyper100mlift,"//23
 					+ " t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,t.pumpeff,"//28
 					+ " t.productiondata, "//29
-					+"  t.inverproducingfluidlevel "//30
+					+"  t.inverproducingfluidlevel, "//30
+					+ " t.submergence "//31
 					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 					+ " where t.wellid=t2.id  "
 					+ " and t.resultstatus=1"
@@ -2491,12 +2498,15 @@ public class MemoryDataManagerTask {
 					RPCDeviceInfo rpcProductionData=gson.fromJson(productionData, type);
 					if(rpcProductionData!=null){
 						responseData.getProduction().setWaterCut(rpcProductionData.getProduction().getWaterCut());
+						responseData.getProduction().setWeightWaterCut(rpcProductionData.getProduction().getWeightWaterCut());
 						responseData.getProduction().setTubingPressure(rpcProductionData.getProduction().getTubingPressure());
 						responseData.getProduction().setCasingPressure(rpcProductionData.getProduction().getCasingPressure());
+						responseData.getProduction().setPumpSettingDepth(rpcProductionData.getProduction().getPumpSettingDepth());
 					}
 				}
 				
 				responseData.getProduction().setProducingfluidLevel(rs.getFloat(30));
+				responseData.getProduction().setSubmergence(rs.getFloat(31));
 				
 				if(jedis.hexists("RPCDeviceTodayData".getBytes(), key.getBytes())){
 					RPCDeviceTodayData deviceTodayData =(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), key.getBytes()));
@@ -2549,7 +2559,8 @@ public class MemoryDataManagerTask {
 					+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 					+ "t.systemefficiency,"
 					+ "t.pumpeff1,t.pumpeff2,t.pumpeff,"
-					+ "t.productiondata "
+					+ "t.productiondata,"
+					+ "t.submergence "
 					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 					+ " where t.wellid=t2.id and t.resultstatus=1 and t.acqtime between to_date('"+currentDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')+1";
 			if(StringManagerUtils.isNotNull(wells)){
@@ -2597,10 +2608,14 @@ public class MemoryDataManagerTask {
 					PCPDeviceInfo pcpProductionData=gson.fromJson(productionData, type);
 					if(pcpProductionData!=null){
 						responseData.getProduction().setWaterCut(pcpProductionData.getProduction().getWaterCut());
+						responseData.getProduction().setWeightWaterCut(pcpProductionData.getProduction().getWeightWaterCut());
 						responseData.getProduction().setTubingPressure(pcpProductionData.getProduction().getTubingPressure());
 						responseData.getProduction().setCasingPressure(pcpProductionData.getProduction().getCasingPressure());
+						responseData.getProduction().setPumpSettingDepth(pcpProductionData.getProduction().getPumpSettingDepth());
+						responseData.getProduction().setProducingfluidLevel(pcpProductionData.getProduction().getProducingfluidLevel());
 					}
 				}
+				responseData.getProduction().setSubmergence(rs.getFloat(18));
 				
 				if(jedis.hexists("PCPDeviceTodayData".getBytes(), key.getBytes())){
 					PCPDeviceTodayData deviceTodayData =(PCPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceTodayData".getBytes(), key.getBytes()));

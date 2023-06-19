@@ -1460,7 +1460,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 						+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 						+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
-						+ "t.inverproducingfluidlevel "
+						+ "t.inverproducingfluidlevel,"
+						+ "t.submergence "
 						+ " from tbl_rpcacqdata_hist t "
 						+ " where t.wellid="+wellId+" "
 						+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
@@ -1511,7 +1512,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					List<Float> systemEfficiencyList=new ArrayList<Float>();
 					List<Float> energyPer100mLiftList=new ArrayList<Float>();
 					
+					List<Float> pumpSettingDepthList=new ArrayList<Float>();
 					List<Float> producingfluidLevelList=new ArrayList<Float>();
+					List<Float> submergenceList=new ArrayList<Float>();
+					
 					List<Float> tubingPressureList=new ArrayList<Float>();
 					List<Float> casingPressureList=new ArrayList<Float>();
 					
@@ -1558,9 +1562,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
 							tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
 							casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
+							pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
 						}else{
 							tubingPressureList.add(0.0f);
 							casingPressureList.add(0.0f);
+							pumpSettingDepthList.add(0.0f);
 						}
 						
 						pumpEffList.add(StringManagerUtils.stringToFloat(obj[15]+""));
@@ -1579,6 +1585,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(obj[26]+""));
 						
 						producingfluidLevelList.add(StringManagerUtils.stringToFloat(obj[27]+""));
+						submergenceList.add(StringManagerUtils.stringToFloat(obj[28]+""));
 					}
 					dataSbf.append("{\"AKString\":\"\",");
 					dataSbf.append("\"WellName\":\""+wellName+"\",");
@@ -1620,7 +1627,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
 					dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
 					dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
+					dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 					dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+					dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 					dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 					dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 					dataSbf.append("}");
@@ -1657,7 +1666,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 						+ "t.productiondata,"
 						+ "t.pumpeff,t.pumpeff1,t.pumpeff2,"
-						+ "t.systemefficiency,t.energyper100mlift "
+						+ "t.systemefficiency,t.energyper100mlift,"
+						+ "t.submergence "
 						+ " from tbl_pcpacqdata_hist t "
 						+ " where t.wellid="+wellId+" "
 						+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
@@ -1692,7 +1702,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					List<Float> systemEfficiencyList=new ArrayList<Float>();
 					List<Float> energyPer100mLiftList=new ArrayList<Float>();
 					
+					List<Float> pumpSettingDepthList=new ArrayList<Float>();
 					List<Float> producingfluidLevelList=new ArrayList<Float>();
+					List<Float> submergenceList=new ArrayList<Float>();
+					
 					List<Float> tubingPressureList=new ArrayList<Float>();
 					List<Float> casingPressureList=new ArrayList<Float>();
 					
@@ -1734,10 +1747,12 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						if(pcpProductionData!=null&&pcpProductionData.getProduction()!=null){
 							tubingPressureList.add(pcpProductionData.getProduction().getTubingPressure());
 							casingPressureList.add(pcpProductionData.getProduction().getCasingPressure());
+							pumpSettingDepthList.add(pcpProductionData.getProduction().getPumpSettingDepth());
 							producingfluidLevelList.add(pcpProductionData.getProduction().getProducingfluidLevel());
 						}else{
 							tubingPressureList.add(0.0f);
 							casingPressureList.add(0.0f);
+							pumpSettingDepthList.add(0.0f);
 							producingfluidLevelList.add(0.0f);
 						}
 						
@@ -1747,6 +1762,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						
 						systemEfficiencyList.add(StringManagerUtils.stringToFloat(obj[13]+""));
 						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(obj[14]+""));
+						submergenceList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 					}
 					dataSbf.append("{\"AKString\":\"\",");
 					dataSbf.append("\"WellName\":\""+wellName+"\",");
@@ -1776,7 +1792,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
 					dataSbf.append("\"PumpEff1\":["+StringUtils.join(pumpEff1List, ",")+"],");
 					dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
+					dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 					dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+					dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 					dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 					dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 					dataSbf.append("}");
@@ -1819,7 +1837,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.productiondata,"
 				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 				+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
-				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift "
+				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
+				+ "t.inverproducingfluidlevel,"
+				+ "t.submergence "
 				+ " from tbl_rpcacqdata_hist t "
 				+ " where t.wellid="+wellId+" "
 				+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
@@ -1827,7 +1847,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " order by t.fesdiagramacqtime";
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
-			
 			Object[] totalObj=(Object[])list.get(0);
 			List<?> fesDiagramList = this.findCallSql(fesDiagramSql);
 			List<String> acqTimeList=new ArrayList<String>();
@@ -1870,6 +1889,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			List<Float> systemEfficiencyList=new ArrayList<Float>();
 			List<Float> energyPer100mLiftList=new ArrayList<Float>();
 			
+			List<Float> pumpSettingDepthList=new ArrayList<Float>();
+			List<Float> producingfluidLevelList=new ArrayList<Float>();
+			List<Float> submergenceList=new ArrayList<Float>();
+			
+			List<Float> tubingPressureList=new ArrayList<Float>();
+			List<Float> casingPressureList=new ArrayList<Float>();
+			
 			for(int j=0;j<fesDiagramList.size();j++){
 				Object[] obj=(Object[])fesDiagramList.get(j);
 				
@@ -1903,10 +1929,21 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				liquidWeightProductionList.add(StringManagerUtils.stringToFloat(obj[11]+""));
 				oilWeightProductionList.add(StringManagerUtils.stringToFloat(obj[12]+""));
 				waterWeightProductionList.add(StringManagerUtils.stringToFloat(obj[13]+""));
+				
 				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
 					weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
 				}else{
 					weightWaterCutList.add(0.0f);
+				}
+				
+				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+					tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
+					casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
+					pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
+				}else{
+					tubingPressureList.add(0.0f);
+					casingPressureList.add(0.0f);
+					pumpSettingDepthList.add(0.0f);
 				}
 				
 				pumpEffList.add(StringManagerUtils.stringToFloat(obj[15]+""));
@@ -1923,6 +1960,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(obj[24]+""));
 				systemEfficiencyList.add(StringManagerUtils.stringToFloat(obj[25]+""));
 				energyPer100mLiftList.add(StringManagerUtils.stringToFloat(obj[26]+""));
+				
+				producingfluidLevelList.add(StringManagerUtils.stringToFloat(obj[27]+""));
+				submergenceList.add(StringManagerUtils.stringToFloat(obj[28]+""));
 			}
 			dataSbf.append("{\"AKString\":\"\",");
 			dataSbf.append("\"WellName\":\""+wellName+"\",");
@@ -1963,7 +2003,12 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			dataSbf.append("\"PumpEff4\":["+StringUtils.join(pumpEff4List, ",")+"],");
 			dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
 			dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
-			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"]");
+			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
+			dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
+			dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+			dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
+			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 			dataSbf.append("}");
 		}
 	
@@ -1983,7 +2028,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 				+ "t.productiondata,"
 				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,"
-				+ "t.systemefficiency,t.energyper100mlift "
+				+ "t.systemefficiency,t.energyper100mlift,"
+				+ "t.submergence "
 				+ " from tbl_pcpacqdata_hist t "
 				+ " where t.wellid="+wellId+" "
 				+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
@@ -2017,6 +2063,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			
 			List<Float> systemEfficiencyList=new ArrayList<Float>();
 			List<Float> energyPer100mLiftList=new ArrayList<Float>();
+			
+			List<Float> pumpSettingDepthList=new ArrayList<Float>();
+			List<Float> producingfluidLevelList=new ArrayList<Float>();
+			List<Float> submergenceList=new ArrayList<Float>();
+			
+			List<Float> tubingPressureList=new ArrayList<Float>();
+			List<Float> casingPressureList=new ArrayList<Float>();
 			
 			for(int j=0;j<fesDiagramList.size();j++){
 				Object[] obj=(Object[])fesDiagramList.get(j);
@@ -2059,6 +2112,19 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				systemEfficiencyList.add(StringManagerUtils.stringToFloat(obj[13]+""));
 				energyPer100mLiftList.add(StringManagerUtils.stringToFloat(obj[14]+""));
+				
+				if(pcpProductionData!=null&&pcpProductionData.getProduction()!=null){
+					tubingPressureList.add(pcpProductionData.getProduction().getTubingPressure());
+					casingPressureList.add(pcpProductionData.getProduction().getCasingPressure());
+					pumpSettingDepthList.add(pcpProductionData.getProduction().getPumpSettingDepth());
+					producingfluidLevelList.add(pcpProductionData.getProduction().getProducingfluidLevel());
+				}else{
+					tubingPressureList.add(0.0f);
+					casingPressureList.add(0.0f);
+					pumpSettingDepthList.add(0.0f);
+					producingfluidLevelList.add(0.0f);
+				}
+				submergenceList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 			}
 			dataSbf.append("{\"AKString\":\"\",");
 			dataSbf.append("\"WellName\":\""+wellName+"\",");
@@ -2074,6 +2140,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			dataSbf.append("\"RunTimeEfficiency\":"+totalObj[6]+",");
 			dataSbf.append("\"RunRange\":\""+StringManagerUtils.CLOBObjectToString(totalObj[7])+"\",");
 			dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"],");
+			dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
+			dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+			dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
+			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
 			dataSbf.append("\"TheoreticalProduction\":["+StringUtils.join(theoreticalProductionList, ",")+"],");
 			dataSbf.append("\"LiquidVolumetricProduction\":["+StringUtils.join(liquidVolumetricProductionList, ",")+"],");
 			dataSbf.append("\"OilVolumetricProduction\":["+StringUtils.join(oilVolumetricProductionList, ",")+"],");

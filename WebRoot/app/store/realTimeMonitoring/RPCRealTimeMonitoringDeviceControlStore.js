@@ -30,6 +30,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                     columnLines: true,
                     forceFit: false,
                     store: store,
+                    scrollOffset: 0,
                     columns: [{
                             header: '操作项',
                             dataIndex: 'item',
@@ -45,7 +46,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                             header: '操作',
                             dataIndex: 'operation',
                             align: 'center',
-                            width: 93,
+                            flex: 2,
+                            minWidth: 93,
                             renderer: function (value, e, o) {
                                 var id = e.record.id;
                                 var item = o.data.item;
@@ -73,7 +75,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                     target: Ext.getBody().component
                                 });
 
-                                if (resolutionMode == 1 && itemMeaning.length == 1) {
+                                if (resolutionMode == 1 && itemMeaning.length == 1) { //
                                     Ext.defer(function () {
                                         Ext.widget('button', {
                                             renderTo: id,
@@ -132,15 +134,15 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                             dock: 'top',
                                             style: 'margin:0;padding:0',
                                             ui: 'footer',
-                                            align: 'center',
+//                                            align: 'center',
                                             height: 25,
-                                            width: 85,
+                                            minWidth: 85,
                                             items: [{
                                                 xtype: 'button',
                                                 height: 25,
                                                 width: 38,
                                                 style: 'margin:1',
-                                                align: 'center',
+//                                                align: 'center',
                                                 disabled: hand,
                                                 hidden: hidden,
                                                 text: itemMeaning[0][1],
@@ -152,8 +154,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
-                                                        //    		                                        waitMsg: cosog.string.updatewait,
-                                                        //    		                                        waitTitle: 'Please Wait...',
                                                         params: {
                                                             deviceId: deviceId,
                                                             wellName: wellName,
@@ -191,7 +191,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                 height: 25,
                                                 width: 38,
                                                 style: 'margin:0',
-                                                align: 'center',
+//                                                align: 'center',
                                                 disabled: hand,
                                                 hidden: hidden,
                                                 text: itemMeaning[1][1],
@@ -203,8 +203,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
-                                                        //    		                                        waitMsg: cosog.string.updatewait,
-                                                        //    		                                        waitTitle: 'Please Wait...',
                                                         params: {
                                                             deviceId: deviceId,
                                                             wellName: wellName,
@@ -237,7 +235,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                         }
                                                     });
                                                 }
-    		                            }]
+    		                            	}]
                                         });
                                     }, 50);
                                 } else if (resolutionMode == 0 && itemMeaning.length > 0) {
@@ -265,8 +263,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
-                                                        //    		                                        waitMsg: cosog.string.updatewait,
-                                                        //    		                                        waitTitle: 'Please Wait...',
                                                         params: {
                                                             deviceId: deviceId,
                                                             wellName: wellName,
@@ -315,8 +311,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
-                                                        //    		                                        waitMsg: cosog.string.updatewait,
-                                                        //    		                                        waitTitle: 'Please Wait...',
                                                         params: {
                                                             deviceId: deviceId,
                                                             wellName: wellName,
@@ -349,7 +343,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                         }
                                                     });
                                                 }
-    		                            }]
+    		                            	}]
                                         });
                                     }, 50);
                                 } else {
@@ -371,8 +365,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                 }
                                                 Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
                                                 Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-                                                //    		                                 Ext.Msg.confirm("操作确认", operaName, function (btn) {
-                                                //    		                                     if (btn == "yes") {
+
                                                 var win_Obj = Ext.getCmp("DeviceControlCheckPassWindow_Id")
                                                 if (win_Obj != undefined) {
                                                     win_Obj.destroy();
@@ -390,7 +383,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                 Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
 
                                                 Ext.getCmp("DeviceControlValue_Id").setValue("");
-                                                //    		                                         Ext.getCmp("checkPassFromPassword_id").setValue("");
 
                                                 Ext.getCmp("DeviceControlShowType_Id").setValue(2);
                                                 Ext.getCmp("DeviceControlValue_Id").show();
@@ -399,8 +391,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                 Ext.getCmp("DeviceControlValue_Id").setValue(o.data.value);
 
                                                 if (resolutionMode == 0) { //开关量
-                                                    //    		                                        	 Ext.getCmp("DeviceControlValue_Id").hide();
-                                                    //    		                                        	 Ext.getCmp("DeviceControlValueCombo_Id").hide();
+
                                                 } else if (resolutionMode == 1 && itemMeaning.length > 0) { //枚举量
                                                     Ext.getCmp("DeviceControlValue_Id").hide();
                                                     Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
@@ -421,8 +412,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                                 }
                                                 DeviceControlCheckPassWindow.show();
                                                 Ext.getCmp("DeviceControlValue_Id").setValue("");
-                                                //    		                                     }
-                                                //    		                                 });
                                             }
                                         });
                                     }, 50);
@@ -430,7 +419,24 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore'
                                 return Ext.String.format('<div id="{0}"></div>', id);
                             }
 			        }
-			    ]
+//			        ,{
+//			        	header: '操作2',
+//                        dataIndex: 'operation2',
+//                        align: 'center',
+//                        flex: 2
+//			        }
+			        ],
+			        listeners: {
+			        	columnresize: function ( ct, column, width, eOpts ) {
+			        		if(column.dataIndex=='operation'){
+//			        			alert(width);
+//			        			var aa = Ext.getCmp("RPCRealTimeMonitoringControlDataGridPanel_Id");
+//			                    if (isNotVal(aa)) {
+//			                    	aa.store.reload();
+//			                    }
+			        		}
+			        	}
+			        }
                 });
                 Ext.getCmp("RPCRealTimeMonitoringRightControlPanel").add(controlGridPanel);
             }

@@ -1214,8 +1214,9 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
   v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
   v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
-  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,
-  
+  v_pumpSettingDepth in number,v_producingfluidLevel in number,v_submergence in number,
+  v_casingPressure in number,v_tubingPressure in number,
+
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_rpcdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
@@ -1234,7 +1235,7 @@ begin
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
     where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
     commit;
-    
+
     if v_recordCount>0 then
       update tbl_rpcdailycalculationdata t
       set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
@@ -1248,11 +1249,12 @@ begin
           t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
           t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
           t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
-          t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+          t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
       where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
       commit;
     end if;
-    
+
     p_msg := '更新成功';
   elsif p_count=0 then
     p_msg := '记录不存在';
@@ -1305,7 +1307,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdailyrecal (
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
   v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
   v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
-  v_producingfluidLevel in number,v_tubingPressure in number,v_casingPressure in number,
+  v_pumpSettingDepth in number,v_producingfluidLevel in number,v_submergence in number,
+  v_tubingPressure in number,v_casingPressure in number,
   v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
@@ -1323,7 +1326,8 @@ begin
         t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
         t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
         t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
-        t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+        t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
+        t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
     where t.id=v_recordId ;
     commit;
     p_msg := '更新成功';
@@ -1437,7 +1441,8 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdaily (
   v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
   v_systemEfficiency in number,v_energyper100mlift in number,
-  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,
+  v_pumpSettingDepth in number,v_producingfluidLevel in number,v_submergence in number,
+  v_casingPressure in number,v_tubingPressure in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_pcpdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
@@ -1466,7 +1471,8 @@ begin
           t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
           t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
           t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-          t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+          t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
        where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
        commit;
     end if;
@@ -1515,7 +1521,9 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdailyrecal (
   v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
   v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
   v_systemEfficiency in number,v_energyper100mlift in number,
-  v_producingfluidLevel in number,v_casingPressure in number,v_tubingPressure in number,v_recordCount in number
+  v_pumpSettingDepth in number,v_producingfluidLevel in number,v_submergence in number,
+  v_casingPressure in number,v_tubingPressure in number,
+  v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
 begin
@@ -1530,7 +1538,8 @@ begin
     t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
     t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
     t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-    t.producingfluidlevel=v_producingfluidLevel,t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+    t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
+    t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
     where t.id=v_recordId ;
     commit;
     p_msg := '更新成功';

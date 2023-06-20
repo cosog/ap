@@ -1988,8 +1988,10 @@ public class DriverAPIController extends BaseController{
 						insertHistColumns+=",runStatus";
 						insertHistValue+=","+runStatus;
 						updateTotalDataSql+=",t.runStatus= "+runStatus;
-						
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":"停抽",runStatus+"","","runStatusName","","","","",1));
+					}else{
+//						updateRealtimeData+=",t.runStatus= null,t.runTimeEfficiency= null ,t.runTime= null,t.runrange=null";
+//						updateTotalDataSql+=",t.runStatus= null,t.runTimeEfficiency= null ,t.runTime= null,t.runrange=null";
 					}
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()

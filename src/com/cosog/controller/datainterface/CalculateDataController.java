@@ -83,12 +83,17 @@ public class CalculateDataController extends BaseController{
 		long allTime=0;
 		
 		ThreadPool executor = new ThreadPool("FESDiagramReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
-		
-		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where t.productiondata is not null and t.fesdiagramacqtime is not null and resultstatus =2";
+		String wellListSql="select distinct wellid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
+				+ " from tbl_rpcacqdata_hist t "
+				+ " where t.productiondata is not null "
+				+ " and t.fesdiagramacqtime is not null "
+				+ " and resultstatus =2";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
-			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(wellList.get(j)+""),StringManagerUtils.stringToInteger(wellList.get(j)+""),0,calculateDataService));
+			Object[] obj=(Object[]) wellList.get(j);
+			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(obj[0]+""),
+					StringManagerUtils.stringToInteger(obj[0]+""),obj[1]+"",0,calculateDataService));
 		}
 		while (!executor.isCompletedByTaskCount()) {
 			Thread.sleep(1000*1);
@@ -121,11 +126,17 @@ public class CalculateDataController extends BaseController{
 		long allTime=0;
 		
 		ThreadPool executor = new ThreadPool("RPMReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
-		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where t.productiondata is not null and t.rpm is not null and resultstatus =2";
+		String wellListSql="select distinct wellid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
+				+ " from tbl_pcpacqdata_hist t "
+				+ " where t.productiondata is not null "
+				+ " and t.rpm is not null "
+				+ " and resultstatus =2";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
-			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(wellList.get(j)+""),StringManagerUtils.stringToInteger(wellList.get(j)+""),1,calculateDataService));
+			Object[] obj=(Object[]) wellList.get(j);
+			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(obj[0]+""),
+					StringManagerUtils.stringToInteger(obj[0]+""),obj[1]+"",1,calculateDataService));
 		}
 		while (!executor.isCompletedByTaskCount()) {
 			Thread.sleep(1000*1);

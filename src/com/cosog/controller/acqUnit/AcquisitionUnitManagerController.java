@@ -299,7 +299,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 			protocolModel.setName(protocolModel.getName().replaceAll(" ", ""));
 			this.protocolModelManagerService.doProtocolAdd(protocolModel);
 			MemoryDataManagerTask.loadProtocolConfig(protocolModel.getName());
-			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 

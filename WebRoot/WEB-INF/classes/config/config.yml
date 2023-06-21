@@ -70,6 +70,16 @@ ap:
          maximumPoolSize: 120
          keepAliveTime: 5
          wattingCount: 0
+      calculateMaintaining:
+         corePoolSize: 20
+         maximumPoolSize: 25
+         keepAliveTime: 5
+         wattingCount: 0
+      totalCalculateMaintaining:
+         corePoolSize: 20
+         maximumPoolSize: 25
+         keepAliveTime: 5
+         wattingCount: 0
    others:
       cache: false
       language: zh_CN

@@ -99,6 +99,7 @@ function createTotalCalculateMaintainingDataColumn(columnInfo) {
         var width_ = "";
         var lock_ = "";
         var hidden_ = "";
+        var flex_="";
         if (attr.hidden == true) {
             hidden_ = ",hidden:true";
         }
@@ -108,7 +109,15 @@ function createTotalCalculateMaintainingDataColumn(columnInfo) {
         if (isNotVal(attr.width)) {
             width_ = ",width:" + attr.width;
         }
-        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
+        if (isNotVal(attr.flex_)) {
+        	flex_ = ",flex:" + attr.flex_;
+        }else{
+        	if (!isNotVal(attr.width)) {
+        		flex_ = ",flex:1";
+            }
+        }
+        
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
         if (attr.dataIndex == 'id') {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
         }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {

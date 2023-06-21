@@ -82,7 +82,12 @@ public class CalculateDataController extends BaseController{
 		long endTime=0;
 		long allTime=0;
 		
-		ThreadPool executor = new ThreadPool("FESDiagramReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
+		ThreadPool executor = new ThreadPool("FESDiagramReCalculate",
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getCorePoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getMaximumPoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getWattingCount());
 		String wellListSql="select distinct wellid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
 				+ " from tbl_rpcacqdata_hist t "
 				+ " where t.productiondata is not null "
@@ -125,7 +130,12 @@ public class CalculateDataController extends BaseController{
 		long endTime=0;
 		long allTime=0;
 		
-		ThreadPool executor = new ThreadPool("RPMReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
+		ThreadPool executor = new ThreadPool("RPMReCalculate",
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getCorePoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getMaximumPoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getWattingCount());
 		String wellListSql="select distinct wellid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
 				+ " from tbl_pcpacqdata_hist t "
 				+ " where t.productiondata is not null "

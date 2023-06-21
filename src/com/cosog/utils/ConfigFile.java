@@ -521,6 +521,8 @@ public class ConfigFile {
 	{
 		ThreadPoolConfig initIdAndIpPort;
 		ThreadPoolConfig dataSynchronization;
+		ThreadPoolConfig calculateMaintaining;
+		ThreadPoolConfig totalCalculateMaintaining;
 		public ThreadPoolConfig getInitIdAndIpPort() {
 			return initIdAndIpPort;
 		}
@@ -532,6 +534,18 @@ public class ConfigFile {
 		}
 		public void setDataSynchronization(ThreadPoolConfig dataSynchronization) {
 			this.dataSynchronization = dataSynchronization;
+		}
+		public ThreadPoolConfig getCalculateMaintaining() {
+			return calculateMaintaining;
+		}
+		public void setCalculateMaintaining(ThreadPoolConfig calculateMaintaining) {
+			this.calculateMaintaining = calculateMaintaining;
+		}
+		public ThreadPoolConfig getTotalCalculateMaintaining() {
+			return totalCalculateMaintaining;
+		}
+		public void setTotalCalculateMaintaining(ThreadPoolConfig totalCalculateMaintaining) {
+			this.totalCalculateMaintaining = totalCalculateMaintaining;
 		}
 	}
 	

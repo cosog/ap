@@ -51,7 +51,7 @@ public class ModbusProtocolConfig implements Serializable{
 	public static class Items implements Comparable<Items>, Serializable{
 		
 		private static final long serialVersionUID = 1L;
-	    private String Name;
+//	    private String Name;
 
 	    private String Title;
 
@@ -77,12 +77,12 @@ public class ModbusProtocolConfig implements Serializable{
 	    
 	    private List<ItemsMeaning> Meaning;
 
-	    public void setName(String Name){
-	        this.Name = Name;
-	    }
-	    public String getName(){
-	        return this.Name;
-	    }
+//	    public void setName(String Name){
+//	        this.Name = Name;
+//	    }
+//	    public String getName(){
+//	        return this.Name;
+//	    }
 	    public void setTitle(String Title){
 	        this.Title = Title;
 	    }
@@ -152,15 +152,15 @@ public class ModbusProtocolConfig implements Serializable{
 			Meaning = meaning;
 		}
 		
-		public String toString(){
-			StringBuffer result=new StringBuffer();
-			result.append("{\"header\": \""+this.Title);
-			if(StringManagerUtils.isNotNull(this.Unit)){
-				result.append("("+this.Unit+")");
-			}
-			result.append("\",\"dataIndex\": \""+this.Name+"\", children: []}");
-			return result.toString();
-		}
+//		public String toString(){
+//			StringBuffer result=new StringBuffer();
+//			result.append("{\"header\": \""+this.Title);
+//			if(StringManagerUtils.isNotNull(this.Unit)){
+//				result.append("("+this.Unit+")");
+//			}
+//			result.append("\",\"dataIndex\": \""+this.Name+"\", children: []}");
+//			return result.toString();
+//		}
 		
 		@Override
 		public int compareTo(Items item) {     //重写Comparable接口的compareTo方法

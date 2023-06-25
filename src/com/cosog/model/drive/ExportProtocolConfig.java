@@ -3,6 +3,8 @@ package com.cosog.model.drive;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cosog.model.DataMapping;
+import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
 
@@ -21,6 +23,10 @@ public class ExportProtocolConfig {
 	private List<DisplayInstance> DisplayInstanceList;
 	
 	private List<AlarmInstance> AlarmInstanceList;
+	
+	private List<DataMapping> DataMappingList;
+	
+	private List<ProtocolRunStatusConfig> ProtocolRunStatusConfigList;
 
 	public Protocol getProtocol() {
 		return Protocol;
@@ -760,5 +766,21 @@ public class ExportProtocolConfig {
 		this.getProtocol().setItems(Items);
 		
 		
+	}
+
+	public List<DataMapping> getDataMappingList() {
+		return DataMappingList;
+	}
+
+	public void setDataMappingList(List<DataMapping> dataMappingList) {
+		DataMappingList = dataMappingList;
+	}
+
+	public List<ProtocolRunStatusConfig> getProtocolRunStatusConfigList() {
+		return ProtocolRunStatusConfigList;
+	}
+
+	public void setProtocolRunStatusConfigList(List<ProtocolRunStatusConfig> protocolRunStatusConfigList) {
+		ProtocolRunStatusConfigList = protocolRunStatusConfigList;
 	}
 }

@@ -25,12 +25,14 @@ import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AlarmUnit;
 import com.cosog.model.AlarmUnitItem;
 import com.cosog.model.CurveConf;
+import com.cosog.model.DataMapping;
 import com.cosog.model.DisplayUnit;
 import com.cosog.model.DisplayUnitItem;
 import com.cosog.model.ProtocolAlarmInstance;
 import com.cosog.model.ProtocolDisplayInstance;
 import com.cosog.model.ProtocolInstance;
 import com.cosog.model.ProtocolModel;
+import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.User;
@@ -4874,6 +4876,78 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					Collections.sort(protocol.getItems());//排序
 				}
 				exportProtocolConfig.setProtocol(protocol);
+				//存储字段表
+				exportProtocolConfig.setDataMappingList(new ArrayList<DataMapping>());
+				exportProtocolConfig.setProtocolRunStatusConfigList(new ArrayList<ProtocolRunStatusConfig>());
+				if(exportProtocolConfig.getProtocol().getItems()!=null){
+					List<String> itemNameList=new ArrayList<String>();
+					for(int i=0;i<exportProtocolConfig.getProtocol().getItems().size();i++){
+						itemNameList.add(exportProtocolConfig.getProtocol().getItems().get(i).getTitle());
+					}
+					if(itemNameList.size()>0){
+						String mappingSql="select t.id,t.name,t.mappingcolumn,t.mappingmode,t.calcolumn,t.repetitiontimes,t.protocoltype "
+								+ " from TBL_DATAMAPPING t "
+								+ " where t.name in ("+StringManagerUtils.joinStringArr2(itemNameList, ",")+") "
+								+ " and t.protocoltype="+exportProtocolConfig.getProtocol().getDeviceType()+" "
+								+ " order by t.id";
+						List<?> mappingList = this.findCallSql(mappingSql);
+						for(int i=0;i<itemNameList.size();i++){
+							for(int j=0;j<mappingList.size();j++){
+								Object[] mappingObj=(Object[])mappingList.get(j);
+								if(itemNameList.get(i).equalsIgnoreCase(mappingObj[1]+"")){
+									DataMapping dataMapping=new DataMapping();
+									dataMapping.setId(StringManagerUtils.stringToInteger(mappingObj[0]+""));
+									dataMapping.setName(mappingObj[1]+"");
+									dataMapping.setMappingColumn(mappingObj[2]+"");
+									dataMapping.setCalColumn(mappingObj[4]==null?"":(mappingObj[4]+""));
+									dataMapping.setProtocolType(StringManagerUtils.stringToInteger(mappingObj[5]+""));
+									dataMapping.setMappingMode(StringManagerUtils.stringToInteger(mappingObj[3]+""));
+									if(mappingObj[6]!=null){
+										dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(mappingObj[6]+""));
+									}
+									exportProtocolConfig.getDataMappingList().add(dataMapping);
+								}
+							}
+						}
+					}
+				}
+				//运行状态配置
+				String runStatusConfigSql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.runvalue,t.stopvalue,t.protocoltype "
+						+ " from tbl_runstatusconfig t,tbl_protocol t2 "
+						+ " where t.protocol=t2.code and t.protocoltype=t2.devicetype "
+						+ " and t2.code='"+exportProtocolConfig.getProtocol().getCode()+"' "
+						+ " and t2.devicetype="+exportProtocolConfig.getProtocol().getDeviceType();
+				List<?> runStatusConfigList = this.findCallSql(runStatusConfigSql);
+				if(runStatusConfigList.size()>0){
+					Object[] runStatusConfigObj=(Object[])runStatusConfigList.get(0);
+					ProtocolRunStatusConfig protocolRunStatusConfig=new ProtocolRunStatusConfig();
+					protocolRunStatusConfig.setId(StringManagerUtils.stringToInteger(runStatusConfigObj[0]+""));
+					protocolRunStatusConfig.setProtocol(runStatusConfigObj[1]+"");
+					protocolRunStatusConfig.setItemName(runStatusConfigObj[2]+"");
+					protocolRunStatusConfig.setItemMappingColumn(runStatusConfigObj[3]+"");
+					protocolRunStatusConfig.setProtocolType(StringManagerUtils.stringToInteger(runStatusConfigObj[6]+""));
+					protocolRunStatusConfig.setRunValue(new ArrayList<Integer>());
+					protocolRunStatusConfig.setStopValue(new ArrayList<Integer>());
+					String runValueStr=runStatusConfigObj[4]!=null?(runStatusConfigObj[4]+""):"";
+					String stopValueStr=runStatusConfigObj[5]!=null?(runStatusConfigObj[5]+""):"";
+					if(StringManagerUtils.isNotNull(runValueStr)){
+						String[] runValueArr=runValueStr.split(",");
+						for(int i=0;i<runValueArr.length;i++){
+							if(StringManagerUtils.isNum(runValueArr[i])){
+								protocolRunStatusConfig.getRunValue().add(StringManagerUtils.stringToInteger(runValueArr[i]));
+							}
+						}
+					}
+					if(StringManagerUtils.isNotNull(stopValueStr)){
+						String[] stopValueArr=stopValueStr.split(",");
+						for(int i=0;i<stopValueArr.length;i++){
+							if(StringManagerUtils.isNum(stopValueArr[i])){
+								protocolRunStatusConfig.getStopValue().add(StringManagerUtils.stringToInteger(stopValueArr[i]));
+							}
+						}
+					}
+					exportProtocolConfig.getProtocolRunStatusConfigList().add(protocolRunStatusConfig);
+				}
 				
 				if(StringManagerUtils.isNotNull(acqUnitStr)){
 					String acqUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark from TBL_ACQ_UNIT_CONF t where t.id in ("+acqUnitStr+") order by t.id";
@@ -7294,6 +7368,59 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					e.printStackTrace();
 				}
 			}
+			//更新存储字段表
+			if(exportProtocolConfig.getProtocol().getItems()!=null && exportProtocolConfig.getProtocol().getItems().size()>0
+					&& exportProtocolConfig.getDataMappingList()!=null && exportProtocolConfig.getDataMappingList().size()>0){
+				for(int i=0;i<exportProtocolConfig.getDataMappingList().size();i++){
+					String mappingItemSql="select t.id from TBL_DATAMAPPING t "
+							+ " where t.name ='"+exportProtocolConfig.getDataMappingList().get(i).getName()+"' "
+							+ " and t.mappingcolumn='"+exportProtocolConfig.getDataMappingList().get(i).getMappingColumn()+"' "
+							+ " and t.protocoltype=+"+exportProtocolConfig.getProtocol().getDeviceType()+" ";
+					List<?> mappingItemList=this.findCallSql(mappingItemSql);
+					if(mappingItemList.size()==0){
+						String addSql="insert into tbl_datamapping(name,mappingcolumn,calcolumn,protocoltype,mappingmode) "
+								+ " values("
+								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getName()+"',"
+								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getMappingColumn()+"',"
+								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getCalColumn()+"',"
+								+ ""+exportProtocolConfig.getProtocol().getDeviceType()+","
+								+1+")";
+						this.getBaseDao().updateOrDeleteBySql(addSql);
+					}
+				}
+			}
+			//更新运行状态
+			if(exportProtocolConfig.getProtocolRunStatusConfigList()!=null && exportProtocolConfig.getProtocolRunStatusConfigList().size()>0){
+				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
+				List<?> existProtocolList=this.findCallSql(existProtocolSql);
+				if(existProtocolList.size()>0){
+					Object[] existProtocolObj = (Object[]) existProtocolList.get(0);
+					int existProtocolId=StringManagerUtils.stringToInteger(existProtocolObj[0]+"");
+					String existProtocolCode=existProtocolObj[1]+"";
+					
+					String runStatusConfigSql="select t.id "
+							+ " from tbl_runstatusconfig t,tbl_protocol t2 "
+							+ " where t.protocol='"+existProtocolCode+"' ";
+					List<?> runStatusConfigList=this.findCallSql(runStatusConfigSql);
+					if(runStatusConfigList.size()>0){
+						String existRunStatusConfigId=runStatusConfigList.get(0).toString();
+						String updateRunStatusConfigSql="update tbl_runstatusconfig t "
+								+ "set t.runvalue='"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getRunValue(), ",")+"',"
+								+ " t.stopvalue='"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getStopValue(), ",")+"' "
+								+ " where t.id= "+existRunStatusConfigId;
+						this.getBaseDao().updateOrDeleteBySql(updateRunStatusConfigSql);
+					}else{
+						String addRunStatusConfigSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,runvalue,stopvalue,protocoltype) "
+								+ "values ('"+existProtocolCode+"','"+exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getItemName()+"',"
+								+ "'"+exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getItemMappingColumn()+"',"
+								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getRunValue(), ",")+"',"
+								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getStopValue(), ",")+"',"
+								+ ""+exportProtocolConfig.getProtocol().getDeviceType()+")";
+						this.getBaseDao().updateOrDeleteBySql(addRunStatusConfigSql);
+					}
+				}
+			}
+			
 			//更新内存及初始化
 			MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolName(exportProtocolConfig.getProtocol().getName(),"update");
 			MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(exportProtocolConfig.getProtocol().getName(),"update");

@@ -426,7 +426,6 @@ public class EquipmentDriverServerTask {
 			}
 			
 			MemoryDataManagerTask.loadProtocolMappingColumn();
-			
 			//同步运行状态配置
 			syncProtocolRunStatusConfig();
 		} catch (SQLException e) {

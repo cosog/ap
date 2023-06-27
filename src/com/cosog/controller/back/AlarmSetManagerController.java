@@ -133,14 +133,13 @@ public class AlarmSetManagerController extends BaseController {
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<AlarmShowStyle>() {}.getType();
 		AlarmShowStyle alarmShowStyleSaveData=gson.fromJson(data, type);
-		String json="";
+		String json= "{success:true,msg:false}";
 		try {
 			if(alarmShowStyleSaveData!=null){
-				
+				alarmSetManagerService.setAlarmColor(alarmShowStyleSaveData);
+				MemoryDataManagerTask.initAlarmStyle();
+				json="{success:true,msg:true}";
 			}
-			alarmSetManagerService.setAlarmColor(alarmShowStyleSaveData);
-			MemoryDataManagerTask.initAlarmStyle();
-			json="{success:true,msg:true}";
 		} catch (Exception e) {
 			json = "{success:true,msg:false}";
 			e.printStackTrace();

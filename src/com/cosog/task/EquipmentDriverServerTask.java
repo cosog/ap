@@ -131,9 +131,15 @@ public class EquipmentDriverServerTask {
 				sendMsg=false;
 				if(!driverProbeResponse.getHttpServerInitStatus()){
 					initServerConfig();
+					responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+					type = new TypeToken<DriverProbeResponse>() {}.getType();
+					driverProbeResponse=gson.fromJson(responseData, type);
 				}
 				if(!driverProbeResponse.getProtocolInitStatus()){
 					initProtocolConfig("","");
+					responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+					type = new TypeToken<DriverProbeResponse>() {}.getType();
+					driverProbeResponse=gson.fromJson(responseData, type);
 				}
 				if(!driverProbeResponse.getInstanceInitStatus()){
 					if(!driverProbeResponse.getProtocolInitStatus()){
@@ -141,6 +147,9 @@ public class EquipmentDriverServerTask {
 					}
 					initInstanceConfig(null,"");
 					initSMSInstanceConfig(null,"");
+					responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+					type = new TypeToken<DriverProbeResponse>() {}.getType();
+					driverProbeResponse=gson.fromJson(responseData, type);
 				}
 				if(!driverProbeResponse.getSMSInitStatus()){
 //					initSMSDevice(null,"");

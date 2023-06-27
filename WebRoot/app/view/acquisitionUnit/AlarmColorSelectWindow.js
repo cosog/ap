@@ -7,7 +7,9 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
     id: 'AlarmColorSelectWindow_Id',
     closeAction: 'destroy',
     width: 500,
-    height: 330,
+    minWidth: 500,
+    height: 400,
+    minHeight: 400,
     shadow: 'sides',
     resizable: false,
     collapsible: true,
@@ -44,6 +46,11 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 hidden: true
             },{
                 id: 'stopOpacity_id',//报警背景色透明度
+                xtype: 'textfield',
+                value: 1,
+                hidden: true
+            },{
+                id: 'noRunStatusDataOpacity_id',//报警背景色透明度
                 xtype: 'textfield',
                 value: 1,
                 hidden: true
@@ -105,7 +112,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                     },{
                         id: 'goOnlineBackgroundColor_id',
                         fieldLabel: '上线',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -126,7 +133,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'onlineBackgroundColor_id',
                         fieldLabel: '在线',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -147,7 +154,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'offlineBackgroundColor_id',
                         fieldLabel: '离线',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -168,7 +175,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'runBackgroundColor_id',
                         fieldLabel: '运行',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -189,7 +196,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'stopBackgroundColor_id',
                         fieldLabel: '停抽',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -208,9 +215,30 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                             }
                         }
                 	},{
+                        id: 'noRunStatusDataBackgroundColor_id',
+                        fieldLabel: '无运行状态',
+                        labelWidth: 70,
+                        anchor:'90%',
+                        listeners : {
+                        	collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('noRunStatusDataBackgroundColor_id')!=undefined){
+                            		Ext.getCmp('noRunStatusDataOpacity_id').setValue(field.color.a);
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
                         id: 'firstLevelBackgroundColor_id',
                         fieldLabel: '一级报警',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -231,7 +259,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'secondLevelBackgroundColor_id',
                         fieldLabel: '二级报警',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -252,7 +280,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'thirdLevelBackgroundColor_id',
                         fieldLabel: '三级报警',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -272,7 +300,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'normalBackgroundColor_id',
                         fieldLabel: '正常',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         listeners : {
                             collapse: function (field,eOpts) {
@@ -299,7 +327,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                     },{
                         id: 'goOnlineColor_id',
                         fieldLabel: '上线',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -320,7 +348,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'onlineColor_id',
                         fieldLabel: '在线',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -341,7 +369,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'offlineColor_id',
                         fieldLabel: '离线',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -362,7 +390,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'runColor_id',
                         fieldLabel: '运行',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -383,7 +411,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'stopColor_id',
                         fieldLabel: '停抽',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -402,9 +430,30 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                             }
                         }
                 	},{
+                        id: 'noRunStatusDataColor_id',
+                        fieldLabel: '无运行状态',
+                        labelWidth: 70,
+                        anchor:'90%',
+                        value:'#FFFFFF',
+                        listeners : {
+                            collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('noRunStatusDataColor_id')!=undefined){
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
                         id: 'firstLevelColor_id',
                         fieldLabel: '一级报警',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -425,7 +474,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'secondLevelColor_id',
                         fieldLabel: '二级报警',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -446,7 +495,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'thirdLevelColor_id',
                         fieldLabel: '三级报警',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -467,7 +516,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'normalColor_id',
                         fieldLabel: '正常',
-                        labelWidth: 60,
+                        labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -548,6 +597,15 @@ function getAlarmLevelSetColor(){
 	        	});
 	        	Ext.getCmp('stopBackgroundColor_id').setColor(BackgroundColor0);
 	        	
+	        	Ext.getCmp('noRunStatusDataBackgroundColor_id').setValue(AlarmShowStyle.Run.noData.BackgroundColor);
+	        	var BackgroundColor0=Ext.getCmp('noRunStatusDataBackgroundColor_id').color;
+	        	BackgroundColor0.a=AlarmShowStyle.Run.noData.Opacity;
+	        	Ext.getCmp('noRunStatusDataBackgroundColor_id').inputEl.applyStyles({
+	        		background: '#'+AlarmShowStyle.Run.noData.BackgroundColor,
+	        		opacity:AlarmShowStyle.Run.noData.Opacity
+	        	});
+	        	Ext.getCmp('noRunStatusDataBackgroundColor_id').setColor(BackgroundColor0);
+	        	
 	        	
 	        	Ext.getCmp('normalBackgroundColor_id').setValue(AlarmShowStyle.Data.Normal.BackgroundColor);
 	        	var BackgroundColor0=Ext.getCmp('normalBackgroundColor_id').color;
@@ -618,6 +676,12 @@ function getAlarmLevelSetColor(){
 	            	background: '#'+AlarmShowStyle.Run.stop.Color,
 	            });
 	            
+	            Ext.getCmp('noRunStatusDataColor_id').setValue(AlarmShowStyle.Run.noData.Color);
+	            var Color0=Ext.getCmp('noRunStatusDataColor_id').color;
+	            Ext.getCmp('noRunStatusDataColor_id').inputEl.applyStyles({
+	            	background: '#'+AlarmShowStyle.Run.noData.Color,
+	            });
+	            
 	            
 	            Ext.getCmp('normalColor_id').setValue(AlarmShowStyle.Data.Normal.Color);
 	            var Color0=Ext.getCmp('normalColor_id').color;
@@ -666,6 +730,7 @@ function saveAlarmColor(){
 	var offlineBackgroundColor=Ext.getCmp('offlineBackgroundColor_id').getValue();
 	var runBackgroundColor=Ext.getCmp('runBackgroundColor_id').getValue();
 	var stopBackgroundColor=Ext.getCmp('stopBackgroundColor_id').getValue();
+	var noRunStatusDataBackgroundColor=Ext.getCmp('noRunStatusDataBackgroundColor_id').getValue();
 	var normalBackgroundColor=Ext.getCmp('normalBackgroundColor_id').getValue();
 	var firstLevelBackgroundColor=Ext.getCmp('firstLevelBackgroundColor_id').getValue();
 	var secondLevelBackgroundColor=Ext.getCmp('secondLevelBackgroundColor_id').getValue();
@@ -676,6 +741,7 @@ function saveAlarmColor(){
 	var offlineColor=Ext.getCmp('offlineColor_id').getValue();
 	var runColor=Ext.getCmp('runColor_id').getValue();
 	var stopColor=Ext.getCmp('stopColor_id').getValue();
+	var noRunStatusDataColor=Ext.getCmp('noRunStatusDataColor_id').getValue();
 	var normalColor=Ext.getCmp('normalColor_id').getValue();
 	var firstLevelColor=Ext.getCmp('firstLevelColor_id').getValue();
 	var secondLevelColor=Ext.getCmp('secondLevelColor_id').getValue();
@@ -686,6 +752,7 @@ function saveAlarmColor(){
 	var offlineOpacity=Ext.getCmp('offlineOpacity_id').getValue();
 	var runOpacity=Ext.getCmp('runOpacity_id').getValue();
 	var stopOpacity=Ext.getCmp('stopOpacity_id').getValue();
+	var noRunStatusDataOpacity=Ext.getCmp('noRunStatusDataOpacity_id').getValue();
 	var normalOpacity=Ext.getCmp('normalOpacity_id').getValue();
 	var firstLevelOpacity=Ext.getCmp('firstLevelOpacity_id').getValue();
 	var secondLevelOpacity=Ext.getCmp('secondLevelOpacity_id').getValue();
@@ -745,6 +812,11 @@ function saveAlarmColor(){
 	 AlarmShowStyle.Run.stop.BackgroundColor=stopBackgroundColor;
 	 AlarmShowStyle.Run.stop.Color=stopColor;
 	 AlarmShowStyle.Run.stop.Opacity=stopOpacity;
+	 AlarmShowStyle.Run.noData={};
+	 AlarmShowStyle.Run.noData.Value=2;
+	 AlarmShowStyle.Run.noData.BackgroundColor=noRunStatusDataBackgroundColor;
+	 AlarmShowStyle.Run.noData.Color=noRunStatusDataColor;
+	 AlarmShowStyle.Run.noData.Opacity=noRunStatusDataOpacity;
 	 Ext.Ajax.request({
 	        url: context + '/alarmSetManagerController/setAlarmColor',
 	        method: "POST",

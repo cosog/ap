@@ -23,6 +23,7 @@ public class AlarmShowStyle implements java.io.Serializable {
 		
 		this.Run.setRun(new AlarmStyle());
 		this.Run.setStop(new AlarmStyle());
+		this.Run.setNoData(new AlarmStyle());
 		
 		this.Data.setNormal(new AlarmStyle());
 		this.Data.setFirstLevel(new AlarmStyle());
@@ -70,6 +71,8 @@ public class AlarmShowStyle implements java.io.Serializable {
     	private AlarmStyle run;
 
         private AlarmStyle stop;
+        
+        private AlarmStyle noData;
 
 		public AlarmStyle getRun() {
 			return run;
@@ -85,6 +88,14 @@ public class AlarmShowStyle implements java.io.Serializable {
 
 		public void setStop(AlarmStyle stop) {
 			this.stop = stop;
+		}
+
+		public AlarmStyle getNoData() {
+			return noData;
+		}
+
+		public void setNoData(AlarmStyle noData) {
+			this.noData = noData;
 		}
     }
     

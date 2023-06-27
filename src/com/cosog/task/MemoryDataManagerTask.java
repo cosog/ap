@@ -2368,6 +2368,11 @@ public class MemoryDataManagerTask {
 					alarmShowStyle.getRun().getRun().setBackgroundColor(rs.getString(2));
 					alarmShowStyle.getRun().getRun().setColor(rs.getString(3));
 					alarmShowStyle.getRun().getRun().setOpacity(rs.getString(4));
+				}else if(rs.getInt(1)==2){
+					alarmShowStyle.getRun().getNoData().setValue(rs.getInt(1));
+					alarmShowStyle.getRun().getNoData().setBackgroundColor(rs.getString(2));
+					alarmShowStyle.getRun().getNoData().setColor(rs.getString(3));
+					alarmShowStyle.getRun().getNoData().setOpacity(rs.getString(4));
 				}
 			}
 			

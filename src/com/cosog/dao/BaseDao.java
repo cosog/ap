@@ -2767,7 +2767,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
-			cs = conn.prepareCall("{call prd_save_alarmcolor(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_alarmcolor(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, alarmShowStyle.getData().getNormal().getBackgroundColor());
 			cs.setString(2, alarmShowStyle.getData().getFirstLevel().getBackgroundColor());
 			cs.setString(3, alarmShowStyle.getData().getSecondLevel().getBackgroundColor());
@@ -2793,10 +2793,16 @@ public class BaseDao extends HibernateDaoSupport {
 			
 			cs.setString(22, alarmShowStyle.getRun().getRun().getBackgroundColor());
 			cs.setString(23, alarmShowStyle.getRun().getStop().getBackgroundColor());
-			cs.setString(24, alarmShowStyle.getRun().getRun().getColor());
-			cs.setString(25, alarmShowStyle.getRun().getStop().getColor());
-			cs.setString(26, alarmShowStyle.getRun().getRun().getOpacity());
-			cs.setString(27, alarmShowStyle.getRun().getStop().getOpacity());
+			cs.setString(24, alarmShowStyle.getRun().getNoData().getBackgroundColor());
+			
+			cs.setString(25, alarmShowStyle.getRun().getRun().getColor());
+			cs.setString(26, alarmShowStyle.getRun().getStop().getColor());
+			cs.setString(27, alarmShowStyle.getRun().getNoData().getColor());
+			
+			cs.setString(28, alarmShowStyle.getRun().getRun().getOpacity());
+			cs.setString(29, alarmShowStyle.getRun().getStop().getOpacity());
+			cs.setString(30, alarmShowStyle.getRun().getNoData().getOpacity());
+			
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

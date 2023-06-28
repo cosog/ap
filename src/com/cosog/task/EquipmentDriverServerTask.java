@@ -65,11 +65,7 @@ public class EquipmentDriverServerTask {
 		java.lang.reflect.Type type=null;
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
-		String probeUrl=StringManagerUtils.getRequesrUrl(
-				Config.getInstance().configFile.getAd().getIp(), 
-				Config.getInstance().configFile.getAd().getPort(), 
-				Config.getInstance().configFile.getAd().getProbe().getInit()
-				);
+		
 		initWellCommStatus();
 		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
@@ -122,34 +118,26 @@ public class EquipmentDriverServerTask {
 		boolean sendMsg=false;
 		exampleDataManage();
 		do{
-			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-			type = new TypeToken<DriverProbeResponse>() {}.getType();
-			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-			
+			DriverProbeResponse driverProbeResponse=adInitProbe();
 			String Ver="";
 			if(driverProbeResponse!=null){
 				sendMsg=false;
 				if(!driverProbeResponse.getHttpServerInitStatus()){
 					initServerConfig();
-					responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-					type = new TypeToken<DriverProbeResponse>() {}.getType();
-					driverProbeResponse=gson.fromJson(responseData, type);
+					driverProbeResponse=adInitProbe();
 				}
 				if(!driverProbeResponse.getProtocolInitStatus()){
 					initProtocolConfig("","");
-					responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-					type = new TypeToken<DriverProbeResponse>() {}.getType();
-					driverProbeResponse=gson.fromJson(responseData, type);
+					driverProbeResponse=adInitProbe();
 				}
 				if(!driverProbeResponse.getInstanceInitStatus()){
 					if(!driverProbeResponse.getProtocolInitStatus()){
 						initProtocolConfig("","");
+						driverProbeResponse=adInitProbe();
 					}
 					initInstanceConfig(null,"");
 					initSMSInstanceConfig(null,"");
-					responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-					type = new TypeToken<DriverProbeResponse>() {}.getType();
-					driverProbeResponse=gson.fromJson(responseData, type);
+					driverProbeResponse=adInitProbe();
 				}
 				if(!driverProbeResponse.getSMSInitStatus()){
 //					initSMSDevice(null,"");
@@ -158,15 +146,16 @@ public class EquipmentDriverServerTask {
 					if(!driverProbeResponse.getInstanceInitStatus()){
 						if(!driverProbeResponse.getProtocolInitStatus()){
 							initProtocolConfig("","");
+							driverProbeResponse=adInitProbe();
 						}
 						initInstanceConfig(null,"");
 						initSMSInstanceConfig(null,"");
+						driverProbeResponse=adInitProbe();
 					}
 					
 					if(executor.isCompletedByTaskCount()){
 						//清空内存
 						AdInitMap.cleanData();
-						
 						initRPCDriverAcquisitionInfoConfig(null,0,"");
 						initPCPDriverAcquisitionInfoConfig(null,0,"");
 					}
@@ -181,6 +170,21 @@ public class EquipmentDriverServerTask {
 			Thread.sleep(1000*1);
 		}while(true);
 	}
+	
+	public static DriverProbeResponse adInitProbe(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String probeUrl=StringManagerUtils.getRequesrUrl(
+				Config.getInstance().configFile.getAd().getIp(), 
+				Config.getInstance().configFile.getAd().getPort(), 
+				Config.getInstance().configFile.getAd().getProbe().getInit()
+				);
+		String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+		type = new TypeToken<DriverProbeResponse>() {}.getType();
+		DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+		return driverProbeResponse;
+	}
+	
 	
 	public static class ExampleDataManageThread extends Thread{
 		private String deviceName;

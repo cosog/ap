@@ -57,8 +57,10 @@ ap:
          smtpHost: smtp.126.com           #邮箱服务器地址，不同服务器地址不同
          smtpPort: 465                    #邮箱SMTP端口，以实际为准
    video:                #视频配置
-      appKey: 14f8cafea45b4dfea4c0f8fbb724e86d
-      secret: 12f4b1bf467322db5fdc0c87113961cb
+      #appKey: 14f8cafea45b4dfea4c0f8fbb724e86d #厂家示例
+      #secret: 12f4b1bf467322db5fdc0c87113961cb  #厂家示例
+      appKey: 828692b940cb4c119e357488020a9583 #助创示例
+      secret: f2c346ca8f38c78b96507ad3479f1d7b #助创示例
    threadPool: 
       initIdAndIpPort:
          corePoolSize: 100
@@ -98,7 +100,7 @@ ap:
       simulateAcqEnable: true         #是否发送模拟数据，用于演示
       sendCycle: 600                  #模拟数据发送周期，单位：秒
       timeDifference: 60              #模拟数据井之间发送间隔，单位：秒
-      otherStaticResourceTimestamp: 20230619160030  #其他静态资源时间戳，修改此项重新加载资源
+      otherStaticResourceTimestamp: 20230628160030  #其他静态资源时间戳，修改此项重新加载资源
 ac:                                                    #AC程序配置 一般只需配置ip即可
    ip: 8.142.92.84                                     #ip或域名
    port: 18100                                         #端口

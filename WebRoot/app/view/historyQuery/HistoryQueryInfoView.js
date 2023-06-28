@@ -935,6 +935,8 @@ function initHistoryQueryRunStatusStatPieOrColChat(get_rawData) {
 					singleData.color='#'+alarmShowStyle.Run.run.Color;
 				}else if(datalist[i].itemCode=='stop'){
 					singleData.color='#'+alarmShowStyle.Run.stop.Color;
+				}else if(datalist[i].itemCode=='noData'){
+					singleData.color='#'+alarmShowStyle.Run.noData.Color;
 				}else if(datalist[i].itemCode=='offline'){
 					singleData.color='#'+alarmShowStyle.Comm.offline.Color;
 				}

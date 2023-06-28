@@ -1589,7 +1589,7 @@ color16ToRgba = function(sColor,Opacity){
 		 	var color='#000000';
 		 	var opacity=1;
 		 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
-		 		if (runStatus != 1) {
+		 		if (runStatus == 0) {
 			 		backgroundColor='#'+alarmShowStyle.Run.stop.BackgroundColor;
 			 		color='#'+alarmShowStyle.Run.stop.Color;
 			 		opacity=alarmShowStyle.Run.stop.Opacity;
@@ -1599,6 +1599,11 @@ color16ToRgba = function(sColor,Opacity){
 			 		color='#'+alarmShowStyle.Run.run.Color;
 			 		opacity=alarmShowStyle.Run.run.Opacity;
 			 		val='运行';
+				}else if (runStatus == 2) {
+					backgroundColor='#'+alarmShowStyle.Run.noData.BackgroundColor;
+			 		color='#'+alarmShowStyle.Run.noData.Color;
+			 		opacity=alarmShowStyle.Run.noData.Opacity;
+			 		val='无数据';
 				}
 			 	tipval=val;
 			 	var rgba=color16ToRgba(backgroundColor,opacity);

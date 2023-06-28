@@ -681,11 +681,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ prodCol+""
-					+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
+					+ "t2.FMax,t2.FMin,"
+					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"
 					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
 					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
 					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
@@ -769,24 +770,27 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				result_json.append("\"FMax\":\""+obj[20]+"\",");
 				result_json.append("\"FMin\":\""+obj[21]+"\",");
+				
 				result_json.append("\"fullnessCoefficient\":\""+obj[22]+"\",");
+				result_json.append("\"plungerStroke\":\""+obj[23]+"\",");
+				result_json.append("\"availablePlungerStroke\":\""+obj[24]+"\",");
 				
-				result_json.append("\"averageWatt\":\""+obj[23]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[24]+"\",");
-				result_json.append("\"waterPower\":\""+obj[25]+"\",");
+				result_json.append("\"averageWatt\":\""+obj[25]+"\",");
+				result_json.append("\"polishrodPower\":\""+obj[26]+"\",");
+				result_json.append("\"waterPower\":\""+obj[27]+"\",");
 				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[26]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[27]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[28]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[29]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[30]+"\",");
+				result_json.append("\"surfaceSystemEfficiency\":\""+obj[28]+"\",");
+				result_json.append("\"welldownSystemEfficiency\":\""+obj[29]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[30]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[31]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[32]+"\",");
 				
-				result_json.append("\"iDegreeBalance\":\""+obj[31]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[32]+"\",");
-				result_json.append("\"deltaradius\":\""+obj[33]+"\",");
-				result_json.append("\"levelCorrectValue\":\""+obj[34]+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[36]+"\",");
+				result_json.append("\"iDegreeBalance\":\""+obj[33]+"\",");
+				result_json.append("\"wattDegreeBalance\":\""+obj[34]+"\",");
+				result_json.append("\"deltaradius\":\""+obj[35]+"\",");
+				result_json.append("\"levelCorrectValue\":\""+obj[36]+"\",");
+				result_json.append("\"inverProducingfluidLevel\":\""+obj[37]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[38]+"\",");
 				result_json.append("\"details\":\"\",");
 				
 				alarmInfo.append("[");
@@ -819,7 +823,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[37+j]+"";
+					String rawValue=obj[39+j]+"";
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
@@ -906,223 +910,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				jedis.close();
 			}
 		}
-		return result_json.toString().replaceAll("\"null\"", "\"\"");
-	}
-	
-	public String getDeviceHistoryExportData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
-		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=1;
-		Jedis jedis=null;
-		try{
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
-				}
-				if(!jedis.exists("AlarmShowStyle".getBytes())){
-					MemoryDataManagerTask.initAlarmStyle();
-				}
-				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-				
-				if(!jedis.exists("rpcCalItemList".getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-				}
-				
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				
-				if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadAcqInstanceOwnItemById("","update");
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			
-			String hisTableName="tbl_rpcacqdata_hist";
-			String deviceTableName="tbl_rpcdevice";
-			String ddicName="historyQuery_RPCHistoryData";
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
-			DataDictionary ddic = null;
-			List<String> ddicColumnsList=new ArrayList<String>();
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				hisTableName="tbl_pcpacqdata_hist";
-				deviceTableName="tbl_pcpdevice";
-				ddicName="historyQuery_PCPHistoryData";
-				columnsKey="pcpDeviceAcquisitionItemColumns";
-			}
-			
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
-			
-			RPCDeviceInfo rpcDeviceInfo=null;
-			if(jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
-			}
-			String protocolName="";
-			AcqInstanceOwnItem acqInstanceOwnItem=null;
-			if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes())){
-				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes()));
-				protocolName=acqInstanceOwnItem.getProtocol();
-			}
-			ModbusProtocolConfig.Protocol protocol=null;
-			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-				if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-						&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(j);
-					break;
-				}
-			}
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			
-			String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
-			List<String> tableColumnsList=new ArrayList<String>();
-			List<?> columnList = this.findCallSql(columnSql);
-			for(int i=0;i<columnList.size();i++){
-				tableColumnsList.add(columnList.get(i).toString());
-			}
-			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-			}
-			String sql="select t2.id,t.wellname,"
-					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
-					+ prodCol+""
-					+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
-					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
-					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
-					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
-					+ "t2.systemEfficiency*100 as systemEfficiency,"
-					+ "t2.energyper100mlift,t2.pumpEff*100 as pumpEff,"
-					+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
-					+ "t2.levelCorrectValue,t2.inverProducingfluidLevel,t2.todayKWattH";
-			
-			String[] ddicColumns=ddic.getSql().split(",");
-			for(int i=0;i<ddicColumns.length;i++){
-				if(dataSaveMode==0){
-					if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
-				}else{
-					if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
-				}
-			}
-			for(int i=0;i<ddicColumnsList.size();i++){
-				sql+=",t2."+ddicColumnsList.get(i);
-			}
-			
-			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
-					+ " where  t.orgid in ("+orgId+") "
-					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
-					+ "  order by t2.acqtime desc";
-			List<?> list = this.findCallSql(sql);
-			result_json.append("[");
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[]) list.get(i);
-				result_json.append("{\"id\":"+obj[0]+",");
-				result_json.append("\"deviceId\":\""+deviceId+"\",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
-				result_json.append("\"acqTime\":\""+obj[2]+"\",");
-				result_json.append("\"commStatus\":"+obj[3]+",");
-				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
-				result_json.append("\"commTime\":\""+obj[5]+"\",");
-				result_json.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
-				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
-				result_json.append("\"runStatus\":"+obj[8]+",");
-				result_json.append("\"runStatusName\":\""+obj[9]+"\",");
-				result_json.append("\"runTime\":\""+obj[10]+"\",");
-				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
-				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
-				result_json.append("\"resultCode\":\""+obj[13]+"\",");
-				result_json.append("\"resultName\":\""+obj[14]+"\",");
-				result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
-				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[16]+"\",");
-				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[17]+"\",");
-				result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[18]+"\",");
-				result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[19]+"\",");
-				
-				result_json.append("\"FMax\":\""+obj[20]+"\",");
-				result_json.append("\"FMin\":\""+obj[21]+"\",");
-				result_json.append("\"fullnessCoefficient\":\""+obj[22]+"\",");
-				
-				result_json.append("\"averageWatt\":\""+obj[23]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[24]+"\",");
-				result_json.append("\"waterPower\":\""+obj[25]+"\",");
-				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[26]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[27]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[28]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[29]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[30]+"\",");
-				
-				result_json.append("\"iDegreeBalance\":\""+obj[31]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[32]+"\",");
-				result_json.append("\"deltaradius\":\""+obj[33]+"\",");
-				result_json.append("\"levelCorrectValue\":\""+obj[34]+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[36]+"\",");
-				result_json.append("\"details\":\"\",");
-				
-				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[37+j]+"";
-					String value=rawValue;
-					if(protocol!=null){
-						for(int k=0;k<protocol.getItems().size();k++){
-							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
-							if(col.equalsIgnoreCase(ddicColumnsList.get(j))){
-								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
-									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
-										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
-											value=protocol.getItems().get(k).getMeaning().get(l).getMeaning();
-											break;
-										}
-									}
-								}
-								break;
-							}
-						}
-					}
-					result_json.append("\""+ddicColumnsList.get(j).replaceAll(" ", "")+"\":\""+value+"\",");
-				}
-				
-				if(result_json.toString().endsWith(",")){
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-				
-				result_json.append("},");
-			}
-			if(result_json.toString().endsWith(",")){
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-			
-			result_json.append("]");
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
-		
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -1228,11 +1015,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ prodCol+""
-					+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
+					+ "t2.FMax,t2.FMin,"
+					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"
 					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
 					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
 					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
@@ -1296,27 +1084,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				result_json.append("\"FMax\":\""+obj[20]+"\",");
 				result_json.append("\"FMin\":\""+obj[21]+"\",");
+				
 				result_json.append("\"fullnessCoefficient\":\""+obj[22]+"\",");
+				result_json.append("\"plungerStroke\":\""+obj[23]+"\",");
+				result_json.append("\"availablePlungerStroke\":\""+obj[24]+"\",");
 				
-				result_json.append("\"averageWatt\":\""+obj[23]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[24]+"\",");
-				result_json.append("\"waterPower\":\""+obj[25]+"\",");
+				result_json.append("\"averageWatt\":\""+obj[25]+"\",");
+				result_json.append("\"polishrodPower\":\""+obj[26]+"\",");
+				result_json.append("\"waterPower\":\""+obj[27]+"\",");
 				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[26]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[27]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[28]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[29]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[30]+"\",");
+				result_json.append("\"surfaceSystemEfficiency\":\""+obj[28]+"\",");
+				result_json.append("\"welldownSystemEfficiency\":\""+obj[29]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[30]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[31]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[32]+"\",");
 				
-				result_json.append("\"iDegreeBalance\":\""+obj[31]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[32]+"\",");
-				result_json.append("\"deltaradius\":\""+obj[33]+"\",");
-				result_json.append("\"levelCorrectValue\":\""+obj[34]+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[36]+"\"");
+				result_json.append("\"iDegreeBalance\":\""+obj[33]+"\",");
+				result_json.append("\"wattDegreeBalance\":\""+obj[34]+"\",");
+				result_json.append("\"deltaradius\":\""+obj[35]+"\",");
+				result_json.append("\"levelCorrectValue\":\""+obj[36]+"\",");
+				result_json.append("\"inverProducingfluidLevel\":\""+obj[37]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[38]+"\"");
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[37+j]+"";
+					String rawValue=obj[39+j]+"";
 					String value=rawValue;
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
@@ -1464,7 +1255,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ prodCol+""
 					+ "averageWatt,waterPower,"
@@ -1668,192 +1459,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getPCPDeviceHistoryExportData(String orgId,String deviceId,String deviceName,String deviceType,Page pager){
-		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=1;
-		Jedis jedis=null;
-		try{
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
-				}
-				if(!jedis.exists("AlarmShowStyle".getBytes())){
-					MemoryDataManagerTask.initAlarmStyle();
-				}
-				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-				
-				if(!jedis.exists("rpcCalItemList".getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-				}
-				
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				
-				if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadAcqInstanceOwnItemById("","update");
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			
-			String hisTableName="tbl_pcpacqdata_hist";
-			String deviceTableName="tbl_pcpdevice";
-			String ddicName="historyQuery_PCPHistoryData";
-			String columnsKey="pcpDeviceAcquisitionItemColumns";
-			DataDictionary ddic = null;
-			List<String> ddicColumnsList=new ArrayList<String>();
-			
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
-			
-			PCPDeviceInfo pcpDeviceInfo=null;
-			if(jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
-				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
-			}
-			String protocolName="";
-			AcqInstanceOwnItem acqInstanceOwnItem=null;
-			if(jedis!=null&&pcpDeviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), pcpDeviceInfo.getInstanceCode().getBytes())){
-				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), pcpDeviceInfo.getInstanceCode().getBytes()));
-				protocolName=acqInstanceOwnItem.getProtocol();
-			}
-			ModbusProtocolConfig.Protocol protocol=null;
-			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-				if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-						&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(j);
-					break;
-				}
-			}
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			
-			String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
-			List<String> tableColumnsList=new ArrayList<String>();
-			List<?> columnList = this.findCallSql(columnSql);
-			for(int i=0;i<columnList.size();i++){
-				tableColumnsList.add(columnList.get(i).toString());
-			}
-			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-			}
-			String sql="select t2.id,t.wellname,"
-					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ prodCol+""
-					+ "averageWatt,waterPower,"
-					+ "systemEfficiency*100 as systemEfficiency,energyper100mlift,pumpEff*100 as pumpEff,"
-					+ "todayKWattH";
-			
-			String[] ddicColumns=ddic.getSql().split(",");
-			for(int i=0;i<ddicColumns.length;i++){
-				if(dataSaveMode==0){
-					if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
-				}else{
-					if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
-				}
-			}
-			for(int i=0;i<ddicColumnsList.size();i++){
-				sql+=",t2."+ddicColumnsList.get(i);
-			}
-			
-			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
-					+ " where  t.orgid in ("+orgId+") "
-					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
-					+ "  order by t2.acqtime desc";
-			List<?> list = this.findCallSql(sql);
-			result_json.append("[");
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[]) list.get(i);
-				result_json.append("{\"id\":"+(i+1)+",");
-				result_json.append("\"deviceId\":\""+deviceId+"\",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
-				result_json.append("\"acqTime\":\""+obj[2]+"\",");
-				result_json.append("\"commStatus\":"+obj[3]+",");
-				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
-				result_json.append("\"commTime\":\""+obj[5]+"\",");
-				result_json.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
-				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
-				result_json.append("\"runStatus\":"+obj[8]+",");
-				result_json.append("\"runStatusName\":\""+obj[9]+"\",");
-				result_json.append("\"runTime\":\""+obj[10]+"\",");
-				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
-				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
-				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[13]+"\",");
-				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[14]+"\",");
-				result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[15]+"\",");
-				result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[16]+"\",");
-				
-				result_json.append("\"averageWatt\":\""+obj[17]+"\",");
-				result_json.append("\"waterPower\":\""+obj[18]+"\",");
-				
-				result_json.append("\"systemEfficiency\":\""+obj[19]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[20]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[21]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[22]+"\",");
-				result_json.append("\"details\":\"\",");
-				
-				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[23+j]+"";
-					String value=rawValue;
-					if(protocol!=null){
-						for(int k=0;k<protocol.getItems().size();k++){
-							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
-							if(col.equalsIgnoreCase(ddicColumnsList.get(j))){
-								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
-									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
-										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
-											value=protocol.getItems().get(k).getMeaning().get(l).getMeaning();
-											break;
-										}
-									}
-								}
-								break;
-							}
-						}
-					}
-					result_json.append("\""+ddicColumnsList.get(j).replaceAll(" ", "")+"\":\""+value+"\",");
-				}
-				
-				if(result_json.toString().endsWith(",")){
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-				
-				result_json.append("},");
-			}
-			if(result_json.toString().endsWith(",")){
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-			result_json.append("]");
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
-		return result_json.toString().replaceAll("\"null\"", "\"\"");
-	}
-	
 	public boolean exportPCPDeviceHistoryData(HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
@@ -1951,7 +1556,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ prodCol+""
 					+ "averageWatt,waterPower,"
@@ -3306,19 +2911,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					
 					+ " t.stroke,t.spm,"//16~17
-					+ " t.fmax,t.fmin,t.fullnessCoefficient,"//18~20
-					+ " t.upperloadline,t.lowerloadline,"//21~22
-					+ prodCol+", "//23~24
-					+ " t.productiondata,t.submergence,"//25~26
-					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//27~28
-					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
-					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
-					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
-					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
-					+ " t.pumpEff*100 as pumpEff,"//36
-					+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//37~39
-					+ " t.todayKWattH,"//40
-					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//41~44
+					+ " t.fmax,t.fmin,"//18~19
+					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//20~22
+					+ " t.upperloadline,t.lowerloadline,"//23~24
+					+ prodCol+", "//25~26
+					+ " t.productiondata,t.submergence,"//27~28
+					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//29~30
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//36~37
+					+ " t.pumpEff*100 as pumpEff,"//38
+					+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//39~41
+					+ " t.todayKWattH,"//42
+					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//43~46
 					+ " from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
 					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
@@ -3362,7 +2968,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String runStatusName=(obj[9]+"").replaceAll("null", "");
 						String resultCode=(obj[13]+"").replaceAll("null", "");;
 						int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
-						String productionDataStr=(obj[25]+"").replaceAll("null", "");
+						String productionDataStr=(obj[27]+"").replaceAll("null", "");
 						
 						
 						type = new TypeToken<RPCDeviceInfo>() {}.getType();
@@ -3380,10 +2986,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 						
-						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[41]);
-						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[42]);
-						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[43]);
-						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[44]);
+						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[43]);
+						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[44]);
+						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[45]);
+						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[46]);
 						
 						dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
 						dataBuff.append("\"wellName\":\"" + obj[1] + "\",");
@@ -3410,33 +3016,37 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						dataBuff.append("\"spm\":\""+obj[17]+"\",");
 						dataBuff.append("\"fmax\":\""+obj[18]+"\",");
 						dataBuff.append("\"fmin\":\""+obj[19]+"\",");
+						
 						dataBuff.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
-						dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
-						dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
+						dataBuff.append("\"plungerStroke\":\""+obj[21]+"\",");
+						dataBuff.append("\"availablePlungerStroke\":\""+obj[22]+"\",");
+						
+						dataBuff.append("\"upperLoadLine\":\""+obj[23]+"\",");
+						dataBuff.append("\"lowerLoadLine\":\""+obj[24]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[25]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[26]+"\",");
 						
 						
 						dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
-						dataBuff.append("\"inverProducingfluidLevel\":\""+obj[28]+"\",");
-						dataBuff.append("\"levelCorrectValue\":\""+obj[27]+"\",");
-						dataBuff.append("\"submergence\":\""+obj[26]+"\",");
+						dataBuff.append("\"inverProducingfluidLevel\":\""+obj[30]+"\",");
+						dataBuff.append("\"levelCorrectValue\":\""+obj[29]+"\",");
+						dataBuff.append("\"submergence\":\""+obj[28]+"\",");
 						
-						dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
-						dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
-						dataBuff.append("\"waterPower\":\""+obj[21]+"\",");
+						dataBuff.append("\"averageWatt\":\""+obj[31]+"\",");
+						dataBuff.append("\"polishrodPower\":\""+obj[32]+"\",");
+						dataBuff.append("\"waterPower\":\""+obj[33]+"\",");
 						
-						dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
-						dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
-						dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
+						dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[34]+"\",");
+						dataBuff.append("\"welldownSystemEfficiency\":\""+obj[35]+"\",");
+						dataBuff.append("\"systemEfficiency\":\""+obj[36]+"\",");
 						
-						dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
-						dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
+						dataBuff.append("\"energyper100mlift\":\""+obj[37]+"\",");
+						dataBuff.append("\"pumpEff\":\""+obj[38]+"\",");
 						
-						dataBuff.append("\"iDegreeBalance\":\"" + obj[37] + "\",");
-						dataBuff.append("\"wattDegreeBalance\":\"" + obj[38] + "\",");
-						dataBuff.append("\"deltaradius\":\""+obj[39]+"\",");
-						dataBuff.append("\"todayKWattH\":\""+obj[40]+"\",");
+						dataBuff.append("\"iDegreeBalance\":\"" + obj[39] + "\",");
+						dataBuff.append("\"wattDegreeBalance\":\"" + obj[40] + "\",");
+						dataBuff.append("\"deltaradius\":\""+obj[41]+"\",");
+						dataBuff.append("\"todayKWattH\":\""+obj[42]+"\",");
 						
 						dataBuff.append("\"positionCurveData\":\"" + positionCurveData + "\",");
 						dataBuff.append("\"loadCurveData\":\"" + loadCurveData + "\",");
@@ -3526,18 +3136,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 				
 				+ " t.stroke,t.spm,"//16~17
-				+ " t.fmax,t.fmin,t.fullnessCoefficient,"//18~20
-				+ " t.upperloadline,t.lowerloadline,"//21~22
-				+ prodCol+", "//23~24
-				+ " t.productiondata,t.submergence,"//25~26
-				+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//27~28
-				+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
-				+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
-				+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
-				+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
-				+ " t.pumpEff*100 as pumpEff,"//36
-				+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//37~39
-				+ " t.todayKWattH"//40
+				+ " t.fmax,t.fmin,"//18~19
+				+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//20~22
+				+ " t.upperloadline,t.lowerloadline,"//23~24
+				+ prodCol+", "//25~26
+				+ " t.productiondata,t.submergence,"//27~28
+				+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//29~30
+				+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
+				+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
+				+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
+				+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//36~37
+				+ " t.pumpEff*100 as pumpEff,"//38
+				+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//39~41
+				+ " t.todayKWattH"//42
 				+ " from tbl_rpcacqdata_hist t"
 				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
 				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
@@ -3568,7 +3179,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String commStatusName=(obj[4]+"").replaceAll("null", "");
 				String runStatusName=(obj[9]+"").replaceAll("null", "");
 				String resultCode=(obj[13]+"").replaceAll("null", "");
-				String productionDataStr=(obj[25]+"").replaceAll("null", "");
+				String productionDataStr=(obj[27]+"").replaceAll("null", "");
 				
 				type = new TypeToken<RPCDeviceInfo>() {}.getType();
 				RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
@@ -3595,33 +3206,37 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				dataBuff.append("\"spm\":\""+obj[17]+"\",");
 				dataBuff.append("\"fmax\":\""+obj[18]+"\",");
 				dataBuff.append("\"fmin\":\""+obj[19]+"\",");
+				
 				dataBuff.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
-				dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
-				dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
-				dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
-				dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
+				dataBuff.append("\"plungerStroke\":\""+obj[21]+"\",");
+				dataBuff.append("\"availablePlungerStroke\":\""+obj[22]+"\",");
+				
+				dataBuff.append("\"upperLoadLine\":\""+obj[23]+"\",");
+				dataBuff.append("\"lowerLoadLine\":\""+obj[24]+"\",");
+				dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[25]+"\",");
+				dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[26]+"\",");
 				
 				
 				dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
-				dataBuff.append("\"inverProducingfluidLevel\":\""+obj[28]+"\",");
-				dataBuff.append("\"levelCorrectValue\":\""+obj[27]+"\",");
-				dataBuff.append("\"submergence\":\""+obj[26]+"\",");
+				dataBuff.append("\"inverProducingfluidLevel\":\""+obj[30]+"\",");
+				dataBuff.append("\"levelCorrectValue\":\""+obj[29]+"\",");
+				dataBuff.append("\"submergence\":\""+obj[28]+"\",");
 				
-				dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
-				dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
-				dataBuff.append("\"waterPower\":\""+obj[21]+"\",");
+				dataBuff.append("\"averageWatt\":\""+obj[31]+"\",");
+				dataBuff.append("\"polishrodPower\":\""+obj[32]+"\",");
+				dataBuff.append("\"waterPower\":\""+obj[33]+"\",");
 				
-				dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
-				dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
-				dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
+				dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[34]+"\",");
+				dataBuff.append("\"welldownSystemEfficiency\":\""+obj[35]+"\",");
+				dataBuff.append("\"systemEfficiency\":\""+obj[36]+"\",");
 				
-				dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
-				dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
+				dataBuff.append("\"energyper100mlift\":\""+obj[37]+"\",");
+				dataBuff.append("\"pumpEff\":\""+obj[38]+"\",");
 				
-				dataBuff.append("\"iDegreeBalance\":\"" + obj[37] + "\",");
-				dataBuff.append("\"wattDegreeBalance\":\"" + obj[38] + "\",");
-				dataBuff.append("\"deltaradius\":\""+obj[39]+"\",");
-				dataBuff.append("\"todayKWattH\":\""+obj[40]+"\"},");
+				dataBuff.append("\"iDegreeBalance\":\"" + obj[39] + "\",");
+				dataBuff.append("\"wattDegreeBalance\":\"" + obj[40] + "\",");
+				dataBuff.append("\"deltaradius\":\""+obj[41]+"\",");
+				dataBuff.append("\"todayKWattH\":\""+obj[42]+"\"},");
 			}
 			if(dataBuff.toString().endsWith(",")){
 				dataBuff.deleteCharAt(dataBuff.length() - 1);
@@ -3666,18 +3281,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					
 					+ " t.stroke,t.spm,"//16~17
-					+ " t.fmax,t.fmin,t.fullnessCoefficient,"//18~20
-					+ " t.upperloadline,t.lowerloadline,"//21~22
-					+ prodCol+", "//23~24
-					+ " t.productiondata,t.submergence,"//25~26
-					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//27~28
-					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
-					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
-					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
-					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
-					+ " t.pumpEff*100 as pumpEff,"//36
-					+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//37~39
-					+ " t.todayKWattH"//40
+					+ " t.fmax,t.fmin,"//18~19
+					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//20~22
+					+ " t.upperloadline,t.lowerloadline,"//23~24
+					+ prodCol+", "//25~26
+					+ " t.productiondata,t.submergence,"//27~28
+					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//29~30
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//36~37
+					+ " t.pumpEff*100 as pumpEff,"//38
+					+ " t.iDegreeBalance,t.wattDegreeBalance,t.deltaradius*100 as deltaradius,"//39~41
+					+ " t.todayKWattH"//42
 					+ " from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
 					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
@@ -3707,7 +3323,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String commStatusName=(obj[4]+"").replaceAll("null", "");
 				String runStatusName=(obj[9]+"").replaceAll("null", "");
 				String resultCode=(obj[13]+"").replaceAll("null", "");
-				String productionDataStr=(obj[25]+"").replaceAll("null", "");
+				String productionDataStr=(obj[27]+"").replaceAll("null", "");
 				
 				type = new TypeToken<RPCDeviceInfo>() {}.getType();
 				RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
@@ -3715,12 +3331,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("{ \"id\":\"" + (1+i) + "\",");
 				result_json.append("\"wellName\":\"" + obj[1] + "\",");
 				result_json.append("\"acqTime\":\"" + obj[2] + "\",");
-				result_json.append("\"commStatus\":"+obj[3]+",");
+				result_json.append("\"commStatus\":\""+obj[3]+"\",");
 				result_json.append("\"commStatusName\":\""+commStatusName+"\",");
 				result_json.append("\"commTime\":\""+obj[5]+"\",");
 				result_json.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
 				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
-				result_json.append("\"runStatus\":"+obj[8]+",");
+				result_json.append("\"runStatus\":\""+obj[8]+"\",");
 				result_json.append("\"runStatusName\":\""+runStatusName+"\",");
 				result_json.append("\"runTime\":\""+obj[10]+"\",");
 				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
@@ -3734,33 +3350,37 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"spm\":\""+obj[17]+"\",");
 				result_json.append("\"fmax\":\""+obj[18]+"\",");
 				result_json.append("\"fmin\":\""+obj[19]+"\",");
+				
 				result_json.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
-				result_json.append("\"upperLoadLine\":\""+obj[21]+"\",");
-				result_json.append("\"lowerLoadLine\":\""+obj[22]+"\",");
-				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
-				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
+				result_json.append("\"plungerStroke\":\""+obj[21]+"\",");
+				result_json.append("\"availablePlungerStroke\":\""+obj[22]+"\",");
+				
+				result_json.append("\"upperLoadLine\":\""+obj[23]+"\",");
+				result_json.append("\"lowerLoadLine\":\""+obj[24]+"\",");
+				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[25]+"\",");
+				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[26]+"\",");
 				
 				
 				result_json.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[28]+"\",");
-				result_json.append("\"levelCorrectValue\":\""+obj[27]+"\",");
-				result_json.append("\"submergence\":\""+obj[26]+"\",");
+				result_json.append("\"inverProducingfluidLevel\":\""+obj[30]+"\",");
+				result_json.append("\"levelCorrectValue\":\""+obj[29]+"\",");
+				result_json.append("\"submergence\":\""+obj[28]+"\",");
 				
-				result_json.append("\"averageWatt\":\""+obj[29]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[30]+"\",");
-				result_json.append("\"waterPower\":\""+obj[21]+"\",");
+				result_json.append("\"averageWatt\":\""+obj[31]+"\",");
+				result_json.append("\"polishrodPower\":\""+obj[32]+"\",");
+				result_json.append("\"waterPower\":\""+obj[33]+"\",");
 				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[34]+"\",");
+				result_json.append("\"surfaceSystemEfficiency\":\""+obj[34]+"\",");
+				result_json.append("\"welldownSystemEfficiency\":\""+obj[35]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[36]+"\",");
 				
-				result_json.append("\"energyper100mlift\":\""+obj[35]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[36]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[37]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[38]+"\",");
 				
-				result_json.append("\"iDegreeBalance\":\"" + obj[37] + "\",");
-				result_json.append("\"wattDegreeBalance\":\"" + obj[38] + "\",");
-				result_json.append("\"deltaradius\":\""+obj[39]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[40]+"\"}");
+				result_json.append("\"iDegreeBalance\":\"" + obj[39] + "\",");
+				result_json.append("\"wattDegreeBalance\":\"" + obj[40] + "\",");
+				result_json.append("\"deltaradius\":\""+obj[41]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[42]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

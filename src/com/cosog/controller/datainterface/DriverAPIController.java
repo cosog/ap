@@ -170,9 +170,14 @@ public class DriverAPIController extends BaseController{
 								result=commonDataService.getBaseDao().executeSqlUpdateClob(updateHistCommRangeClobSql,clobCont);
 							}
 							
-							
+							rpcDeviceInfo.setCommStatus(0);
 							rpcDeviceInfo.setOnLineCommStatus(0);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								rpcDeviceInfo.setAcqTime(time);
+								rpcDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+								rpcDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+								rpcDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+								
 								rpcDeviceInfo.setOnLineAcqTime(time);
 								rpcDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
@@ -255,8 +260,14 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							
+							pcpDeviceInfo.setCommStatus(0);
 							pcpDeviceInfo.setOnLineCommStatus(0);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
+								pcpDeviceInfo.setOnLineAcqTime(time);
+								pcpDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+								pcpDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+								pcpDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+								
 								pcpDeviceInfo.setOnLineAcqTime(time);
 								pcpDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 								pcpDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
@@ -1367,16 +1378,6 @@ public class DriverAPIController extends BaseController{
 						rpcCalculateRequestData.getFESDiagram().setSrc(0);
 					}
 					updateRequestData(rpcCalculateRequestData,rpcDeviceInfo);
-//					rpcCalculateRequestData.setWellName(rpcDeviceInfo.getWellName());
-//					rpcCalculateRequestData.setFluidPVT(rpcDeviceInfo.getFluidPVT());
-//					rpcCalculateRequestData.setReservoir(rpcDeviceInfo.getReservoir());
-//					rpcCalculateRequestData.setRodString(rpcDeviceInfo.getRodString());
-//					rpcCalculateRequestData.setTubingString(rpcDeviceInfo.getTubingString());
-//					rpcCalculateRequestData.setCasingString(rpcDeviceInfo.getCasingString());
-//					rpcCalculateRequestData.setPump(rpcDeviceInfo.getPump());
-//					rpcCalculateRequestData.setPumpingUnit(rpcDeviceInfo.getPumpingUnit());
-//					rpcCalculateRequestData.setProduction(rpcDeviceInfo.getProduction());
-//					rpcCalculateRequestData.setManualIntervention(rpcDeviceInfo.getManualIntervention());
 					
 					RPCCalculateResponseData rpcCalculateResponseData=null;
 					CommResponseData commResponseData=null;
@@ -1391,7 +1392,7 @@ public class DriverAPIController extends BaseController{
 					String totalRequestData="";
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
-					int runStatus=0;
+					int runStatus=2;
 					float totalKWattH=0;
 					float totalGasVolumetricProduction=0;
 					float totalWaterVolumetricProduction=0;
@@ -1705,28 +1706,31 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					//判断是否采集了运行状态，如采集则进行时率计算
-					if(isAcqRunStatus){
-						String tiemEffRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getRunRange())){
-							tiemEffRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+rpcDeviceInfo.getRunStatusAcqTime()+"\","
-									+ "\"RunStatus\": "+(rpcDeviceInfo.getRunStatus()==1?true:false)+","
-									+ "\"RunEfficiency\": {"
-									+ "\"Efficiency\": "+rpcDeviceInfo.getRunEff()+","
-									+ "\"Time\": "+rpcDeviceInfo.getRunTime()+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getRunRange())+""
-									+ "}"
-									+ "},";
-						}	
-						tiemEffRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"RunStatus\":"+(runStatus==1?true:false)+""
+//					if(isAcqRunStatus){
+//						
+//					}else{
+//						
+//					}
+					String tiemEffRequest="{"
+							+ "\"AKString\":\"\","
+							+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+					if(StringManagerUtils.isNotNull(rpcDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getRunRange())){
+						tiemEffRequest+= "\"Last\":{"
+								+ "\"AcqTime\": \""+rpcDeviceInfo.getRunStatusAcqTime()+"\","
+								+ "\"RunStatus\": "+(rpcDeviceInfo.getRunStatus()==1?true:false)+","
+								+ "\"RunEfficiency\": {"
+								+ "\"Efficiency\": "+rpcDeviceInfo.getRunEff()+","
+								+ "\"Time\": "+rpcDeviceInfo.getRunTime()+","
+								+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getRunRange())+""
 								+ "}"
-								+ "}";
-						timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
-					}
+								+ "},";
+					}	
+					tiemEffRequest+= "\"Current\": {"
+							+ "\"AcqTime\":\""+acqTime+"\","
+							+ "\"RunStatus\":"+(runStatus==1?true:false)+""
+							+ "}"
+							+ "}";
+					timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
@@ -1984,15 +1988,16 @@ public class DriverAPIController extends BaseController{
 					}
 					//如果进行了时率计算
 					if(isAcqRunStatus){
-						updateRealtimeData+=",t.runStatus= "+runStatus;
-						insertHistColumns+=",runStatus";
-						insertHistValue+=","+runStatus;
-						updateTotalDataSql+=",t.runStatus= "+runStatus;
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":"停抽",runStatus+"","","runStatusName","","","","",1));
+						
 					}else{
-//						updateRealtimeData+=",t.runStatus= null,t.runTimeEfficiency= null ,t.runTime= null,t.runrange=null";
-//						updateTotalDataSql+=",t.runStatus= null,t.runTimeEfficiency= null ,t.runTime= null,t.runrange=null";
+						
 					}
+					updateRealtimeData+=",t.runStatus= "+runStatus;
+					insertHistColumns+=",runStatus";
+					insertHistValue+=","+runStatus;
+					updateTotalDataSql+=",t.runStatus= "+runStatus;
+					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停抽":"无数据"),runStatus+"","","runStatusName","","","","",1));
+					
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
@@ -2114,7 +2119,7 @@ public class DriverAPIController extends BaseController{
 								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}else if(workType!=null&&alarmInstanceOwnItem.getItemList().get(i).getType()==4 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
 								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}else if(isAcqRunStatus&&alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":"停抽")){
+							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停抽":"无数据"))){
 								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}
 						}
@@ -2755,7 +2760,7 @@ public class DriverAPIController extends BaseController{
 					TotalAnalysisRequestData totalAnalysisRequestData=null;
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqRPM=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
-					int runStatus=0;
+					int runStatus=2;
 					float totalKWattH=0;
 					float totalGasVolumetricProduction=0;
 					float totalWaterVolumetricProduction=0;
@@ -3005,28 +3010,28 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					//判断是否采集了运行状态，如采集则进行时率计算
-					if(isAcqRunStatus){
-						String tiemEffRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getRunRange())){
-							tiemEffRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+pcpDeviceInfo.getRunStatusAcqTime()+"\","
-									+ "\"RunStatus\": "+(pcpDeviceInfo.getRunStatus()==1?true:false)+","
-									+ "\"RunEfficiency\": {"
-									+ "\"Efficiency\": "+pcpDeviceInfo.getRunEff()+","
-									+ "\"Time\": "+pcpDeviceInfo.getRunTime()+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getRunRange())+""
-									+ "}"
-									+ "},";
-						}	
-						tiemEffRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"RunStatus\":"+(runStatus==1?true:false)+""
+					if(isAcqRunStatus){}
+					String tiemEffRequest="{"
+							+ "\"AKString\":\"\","
+							+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+					if(StringManagerUtils.isNotNull(pcpDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getRunRange())){
+						tiemEffRequest+= "\"Last\":{"
+								+ "\"AcqTime\": \""+pcpDeviceInfo.getRunStatusAcqTime()+"\","
+								+ "\"RunStatus\": "+(pcpDeviceInfo.getRunStatus()==1?true:false)+","
+								+ "\"RunEfficiency\": {"
+								+ "\"Efficiency\": "+pcpDeviceInfo.getRunEff()+","
+								+ "\"Time\": "+pcpDeviceInfo.getRunTime()+","
+								+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getRunRange())+""
 								+ "}"
-								+ "}";
-						timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
-					}
+								+ "},";
+					}	
+					tiemEffRequest+= "\"Current\": {"
+							+ "\"AcqTime\":\""+acqTime+"\","
+							+ "\"RunStatus\":"+(runStatus==1?true:false)+""
+							+ "}"
+							+ "}";
+					timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
+				
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
@@ -3211,12 +3216,14 @@ public class DriverAPIController extends BaseController{
 					}
 					//如果进行了时率计算
 					if(isAcqRunStatus){
-						updateRealtimeData+=",t.runStatus= "+runStatus;
-						insertHistColumns+=",runStatus";
-						insertHistValue+=","+runStatus;
-						updateTotalDataSql+=",t.runStatus= "+runStatus;
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":"停抽",runStatus+"","","runStatusName","","","","",1));
+						
 					}
+					updateRealtimeData+=",t.runStatus= "+runStatus;
+					insertHistColumns+=",runStatus";
+					insertHistValue+=","+runStatus;
+					updateTotalDataSql+=",t.runStatus= "+runStatus;
+					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停抽":"无数据"),runStatus+"","","runStatusName","","","","",1));
+					
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
@@ -3323,7 +3330,7 @@ public class DriverAPIController extends BaseController{
 						for(int i=0;i<alarmInstanceOwnItem.itemList.size();i++){
 							if(alarmInstanceOwnItem.getItemList().get(i).getType()==3 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase("在线")){
 								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}else if(isAcqRunStatus&&alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":"停抽")){
+							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停抽":"无数据"))){
 								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}
 						}

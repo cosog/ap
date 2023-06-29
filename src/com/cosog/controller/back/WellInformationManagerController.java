@@ -1842,19 +1842,19 @@ public class WellInformationManagerController extends BaseController {
 		String url="";
 		String key="Model";
 		if(StringManagerUtils.stringToInteger(type)==1){
-			url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getWriteTopicModel());
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicModel();
 			key="Model";
 		}else if(StringManagerUtils.stringToInteger(type)==2){
-			url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getWriteTopicConf());
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicConf();
 			key="Conf";
 		}else if(StringManagerUtils.stringToInteger(type)==3){
-			url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getWriteTopicRtc());
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicRtc();
 			key="Time";
 		}else if(StringManagerUtils.stringToInteger(type)==4){
-			url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getWriteTopicDog());
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicDog();
 			key="Timeout";
 		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6 || StringManagerUtils.stringToInteger(type)==7){
-			url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getWriteTopicStopRpc());
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicStopRpc();
 			key="Position";
 		}
 		
@@ -1935,7 +1935,7 @@ public class WellInformationManagerController extends BaseController {
 		String wellId = ParamUtils.getParameter(request, "wellId");
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
-		String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getReadTopicReq());
+		String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 		String topic="";
 		if(StringManagerUtils.stringToInteger(type)==1){
 			topic="model";
@@ -2016,7 +2016,7 @@ public class WellInformationManagerController extends BaseController {
 	    List<List<Object>> sheetDataList = new ArrayList<>();
 	    sheetDataList.add(head);
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getReadTopicReq());
+			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
 			requestBuff.append("{\"ID\":\""+signinId+"\",");

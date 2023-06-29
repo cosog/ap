@@ -675,9 +675,6 @@ public class ConfigFile {
 	
 	public static class Ac
 	{
-		private String ip;
-		
-		private int port;
 		
 		private AcProbe probe;
 
@@ -728,18 +725,6 @@ public class ConfigFile {
 		}
 		public void setRPM(String rPM) {
 			RPM = rPM;
-		}
-		public String getIp() {
-			return ip;
-		}
-		public void setIp(String ip) {
-			this.ip = ip;
-		}
-		public int getPort() {
-			return port;
-		}
-		public void setPort(int port) {
-			this.port = port;
 		}
 		public String getTotalCalculation() {
 			return totalCalculation;
@@ -803,9 +788,6 @@ public class ConfigFile {
 	
 	public static class Ad
 	{
-		private String ip;
-		
-		private int port;
 		
 		private Ad_Init init;
 
@@ -838,18 +820,6 @@ public class ConfigFile {
 		}
 		public void setInit(Ad_Init init) {
 			this.init = init;
-		}
-		public String getIp() {
-			return ip;
-		}
-		public void setIp(String ip) {
-			this.ip = ip;
-		}
-		public int getPort() {
-			return port;
-		}
-		public void setPort(int port) {
-			this.port = port;
 		}
 	}
 	
@@ -885,10 +855,41 @@ public class ConfigFile {
 		}
 	}
 	
+	public static class InitServerContent{
+		private String idOnlineStatusPushURL;
+		private String idAcqGroupDataPushURL;
+		private String ipPortOnlineStatusPushURL;
+		private String ipPortAcqGroupDataPushURL;
+		public String getIdOnlineStatusPushURL() {
+			return idOnlineStatusPushURL;
+		}
+		public void setIdOnlineStatusPushURL(String idOnlineStatusPushURL) {
+			this.idOnlineStatusPushURL = idOnlineStatusPushURL;
+		}
+		public String getIdAcqGroupDataPushURL() {
+			return idAcqGroupDataPushURL;
+		}
+		public void setIdAcqGroupDataPushURL(String idAcqGroupDataPushURL) {
+			this.idAcqGroupDataPushURL = idAcqGroupDataPushURL;
+		}
+		public String getIpPortOnlineStatusPushURL() {
+			return ipPortOnlineStatusPushURL;
+		}
+		public void setIpPortOnlineStatusPushURL(String ipPortOnlineStatusPushURL) {
+			this.ipPortOnlineStatusPushURL = ipPortOnlineStatusPushURL;
+		}
+		public String getIpPortAcqGroupDataPushURL() {
+			return ipPortAcqGroupDataPushURL;
+		}
+		public void setIpPortAcqGroupDataPushURL(String ipPortAcqGroupDataPushURL) {
+			this.ipPortAcqGroupDataPushURL = ipPortAcqGroupDataPushURL;
+		}
+	}
+	
 	public static class Ad_InitServer{
 		private String url;
 		
-		private Ad_ServerInitContent[] content;
+		private InitServerContent content;
 
 		public String getUrl() {
 			return url;
@@ -898,11 +899,11 @@ public class ConfigFile {
 			this.url = url;
 		}
 
-		public Ad_ServerInitContent[] getContent() {
+		public InitServerContent getContent() {
 			return content;
 		}
 
-		public void setContent(Ad_ServerInitContent[] content) {
+		public void setContent(InitServerContent content) {
 			this.content = content;
 		}
 		

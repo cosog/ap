@@ -3869,7 +3869,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json+="{ \"success\":true,\"columns\":"+columns+",";
 		result_json+="\"totalRoot\":[";
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getReadTopicReq());
+			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			
 			StringBuffer requestBuff = new StringBuffer();
@@ -3930,7 +3930,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
 			try{
-				String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getReadTopicReq());
+				String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 				String topic="rawwatercut";
 				
 				StringBuffer requestBuff = new StringBuffer();
@@ -3956,7 +3956,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getReadTopicReq());
+			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
 			requestBuff.append("{\"ID\":\""+signinId+"\",");

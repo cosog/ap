@@ -174,11 +174,7 @@ public class EquipmentDriverServerTask {
 	public static DriverProbeResponse adInitProbe(){
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String probeUrl=StringManagerUtils.getRequesrUrl(
-				Config.getInstance().configFile.getAd().getIp(), 
-				Config.getInstance().configFile.getAd().getPort(), 
-				Config.getInstance().configFile.getAd().getProbe().getInit()
-				);
+		String probeUrl=Config.getInstance().configFile.getAd().getProbe().getInit();
 		String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
 		type = new TypeToken<DriverProbeResponse>() {}.getType();
 		DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
@@ -201,7 +197,7 @@ public class EquipmentDriverServerTask {
 			try {
 				Thread.currentThread().sleep(1000*wait);
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
-				String url=stringManagerUtils.getProjectUrl()+"/api/acq/group";
+				String url=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdAcqGroupDataPushURL();
 				
 				String path="";
 				path=stringManagerUtils.getFilePath(deviceName+"_01.json","example/");
@@ -793,7 +789,7 @@ public class EquipmentDriverServerTask {
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
-		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getProtocol());
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getProtocol();
 		Gson gson = new Gson();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		InitProtocol initProtocol=null;
@@ -980,7 +976,7 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("static-access")
 	public static int initInstanceConfig(List<String> instanceList,String method){
-		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getInstance());
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		Gson gson = new Gson();
 		int result=0;
 		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
@@ -1122,7 +1118,7 @@ public class EquipmentDriverServerTask {
 	//初始化短信实例
 	@SuppressWarnings("static-access")
 	public static int initSMSInstanceConfig(List<String> instanceList,String method){
-		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getInstance());
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		Gson gson = new Gson();
 		int result=0;
 		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
@@ -1477,7 +1473,7 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("static-access")
 	public static int initSMSDevice(List<String> wellList,String method){
-		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getSMS());
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getSMS();
 		Gson gson = new Gson();
 		int result=0;
 		String wellName=StringManagerUtils.joinStringArr2(wellList, ",");
@@ -1577,26 +1573,22 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static void initServerConfig() throws MalformedURLException{
-		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getServer().getUrl());
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getServer().getUrl();
 		StringBuffer json_buff = new StringBuffer();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		try {
-//			String host = StringManagerUtils.getLocalIPAddress();
-////			host = "127.0.0.1";
-//			int port=StringManagerUtils.getHttpPort();
-//			String projectName=stringManagerUtils.getProjectName();
-			ConfigFile.Ad_ServerInitContent[] content=Config.getInstance().configFile.getAd().getInit().getServer().getContent();
-			for(int i=0;i<content.length;i++){
-				json_buff.append("{");
-				json_buff.append("\"IP\":\""+content[i].getIp()+"\",");
-				json_buff.append("\"Port\":\""+content[i].getPort()+"\",");
-				json_buff.append("\"ProjectName\":\""+content[i].getProjectName()+"\"");
-				json_buff.append("}");
-				StringManagerUtils.printLog("服务初始化："+json_buff.toString());
-				if(initEnable){
-					StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
-				}
+
+			json_buff.append("{");
+			json_buff.append("\"IDOnlineStatusPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdOnlineStatusPushURL()+"\",");
+			json_buff.append("\"IDAcqGroupDataPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdAcqGroupDataPushURL()+"\",");
+			json_buff.append("\"IPPortOnlineStatusPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIpPortOnlineStatusPushURL()+"\",");
+			json_buff.append("\"IPPortAcqGroupDataPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIpPortAcqGroupDataPushURL()+"\"");
+			json_buff.append("}");
+			StringManagerUtils.printLog("服务初始化："+json_buff.toString());
+			if(initEnable){
+				StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
 			}
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

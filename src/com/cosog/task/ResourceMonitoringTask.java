@@ -79,11 +79,11 @@ public class ResourceMonitoringTask {
 	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring(){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String probeMemUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getProbe().getMem());
-		String probeCPUUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getProbe().getCpu());
+		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
+		String probeCPUUrl=Config.getInstance().configFile.getAd().getProbe().getCpu();
 		
 		String adAllOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
-		String adStatusUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getProbe().getApp());
+		String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();
 		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;

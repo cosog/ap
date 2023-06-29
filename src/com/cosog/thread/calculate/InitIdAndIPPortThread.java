@@ -70,8 +70,8 @@ public class InitIdAndIPPortThread implements Runnable{
 			return;
 		}
 		Gson gson = new Gson();
-		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getId());
-		String initIPPortUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getIpPort());
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getId();
+		String initIPPortUrl=Config.getInstance().configFile.getAd().getInit().getIpPort();
 		Map<String,InitializedDeviceInfo> initializedDeviceList=AdInitMap.getIdInitMapObject();
 		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=AdInitMap.getIpPoetInitMapObject();
 
@@ -295,8 +295,8 @@ public class InitIdAndIPPortThread implements Runnable{
 			return;
 		}
 		Gson gson = new Gson();
-		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getId());
-		String initIPPortUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getIpPort());
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getId();
+		String initIPPortUrl=Config.getInstance().configFile.getAd().getInit().getIpPort();
 		Map<String,InitializedDeviceInfo> initializedDeviceList=AdInitMap.getIdInitMapObject();
 		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=AdInitMap.getIpPoetInitMapObject();
 		String wellName=pcpDeviceInfo.getWellName();

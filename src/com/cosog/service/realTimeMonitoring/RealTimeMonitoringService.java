@@ -380,10 +380,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						run=StringManagerUtils.stringToInteger(obj[1]+"");
 					}else if(StringManagerUtils.stringToInteger(obj[0]+"")==0){
 						stop=StringManagerUtils.stringToInteger(obj[1]+"");
-					}else if(StringManagerUtils.stringToInteger(obj[0]+"")==2){
-						noData=StringManagerUtils.stringToInteger(obj[1]+"");
-					}else{
+					}else if(StringManagerUtils.stringToInteger(obj[0]+"")==-1){
 						offline=StringManagerUtils.stringToInteger(obj[1]+"");
+					}else{
+						noData=StringManagerUtils.stringToInteger(obj[1]+"");
 					}
 				}
 			}else{
@@ -401,13 +401,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									if(commStatus>0){
 										if(runStatus==1){
 											run+=1;
-										}else if(runStatus==2){
-											noData+=1;
-										}else{
+										}else if(runStatus==0){
 											stop+=1;;
+										}else{
+											noData+=1;
 										}
 									}else{
-										offline+=1;;
+										offline+=1;
 									}
 								}
 							}
@@ -421,10 +421,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									if(commStatus>0){
 										if(runStatus==1){
 											run+=1;
-										}else if(runStatus==2){
-											noData+=1;
+										}else if(runStatus==0){
+											stop+=1;
 										}else{
-											stop+=1;;
+											noData+=1;
 										}
 									}else{
 										offline+=1;;

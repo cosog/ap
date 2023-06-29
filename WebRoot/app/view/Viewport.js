@@ -905,6 +905,8 @@ function getDeviceRunStatusTotal() {
                                     singleData.color = '#' + alarmShowStyle.Run.stop.Color;
                                 } else if (datalist[i].itemCode == 'offline') {
                                     singleData.color = '#' + alarmShowStyle.Comm.offline.Color;
+                                } else {
+                                	singleData.color = '#' + alarmShowStyle.Run.noData.Color;
                                 }
                                 pieData.push(singleData);
                             }

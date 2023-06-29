@@ -451,8 +451,8 @@ public class RealTimeMonitoringController extends BaseController {
 			
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
-			String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRw().getWriteAddr());
-			String readUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRw().getReadAddr());
+			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
+			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();
 			
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
@@ -482,8 +482,8 @@ public class RealTimeMonitoringController extends BaseController {
 			if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
 				IDOrIPPortKey="IPPort";
 				IDOrIPPort=ipPort;
-				url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRw().getWriteAddr_ipPort());
-				readUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRw().getReadAddr_ipPort());
+				url=Config.getInstance().configFile.getAd().getRw().getWriteAddr_ipPort();
+				readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr_ipPort();
 			}
 			if(StringManagerUtils.isNotNull(title) && addr!=-99){
 				String ctrlJson="{"

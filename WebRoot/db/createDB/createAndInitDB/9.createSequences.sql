@@ -71,7 +71,7 @@ cache 20;
 create sequence SEQ_CODE
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 1142
+start with 1162
 increment by 1
 cache 20;
 
@@ -92,14 +92,14 @@ cache 20;
 create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 136
+start with 140
 increment by 1
 cache 20;
 
 create sequence SEQ_REPORT_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 94
+start with 110
 increment by 1
 cache 20;
 

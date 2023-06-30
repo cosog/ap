@@ -179,12 +179,18 @@
 		if($("#flag").prop("checked")){
 			flag_=1;
 		}
-		var paramObj ="?&time="+getSeconds+"&userId=" + userId_ + "&userPwd=" + userPwd_+"&flag=" + flag_;	
-		var url="<%=path%>/userLoginManagerController/userLogin"+paramObj;
+		var paramObj ="?&time="+getSeconds+"&userId=" + userId_ + "&userPwd=" + userPwd_+"&flag=" + flag_;
+		var url=context + '/userLoginManagerController/userLogin';
 	   // jquery Ajax请求事件
 		$.ajax({
 			url: url,
 			cache:false,
+			data: {
+				time: getSeconds,
+				userId: userId_,
+				userPwd: userPwd_,
+				flag: flag_
+			},
 			success:function(data){
 			    username=getLogin_;
 			    localStorage.setItem("userLoginName",getLogin_);

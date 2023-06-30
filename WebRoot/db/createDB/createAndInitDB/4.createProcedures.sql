@@ -1695,10 +1695,13 @@ CREATE OR REPLACE PROCEDURE prd_save_alarmcolor (    overviewBackgroundColor0   
 
                                                         runBackgroundColor   in varchar2,
                                                         stopBackgroundColor     in varchar2,
+                                                        noDataBackgroundColor     in varchar2,
                                                         runColor   in varchar2,
                                                         stopColor     in varchar2,
+                                                        noDataColor     in varchar2,
                                                         runOpacity   in varchar2,
-                                                        stopOpacity     in varchar2) is
+                                                        stopOpacity     in varchar2,
+                                                        noDataOpacity     in varchar2) is
   p_msg varchar2(30) := 'error';
 begin
     --数据报警
@@ -1733,12 +1736,15 @@ begin
     --运行
     Update tbl_code t1 set t1.itemname=runBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=1;
     Update tbl_code t1 set t1.itemname=stopBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=noDataBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=2;
 
     Update tbl_code t1 set t1.itemname=runColor where t1.itemcode='YXBJQJYS' and t1.itemvalue=1;
     Update tbl_code t1 set t1.itemname=stopColor where t1.itemcode='YXBJQJYS' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=noDataColor where t1.itemcode='YXBJQJYS' and t1.itemvalue=2;
 
     Update tbl_code t1 set t1.itemname=runOpacity where t1.itemcode='YXBJYSTMD' and t1.itemvalue=1;
     Update tbl_code t1 set t1.itemname=stopOpacity where t1.itemcode='YXBJYSTMD' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=noDataOpacity where t1.itemcode='YXBJYSTMD' and t1.itemvalue=2;
     commit;
     p_msg := '修改成功';
 

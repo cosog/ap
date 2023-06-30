@@ -903,9 +903,11 @@ function getDeviceRunStatusTotal() {
                                     singleData.color = '#' + alarmShowStyle.Run.run.Color;
                                 } else if (datalist[i].itemCode == 'stop') {
                                     singleData.color = '#' + alarmShowStyle.Run.stop.Color;
+                                } else if (datalist[i].itemCode == 'goOnline') {
+                                    singleData.color = '#' + alarmShowStyle.Comm.goOnline.Color;
                                 } else if (datalist[i].itemCode == 'offline') {
                                     singleData.color = '#' + alarmShowStyle.Comm.offline.Color;
-                                } else {
+                                }  else {
                                 	singleData.color = '#' + alarmShowStyle.Run.noData.Color;
                                 }
                                 pieData.push(singleData);

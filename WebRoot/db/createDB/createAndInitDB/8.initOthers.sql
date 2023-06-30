@@ -338,16 +338,25 @@ insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMAR
 values (1065, 'YXBJQJYS', '00ff00', '1', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
+values (1143, 'YXBJQJYS', 'f09614', '2', null, null, null);
+
+insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1102, 'YXBJYS', 'dc2828', '0', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1103, 'YXBJYS', '00ff00', '1', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
+values (1142, 'YXBJYS', 'f09614', '2', null, null, null);
+
+insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1106, 'YXBJYSTMD', '0', '0', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1107, 'YXBJYSTMD', '0', '1', null, null, null);
+
+insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
+values (1144, 'YXBJYSTMD', '0', '2', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (943, 'alarmType', '开关量报警', '0', null, null, null);
@@ -375,190 +384,193 @@ values (1084, 'alarmType', '运行状态报警', '6', null, null, null);
 /* 初始化TBL_DATAMAPPING数据                                          */
 /*==============================================================*/
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (1, '声光报警控制位', 'c_sgbjkzw', 0, null, null, 1);
+values (1, '启停控制', 'c_qtkz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (2, '油压', 'c_yy', 0, 'TubingPressure', null, 1);
+values (2, '动液面', 'c_dym', 0, 'ProducingfluidLevel', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (3, '套压', 'c_ty', 0, 'CasingPressure', null, 1);
+values (3, '冲次', 'c_cc', 0, 'SPM', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (4, '回压', 'c_hy', 0, null, null, 1);
+values (4, '煤层顶板深', 'c_mcdbs', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (5, '井口温度', 'c_jkwd', 0, 'WellHeadTemperature', null, 1);
+values (5, '压力计安装深度', 'c_yljazsd', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (6, '运行状态', 'c_yxzt', 0, 'RunStatus', null, 1);
+values (6, '井下压力计-压力', 'c_jxyljyl', 0, 'BottomHolePressure', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (7, '启停控制', 'c_qtkz', 0, null, null, 1);
+values (7, '井口套压', 'c_jkty', 0, 'CasingPressure', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (8, '含水率', 'c_hsl', 0, 'VolumeWaterCut', null, 1);
+values (8, '系统压力', 'c_xtyl', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (9, '动液面', 'c_dym', 0, 'ProducingfluidLevel', null, 1);
+values (9, '产气量累计', 'c_cqllj', 0, 'TotalGasVolumetricProduction', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (10, '光杆温度', 'c_ggwd', 0, null, null, 1);
+values (10, '产气量瞬时', 'c_cqlss', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (11, '盘根盒温度', 'c_pghwd', 0, null, null, 1);
+values (11, '气体温度', 'c_qtwd', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (12, 'A相电流', 'c_Axdl', 0, 'IA', null, 1);
+values (12, '产水量累计', 'c_csllj', 0, 'TotalWaterVolumetricProduction', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (13, 'B相电流', 'c_Bxdl', 0, 'IB', null, 1);
+values (13, '产水量瞬时', 'c_cslss', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (14, 'C相电流', 'c_Cxdl', 0, 'IC', null, 1);
+values (14, '井下压力计-温度', 'c_jxyljwd', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (15, 'A相电压', 'c_Axdy', 0, 'VA', null, 1);
+values (15, '气体流量计通讯状态', 'c_qtlljtxzt', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (16, 'B相电压', 'c_Bxdy', 0, 'VB', null, 1);
+values (16, '水流量计通讯状态', 'c_slljtxzt', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (17, 'C相电压', 'c_Cxdy', 0, 'VC', null, 1);
+values (17, '井下压力计/液面仪通讯状态', 'c_jxyljymytxzt', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (18, '有功功耗', 'c_yggh', 0, 'TotalKWattH', null, 1);
+values (18, '变频器通讯状态', 'c_bpqtxzt', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (19, '无功功耗', 'c_wggh', 0, 'TotalKVarH', null, 1);
+values (19, '频率控制方式', 'c_plkzfs', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (20, '有功功率', 'c_yggl', 0, 'Watt3', null, 1);
+values (20, '变频器设置频率', 'c_bpqszpl', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (21, '无功功率', 'c_wggl', 0, 'Var3', null, 1);
+values (21, '变频器运行频率', 'c_bpqyxpl', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (22, '反向功率', 'c_fxgl', 0, null, null, 1);
+values (22, '变频器故障状态', 'c_bpqgzzt', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (23, '功率因数', 'c_glys', 0, 'PF3', null, 1);
+values (23, '变频器输出电流', 'c_bpqscdl', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (24, '变频设置频率', 'c_bpszpl', 0, 'SetFrequency', null, 1);
+values (24, '变频器输出电压', 'c_bpqscdy', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (25, '变频运行频率', 'c_bpyxpl', 0, 'RunFrequency', null, 1);
+values (25, '变频器厂家代码', 'c_bpqcjdm', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (26, '功图采集间隔', 'c_gtcjjg', 0, null, null, 1);
+values (26, '变频器状态字1', 'c_bpqztz1', 0, 'RunStatus', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (27, '功图设置点数', 'c_gtszds', 0, null, null, 1);
+values (27, '变频器状态字2', 'c_bpqztz2', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (28, '功图实测点数', 'c_gtscds', 0, 'FESDiagramAcqCount', null, 1);
+values (28, '本地旋钮位置', 'c_bdxnwz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (29, '功图采集时间', 'c_gtcjsj', 0, 'FESDiagramAcqtime', null, 1);
+values (29, '母线电压', 'c_mxdy', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (30, '冲次', 'c_cc', 0, 'SPM', null, 1);
+values (30, '设定频率反馈', 'c_sdplfk', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (31, '冲程', 'c_cc1', 0, 'Stroke', null, 1);
+values (31, '10Hz对应冲次/转速预设值', 'c_10Hzdycczsysz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (32, '功图数据-位移', 'c_gtsjwy', 0, 'Position_Curve', null, 1);
+values (32, '50Hz对应冲次/转速预设值', 'c_50Hzdycczsysz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (33, '功图数据-载荷', 'c_gtsjzh', 0, 'Load_Curve', null, 1);
+values (33, '冲次/转速设定值', 'c_cczssdz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (34, '功图数据-电流', 'c_gtsjdl', 0, 'Current_Curve', null, 1);
+values (34, '修正后井底流压', 'c_xzhjdly', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (35, '功图数据-功率', 'c_gtsjgl', 0, 'Power_Curve', null, 1);
+values (35, '计算液柱高度', 'c_jsyzgd', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (36, '油压', 'c_yy', 1, 'TubingPressure', null, 1);
+values (36, '计算近1小时液柱下降速度', 'c_jsj1xsyzxjsd', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (37, '套压', 'c_ty', 1, 'CasingPressure', null, 1);
+values (37, '排采模式', 'c_pcms', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (38, '回压', 'c_hy', 1, null, null, 1);
+values (38, '自动排采状态', 'c_zdpczt', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (39, '井口温度', 'c_jkwd', 1, 'WellHeadTemperature', null, 1);
+values (39, '自动排采-最小频率', 'c_zdpczxpl', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (40, '运行状态', 'c_yxzt', 1, 'RunStatus', null, 1);
+values (40, '自动排采-最大频率', 'c_zdpczdpl', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (41, '启停控制', 'c_qtkz', 1, null, null, 1);
+values (41, '最大步长幅度限制', 'c_zdbcfdxz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (42, '含水率', 'c_hsl', 1, 'VolumeWaterCut', null, 1);
+values (42, '最短调整时间间隔', 'c_zddzsjjg', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (43, '动液面', 'c_dym', 1, 'ProducingfluidLevel', null, 1);
+values (43, '自动重启延时', 'c_zdzqys', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (44, 'A相电流', 'c_Axdl', 1, 'IA', null, 1);
+values (44, '自动重启次数', 'c_zdzqcs', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (45, 'B相电流', 'c_Bxdl', 1, 'IB', null, 1);
+values (45, '井底流压波动报警值', 'c_jdlybdbjz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (46, 'C相电流', 'c_Cxdl', 1, 'IC', null, 1);
+values (46, '定降液-目标定降（每日）', 'c_djymbdjmr', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (47, 'A相电压', 'c_Axdy', 1, 'VA', null, 1);
+values (47, '定降液-液柱低停机值', 'c_djyyzdtjz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (48, 'B相电压', 'c_Bxdy', 1, 'VB', null, 1);
+values (48, '定降液-液柱低报警值', 'c_djyyzdbjz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (49, 'C相电压', 'c_Cxdy', 1, 'VC', null, 1);
+values (49, '定降液-液柱重启值', 'c_djyyzzqz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (50, '有功功耗', 'c_yggh', 1, 'TotalKWattH', null, 1);
+values (50, '定降液-液柱高报警值', 'c_djyyzgbjz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (51, '无功功耗', 'c_wggh', 1, 'TotalKVarH', null, 1);
+values (51, '定降液-P参数', 'c_djyPcs', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (52, '有功功率', 'c_yggl', 1, 'Watt3', null, 1);
+values (52, '定降液-I参数', 'c_djyIcs', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (53, '无功功率', 'c_wggl', 1, 'Var3', null, 1);
+values (53, '定降液-D参数', 'c_djyDcs', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (54, '反向功率', 'c_fxgl', 1, null, null, 1);
+values (54, '定流压-目标流压', 'c_dlymbly', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (55, '功率因数', 'c_glys', 1, 'PF3', null, 1);
+values (55, '定流压-流压低停机值', 'c_dlylydtjz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (56, '变频设置频率', 'c_bpszpl', 1, 'SetFrequency', null, 1);
+values (56, '定流压-流压低报警值', 'c_dlylydbjz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (57, '变频运行频率', 'c_bpyxpl', 1, 'RunFrequency', null, 1);
+values (57, '定流压-流压重启值', 'c_dlylyzqz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (58, '螺杆泵转速', 'c_lgbzs', 1, 'RPM', null, 1);
+values (58, '定流压-流压高报警值', 'c_dlylygbjz', 0, null, null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (59, '螺杆泵扭矩', 'c_lgbnj', 1, null, null, 1);
+values (59, '定流压-P参数', 'c_dlyPcs', 0, null, null, 1);
+
+insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
+values (60, '定流压-I参数', 'c_dlyIcs', 0, null, null, 1);
+
+insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
+values (61, '定流压-D参数', 'c_dlyDcs', 0, null, null, 1);
 
 /*==============================================================*/
 /* 初始化TBL_RUNSTATUSCONFIG数据                                          */
 /*==============================================================*/
 insert into TBL_RUNSTATUSCONFIG (ID, PROTOCOL, ITEMNAME, ITEMMAPPINGCOLUMN, RUNVALUE, STOPVALUE, PROTOCOLTYPE)
-values (1, 'A11-抽油机', '运行状态', 'c_yxzt', '1', '0', 0);
-
-insert into TBL_RUNSTATUSCONFIG (ID, PROTOCOL, ITEMNAME, ITEMMAPPINGCOLUMN, RUNVALUE, STOPVALUE, PROTOCOLTYPE)
-values (2, 'A11-螺杆泵', '运行状态', 'c_yxzt', '1', '0', 1);
+values (1, 'RTU2.0', '变频器状态字1', 'c_bpqztz1', '1', '3,4', 0);
 
 /*==============================================================*/
 /* 初始化TBL_RPC_WORKTYPE数据                                          */

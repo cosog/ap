@@ -99,11 +99,13 @@ private CommonDataService service;
 		String currentShowLevel="";
 		String currentFlag="";
 		String currentReportEdit="";
-		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_flag,t3.role_reportedit "
+		String currentVideoKeyEdit="";
+		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_flag,t3.role_reportedit,t3.role_videokeyedit "
 				+ "from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
 		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,"
 				+ " role_flag as roleFlag,decode(t.role_flag,1,'是','否') as roleFlagName,"
 				+ " role_reportedit as roleReportEdit,decode(t.role_reportedit,1,'是','否') as roleReportEditName,"
+				+ " role_videokeyedit as roleVideoKeyEdit,decode(t.role_videokeyedit,1,'是','否') as roleVideoKeyEditName,"
 				+ " showLevel,remark"
 				+ " from  tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
@@ -122,6 +124,7 @@ private CommonDataService service;
 			currentShowLevel=obj[2]+"";
 			currentFlag=obj[3]+"";
 			currentReportEdit=obj[4]+"";
+			currentVideoKeyEdit=obj[5]+"";
 		}
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()
 		+",\"currentId\":"+currentId
@@ -129,6 +132,7 @@ private CommonDataService service;
 		+",\"currentShowLevel\":"+currentShowLevel
 		+",\"currentFlag\":"+currentFlag
 		+",\"currentReportEdit\":"+currentReportEdit
+		+",\"currentVideoKeyEdit\":"+currentVideoKeyEdit
 		+",\"columns\":"+columns+",\"totalRoot\":[");
 		
 		for (Object o : list) {
@@ -140,23 +144,16 @@ private CommonDataService service;
 			result_json.append("\"roleFlagName\":"+(StringManagerUtils.stringToInteger(obj[3]+"")==1)+",");
 			result_json.append("\"roleReportEdit\":\""+obj[5]+"\",");
 			result_json.append("\"roleReportEditName\":"+(StringManagerUtils.stringToInteger(obj[5]+"")==1)+",");
-			result_json.append("\"showLevel\":\""+obj[7]+"\",");
-			result_json.append("\"remark\":\""+obj[8]+"\"},");
+			result_json.append("\"roleVideoKeyEdit\":\""+obj[7]+"\",");
+			result_json.append("\"roleVideoKeyEditName\":"+(StringManagerUtils.stringToInteger(obj[7]+"")==1)+",");
+			result_json.append("\"showLevel\":\""+obj[9]+"\",");
+			result_json.append("\"remark\":\""+obj[10]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
-		
-		
-//		try {
-//			json=this.findPageBySqlEntity(sql,columns , pager );
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return json;
 	}
 
 	public void addRole(T role) throws Exception {
@@ -201,6 +198,7 @@ private CommonDataService service;
 				sql+= " t.role_level="+role.getRoleLevel()+", "
 						+ " t.role_flag="+role.getRoleFlag()+", "
 						+ " t.role_reportedit="+role.getRoleReportEdit()+", "
+						+ " t.role_videokeyedit="+role.getRoleVideoKeyEdit()+", "
 						+ " t.showlevel="+role.getShowLevel()+", ";
 			}	
 			sql+= " t.role_name='"+role.getRoleName()+"', "

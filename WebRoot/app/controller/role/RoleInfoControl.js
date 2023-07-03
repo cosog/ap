@@ -145,6 +145,7 @@ function addroleInfo() {
     var currentUserRoleShowLevel=parseInt(Ext.getCmp("currentUserRoleShowLevel_Id").getValue());
     var currentUserRoleFlag=parseInt(Ext.getCmp("currentUserRoleFlag_Id").getValue());
     var currentUserRoleReportEdit=parseInt(Ext.getCmp("currentUserRoleReportEdit_Id").getValue());
+    var currentUserRoleVideoKeyEdit=parseInt(Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue());
     
     Ext.getCmp("roleLevel_Id").setMinValue(currentUserRoleLevel+1);
     Ext.getCmp("roleLevel_Id").setValue(currentUserRoleLevel+1);
@@ -164,6 +165,13 @@ function addroleInfo() {
     	Ext.getCmp("roleReportEditComboxfield_Id").setValue(0);
     	Ext.getCmp("roleReportEditComboxfield_Id").setRawValue('否');
     	Ext.getCmp("roleReportEditComboxfield_Id").disable();
+    }
+    
+    if(currentUserRoleVideoKeyEdit==0){
+    	Ext.getCmp("roleVideoKeyEdit_Id").setValue(0);
+    	Ext.getCmp("roleVideoKeyEditComboxfield_Id").setValue(0);
+    	Ext.getCmp("roleVideoKeyEditComboxfield_Id").setRawValue('否');
+    	Ext.getCmp("roleVideoKeyEditComboxfield_Id").disable();
     }
     
     Ext.getCmp("addFormrole_Id").show();
@@ -343,6 +351,7 @@ function updateRoleInfoByGridBtn(record) {
     var roleLevel=record.get("roleLevel");
     var roleFlagName=record.get("roleFlagName");
     var roleReportEditName=record.get("roleReportEditName");
+    var roleVideoKeyEditName=record.get("roleVideoKeyEditName");
     var showLevel=record.get("showLevel");
     var remark=record.get("remark");
     Ext.Ajax.request({
@@ -354,6 +363,7 @@ function updateRoleInfoByGridBtn(record) {
 			roleLevel : roleLevel,
 			roleFlagName : roleFlagName,
 			roleReportEditName : roleReportEditName,
+			roleVideoKeyEditName : roleVideoKeyEditName,
 			showLevel : showLevel,
 			remark : remark
 		},

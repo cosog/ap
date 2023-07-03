@@ -21,6 +21,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             id: 'roleFlagComboxfield_Id',
             value: 0,
             fieldLabel: '设备控制权限<font color=red>*</font>',
+            labelWidth: 110,
             typeAhead : true,
             allowBlank: false,
             autoSelect:true,
@@ -47,6 +48,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             id: 'roleReportEditComboxfield_Id',
             value: 0,
             fieldLabel: '报表编辑权限<font color=red>*</font>',
+            labelWidth: 110,
             typeAhead : true,
             allowBlank: false,
             autoSelect:true,
@@ -65,6 +67,33 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             listeners: {
             	select: function (v,o) {
 					Ext.getCmp("roleReportEdit_Id").setValue(this.value);
+                }
+            }
+        });
+        
+        var RoleVideoKeyEditCombox = new Ext.form.ComboBox({
+            id: 'roleVideoKeyEditComboxfield_Id',
+            value: 0,
+            fieldLabel: '视频密钥编辑权限<font color=red>*</font>',
+            labelWidth: 110,
+            typeAhead : true,
+            allowBlank: false,
+            autoSelect:true,
+            editable:false,
+            anchor: '100%',
+            emptyText: '--请选择--',
+            triggerAction: 'all',
+            store: new Ext.data.SimpleStore({
+            	autoLoad : false,
+                fields: ['roleVideoKeyEdit', 'roleVideoKeyEditName'],
+                data: [['0', '否'], ['1', '是']]
+            }),
+            displayField: 'roleVideoKeyEditName',
+            valueField: 'roleVideoKeyEdit',
+            queryMode : 'local',
+            listeners: {
+            	select: function (v,o) {
+					Ext.getCmp("roleVideoKeyEdit_Id").setValue(this.value);
                 }
             }
         });
@@ -89,7 +118,13 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 id: 'roleReportEdit_Id',
                 value: 0
             }, {
+                xtype: "hidden",
+                name: 'role.roleVideoKeyEdit',
+                id: 'roleVideoKeyEdit_Id',
+                value: 0
+            }, {
                 fieldLabel: cosog.string.roleName+'<font color=red>*</font>',
+                labelWidth: 110,
                 allowBlank: false,
                 anchor: '100%',
                 id: 'role_Name_Id',
@@ -121,6 +156,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             	id: "roleLevel_Id",
                 name: 'role.roleLevel',
                 fieldLabel: '角色等级<font color=red>*</font>',
+                labelWidth: 110,
                 allowBlank: false,
                 minValue: 1,
                 value:1,
@@ -131,12 +167,14 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             	id: "roleShowLevel_Id",
                 name: 'role.showLevel',
                 fieldLabel: '数据显示级别<font color=red>*</font>',
+                labelWidth: 110,
                 allowBlank: false,
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'
-            },RoleTypeCombox,RoleReportEditCombox, {
+            },RoleTypeCombox,RoleReportEditCombox,RoleVideoKeyEditCombox, {
                 fieldLabel: '角色描述',
+                labelWidth: 110,
                 id: 'roleRemark_Id',
                 anchor: '100',
                 xtype: 'textareafield',

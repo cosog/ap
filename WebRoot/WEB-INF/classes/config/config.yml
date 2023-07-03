@@ -59,8 +59,10 @@ ap:
    video:                #视频配置
       #appKey: 14f8cafea45b4dfea4c0f8fbb724e86d #厂家示例
       #secret: 12f4b1bf467322db5fdc0c87113961cb  #厂家示例
-      appKey: 828692b940cb4c119e357488020a9583 #助创示例
-      secret: f2c346ca8f38c78b96507ad3479f1d7b #助创示例
+      #appKey: 828692b940cb4c119e357488020a9583 #助创示例
+      #secret: f2c346ca8f38c78b96507ad3479f1d7b #助创示例
+      appKey: 5dc6bb34b5324007b839b0df5623d85e #助创示例2
+      secret: 300f21e0d937f5d2698549f16ecc9512 #助创示例2
    threadPool: 
       initIdAndIpPort:
          corePoolSize: 100

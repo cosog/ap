@@ -59,6 +59,7 @@ public class User implements java.io.Serializable {
 	private Integer roleFlag;
 	private Integer roleShowLevel;
 	private Integer roleReportEdit;
+	private Integer roleVideoKeyEdit;
 	
 
 	/**
@@ -379,5 +380,14 @@ public class User implements java.io.Serializable {
 
 	public void setRoleReportEdit(Integer roleReportEdit) {
 		this.roleReportEdit = roleReportEdit;
+	}
+
+	@Transient
+	public Integer getRoleVideoKeyEdit() {
+		return roleVideoKeyEdit;
+	}
+
+	public void setRoleVideoKeyEdit(Integer roleVideoKeyEdit) {
+		this.roleVideoKeyEdit = roleVideoKeyEdit;
 	}
 }

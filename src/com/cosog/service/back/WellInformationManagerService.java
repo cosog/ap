@@ -3357,9 +3357,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-				+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",flex:1 ,children:[] },"
+				+ "{ \"header\":\"监控路径\",\"dataIndex\":\"videoUrl\",flex:5 ,children:[] },"
+				+ "{ \"header\":\"视频密钥\",\"dataIndex\":\"videoKey\",flex:1 ,children:[] }"
 				+ "]";
 		String deviceTableName="tbl_rpcdevice";
 		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
@@ -3370,7 +3371,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where t.id="+deviceId;
 		
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"videoKeyList\":[\"\",\"a\",\"b\",\"c\"],\"totalRoot\":[");
 		if(list.size()>0){
 			String videoUrl=list.get(0)==null?"":list.get(0).toString();
 			String videoUrl1="",videoUrl2="";
@@ -3385,8 +3386,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 			
 			
-			result_json.append("{\"id\":1,\"itemName\":\"视频监控路径1\",\"itemValue\":\""+videoUrl1+"\"},");
-			result_json.append("{\"id\":2,\"itemName\":\"视频监控路径2\",\"itemValue\":\""+videoUrl2+"\"},");
+			result_json.append("{\"id\":1,\"itemName\":\"视频1\",\"videoUrl\":\""+videoUrl1+"\",\"videoKey\":\"\"},");
+			result_json.append("{\"id\":2,\"itemName\":\"视频2\",\"videoUrl\":\""+videoUrl2+"\",\"videoKey\":\"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

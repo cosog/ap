@@ -437,11 +437,21 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 	}]
                 },{
                 	region: 'south',
-                	height:'20%',
+                	height:'23%',
+//                	minHeight:135,
                 	title:'视频配置',
                 	id:'RPCVideoInfoPanel_Id',
                 	split: true,
                 	collapsible: true,
+                	tbar:['->',{
+                        xtype: 'button',
+                        text: '编辑视频密钥',
+                        iconCls: 'save',
+                        disabled: loginUserRoleVideoKeyEdit!=1,
+                        handler: function (v, o) {
+//                        	rpcSingleWellDailyReportHelper.saveData();
+                        }
+                    }],
                 	html: '<div class="RPCVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="RPCVideoInfoTableDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -1803,10 +1813,40 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 			Ext.getCmp("RPCVideoInfoPanel_Id").setTitle(panelTitle);
 			if(rpcVideoInfoHandsontableHelper==null || rpcVideoInfoHandsontableHelper.hot==undefined){
 				rpcVideoInfoHandsontableHelper = RPCVideoInfoHandsontableHelper.createNew("RPCVideoInfoTableDiv_id");
-				var colHeaders="['序号','名称','变量']";
-				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
+				var colHeaders = "[";
+                var columns = "[";
+                var colWidths=[];
+                for (var i = 0; i < result.columns.length; i++) {
+                    colHeaders += "'" + result.columns[i].header + "'";
+                    colWidths.push(result.columns[i].flex);
+                    if (result.columns[i].dataIndex.toUpperCase() === "videoKey".toUpperCase()) {
+                        var source = "[";
+                        for (var j = 0; j < result.videoKeyList.length; j++) {
+                            source += "\'" + result.videoKeyList[j] + "\'";
+                            if (j < result.videoKeyList.length - 1) {
+                                source += ",";
+                            }
+                        }
+                        source += "]";
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+                    }else {
+                        columns += "{data:'" + result.columns[i].dataIndex + "'}";
+                    }
+                    if (i < result.columns.length - 1) {
+                        colHeaders += ",";
+                        columns += ",";
+                    }
+                }
+                colHeaders += "]";
+                columns += "]";
+				
+				
+				
+//				var colHeaders="['序号','名称','监控路径','视频密钥']";
+//				var columns="[{data:'id'},{data:'itemName'},{data:'videoUrl'},{data:'videoKey',type:'dropdown',strict:true,allowInvalid:false,source:['','1','2','3']}]";
 				rpcVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+				rpcVideoInfoHandsontableHelper.colWidths=colWidths;
 				if(result.totalRoot.length==0){
 					rpcVideoInfoHandsontableHelper.createTable([{},{},{},{}]);
 				}else{
@@ -1838,6 +1878,7 @@ var RPCVideoInfoHandsontableHelper = {
 	        rpcVideoInfoHandsontableHelper.divid = divid;
 	        rpcVideoInfoHandsontableHelper.colHeaders = [];
 	        rpcVideoInfoHandsontableHelper.columns = [];
+	        rpcVideoInfoHandsontableHelper.colWidths=[];
 	        rpcVideoInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
@@ -1859,7 +1900,7 @@ var RPCVideoInfoHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [1,1,5],
+	                colWidths: rpcVideoInfoHandsontableHelper.colWidths,
 	                columns: rpcVideoInfoHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1876,7 +1917,7 @@ var RPCVideoInfoHandsontableHelper = {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex !=2) {
+	                    if (visualColIndex < 2) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcVideoInfoHandsontableHelper.addBoldBg;
 		                }

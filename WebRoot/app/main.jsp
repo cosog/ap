@@ -73,6 +73,7 @@
         var loginUserRoleFlag = "${userLogin.roleFlag}";
         var loginUserRoleShowLevel = "${userLogin.roleShowLevel}";
         var loginUserRoleReportEdit = "${userLogin.roleReportEdit}";
+        var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
         if (user_ == null || "" == (user_)) {
             window.location.href = "../login/toLogin";
         }

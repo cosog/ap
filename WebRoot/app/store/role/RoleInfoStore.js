@@ -29,12 +29,14 @@ Ext.define('AP.store.role.RoleInfoStore', {
             var currentShowLevel=get_rawData.currentShowLevel;
             var currentFlag=get_rawData.currentFlag;
             var currentReportEdit=get_rawData.currentReportEdit;
+            var currentVideoKeyEdit=get_rawData.currentVideoKeyEdit;
             
             Ext.getCmp("currentUserRoleId_Id").setValue(currentId);
             Ext.getCmp("currentUserRoleLevel_Id").setValue(currentLevel);
             Ext.getCmp("currentUserRoleShowLevel_Id").setValue(currentShowLevel);
             Ext.getCmp("currentUserRoleFlag_Id").setValue(currentFlag);
             Ext.getCmp("currentUserRoleReportEdit_Id").setValue(currentReportEdit);
+            Ext.getCmp("currentUserRoleVideoKeyEdit_Id").setValue(currentVideoKeyEdit);
             var gridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var arrColumns = get_rawData.columns;
@@ -140,6 +142,29 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         sortable: true,
                         width: 85,
                         dataIndex: 'roleReportEditName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                    	    	if(parseInt(record.data.roleId)==parseInt(currentId)){
+                    	    		return false;
+                    	    	}else{
+                                    return true;
+                                }
+                    	    }
+                    	}
+                    }, {
+                        header: '视频密钥编辑权限权限',
+                        xtype: 'checkcolumn',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        width: 135,
+                        dataIndex: 'roleVideoKeyEditName',
                         editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',

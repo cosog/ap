@@ -32,6 +32,7 @@ import com.cosog.model.RPCDeviceAddInfo;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
+import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
@@ -1223,6 +1224,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public void doPumpingModelAdd(PumpingModelInformation auxiliaryDeviceInformation) throws Exception {
 		getBaseDao().addObject(auxiliaryDeviceInformation);
+	}
+	
+	public void doVideoKeyAdd(VideoKey videoKey) throws Exception {
+		getBaseDao().addObject(videoKey);
 	}
 	
 	public void deleteMasterAndAuxiliary(final int masterid) throws Exception {
@@ -3352,10 +3357,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDeviceVideoInfo(String deviceId,String deviceType) {
+	public String getDeviceVideoInfo(String deviceId,String deviceType,String orgId) {
 		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
+		StringBuffer videoKeyDropdownData = new StringBuffer();
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",flex:1 ,children:[] },"
@@ -3369,9 +3373,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String sql = "select t.videourl "
 				+ " from "+deviceTableName+" t "
 				+ " where t.id="+deviceId;
+		String videoKeySql="select t.account from TBL_VIDEOKEY t where t.orgid in("+orgId+") order by t.id";
+		List<?> videoKeyList = this.findCallSql(videoKeySql);
+		videoKeyDropdownData.append("[");
+		if(videoKeyList.size()>0){
+			videoKeyDropdownData.append("\"\",");
+			for(int i=0;i<videoKeyList.size();i++){
+				videoKeyDropdownData.append("\""+videoKeyList.get(i)+"\",");
+			}
+			if(videoKeyDropdownData.toString().endsWith(",")){
+				videoKeyDropdownData.deleteCharAt(videoKeyDropdownData.length() - 1);
+			}
+		}
+		videoKeyDropdownData.append("]");
 		
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"videoKeyList\":[\"\",\"a\",\"b\",\"c\"],\"totalRoot\":[");
+		result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"videoKeyList\":"+videoKeyDropdownData.toString()+",\"totalRoot\":[");
 		if(list.size()>0){
 			String videoUrl=list.get(0)==null?"":list.get(0).toString();
 			String videoUrl1="",videoUrl2="";
@@ -3394,6 +3411,32 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getVideoKeyData(String orgId){
+		StringBuffer result_json = new StringBuffer();
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"account\",flex:1 ,children:[] },"
+				+ "{ \"header\":\"appKey\",\"dataIndex\":\"appKey\",flex:5 ,children:[] },"
+				+ "{ \"header\":\"secret\",\"dataIndex\":\"secret\",flex:5 ,children:[] }"
+				+ "]";
+		String sql="select t.id,t.account,t.appkey,t.secret from TBL_VIDEOKEY t where t.orgid in("+orgId+") order by t.id";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"account\":\""+obj[1]+"\",");
+			result_json.append("\"appKey\":\""+obj[2]+"\",");
+			result_json.append("\"secret\":\""+obj[3]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
 	}
 	
 	public String getAcquisitionUnitList(String protocol){

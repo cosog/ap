@@ -41,6 +41,7 @@ import com.cosog.model.RPCDeviceAddInfo;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
+import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.PCPProductionData;
@@ -49,6 +50,7 @@ import com.cosog.model.drive.RPCInteractionResponseData;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceConfig;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
+import com.cosog.model.gridmodel.VideoKeyHandsontableChangedData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.service.back.WellInformationManagerService;
 import com.cosog.service.base.CommonDataService;
@@ -99,6 +101,8 @@ public class WellInformationManagerController extends BaseController {
 	@Autowired
 	private WellInformationManagerService<PumpingModelInformation> pumpingModelManagerService;
 	@Autowired
+	private WellInformationManagerService<VideoKey> videoKeyManagerService;
+	@Autowired
 	private CommonDataService service;
 	private String limit;
 	private String msg = "";
@@ -130,6 +134,11 @@ public class WellInformationManagerController extends BaseController {
 	@InitBinder("smsDeviceInformation")
 	public void initBinder4(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("smsDeviceInformation.");
+	}
+	
+	@InitBinder("videoKey")
+	public void initBinder5(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("videoKey.");
 	}
 	
 	/**
@@ -659,13 +668,62 @@ public class WellInformationManagerController extends BaseController {
 	public String getDeviceVideoInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		String orgId= ParamUtils.getParameter(request, "orgId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getDeviceVideoInfo(deviceId,deviceType);
+		String json = this.wellInformationManagerService.getDeviceVideoInfo(deviceId,deviceType,orgId);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getVideoKeyData")
+	public String getVideoKeyData() throws IOException {
+		String orgId= ParamUtils.getParameter(request, "orgId");
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getVideoKeyData(orgId);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveVideoKeyHandsontableData")
+	public String saveVideoKeyHandsontableData() throws Exception {
+		HttpSession session=request.getSession();
+		String json ="{success:true}";
+		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		Gson gson = new Gson();
+		
+		java.lang.reflect.Type type = new TypeToken<VideoKeyHandsontableChangedData>() {}.getType();
+		VideoKeyHandsontableChangedData videoKeyHandsontableChangedData=gson.fromJson(data, type);
+//		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+//			deviceTableName="tbl_rpcdevice";
+//			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+//		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+//			deviceTableName="tbl_pcpdevice";
+//			json=this.wellInformationManagerService.savePCPDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+//		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+//			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+//		}
+		
+		
+		
+		
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
 		return null;
@@ -937,17 +995,17 @@ public class WellInformationManagerController extends BaseController {
 				deviceProductionDataSaveStr=gson.toJson(productionData);
 			}
 		}
-		
-		
-		
-		
 		this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr);
+		
+		//处理抽油机数据
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			//处理抽油机型号
 			this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);
 			//处理抽油机详情
 			this.wellInformationManagerService.saveRPCPumpingInfo(deviceId,stroke,balanceInfo);
 		}
+		
+		//处理视频数据
 		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl);
 		
 		
@@ -1668,6 +1726,24 @@ public class WellInformationManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.pumpingModelManagerService.doPumpingModelAdd(pumpingModelInformation);
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	@RequestMapping("/doVideoKeyAdd")
+	public String doVideoKeyAdd(@ModelAttribute VideoKey videoKey) throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		try {
+			this.videoKeyManagerService.doVideoKeyAdd(videoKey);
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);

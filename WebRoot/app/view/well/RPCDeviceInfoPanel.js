@@ -113,23 +113,6 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-//                    var fields = "";
-//                    var heads = "";
-//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-//                    var wellInformationName = Ext.getCmp('rpcDeviceListComb_Id').getValue();
-//                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
-//                    for (var i = 0; i < rpcDeviceInfoHandsontableHelper.colHeaders.length; i++) {
-//                        fields += rpcDeviceInfoHandsontableHelper.columns[i].data + ",";
-//                        heads += rpcDeviceInfoHandsontableHelper.colHeaders[i] + ","
-//                    }
-//                    if (isNotVal(fields)) {
-//                        fields = fields.substring(0, fields.length - 1);
-//                        heads = heads.substring(0, heads.length - 1);
-//                    }
-//
-//                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=101&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机井")) + "&title=" + URLencode(URLencode("抽油机井"));
-//                    openExcelWindow(url + '?flag=true' + param);
-                	
                 	var window = Ext.create("AP.view.well.ExportDeviceInfoWindow");
                     Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(101);
                     window.show();
@@ -449,7 +432,8 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                         iconCls: 'save',
                         disabled: loginUserRoleVideoKeyEdit!=1,
                         handler: function (v, o) {
-//                        	rpcSingleWellDailyReportHelper.saveData();
+                        	var VideoKeyInfoWindow = Ext.create("AP.view.well.VideoKeyInfoWindow");
+                        	VideoKeyInfoWindow.show();
                         }
                     }],
                 	html: '<div class="RPCVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="RPCVideoInfoTableDiv_id"></div></div>',
@@ -809,11 +793,6 @@ var RPCDeviceInfoHandsontableHelper = {
                 afterChange: function (changes, source) {
                     //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
                     if (changes != null) {
-//                        var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-//                        if (IframeViewSelection.length > 0 && IframeViewSelection[0].isLeaf()) {} else {
-//                            Ext.MessageBox.alert("信息", "编辑前，请先在左侧选择对应组织节点");
-//                        }
-
                         for (var i = 0; i < changes.length; i++) {
                             var params = [];
                             var index = changes[i][0]; //行号码
@@ -1141,6 +1120,7 @@ var RPCDeviceInfoHandsontableHelper = {
                 var videoUrl='';
                 var videoUrl1='';
                 var videoUrl2='';
+                
                 if(rpcVideoInfoHandsontableHelper!=null && rpcVideoInfoHandsontableHelper.hot!=undefined){
                 	var rpcVideoInfoHandsontableData=rpcVideoInfoHandsontableHelper.hot.getData();
                 	videoUrl1=rpcVideoInfoHandsontableData[0][2];
@@ -1793,13 +1773,18 @@ var RPCPumpingInfoHandsontableHelper = {
 	};
 
 function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
-	if(isNew&&rpcVideoInfoHandsontableHelper!=null){
-		if(rpcVideoInfoHandsontableHelper.hot!=undefined){
-			rpcVideoInfoHandsontableHelper.hot.destroy();
-		}
-		rpcVideoInfoHandsontableHelper=null;
+//	if(isNew&&rpcVideoInfoHandsontableHelper!=null){
+//		if(rpcVideoInfoHandsontableHelper.hot!=undefined){
+//			rpcVideoInfoHandsontableHelper.hot.destroy();
+//		}
+//		rpcVideoInfoHandsontableHelper=null;
+//	}
+	if(rpcVideoInfoHandsontableHelper!=null && rpcVideoInfoHandsontableHelper.hot!=undefined){
+		rpcVideoInfoHandsontableHelper.hot.destroy();
 	}
+	rpcVideoInfoHandsontableHelper=null;
 	Ext.getCmp("RPCVideoInfoPanel_Id").el.mask(cosog.string.loading).show();
+	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',
@@ -1840,10 +1825,6 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
                 colHeaders += "]";
                 columns += "]";
 				
-				
-				
-//				var colHeaders="['序号','名称','监控路径','视频密钥']";
-//				var columns="[{data:'id'},{data:'itemName'},{data:'videoUrl'},{data:'videoKey',type:'dropdown',strict:true,allowInvalid:false,source:['','1','2','3']}]";
 				rpcVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				rpcVideoInfoHandsontableHelper.colWidths=colWidths;
@@ -1866,7 +1847,8 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 		},
 		params: {
 			deviceId:deviceId,
-			deviceType:101
+			deviceType:101,
+			orgId: leftOrg_Id
         }
 	});
 };

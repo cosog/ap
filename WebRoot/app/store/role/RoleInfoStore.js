@@ -158,12 +158,12 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	    }
                     	}
                     }, {
-                        header: '视频密钥编辑权限权限',
+                        header: '视频密钥编辑权限',
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        width: 135,
+                        width: 115,
                         dataIndex: 'roleVideoKeyEditName',
                         editor: {
                         	xtype: 'checkbox',

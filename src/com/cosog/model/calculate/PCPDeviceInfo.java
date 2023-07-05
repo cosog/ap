@@ -28,7 +28,10 @@ public class PCPDeviceInfo implements Serializable {
 	private String ipPort;
 	private String slave;
 	private Integer PeakDelay;
-	private String videoUrl;
+	private String videoUrl1;
+	private String videoUrl2;
+	private Integer videoKey1;
+	private Integer videoKey2;
 	private Integer status;
 	private String statusName;
 	private Integer sortNum;
@@ -189,16 +192,6 @@ public class PCPDeviceInfo implements Serializable {
 
 	public void setSlave(String slave) {
 		this.slave = slave;
-	}
-
-
-	public String getVideoUrl() {
-		return videoUrl;
-	}
-
-
-	public void setVideoUrl(String videoUrl) {
-		this.videoUrl = videoUrl;
 	}
 
 
@@ -679,6 +672,46 @@ public class PCPDeviceInfo implements Serializable {
 
 	public void setTotalWaterVolumetricProduction(float totalWaterVolumetricProduction) {
 		this.totalWaterVolumetricProduction = totalWaterVolumetricProduction;
+	}
+
+
+	public String getVideoUrl1() {
+		return videoUrl1;
+	}
+
+
+	public void setVideoUrl1(String videoUrl1) {
+		this.videoUrl1 = videoUrl1;
+	}
+
+
+	public String getVideoUrl2() {
+		return videoUrl2;
+	}
+
+
+	public void setVideoUrl2(String videoUrl2) {
+		this.videoUrl2 = videoUrl2;
+	}
+
+
+	public Integer getVideoKey1() {
+		return videoKey1;
+	}
+
+
+	public void setVideoKey1(Integer videoKey1) {
+		this.videoKey1 = videoKey1;
+	}
+
+
+	public Integer getVideoKey2() {
+		return videoKey2;
+	}
+
+
+	public void setVideoKey2(Integer videoKey2) {
+		this.videoKey2 = videoKey2;
 	}
 
 

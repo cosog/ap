@@ -1117,16 +1117,18 @@ var RPCDeviceInfoHandsontableHelper = {
                 	}
                 }
                 //视频信息
-                var videoUrl='';
                 var videoUrl1='';
                 var videoUrl2='';
+                var videoKeyName1='';
+                var videoKeyName2='';
                 
                 if(rpcVideoInfoHandsontableHelper!=null && rpcVideoInfoHandsontableHelper.hot!=undefined){
                 	var rpcVideoInfoHandsontableData=rpcVideoInfoHandsontableHelper.hot.getData();
                 	videoUrl1=rpcVideoInfoHandsontableData[0][2];
+                	videoKeyName1=rpcVideoInfoHandsontableData[0][3];
                 	videoUrl2=rpcVideoInfoHandsontableData[1][2];
+                	videoKeyName2=rpcVideoInfoHandsontableData[1][3];
                 }
-                videoUrl=videoUrl1+';'+videoUrl2;
             	Ext.Ajax.request({
                     method: 'POST',
                     url: context + '/wellInformationManagerController/saveWellHandsontableData',
@@ -1161,7 +1163,10 @@ var RPCDeviceInfoHandsontableHelper = {
                     	balanceInfo: JSON.stringify(balanceInfo),
                         deviceProductionData: JSON.stringify(deviceProductionData),
                         manualInterventionResultName: manualInterventionResultName,
-                        videoUrl:videoUrl,
+                        videoUrl1:videoUrl1,
+                        videoKeyName1:videoKeyName1,
+                        videoUrl2:videoUrl2,
+                        videoKeyName2:videoKeyName2,
                         orgId: leftOrg_Id,
                         deviceType: 101
                     }

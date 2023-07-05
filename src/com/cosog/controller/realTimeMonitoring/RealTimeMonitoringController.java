@@ -727,7 +727,8 @@ public class RealTimeMonitoringController extends BaseController {
 	
 	@RequestMapping("/getUIKitAccessToken")
 	public String getUIKitAccessToken()throws Exception{
-		String json=this.realTimeMonitoringService.getUIKitAccessToken();
+		String videoKeyId = ParamUtils.getParameter(request, "videoKeyId");
+		String json=this.realTimeMonitoringService.getUIKitAccessToken(videoKeyId);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

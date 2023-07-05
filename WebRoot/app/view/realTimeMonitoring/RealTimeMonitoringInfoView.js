@@ -1769,7 +1769,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 
 }
 
-function initVideo(panelId,divId,videoUrl,deviceType,videoNo,isNew){
+function initVideo(panelId,divId,videoUrl,videoKeyId,deviceType,videoNo,isNew){
 	var now=new Date().getTime();
 	var accessToken='';
 	if(videoUrl=='ezopen://open.ys7.com/G39444019/1.live'){
@@ -1790,27 +1790,23 @@ function initVideo(panelId,divId,videoUrl,deviceType,videoNo,isNew){
 			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
 		}
 	}else{
-		if(accessTokenInfo==null || (!accessTokenInfo.success) || now>accessTokenInfo.expireTime){
-			Ext.Ajax.request({
-				method:'POST',
-				url:context + '/realTimeMonitoringController/getUIKitAccessToken',
-				success:function(response) {
-					accessTokenInfo = Ext.JSON.decode(response.responseText);
-					if(accessTokenInfo.success){
-						accessToken=accessTokenInfo.accessToken;
-					}
-					showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
-				},
-				failure:function(){
-					Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/realTimeMonitoringController/getUIKitAccessToken',
+			success:function(response) {
+				accessTokenInfo = Ext.JSON.decode(response.responseText);
+				if(accessTokenInfo.success){
+					accessToken=accessTokenInfo.accessToken;
 				}
-			});
-		}else{
-			if(accessTokenInfo.success){
-				accessToken=accessTokenInfo.accessToken;
-			}
-			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
-		}
+				showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
+			},
+			failure:function(){
+				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			},
+			params: {
+				videoKeyId: videoKeyId
+	        }
+		});
 	}
 }
 
@@ -1829,25 +1825,16 @@ function createVideo(deviceType,data,videoNo,isNew){
 		divId2='PCPRealTimeMonitoringRightVideoDiv2_Id';
 	}
 	
-	var videoUrl  = data.videoUrl;
-	var url="";
-	var videoUrl1="",videoUrl2="";
-	if(isNotVal(videoUrl)){
-		var videoUrlArr=videoUrl.split(";");
-		if(videoUrlArr.length>0){
-			videoUrl1=videoUrlArr[0];
-			if(videoUrlArr.length>1){
-				videoUrl2=videoUrlArr[1];
-			}
-		}
-	}
+	var videoUrl1=data.videoUrl1,videoUrl2=data.videoUrl2;
+	var videoKeyId1=data.videoKeyId1,videoKeyId2=data.videoKeyId2;
+	
 	if(videoNo==1){
-		initVideo(panelId1,divId1,videoUrl1,deviceType,1,isNew);
+		initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
 	}else if(videoNo==2){
-		initVideo(panelId2,divId2,videoUrl2,deviceType,2,isNew);
+		initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
 	}else{
-		initVideo(panelId1,divId1,videoUrl1,deviceType,1,isNew);
-		initVideo(panelId2,divId2,videoUrl2,deviceType,2,isNew);
+		initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
+		initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
 	}
 }
 

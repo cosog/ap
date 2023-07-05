@@ -705,19 +705,7 @@ public class WellInformationManagerController extends BaseController {
 		
 		java.lang.reflect.Type type = new TypeToken<VideoKeyHandsontableChangedData>() {}.getType();
 		VideoKeyHandsontableChangedData videoKeyHandsontableChangedData=gson.fromJson(data, type);
-//		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-//			deviceTableName="tbl_rpcdevice";
-//			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-//		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-//			deviceTableName="tbl_pcpdevice";
-//			json=this.wellInformationManagerService.savePCPDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-//		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
-//			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-//		}
-		
-		
-		
-		
+		this.wellInformationManagerService.saveVideoKeyHandsontableData(videoKeyHandsontableChangedData,orgId);
 		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -913,7 +901,10 @@ public class WellInformationManagerController extends BaseController {
 		String deviceProductionData = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "deviceProductionData"));
 		String manualInterventionResultName = ParamUtils.getParameter(request, "manualInterventionResultName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
-		String videoUrl = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "videoUrl"));
+		String videoUrl1 = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "videoUrl1"));
+		String videoKeyName1 = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "videoKeyName1"));
+		String videoUrl2 = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "videoUrl2"));
+		String videoKeyName2 = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "videoKeyName2"));
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
 		String deviceTableName="tbl_rpcdevice";
@@ -1006,7 +997,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		
 		//处理视频数据
-		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl);
+		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl1,videoKeyName1,videoUrl2,videoKeyName2);
 		
 		
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
@@ -1744,6 +1735,9 @@ public class WellInformationManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.videoKeyManagerService.doVideoKeyAdd(videoKey);
+			List<String> nameList=new ArrayList<>();
+			nameList.add(videoKey.getAccount());
+			MemoryDataManagerTask.loadUIKitAccessTokenByName(nameList,"update");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -1850,6 +1844,25 @@ public class WellInformationManagerController extends BaseController {
 		String manufacturer = ParamUtils.getParameter(request, "manufacturer");
 		String model = ParamUtils.getParameter(request, "model");
 		boolean flag = this.wellInformationManagerService.judgePumpingModelExistOrNot(manufacturer,model);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json = "";
+		if (flag) {
+			json = "{success:true,msg:'1'}";
+		} else {
+			json = "{success:true,msg:'0'}";
+		}
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/judgeVideoKeyExistOrNot")
+	public String judgeVideoKeyExistOrNot() throws IOException {
+		String account = ParamUtils.getParameter(request, "account");
+		boolean flag = this.wellInformationManagerService.judgeVideoKeyExistOrNot(account);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";

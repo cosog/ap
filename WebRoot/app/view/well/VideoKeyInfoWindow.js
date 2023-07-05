@@ -41,8 +41,30 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
                 text: '添加密钥',
                 iconCls: 'add',
                 handler: function (v, o) {
+                	var selectedOrgName="";
+                	var selectedOrgId="";
+                	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+            		var count=IframeViewStore.getCount();
+                	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+                	if (IframeViewSelection.length > 0) {
+                		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
+                		selectedOrgId=IframeViewSelection[0].data.orgId;
+                		
+                	} else {
+                		if(count>0){
+                			selectedOrgName=IframeViewStore.getAt(0).data.text;
+                			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+                		}
+                	}
                 	
-                }
+                	var window = Ext.create("AP.view.well.VideoKeyAddWindow", {
+                        title: '添加视频密钥'
+                    });
+                    window.show();
+                    Ext.getCmp("videoKeyWinOrgLabel_Id").setHtml("密钥将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
+                    Ext.getCmp("videoKeyOrg_Id").setValue(selectedOrgId);
+                    return false;
+    			}
     		}, '-',{
     			xtype: 'button',
     			text: '删除密钥',

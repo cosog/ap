@@ -1178,7 +1178,6 @@ public class BaseDao extends HibernateDaoSupport {
 		if(acStatusProbeResonanceData!=null){
 			license=acStatusProbeResonanceData.getLicenseNumber();
 		}
-//		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		try {
 			cs = conn.prepareCall("{call prd_save_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){

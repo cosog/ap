@@ -1580,9 +1580,9 @@ public class WellInformationManagerController extends BaseController {
 			if(rpcDeviceInformation.getOrgId()==null){
 				rpcDeviceInformation.setOrgId(user.getUserOrgid());
 			}
-			String videoUrl1 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl1");
-			String videoUrl2 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl2");
-			rpcDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
+//			String videoUrl1 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl1");
+//			String videoUrl2 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl2");
+//			rpcDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
 			
 			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
 			int license=0;
@@ -1636,9 +1636,6 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		try {
 			User user = (User) session.getAttribute("userLogin");
-			String videoUrl1 = ParamUtils.getParameter(request, "pcpDeviceInformation.videoUrl1");
-			String videoUrl2 = ParamUtils.getParameter(request, "pcpDeviceInformation.videoUrl2");
-			pcpDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
 			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
 			int license=0;
 			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");

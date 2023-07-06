@@ -33,7 +33,6 @@ public class PcpDeviceInformation implements java.io.Serializable {
 	private String ipPort;
 	private String slave;
 	private Integer peakDelay;
-	private String videoUrl;
 	private Integer sortNum;
 	private Integer status;
 
@@ -47,7 +46,7 @@ public class PcpDeviceInformation implements java.io.Serializable {
 			Integer applicationScenarios, 
 			String instanceCode, String alarmInstanceCode,String displayInstanceCode, String reportInstanceCode, 
 			String tcpType, String signInId,String ipPort, String slave,
-			String videoUrl, Integer sortNum) {
+			Integer sortNum) {
 		super();
 		this.id = id;
 		this.orgId = orgId;
@@ -62,7 +61,6 @@ public class PcpDeviceInformation implements java.io.Serializable {
 		this.signInId = signInId;
 		this.ipPort = ipPort;
 		this.slave = slave;
-		this.videoUrl = videoUrl;
 		this.sortNum = sortNum;
 	}
 
@@ -156,15 +154,6 @@ public class PcpDeviceInformation implements java.io.Serializable {
 
 	public void setSlave(String slave) {
 		this.slave = slave;
-	}
-
-	@Column(name = "videoUrl", nullable = true, length = 400)
-	public String getVideoUrl() {
-		return videoUrl;
-	}
-
-	public void setVideoUrl(String videoUrl) {
-		this.videoUrl = videoUrl;
 	}
 
 	@Column(name = "sortNum", precision = 22, scale = 0)

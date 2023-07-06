@@ -59,7 +59,11 @@ public class WellHandsontableChangedData {
 	    
 	    private String videoUrl1="";
 	    
+	    private String videoKeyName1="";
+	    
 	    private String videoUrl2="";
+	    
+	    private String videoKeyName2="";
 	    
 	    private String statusName="";
 	    
@@ -769,6 +773,22 @@ public class WellHandsontableChangedData {
 
 		public void setLevelCorrectValue(String levelCorrectValue) {
 			this.levelCorrectValue = levelCorrectValue;
+		}
+
+		public String getVideoKeyName1() {
+			return videoKeyName1;
+		}
+
+		public void setVideoKeyName1(String videoKeyName1) {
+			this.videoKeyName1 = videoKeyName1;
+		}
+
+		public String getVideoKeyName2() {
+			return videoKeyName2;
+		}
+
+		public void setVideoKeyName2(String videoKeyName2) {
+			this.videoKeyName2 = videoKeyName2;
 		}
 	    
 	}

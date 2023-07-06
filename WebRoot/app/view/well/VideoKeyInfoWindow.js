@@ -13,8 +13,8 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 800,
-    minWidth: 800,
+    width: 900,
+    minWidth: 900,
     height: 600,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -251,7 +251,7 @@ var VideoKeyDataHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [1,1,5,5],
+	        		colWidths: [2,3,10,10],
 	        		columns: videoKeyDataHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 //	                autoWrapRow: true,

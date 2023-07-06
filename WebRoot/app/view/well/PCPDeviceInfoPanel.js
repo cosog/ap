@@ -110,23 +110,6 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-//                    var fields = "";
-//                    var heads = "";
-//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-//                    var wellInformationName = Ext.getCmp('pcpDeviceListComb_Id').getValue();
-//                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
-//                    for (var i = 0; i < pcpDeviceInfoHandsontableHelper.colHeaders.length; i++) {
-//                        fields += pcpDeviceInfoHandsontableHelper.columns[i].data + ",";
-//                        heads += pcpDeviceInfoHandsontableHelper.colHeaders[i] + ","
-//                    }
-//                    if (isNotVal(fields)) {
-//                        fields = fields.substring(0, fields.length - 1);
-//                        heads = heads.substring(0, heads.length - 1);
-//                    }
-//
-//                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=201&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("螺杆泵井")) + "&title=" + URLencode(URLencode("螺杆泵井"));
-//                    openExcelWindow(url + '?flag=true' + param);
-                	
                 	var window = Ext.create("AP.view.well.ExportDeviceInfoWindow");
                     Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(201);
                     window.show();
@@ -343,11 +326,21 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         }
                 	},{
                     	region: 'south',
-                    	height:'20%',
+                    	height:'23%',
                     	title:'视频配置',
                     	id:'PCPVideoInfoPanel_Id',
                     	split: true,
                     	collapsible: true,
+                    	tbar:['->',{
+                            xtype: 'button',
+                            text: '编辑视频密钥',
+                            iconCls: 'save',
+                            disabled: loginUserRoleVideoKeyEdit!=1,
+                            handler: function (v, o) {
+                            	var VideoKeyInfoWindow = Ext.create("AP.view.well.VideoKeyInfoWindow");
+                            	VideoKeyInfoWindow.show();
+                            }
+                        }],
                     	html: '<div class="PCPVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="PCPVideoInfoTableDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -937,15 +930,19 @@ var PCPDeviceInfoHandsontableHelper = {
             	}
                 
               //视频信息
-                var videoUrl='';
+              //视频信息
                 var videoUrl1='';
                 var videoUrl2='';
+                var videoKeyName1='';
+                var videoKeyName2='';
+                
                 if(pcpVideoInfoHandsontableHelper!=null && pcpVideoInfoHandsontableHelper.hot!=undefined){
-                	var pcpVideoInfoHandsontableData=pcpVideoInfoHandsontableHelper.hot.getData();
-                	videoUrl1=pcpVideoInfoHandsontableData[0][2];
-                	videoUrl2=pcpVideoInfoHandsontableData[1][2];
+                	var rpcVideoInfoHandsontableData=pcpVideoInfoHandsontableHelper.hot.getData();
+                	videoUrl1=rpcVideoInfoHandsontableData[0][2];
+                	videoKeyName1=rpcVideoInfoHandsontableData[0][3];
+                	videoUrl2=rpcVideoInfoHandsontableData[1][2];
+                	videoKeyName2=rpcVideoInfoHandsontableData[1][3];
                 }
-                videoUrl=videoUrl1+';'+videoUrl2;
             	Ext.Ajax.request({
                     method: 'POST',
                     url: context + '/wellInformationManagerController/saveWellHandsontableData',
@@ -977,7 +974,10 @@ var PCPDeviceInfoHandsontableHelper = {
                     	deviceId: deviceId,
                     	data: JSON.stringify(pcpDeviceInfoHandsontableHelper.AllData),
                         deviceProductionData: JSON.stringify(deviceProductionData),
-                        videoUrl:videoUrl,
+                        videoUrl1:videoUrl1,
+                        videoKeyName1:videoKeyName1,
+                        videoUrl2:videoUrl2,
+                        videoKeyName2:videoKeyName2,
                         orgId: leftOrg_Id,
                         deviceType: 201
                     }
@@ -1214,13 +1214,18 @@ var PCPProductionHandsontableHelper = {
 	};
 
 function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
-	if(isNew&&pcpVideoInfoHandsontableHelper!=null){
-		if(pcpVideoInfoHandsontableHelper.hot!=undefined){
-			pcpVideoInfoHandsontableHelper.hot.destroy();
-		}
+//	if(isNew&&pcpVideoInfoHandsontableHelper!=null){
+//		if(pcpVideoInfoHandsontableHelper.hot!=undefined){
+//			pcpVideoInfoHandsontableHelper.hot.destroy();
+//		}
+//		pcpVideoInfoHandsontableHelper=null;
+//	}
+	if(pcpVideoInfoHandsontableHelper!=null && pcpVideoInfoHandsontableHelper.hot!=undefined){
+		pcpVideoInfoHandsontableHelper.hot.destroy();
 		pcpVideoInfoHandsontableHelper=null;
 	}
 	Ext.getCmp("PCPVideoInfoPanel_Id").el.mask(cosog.string.loading).show();
+	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',
@@ -1232,12 +1237,40 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 				panelTitle="螺杆泵井【<font color='red'>"+deviceName+"</font>】视频配置";
 			}
 			Ext.getCmp("PCPVideoInfoPanel_Id").setTitle(panelTitle);
+			
+			
 			if(pcpVideoInfoHandsontableHelper==null || pcpVideoInfoHandsontableHelper.hot==undefined){
 				pcpVideoInfoHandsontableHelper = PCPVideoInfoHandsontableHelper.createNew("PCPVideoInfoTableDiv_id");
-				var colHeaders="['序号','名称','变量']";
-				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
+				var colHeaders = "[";
+                var columns = "[";
+                var colWidths=[];
+                for (var i = 0; i < result.columns.length; i++) {
+                    colHeaders += "'" + result.columns[i].header + "'";
+                    colWidths.push(result.columns[i].flex);
+                    if (result.columns[i].dataIndex.toUpperCase() === "videoKey".toUpperCase()) {
+                        var source = "[";
+                        for (var j = 0; j < result.videoKeyList.length; j++) {
+                            source += "\'" + result.videoKeyList[j] + "\'";
+                            if (j < result.videoKeyList.length - 1) {
+                                source += ",";
+                            }
+                        }
+                        source += "]";
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+                    }else {
+                        columns += "{data:'" + result.columns[i].dataIndex + "'}";
+                    }
+                    if (i < result.columns.length - 1) {
+                        colHeaders += ",";
+                        columns += ",";
+                    }
+                }
+                colHeaders += "]";
+                columns += "]";
+				
 				pcpVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				pcpVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+				pcpVideoInfoHandsontableHelper.colWidths=colWidths;
 				if(result.totalRoot.length==0){
 					pcpVideoInfoHandsontableHelper.createTable([{},{},{},{}]);
 				}else{
@@ -1257,7 +1290,8 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 		},
 		params: {
 			deviceId:deviceId,
-			deviceType:201
+			deviceType:201,
+			orgId: leftOrg_Id
         }
 	});
 };
@@ -1269,6 +1303,7 @@ var PCPVideoInfoHandsontableHelper = {
 	        pcpVideoInfoHandsontableHelper.divid = divid;
 	        pcpVideoInfoHandsontableHelper.colHeaders = [];
 	        pcpVideoInfoHandsontableHelper.columns = [];
+	        pcpVideoInfoHandsontableHelper.colWidths=[];
 	        pcpVideoInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
@@ -1290,7 +1325,7 @@ var PCPVideoInfoHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [1,1,5],
+	                colWidths: pcpVideoInfoHandsontableHelper.colWidths,
 	                columns: pcpVideoInfoHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1307,7 +1342,7 @@ var PCPVideoInfoHandsontableHelper = {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex !=2) {
+	                    if (visualColIndex < 2) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = pcpVideoInfoHandsontableHelper.addBoldBg;
 		                }

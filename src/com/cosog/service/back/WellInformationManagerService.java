@@ -776,7 +776,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					collisionBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					collisionBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");
+					collisionBuff.append("\"videoKeyName1\":\""+list.get(i).getVideoKeyName1()+"\",");
 					collisionBuff.append("\"videoUrl2\":\""+list.get(i).getVideoUrl2()+"\",");
+					collisionBuff.append("\"videoKeyName2\":\""+list.get(i).getVideoKeyName2()+"\",");
 					collisionBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					collisionBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
@@ -852,7 +854,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					overlayBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					overlayBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");
+					overlayBuff.append("\"videoKeyName1\":\""+list.get(i).getVideoKeyName1()+"\",");
 					overlayBuff.append("\"videoUrl2\":\""+list.get(i).getVideoUrl2()+"\",");
+					overlayBuff.append("\"videoKeyName2\":\""+list.get(i).getVideoKeyName2()+"\",");
 					overlayBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					overlayBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
@@ -1074,7 +1078,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					collisionBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					collisionBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");
+					collisionBuff.append("\"videoKeyName1\":\""+list.get(i).getVideoKeyName1()+"\",");
 					collisionBuff.append("\"videoUrl2\":\""+list.get(i).getVideoUrl2()+"\",");
+					collisionBuff.append("\"videoKeyName2\":\""+list.get(i).getVideoKeyName2()+"\",");
 					collisionBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					collisionBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
@@ -1134,7 +1140,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					overlayBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					overlayBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");
+					overlayBuff.append("\"videoKeyName1\":\""+list.get(i).getVideoKeyName1()+"\",");
 					overlayBuff.append("\"videoUrl2\":\""+list.get(i).getVideoUrl2()+"\",");
+					overlayBuff.append("\"videoKeyName2\":\""+list.get(i).getVideoKeyName2()+"\",");
 					overlayBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					overlayBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
@@ -3362,9 +3370,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			deviceTableName="tbl_pcpdevice";
 		}
 		String sql = "select t.videourl1,t2.account as videokey1,t.videourl2,t3.account as videokey2"
-				+ " from "+deviceTableName+" t,TBL_VIDEOKEY t2,TBL_VIDEOKEY t3 "
-				+ " where t.videokeyid1=t2.id and t.videokeyid2=t3.id"
-				+ " and t.id="+deviceId;
+				+ " from "+deviceTableName+" t"
+				+ " left outer join TBL_VIDEOKEY t2 on t.videokeyid1=t2.id "
+				+ " left outer join TBL_VIDEOKEY t3 on t.videokeyid2=t3.id "
+				+ " where t.id="+deviceId;
 		String videoKeySql="select t.account from TBL_VIDEOKEY t where t.orgid in("+orgId+") order by t.id";
 		List<?> videoKeyList = this.findCallSql(videoKeySql);
 		videoKeyDropdownData.append("[");

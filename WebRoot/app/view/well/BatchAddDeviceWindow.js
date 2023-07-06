@@ -104,6 +104,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
 		batchAddDeviceHandsontableHelper = null;
 	}
     var orgId = Ext.getCmp('batchAddDeviceOrg_Id').getValue();
+    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType = Ext.getCmp('batchAddDeviceType_Id').getValue();
     
     var applicationScenarios=0;
@@ -241,7 +242,9 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     } else if (dataIndex.toUpperCase() != "wellName".toUpperCase() 
                     		&& dataIndex.toUpperCase() != "signInId".toUpperCase()
                     		&& dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
-                    		&& dataIndex.toUpperCase() != "videoUrl2".toUpperCase() ) {
+                    		&& dataIndex.toUpperCase() != "videoKeyName1".toUpperCase()
+                    		&& dataIndex.toUpperCase() != "videoUrl2".toUpperCase()
+                    		&& dataIndex.toUpperCase() != "videoKeyName2".toUpperCase()) {
                         columns += "{data:'" + dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
                     }else {
                         columns += "{data:'" + dataIndex + "'}";
@@ -270,6 +273,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
         },
         params: {
         	orgId: orgId,
+        	orgIds: leftOrg_Id,
         	deviceType: deviceType,
             recordCount: 50,
             applicationScenarios:applicationScenarios,

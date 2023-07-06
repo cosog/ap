@@ -542,21 +542,23 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 minValue: 0,
                 anchor: '95%',
                 msgTarget: 'side'
-            },{
-         		xtype: "textfield",
-         		fieldLabel: '视频监控路径1',
-         		id: 'pcpDeviceVideoUrl1_Id',
-         		anchor: '95%',
-         		name: "pcpDeviceInformation.videoUrl1",
-         		value:''
-            },{
-         		xtype: "textfield",
-         		fieldLabel: '视频监控路径2',
-         		id: 'pcpDeviceVideoUrl2_Id',
-         		anchor: '95%',
-         		name: "pcpDeviceInformation.videoUrl2",
-         		value:''
-            },{
+            },
+//            {
+//         		xtype: "textfield",
+//         		fieldLabel: '视频监控路径1',
+//         		id: 'pcpDeviceVideoUrl1_Id',
+//         		anchor: '95%',
+//         		name: "pcpDeviceInformation.videoUrl1",
+//         		value:''
+//            },{
+//         		xtype: "textfield",
+//         		fieldLabel: '视频监控路径2',
+//         		id: 'pcpDeviceVideoUrl2_Id',
+//         		anchor: '95%',
+//         		name: "pcpDeviceInformation.videoUrl2",
+//         		value:''
+//            },
+            {
             	xtype: 'fieldcontainer',
                 fieldLabel : '状态<font color=red>*</font>',
                 defaultType: 'radiofield',

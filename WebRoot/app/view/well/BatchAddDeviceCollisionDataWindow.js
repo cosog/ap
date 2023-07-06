@@ -176,10 +176,6 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                             isCheckout: isCheckout
                         }
                     });
-                    
-                    
-                    
-                    
                 }
             }],
             layout: 'border',
@@ -381,7 +377,9 @@ function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
             } else if (dataIndex.toUpperCase() != "wellName".toUpperCase() 
             		&& dataIndex.toUpperCase() != "signInId".toUpperCase()
             		&& dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
-            		&& dataIndex.toUpperCase() != "videoUrl2".toUpperCase() ) {
+            		&& dataIndex.toUpperCase() != "videoKeyName1".toUpperCase()
+            		&& dataIndex.toUpperCase() != "videoUrl2".toUpperCase()
+            		&& dataIndex.toUpperCase() != "videoKeyName2".toUpperCase() ) {
                 columns += "{data:'" + dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceCollisionDataHandsontableHelper);}}";
             } else {
                 columns += "{data:'" + dataIndex + "'}";
@@ -719,7 +717,9 @@ function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
             } else if (dataIndex.toUpperCase() != "wellName".toUpperCase() 
             		&& dataIndex.toUpperCase() != "signInId".toUpperCase()
             		&& dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
-            		&& dataIndex.toUpperCase() != "videoUrl2".toUpperCase() ) {
+            		&& dataIndex.toUpperCase() != "videoKeyName1".toUpperCase()
+            		&& dataIndex.toUpperCase() != "videoUrl2".toUpperCase()
+            		&& dataIndex.toUpperCase() != "videoKeyName2".toUpperCase() ) {
                 columns += "{data:'" + dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceOverlayDataHandsontableHelper);}}";
             }  else {
                 columns += "{data:'" + dataIndex + "'}";

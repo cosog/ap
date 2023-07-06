@@ -5,7 +5,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
     layout: 'fit',
     iframe: true,
     closeAction: 'destroy',
-    width: 300,
+    width: 400,
     shadow: 'sides',
     resizable: false,
     collapsible: true,
@@ -28,11 +28,13 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
             },{
                 xtype: "hidden",
                 fieldLabel: '单位编号',
+                labelWidth: 60,
                 id: 'videoKeyOrg_Id',
                 value: '',
                 name: "videoKey.orgId"
             },{
                 fieldLabel: '名称<font color=red>*</font>',
+                labelWidth: 60,
                 id: 'videoKeyAccount_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -67,6 +69,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
             },{
                 xtype: "textfield",
                 fieldLabel: 'appKey<font color=red>*</font>',
+                labelWidth: 60,
                 allowBlank: false,
                 id: 'videoKeyAppKey_Id',
                 anchor: '95%',
@@ -75,6 +78,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
             },{
                 xtype: "textfield",
                 fieldLabel: 'secret<font color=red>*</font>',
+                labelWidth: 60,
                 allowBlank: false,
                 id: 'videoKeySecret_Id',
                 anchor: '95%',

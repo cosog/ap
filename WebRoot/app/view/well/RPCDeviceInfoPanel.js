@@ -421,7 +421,6 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 },{
                 	region: 'south',
                 	height:'23%',
-//                	minHeight:135,
                 	title:'视频配置',
                 	id:'RPCVideoInfoPanel_Id',
                 	split: true,
@@ -1786,6 +1785,7 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 //	}
 	if(rpcVideoInfoHandsontableHelper!=null && rpcVideoInfoHandsontableHelper.hot!=undefined){
 		rpcVideoInfoHandsontableHelper.hot.destroy();
+		rpcVideoInfoHandsontableHelper=null;
 	}
 	rpcVideoInfoHandsontableHelper=null;
 	Ext.getCmp("RPCVideoInfoPanel_Id").el.mask(cosog.string.loading).show();

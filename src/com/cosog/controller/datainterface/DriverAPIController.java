@@ -1362,12 +1362,14 @@ public class DriverAPIController extends BaseController{
 				if(protocol!=null){
 					String lastSaveTime=rpcDeviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
+					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
 					String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 					String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 					long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-					if(timeDiff>save_cycle*1000){
+					if(save_cycle<=acq_cycle || timeDiff>=save_cycle*1000){
 						save=true;
 					}
+					System.out.println(rpcDeviceInfo.getSignInId()+"采集时间："+acqTime+",上次数据保存时间："+lastSaveTime+",时间差："+timeDiff+",保存周期："+(save_cycle*1000)+",采集周期："+(acq_cycle*1000)+",是否保存:"+save);
 					
 					RPCCalculateRequestData rpcCalculateRequestData=new RPCCalculateRequestData();
 					rpcCalculateRequestData.init();
@@ -1550,6 +1552,8 @@ public class DriverAPIController extends BaseController{
 											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
 												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 													runStatus=1;
+												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+													runStatus=0;
 												}
 											}else{
 												if(rawRunStatus==1){
@@ -1558,11 +1562,7 @@ public class DriverAPIController extends BaseController{
 													runStatus=0;
 												}
 											}
-										}else{
-											runStatus=rpcDeviceInfo.getRunStatus();
 										}
-												
-										
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqEnergy=true;
@@ -2723,10 +2723,11 @@ public class DriverAPIController extends BaseController{
 				if(protocol!=null){
 					String lastSaveTime=pcpDeviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
+					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
 					String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 					String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 					long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-					if(timeDiff>save_cycle*1000){
+					if(save_cycle<=acq_cycle || timeDiff>=save_cycle*1000){
 						save=true;
 					}
 					
@@ -2914,6 +2915,8 @@ public class DriverAPIController extends BaseController{
 											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
 												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 													runStatus=1;
+												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+													runStatus=0;
 												}
 											}else{
 												if(rawRunStatus==1){
@@ -2922,8 +2925,6 @@ public class DriverAPIController extends BaseController{
 													runStatus=0;
 												}
 											}
-										}else{
-											runStatus=pcpDeviceInfo.getRunStatus();
 										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){

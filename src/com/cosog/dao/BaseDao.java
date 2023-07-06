@@ -1179,7 +1179,7 @@ public class BaseDao extends HibernateDaoSupport {
 			license=acStatusProbeResonanceData.getLicenseNumber();
 		}
 		try {
-			cs = conn.prepareCall("{call prd_save_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					try{
@@ -1321,21 +1321,25 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
-							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
-							cs.setInt(15, status);
-							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-							cs.setString(17, new Gson().toJson(productionData));
-							cs.setString(18, wellHandsontableChangedData.getUpdatelist().get(i).getManufacturer().replaceAll(" ", ""));
-							cs.setString(19, wellHandsontableChangedData.getUpdatelist().get(i).getModel().replaceAll(" ", ""));
-							cs.setString(20, wellHandsontableChangedData.getUpdatelist().get(i).getStroke().replaceAll(" ", ""));
-							cs.setString(21, new Gson().toJson(balance));
-							cs.setInt(22, StringManagerUtils.stringToInteger(isCheckout));
-							cs.setInt(23, license);
-							cs.registerOutParameter(24, Types.INTEGER);
-							cs.registerOutParameter(25,Types.VARCHAR);
+							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", ""));
+							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getVideoKeyName1().replaceAll(" ", ""));
+							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
+							cs.setString(17, wellHandsontableChangedData.getUpdatelist().get(i).getVideoKeyName2().replaceAll(" ", ""));
+							
+							cs.setInt(18, status);
+							cs.setString(19, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(20, new Gson().toJson(productionData));
+							cs.setString(21, wellHandsontableChangedData.getUpdatelist().get(i).getManufacturer().replaceAll(" ", ""));
+							cs.setString(22, wellHandsontableChangedData.getUpdatelist().get(i).getModel().replaceAll(" ", ""));
+							cs.setString(23, wellHandsontableChangedData.getUpdatelist().get(i).getStroke().replaceAll(" ", ""));
+							cs.setString(24, new Gson().toJson(balance));
+							cs.setInt(25, StringManagerUtils.stringToInteger(isCheckout));
+							cs.setInt(26, license);
+							cs.registerOutParameter(27, Types.INTEGER);
+							cs.registerOutParameter(28,Types.VARCHAR);
 							cs.executeUpdate();
-							int saveSign=cs.getInt(24);
-							String saveResultStr=cs.getString(25);
+							int saveSign=cs.getInt(27);
+							String saveResultStr=cs.getString(28);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
@@ -1498,21 +1502,24 @@ public class BaseDao extends HibernateDaoSupport {
 								cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
 								cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
 								cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
-								cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
-								cs.setInt(15, status);
-								cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
-								cs.setString(17, new Gson().toJson(productionData));
-								cs.setString(18, wellHandsontableChangedData.getInsertlist().get(i).getManufacturer().replaceAll(" ", ""));
-								cs.setString(19, wellHandsontableChangedData.getInsertlist().get(i).getModel().replaceAll(" ", ""));
-								cs.setString(20, wellHandsontableChangedData.getInsertlist().get(i).getStroke().replaceAll(" ", ""));
-								cs.setString(21, new Gson().toJson(balance));
-								cs.setInt(22, StringManagerUtils.stringToInteger(isCheckout));
-								cs.setInt(23, license);
-								cs.registerOutParameter(24, Types.INTEGER);
-								cs.registerOutParameter(25,Types.VARCHAR);
+								cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", ""));
+								cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getVideoKeyName1().replaceAll(" ", ""));
+								cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
+								cs.setString(17, wellHandsontableChangedData.getInsertlist().get(i).getVideoKeyName2().replaceAll(" ", ""));
+								cs.setInt(18, status);
+								cs.setString(19, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+								cs.setString(20, new Gson().toJson(productionData));
+								cs.setString(21, wellHandsontableChangedData.getInsertlist().get(i).getManufacturer().replaceAll(" ", ""));
+								cs.setString(22, wellHandsontableChangedData.getInsertlist().get(i).getModel().replaceAll(" ", ""));
+								cs.setString(23, wellHandsontableChangedData.getInsertlist().get(i).getStroke().replaceAll(" ", ""));
+								cs.setString(24, new Gson().toJson(balance));
+								cs.setInt(25, StringManagerUtils.stringToInteger(isCheckout));
+								cs.setInt(26, license);
+								cs.registerOutParameter(27, Types.INTEGER);
+								cs.registerOutParameter(28,Types.VARCHAR);
 								cs.executeUpdate();
-								int saveSign=cs.getInt(24);
-								String saveResultStr=cs.getString(25);
+								int saveSign=cs.getInt(27);
+								String saveResultStr=cs.getString(28);
 								if(saveSign==0||saveSign==1){//保存成功
 									if(saveSign==0){//添加
 										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
@@ -1846,7 +1853,7 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 //		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		try {
-			cs = conn.prepareCall("{call prd_save_pcpdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_pcpdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					try{
@@ -1961,17 +1968,22 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
-							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
-							cs.setInt(15, status);
-							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-							cs.setString(17, new Gson().toJson(productionData));
-							cs.setInt(18, StringManagerUtils.stringToInteger(isCheckout));
-							cs.setInt(19, license);
-							cs.registerOutParameter(20, Types.INTEGER);
-							cs.registerOutParameter(21,Types.VARCHAR);
+							
+							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", ""));
+							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getVideoKeyName1().replaceAll(" ", ""));
+							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
+							cs.setString(17, wellHandsontableChangedData.getUpdatelist().get(i).getVideoKeyName2().replaceAll(" ", ""));
+							
+							cs.setInt(18, status);
+							cs.setString(19, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(20, new Gson().toJson(productionData));
+							cs.setInt(21, StringManagerUtils.stringToInteger(isCheckout));
+							cs.setInt(22, license);
+							cs.registerOutParameter(23, Types.INTEGER);
+							cs.registerOutParameter(24,Types.VARCHAR);
 							cs.executeUpdate();
-							int saveSign=cs.getInt(20);
-							String saveResultStr=cs.getString(21);
+							int saveSign=cs.getInt(23);
+							String saveResultStr=cs.getString(24);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
@@ -2104,17 +2116,20 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
-							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
-							cs.setInt(15, status);
-							cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
-							cs.setString(17, new Gson().toJson(productionData));
-							cs.setInt(18, StringManagerUtils.stringToInteger(isCheckout));
-							cs.setInt(19, license);
-							cs.registerOutParameter(20, Types.INTEGER);
-							cs.registerOutParameter(21,Types.VARCHAR);
+							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", ""));
+							cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getVideoKeyName1().replaceAll(" ", ""));
+							cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
+							cs.setString(17, wellHandsontableChangedData.getInsertlist().get(i).getVideoKeyName2().replaceAll(" ", ""));
+							cs.setInt(18, status);
+							cs.setString(19, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(20, new Gson().toJson(productionData));
+							cs.setInt(21, StringManagerUtils.stringToInteger(isCheckout));
+							cs.setInt(22, license);
+							cs.registerOutParameter(23, Types.INTEGER);
+							cs.registerOutParameter(24,Types.VARCHAR);
 							cs.executeUpdate();
-							int saveSign=cs.getInt(20);
-							String saveResultStr=cs.getString(21);
+							int saveSign=cs.getInt(23);
+							String saveResultStr=cs.getString(24);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));

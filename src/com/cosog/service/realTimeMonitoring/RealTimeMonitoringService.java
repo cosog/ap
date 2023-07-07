@@ -675,7 +675,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,"
 					+ "t2.pumpEff*100 as pumpEff,"
 					+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
-					+ "t2.levelCorrectValue,t2.inverProducingfluidLevel,t2.todayKWattH";
+					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,t2.todayKWattH,"
+					+ "t2.productiondata";
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
 				if(dataSaveMode==0){
@@ -728,6 +729,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String commStatusName=obj[9]+"";
 				String runStatusName=obj[14]+"";
 				String resultCode=obj[15]+"";
+				String productionDataStr=obj[44]+"";
 				
 				RPCDeviceInfo rpcDeviceInfo=null;
 				if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
@@ -825,8 +827,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"wattDegreeBalance\":\""+obj[39]+"\",");
 				result_json.append("\"deltaradius\":\""+obj[40]+"\",");
 				
-				result_json.append("\"levelCorrectValue\":\""+obj[41]+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[42]+"\",");
+				result_json.append("\"levelDifferenceValue\":\""+obj[41]+"\",");
+				result_json.append("\"calcProducingfluidLevel\":\""+obj[42]+"\",");
 				result_json.append("\"todayKWattH\":\""+obj[43]+"\",");
 				
 				alarmInfo.append("[");
@@ -860,7 +862,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[44+j]+"";
+					String rawValue=obj[45+j]+"";
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
@@ -1022,7 +1024,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,"
 					+ "t2.pumpEff*100 as pumpEff,"
 					+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
-					+ "t2.levelCorrectValue,t2.inverProducingfluidLevel,t2.todayKWattH";
+					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,t2.todayKWattH";
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
@@ -1139,8 +1141,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"wattDegreeBalance\":\""+obj[39]+"\",");
 				result_json.append("\"deltaradius\":\""+obj[40]+"\",");
 				
-				result_json.append("\"levelCorrectValue\":\""+obj[41]+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[42]+"\",");
+				result_json.append("\"levelDifferenceValue\":\""+obj[41]+"\",");
+				result_json.append("\"calcProducingfluidLevel\":\""+obj[42]+"\",");
 				result_json.append("\"todayKWattH\":\""+obj[43]+"\",");
 				
 				for(int j=0;j<ddicColumnsList.size();j++){

@@ -56,13 +56,6 @@ ap:
          password: CANDRMRCDLKHUKQX       #邮箱授权码或独立密码
          smtpHost: smtp.126.com           #邮箱服务器地址，不同服务器地址不同
          smtpPort: 465                    #邮箱SMTP端口，以实际为准
-   video:                #视频配置
-      #appKey: 14f8cafea45b4dfea4c0f8fbb724e86d #厂家示例
-      #secret: 12f4b1bf467322db5fdc0c87113961cb  #厂家示例
-      #appKey: 828692b940cb4c119e357488020a9583 #助创示例
-      #secret: f2c346ca8f38c78b96507ad3479f1d7b #助创示例
-      appKey: 5dc6bb34b5324007b839b0df5623d85e #助创示例2
-      secret: 300f21e0d937f5d2698549f16ecc9512 #助创示例2
    threadPool: 
       initIdAndIpPort:
          corePoolSize: 100
@@ -105,17 +98,17 @@ ap:
       otherStaticResourceTimestamp: 20230628160030  #其他静态资源时间戳，修改此项重新加载资源
 ac:                                                    #AC程序配置
    probe:                                              #状态监测
-      app: http://8.142.92.84:18100/api/probe/app                               #运行状态监测
-      mem: http://8.142.92.84:18100/api/probe/mem                               #服务器内存监测
-      disk: http://8.142.92.84:18100/api/probe/disk                             #服务器磁盘监测
-      host: http://8.142.92.84:18100/api/probe/host                             #服务器主机监测
-      cpu: http://8.142.92.84:18100/api/probe/cpu                               #服务器 CPU 监测
-   FESDiagram: http://8.142.92.84:18100/api/calc/rpc/fesdiagram/pro             #功图计算
-   RPM: http://8.142.92.84:18100/api/calc/pcp/rpm                               #螺杆泵转速计产
-   communication: http://8.142.92.84:18100/api/calc/plugin/timeeff/comm         #通信时率计算
-   run: http://8.142.92.84:18100/api/calc/plugin/timeeff/run                    #运行时率计算
-   energy: http://8.142.92.84:18100/api/calc/plugin/energy                      #能耗计算
-   totalCalculation: http://8.142.92.84:18100/api/analy/total/well              #全井汇总
+      app: http://39.98.187.157:18100/api/probe/app                               #运行状态监测
+      mem: http://39.98.187.157:18100/api/probe/mem                               #服务器内存监测
+      disk: http://39.98.187.157:18100/api/probe/disk                             #服务器磁盘监测
+      host: http://39.98.187.157:18100/api/probe/host                             #服务器主机监测
+      cpu: http://39.98.187.157:18100/api/probe/cpu                               #服务器 CPU 监测
+   FESDiagram: http://39.98.187.157:18100/api/calc/rpc/fesdiagram/pro             #功图计算
+   RPM: http://39.98.187.157:18100/api/calc/pcp/rpm                               #螺杆泵转速计产
+   communication: http://39.98.187.157:18100/api/calc/plugin/timeeff/comm         #通信时率计算
+   run: http://39.98.187.157:18100/api/calc/plugin/timeeff/run                    #运行时率计算
+   energy: http://39.98.187.157:18100/api/calc/plugin/energy                      #能耗计算
+   totalCalculation: http://39.98.187.157:18100/api/analy/total/well              #全井汇总
 ad:                                                          #AD程序配置 
    init:                                                     #初始化配置
       server:                                                #目标服务器初始化

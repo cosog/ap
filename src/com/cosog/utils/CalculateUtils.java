@@ -72,6 +72,8 @@ public class CalculateUtils {
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		String responseDataStr=StringManagerUtils.sendPostMethod(FESDiagramUrl, requestDataStr,"utf-8",0,0);
+		System.out.println("功图计算请求数据:"+requestDataStr);
+		System.out.println("功图计算响应数据:"+responseDataStr);
 		type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 		RPCCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;

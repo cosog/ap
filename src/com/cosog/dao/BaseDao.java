@@ -3151,8 +3151,8 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(51,calculateResponseData.getProduction().getSVLeakWeightProduction());
 				cs.setFloat(52,calculateResponseData.getProduction().getGasInfluenceWeightProduction());
 				//液面反演校正值、反演液面
-				cs.setFloat(53,calculateResponseData.getProduction().getLevelCorrectValue());
-				cs.setFloat(54,calculateResponseData.getProduction().getProducingfluidLevel());
+				cs.setFloat(53,calculateResponseData.getProduction().getLevelDifferenceValue());
+				cs.setFloat(54,calculateResponseData.getProduction().getCalcProducingfluidLevel());
 				
 				//沉没度
 				cs.setFloat(55,calculateResponseData.getProduction().getSubmergence());
@@ -3498,8 +3498,8 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(39,calculateResponseData.getProduction().getSVLeakWeightProduction());
 				cs.setFloat(40,calculateResponseData.getProduction().getGasInfluenceWeightProduction());
 				//液面反演校正值、反演液面
-				cs.setFloat(41,calculateResponseData.getProduction().getLevelCorrectValue());
-				cs.setFloat(42,calculateResponseData.getProduction().getProducingfluidLevel());
+				cs.setFloat(41,calculateResponseData.getProduction().getLevelDifferenceValue());
+				cs.setFloat(42,calculateResponseData.getProduction().getCalcProducingfluidLevel());
 				//沉没度
 				cs.setFloat(43,calculateResponseData.getProduction().getSubmergence());
 				//系统效率

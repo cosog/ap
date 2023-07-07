@@ -267,7 +267,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        calculateRequestData.getFESDiagram().setWatt(Watt);
 	        calculateRequestData.getFESDiagram().setI(I);
 	        
-//	        calculateRequestData.getManualIntervention().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[9]+""));
 	        
 	        if(object.length>11){
 	        	int pumpingModelId=StringManagerUtils.stringToInteger(object[11]+"");
@@ -351,7 +350,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 				+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
-				+ "t.inverproducingfluidlevel,"
+				+ "t.calcProducingfluidLevel,"
 				+ "t.submergence "
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "

@@ -506,10 +506,12 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 	    private float WellHeadFluidTemperature;
 
 	    private float ProducingfluidLevel;
+	    
+	    private float CalcProducingfluidLevel;
+	    
+	    private float LevelDifferenceValue;
 
 	    private float PumpSettingDepth;
-	    
-	    private float LevelCorrectValue;
 
 	    private float Submergence;
 
@@ -783,17 +785,23 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 	    public float getGasInfluenceWeightProduction(){
 	        return this.GasInfluenceWeightProduction;
 	    }
-		public float getLevelCorrectValue() {
-			return LevelCorrectValue;
-		}
-		public void setLevelCorrectValue(float levelCorrectValue) {
-			LevelCorrectValue = levelCorrectValue;
-		}
 		public float getWeightWaterCut() {
 			return WeightWaterCut;
 		}
 		public void setWeightWaterCut(float weightWaterCut) {
 			WeightWaterCut = weightWaterCut;
+		}
+		public float getCalcProducingfluidLevel() {
+			return CalcProducingfluidLevel;
+		}
+		public void setCalcProducingfluidLevel(float calcProducingfluidLevel) {
+			CalcProducingfluidLevel = calcProducingfluidLevel;
+		}
+		public float getLevelDifferenceValue() {
+			return LevelDifferenceValue;
+		}
+		public void setLevelDifferenceValue(float levelDifferenceValue) {
+			LevelDifferenceValue = levelDifferenceValue;
 		}
 	}
 

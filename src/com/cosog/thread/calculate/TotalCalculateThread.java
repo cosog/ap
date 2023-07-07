@@ -55,7 +55,7 @@ public class TotalCalculateThread extends Thread{
 					+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 					+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 					+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
-					+ "t.inverproducingfluidlevel,"
+					+ "t.calcProducingfluidLevel,"
 					+ "t.submergence "
 					+ " from tbl_rpcacqdata_hist t "
 					+ " where t.wellid="+wellId+" "

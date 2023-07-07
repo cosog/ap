@@ -64,11 +64,9 @@ public class CalculateThread extends Thread{
 					+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
 					+ " t.stroke,t.spm,"
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
-//					+ " t.levelcorrectvalue,"
 					+ " t.productiondata,"
 					+ " t3.id as pumpingmodelid,t3.manufacturer,t3.model,t3.crankrotationdirection,t3.offsetangleofcrank,t3.crankgravityradius,t3.singlecrankweight,t3.singlecrankpinweight,t3.structuralunbalance,"
 					+ " t.balanceinfo,"
-//					+ " t.c_gtscds,"
 					+ " t.id"
 					+ " from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_rpcdevice t2 on t.wellid=t2.id"
@@ -89,7 +87,7 @@ public class CalculateThread extends Thread{
 					+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 					+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 					+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
-					+ "t.inverproducingfluidlevel,"//28
+					+ "t.calcProducingfluidLevel,"//28
 					+ "t.submergence,"//29
 					+ "t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
 					+ "t.runstatus,t.runtime,t.runtimeefficiency,t.runrange,"

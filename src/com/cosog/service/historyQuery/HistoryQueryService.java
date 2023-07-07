@@ -693,7 +693,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.systemEfficiency*100 as systemEfficiency,"
 					+ "t2.energyper100mlift,t2.pumpEff*100 as pumpEff,"
 					+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
-					+ "t2.levelCorrectValue,t2.inverProducingfluidLevel,t2.todayKWattH";
+					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,t2.todayKWattH";
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
@@ -788,8 +788,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"iDegreeBalance\":\""+obj[33]+"\",");
 				result_json.append("\"wattDegreeBalance\":\""+obj[34]+"\",");
 				result_json.append("\"deltaradius\":\""+obj[35]+"\",");
-				result_json.append("\"levelCorrectValue\":\""+obj[36]+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[37]+"\",");
+				result_json.append("\"levelDifferenceValue\":\""+obj[36]+"\",");
+				result_json.append("\"calcProducingfluidLevel\":\""+obj[37]+"\",");
 				result_json.append("\"todayKWattH\":\""+obj[38]+"\",");
 				result_json.append("\"details\":\"\",");
 				
@@ -1027,7 +1027,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.systemEfficiency*100 as systemEfficiency,"
 					+ "t2.energyper100mlift,t2.pumpEff*100 as pumpEff,"
 					+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
-					+ "t2.levelCorrectValue,t2.inverProducingfluidLevel,t2.todayKWattH";
+					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,t2.todayKWattH";
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
@@ -1102,8 +1102,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"iDegreeBalance\":\""+obj[33]+"\",");
 				result_json.append("\"wattDegreeBalance\":\""+obj[34]+"\",");
 				result_json.append("\"deltaradius\":\""+obj[35]+"\",");
-				result_json.append("\"levelCorrectValue\":\""+obj[36]+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[37]+"\",");
+				result_json.append("\"levelDifferenceValue\":\""+obj[36]+"\",");
+				result_json.append("\"calcProducingfluidLevel\":\""+obj[37]+"\",");
 				result_json.append("\"todayKWattH\":\""+obj[38]+"\"");
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
@@ -2916,7 +2916,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.upperloadline,t.lowerloadline,"//23~24
 					+ prodCol+", "//25~26
 					+ " t.productiondata,t.submergence,"//27~28
-					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//29~30
+					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//29~30
 					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
 					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
 					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
@@ -3028,8 +3028,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 						
 						dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
-						dataBuff.append("\"inverProducingfluidLevel\":\""+obj[30]+"\",");
-						dataBuff.append("\"levelCorrectValue\":\""+obj[29]+"\",");
+						dataBuff.append("\"calcProducingfluidLevel\":\""+obj[30]+"\",");
+						dataBuff.append("\"levelDifferenceValue\":\""+obj[29]+"\",");
 						dataBuff.append("\"submergence\":\""+obj[28]+"\",");
 						
 						dataBuff.append("\"averageWatt\":\""+obj[31]+"\",");
@@ -3141,7 +3141,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.upperloadline,t.lowerloadline,"//23~24
 				+ prodCol+", "//25~26
 				+ " t.productiondata,t.submergence,"//27~28
-				+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//29~30
+				+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//29~30
 				+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
 				+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
 				+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
@@ -3218,8 +3218,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				
 				dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
-				dataBuff.append("\"inverProducingfluidLevel\":\""+obj[30]+"\",");
-				dataBuff.append("\"levelCorrectValue\":\""+obj[29]+"\",");
+				dataBuff.append("\"calcProducingfluidLevel\":\""+obj[30]+"\",");
+				dataBuff.append("\"levelDifferenceValue\":\""+obj[29]+"\",");
 				dataBuff.append("\"submergence\":\""+obj[28]+"\",");
 				
 				dataBuff.append("\"averageWatt\":\""+obj[31]+"\",");
@@ -3286,7 +3286,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.upperloadline,t.lowerloadline,"//23~24
 					+ prodCol+", "//25~26
 					+ " t.productiondata,t.submergence,"//27~28
-					+ " t.levelCorrectValue,t.inverProducingfluidLevel,"//29~30
+					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//29~30
 					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
 					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
 					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
@@ -3362,8 +3362,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				
 				result_json.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
-				result_json.append("\"inverProducingfluidLevel\":\""+obj[30]+"\",");
-				result_json.append("\"levelCorrectValue\":\""+obj[29]+"\",");
+				result_json.append("\"calcProducingfluidLevel\":\""+obj[30]+"\",");
+				result_json.append("\"levelDifferenceValue\":\""+obj[29]+"\",");
 				result_json.append("\"submergence\":\""+obj[28]+"\",");
 				
 				result_json.append("\"averageWatt\":\""+obj[31]+"\",");

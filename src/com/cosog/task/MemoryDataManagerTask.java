@@ -466,9 +466,6 @@ public class MemoryDataManagerTask {
 						rpcDeviceInfo.setProduction(rpcProductionData.getProduction());
 						
 						rpcDeviceInfo.setManualIntervention(rpcProductionData.getManualIntervention());
-//						if(rpcDeviceInfo.getManualIntervention()!=null){
-//							rpcDeviceInfo.getManualIntervention().setLevelCorrectValue(levelCorrectValue);
-//						}
 						if(pumpingModelId>0){
 							rpcDeviceInfo.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
 							rpcDeviceInfo.getPumpingUnit().setManufacturer(rs.getString(30)+"");
@@ -1870,8 +1867,8 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcCalItemList".getBytes(),69, SerializeObjectUnils.serialize(new CalItem("功率平衡度","WattDegreeBalance","%",2,"功率平衡度")));
 			jedis.zadd("rpcCalItemList".getBytes(),70, SerializeObjectUnils.serialize(new CalItem("移动距离","DeltaRadius","m",2,"移动距离")));
 			
-			jedis.zadd("rpcCalItemList".getBytes(),71, SerializeObjectUnils.serialize(new CalItem("反演液面校正值","LevelCorrectValue","MPa",2,"反演液面校正值")));
-			jedis.zadd("rpcCalItemList".getBytes(),72, SerializeObjectUnils.serialize(new CalItem("动液面","InverProducingfluidLevel","m",2,"动液面")));
+			jedis.zadd("rpcCalItemList".getBytes(),71, SerializeObjectUnils.serialize(new CalItem("液面差值","LevelDifferenceValue","MPa",2,"反演液面校正值")));
+			jedis.zadd("rpcCalItemList".getBytes(),72, SerializeObjectUnils.serialize(new CalItem("反演动液面","CalcProducingfluidLevel","m",2,"反演动液面")));
 			
 			jedis.zadd("rpcCalItemList".getBytes(),73, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,"日用电量")));
 		}catch (Exception e) {
@@ -2449,7 +2446,7 @@ public class MemoryDataManagerTask {
 					+ " t.systemefficiency,t.surfacesystemefficiency,t.welldownsystemefficiency,t.energyper100mlift,"//23
 					+ " t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,t.pumpeff,"//28
 					+ " t.productiondata, "//29
-					+"  t.inverproducingfluidlevel, "//30
+					+"  t.calcProducingfluidLevel, "//30
 					+ " t.submergence "//31
 					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 					+ " where t.wellid=t2.id  "

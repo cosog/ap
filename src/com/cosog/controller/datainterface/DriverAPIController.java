@@ -2080,8 +2080,6 @@ public class DriverAPIController extends BaseController{
 					if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
 							&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
 							&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0){
-//						rpcDeviceInfo.getManualIntervention().setLevelCorrectValue(rpcCalculateResponseData.getProduction().getLevelCorrectValue());
-						
 						updateTotalDataSql+=",t.producingfluidLevel= "+rpcCalculateResponseData.getProduction().getProducingfluidLevel();
 					}
 					
@@ -3740,9 +3738,9 @@ public class DriverAPIController extends BaseController{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("固定凡尔漏失量","固定凡尔漏失量",calculateResponseData.getProduction().getSVLeakWeightProduction()+"",calculateResponseData.getProduction().getSVLeakWeightProduction()+"","","SVLEAKWEIGHTPRODUCTION","","","","t/d",1));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("气影响","气影响",calculateResponseData.getProduction().getGasInfluenceWeightProduction()+"",calculateResponseData.getProduction().getGasInfluenceWeightProduction()+"","","GASINFLUENCEPROD_W","","","","t/d",1));
 			
-			//液面反演校正值、反演液面
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液面反演校正值","液面反演校正值",calculateResponseData.getProduction().getLevelCorrectValue()+"",calculateResponseData.getProduction().getLevelCorrectValue()+"","","LEVELCORRECTVALUE","","","","m",1));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("动液面","动液面",calculateResponseData.getProduction().getProducingfluidLevel()+"",calculateResponseData.getProduction().getProducingfluidLevel()+"","","INVERPRODUCINGFLUIDLEVEL","","","","m",1));
+			//液面差值、反演动液面
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液面差值","液面差值",calculateResponseData.getProduction().getLevelDifferenceValue()+"",calculateResponseData.getProduction().getLevelDifferenceValue()+"","","LEVELDIFFERENCEVALUE","","","","m",1));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("反演动液面","反演动液面",calculateResponseData.getProduction().getCalcProducingfluidLevel()+"",calculateResponseData.getProduction().getCalcProducingfluidLevel()+"","","CALCPRODUCINGFLUIDLEVEL","","","","m",1));
 			
 			//系统效率
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("有功功率","有功功率",calculateResponseData.getFESDiagram().getAvgWatt()+"",calculateResponseData.getFESDiagram().getAvgWatt()+"","","AVERAGEWATT","","","","kW",1));
@@ -3837,9 +3835,9 @@ public class DriverAPIController extends BaseController{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("固定凡尔漏失量","固定凡尔漏失量","","","","SVLEAKWEIGHTPRODUCTION","","","","t/d",1));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("气影响","气影响","","","","GASINFLUENCEPROD_W","","","","t/d",1));
 			
-			//液面反演校正值、反演液面
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液面反演校正值","液面反演校正值","","","","LEVELCORRECTVALUE","","","","m",1));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("反演液面","反演液面","","","","INVERPRODUCINGFLUIDLEVEL","","","","m",1));
+			//液面差值、反演动液面
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液面差值","液面差值","","","","LEVELDIFFERENCEVALUE","","","","m",1));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("反演动液面","反演动液面","","","","CALCPRODUCINGFLUIDLEVEL","","","","m",1));
 			
 			//系统效率
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("有功功率","有功功率","","","","AVERAGEWATT","","","","kW",1));

@@ -1867,10 +1867,12 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcCalItemList".getBytes(),69, SerializeObjectUnils.serialize(new CalItem("功率平衡度","WattDegreeBalance","%",2,"功率平衡度")));
 			jedis.zadd("rpcCalItemList".getBytes(),70, SerializeObjectUnils.serialize(new CalItem("移动距离","DeltaRadius","m",2,"移动距离")));
 			
-			jedis.zadd("rpcCalItemList".getBytes(),71, SerializeObjectUnils.serialize(new CalItem("液面差值","LevelDifferenceValue","MPa",2,"反演液面校正值")));
+			jedis.zadd("rpcCalItemList".getBytes(),71, SerializeObjectUnils.serialize(new CalItem("液面校正差值","LevelDifferenceValue","MPa",2,"反演液面校正值")));
 			jedis.zadd("rpcCalItemList".getBytes(),72, SerializeObjectUnils.serialize(new CalItem("反演动液面","CalcProducingfluidLevel","m",2,"反演动液面")));
 			
-			jedis.zadd("rpcCalItemList".getBytes(),73, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,"日用电量")));
+			jedis.zadd("rpcCalItemList".getBytes(),73, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
+			
+			jedis.zadd("rpcCalItemList".getBytes(),74, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,"日用电量")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -1996,13 +1998,14 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("反演动液面","CalcProducingfluidLevel","m",2,"反演动液面")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),47, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),47, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),48, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),48, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),49, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -2447,7 +2450,8 @@ public class MemoryDataManagerTask {
 					+ " t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,t.pumpeff,"//28
 					+ " t.productiondata, "//29
 					+"  t.calcProducingfluidLevel, "//30
-					+ " t.submergence "//31
+					+"  t.levelDifferenceValue, "//31
+					+ " t.submergence "//32
 					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 					+ " where t.wellid=t2.id  "
 					+ " and t.resultstatus=1"
@@ -2511,11 +2515,13 @@ public class MemoryDataManagerTask {
 						responseData.getProduction().setTubingPressure(rpcProductionData.getProduction().getTubingPressure());
 						responseData.getProduction().setCasingPressure(rpcProductionData.getProduction().getCasingPressure());
 						responseData.getProduction().setPumpSettingDepth(rpcProductionData.getProduction().getPumpSettingDepth());
+						responseData.getProduction().setProducingfluidLevel(rpcProductionData.getProduction().getProducingfluidLevel());
 					}
 				}
 				
-				responseData.getProduction().setProducingfluidLevel(rs.getFloat(30));
-				responseData.getProduction().setSubmergence(rs.getFloat(31));
+				responseData.getProduction().setCalcProducingfluidLevel(rs.getFloat(30));
+				responseData.getProduction().setLevelDifferenceValue(rs.getFloat(31));
+				responseData.getProduction().setSubmergence(rs.getFloat(32));
 				
 				if(jedis.hexists("RPCDeviceTodayData".getBytes(), key.getBytes())){
 					RPCDeviceTodayData deviceTodayData =(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), key.getBytes()));

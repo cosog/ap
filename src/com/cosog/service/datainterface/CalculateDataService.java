@@ -350,7 +350,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 				+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
-				+ "t.calcProducingfluidLevel,"
+				+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
 				+ "t.submergence "
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
@@ -540,6 +540,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				List<Float> pumpSettingDepthList=new ArrayList<Float>();
 				List<Float> producingfluidLevelList=new ArrayList<Float>();
+				List<Float> calcProducingfluidLevelList=new ArrayList<Float>();
+				List<Float> levelDifferenceValueList=new ArrayList<Float>();
 				List<Float> submergenceList=new ArrayList<Float>();
 				
 				List<Float> tubingPressureList=new ArrayList<Float>();
@@ -587,10 +589,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 							tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
 							casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
 							pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
+							producingfluidLevelList.add(rpcProductionData.getProduction().getProducingfluidLevel());
 						}else{
 							tubingPressureList.add(0.0f);
 							casingPressureList.add(0.0f);
 							pumpSettingDepthList.add(0.0f);
+							producingfluidLevelList.add(0.0f);
 						}
 						
 						
@@ -609,8 +613,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 						systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[26]+""));
 						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[27]+""));
 						
-						producingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
-						submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
+						calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
+						levelDifferenceValueList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
+						submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[30]+""));
 					}
 				}
 				
@@ -659,6 +664,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
 				dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 				dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+				dataSbf.append("\"CalcProducingfluidLevel\":["+StringUtils.join(calcProducingfluidLevelList, ",")+"],");
+				dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 				dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 				dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");

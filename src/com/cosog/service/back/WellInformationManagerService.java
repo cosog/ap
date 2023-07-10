@@ -1743,7 +1743,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="",
 					rodGrade3="",rodOutsideDiameter3="",rodInsideDiameter3="",rodLength3="",
 					rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="",
-					netGrossRatio="",netGrossValue="";
+					netGrossRatio="",netGrossValue="",levelCorrectValue="";
 			String balanceWeight="",balancePosition="";
 			
 			
@@ -1813,6 +1813,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					if(productionData.getManualIntervention()!=null){
 						netGrossRatio=productionData.getManualIntervention().getNetGrossRatio()+"";
 						netGrossValue=productionData.getManualIntervention().getNetGrossValue()+"";
+						levelCorrectValue=productionData.getManualIntervention().getLevelCorrectValue()+"";
 					}
 				}
 			}
@@ -1893,6 +1894,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			
 			result_json.append("\"netGrossRatio\":\""+netGrossRatio+"\",");
 			result_json.append("\"netGrossValue\":\""+netGrossValue+"\",");
+			result_json.append("\"levelCorrectValue\":\""+levelCorrectValue+"\",");
 			
 			result_json.append("\"manufacturer\":\""+obj[19]+"\",");
 			result_json.append("\"model\":\""+obj[20]+"\",");

@@ -70,7 +70,8 @@ public class TotalAnalysisResponseData {
     private Item PumpSettingDepth;
     private Item ProducingfluidLevel;
     private Item Submergence;
-    private Item LevelCorrectValue;
+    private Item CalcProducingfluidLevel;
+    private Item LevelDifferenceValue;
     private Item PumpIntakeP; //泵入口压力				MPa
     private Item PumpIntakeT; //泵入口温度				℃
     private Item PumpIntakeGOL; //泵入口就地气液比
@@ -1058,14 +1059,6 @@ public class TotalAnalysisResponseData {
 	public void setNoLiquidFullnessCoefficient(Item noLiquidFullnessCoefficient) {
 		NoLiquidFullnessCoefficient = noLiquidFullnessCoefficient;
 	}
-
-	public Item getLevelCorrectValue() {
-		return LevelCorrectValue;
-	}
-
-	public void setLevelCorrectValue(Item levelCorrectValue) {
-		LevelCorrectValue = levelCorrectValue;
-	}
 	
 	public boolean stringLengthManage(){
 		if(this.ResultString.length()>2000){
@@ -1110,6 +1103,22 @@ public class TotalAnalysisResponseData {
 
 	public void setBottomHoleTemperature(Item bottomHoleTemperature) {
 		BottomHoleTemperature = bottomHoleTemperature;
+	}
+
+	public Item getCalcProducingfluidLevel() {
+		return CalcProducingfluidLevel;
+	}
+
+	public void setCalcProducingfluidLevel(Item calcProducingfluidLevel) {
+		CalcProducingfluidLevel = calcProducingfluidLevel;
+	}
+
+	public Item getLevelDifferenceValue() {
+		return LevelDifferenceValue;
+	}
+
+	public void setLevelDifferenceValue(Item levelDifferenceValue) {
+		LevelDifferenceValue = levelDifferenceValue;
 	}
 
 	

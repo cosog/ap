@@ -559,8 +559,6 @@ public class ConfigFile {
 
 	    private Email email;
 	    
-	    private Video video;
-	    
 	    private ThreadPool threadPool;
 
 	    private Others others;
@@ -589,12 +587,6 @@ public class ConfigFile {
 	    public Others getOthers(){
 	        return this.others;
 	    }
-		public Video getVideo() {
-			return video;
-		}
-		public void setVideo(Video video) {
-			this.video = video;
-		}
 		public RedisConfig getRedis() {
 			return redis;
 		}

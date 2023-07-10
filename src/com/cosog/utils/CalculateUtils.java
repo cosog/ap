@@ -169,6 +169,8 @@ public class CalculateUtils {
 		
 		List<Float> pumpSettingDepthList=new ArrayList<Float>();
 		List<Float> producingfluidLevelList=new ArrayList<Float>();
+		List<Float> calcProducingfluidLevelList=new ArrayList<Float>();
+		List<Float> levelDifferenceValueList=new ArrayList<Float>();
 		List<Float> submergenceList=new ArrayList<Float>();
 		
 		List<Float> tubingPressureList=new ArrayList<Float>();
@@ -212,6 +214,8 @@ public class CalculateUtils {
 				
 				pumpSettingDepthList.add(responseData.getProduction().getPumpSettingDepth());
 				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
+				calcProducingfluidLevelList.add(responseData.getProduction().getCalcProducingfluidLevel());
+				levelDifferenceValueList.add(responseData.getProduction().getLevelDifferenceValue());
 				submergenceList.add(responseData.getProduction().getSubmergence());
 				tubingPressureList.add(responseData.getProduction().getTubingPressure());
 				casingPressureList.add(responseData.getProduction().getCasingPressure());
@@ -277,6 +281,8 @@ public class CalculateUtils {
 			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
 			dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 			dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+			dataSbf.append("\"CalcProducingfluidLevel\":["+StringUtils.join(calcProducingfluidLevelList, ",")+"],");
+			dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 			dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");

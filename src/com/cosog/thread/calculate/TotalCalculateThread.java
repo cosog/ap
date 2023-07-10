@@ -55,7 +55,7 @@ public class TotalCalculateThread extends Thread{
 					+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
 					+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 					+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
-					+ "t.inverproducingfluidlevel,"
+					+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
 					+ "t.submergence "
 					+ " from tbl_rpcacqdata_hist t "
 					+ " where t.wellid="+wellId+" "
@@ -109,6 +109,8 @@ public class TotalCalculateThread extends Thread{
 				
 				List<Float> pumpSettingDepthList=new ArrayList<Float>();
 				List<Float> producingfluidLevelList=new ArrayList<Float>();
+				List<Float> calcProducingfluidLevelList=new ArrayList<Float>();
+				List<Float> levelDifferenceValueList=new ArrayList<Float>();
 				List<Float> submergenceList=new ArrayList<Float>();
 				
 				List<Float> tubingPressureList=new ArrayList<Float>();
@@ -158,10 +160,12 @@ public class TotalCalculateThread extends Thread{
 						tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
 						casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
 						pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
+						producingfluidLevelList.add(rpcProductionData.getProduction().getProducingfluidLevel());
 					}else{
 						tubingPressureList.add(0.0f);
 						casingPressureList.add(0.0f);
 						pumpSettingDepthList.add(0.0f);
+						producingfluidLevelList.add(0.0f);
 					}
 					
 					pumpEffList.add(StringManagerUtils.stringToFloat(obj[15]+""));
@@ -179,8 +183,9 @@ public class TotalCalculateThread extends Thread{
 					systemEfficiencyList.add(StringManagerUtils.stringToFloat(obj[25]+""));
 					energyPer100mLiftList.add(StringManagerUtils.stringToFloat(obj[26]+""));
 					
-					producingfluidLevelList.add(StringManagerUtils.stringToFloat(obj[27]+""));
-					submergenceList.add(StringManagerUtils.stringToFloat(obj[28]+""));
+					calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(obj[27]+""));
+					levelDifferenceValueList.add(StringManagerUtils.stringToFloat(obj[28]+""));
+					submergenceList.add(StringManagerUtils.stringToFloat(obj[29]+""));
 				}
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellName+"\",");
@@ -224,6 +229,8 @@ public class TotalCalculateThread extends Thread{
 				dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
 				dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 				dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+				dataSbf.append("\"CalcProducingfluidLevel\":["+StringUtils.join(calcProducingfluidLevelList, ",")+"],");
+				dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 				dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 				dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");

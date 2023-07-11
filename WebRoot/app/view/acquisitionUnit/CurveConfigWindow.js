@@ -183,6 +183,19 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			}else if(parseInt(col)==7){
                 				protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),9,curveConfig);
                 			}
+                		}else if(tableType==3){
+                			protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
+                			var curveConfig={};
+                			curveConfig.sort=sort;
+                			curveConfig.lineWidth=lineWidth;
+                			curveConfig.dashStyle=dashStyle;
+                			curveConfig.yAxisOpposite=yAxisOpposite;
+                			curveConfig.color=color;
+                			if(parseInt(col)==6){
+                				protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),8,curveConfig);
+                			}else if(parseInt(col)==7){
+                				protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),9,curveConfig);
+                			}
                 		}else if(tableType==21){//单井报表汇总计算项
                 			singleWellReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
                 			var curveConfig={};

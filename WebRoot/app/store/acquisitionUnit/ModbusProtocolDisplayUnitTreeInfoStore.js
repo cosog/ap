@@ -70,14 +70,17 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                         			CreateProtocolDisplayUnitCtrlItemsConfigInfoTable('',1,'');
                             	}
                         		CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
+                        		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
                         	}else if(record.data.classes==1){
                         		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         		CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.parentNode.data.deviceType,record.data.classes);
+                        		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.parentNode.data.deviceType,record.data.classes);
                         	}else if(record.data.classes==2){
                         		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text);
                         		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text);
                         		CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.parentNode.parentNode.data.deviceType,record.data.classes,record.data.id,record.data.text);
+                        		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.parentNode.parentNode.data.deviceType,record.data.classes,record.data.id,record.data.text);
                         	}
                         	CreateProtocolDisplayUnitConfigPropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件

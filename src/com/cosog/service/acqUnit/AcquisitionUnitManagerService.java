@@ -1596,6 +1596,146 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getProtocolDisplayUnitInputItemsConfigData(String deviceType,String classes,String unitId){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String key="rpcInputItemList";
+		if("1".equalsIgnoreCase(deviceType)){
+			key="pcpInputItemList";
+		}
+		Jedis jedis=null;
+		List<byte[]> inputItemSet=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists(key.getBytes())){
+				if("1".equalsIgnoreCase(deviceType)){
+					MemoryDataManagerTask.loadPCPInputItem();
+				}else{
+					MemoryDataManagerTask.loadRPCInputItem();
+				}
+			}
+			inputItemSet= jedis.zrange(key.getBytes(), 0, -1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
+				+ "]";
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		List<String> itemsList=new ArrayList<String>();
+		List<String> itemsCodeList=new ArrayList<String>();
+		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsShowLevelList=new ArrayList<String>();
+		List<String> realtimeCurveConfList=new ArrayList<String>();
+		List<String> historyCurveConfList=new ArrayList<String>();
+		if("2".equalsIgnoreCase(classes)){
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
+					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
+					+ " order by t.sort";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				itemsList.add(obj[0]+"");
+				itemsCodeList.add(obj[1]+"");
+				itemsSortList.add(obj[2]+"");
+				itemsShowLevelList.add(obj[3]+"");
+				String realtimeCurveConf=obj[4]+"";
+				if(!StringManagerUtils.isNotNull(obj[4]+"")){
+					realtimeCurveConf="\"\"";
+				}
+				String historyCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+					historyCurveConf="\"\"";
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConf);
+				historyCurveConfList.add(historyCurveConf);
+			}
+		}
+		
+		int index=1;
+		if(inputItemSet!=null){
+			for(byte[] rpcCalItemByteArr:inputItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				
+				boolean checked=false;
+				String sort="";
+				String showLevel="";
+				String realtimeCurveConf="\"\"";
+				String realtimeCurveConfShowValue="";
+				String historyCurveConf="\"\"";
+				String historyCurveConfShowValue="";
+
+				checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
+				if(checked){
+					for(int k=0;k<itemsList.size();k++){
+						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+							sort=itemsSortList.get(k);
+							showLevel=itemsShowLevelList.get(k);
+							realtimeCurveConf=realtimeCurveConfList.get(k);
+							historyCurveConf=historyCurveConfList.get(k);
+							
+							CurveConf realtimeCurveConfObj=null;
+							if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
+								type = new TypeToken<CurveConf>() {}.getType();
+								realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
+							}
+							
+							CurveConf historyCurveConfObj=null;
+							if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
+								type = new TypeToken<CurveConf>() {}.getType();
+								historyCurveConfObj=gson.fromJson(historyCurveConf, type);
+							}
+							
+							if(realtimeCurveConfObj!=null){
+								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+							}
+							if(historyCurveConfObj!=null){
+								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+							}
+							break;
+						}
+					}
+				}
+				result_json.append("{\"checked\":"+checked+","
+						+ "\"id\":"+(index)+","
+						+ "\"title\":\""+calItem.getName()+"\","
+						+ "\"unit\":\""+calItem.getUnit()+"\","
+						+ "\"showLevel\":\""+showLevel+"\","
+						+ "\"sort\":\""+sort+"\","
+						+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
+						+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+						+ "\"historyCurveConf\":"+historyCurveConf+","
+						+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+						+ "\"code\":\""+calItem.getCode()+"\""
+						+ "},");
+				index++;
+			
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getReportUnitTotalCalItemsConfigData(String deviceType,String reportType,String unitId,String classes){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
@@ -2276,7 +2416,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(key.getBytes())){
-				MemoryDataManagerTask.loadRPCCalculateItem();
+				if("1".equalsIgnoreCase(deviceType)){
+					MemoryDataManagerTask.loadPCPCalculateItem();
+				}else{
+					MemoryDataManagerTask.loadRPCCalculateItem();
+				}
 			}
 			
 			rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
@@ -2350,6 +2494,136 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			int index=1;
 			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
 				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
+					String sort="";
+					String showLevel="";
+					String realtimeCurveConfShowValue="";
+					String historyCurveConfShowValue="";
+
+					for(int k=0;k<itemsList.size();k++){
+						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+							sort=itemsSortList.get(k);
+							showLevel=itemsShowLevelList.get(k);
+							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+							historyCurveConfShowValue=historyCurveConfList.get(k);
+							break;
+						}
+					}
+					result_json.append("{"
+							+ "\"id\":"+index+","
+							+ "\"title\":\""+calItem.getName()+"\","
+							+ "\"unit\":\""+calItem.getUnit()+"\","
+							+ "\"showLevel\":\""+showLevel+"\","
+							+ "\"sort\":\""+sort+"\","
+							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+							+ "},");
+					index++;
+				}
+			}
+		}
+		
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getProtocolDisplayInstanceInputItemsConfigData(String id,String classes,String deviceType){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String key="rpcInputItemList";
+		if("1".equalsIgnoreCase(deviceType)){
+			key="pcpInputItemList";
+		}
+		Jedis jedis=null;
+		List<byte[]> inputItemSet=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists(key.getBytes())){
+				if("1".equalsIgnoreCase(deviceType)){
+					MemoryDataManagerTask.loadPCPInputItem();
+				}else{
+					MemoryDataManagerTask.loadRPCInputItem();
+				}
+			}
+			
+			inputItemSet= jedis.zrange(key.getBytes(), 0, -1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "]";
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		List<String> itemsList=new ArrayList<String>();
+		List<String> itemsCodeList=new ArrayList<String>();
+		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsBitIndexList=new ArrayList<String>();
+		List<String> itemsShowLevelList=new ArrayList<String>();
+		List<String> realtimeCurveConfList=new ArrayList<String>();
+		List<String> historyCurveConfList=new ArrayList<String>();
+		
+		String sql="select t.itemname,t.itemcode,t.bitindex,t.sort,t.showlevel,"
+				+ " t.realtimeCurveConf,historyCurveConf "
+				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
+				+ " and t3.id= "+id
+				+ " order by t.id";
+		if(inputItemSet!=null){
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				itemsList.add(obj[0]+"");
+				itemsCodeList.add(obj[1]+"");
+				itemsBitIndexList.add(obj[2]+"");
+				itemsSortList.add(obj[3]+"");
+				itemsShowLevelList.add(obj[4]+"");
+				String realtimeCurveConfShowValue="";
+				String historyCurveConfShowValue="";
+				
+				CurveConf realtimeCurveConfObj=null;
+				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
+					type = new TypeToken<CurveConf>() {}.getType();
+					realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
+				}
+				
+				CurveConf historyCurveConfObj=null;
+				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
+					type = new TypeToken<CurveConf>() {}.getType();
+					historyCurveConfObj=gson.fromJson(obj[6]+"", type);
+				}
+				
+				if(realtimeCurveConfObj!=null){
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+				}
+				if(historyCurveConfObj!=null){
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConfShowValue);
+				historyCurveConfList.add(historyCurveConfShowValue);
+			}
+			int index=1;
+			for(byte[] inputItemByteArr:inputItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
 					String sort="";
 					String showLevel="";

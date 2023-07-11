@@ -246,6 +246,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
     				}
+    				if(protocolDisplayInstanceInputItemsHandsontableHelper!=null){
+    					if(protocolDisplayInstanceInputItemsHandsontableHelper.hot!=undefined){
+    						protocolDisplayInstanceInputItemsHandsontableHelper.hot.destroy();
+    					}
+    					protocolDisplayInstanceInputItemsHandsontableHelper=null;
+    				}
     				
     				//报表实例
     				if(reportInstanceSingleWellTemplateHandsontableHelper!=null){
@@ -353,6 +359,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     						protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.destroy();
     					}
     					protocolDisplayUnitCtrlItemsConfigHandsontableHelper=null;
+    				}
+    				if(protocolDisplayUnitInputItemsConfigHandsontableHelper!=null){
+    					if(protocolDisplayUnitInputItemsConfigHandsontableHelper.hot!=undefined){
+    						protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.destroy();
+    					}
+    					protocolDisplayUnitInputItemsConfigHandsontableHelper=null;
     				}
     				
     				//报表单元

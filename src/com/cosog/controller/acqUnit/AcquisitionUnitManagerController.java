@@ -930,6 +930,56 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	/**
+	 * @return NUll
+	 * @throws IOException
+	 * 显示单元安排录入项
+	 */
+	@RequestMapping("/grantInputItemsToDisplayUnitPermission")
+	public String grantInputItemsToDisplayUnitPermission() throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		DisplayUnitItem displayUnitItem = null;
+		try {
+			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
+			String unitId = ParamUtils.getParameter(request, "unitId");
+			String itemType = ParamUtils.getParameter(request, "itemType");
+
+			this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
+			if (StringManagerUtils.isNotNull(matrixCodes)) {
+				String module_matrix[] = matrixCodes.split("\\|");
+				for (int i = 0; i < module_matrix.length; i++) {
+					String module_[] = module_matrix[i].split("##");
+					
+					
+					String itemName=module_[0];
+					displayUnitItem = new DisplayUnitItem();
+					displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
+					displayUnitItem.setItemName(itemName);
+					displayUnitItem.setItemCode(module_[1]);
+					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
+					displayUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
+					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
+					displayUnitItem.setRealtimeCurveConf(module_[4]);
+					displayUnitItem.setHistoryCurveConf(module_[5]);
+					displayUnitItem.setMatrix(module_[6]);
+					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
+				}
+				
+			}
+//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
 	@RequestMapping("/grantTotalCalItemsToReportUnitPermission")
 	public String grantTotalCalItemsToReportUnitPermission() throws IOException {
 		String result = "";
@@ -1220,6 +1270,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getProtocolDisplayUnitInputItemsConfigData")
+	public String getProtocolDisplayUnitInputItemsConfigData() throws Exception {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitInputItemsConfigData(deviceType,classes,unitId);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getReportUnitTotalCalItemsConfigData")
 	public String getReportUnitTotalCalItemsConfigData() throws Exception {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -1335,6 +1401,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCalItemsConfigData(id,classes,deviceType);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getProtocolDisplayInstanceInputItemsConfigData")
+	public String getProtocolDisplayInstanceInputItemsConfigData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceInputItemsConfigData(id,classes,deviceType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

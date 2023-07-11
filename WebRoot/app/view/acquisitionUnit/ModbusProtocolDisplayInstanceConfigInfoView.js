@@ -1,6 +1,7 @@
 var protocolDisplayInstanceAcqItemsHandsontableHelper=null;
 var protocolDisplayInstanceCalItemsHandsontableHelper=null;
 var protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
+var protocolDisplayInstanceInputItemsHandsontableHelper=null;
 var protocolDisplayInstancePropertiesHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView', {
     extend: 'Ext.panel.Panel',
@@ -103,7 +104,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolDisplayInstanceAcqItemsHandsontableHelper!=null && protocolDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
-//                                		protocolDisplayInstanceAcqItemsHandsontableHelper.hot.refreshDimensions();
                                 		var newWidth=width;
                                 		var newHeight=height;
                                 		var header=thisPanel.getHeader();
@@ -120,9 +120,37 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     	},{
                     		region: 'south',
                         	height:'50%',
-                        	title:'计算项',
-                        	collapsible: true,
+                        	title:'控制项',
+                    		id:"ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
+                            layout: 'fit',
+                            collapsible: true,
                             split: true,
+                            html:'<div class="ProtocolDisplayInstanceCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCtrlItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayInstanceCtrlItemsHandsontableHelper!=null && protocolDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined){
+//                                		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
+                            }
+                    	}]
+                	},{
+                		region: 'east',
+                		width:'50%',
+                		layout: "border",
+                		items: [{
+                			region: 'center',
+                			title:'计算项',
                         	layout: 'fit',
                         	id:"ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id",
                             layout: 'fit',
@@ -130,7 +158,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolDisplayInstanceCalItemsHandsontableHelper!=null && protocolDisplayInstanceCalItemsHandsontableHelper.hot!=undefined){
-//                                		protocolDisplayInstanceCalItemsHandsontableHelper.hot.refreshDimensions();
                                 		var newWidth=width;
                                 		var newHeight=height;
                                 		var header=thisPanel.getHeader();
@@ -144,33 +171,32 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                                 	}
                                 }
                             }
-                    	}]
-                	},{
-                		region: 'east',
-                		width:'40%',
-                		title:'控制项',
-                		id:"ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
-                        layout: 'fit',
-                        collapsible: true,
-                        split: true,
-                        html:'<div class="ProtocolDisplayInstanceCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCtrlItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolDisplayInstanceCtrlItemsHandsontableHelper!=null && protocolDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined){
-//                            		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.refreshDimensions();
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
+                		},{
+                    		region: 'south',
+                        	height:'50%',
+                        	title:'录入项',
+                    		id:"ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id",
+                            layout: 'fit',
+                            collapsible: true,
+                            split: true,
+                            html:'<div class="ProtocolDisplayInstanceInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceInputItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayInstanceInputItemsHandsontableHelper!=null && protocolDisplayInstanceInputItemsHandsontableHelper.hot!=undefined){
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayInstanceInputItemsHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
                             }
-                        }
+                    	}]
                 	}]
                 }]
             }]
@@ -484,8 +510,8 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
+						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
 						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'}"
 						+"]";
@@ -581,6 +607,126 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	        	});
 	        }
 	        return protocolDisplayInstanceCalItemsHandsontableHelper;
+	    }
+};
+
+function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classes,deviceType){
+	Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceInputItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(instanceName!=''){
+				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/计算项");
+			}else{
+				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle("录入项");
+			}
+			var result =  Ext.JSON.decode(response.responseText);
+			if(protocolDisplayInstanceInputItemsHandsontableHelper==null || protocolDisplayInstanceInputItemsHandsontableHelper.hot==undefined){
+				protocolDisplayInstanceInputItemsHandsontableHelper = ProtocolDisplayInstanceInputItemsHandsontableHelper.createNew("ProtocolDisplayInstanceInputItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线']";
+				var columns="["
+						+"{data:'id'}," 
+						+"{data:'title'},"
+						+"{data:'unit'},"
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
+						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
+						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historyCurveConfShowValue'}"
+						+"]";
+				protocolDisplayInstanceInputItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				protocolDisplayInstanceInputItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					protocolDisplayInstanceInputItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					protocolDisplayInstanceInputItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					protocolDisplayInstanceInputItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					protocolDisplayInstanceInputItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			id:id,
+			classes:classes,
+			deviceType:deviceType
+        }
+	});
+};
+
+var ProtocolDisplayInstanceInputItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var protocolDisplayInstanceInputItemsHandsontableHelper = {};
+	        protocolDisplayInstanceInputItemsHandsontableHelper.hot1 = '';
+	        protocolDisplayInstanceInputItemsHandsontableHelper.divid = divid;
+	        protocolDisplayInstanceInputItemsHandsontableHelper.validresult=true;//数据校验
+	        protocolDisplayInstanceInputItemsHandsontableHelper.colHeaders=[];
+	        protocolDisplayInstanceInputItemsHandsontableHelper.columns=[];
+	        protocolDisplayInstanceInputItemsHandsontableHelper.AllData=[];
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if(value!=null){
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
+	            }
+	        }
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolDisplayInstanceInputItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolDisplayInstanceInputItemsHandsontableHelper.divid);
+	        	protocolDisplayInstanceInputItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,140,80,60,60,85,85],
+	                columns:protocolDisplayInstanceInputItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:protocolDisplayInstanceInputItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    if(visualColIndex==5||visualColIndex==6){
+		                	cellProperties.renderer = protocolDisplayInstanceInputItemsHandsontableHelper.addCurveBg;
+		                }
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        return protocolDisplayInstanceInputItemsHandsontableHelper;
 	    }
 };
 

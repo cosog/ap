@@ -109,6 +109,8 @@ public class MemoryDataManagerTask {
 			jedis.del("pcpCalItemList".getBytes());
 			jedis.del("rpcTotalCalItemList".getBytes());
 			jedis.del("pcpTotalCalItemList".getBytes());
+			jedis.del("rpcInputItemList".getBytes());
+			jedis.del("pcpInputItemList".getBytes());
 			jedis.del("UserInfo".getBytes());
 			jedis.del("RPCWorkType".getBytes());
 			jedis.del("RPCWorkTypeByName".getBytes());
@@ -2068,6 +2070,68 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpTotalCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static void loadRPCInputItem(){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			//有序集合
+			jedis.zadd("rpcInputItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("原油密度","CrudeOilDensity","g/cm^3",2,"原油密度")));
+			jedis.zadd("rpcInputItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("水密度","WaterDensity","g/cm^3",2,"水密度")));
+			jedis.zadd("rpcInputItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("天然气相对密度","NaturalGasRelativeDensity","",2,"天然气相对密度")));
+			jedis.zadd("rpcInputItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("饱和压力","SaturationPressure","MPa",2,"饱和压力")));
+			
+			jedis.zadd("rpcInputItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("油层中部深度","ReservoirDepth","m",2,"油层中部深度")));
+			jedis.zadd("rpcInputItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("油层中部温度","ReservoirTemperature","℃",2,"油层中部温度")));
+			
+			jedis.zadd("rpcInputItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
+			jedis.zadd("rpcInputItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
+			jedis.zadd("rpcInputItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("井口温度","WellHeadTemperature","℃",2,"井口温度")));
+			jedis.zadd("rpcInputItemList".getBytes(),10, SerializeObjectUnils.serialize(new CalItem("含水率","WaterCut","%",2,"含水率")));
+			jedis.zadd("rpcInputItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("生产气油比","ProductionGasOilRatio","m^3/t",2,"生产气油比")));
+			
+			jedis.zadd("rpcInputItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
+			jedis.zadd("rpcInputItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
+			
+			jedis.zadd("rpcInputItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("泵径","PumpBoreDiameter","mm",2,"泵径")));
+			
+			jedis.zadd("rpcInputItemList".getBytes(),15, SerializeObjectUnils.serialize(new CalItem("反演液面校正值","LevelCorrectValue","MPa",2,"反演液面校正值")));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static void loadPCPInputItem(){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			//有序集合
+			jedis.zadd("pcpInputItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("水密度","WaterDensity","g/cm^3",2,"水密度")));
+			jedis.zadd("pcpInputItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("天然气相对密度","NaturalGasRelativeDensity","",2,"天然气相对密度")));
+			
+			jedis.zadd("pcpInputItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("煤层中部深度","ReservoirDepth","m",2,"油层中部深度")));
+			jedis.zadd("pcpInputItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("煤层中部温度","ReservoirTemperature","℃",2,"油层中部温度")));
+			
+			jedis.zadd("pcpInputItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
+			jedis.zadd("pcpInputItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
+			jedis.zadd("pcpInputItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("井口温度","WellHeadTemperature","℃",2,"井口温度")));
+			
+			jedis.zadd("pcpInputItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
+			jedis.zadd("pcpInputItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
+			
+			jedis.zadd("pcpInputItemList".getBytes(),10, SerializeObjectUnils.serialize(new CalItem("泵径","PumpBoreDiameter","mm",2,"泵径")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

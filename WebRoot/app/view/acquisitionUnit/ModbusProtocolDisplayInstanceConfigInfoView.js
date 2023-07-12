@@ -150,35 +150,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                 		layout: "border",
                 		items: [{
                 			region: 'center',
-                			title:'计算项',
-                        	layout: 'fit',
-                        	id:"ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id",
-                            layout: 'fit',
-                            html:'<div class="ProtocolDisplayInstanceCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCalItemsConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolDisplayInstanceCalItemsHandsontableHelper!=null && protocolDisplayInstanceCalItemsHandsontableHelper.hot!=undefined){
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		protocolDisplayInstanceCalItemsHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                	}
-                                }
-                            }
-                		},{
-                    		region: 'south',
-                        	height:'50%',
-                        	title:'录入项',
+                			layout: 'fit',
+                			title:'录入项',
                     		id:"ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id",
-                            layout: 'fit',
-                            collapsible: true,
-                            split: true,
                             html:'<div class="ProtocolDisplayInstanceInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceInputItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -190,6 +164,31 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                                 			newHeight=newHeight-header.lastBox.height-2;
                                 		}
                                 		protocolDisplayInstanceInputItemsHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
+                            }
+                		},{
+                    		region: 'south',
+                        	height:'50%',
+                        	layout: 'fit',
+                            collapsible: true,
+                            split: true,
+                			title:'计算项',
+                        	id:"ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id",
+                            html:'<div class="ProtocolDisplayInstanceCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCalItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayInstanceCalItemsHandsontableHelper!=null && protocolDisplayInstanceCalItemsHandsontableHelper.hot!=undefined){
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayInstanceCalItemsHandsontableHelper.hot.updateSettings({
                                 			width:newWidth,
                                 			height:newHeight
                                 		});
@@ -618,7 +617,7 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 		success:function(response) {
 			Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/计算项");
+				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/录入项");
 			}else{
 				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle("录入项");
 			}

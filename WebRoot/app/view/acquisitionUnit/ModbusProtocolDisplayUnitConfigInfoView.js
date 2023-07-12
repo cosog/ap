@@ -150,35 +150,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                 		layout: "border",
                     	items: [{
                     		region: 'center',
-                    		title:'计算项配置',
                         	layout: 'fit',
-                        	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
-                            layout: 'fit',
-                            html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                	}
-                                }
-                            }
-                    	},{
-                    		region: 'south',
-                        	height:'50%',
                         	title:'录入项配置',
                     		id:"ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id",
-                            layout: 'fit',
-                            collapsible: true,
-                            split: true,
                             html:'<div class="ModbusProtocolDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -190,6 +164,31 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                                 			newHeight=newHeight-header.lastBox.height-2;
                                 		}
                                 		protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
+                            }
+                    	},{
+                    		region: 'south',
+                        	height:'50%',
+                        	layout: 'fit',
+                            collapsible: true,
+                            split: true,
+                        	title:'计算项配置',
+                        	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
+                            html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
                                 			width:newWidth,
                                 			height:newHeight
                                 		});

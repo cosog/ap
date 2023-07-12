@@ -1700,6 +1700,9 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 					}
+					
+					List<ProtocolItemResolutionData> rpcInputItemItemResolutionDataList=getRPCInputItemData(rpcDeviceInfo);
+					
 					String tiemEffRequest="{"
 							+ "\"AKString\":\"\","
 							+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
@@ -2266,6 +2269,31 @@ public class DriverAPIController extends BaseController{
 						acquisitionItemInfo.setAlarmLevel(alarmLevel);
 						acquisitionItemInfo.setUnit(calItemResolutionDataList.get(i).getUnit());
 						acquisitionItemInfo.setSort(calItemResolutionDataList.get(i).getSort());
+
+						if(acquisitionItemInfo.getAlarmLevel()>0){
+							alarm=true;
+						}
+						acquisitionItemInfoList.add(acquisitionItemInfo);
+					}
+					
+					
+					//添加录入项
+					for(int i=0;i<rpcInputItemItemResolutionDataList.size();i++){
+						int alarmLevel=0;
+						AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+						acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(rpcInputItemItemResolutionDataList.get(i).getAddr()));
+						acquisitionItemInfo.setColumn(rpcInputItemItemResolutionDataList.get(i).getColumn());
+						acquisitionItemInfo.setTitle(rpcInputItemItemResolutionDataList.get(i).getColumnName());
+						acquisitionItemInfo.setRawTitle(rpcInputItemItemResolutionDataList.get(i).getRawColumnName());
+						acquisitionItemInfo.setValue(rpcInputItemItemResolutionDataList.get(i).getValue());
+						acquisitionItemInfo.setRawValue(rpcInputItemItemResolutionDataList.get(i).getRawValue());
+						acquisitionItemInfo.setDataType(rpcInputItemItemResolutionDataList.get(i).getColumnDataType());
+						acquisitionItemInfo.setResolutionMode(rpcInputItemItemResolutionDataList.get(i).getResolutionMode());
+						acquisitionItemInfo.setBitIndex(rpcInputItemItemResolutionDataList.get(i).getBitIndex());
+						
+						acquisitionItemInfo.setAlarmLevel(alarmLevel);
+						acquisitionItemInfo.setUnit(rpcInputItemItemResolutionDataList.get(i).getUnit());
+						acquisitionItemInfo.setSort(rpcInputItemItemResolutionDataList.get(i).getSort());
 
 						if(acquisitionItemInfo.getAlarmLevel()>0){
 							alarm=true;
@@ -2996,8 +3024,7 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 					}
-					//判断是否采集了运行状态，如采集则进行时率计算
-					if(isAcqRunStatus){}
+					List<ProtocolItemResolutionData> pcpInputItemItemResolutionDataList=getPCPInputItemData(pcpDeviceInfo);
 					String tiemEffRequest="{"
 							+ "\"AKString\":\"\","
 							+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
@@ -3463,6 +3490,30 @@ public class DriverAPIController extends BaseController{
 						acquisitionItemInfoList.add(acquisitionItemInfo);
 					}
 					
+					//添加录入项
+					for(int i=0;i<pcpInputItemItemResolutionDataList.size();i++){
+						int alarmLevel=0;
+						AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+						acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(pcpInputItemItemResolutionDataList.get(i).getAddr()));
+						acquisitionItemInfo.setColumn(pcpInputItemItemResolutionDataList.get(i).getColumn());
+						acquisitionItemInfo.setTitle(pcpInputItemItemResolutionDataList.get(i).getColumnName());
+						acquisitionItemInfo.setRawTitle(pcpInputItemItemResolutionDataList.get(i).getRawColumnName());
+						acquisitionItemInfo.setValue(pcpInputItemItemResolutionDataList.get(i).getValue());
+						acquisitionItemInfo.setRawValue(pcpInputItemItemResolutionDataList.get(i).getRawValue());
+						acquisitionItemInfo.setDataType(pcpInputItemItemResolutionDataList.get(i).getColumnDataType());
+						acquisitionItemInfo.setResolutionMode(pcpInputItemItemResolutionDataList.get(i).getResolutionMode());
+						acquisitionItemInfo.setBitIndex(pcpInputItemItemResolutionDataList.get(i).getBitIndex());
+						
+						acquisitionItemInfo.setAlarmLevel(alarmLevel);
+						acquisitionItemInfo.setUnit(pcpInputItemItemResolutionDataList.get(i).getUnit());
+						acquisitionItemInfo.setSort(pcpInputItemItemResolutionDataList.get(i).getSort());
+
+						if(acquisitionItemInfo.getAlarmLevel()>0){
+							alarm=true;
+						}
+						acquisitionItemInfoList.add(acquisitionItemInfo);
+					}
+					
 					//将采集数据放入内存
 					if(deviceTodayData!=null){
 						deviceTodayData.setAcquisitionItemInfoList(acquisitionItemInfoList);
@@ -3655,7 +3706,111 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
+	public static List<ProtocolItemResolutionData> getRPCInputItemData(RPCDeviceInfo rpcDeviceInfo){
+		List<ProtocolItemResolutionData> rpcInputItemList=new ArrayList<ProtocolItemResolutionData>();
+		String reservoirName="油层";
+		if(rpcDeviceInfo.getApplicationScenarios()==0){
+			reservoirName="煤层";
+		}
+		if(rpcDeviceInfo!=null && rpcDeviceInfo.getFluidPVT()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度",rpcDeviceInfo.getFluidPVT().getCrudeOilDensity()+"",rpcDeviceInfo.getFluidPVT().getCrudeOilDensity()+"","","CrudeOilDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度",rpcDeviceInfo.getFluidPVT().getWaterDensity()+"",rpcDeviceInfo.getFluidPVT().getWaterDensity()+"","","WaterDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度",rpcDeviceInfo.getFluidPVT().getNaturalGasRelativeDensity()+"",rpcDeviceInfo.getFluidPVT().getNaturalGasRelativeDensity()+"","","NaturalGasRelativeDensity","","","","",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力",rpcDeviceInfo.getFluidPVT().getSaturationPressure()+"",rpcDeviceInfo.getFluidPVT().getSaturationPressure()+"","","SaturationPressure","","","","MPa",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度","","","","CrudeOilDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度","","","","WaterDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度","","","","NaturalGasRelativeDensity","","","","",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力","","","","SaturationPressure","","","","MPa",1));
+		}
+		
+		if(rpcDeviceInfo!=null && rpcDeviceInfo.getReservoir()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度",rpcDeviceInfo.getReservoir().getDepth()+"",rpcDeviceInfo.getReservoir().getDepth()+"","","ReservoirDepth","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度",rpcDeviceInfo.getReservoir().getTemperature()+"",rpcDeviceInfo.getReservoir().getTemperature()+"","","ReservoirTemperature","","","","℃",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度","","","","ReservoirDepth","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度","","","","ReservoirTemperature","","","","℃",1));
+		}
+		
+		if(rpcDeviceInfo!=null && rpcDeviceInfo.getProduction()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压",rpcDeviceInfo.getProduction().getTubingPressure()+"",rpcDeviceInfo.getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压",rpcDeviceInfo.getProduction().getCasingPressure()+"",rpcDeviceInfo.getProduction().getCasingPressure()+"","","CasingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度",rpcDeviceInfo.getProduction().getWellHeadTemperature()+"",rpcDeviceInfo.getProduction().getWellHeadTemperature()+"","","WellHeadTemperature","","","","℃",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率",rpcDeviceInfo.getProduction().getWaterCut()+"",rpcDeviceInfo.getProduction().getWaterCut()+"","","WaterCut","","","","%",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比",rpcDeviceInfo.getProduction().getProductionGasOilRatio()+"",rpcDeviceInfo.getProduction().getProductionGasOilRatio()+"","","ProductionGasOilRatio","","","","m^3/t",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面",rpcDeviceInfo.getProduction().getProducingfluidLevel()+"",rpcDeviceInfo.getProduction().getProducingfluidLevel()+"","","ProducingfluidLevel","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂",rpcDeviceInfo.getProduction().getPumpSettingDepth()+"",rpcDeviceInfo.getProduction().getPumpSettingDepth()+"","","PumpSettingDepth","","","","m",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压","","","","TubingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压","","","","CasingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度","","","","WellHeadTemperature","","","","℃",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率","","","","WaterCut","","","","%",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比","","","","ProductionGasOilRatio","","","","m^3/t",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面","","","","ProducingfluidLevel","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂","","","","PumpSettingDepth","","","","m",1));
+		}
+		
+		if(rpcDeviceInfo!=null && rpcDeviceInfo.getPump()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData("泵径","泵径",rpcDeviceInfo.getPump().getPumpBoreDiameter()*1000+"",rpcDeviceInfo.getPump().getPumpBoreDiameter()*1000+"","","PumpBoreDiameter","","","","mm",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData("泵径","泵径","","","","PumpBoreDiameter","","","","mm",1));
+		}
+		
+		if(rpcDeviceInfo!=null && rpcDeviceInfo.getManualIntervention()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData("反演液面校正值","反演液面校正值",rpcDeviceInfo.getManualIntervention().getLevelCorrectValue()+"",rpcDeviceInfo.getManualIntervention().getLevelCorrectValue()+"","","LevelCorrectValue","","","","MPa",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData("反演液面校正值","反演液面校正值","","","","LevelCorrectValue","","","","MPa",1));
+		}
+		
+		return rpcInputItemList;
+	}
 	
+	public static List<ProtocolItemResolutionData> getPCPInputItemData(PCPDeviceInfo pcpDeviceInfo){
+		List<ProtocolItemResolutionData> rpcInputItemList=new ArrayList<ProtocolItemResolutionData>();
+		String reservoirName="油层";
+		if(pcpDeviceInfo.getApplicationScenarios()==0){
+			reservoirName="煤层";
+		}
+		if(pcpDeviceInfo!=null && pcpDeviceInfo.getFluidPVT()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度",pcpDeviceInfo.getFluidPVT().getCrudeOilDensity()+"",pcpDeviceInfo.getFluidPVT().getCrudeOilDensity()+"","","CrudeOilDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度",pcpDeviceInfo.getFluidPVT().getWaterDensity()+"",pcpDeviceInfo.getFluidPVT().getWaterDensity()+"","","WaterDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度",pcpDeviceInfo.getFluidPVT().getNaturalGasRelativeDensity()+"",pcpDeviceInfo.getFluidPVT().getNaturalGasRelativeDensity()+"","","NaturalGasRelativeDensity","","","","",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力",pcpDeviceInfo.getFluidPVT().getSaturationPressure()+"",pcpDeviceInfo.getFluidPVT().getSaturationPressure()+"","","SaturationPressure","","","","MPa",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度","","","","CrudeOilDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度","","","","WaterDensity","","","","g/cm^3",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度","","","","NaturalGasRelativeDensity","","","","",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力","","","","SaturationPressure","","","","MPa",1));
+		}
+		
+		if(pcpDeviceInfo!=null && pcpDeviceInfo.getReservoir()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度",pcpDeviceInfo.getReservoir().getDepth()+"",pcpDeviceInfo.getReservoir().getDepth()+"","","ReservoirDepth","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度",pcpDeviceInfo.getReservoir().getTemperature()+"",pcpDeviceInfo.getReservoir().getTemperature()+"","","ReservoirTemperature","","","","℃",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度","","","","ReservoirDepth","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度","","","","ReservoirTemperature","","","","℃",1));
+		}
+		
+		if(pcpDeviceInfo!=null && pcpDeviceInfo.getProduction()!=null){
+			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压",pcpDeviceInfo.getProduction().getTubingPressure()+"",pcpDeviceInfo.getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压",pcpDeviceInfo.getProduction().getCasingPressure()+"",pcpDeviceInfo.getProduction().getCasingPressure()+"","","CasingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度",pcpDeviceInfo.getProduction().getWellHeadTemperature()+"",pcpDeviceInfo.getProduction().getWellHeadTemperature()+"","","WellHeadTemperature","","","","℃",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率",pcpDeviceInfo.getProduction().getWaterCut()+"",pcpDeviceInfo.getProduction().getWaterCut()+"","","WaterCut","","","","%",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比",pcpDeviceInfo.getProduction().getProductionGasOilRatio()+"",pcpDeviceInfo.getProduction().getProductionGasOilRatio()+"","","ProductionGasOilRatio","","","","m^3/t",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面",pcpDeviceInfo.getProduction().getProducingfluidLevel()+"",pcpDeviceInfo.getProduction().getProducingfluidLevel()+"","","ProducingfluidLevel","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂",pcpDeviceInfo.getProduction().getPumpSettingDepth()+"",pcpDeviceInfo.getProduction().getPumpSettingDepth()+"","","PumpSettingDepth","","","","m",1));
+		}else{
+			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压","","","","TubingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压","","","","CasingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度","","","","WellHeadTemperature","","","","℃",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率","","","","WaterCut","","","","%",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比","","","","ProductionGasOilRatio","","","","m^3/t",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面","","","","ProducingfluidLevel","","","","m",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂","","","","PumpSettingDepth","","","","m",1));
+		}
+		
+		return rpcInputItemList;
+	}
 	
 	public static List<ProtocolItemResolutionData> getFESDiagramCalItemData(RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData){
 		List<ProtocolItemResolutionData> FESDiagramCalItemList=new ArrayList<ProtocolItemResolutionData>();

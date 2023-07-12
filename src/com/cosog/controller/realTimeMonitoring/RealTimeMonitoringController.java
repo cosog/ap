@@ -179,6 +179,41 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
+	//
+	@RequestMapping("/getDeviceRealTimeOverview")
+	public String getDeviceRealTimeOverview() throws Exception {
+		String json = "";
+		orgId = ParamUtils.getParameter(request, "orgId");
+		deviceName = ParamUtils.getParameter(request, "deviceName");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		FESdiagramResultStatValue = ParamUtils.getParameter(request, "FESdiagramResultStatValue");
+		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
+		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
+		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		if(StringManagerUtils.stringToInteger(deviceType)==0){
+			json = realTimeMonitoringService.getDeviceRealTimeOverview(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+		}else{
+			json = realTimeMonitoringService.getPCPDeviceRealTimeOverview(orgId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+		}
+		
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getDeviceRealTimeOverviewDataPage")
 	public String getDeviceRealTimeOverviewDataPage() throws Exception {
 		String json = "";
@@ -207,41 +242,6 @@ public class RealTimeMonitoringController extends BaseController {
 			dataPage = realTimeMonitoringService.getPCPDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit);
 		}
 		json="{\"success\":true,\"dataPage\":"+dataPage+"}";
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	//
-	@RequestMapping("/getDeviceRealTimeOverview")
-	public String getDeviceRealTimeOverview() throws Exception {
-		String json = "";
-		orgId = ParamUtils.getParameter(request, "orgId");
-		deviceName = ParamUtils.getParameter(request, "deviceName");
-		deviceType = ParamUtils.getParameter(request, "deviceType");
-		FESdiagramResultStatValue = ParamUtils.getParameter(request, "FESdiagramResultStatValue");
-		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
-		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
-		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
-		this.pager = new Page("pagerForm", request);
-		User user=null;
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			json = realTimeMonitoringService.getDeviceRealTimeOverview(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
-		}else{
-			json = realTimeMonitoringService.getPCPDeviceRealTimeOverview(orgId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
-		}
-		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

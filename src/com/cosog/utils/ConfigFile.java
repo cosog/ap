@@ -731,6 +731,8 @@ public class ConfigFile {
 	    private String init;
 
 	    private String app;
+	    
+	    private String online;
 
 	    private String cpu;
 
@@ -776,6 +778,12 @@ public class ConfigFile {
 	    public String getHost(){
 	        return this.host;
 	    }
+		public String getOnline() {
+			return online;
+		}
+		public void setOnline(String online) {
+			this.online = online;
+		}
 	}
 	
 	public static class Ad

@@ -23,6 +23,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.cosog.model.AccessToken;
+import com.cosog.model.calculate.AdOnlineProbeResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;
@@ -115,6 +116,9 @@ public class EquipmentDriverServerTask {
 			Thread.sleep(1000*1);
 	    }
 		System.out.println("线程池任务执行完毕！");
+		
+		initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
+		
 		boolean sendMsg=false;
 		exampleDataManage();
 		do{
@@ -179,6 +183,16 @@ public class EquipmentDriverServerTask {
 		type = new TypeToken<DriverProbeResponse>() {}.getType();
 		DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
 		return driverProbeResponse;
+	}
+	
+	public static AdOnlineProbeResponseData adOnlineProbe(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String probeUrl=Config.getInstance().configFile.getAd().getProbe().getOnline();
+		String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+		type = new TypeToken<AdOnlineProbeResponseData>() {}.getType();
+		AdOnlineProbeResponseData adOnlineProbeResponseData=gson.fromJson(responseData, type);
+		return adOnlineProbeResponseData;
 	}
 	
 	
@@ -1594,13 +1608,50 @@ public class EquipmentDriverServerTask {
 		}
 	}
 	
+	public static void initWellCommStatusByOnlineProbe(){
+		AdOnlineProbeResponseData adOnlineProbeResponseData =adOnlineProbe();
+		if(adOnlineProbeResponseData!=null){
+			if(adOnlineProbeResponseData.getOnlineID()!=null && adOnlineProbeResponseData.getOnlineID().size()>0 ){
+				String initRPCCommSql="update tbl_rpcacqdata_latest t set t.commstatus=1 "
+						+ " where t.commstatus<>1 "
+						+ " and t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.tcptype='TCP Client' and t2.signinid in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineID(), ",")+") )";
+				String initPCPCommSql="update tbl_pcpacqdata_latest t set t.commstatus=1 "
+						+ " where t.commstatus<>1 "
+						+ " and t.wellid in ( select t2.id from tbl_pcpdevice t2 where t2.tcptype='TCP Client' and t2.signinid in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineID(), ",")+") )";
+				try {
+					JDBCUtil.updateRecord(initRPCCommSql, null);
+					JDBCUtil.updateRecord(initPCPCommSql, null);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(adOnlineProbeResponseData.getOnlineIPPort()!=null && adOnlineProbeResponseData.getOnlineIPPort().size()>0 ){
+				String initRPCCommSql="update tbl_rpcacqdata_latest t set t.commstatus=1 "
+						+ " where t.commstatus<>1 "
+						+ " and t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.tcptype='TCP Server' and t2.ipport in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineIPPort(), ",")+") )";
+				String initPCPCommSql="update tbl_pcpacqdata_latest t set t.commstatus=1 "
+						+ " where t.commstatus<>1 "
+						+ " and t.wellid in ( select t2.id from tbl_pcpdevice t2 where t2.tcptype='TCP Server' and t2.ipport in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineIPPort(), ",")+") )";
+				try {
+					JDBCUtil.updateRecord(initRPCCommSql, null);
+					JDBCUtil.updateRecord(initPCPCommSql, null);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	
 	public static int initWellCommStatus(){
-		String intRPCCommSql="update tbl_rpcacqdata_latest t set t.commstatus=0 ";
-		String intPCPCommSql="update tbl_pcpacqdata_latest t set t.commstatus=0 ";
+		String initRPCCommSql="update tbl_rpcacqdata_latest t set t.commstatus=0 ";
+		String initPCPCommSql="update tbl_pcpacqdata_latest t set t.commstatus=0 ";
 		int result=0;
 		try {
-			result = JDBCUtil.updateRecord(intRPCCommSql, null);
-			result = JDBCUtil.updateRecord(intPCPCommSql, null);
+			result = JDBCUtil.updateRecord(initRPCCommSql, null);
+			result = JDBCUtil.updateRecord(initPCPCommSql, null);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1621,10 +1672,10 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initWellRPCCommStatus(){
-		String intCommSql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
+		String initCommSql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
 		int result=0;
 		try {
-			result = JDBCUtil.updateRecord(intCommSql, null);
+			result = JDBCUtil.updateRecord(initCommSql, null);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

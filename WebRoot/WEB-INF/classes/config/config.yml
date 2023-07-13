@@ -132,6 +132,7 @@ ad:                                                          #AD程序配置
    probe:                                                    #状态监测
       init: http://8.142.92.84:19200/api/probe/init                                   #初始化状态监测
       app: http://8.142.92.84:19200/api/probe/app                                     #运行状态监测
+      online: http://8.142.92.84:19200/api/probe/online                               #在线状态监测
       cpu: http://8.142.92.84:19200/api/probe/cpu                                     #服务器 CPU 监测
       mem: http://8.142.92.84:19200/api/probe/mem                                     #服务器内存监测
       disk: http://8.142.92.84:19200/api/probe/disk                                   #服务器磁盘监测

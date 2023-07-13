@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 138775
+start with 140877
 increment by 1
 cache 20;
 
@@ -92,14 +92,14 @@ cache 20;
 create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 140
+start with 136
 increment by 1
 cache 20;
 
 create sequence SEQ_REPORT_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 110
+start with 120
 increment by 1
 cache 20;
 
@@ -359,5 +359,12 @@ create sequence SEQ_RUNSTATUSCONFIG
 minvalue 1
 maxvalue 9999999999999999999999999
 start with 4
+increment by 1
+cache 20;
+
+create sequence SEQ_VIDEOKEY
+minvalue 1
+maxvalue 9999999999999999999999999
+start with 1
 increment by 1
 cache 20;

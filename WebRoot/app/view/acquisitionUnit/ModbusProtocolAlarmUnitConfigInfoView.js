@@ -1546,6 +1546,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 function SaveModbusProtocolAlarmUnitConfigData(saveData){
 	Ext.Ajax.request({
 		method:'POST',
+		async :  false,
 		url:context + '/acquisitionUnitManagerController/saveModbusProtocolAlarmUnitData',
 		success:function(response) {
 			data=Ext.JSON.decode(response.responseText);

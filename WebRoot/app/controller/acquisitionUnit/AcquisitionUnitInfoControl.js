@@ -490,6 +490,7 @@ var grantAcquisitionItemsPermission = function () {
             Ext.Ajax.request({
                 url: addUrl,
                 method: "POST",
+                async :  false,
                 params: {
                     params: addparams,
                     protocol :protocol,

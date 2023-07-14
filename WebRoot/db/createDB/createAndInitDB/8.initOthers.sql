@@ -615,7 +615,7 @@ insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPT
 values (14, 1214, '双凡尔漏失', '"图形呈椭圆状；图形在上、下理论载荷线之间；漏失严重时，油井不出油。"', '洗井、碰泵或检泵', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
-values (15, 1215, '游动凡尔失灵/油管漏', '"图形呈条带状；图形在下理论载荷线附近；产量为零。"', '洗井、碰泵或检泵', null);
+values (15, 1215, '游动凡尔失灵/油管漏', '"图形呈条带状；图形在下理论载荷线附近；产量为零。"', '洗井、碰泵或检泵/打压、更换油管', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
 values (16, 1216, '固定凡尔失灵', '"图形呈条带状；图形在上理论载荷线附近；产量为零。"', '洗井、碰泵或检泵', null);

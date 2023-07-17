@@ -198,7 +198,7 @@
 <p><img src="media/3e0fa9d14b33fd144fe805aaffd1e3c7.png" alt=""></p>
 <h3 id="2-1-3-">2.1.3 添加显示单元</h3>
 <p>创建显示单元，并设置单元下包含的项及曲线。</p>
-<p><img src="media/a75ddb19d56d6b88c1811fc7fe31a5e6.png" alt=""></p>
+<p><img src="media/98e383406d54a51b97524127b1ac32b1.png" alt=""></p>
 <h3 id="2-1-4-">2.1.4 添加报警单元</h3>
 <p>创建报警单元，并设置单元下包含的报警项及报警配置。</p>
 <p><img src="media/8dc64c5b74c54d4a7fd0617739216076.png" alt=""></p>
@@ -243,7 +243,7 @@
 <p>按照2.1节中添加好驱动相关的数据后，在该模块添加设备。</p>
 <h4 id="2-2-1-1-">2.2.1.1 添加设备</h4>
 <p>点击“添加设备”按钮，将在选中的单位下添加设备，同一单位下不能添加同名设备。</p>
-<p><img src="media/ccbd5d76aa66a9f1160e8fc5144092fe.png" alt=""></p>
+<p><img src="media/066415c1280878e2b9a826cd5ef5a0a2.png" alt=""></p>
 <h4 id="2-2-1-2-">2.2.1.2 设备查看及修改</h4>
 <p>在设备列表处进行设备主要信息查看和修改：</p>
 <h4 id="2-2-1-3-">2.2.1.3 删除设备</h4>
@@ -255,23 +255,21 @@
 <p>冲突数据修改注册包ID和设备从地址，直到无冲突时才可保存成功。</p>
 <p>已有数据继续保存的话，覆盖同名设备的信息，不会添加设备。</p>
 <p><img src="media/7a6c7b881afa968cc6d9e02a4ffe849a.png" alt=""></p>
+<h4 id="2-2-1-5-">2.2.1.5 视频配置</h4>
+<p>软件支持萤石云视频接入，选中设备，录入信息监控路径和视频密钥，如果密钥下拉框中无所需信息，点击“编辑视频密钥”按钮（需视频密钥编辑权限），在弹出的窗口中，添加或者编辑密钥信息后，再配置视频密钥。每个设备可录入两个视频。</p>
+<p><img src="media/c5dc95c08d532cd873ac53d6045cfd1a.png" alt=""></p>
 <h1 id="-3-">第3章 其他配置</h1>
-<h2 id="3-1-">3.1 视频账号配置</h2>
-<p>目前支持萤石云视频接入</p>
-<p>先停止tomcat，配置完成后再启动；</p>
-<p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，配置萤石云相关账号的appKey及secret（登录萤石云查看）</p>
-<p><img src="media/9a275e5da613c17118b37192dd2171e9.png" alt=""></p>
-<h2 id="3-2-">3.2 邮件发送账号配置</h2>
+<h2 id="3-1-">3.1 邮件发送账号配置</h2>
 <p>如需发送邮件（如报警邮件），参考本节内容配置邮件发送账号。</p>
 <p>先停止tomcat，配置完成后再启动；</p>
 <p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，配置邮箱信息</p>
 <p><img src="media/4e5bcf573fbf5d849e6021c6bcf6c571.png" alt=""></p>
-<h2 id="3-3-">3.3 其他项配置</h2>
+<h2 id="3-2-">3.2 其他项配置</h2>
 <p>软件的一些其他配置，一般情况下不用修改.</p>
 <p>先停止tomcat，配置完成后再启动。</p>
 <p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，配置项见下图：</p>
 <p><img src="media/8968dbc6de302f8f692487484475e80a.png" alt=""></p>
-<h2 id="3-4-oracle-">3.4 oracle常见问题</h2>
+<h2 id="3-3-oracle-">3.3 oracle常见问题</h2>
 <p>1、关闭oracle监听日志</p>
 <p>随着系统的运行，oracle的日志文件会越来越大，当达到4G时，会影响到数据库的正常运行，可以选择关闭oracle日志文件的生成，操作方法如下。</p>
 <p>打开命令窗口，依次执行以下命令进行关闭oracle日志操作，centOS系统下，切换oracle用户执行</p>
@@ -315,7 +313,7 @@ immediate;”关闭oracle例程后，执行“startup”启动数据库。</p>
 <p>alter tablespace ap_data add datafile
 &#39;/opt/oracle/oradata/ORCLCDB/ORCLPDB1/ap_data02.DBF&#39; size 350M autoextend on
 next 50M Maxsize UNLIMITED;</p>
-<h2 id="3-5-">3.5 数据库备份</h2>
+<h2 id="3-4-">3.4 数据库备份</h2>
 <p>使用exp命令备份数据库，命令如下：</p>
 <p>exp ap/ap123#@ORCLPDB file=d:/ap.dmp full=y;</p>
 <p>其中：</p>

@@ -68,6 +68,7 @@ public class EquipmentDriverServerTask {
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
 		
 		initWellCommStatus();
+		initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
 		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
 //		
@@ -98,27 +99,7 @@ public class EquipmentDriverServerTask {
 //			Thread.sleep(1000*5);
 //		}
 		
-		initServerConfig();
-		initProtocolConfig("","");
-		initInstanceConfig(null,"");
-		initSMSInstanceConfig(null,"");
-		initSMSDevice(null,"");
-		initRPCDriverAcquisitionInfoConfig(null,0,"");
-		initPCPDriverAcquisitionInfoConfig(null,0,"");
-		ThreadPool executor = new ThreadPool("adInit",
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getMaximumPoolSize(), 
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
-				TimeUnit.SECONDS, 
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
-		while (!executor.isCompletedByTaskCount()) {
-			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
-			Thread.sleep(1000*1);
-	    }
-		System.out.println("线程池任务执行完毕！");
-		
-		initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
-		
+		ThreadPool executor=adInit();
 		boolean sendMsg=false;
 		exampleDataManage();
 		do{
@@ -173,6 +154,28 @@ public class EquipmentDriverServerTask {
 			}
 			Thread.sleep(1000*1);
 		}while(true);
+	}
+	
+	public static ThreadPool adInit() throws MalformedURLException, InterruptedException{
+		initServerConfig();
+		initProtocolConfig("","");
+		initInstanceConfig(null,"");
+		initSMSInstanceConfig(null,"");
+		initSMSDevice(null,"");
+		initRPCDriverAcquisitionInfoConfig(null,0,"");
+		initPCPDriverAcquisitionInfoConfig(null,0,"");
+		ThreadPool executor = new ThreadPool("adInit",
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getMaximumPoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
+		while (!executor.isCompletedByTaskCount()) {
+			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+			Thread.sleep(1000*1);
+	    }
+		System.out.println("线程池任务执行完毕！");
+		return executor;
 	}
 	
 	public static DriverProbeResponse adInitProbe(){

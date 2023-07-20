@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
+import com.cosog.model.DataSourceConfig;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.VideoKey;
@@ -38,6 +39,7 @@ import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.calculate.RPCCalculateRequestData.Balance;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.drive.AcquisitionItemInfo;
+import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPDeviceTodayData;
@@ -3190,5 +3192,30 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return name;
+	}
+	
+	public static void loadDataSourceConfig(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		
+		String path=stringManagerUtils.getFilePath("dataSource.json","dataSource/");
+		String data=stringManagerUtils.readFile(path,"utf-8");
+		
+		type = new TypeToken<DataSourceConfig>() {}.getType();
+		DataSourceConfig dataSourceConfig=gson.fromJson(data, type);
+		
+		Map<String, Object> map = DataModelMap.getMapObject();
+		map.put("dataSourceConfig", dataSourceConfig);
+	}
+	
+	public static DataSourceConfig getDataSourceConfig(){
+		Map<String, Object> map = DataModelMap.getMapObject();
+		DataSourceConfig dataSourceConfig=(DataSourceConfig) map.get("dataSourceConfig");
+		if(dataSourceConfig==null){
+			loadDataSourceConfig();
+			dataSourceConfig=(DataSourceConfig) map.get("dataSourceConfig");
+		}
+		return dataSourceConfig;
 	}
 }

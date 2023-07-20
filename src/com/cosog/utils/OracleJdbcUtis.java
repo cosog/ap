@@ -8,12 +8,56 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
+
+import com.cosog.model.DataSourceConfig;
+import com.cosog.task.MemoryDataManagerTask;
 
 import oracle.sql.CLOB;
 
 public class OracleJdbcUtis {
 
+	private static BasicDataSource outerDataSource=null;
+	
+	private static void initOuterDataSource(){
+		
+		DataSourceConfig dataSourceConfig=MemoryDataManagerTask.getDataSourceConfig();
+		
+		if(dataSourceConfig!=null && dataSourceConfig.isEnable()){
+			
+			outerDataSource = new BasicDataSource();
+			
+			outerDataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+
+			outerDataSource.setUrl("jdbc:oracle:thin:@"+dataSourceConfig.getIP()+":"+dataSourceConfig.getPort()+"/"+dataSourceConfig.getInstanceName()+"");
+
+			outerDataSource.setUsername(dataSourceConfig.getUser());
+
+			outerDataSource.setPassword(dataSourceConfig.getPassword());
+
+			outerDataSource.setInitialSize(5); // 初始化连接数
+
+			outerDataSource.setMaxIdle(10); // 最大空闲连接数
+
+			outerDataSource.setMinIdle(5); // 最小空闲连接数
+
+			outerDataSource.setMaxIdle(100); // 最大连接数
+		}
+	}
+	
+	public static Connection getOuterConnection() throws SQLException{
+		Connection conn=null;
+		if(outerDataSource==null){
+			initOuterDataSource();
+		}
+		if(outerDataSource!=null){
+			conn=outerDataSource.getConnection();
+		}
+		return conn;
+	}
+	
+	
 	public static Connection getConnection(){  
         try{  
             

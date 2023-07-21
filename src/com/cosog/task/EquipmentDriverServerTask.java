@@ -72,6 +72,7 @@ public class EquipmentDriverServerTask {
 		initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
 		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
+		
 //		
 //		
 //		path=stringManagerUtils.getFilePath("test3.json","example/");

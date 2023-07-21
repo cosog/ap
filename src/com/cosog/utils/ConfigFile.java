@@ -523,6 +523,7 @@ public class ConfigFile {
 		ThreadPoolConfig dataSynchronization;
 		ThreadPoolConfig calculateMaintaining;
 		ThreadPoolConfig totalCalculateMaintaining;
+		ThreadPoolConfig outerDatabaseSync;
 		public ThreadPoolConfig getInitIdAndIpPort() {
 			return initIdAndIpPort;
 		}
@@ -546,6 +547,12 @@ public class ConfigFile {
 		}
 		public void setTotalCalculateMaintaining(ThreadPoolConfig totalCalculateMaintaining) {
 			this.totalCalculateMaintaining = totalCalculateMaintaining;
+		}
+		public ThreadPoolConfig getOuterDatabaseSync() {
+			return outerDatabaseSync;
+		}
+		public void setOuterDatabaseSync(ThreadPoolConfig outerDatabaseSync) {
+			this.outerDatabaseSync = outerDatabaseSync;
 		}
 	}
 	

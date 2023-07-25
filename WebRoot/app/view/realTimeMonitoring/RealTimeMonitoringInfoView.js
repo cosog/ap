@@ -133,7 +133,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         				id:'PCPRealTimeMonitoringInfoPanel_Id',
         				items: [PCPRealTimeMonitoringInfoView],
         				layout: "fit",
-        				hidden: pcpHidden||onlyMonitor,
+        				hidden: pcpHidden,
         				border: false
         			}],
         			listeners: {
@@ -659,33 +659,18 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 				events: {
 					click: function(e) {
 						Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                    	
 						var statSelectFESdiagramResultId="RPCRealTimeMonitoringStatSelectFESdiagramResult_Id";
 						var deviceListComb_Id="RealTimeMonitoringRPCDeviceListComb_Id";
 						var gridPanel_Id="RPCRealTimeMonitoringListGridPanel_Id";
 						var store="AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore";
-						
-						
 						if(!e.point.selected){//如果没被选中,则本次是选中
 							Ext.getCmp(statSelectFESdiagramResultId).setValue(e.point.name);
 						}else{//取消选中
 							Ext.getCmp(statSelectFESdiagramResultId).setValue('');
 						}
-						
 						Ext.getCmp(deviceListComb_Id).setValue('');
 						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						
-						
 						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp(gridPanel_Id),store);
-						
-						
-//						var gridPanel = Ext.getCmp(gridPanel_Id);
-//						if (isNotVal(gridPanel)) {
-//							gridPanel.getSelectionModel().deselectAll(true);
-//							gridPanel.getStore().loadPage(1);
-//						}else{
-//							Ext.create(store).loadPage(1);
-//						}
 					}
 				},
 				showInLegend : true

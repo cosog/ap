@@ -328,7 +328,8 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
 				selectOnFocus : false,
 			    forceSelection : true,
 			    value:'',
-			    allowBlank: false,
+			    allowBlank: sceneConfig!='all',
+			    hidden: sceneConfig!='all',
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
@@ -348,7 +349,7 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 xtype: "hidden",
                 fieldLabel: '应用场景值',
                 id: 'pcpDeviceApplicationScenarios_Id',
-                value: '',
+                value: sceneConfig=='cbm'?0:1,
                 name: "pcpDeviceInformation.applicationScenarios"
             },pcpDeviceAcqInstanceComb,{
             	xtype: "hidden",

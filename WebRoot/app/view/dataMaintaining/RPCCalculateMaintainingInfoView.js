@@ -461,7 +461,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             
     		},'->',{
                 xtype: 'button',
-                text: '修改数据计算',
+                text: '修改历史数据计算',
                 id:'RPCCalculateMaintainingUpdateDataBtn',
                 pressed: false,
                 iconCls: 'edit',
@@ -470,7 +470,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 }
             },"-",{
                 xtype: 'button',
-                text: '关联数据计算',
+                text: '关联生产数据计算',
                 pressed: false,
                 iconCls: 'save',
                 id:'RPCCalculateMaintainingLinkedDataBtn',

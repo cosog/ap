@@ -329,6 +329,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     	height:'23%',
                     	title:'视频配置',
                     	id:'PCPVideoInfoPanel_Id',
+                    	hidden: !IoTConfig,
                     	split: true,
                     	collapsible: true,
                     	tbar:['->',{

@@ -25,7 +25,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                     id:'PCPDailyReportPanel_Id',
                     layout: "fit",
                     border: false,
-                    hidden: pcpHidden||onlyMonitor,
+                    hidden: pcpHidden,
                     items:[PCPDailyReportPanel]
                 }],
                 listeners: {

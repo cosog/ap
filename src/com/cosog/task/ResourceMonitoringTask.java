@@ -82,6 +82,11 @@ public class ResourceMonitoringTask {
 		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
 		String probeCPUUrl=Config.getInstance().configFile.getAd().getProbe().getCpu();
 		
+		if(!Config.getInstance().configFile.getAp().getOthers().isIot() ){
+			probeMemUrl=Config.getInstance().configFile.getAc().getProbe().getMem();
+			probeCPUUrl=Config.getInstance().configFile.getAc().getProbe().getCpu();
+		}
+		
 		String adAllOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
 		String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();
 		
@@ -136,6 +141,7 @@ public class ResourceMonitoringTask {
 				acRunStatus=1;
 				acVersion=acStatusProbeResonanceData.getVer();
 				acLicense=acStatusProbeResonanceData.getLicenseNumber();
+				
 			}else{
 				acRunStatus=0;
 				acVersion="";
@@ -159,68 +165,72 @@ public class ResourceMonitoringTask {
 				adRunStatus=1;
 				adVersion=adStatusProbeResonanceData.getVer();
 				adLicense=adStatusProbeResonanceData.getLicenseNumber();
-				
-				String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",0,0);
-				String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",0,0);
-				type = new TypeToken<CPUProbeResponseData>() {}.getType();
-				CPUProbeResponseData cpuProbeResponseData=gson.fromJson(CPUProbeResponseDataStr, type);
-				type = new TypeToken<MemoryProbeResponseData>() {}.getType();
-				MemoryProbeResponseData memoryProbeResponseData=gson.fromJson(MemoryProbeResponseDataStr, type);
-				if(cpuProbeResponseData!=null){
-					cpuUsedPercent="";
-					cpuUsedPercentValue="";
-					cpuUsedPercentAlarmLevel=0;
-					
-					for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
-						if(cpuProbeResponseData.getPercent().get(i)>=60 && cpuProbeResponseData.getPercent().get(i)<80 && cpuUsedPercentAlarmLevel<1){
-							cpuUsedPercentAlarmLevel=1;
-						}else if(cpuProbeResponseData.getPercent().get(i)>=80 && cpuUsedPercentAlarmLevel<2){
-							cpuUsedPercentAlarmLevel=2;
-						}
-						
-						cpuUsedPercent+=cpuProbeResponseData.getPercent().get(i)+"%";
-						cpuUsedPercentValue+=cpuProbeResponseData.getPercent().get(i);
-						if(i<cpuProbeResponseData.getPercent().size()-1){
-							cpuUsedPercent+=";";
-							cpuUsedPercentValue+=";";
-						}
-					}
-				}else{
-					cpuUsedPercent="";
-					cpuUsedPercentValue="";
-					cpuUsedPercentAlarmLevel=0;
-				}
-				if(memoryProbeResponseData!=null){
-					memUsedPercent="";
-					memUsedPercentValue="";
-					memUsedPercentAlarmLevel=0;
-					if(memoryProbeResponseData.getUsedPercent()>=60 && memoryProbeResponseData.getUsedPercent()<80){
-						memUsedPercentAlarmLevel=1;
-					}else if(memoryProbeResponseData.getUsedPercent()>=80){
-						memUsedPercentAlarmLevel=2;
-					}
-					memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
-					memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
-				}else{
-					memUsedPercent="";
-					memUsedPercentValue="";
-					memUsedPercentAlarmLevel=0;
-				}
 			}else{
 				adRunStatus=0;
 				adVersion="";
 				adLicense=0;
-				
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		//服务器资源监测
+		cpuUsedPercent="";
+		cpuUsedPercentValue="";
+		cpuUsedPercentAlarmLevel=0;
+		
+		memUsedPercent="";
+		memUsedPercentValue="";
+		memUsedPercentAlarmLevel=0;
+		if( ((!Config.getInstance().configFile.getAp().getOthers().isIot()) && acRunStatus==1)
+				|| (Config.getInstance().configFile.getAp().getOthers().isIot() && adRunStatus==1) 
+				){
+			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",0,0);
+			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",0,0);
+			type = new TypeToken<CPUProbeResponseData>() {}.getType();
+			CPUProbeResponseData cpuProbeResponseData=gson.fromJson(CPUProbeResponseDataStr, type);
+			type = new TypeToken<MemoryProbeResponseData>() {}.getType();
+			MemoryProbeResponseData memoryProbeResponseData=gson.fromJson(MemoryProbeResponseDataStr, type);
+			if(cpuProbeResponseData!=null){
 				cpuUsedPercent="";
 				cpuUsedPercentValue="";
 				cpuUsedPercentAlarmLevel=0;
 				
+				for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
+					if(cpuProbeResponseData.getPercent().get(i)>=60 && cpuProbeResponseData.getPercent().get(i)<80 && cpuUsedPercentAlarmLevel<1){
+						cpuUsedPercentAlarmLevel=1;
+					}else if(cpuProbeResponseData.getPercent().get(i)>=80 && cpuUsedPercentAlarmLevel<2){
+						cpuUsedPercentAlarmLevel=2;
+					}
+					
+					cpuUsedPercent+=cpuProbeResponseData.getPercent().get(i)+"%";
+					cpuUsedPercentValue+=cpuProbeResponseData.getPercent().get(i);
+					if(i<cpuProbeResponseData.getPercent().size()-1){
+						cpuUsedPercent+=";";
+						cpuUsedPercentValue+=";";
+					}
+				}
+			}else{
+				cpuUsedPercent="";
+				cpuUsedPercentValue="";
+				cpuUsedPercentAlarmLevel=0;
+			}
+			if(memoryProbeResponseData!=null){
+				memUsedPercent="";
+				memUsedPercentValue="";
+				memUsedPercentAlarmLevel=0;
+				if(memoryProbeResponseData.getUsedPercent()>=60 && memoryProbeResponseData.getUsedPercent()<80){
+					memUsedPercentAlarmLevel=1;
+				}else if(memoryProbeResponseData.getUsedPercent()>=80){
+					memUsedPercentAlarmLevel=2;
+				}
+				memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
+				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
+			}else{
 				memUsedPercent="";
 				memUsedPercentValue="";
 				memUsedPercentAlarmLevel=0;
 			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
 		
 		try{

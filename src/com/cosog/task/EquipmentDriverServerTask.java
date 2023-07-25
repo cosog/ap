@@ -54,8 +54,8 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
-	
+	private static boolean initSwitch=false;
+	private static boolean initEnable=initSwitch&&Config.getInstance().configFile.getAp().getOthers().isIot();
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
 	}
@@ -69,7 +69,9 @@ public class EquipmentDriverServerTask {
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
 		
 		initWellCommStatus();
-		initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
+		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
+		}
 		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
 		
@@ -101,35 +103,23 @@ public class EquipmentDriverServerTask {
 //			Thread.sleep(1000*5);
 //		}
 		
-		ThreadPool executor=adInit();
-		boolean sendMsg=false;
-		exampleDataManage();
-		do{
-			DriverProbeResponse driverProbeResponse=adInitProbe();
-			String Ver="";
-			if(driverProbeResponse!=null){
-				sendMsg=false;
-				if(!driverProbeResponse.getHttpServerInitStatus()){
-					initServerConfig();
-					driverProbeResponse=adInitProbe();
-				}
-				if(!driverProbeResponse.getProtocolInitStatus()){
-					initProtocolConfig("","");
-					driverProbeResponse=adInitProbe();
-				}
-				if(!driverProbeResponse.getInstanceInitStatus()){
+		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+			ThreadPool executor=adInit();
+			boolean sendMsg=false;
+			exampleDataManage();
+			do{
+				DriverProbeResponse driverProbeResponse=adInitProbe();
+				String Ver="";
+				if(driverProbeResponse!=null){
+					sendMsg=false;
+					if(!driverProbeResponse.getHttpServerInitStatus()){
+						initServerConfig();
+						driverProbeResponse=adInitProbe();
+					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
 						initProtocolConfig("","");
 						driverProbeResponse=adInitProbe();
 					}
-					initInstanceConfig(null,"");
-					initSMSInstanceConfig(null,"");
-					driverProbeResponse=adInitProbe();
-				}
-				if(!driverProbeResponse.getSMSInitStatus()){
-//					initSMSDevice(null,"");
-				}
-				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
 					if(!driverProbeResponse.getInstanceInitStatus()){
 						if(!driverProbeResponse.getProtocolInitStatus()){
 							initProtocolConfig("","");
@@ -139,23 +129,37 @@ public class EquipmentDriverServerTask {
 						initSMSInstanceConfig(null,"");
 						driverProbeResponse=adInitProbe();
 					}
-					
-					if(executor.isCompletedByTaskCount()){
-						//清空内存
-						AdInitMap.cleanData();
-						initRPCDriverAcquisitionInfoConfig(null,0,"");
-						initPCPDriverAcquisitionInfoConfig(null,0,"");
+					if(!driverProbeResponse.getSMSInitStatus()){
+//						initSMSDevice(null,"");
+					}
+					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+						if(!driverProbeResponse.getInstanceInitStatus()){
+							if(!driverProbeResponse.getProtocolInitStatus()){
+								initProtocolConfig("","");
+								driverProbeResponse=adInitProbe();
+							}
+							initInstanceConfig(null,"");
+							initSMSInstanceConfig(null,"");
+							driverProbeResponse=adInitProbe();
+						}
+						
+						if(executor.isCompletedByTaskCount()){
+							//清空内存
+							AdInitMap.cleanData();
+							initRPCDriverAcquisitionInfoConfig(null,0,"");
+							initPCPDriverAcquisitionInfoConfig(null,0,"");
+						}
+					}
+					Ver=driverProbeResponse.getVer();
+				}else{
+					if(!sendMsg){
+						StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+						sendMsg=true;
 					}
 				}
-				Ver=driverProbeResponse.getVer();
-			}else{
-				if(!sendMsg){
-					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-					sendMsg=true;
-				}
-			}
-			Thread.sleep(1000*1);
-		}while(true);
+				Thread.sleep(1000*1);
+			}while(true);
+		}
 	}
 	
 	public static ThreadPool adInit() throws MalformedURLException, InterruptedException{

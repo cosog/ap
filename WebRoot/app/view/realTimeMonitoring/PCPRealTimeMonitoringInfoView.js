@@ -194,6 +194,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                 		},{
                 			title:'通信状态',
                 			layout: 'fit',
+                			hidden: onlyFESDiagramCal,
                         	id:'PCPRealTimeMonitoringStatGraphPanel_Id',
                         	html: '<div id="PCPRealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
@@ -383,6 +384,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                 		},{
                 			title:'设备控制',
                 			border: false,
+                			hidden: onlyFESDiagramCal,
                             layout: 'border',
                             hideMode:'offsets',
                             id:'PCPRealTimeMonitoringRightControlAndVideoPanel',

@@ -51,6 +51,7 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
             	title:'应用场景',
             	region: 'west',
             	width:'15%',
+            	hidden: sceneConfig!='all',
             	layout: 'fit',
             	header:false,
         		split: true,
@@ -298,24 +299,11 @@ var BatchAddDeviceHandsontableHelper = {
         batchAddDeviceHandsontableHelper.insertlist = [];
         
         batchAddDeviceHandsontableHelper.pumpingModelInfo = {};
-        
-//        batchAddDeviceHandsontableHelper.datavalidator=[[0,52]];
 
         batchAddDeviceHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             td.style.backgroundColor = 'rgb(242, 242, 242)';
         }
-        
-//        batchAddDeviceHandsontableHelper.addDataValidatorCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-//        	if(batchAddDeviceHandsontableHelper.hot!=undefined){
-//        		for(var i=0;i<batchAddDeviceHandsontableHelper.datavalidator.length;i++){
-//        			if(row==batchAddDeviceHandsontableHelper.datavalidator[i][0] && col==batchAddDeviceHandsontableHelper.datavalidator[i][1]){
-//        				td.style.backgroundColor = '#f09614';
-//        				break;
-//        			}
-//        		}
-//        	}
-//        }
 
         batchAddDeviceHandsontableHelper.createTable = function (data) {
             $('#' + batchAddDeviceHandsontableHelper.divid).empty();
@@ -382,9 +370,6 @@ var BatchAddDeviceHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
-                    
-//                    cellProperties.renderer = batchAddDeviceHandsontableHelper.addDataValidatorCellStyle;
-                    
                     if(batchAddDeviceHandsontableHelper.hot!=undefined && batchAddDeviceHandsontableHelper.hot.getDataAtCell!=undefined){
                     	var columns=batchAddDeviceHandsontableHelper.columns;
                         var pumpingManufacturerColIndex=-1;
@@ -446,15 +431,10 @@ var BatchAddDeviceHandsontableHelper = {
                             			break;
                             		}
                             	}
-                            	
-                            	
                         	}
                         }
                         
                     }
-                    
-                    
-//                    setCellMeta(selectedRow, selectedCol, "source", dropdownOptions);
                     return cellProperties;
                 },
                 afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

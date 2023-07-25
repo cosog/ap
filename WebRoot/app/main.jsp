@@ -52,8 +52,29 @@
         exitButtonIcon = context + exitButtonIcon.substring(exitButtonIcon.indexOf("/"), exitButtonIcon.length);
 
         var productionUnit = ${configFile}.ap.others.productionUnit;
-        var pcpHidden = ${ configFile}.ap.others.pcpHidden;
-        var onlyMonitor = ${configFile}.ap.others.onlyMonitor;
+        
+        var IoTConfig = ${ configFile}.ap.others.iot;     //物联网
+        var sceneConfig = ${ configFile}.ap.others.scene; //应用场景 all-全部 oil-油井 cbm-煤层气井
+        var moduleConfig = ${ configFile}.ap.others.module;//模块 ""-仅监测 all-全部 rpc-抽油机井功图计算 pcp-螺杆泵井转速计算
+        
+        
+        
+        var pcpHidden = true;
+        if(moduleConfig=='all' || moduleConfig=='pcp'){
+        	pcpHidden = false
+        }
+        
+        var onlyMonitor=false;
+        if(IoTConfig && moduleConfig==""){
+        	onlyMonitor=true;
+        }
+        
+        var onlyFESDiagramCal=false;
+        if(!IoTConfig){
+        	onlyFESDiagramCal=true;
+        }
+        
+        
         var showLogo = ${configFile}.ap.others.showLogo;
         
         var oemStaticResourceTimestamp = ${configFile}.ap.oem.staticResourceTimestamp;

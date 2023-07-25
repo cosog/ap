@@ -327,7 +327,8 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 				selectOnFocus : false,
 			    forceSelection : true,
 			    value:'',
-			    allowBlank: false,
+			    allowBlank: sceneConfig!='all',
+			    hidden: sceneConfig!='all',
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
@@ -347,7 +348,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                 xtype: "hidden",
                 fieldLabel: '应用场景值',
                 id: 'rpcDeviceApplicationScenarios_Id',
-                value: '',
+                value: sceneConfig=='cbm'?0:1,
                 name: "rpcDeviceInformation.applicationScenarios"
             },rpcDeviceAcqInstanceComb,{
             	xtype: "hidden",

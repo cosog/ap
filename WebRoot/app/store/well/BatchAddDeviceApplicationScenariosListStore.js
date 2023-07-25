@@ -65,7 +65,20 @@ Ext.define('AP.store.well.BatchAddDeviceApplicationScenariosListStore', {
                 var panel = Ext.getCmp("BatchAddDeviceApplicationScenariosInfoPanel_Id");
                 panel.add(gridPanel);
             }
-            gridPanel.getSelectionModel().select(0, true);
+            var selectRow=0;
+            if(sceneConfig!='all'){
+            	var sceneValue=1;
+            	if(sceneConfig=='cbm'){
+            		sceneValue=0;
+            	}
+            	for(var i=0;i<store.data.items.length;i++){
+        			if(sceneValue==store.data.items[i].data.applicationScenarios){
+        				selectRow=i;
+        				break;
+        			}
+        		}
+            }
+            gridPanel.getSelectionModel().select(selectRow, true);
         },
         beforeload: function (store, options) {
         	

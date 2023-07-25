@@ -226,6 +226,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                 		},{
                 			title:'通信状态',
                 			layout: 'fit',
+                			hidden: onlyFESDiagramCal,
                         	id:'RPCRealTimeMonitoringStatGraphPanel_Id',
                         	html: '<div id="RPCRealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
@@ -628,6 +629,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                 		},{
                 			title:'设备控制',
                 			border: false,
+                			hidden: onlyFESDiagramCal,
                             layout: 'border',
                             hideMode:'offsets',
                             id:'RPCRealTimeMonitoringRightControlAndVideoPanel',

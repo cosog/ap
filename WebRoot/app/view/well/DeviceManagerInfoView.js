@@ -25,7 +25,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         				id:'PCPDeviceManagerPanel',
         				layout: "fit",
         				border: false,
-        				hidden: pcpHidden||onlyMonitor,
+        				hidden: pcpHidden,
         				items: [PCPDeviceInfoPanel]
         			}],
         			listeners: {

@@ -345,9 +345,11 @@ public class ConfigFile {
 
 	    private String productionUnit;
 
-	    private boolean pcpHidden;
+	    private boolean iot;
+
+	    private String scene;
 	    
-	    private boolean onlyMonitor;
+	    private String module;
 
 	    private boolean showLogo;
 
@@ -411,12 +413,6 @@ public class ConfigFile {
 	    public String getProductionUnit(){
 	        return this.productionUnit;
 	    }
-	    public void setPcpHidden(boolean pcpHidden){
-	        this.pcpHidden = pcpHidden;
-	    }
-	    public boolean getPcpHidden(){
-	        return this.pcpHidden;
-	    }
 	    public void setShowLogo(boolean showLogo){
 	        this.showLogo = showLogo;
 	    }
@@ -459,17 +455,29 @@ public class ConfigFile {
 		public void setVacuateThreshold(int vacuateThreshold) {
 			this.vacuateThreshold = vacuateThreshold;
 		}
-		public boolean isOnlyMonitor() {
-			return onlyMonitor;
-		}
-		public void setOnlyMonitor(boolean onlyMonitor) {
-			this.onlyMonitor = onlyMonitor;
-		}
 		public String getOtherStaticResourceTimestamp() {
 			return otherStaticResourceTimestamp;
 		}
 		public void setOtherStaticResourceTimestamp(String otherStaticResourceTimestamp) {
 			this.otherStaticResourceTimestamp = otherStaticResourceTimestamp;
+		}
+		public String getScene() {
+			return scene;
+		}
+		public void setScene(String scene) {
+			this.scene = scene;
+		}
+		public String getModule() {
+			return module;
+		}
+		public void setModule(String module) {
+			this.module = module;
+		}
+		public boolean isIot() {
+			return iot;
+		}
+		public void setIot(boolean iot) {
+			this.iot = iot;
 		}
 	}
 	

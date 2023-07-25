@@ -25,7 +25,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         				id:'PCPAlarmQueryPanel_Id',
         				items: [PCPAlarmQueryInfoView],
         				layout: "fit",
-        				hidden: pcpHidden||onlyMonitor,
+        				hidden: pcpHidden,
         				border: false
         			}],
         			listeners: {

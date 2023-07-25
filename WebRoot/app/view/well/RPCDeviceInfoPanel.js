@@ -423,6 +423,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 	height:'23%',
                 	title:'视频配置',
                 	id:'RPCVideoInfoPanel_Id',
+                	hidden: !IoTConfig,
                 	split: true,
                 	collapsible: true,
                 	tbar:['->',{

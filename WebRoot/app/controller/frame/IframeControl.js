@@ -303,9 +303,6 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 		if(!tabChange){
 			if(activeId=="RPCDeviceManagerPanel"){
-				
-				
-				
 				Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
 		    	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(0);
 				CreateAndLoadRPCDeviceInfoTable(true);

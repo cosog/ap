@@ -48,14 +48,14 @@
 		<property name="user" value="${ap.datasource.user}" />
 		<property name="password" value="${ap.datasource.password}" />
 		<!--<property name="autoReconnect" value="true" />-->
-		<!--
+		
 		<property name="testBeforeUse">
 			<value>false</value>
 		</property>
 		<property name="houseKeepingTestSql">
 			<value>select 1 from dual</value>
 		</property>
-		-->
+		
 		<property name="maximumConnectionCount">
 			<value>100</value>
 		</property>

@@ -58,6 +58,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 					anchor : '95%',
 					store: acqInstanceStore,
 					queryMode : 'remote',
+					hidden: !IoTConfig,
 					typeAhead : true,
 					autoSelect : false,
 					allowBlank : true,
@@ -117,6 +118,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 					anchor : '95%',
 					store: displayInstanceStore,
 					queryMode : 'remote',
+					hidden: !IoTConfig,
 					typeAhead : true,
 					autoSelect : false,
 					allowBlank : true,
@@ -176,6 +178,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 					anchor : '95%',
 					store: reportInstanceStore,
 					queryMode : 'remote',
+					hidden: !IoTConfig,
 					typeAhead : true,
 					autoSelect : false,
 					allowBlank : true,
@@ -235,6 +238,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 					anchor : '95%',
 					store: alarmInstanceStore,
 					queryMode : 'remote',
+					hidden: !IoTConfig,
 					typeAhead : true,
 					autoSelect : false,
 					allowBlank : true,
@@ -380,6 +384,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 				id : 'rpcDeviceTcpTypeComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',
+				hidden: !IoTConfig,
 				selectOnFocus : false,
 			    forceSelection : true,
 			    value:'',
@@ -420,6 +425,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                 anchor: '95%',
                 name: "rpcDeviceInformation.signInId",
                 value: '',
+                hidden: !IoTConfig,
                 listeners: {
                 	blur: function (t, e) {
                         var slave=Ext.getCmp("rpcDeviceSlave_Id").getValue();
@@ -456,6 +462,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                 xtype: "textfield",
                 fieldLabel: '下位机IP端口',
                 allowBlank: true,
+                hidden: !IoTConfig,
                 id: 'rpcDeviceIpPort_Id',
                 anchor: '95%',
                 name: "rpcDeviceInformation.ipPort",
@@ -501,6 +508,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
          		anchor: '95%',
          		name: "rpcDeviceInformation.slave",
          		value:'01',
+         		hidden: !IoTConfig,
          		listeners: {
                 	blur: function (t, e) {
                         var signinId=Ext.getCmp("rpcDeviceSignInId_Id").getValue();
@@ -539,6 +547,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
             	name: "rpcDeviceInformation.peakDelay",
                 fieldLabel: '错峰延时(s)',
                 allowBlank: true,
+                hidden: !IoTConfig,
                 minValue: 0,
                 anchor: '95%',
                 msgTarget: 'side'

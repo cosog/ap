@@ -687,7 +687,7 @@ var PCPDeviceInfoHandsontableHelper = {
                             if(params[1] == "applicationScenariosName"){
                             	const plugin = pcpProductionHandsontableHelper.hot.getPlugin('hiddenRows');
                             	var hiddenRows=[0,3,9,10];
-                            	if(params[3] == "煤层气井"){
+                            	if(sceneConfig=='cbm' || (sceneConfig=='all'&& params[3] == "煤层气井") ){
                             		plugin.hideRows(hiddenRows);
                             		pcpProductionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
                             		pcpProductionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');

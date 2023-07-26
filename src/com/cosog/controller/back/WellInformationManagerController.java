@@ -910,6 +910,50 @@ public class WellInformationManagerController extends BaseController {
 		String deviceTableName="tbl_rpcdevice";
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
+		
+		if((!Config.getInstance().configFile.getAp().getOthers().isIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
+			String instanceNames=this.wellInformationManagerService.getDefaultInstanceName(StringManagerUtils.stringToInteger(deviceType));
+			String[] instanceNameArr=instanceNames.split(";");
+			if(instanceNameArr.length==4){
+				if(wellHandsontableChangedData.getUpdatelist()!=null){
+					for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
+						wellHandsontableChangedData.getUpdatelist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setTcpType("TCP Client");
+						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
+						wellHandsontableChangedData.getUpdatelist().get(i).setSlave("01");
+						if(!"all".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
+							if("cbm".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
+								wellHandsontableChangedData.getUpdatelist().get(i).setApplicationScenariosName("煤层气井");
+							}else{
+								wellHandsontableChangedData.getUpdatelist().get(i).setApplicationScenariosName("油井");
+							}
+						}
+					}
+				}
+				if(wellHandsontableChangedData.getInsertlist()!=null){
+					for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
+						wellHandsontableChangedData.getInsertlist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setTcpType("TCP Client");
+						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getWellName());
+						wellHandsontableChangedData.getInsertlist().get(i).setSlave("01");
+						if(!"all".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
+							if("cbm".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
+								wellHandsontableChangedData.getInsertlist().get(i).setApplicationScenariosName("煤层气井");
+							}else{
+								wellHandsontableChangedData.getInsertlist().get(i).setApplicationScenariosName("油井");
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			deviceTableName="tbl_rpcdevice";
 			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
@@ -1030,6 +1074,34 @@ public class WellInformationManagerController extends BaseController {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
+		
+		if((!Config.getInstance().configFile.getAp().getOthers().isIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
+			String[] instanceNameArr=this.wellInformationManagerService.getDefaultInstanceName(StringManagerUtils.stringToInteger(deviceType)).split(";");
+			if(instanceNameArr.length==4){
+				if(wellHandsontableChangedData.getUpdatelist()!=null){
+					for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
+						wellHandsontableChangedData.getUpdatelist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setTcpType("TCP Client");
+						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
+						wellHandsontableChangedData.getUpdatelist().get(i).setSlave("01");
+					}
+				}
+				if(wellHandsontableChangedData.getInsertlist()!=null){
+					for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
+						wellHandsontableChangedData.getInsertlist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setTcpType("TCP Client");
+						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getWellName());
+						wellHandsontableChangedData.getInsertlist().get(i).setSlave("01");
+					}
+				}
+			}
+		}
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			json=this.wellInformationManagerService.batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),applicationScenarios,isCheckout,user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
@@ -1591,6 +1663,19 @@ public class WellInformationManagerController extends BaseController {
 				license=acStatusProbeResonanceData.getLicenseNumber();
 			}
 			if(deviceAmount<license){
+				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
+					String[] instanceCodeArr=this.rpcDeviceManagerService.getDefaultInstanceCode(0).split(";");
+					if(instanceCodeArr.length==4){
+						rpcDeviceInformation.setInstanceCode(instanceCodeArr[0].replaceAll(" ", ""));
+						rpcDeviceInformation.setDisplayInstanceCode(instanceCodeArr[1].replaceAll(" ", ""));
+						rpcDeviceInformation.setAlarmInstanceCode(instanceCodeArr[2].replaceAll(" ", ""));
+						rpcDeviceInformation.setReportInstanceCode(instanceCodeArr[3].replaceAll(" ", ""));
+						rpcDeviceInformation.setTcpType("TCP Client");
+						rpcDeviceInformation.setSignInId(rpcDeviceInformation.getWellName());
+						rpcDeviceInformation.setSlave("01");;
+					}
+				}
+				
 				this.rpcDeviceManagerService.doRPCDeviceAdd(rpcDeviceInformation);
 				List<String> wells=new ArrayList<String>();
 				wells.add(rpcDeviceInformation.getWellName());
@@ -1643,6 +1728,18 @@ public class WellInformationManagerController extends BaseController {
 				license=acStatusProbeResonanceData.getLicenseNumber();
 			}
 			if(deviceAmount<license){
+				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
+					String[] instanceCodeArr=this.rpcDeviceManagerService.getDefaultInstanceCode(1).split(";");
+					if(instanceCodeArr.length==4){
+						pcpDeviceInformation.setInstanceCode(instanceCodeArr[0].replaceAll(" ", ""));
+						pcpDeviceInformation.setDisplayInstanceCode(instanceCodeArr[1].replaceAll(" ", ""));
+						pcpDeviceInformation.setAlarmInstanceCode(instanceCodeArr[2].replaceAll(" ", ""));
+						pcpDeviceInformation.setReportInstanceCode(instanceCodeArr[3].replaceAll(" ", ""));
+						pcpDeviceInformation.setTcpType("TCP Client");
+						pcpDeviceInformation.setSignInId(pcpDeviceInformation.getWellName());
+						pcpDeviceInformation.setSlave("01");;
+					}
+				}
 				this.pcpDeviceManagerService.doPCPDeviceAdd(pcpDeviceInformation);
 				
 				List<String> wells=new ArrayList<String>();

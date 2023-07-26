@@ -92,7 +92,7 @@ ap:
       defaultGraghSize: 30            #图形平铺每页图形数量
       vacuateThreshold: 300           #历史曲线、图形抽稀阈值
       productionUnit: stere           #产量单位 stere-立方米 ton-吨
-      iot: true                       #物联网
+      iot: false                       #物联网
       scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
       module: all                     #模块 ""-仅监测 all-全部 rpc-抽油机井功图计算 pcp-螺杆泵井转速计算
       showLogo: true                  #是否显示图标

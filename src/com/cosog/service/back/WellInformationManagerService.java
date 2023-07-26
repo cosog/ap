@@ -3044,6 +3044,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				String updateTime=obj[1]+"";
 				applicationScenarios=obj[2]+"";
 				
+				if(!"all".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
+					if("cbm".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
+						applicationScenarios="0";
+					}else{
+						applicationScenarios="1";
+					}
+				}
+				
 				String reservoirShow="油层";
 				if("0".equalsIgnoreCase(applicationScenarios)){
 					reservoirShow="煤层";
@@ -4487,5 +4495,71 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			MemoryDataManagerTask.loadUIKitAccessToken(delIdList,"delete");
 		}
 		return "";
+	}
+	
+	public String getDefaultInstanceCode(int deviceType){
+		if(deviceType>=100 && deviceType<200){
+			deviceType=0;
+		}else if(deviceType>=200 && deviceType<300){
+			deviceType=1;
+		}
+		
+		String acqInstanceCode=" ",displayInstanceCode=" ",alarmInstanceCode=" ",reportInstanceCode=" ";
+		String acqInstanceSql="select v.code from(select t.code from TBL_PROTOCOLINSTANCE t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		String displayInstanceSql="select v.code from(select t.code from tbl_protocoldisplayinstance t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		String alarmInstanceSql="select v.code from(select t.code from tbl_protocolalarminstance t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		String reportInstanceSql="select v.code from(select t.code from tbl_protocolreportinstance t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		
+		List<?> acqInstanceList = this.findCallSql(acqInstanceSql);
+		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
+		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
+		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
+		
+		if(acqInstanceList.size()>0 && acqInstanceList.get(0)!=null ){
+			acqInstanceCode=acqInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		if(displayInstanceList.size()>0 && displayInstanceList.get(0)!=null ){
+			displayInstanceCode=displayInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		if(alarmInstanceList.size()>0 && alarmInstanceList.get(0)!=null ){
+			alarmInstanceCode=alarmInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		if(reportInstanceList.size()>0 && reportInstanceList.get(0)!=null ){
+			reportInstanceCode=reportInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		return acqInstanceCode+";"+displayInstanceCode+";"+alarmInstanceCode+";"+reportInstanceCode;
+	}
+	
+	public String getDefaultInstanceName(int deviceType){
+		if(deviceType>=100 && deviceType<200){
+			deviceType=0;
+		}else if(deviceType>=200 && deviceType<300){
+			deviceType=1;
+		}
+		
+		String acqInstanceName=" ",displayInstanceName=" ",alarmInstanceName=" ",reportInstanceName=" ";
+		String acqInstanceSql="select v.name from(select t.name from TBL_PROTOCOLINSTANCE t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		String displayInstanceSql="select v.name from(select t.name from tbl_protocoldisplayinstance t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		String alarmInstanceSql="select v.name from(select t.name from tbl_protocolalarminstance t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		String reportInstanceSql="select v.name from(select t.name from tbl_protocolreportinstance t where t.devicetype="+deviceType+" order by t.id) v where rownum=1";
+		
+		List<?> acqInstanceList = this.findCallSql(acqInstanceSql);
+		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
+		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
+		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
+		
+		if(acqInstanceList.size()>0 && acqInstanceList.get(0)!=null ){
+			acqInstanceName=acqInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		if(displayInstanceList.size()>0 && displayInstanceList.get(0)!=null ){
+			displayInstanceName=displayInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		if(alarmInstanceList.size()>0 && alarmInstanceList.get(0)!=null ){
+			alarmInstanceName=alarmInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		if(reportInstanceList.size()>0 && reportInstanceList.get(0)!=null ){
+			reportInstanceName=reportInstanceList.get(0).toString().replaceAll("null", "");
+		}
+		return acqInstanceName+";"+displayInstanceName+";"+alarmInstanceName+";"+reportInstanceName;
 	}
 }

@@ -22,17 +22,17 @@ ap:
       linkshow: ""
       #图片及样式
       #heichao
-      favicon: "./images/logo/favicon_heichao.ico"      #网页图标
-      logo: "./images/logo/logo_heichao.png"            #软件logo
-      loginBackgroundImage: "./images/login/login.jpg"  #登录界面背景图片
-      loginCSS: "./styles/login_heichao.css"            #登录界面CSS
-      bannerCSS: "./styles/banner_heichao.css"          #主界面banner CSS
+      #favicon: "./images/logo/favicon_heichao.ico"      #网页图标
+      #logo: "./images/logo/logo_heichao.png"            #软件logo
+      #loginBackgroundImage: "./images/login/login.jpg"  #登录界面背景图片
+      #loginCSS: "./styles/login_heichao.css"            #登录界面CSS
+      #bannerCSS: "./styles/banner_heichao.css"          #主界面banner CSS
       #cnpc
-      #favicon: "./images/logo/favicon_cnpc.ico"
-      #logo: "./images/logo/logo_cnpc.png"
-      #loginBackgroundImage: "./images/login/login.jpg"
-      #loginCSS: "./styles/login_cnpc.css"
-      #bannerCSS: "./styles/banner_cnpc.css"
+      favicon: "./images/logo/favicon_cnpc.ico"
+      logo: "./images/logo/logo_cnpc.png"
+      loginBackgroundImage: "./images/login/login.jpg"
+      loginCSS: "./styles/login_cnpc.css"
+      bannerCSS: "./styles/banner_cnpc.css"
       #cnooc
       #favicon: "./images/logo/favicon_cnooc.ico"
       #logo: "./images/logo/logo_cnooc.png"
@@ -47,7 +47,7 @@ ap:
       #bannerCSS: "./styles/banner_zhuchuang.css"
       helpButtonIcon: "./images/help.svg"             #帮助按钮图标
       exitButtonIcon: "./images/exit.svg"             #退出按钮图标
-      staticResourceTimestamp: 20230427161730  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+      staticResourceTimestamp: 20230728153030  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
       helpDocument: "./readme/ap_cbm/help.html"             #帮助文档
       helpDocumentTimestamp: 20230714163030  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
    email:                #邮件发送账号配置
@@ -93,8 +93,8 @@ ap:
       vacuateThreshold: 300           #历史曲线、图形抽稀阈值
       productionUnit: stere           #产量单位 stere-立方米 ton-吨
       iot: false                       #物联网
-      scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
-      module: all                     #模块 ""-仅监测 all-全部 rpc-抽油机井功图计算 pcp-螺杆泵井转速计算
+      scene: oil                      #应用场景 all-全部 oil-油井 cbm-煤层气井
+      module: rpc                     #模块 ""-仅监测 all-全部 rpc-抽油机井功图计算 pcp-螺杆泵井转速计算
       showLogo: true                  #是否显示图标
       printLog: true                  #是否打印日志
       exportLimit: 10000              #导出数据上限

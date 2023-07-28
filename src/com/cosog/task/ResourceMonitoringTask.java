@@ -141,7 +141,6 @@ public class ResourceMonitoringTask {
 				acRunStatus=1;
 				acVersion=acStatusProbeResonanceData.getVer();
 				acLicense=acStatusProbeResonanceData.getLicenseNumber();
-				
 			}else{
 				acRunStatus=0;
 				acVersion="";
@@ -157,21 +156,22 @@ public class ResourceMonitoringTask {
 		}
 		
 		//ad状态检测
-		try{
-			String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
-			type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
-			AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
-			if(adStatusProbeResonanceData!=null){
-				adRunStatus=1;
-				adVersion=adStatusProbeResonanceData.getVer();
-				adLicense=adStatusProbeResonanceData.getLicenseNumber();
-			}else{
-				adRunStatus=0;
-				adVersion="";
-				adLicense=0;
+		adRunStatus=0;
+		adVersion="";
+		adLicense=0;
+		if(Config.getInstance().configFile.getAp().getOthers().isIot() ){
+			try{
+				String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
+				type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
+				AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
+				if(adStatusProbeResonanceData!=null){
+					adRunStatus=1;
+					adVersion=adStatusProbeResonanceData.getVer();
+					adLicense=adStatusProbeResonanceData.getLicenseNumber();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
 		
 		//服务器资源监测

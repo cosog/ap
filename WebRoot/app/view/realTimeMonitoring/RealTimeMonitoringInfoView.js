@@ -80,6 +80,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 		xtype: 'button',
                         id:"adRunStatusProbeLabel_id",
                         text: 'ad',
+                        hidden: !IoTConfig,
 //                        width: 100,
                         handler: function (v, o) {
                         	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("ad运行状态");

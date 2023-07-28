@@ -384,181 +384,40 @@ values (1084, 'alarmType', '运行状态报警', '6', null, null, null);
 /* 初始化TBL_DATAMAPPING数据                                          */
 /*==============================================================*/
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (1, '声光报警控制位', 'c_sgbjkzw', 0, null, null, 1);
+values (1, '油压', 'c_yy', 0, 'TubingPressure', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (2, '油压', 'c_yy', 0, 'TubingPressure', null, 1);
+values (2, '套压', 'c_ty', 0, 'CasingPressure', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (3, '套压', 'c_ty', 0, 'CasingPressure', null, 1);
+values (3, '井口温度', 'c_jkwd', 0, 'WellHeadTemperature', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (4, '回压', 'c_hy', 0, null, null, 1);
+values (4, '运行状态', 'c_yxzt', 0, 'RunStatus', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (5, '井口温度', 'c_jkwd', 0, 'WellHeadTemperature', null, 1);
+values (5, '功图实测点数', 'c_gtscds', 0, 'FESDiagramAcqCount', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (6, '运行状态', 'c_yxzt', 0, 'RunStatus', null, 1);
+values (6, '功图采集时间', 'c_gtcjsj', 0, 'FESDiagramAcqtime', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (7, '启停控制', 'c_qtkz', 0, null, null, 1);
+values (7, '冲次', 'c_cc', 0, 'SPM', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (8, '含水率', 'c_hsl', 0, 'VolumeWaterCut', null, 1);
+values (8, '冲程', 'c_cc1', 0, 'Stroke', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (9, '动液面', 'c_dym', 0, 'ProducingfluidLevel', null, 1);
+values (9, '功图数据-位移', 'c_gtsjwy', 0, 'Position_Curve', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (10, '光杆温度', 'c_ggwd', 0, null, null, 1);
+values (10, '功图数据-载荷', 'c_gtsjzh', 0, 'Load_Curve', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (11, '盘根盒温度', 'c_pghwd', 0, null, null, 1);
+values (11, '功图数据-电流', 'c_gtsjdl', 0, 'Current_Curve', null, 1);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (12, 'A相电流', 'c_Axdl', 0, 'IA', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (13, 'B相电流', 'c_Bxdl', 0, 'IB', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (14, 'C相电流', 'c_Cxdl', 0, 'IC', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (15, 'A相电压', 'c_Axdy', 0, 'VA', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (16, 'B相电压', 'c_Bxdy', 0, 'VB', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (17, 'C相电压', 'c_Cxdy', 0, 'VC', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (18, '有功功耗', 'c_yggh', 0, 'TotalKWattH', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (19, '无功功耗', 'c_wggh', 0, 'TotalKVarH', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (20, '有功功率', 'c_yggl', 0, 'Watt3', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (21, '无功功率', 'c_wggl', 0, 'Var3', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (22, '反向功率', 'c_fxgl', 0, null, null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (23, '功率因数', 'c_glys', 0, 'PF3', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (24, '变频设置频率', 'c_bpszpl', 0, 'SetFrequency', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (25, '变频运行频率', 'c_bpyxpl', 0, 'RunFrequency', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (26, '功图采集间隔', 'c_gtcjjg', 0, null, null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (27, '功图设置点数', 'c_gtszds', 0, null, null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (28, '功图实测点数', 'c_gtscds', 0, 'FESDiagramAcqCount', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (29, '功图采集时间', 'c_gtcjsj', 0, 'FESDiagramAcqtime', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (30, '冲次', 'c_cc', 0, 'SPM', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (31, '冲程', 'c_cc1', 0, 'Stroke', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (32, '功图数据-位移', 'c_gtsjwy', 0, 'Position_Curve', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (33, '功图数据-载荷', 'c_gtsjzh', 0, 'Load_Curve', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (34, '功图数据-电流', 'c_gtsjdl', 0, 'Current_Curve', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (35, '功图数据-功率', 'c_gtsjgl', 0, 'Power_Curve', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (36, '油压', 'c_yy', 1, 'TubingPressure', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (37, '套压', 'c_ty', 1, 'CasingPressure', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (38, '回压', 'c_hy', 1, null, null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (39, '井口温度', 'c_jkwd', 1, 'WellHeadTemperature', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (40, '运行状态', 'c_yxzt', 1, 'RunStatus', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (41, '启停控制', 'c_qtkz', 1, null, null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (42, '含水率', 'c_hsl', 1, 'VolumeWaterCut', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (43, '动液面', 'c_dym', 1, 'ProducingfluidLevel', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (44, 'A相电流', 'c_Axdl', 1, 'IA', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (45, 'B相电流', 'c_Bxdl', 1, 'IB', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (46, 'C相电流', 'c_Cxdl', 1, 'IC', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (47, 'A相电压', 'c_Axdy', 1, 'VA', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (48, 'B相电压', 'c_Bxdy', 1, 'VB', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (49, 'C相电压', 'c_Cxdy', 1, 'VC', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (50, '有功功耗', 'c_yggh', 1, 'TotalKWattH', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (51, '无功功耗', 'c_wggh', 1, 'TotalKVarH', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (52, '有功功率', 'c_yggl', 1, 'Watt3', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (53, '无功功率', 'c_wggl', 1, 'Var3', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (54, '反向功率', 'c_fxgl', 1, null, null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (55, '功率因数', 'c_glys', 1, 'PF3', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (56, '变频设置频率', 'c_bpszpl', 1, 'SetFrequency', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (57, '变频运行频率', 'c_bpyxpl', 1, 'RunFrequency', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (58, '螺杆泵转速', 'c_lgbzs', 1, 'RPM', null, 1);
-
-insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, CALCOLUMN, REPETITIONTIMES, MAPPINGMODE)
-values (59, '螺杆泵扭矩', 'c_lgbnj', 1, null, null, 1);
+values (12, '功图数据-功率', 'c_gtsjgl', 0, 'Power_Curve', null, 1);
 
 /*==============================================================*/
 /* 初始化TBL_RUNSTATUSCONFIG数据                                          */
@@ -882,8 +741,8 @@ BEGIN
   clobValue := '{"List":[{"Stroke":6.0,"PRTF":[{"CrankAngle":0.0,"PR":10.0,"TF":-0.651},{"CrankAngle":15.0,"PR":0.3,"TF":0.272},{"CrankAngle":30.0,"PR":3.4,"TF":1.2606},{"CrankAngle":45.0,"PR":10.5,"TF":1.998},{"CrankAngle":60.0,"PR":20.5,"TF":2.522},{"CrankAngle":75.0,"PR":32.1,"TF":2.748},{"CrankAngle":90.0,"PR":44.1,"TF":2.735},{"CrankAngle":105.0,"PR":55.7,"TF":2.573},{"CrankAngle":120.0,"PR":66.4,"TF":2.337},{"CrankAngle":135.0,"PR":76.0,"TF":2.066},{"CrankAngle":150.0,"PR":84.4,"TF":1.769},{"CrankAngle":165.0,"PR":91.4,"TF":1.424},{"CrankAngle":180.0,"PR":96.7,"TF":0.977},{"CrankAngle":195.0,"PR":99.7,"TF":0.343},{"CrankAngle":210.0,"PR":99.3,"TF":-0.534},{"CrankAngle":225.0,"PR":94.8,"TF":-1.527},{"CrankAngle":240.0,"PR":86.3,"TF":-2.343},{"CrankAngle":255.0,"PR":74.9,"TF":-2.834},{"CrankAngle":270.0,"PR":62.0,"TF":-3.042},{"CrankAngle":285.0,"PR":48.6,"TF":-3.043},{"CrankAngle":300.0,"PR":35.6,"TF":-2.88},{"CrankAngle":315.0,"PR":23.7,"TF":-2.566},{"CrankAngle":330.0,"PR":13.5,"TF":-2.095},{"CrankAngle":345.0,"PR":5.7,"TF":-1.455},{"CrankAngle":360.0,"PR":10.0,"TF":-0.651}]},'||
   '{"Stroke":5.0,"PRTF":[{"CrankAngle":0.0,"PR":0.9,"TF":-0.521},{"CrankAngle":15.0,"PR":0.2,"TF":0.245},{"CrankAngle":30.0,"PR":3.5,"TF":1.006},{"CrankAngle":45.0,"PR":10.5,"TF":1.655},{"CrankAngle":60.0,"PR":20.3,"TF":2.105},{"CrankAngle":75.0,"PR":32.0,"TF":2.328},{"CrankAngle":90.0,"PR":44.2,"TF":2.355},{"CrankAngle":105.0,"PR":56.2,"TF":2.244},{"CrankAngle":120.0,"PR":67.4,"TF":2.047},{"CrankAngle":135.0,"PR":77.4,"TF":1.796},{"CrankAngle":150.0,"PR":86.0,"TF":1.5},{"CrankAngle":165.0,"PR":92.9,"TF":1.144},{"CrankAngle":180.0,"PR":97.7,"TF":0.699},{"CrankAngle":195.0,"PR":99.9,"TF":0.133},{"CrankAngle":210.0,"PR":98.9,"TF":-0.553},{"CrankAngle":240.0,"PR":85.8,"TF":-1.893},{"CrankAngle":255.0,"PR":74.8,"TF":-2.318},{"CrankAngle":270.0,"PR":62.1,"TF":-2.535},{"CrankAngle":285.0,"PR":48.7,"TF":-2.57},{"CrankAngle":300.0,"PR":35.6,"TF":-2.447},{"CrankAngle":315.0,"PR":23.5,"TF":-2.177},{"CrankAngle":330.0,"PR":13.2,"TF":-1.762},{"CrankAngle":345.0,"PR":5.5,"TF":-1.205},{"CrankAngle":360.0,"PR":0.9,"TF":-0.521}]},'||
   '{"Stroke":4.0,"PRTF":[{"CrankAngle":0.0,"PR":0.9,"TF":-0.399},{"CrankAngle":15.0,"PR":0.2,"TF":0.206},{"CrankAngle":30.0,"PR":3.5,"TF":0.799},{"CrankAngle":45.0,"PR":10.3,"TF":1.309},{"CrankAngle":60.0,"PR":20.0,"TF":1.678},{"CrankAngle":75.0,"PR":31.6,"TF":1.883},{"CrankAngle":90.0,"PR":44.0,"TF":1.936},{"CrankAngle":105.0,"PR":56.3,"TF":1.869},{"CrankAngle":120.0,"PR":67.8,"TF":1.715},{"CrankAngle":135.0,"PR":78.2,"TF":1.496},{"CrankAngle":150.0,"PR":87.0,"TF":1.223},{"CrankAngle":165.0,"PR":93.8,"TF":0.891},{"CrankAngle":180.0,"PR":98.3,"TF":0.491},{"CrankAngle":195.0,"PR":100.0,"TF":0.018},{"CrankAngle":210.0,"PR":98.4,"TF":-0.51},{"CrankAngle":225.0,"PR":93.4,"TF":-1.041},{"CrankAngle":240.0,"PR":85.2,"TF":-1.503},{"CrankAngle":255.0,"PR":74.3,"TF":-1.841},{"CrankAngle":270.0,"PR":61.8,"TF":-2.032},{"CrankAngle":285.0,"PR":48.5,"TF":-2.077},{"CrankAngle":300.0,"PR":35.3,"TF":-1.984},{"CrankAngle":315.0,"PR":23.2,"TF":-1.76},{"CrankAngle":330.0,"PR":12.9,"TF":-1.413},{"CrankAngle":345.0,"PR":5.2,"TF":-0.952},{"CrankAngle":360.0,"PR":0.9,"TF":-0.399}]}]}';
-  UPDATE TBL_PUMPINGMODEL T SET T.PRTF = clobValue WHERE t.id=15;  
-  COMMIT;  
+  UPDATE TBL_PUMPINGMODEL T SET T.PRTF = clobValue WHERE t.id=15;
+  COMMIT;
 END;  
 /
 
@@ -893,8 +752,8 @@ BEGIN
   clobValue := '{"List":[{"Stroke":5.5,"PRTF":[{"CrankAngle":0.0,"PR":10.0,"TF":-0.596},{"CrankAngle":15.0,"PR":0.3,"TF":0.249},{"CrankAngle":30.0,"PR":3.4,"TF":1.154},{"CrankAngle":45.0,"PR":10.5,"TF":1.829},{"CrankAngle":60.0,"PR":20.3,"TF":2.309},{"CrankAngle":75.0,"PR":32.1,"TF":2.516},{"CrankAngle":90.0,"PR":44.1,"TF":2.504},{"CrankAngle":105.0,"PR":55.7,"TF":2.356},{"CrankAngle":120.0,"PR":66.4,"TF":2.14},{"CrankAngle":135.0,"PR":76.0,"TF":1.891},{"CrankAngle":150.0,"PR":84.4,"TF":1.62},{"CrankAngle":165.0,"PR":91.4,"TF":1.304},{"CrankAngle":180.0,"PR":96.7,"TF":0.894},{"CrankAngle":195.0,"PR":99.7,"TF":0.314},{"CrankAngle":210.0,"PR":99.3,"TF":-0.489},{"CrankAngle":225.0,"PR":94.8,"TF":-1.398},{"CrankAngle":240.0,"PR":86.3,"TF":-2.145},{"CrankAngle":255.0,"PR":74.9,"TF":-2.595},{"CrankAngle":270.0,"PR":62.0,"TF":-2.785},{"CrankAngle":285.0,"PR":48.6,"TF":-2.786},{"CrankAngle":300.0,"PR":35.6,"TF":-2.637},{"CrankAngle":315.0,"PR":23.7,"TF":-2.439},{"CrankAngle":330.0,"PR":13.5,"TF":-1.918},{"CrankAngle":345.0,"PR":5.7,"TF":-1.332},{"CrankAngle":360.0,"PR":10.0,"TF":-0.596}]},'||
   '{"Stroke":4.6,"PRTF":[{"CrankAngle":0.0,"PR":0.9,"TF":-0.477},{"CrankAngle":15.0,"PR":0.2,"TF":0.224},{"CrankAngle":30.0,"PR":3.5,"TF":0.921},{"CrankAngle":45.0,"PR":10.5,"TF":1.515},{"CrankAngle":60.0,"PR":20.3,"TF":1.927},{"CrankAngle":75.0,"PR":32.0,"TF":2.131},{"CrankAngle":90.0,"PR":44.2,"TF":2.156},{"CrankAngle":105.0,"PR":56.2,"TF":2.054},{"CrankAngle":120.0,"PR":67.4,"TF":1.874},{"CrankAngle":135.0,"PR":77.4,"TF":1.644},{"CrankAngle":150.0,"PR":87.0,"TF":1.373},{"CrankAngle":165.0,"PR":93.8,"TF":1.047},{"CrankAngle":180.0,"PR":98.3,"TF":0.64},{"CrankAngle":195.0,"PR":100.0,"TF":0.122},{"CrankAngle":210.0,"PR":98.4,"TF":-0.506},{"CrankAngle":225.0,"PR":93.4,"TF":-1.165},{"CrankAngle":240.0,"PR":85.2,"TF":-1.733},{"CrankAngle":255.0,"PR":74.3,"TF":-2.122},{"CrankAngle":270.0,"PR":61.8,"TF":-2.321},{"CrankAngle":285.0,"PR":48.5,"TF":-2.353},{"CrankAngle":300.0,"PR":35.3,"TF":-2.24},{"CrankAngle":315.0,"PR":23.2,"TF":-1.993},{"CrankAngle":330.0,"PR":12.9,"TF":-1.613},{"CrankAngle":345.0,"PR":5.2,"TF":-1.103},{"CrankAngle":360.0,"PR":0.9,"TF":-0.477}]},'||
   '{"Stroke":3.7,"PRTF":[{"CrankAngle":0.0,"PR":0.9,"TF":-0.365},{"CrankAngle":15.0,"PR":0.2,"TF":0.189},{"CrankAngle":30.0,"PR":3.5,"TF":0.731},{"CrankAngle":45.0,"PR":10.3,"TF":1.198},{"CrankAngle":60.0,"PR":20.0,"TF":1.536},{"CrankAngle":75.0,"PR":31.6,"TF":1.734},{"CrankAngle":90.0,"PR":44.0,"TF":1.772},{"CrankAngle":105.0,"PR":56.3,"TF":1.711},{"CrankAngle":120.0,"PR":67.8,"TF":1.57},{"CrankAngle":135.0,"PR":78.2,"TF":1.37},{"CrankAngle":150.0,"PR":86.0,"TF":1.12},{"CrankAngle":165.0,"PR":92.9,"TF":0.816},{"CrankAngle":180.0,"PR":97.7,"TF":0.45},{"CrankAngle":195.0,"PR":99.9,"TF":0.016},{"CrankAngle":210.0,"PR":98.9,"TF":-0.467},{"CrankAngle":225.0,"PR":94.1,"TF":-0.953},{"CrankAngle":240.0,"PR":85.8,"TF":-1.376},{"CrankAngle":255.0,"PR":74.8,"TF":-1.685},{"CrankAngle":270.0,"PR":62.1,"TF":-1.86},{"CrankAngle":285.0,"PR":48.7,"TF":-1.901},{"CrankAngle":300.0,"PR":35.6,"TF":-1.816},{"CrankAngle":315.0,"PR":23.5,"TF":-1.611},{"CrankAngle":330.0,"PR":13.2,"TF":-1.294},{"CrankAngle":345.0,"PR":5.5,"TF":-0.872},{"CrankAngle":360.0,"PR":0.9,"TF":-0.365}]}]}';
-  UPDATE TBL_PUMPINGMODEL T SET T.PRTF = clobValue WHERE t.id=16;  
-  COMMIT;  
+  UPDATE TBL_PUMPINGMODEL T SET T.PRTF = clobValue WHERE t.id=16;
+  COMMIT;
 END;  
 /
 
@@ -904,7 +763,7 @@ BEGIN
   clobValue := '{"List":[{"Stroke":6.0,"PRTF":[{"CrankAngle":0.0,"PR":10.0,"TF":-0.651},{"CrankAngle":15.0,"PR":0.3,"TF":0.272},{"CrankAngle":30.0,"PR":3.4,"TF":1.2606},{"CrankAngle":45.0,"PR":10.5,"TF":1.998},{"CrankAngle":60.0,"PR":20.5,"TF":2.522},{"CrankAngle":75.0,"PR":32.1,"TF":2.748},{"CrankAngle":90.0,"PR":44.1,"TF":2.735},{"CrankAngle":105.0,"PR":55.7,"TF":2.573},{"CrankAngle":120.0,"PR":66.4,"TF":2.337},{"CrankAngle":135.0,"PR":76.0,"TF":2.066},{"CrankAngle":150.0,"PR":84.4,"TF":1.769},{"CrankAngle":165.0,"PR":91.4,"TF":1.424},{"CrankAngle":180.0,"PR":96.7,"TF":0.977},{"CrankAngle":195.0,"PR":99.7,"TF":0.343},{"CrankAngle":210.0,"PR":99.3,"TF":-0.534},{"CrankAngle":225.0,"PR":94.8,"TF":-1.527},{"CrankAngle":240.0,"PR":86.3,"TF":-2.343},{"CrankAngle":255.0,"PR":74.9,"TF":-2.834},{"CrankAngle":270.0,"PR":62.0,"TF":-3.042},{"CrankAngle":285.0,"PR":48.6,"TF":-3.043},{"CrankAngle":300.0,"PR":35.6,"TF":-2.88},{"CrankAngle":315.0,"PR":23.7,"TF":-2.566},{"CrankAngle":330.0,"PR":13.5,"TF":-2.095},{"CrankAngle":345.0,"PR":5.7,"TF":-1.455},{"CrankAngle":360.0,"PR":10.0,"TF":-0.651}]},'||
   '{"Stroke":5.0,"PRTF":[{"CrankAngle":0.0,"PR":0.9,"TF":-0.521},{"CrankAngle":15.0,"PR":0.2,"TF":0.245},{"CrankAngle":30.0,"PR":3.5,"TF":1.006},{"CrankAngle":45.0,"PR":10.5,"TF":1.655},{"CrankAngle":60.0,"PR":20.3,"TF":2.105},{"CrankAngle":75.0,"PR":32.0,"TF":2.328},{"CrankAngle":90.0,"PR":44.2,"TF":2.355},{"CrankAngle":105.0,"PR":56.2,"TF":2.244},{"CrankAngle":120.0,"PR":67.4,"TF":2.047},{"CrankAngle":135.0,"PR":77.4,"TF":1.796},{"CrankAngle":150.0,"PR":86.0,"TF":1.5},{"CrankAngle":165.0,"PR":92.9,"TF":1.144},{"CrankAngle":180.0,"PR":97.7,"TF":0.699},{"CrankAngle":195.0,"PR":99.9,"TF":0.133},{"CrankAngle":210.0,"PR":98.9,"TF":-0.553},{"CrankAngle":240.0,"PR":85.8,"TF":-1.893},{"CrankAngle":255.0,"PR":74.8,"TF":-2.318},{"CrankAngle":270.0,"PR":62.1,"TF":-2.535},{"CrankAngle":285.0,"PR":48.7,"TF":-2.57},{"CrankAngle":300.0,"PR":35.6,"TF":-2.447},{"CrankAngle":315.0,"PR":23.5,"TF":-2.177},{"CrankAngle":330.0,"PR":13.2,"TF":-1.762},{"CrankAngle":345.0,"PR":5.5,"TF":-1.205},{"CrankAngle":360.0,"PR":0.9,"TF":-0.521}]},'||
   '{"Stroke":4.0,"PRTF":[{"CrankAngle":0.0,"PR":0.9,"TF":-0.399},{"CrankAngle":15.0,"PR":0.2,"TF":0.206},{"CrankAngle":30.0,"PR":3.5,"TF":0.799},{"CrankAngle":45.0,"PR":10.3,"TF":1.309},{"CrankAngle":60.0,"PR":20.0,"TF":1.678},{"CrankAngle":75.0,"PR":31.6,"TF":1.883},{"CrankAngle":90.0,"PR":44.0,"TF":1.936},{"CrankAngle":105.0,"PR":56.3,"TF":1.869},{"CrankAngle":120.0,"PR":67.8,"TF":1.715},{"CrankAngle":135.0,"PR":78.2,"TF":1.496},{"CrankAngle":150.0,"PR":87.0,"TF":1.223},{"CrankAngle":165.0,"PR":93.8,"TF":0.891},{"CrankAngle":180.0,"PR":98.3,"TF":0.491},{"CrankAngle":195.0,"PR":100.0,"TF":0.018},{"CrankAngle":210.0,"PR":98.4,"TF":-0.51},{"CrankAngle":225.0,"PR":93.4,"TF":-1.041},{"CrankAngle":240.0,"PR":85.2,"TF":-1.503},{"CrankAngle":255.0,"PR":74.3,"TF":-1.841},{"CrankAngle":270.0,"PR":61.8,"TF":-2.032},{"CrankAngle":285.0,"PR":48.5,"TF":-2.077},{"CrankAngle":300.0,"PR":35.3,"TF":-1.984},{"CrankAngle":315.0,"PR":23.2,"TF":-1.76},{"CrankAngle":330.0,"PR":12.9,"TF":-1.413},{"CrankAngle":345.0,"PR":5.2,"TF":-0.952},{"CrankAngle":360.0,"PR":0.9,"TF":-0.399}]}]}';
-  UPDATE TBL_PUMPINGMODEL T SET T.PRTF = clobValue WHERE t.id=17;  
-  COMMIT;  
+  UPDATE TBL_PUMPINGMODEL T SET T.PRTF = clobValue WHERE t.id=17;
+  COMMIT;
 END;  
 /

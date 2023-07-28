@@ -34,10 +34,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 		if(dataSourceConfig!=null && dataSourceConfig.isEnable()){
 
 			String sql="select t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,to_char(t2.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqtime "
-					+ " from tbl_rpcdevice t,tbl_rpcacqdata_latest t2 "
-					+ " where t.id=t2.wellid "
-//					+ " and t.wellname='test_01'"
-					+ " and t.status=1";
+					+ " from tbl_rpcdevice t"
+					+ " left outer join tbl_rpcacqdata_latest t2 on t.id=t2.wellid  "
+					+ " where t.status=1";
 			Connection conn = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;

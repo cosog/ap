@@ -224,6 +224,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                 		},{
                 			title:'通信状态',
                 			layout: 'fit',
+                			hidden: onlyFESDiagramCal,
                         	id:'RPCHistoryQueryStatGraphPanel_Id',
                         	html: '<div id="RPCHistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {

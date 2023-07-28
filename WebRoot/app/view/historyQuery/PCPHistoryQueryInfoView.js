@@ -189,6 +189,7 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                 		},{
                 			title:'通信状态',
                 			layout: 'fit',
+                			hidden: onlyFESDiagramCal,
                         	id:'PCPHistoryQueryStatGraphPanel_Id',
                         	html: '<div id="PCPHistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {

@@ -103,8 +103,9 @@ public class EquipmentDriverServerTask {
 //			Thread.sleep(1000*5);
 //		}
 		
+		ThreadPool executor=adInit();
+		
 		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
-			ThreadPool executor=adInit();
 			boolean sendMsg=false;
 			exampleDataManage();
 			do{

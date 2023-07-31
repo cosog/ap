@@ -12,13 +12,16 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
 
 import com.cosog.model.DataSourceConfig;
+import com.cosog.model.DataWriteBackConfig;
 import com.cosog.task.MemoryDataManagerTask;
 
 import oracle.sql.CLOB;
 
 public class OracleJdbcUtis {
 
-	private static BasicDataSource outerDataSource=null;
+	public static BasicDataSource outerDataSource=null;
+	
+	public static BasicDataSource outerDataWriteBackDataSource=null;
 	
 	private static void initOuterDataSource(){
 		
@@ -30,7 +33,7 @@ public class OracleJdbcUtis {
 			
 			outerDataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 
-			outerDataSource.setUrl("jdbc:oracle:thin:@"+dataSourceConfig.getIP()+":"+dataSourceConfig.getPort()+"/"+dataSourceConfig.getInstanceName()+"");
+			outerDataSource.setUrl("jdbc:oracle:thin:@"+dataSourceConfig.getIP()+":"+dataSourceConfig.getPort()+(dataSourceConfig.getVersion()>=12?"/":":")+dataSourceConfig.getInstanceName()+"");
 
 			outerDataSource.setUsername(dataSourceConfig.getUser());
 
@@ -46,10 +49,39 @@ public class OracleJdbcUtis {
 		}
 	}
 	
+	private static void initDataWriteBackDataSource(){
+		
+		DataWriteBackConfig dataWriteBackConfig=MemoryDataManagerTask.getDataWriteBackConfig();
+		
+		if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable()){
+			
+			outerDataWriteBackDataSource = new BasicDataSource();
+			
+			outerDataWriteBackDataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+
+			outerDataWriteBackDataSource.setUrl("jdbc:oracle:thin:@"+dataWriteBackConfig.getIP()+":"+dataWriteBackConfig.getPort()+(dataWriteBackConfig.getVersion()>=12?"/":":")+dataWriteBackConfig.getInstanceName()+"");
+
+			outerDataWriteBackDataSource.setUsername(dataWriteBackConfig.getUser());
+
+			outerDataWriteBackDataSource.setPassword(dataWriteBackConfig.getPassword());
+
+			outerDataWriteBackDataSource.setInitialSize(5); // 初始化连接数
+
+			outerDataWriteBackDataSource.setMaxIdle(10); // 最大空闲连接数
+
+			outerDataWriteBackDataSource.setMinIdle(5); // 最小空闲连接数
+
+			outerDataWriteBackDataSource.setMaxIdle(100); // 最大连接数
+		}
+	}
+	
 	public static Connection getOuterConnection() throws SQLException{
 		Connection conn=null;
 		if(outerDataSource==null){
 			initOuterDataSource();
+		}
+		if(outerDataWriteBackDataSource==null){
+			initDataWriteBackDataSource();
 		}
 		if(outerDataSource!=null){
 			conn=outerDataSource.getConnection();

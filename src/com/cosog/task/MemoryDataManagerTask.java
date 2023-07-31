@@ -24,6 +24,7 @@ import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DataSourceConfig;
+import com.cosog.model.DataWriteBackConfig;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.VideoKey;
@@ -3217,5 +3218,30 @@ public class MemoryDataManagerTask {
 			dataSourceConfig=(DataSourceConfig) map.get("dataSourceConfig");
 		}
 		return dataSourceConfig;
+	}
+	
+	public static void loadDataWriteBackConfig(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		
+		String path=stringManagerUtils.getFilePath("writeBackConfig.json","dataSource/");
+		String data=stringManagerUtils.readFile(path,"utf-8");
+		
+		type = new TypeToken<DataWriteBackConfig>() {}.getType();
+		DataWriteBackConfig dataWriteBackConfig=gson.fromJson(data, type);
+		
+		Map<String, Object> map = DataModelMap.getMapObject();
+		map.put("dataWriteBackConfig", dataWriteBackConfig);
+	}
+	
+	public static DataWriteBackConfig getDataWriteBackConfig(){
+		Map<String, Object> map = DataModelMap.getMapObject();
+		DataWriteBackConfig dataWriteBackConfig=(DataWriteBackConfig) map.get("dataWriteBackConfig");
+		if(dataWriteBackConfig==null){
+			loadDataWriteBackConfig();
+			dataWriteBackConfig=(DataWriteBackConfig) map.get("dataWriteBackConfig");
+		}
+		return dataWriteBackConfig;
 	}
 }

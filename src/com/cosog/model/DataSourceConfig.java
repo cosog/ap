@@ -6,9 +6,11 @@ public class DataSourceConfig {
 
     private String IP;
 
-    private int Port;
+    private int Version;
 
     private String InstanceName;
+    
+    private int Port;
 
     private String User;
 
@@ -969,5 +971,13 @@ public class DataSourceConfig {
 
 	public void setProductionTable(ProductionTable productionTable) {
 		ProductionTable = productionTable;
+	}
+
+	public int getVersion() {
+		return Version;
+	}
+
+	public void setVersion(int version) {
+		Version = version;
 	}
 }

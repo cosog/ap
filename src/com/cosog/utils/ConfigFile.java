@@ -532,6 +532,7 @@ public class ConfigFile {
 		ThreadPoolConfig calculateMaintaining;
 		ThreadPoolConfig totalCalculateMaintaining;
 		ThreadPoolConfig outerDatabaseSync;
+		ThreadPoolConfig dataWriteBack;
 		public ThreadPoolConfig getInitIdAndIpPort() {
 			return initIdAndIpPort;
 		}

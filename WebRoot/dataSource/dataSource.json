@@ -3,7 +3,7 @@
     "IP":"127.0.0.1",
     "Port":1521,
     "InstanceName":"orclpdb",
-    "Version":11,
+    "Version":12,
     "User":"kfk",
     "Password":"a11ck_123",
     "DiagramTable":{

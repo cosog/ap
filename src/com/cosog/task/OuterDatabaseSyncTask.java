@@ -43,7 +43,8 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 			String sql="select t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,to_char(t2.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqtime "
 					+ " from tbl_rpcdevice t"
 					+ " left outer join tbl_rpcacqdata_latest t2 on t.id=t2.wellid  "
-					+ " where t.status=1";
+					+ " where t.status=1"
+					+ " ";
 			Connection conn = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -102,12 +103,12 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 		
 		public void run(){
 			DataSourceConfig dataSourceConfig=MemoryDataManagerTask.getDataSourceConfig();
-			if(dataSourceConfig!=null && dataSourceConfig.isEnable() && OracleJdbcUtis.outerDataSource!=null){
+			if(dataSourceConfig!=null && dataSourceConfig.isEnable()){
 				Connection conn = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				try {
-					conn=OracleJdbcUtis.outerDataSource.getConnection();
+					conn=OracleJdbcUtis.getOuterConnection();
 					if(conn!=null){
 						if(dataSourceConfig.getDiagramTable().getEnable()){
 							String pushUrl=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdAcqGroupDataPushURL();
@@ -298,12 +299,12 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 		
 		public void run(){
 			DataWriteBackConfig dataWriteBackConfig=MemoryDataManagerTask.getDataWriteBackConfig();
-			if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && this.rpcCalculateResponseData!=null && OracleJdbcUtis.outerDataWriteBackDataSource!=null){
+			if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && this.rpcCalculateResponseData!=null){
 				Connection conn = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				try {
-					conn=OracleJdbcUtis.outerDataWriteBackDataSource.getConnection();
+					conn=OracleJdbcUtis.getDataWriteBackConnection();
 					if(conn!=null){
 						if(dataWriteBackConfig.getDiagramResult().getEnable()){
 							String updateSql="";
@@ -319,47 +320,33 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							insertSql="insert into "+dataWriteBackConfig.getDiagramResult().getTableName()+" (";
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getEnable()){
-								String value=this.rpcCalculateResponseData.getWellName();
-								if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getType())){
-									value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-								}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getType())){
-									value="'"+value+"'";
-								}
-								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getColumn()+ "="+value+",";
+								String value=getOperaValue(this.rpcCalculateResponseData.getWellName(),dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getType());
+								
+//								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getColumn()+ "="+value+",";
 								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getColumn()+",";
 								insertValues+=value+",";
 								
 								wellNameValue=value;
-								itemCount++;
+//								itemCount++;
 							}
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getEnable()){
 								String value="null";
 								if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-									value=this.rpcCalculateResponseData.getFESDiagram().getAcqTime();
-									if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getType())){
-										value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-									}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getType())){
-										value="'"+value+"'";
-									}
+									value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getAcqTime(),dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getType());
 								}	
-								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getColumn()+ "="+value+",";
+//								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getColumn()+ "="+value+",";
 								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getColumn()+",";
 								insertValues+=value+",";
 								
 								acqTimeValue=value;
-								itemCount++;
+//								itemCount++;
 							}
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getEnable()){
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getFESDiagram().getFMax()!=null&&this.rpcCalculateResponseData.getFESDiagram().getFMax().size()>0){
-										value=rpcCalculateResponseData.getFESDiagram().getFMax().get(0)+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(rpcCalculateResponseData.getFESDiagram().getFMax().get(0)+"",dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getType());
 									}
 								}	
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getColumn()+ "="+value+",";
@@ -372,12 +359,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getFESDiagram().getFMin()!=null&&this.rpcCalculateResponseData.getFESDiagram().getFMin().size()>0){
-										value=rpcCalculateResponseData.getFESDiagram().getFMin().get(0)+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(rpcCalculateResponseData.getFESDiagram().getFMin().get(0)+"",dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getType());
 									}
 								}	
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getColumn()+ "="+value+",";
@@ -386,16 +368,37 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								itemCount++;
 							}
 							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getUpperLoadLine()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getLowerLoadLine()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getEnable()){
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=this.rpcCalculateResponseData.getFESDiagram().getFullnessCoefficient()+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getFullnessCoefficient()+"",dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getType());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getColumn()+ "="+value+",";
@@ -404,15 +407,23 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								itemCount++;
 							}
 							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getNoLiquidFullnessCoefficient()+"",dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getEnable()){
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									value=this.rpcCalculateResponseData.getCalculationStatus().getResultCode()+"";
-									if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getType())){
-										value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-									}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getType())){
-										value="'"+value+"'";
-									}
+									value=getOperaValue(this.rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getType());
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getColumn()+ "="+value+",";
 								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getColumn()+",";
@@ -442,12 +453,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 									jedis.close();
 								}
 							}
-							if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getResultName().getType())){
-								resultName="'"+resultName+"'";
-							}
-							if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getOptimizationSuggestion().getType())){
-								optimizationSuggestion="'"+optimizationSuggestion+"'";
-							}
+							resultName=getOperaValue(resultName,dataWriteBackConfig.getDiagramResult().getColumns().getResultName().getType());
+							optimizationSuggestion=getOperaValue(optimizationSuggestion,dataWriteBackConfig.getDiagramResult().getColumns().getOptimizationSuggestion().getType());
+							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getResultName().getEnable()){
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getResultName().getColumn()+ "="+resultName+",";
 								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getResultName().getColumn()+",";
@@ -467,12 +475,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=this.rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getType());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getColumn()+ "="+value+",";
@@ -484,12 +487,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=this.rpcCalculateResponseData.getProduction().getOilVolumetricProduction()+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getOilVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getType());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getColumn()+ "="+value+",";
@@ -501,12 +499,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=this.rpcCalculateResponseData.getProduction().getWaterVolumetricProduction()+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getWaterVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getType());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getColumn()+ "="+value+",";
@@ -520,12 +513,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=this.rpcCalculateResponseData.getProduction().getLiquidWeightProduction()+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getLiquidWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getType());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getColumn()+ "="+value+",";
@@ -537,12 +525,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=this.rpcCalculateResponseData.getProduction().getOilWeightProduction()+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getOilWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getType());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getColumn()+ "="+value+",";
@@ -554,12 +537,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=this.rpcCalculateResponseData.getProduction().getWaterWeightProduction()+"";
-										if("date".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getType())){
-											value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
-										}else if(!"number".equalsIgnoreCase(dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getType())){
-											value="'"+value+"'";
-										}
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getWaterWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getType());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getColumn()+ "="+value+",";
@@ -568,9 +546,217 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								itemCount++;
 							}
 							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getTheoreticalProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getPumpEfficiency()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getPumpEfficiency().getPumpEff()+"",dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getCalcProducingfluidLevel()+"",dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getLevelDifferenceValue()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getSubmergence()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getUpStrokeIMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getDownStrokeIMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getIDegreeBalance()+"",dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getUpStrokeWattMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getDownStrokeWattMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getWattDegreeBalance()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getDeltaRadius()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
+							if(dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getEnable()){
+								String value="null";
+								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getEnergyPer100mLift()+"",dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getType());
+									}	
+								}
+								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getColumn()+ "="+value+",";
+								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getColumn()+",";
+								insertValues+=value+",";
+								itemCount++;
+							}
+							
 							if(itemCount>0){
 								if(updateSql.endsWith(",")){
-									updateSql=updateSql.substring(updateSql.lastIndexOf(",")+1);
+									updateSql=updateSql.substring(0,updateSql.length()-1);
 								}
 								if(insertColumns.endsWith(",")){
 									insertColumns=insertColumns.substring(0,insertColumns.length()-1);
@@ -590,7 +776,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								}
 								
 								try{  
-						            pstmt=conn.prepareStatement(sql);  
+						            pstmt=conn.prepareStatement(sql);
 						            int iNum=pstmt.executeUpdate();
 						        }catch(RuntimeException re){  
 						        	re.printStackTrace();
@@ -606,6 +792,15 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 					OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 				}
 			}
+		}
+		
+		public String getOperaValue(String value,String type){
+			if("date".equalsIgnoreCase(type)){
+				value="to_date('"+value+"','yyyy-mm-dd hh24:mi:ss')";
+			}else if(!"number".equalsIgnoreCase(type)){
+				value="'"+value+"'";
+			}
+			return value;
 		}
 
 		public RPCCalculateResponseData getRpcCalculateResponseData() {

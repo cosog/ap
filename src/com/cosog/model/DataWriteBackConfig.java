@@ -57,8 +57,14 @@ public class DataWriteBackConfig {
 	    private ColumnInfo FMax;
 
 	    private ColumnInfo FMin;
+	    
+	    private ColumnInfo UpperLoadLine;
+	    
+	    private ColumnInfo LowerLoadLine;
 
 	    private ColumnInfo FullnessCoefficient;
+	    
+	    private ColumnInfo NoLiquidFullnessCoefficient;
 
 	    private ColumnInfo ResultName;
 
@@ -77,6 +83,38 @@ public class DataWriteBackConfig {
 	    private ColumnInfo OilWeightProduction;
 
 	    private ColumnInfo WaterWeightProduction;
+	    
+	    private ColumnInfo TheoreticalProduction;
+	    
+	    private ColumnInfo PumpEff;
+	    
+	    private ColumnInfo CalcProducingfluidLevel;
+	    
+	    private ColumnInfo LevelDifferenceValue;
+	    
+	    private ColumnInfo Submergence;
+	    
+	    private ColumnInfo DownStrokeIMax;
+	    
+	    private ColumnInfo UpStrokeIMax;
+	    
+	    private ColumnInfo IDegreeBalance;
+	    
+	    private ColumnInfo DownStrokeWattMax;
+	    
+	    private ColumnInfo UpStrokeWattMax;
+	    
+	    private ColumnInfo WattDegreeBalance;
+	    
+	    private ColumnInfo DeltaRadius;
+	    
+	    private ColumnInfo WellDownSystemEfficiency;
+	    
+	    private ColumnInfo SurfaceSystemEfficiency;
+	    
+	    private ColumnInfo SystemEfficiency;
+	    
+	    private ColumnInfo EnergyPer100mLift;
 
 		public ColumnInfo getWellName() {
 			return WellName;
@@ -188,6 +226,158 @@ public class DataWriteBackConfig {
 
 		public void setOilWeightProduction(ColumnInfo oilWeightProduction) {
 			OilWeightProduction = oilWeightProduction;
+		}
+
+		public ColumnInfo getUpperLoadLine() {
+			return UpperLoadLine;
+		}
+
+		public void setUpperLoadLine(ColumnInfo upperLoadLine) {
+			UpperLoadLine = upperLoadLine;
+		}
+
+		public ColumnInfo getLowerLoadLine() {
+			return LowerLoadLine;
+		}
+
+		public void setLowerLoadLine(ColumnInfo lowerLoadLine) {
+			LowerLoadLine = lowerLoadLine;
+		}
+
+		public ColumnInfo getNoLiquidFullnessCoefficient() {
+			return NoLiquidFullnessCoefficient;
+		}
+
+		public void setNoLiquidFullnessCoefficient(ColumnInfo noLiquidFullnessCoefficient) {
+			NoLiquidFullnessCoefficient = noLiquidFullnessCoefficient;
+		}
+
+		public ColumnInfo getTheoreticalProduction() {
+			return TheoreticalProduction;
+		}
+
+		public void setTheoreticalProduction(ColumnInfo theoreticalProduction) {
+			TheoreticalProduction = theoreticalProduction;
+		}
+
+		public ColumnInfo getPumpEff() {
+			return PumpEff;
+		}
+
+		public void setPumpEff(ColumnInfo pumpEff) {
+			PumpEff = pumpEff;
+		}
+
+		public ColumnInfo getCalcProducingfluidLevel() {
+			return CalcProducingfluidLevel;
+		}
+
+		public void setCalcProducingfluidLevel(ColumnInfo calcProducingfluidLevel) {
+			CalcProducingfluidLevel = calcProducingfluidLevel;
+		}
+
+		public ColumnInfo getLevelDifferenceValue() {
+			return LevelDifferenceValue;
+		}
+
+		public void setLevelDifferenceValue(ColumnInfo levelDifferenceValue) {
+			LevelDifferenceValue = levelDifferenceValue;
+		}
+
+		public ColumnInfo getSubmergence() {
+			return Submergence;
+		}
+
+		public void setSubmergence(ColumnInfo submergence) {
+			Submergence = submergence;
+		}
+
+		public ColumnInfo getDownStrokeIMax() {
+			return DownStrokeIMax;
+		}
+
+		public void setDownStrokeIMax(ColumnInfo downStrokeIMax) {
+			DownStrokeIMax = downStrokeIMax;
+		}
+
+		public ColumnInfo getUpStrokeIMax() {
+			return UpStrokeIMax;
+		}
+
+		public void setUpStrokeIMax(ColumnInfo upStrokeIMax) {
+			UpStrokeIMax = upStrokeIMax;
+		}
+
+		public ColumnInfo getIDegreeBalance() {
+			return IDegreeBalance;
+		}
+
+		public void setIDegreeBalance(ColumnInfo iDegreeBalance) {
+			IDegreeBalance = iDegreeBalance;
+		}
+
+		public ColumnInfo getDownStrokeWattMax() {
+			return DownStrokeWattMax;
+		}
+
+		public void setDownStrokeWattMax(ColumnInfo downStrokeWattMax) {
+			DownStrokeWattMax = downStrokeWattMax;
+		}
+
+		public ColumnInfo getUpStrokeWattMax() {
+			return UpStrokeWattMax;
+		}
+
+		public void setUpStrokeWattMax(ColumnInfo upStrokeWattMax) {
+			UpStrokeWattMax = upStrokeWattMax;
+		}
+
+		public ColumnInfo getWattDegreeBalance() {
+			return WattDegreeBalance;
+		}
+
+		public void setWattDegreeBalance(ColumnInfo wattDegreeBalance) {
+			WattDegreeBalance = wattDegreeBalance;
+		}
+
+		public ColumnInfo getDeltaRadius() {
+			return DeltaRadius;
+		}
+
+		public void setDeltaRadius(ColumnInfo deltaRadius) {
+			DeltaRadius = deltaRadius;
+		}
+
+		public ColumnInfo getWellDownSystemEfficiency() {
+			return WellDownSystemEfficiency;
+		}
+
+		public void setWellDownSystemEfficiency(ColumnInfo wellDownSystemEfficiency) {
+			WellDownSystemEfficiency = wellDownSystemEfficiency;
+		}
+
+		public ColumnInfo getSurfaceSystemEfficiency() {
+			return SurfaceSystemEfficiency;
+		}
+
+		public void setSurfaceSystemEfficiency(ColumnInfo surfaceSystemEfficiency) {
+			SurfaceSystemEfficiency = surfaceSystemEfficiency;
+		}
+
+		public ColumnInfo getSystemEfficiency() {
+			return SystemEfficiency;
+		}
+
+		public void setSystemEfficiency(ColumnInfo systemEfficiency) {
+			SystemEfficiency = systemEfficiency;
+		}
+
+		public ColumnInfo getEnergyPer100mLift() {
+			return EnergyPer100mLift;
+		}
+
+		public void setEnergyPer100mLift(ColumnInfo energyPer100mLift) {
+			EnergyPer100mLift = energyPer100mLift;
 		}
 	}
 	

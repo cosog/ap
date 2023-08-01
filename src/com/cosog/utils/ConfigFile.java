@@ -563,6 +563,12 @@ public class ConfigFile {
 		public void setOuterDatabaseSync(ThreadPoolConfig outerDatabaseSync) {
 			this.outerDatabaseSync = outerDatabaseSync;
 		}
+		public ThreadPoolConfig getDataWriteBack() {
+			return dataWriteBack;
+		}
+		public void setDataWriteBack(ThreadPoolConfig dataWriteBack) {
+			this.dataWriteBack = dataWriteBack;
+		}
 	}
 	
 	public static class Ap

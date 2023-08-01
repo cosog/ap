@@ -3,21 +3,21 @@
     "IP":"127.0.0.1",
     "Port":1521,
     "InstanceName":"orclpdb",
-    "Version":11,
+    "Version":12,
     "User":"kfk",
     "Password":"a11ck_123",
     "WriteType":"update",
     "DiagramResult":{
-        "TableName":"pc_fd_pumpjack_fdyna_dia_t",
+        "TableName":"diagramWriteBackTable",
         "Enable":true,
         "Columns":{
             "WellName":{
-                "Column":"well_common_name",
+                "Column":"WellName",
                 "Type":"varchar2",
                 "Enable":true
             },
             "AcqTime":{
-                "Column":"dyna_create_time",
+                "Column":"AcqTime",
                 "Type":"date",
                 "Enable":true
             },
@@ -31,8 +31,23 @@
                 "Type":"number",
                 "Enable":true
             },
+            "UpperLoadLine":{
+                "Column":"UpperLoadLine",
+                "Type":"number",
+                "Enable":true
+            },
+            "LowerLoadLine":{
+                "Column":"LowerLoadLine",
+                "Type":"number",
+                "Enable":true
+            },
             "FullnessCoefficient":{
                 "Column":"FullnessCoefficient",
+                "Type":"number",
+                "Enable":true
+            },
+            "NoLiquidFullnessCoefficient":{
+                "Column":"NoLiquidFullnessCoefficient",
                 "Type":"number",
                 "Enable":true
             },
@@ -78,6 +93,86 @@
             },
             "WaterWeightProduction":{
                 "Column":"WaterWeightProduction",
+                "Type":"number",
+                "Enable":true
+            },
+            "TheoreticalProduction":{
+                "Column":"TheoreticalProduction",
+                "Type":"number",
+                "Enable":true
+            },
+            "PumpEff":{
+                "Column":"PumpEff",
+                "Type":"number",
+                "Enable":true
+            },
+            "CalcProducingfluidLevel":{
+                "Column":"CalcProducingfluidLevel",
+                "Type":"number",
+                "Enable":true
+            },
+            "LevelDifferenceValue":{
+                "Column":"LevelDifferenceValue",
+                "Type":"number",
+                "Enable":true
+            },
+            "Submergence":{
+                "Column":"Submergence",
+                "Type":"number",
+                "Enable":true
+            },
+            "DownStrokeIMax":{
+                "Column":"DownStrokeIMax",
+                "Type":"number",
+                "Enable":true
+            },
+            "UpStrokeIMax":{
+                "Column":"UpStrokeIMax",
+                "Type":"number",
+                "Enable":true
+            },
+            "IDegreeBalance":{
+                "Column":"IDegreeBalance",
+                "Type":"number",
+                "Enable":true
+            },
+            "DownStrokeWattMax":{
+                "Column":"DownStrokeWattMax",
+                "Type":"number",
+                "Enable":true
+            },
+            "UpStrokeWattMax":{
+                "Column":"UpStrokeWattMax",
+                "Type":"number",
+                "Enable":true
+            },
+            "WattDegreeBalance":{
+                "Column":"WattDegreeBalance",
+                "Type":"number",
+                "Enable":true
+            },
+            "DeltaRadius":{
+                "Column":"DeltaRadius",
+                "Type":"number",
+                "Enable":true
+            },
+            "WellDownSystemEfficiency":{
+                "Column":"WellDownSystemEfficiency",
+                "Type":"number",
+                "Enable":true
+            },
+            "SurfaceSystemEfficiency":{
+                "Column":"SurfaceSystemEfficiency",
+                "Type":"number",
+                "Enable":true
+            },
+            "SystemEfficiency":{
+                "Column":"SystemEfficiency",
+                "Type":"number",
+                "Enable":true
+            },
+            "EnergyPer100mLift":{
+                "Column":"EnergyPer100mLift",
                 "Type":"number",
                 "Enable":true
             }

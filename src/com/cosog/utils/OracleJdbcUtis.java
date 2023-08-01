@@ -80,11 +80,19 @@ public class OracleJdbcUtis {
 		if(outerDataSource==null){
 			initOuterDataSource();
 		}
+		if(outerDataSource!=null){
+			conn=outerDataSource.getConnection();
+		}
+		return conn;
+	}
+	
+	public static Connection getDataWriteBackConnection() throws SQLException{
+		Connection conn=null;
 		if(outerDataWriteBackDataSource==null){
 			initDataWriteBackDataSource();
 		}
-		if(outerDataSource!=null){
-			conn=outerDataSource.getConnection();
+		if(outerDataWriteBackDataSource!=null){
+			conn=outerDataWriteBackDataSource.getConnection();
 		}
 		return conn;
 	}

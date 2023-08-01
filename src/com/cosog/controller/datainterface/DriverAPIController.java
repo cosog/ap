@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
+import com.cosog.model.DataWriteBackConfig;
 import com.cosog.model.Org;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.User;
@@ -53,6 +55,9 @@ import com.cosog.service.mobile.MobileService;
 import com.cosog.service.right.UserManagerService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.OuterDatabaseSyncTask;
+import com.cosog.task.OuterDatabaseSyncTask.RPCWellDataSyncThread;
+import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
@@ -1251,6 +1256,8 @@ public class DriverAPIController extends BaseController{
             }
         }
 		
+		DataWriteBackConfig dataWriteBackConfig=MemoryDataManagerTask.getDataWriteBackConfig();
+		
 		StringBuffer webSocketSendData = new StringBuffer();
 		StringBuffer displayItemInfo_json = new StringBuffer();
 		StringBuffer allItemInfo_json = new StringBuffer();
@@ -1854,6 +1861,18 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 						rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
+						
+						//计算结果回写
+						if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && rpcCalculateResponseData!=null){
+							ThreadPool executor = new ThreadPool("DiagramDataWriteBack",
+									Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getCorePoolSize(), 
+									Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getMaximumPoolSize(), 
+									Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getKeepAliveTime(), 
+									TimeUnit.SECONDS, 
+									Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getWattingCount());
+							executor.execute(new OuterDatabaseSyncTask.DiagramDataWriteBackThread(rpcCalculateResponseData));
+						}
+						
 						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							if(jedis.hexists("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes())){
 								workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes()));

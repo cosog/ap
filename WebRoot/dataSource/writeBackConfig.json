@@ -14,166 +14,199 @@
             "WellName":{
                 "Column":"WellName",
                 "Type":"varchar2",
+                "Ratio":1,
                 "Enable":true
             },
             "AcqTime":{
                 "Column":"AcqTime",
                 "Type":"date",
+                "Ratio":1,
                 "Enable":true
             },
             "FMax":{
                 "Column":"FMax",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "FMin":{
                 "Column":"FMin",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "UpperLoadLine":{
                 "Column":"UpperLoadLine",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "LowerLoadLine":{
                 "Column":"LowerLoadLine",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "FullnessCoefficient":{
                 "Column":"FullnessCoefficient",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "NoLiquidFullnessCoefficient":{
                 "Column":"NoLiquidFullnessCoefficient",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "ResultName":{
                 "Column":"ResultNmae",
                 "Type":"varchar2",
+                "Ratio":1,
                 "Enable":true
             },
             "ResultCode":{
                 "Column":"ResultCode",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "OptimizationSuggestion":{
                 "Column":"OptimizationSuggestion",
                 "Type":"varchar2",
+                "Ratio":1,
                 "Enable":true
             },
             "LiquidVolumetricProduction":{
                 "Column":"LiquidVolumetricProduction",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "OilVolumetricProduction":{
                 "Column":"OilVolumetricProduction",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "WaterVolumetricProduction":{
                 "Column":"WaterVolumetricProduction",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "LiquidWeightProduction":{
                 "Column":"LiquidWeightProduction",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "OilWeightProduction":{
                 "Column":"OilWeightProduction",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "WaterWeightProduction":{
                 "Column":"WaterWeightProduction",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "TheoreticalProduction":{
                 "Column":"TheoreticalProduction",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "PumpEff":{
                 "Column":"PumpEff",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "CalcProducingfluidLevel":{
                 "Column":"CalcProducingfluidLevel",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "LevelDifferenceValue":{
                 "Column":"LevelDifferenceValue",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "Submergence":{
                 "Column":"Submergence",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "DownStrokeIMax":{
                 "Column":"DownStrokeIMax",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "UpStrokeIMax":{
                 "Column":"UpStrokeIMax",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "IDegreeBalance":{
                 "Column":"IDegreeBalance",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "DownStrokeWattMax":{
                 "Column":"DownStrokeWattMax",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "UpStrokeWattMax":{
                 "Column":"UpStrokeWattMax",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "WattDegreeBalance":{
                 "Column":"WattDegreeBalance",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "DeltaRadius":{
                 "Column":"DeltaRadius",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "WellDownSystemEfficiency":{
                 "Column":"WellDownSystemEfficiency",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "SurfaceSystemEfficiency":{
                 "Column":"SurfaceSystemEfficiency",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "SystemEfficiency":{
                 "Column":"SystemEfficiency",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             },
             "EnergyPer100mLift":{
                 "Column":"EnergyPer100mLift",
                 "Type":"number",
+                "Ratio":1,
                 "Enable":true
             }
         }

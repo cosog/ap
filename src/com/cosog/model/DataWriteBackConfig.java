@@ -25,6 +25,8 @@ public class DataWriteBackConfig {
 	    private String Column;
 
 	    private String Type;
+	    
+	    private float Ratio;
 
 	    private boolean Enable;
 
@@ -46,6 +48,12 @@ public class DataWriteBackConfig {
 	    public boolean getEnable(){
 	        return this.Enable;
 	    }
+		public float getRatio() {
+			return Ratio;
+		}
+		public void setRatio(float ratio) {
+			Ratio = ratio;
+		}
 	}
 	
 	public static class DiagramResultColumn

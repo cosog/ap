@@ -48,12 +48,26 @@ public class SessionLockHelper {
 		Iterator<Entry<String, HttpSession>> entries = map.entrySet().iterator();
 		while (entries.hasNext()) {
 			Entry<String, HttpSession> entry = entries.next();
-			User user=(User) entry.getValue().getAttribute("userLogin");
-			if(user!=null&&userNo==user.getUserNo()){
-				entry.getValue().invalidate();
+			if(entry.getValue()!=null){
+				long lastAccessedTime = entry.getValue().getLastAccessedTime();
+				long currentTime = System.currentTimeMillis();
+				long sessionTimeout = entry.getValue().getMaxInactiveInterval() * 1000;
+				if (currentTime - lastAccessedTime > sessionTimeout) {
+				    // session已经过期，执行相应操作
+					entries.remove();
+					System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
+				} else {
+				    // session未过期，继续下一步操作
+					User user=(User) entry.getValue().getAttribute("userLogin");
+					if(user!=null&&userNo==user.getUserNo()){
+						entry.getValue().invalidate();
+						entries.remove();
+						System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
+						break;
+					}
+				}
+			}else{
 				entries.remove();
-				System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
-				break;
 			}
 		}
 	}

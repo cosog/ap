@@ -26,10 +26,10 @@ public class SessionLockHelper {
 	
 	public static void destroySession(String key){
 		HttpSession session=map.get(key);
-		if(session!=null){
+		if(session!=null && isValid(session)){
 			session.invalidate();
-			System.out.println("销毁session:"+session.getId()+"，当前用户数:"+map.size());
 		}
+		moveSession(session);
 	}
 	
 //	public static void destroySessionByUserId(String userId){
@@ -48,27 +48,40 @@ public class SessionLockHelper {
 		Iterator<Entry<String, HttpSession>> entries = map.entrySet().iterator();
 		while (entries.hasNext()) {
 			Entry<String, HttpSession> entry = entries.next();
-			if(entry.getValue()!=null){
-				long lastAccessedTime = entry.getValue().getLastAccessedTime();
-				long currentTime = System.currentTimeMillis();
-				long sessionTimeout = entry.getValue().getMaxInactiveInterval() * 1000;
-				if (currentTime - lastAccessedTime > sessionTimeout) {
-				    // session已经过期，执行相应操作
-					entries.remove();
-					System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
-				} else {
-				    // session未过期，继续下一步操作
+			if(entry.getValue()!=null && isValid(entry.getValue()) ){
+				try{
 					User user=(User) entry.getValue().getAttribute("userLogin");
 					if(user!=null&&userNo==user.getUserNo()){
 						entry.getValue().invalidate();
 						entries.remove();
 						System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
-						break;
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
 				}
 			}else{
 				entries.remove();
+				System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
 			}
 		}
+	}
+	
+	public static boolean isValid(HttpSession session){
+		boolean valid=false;
+		try{
+			long lastAccessedTime = session.getLastAccessedTime();
+			long currentTime = System.currentTimeMillis();
+			long sessionTimeout = session.getMaxInactiveInterval() * 1000;
+			if (sessionTimeout>0 && (currentTime - lastAccessedTime > sessionTimeout) ) {
+				session.invalidate();
+				valid=false;
+			}else{
+				valid=true;
+			}
+		}catch (Exception e) {
+			valid=false;
+		}
+		return  valid;
 	}
 }

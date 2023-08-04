@@ -1,154 +1,154 @@
-**油气生产智能监控系统 V8.5**
-
 **数据库手册**
 
 **北京科斯奇石油科技有限公司 制作**
 
 **目 录**
 
-[一、表	1](#_Toc134209124)
+[一、表	1](#_Toc142054053)
 
->   [1.1 概览	1](#_Toc134209125)
+>   [1.1 概览	1](#_Toc142054054)
 
->   [1.2 详述	3](#_Toc134209126)
+>   [1.2 详述	3](#_Toc142054055)
 
->   [1.2.1 tbl_org	3](#_Toc134209127)
+>   [1.2.1 tbl_org	3](#_Toc142054056)
 
->   [1.2.2 tbl_user	4](#_Toc134209128)
+>   [1.2.2 tbl_user	4](#_Toc142054057)
 
->   [1.2.3 tbl_role	5](#_Toc134209129)
+>   [1.2.3 tbl_role	5](#_Toc142054058)
 
->   [1.2.4 tbl_module	5](#_Toc134209130)
+>   [1.2.4 tbl_module	5](#_Toc142054059)
 
->   [1.2.5 tbl_module2role	6](#_Toc134209131)
+>   [1.2.5 tbl_module2role	6](#_Toc142054060)
 
->   [1.2.6 tbl_dist_name	6](#_Toc134209132)
+>   [1.2.6 tbl_dist_name	6](#_Toc142054061)
 
->   [1.2.7 tbl_dist_item	7](#_Toc134209133)
+>   [1.2.7 tbl_dist_item	7](#_Toc142054062)
 
->   [1.2.8 tbl_code	8](#_Toc134209134)
+>   [1.2.8 tbl_code	8](#_Toc142054063)
 
->   [1.2.9 tbl_protocol	8](#_Toc134209135)
+>   [1.2.9 tbl_protocol	8](#_Toc142054064)
 
->   [1.2.10 tbl_datamapping	8](#_Toc134209136)
+>   [1.2.10 tbl_datamapping	8](#_Toc142054065)
 
->   [1.2.11 tbl_runstatusconfig	9](#_Toc134209137)
+>   [1.2.11 tbl_runstatusconfig	9](#_Toc142054066)
 
->   [1.2.12 tbl_acq_unit_conf	10](#_Toc134209138)
+>   [1.2.12 tbl_acq_unit_conf	10](#_Toc142054067)
 
->   [1.2.13 tbl_acq_group_conf	10](#_Toc134209139)
+>   [1.2.13 tbl_acq_group_conf	10](#_Toc142054068)
 
->   [1.2.14 tbl_acq_item2group_conf	10](#_Toc134209140)
+>   [1.2.14 tbl_acq_item2group_conf	10](#_Toc142054069)
 
->   [1.2.15 tbl_acq_group2unit_conf	12](#_Toc134209141)
+>   [1.2.15 tbl_acq_group2unit_conf	12](#_Toc142054070)
 
->   [1.2.16 tbl_alarm_unit_conf	12](#_Toc134209142)
+>   [1.2.16 tbl_alarm_unit_conf	12](#_Toc142054071)
 
->   [1.2.17 tbl_alarm_item2unit_conf	12](#_Toc134209143)
+>   [1.2.17 tbl_alarm_item2unit_conf	12](#_Toc142054072)
 
->   [1.2.18 tbl_display_unit_conf	13](#_Toc134209144)
+>   [1.2.18 tbl_display_unit_conf	13](#_Toc142054073)
 
->   [1.2.19 tbl_display_item2unit_conf	13](#_Toc134209145)
+>   [1.2.19 tbl_display_item2unit_conf	13](#_Toc142054074)
 
->   [1.2.20 tbl_report_unit_conf	14](#_Toc134209146)
+>   [1.2.20 tbl_report_unit_conf	14](#_Toc142054075)
 
->   [1.2.21 tbl_report_items2unit_conf	14](#_Toc134209147)
+>   [1.2.21 tbl_report_items2unit_conf	14](#_Toc142054076)
 
->   [1.2.22 tbl_protocolinstance	16](#_Toc134209148)
+>   [1.2.22 tbl_protocolinstance	16](#_Toc142054077)
 
->   [1.2.23 tbl_protocolalarminstance	16](#_Toc134209149)
+>   [1.2.23 tbl_protocolalarminstance	16](#_Toc142054078)
 
->   [1.2.24 tbl_protocoldisplayinstance	17](#_Toc134209150)
+>   [1.2.24 tbl_protocoldisplayinstance	17](#_Toc142054079)
 
->   [1.2.25 tbl_protocolreportinstance	17](#_Toc134209151)
+>   [1.2.25 tbl_protocolreportinstance	17](#_Toc142054080)
 
->   [1.2.26 tbl_protocolsmsinstance	17](#_Toc134209152)
+>   [1.2.26 tbl_protocolsmsinstance	17](#_Toc142054081)
 
->   [1.2.27 tbl_rpcdevice	18](#_Toc134209153)
+>   [1.2.27 tbl_rpcdevice	18](#_Toc142054082)
 
->   [1.2.28 tbl_pcpdevice	19](#_Toc134209154)
+>   [1.2.28 tbl_pcpdevice	20](#_Toc142054083)
 
->   [1.2.29 tbl_smsdevice	20](#_Toc134209155)
+>   [1.2.29 tbl_smsdevice	21](#_Toc142054084)
 
->   [1.2.30 tbl_pumpingmodel	20](#_Toc134209156)
+>   [1.2.30 tbl_pumpingmodel	21](#_Toc142054085)
 
->   [1.2.31 tbl_rpc_worktype	20](#_Toc134209157)
+>   [1.2.31 tbl_rpc_worktype	21](#_Toc142054086)
 
->   [1.2.32 tbl_rpcacqdata_latest	21](#_Toc134209158)
+>   [1.2.32 tbl_rpcacqdata_latest	22](#_Toc142054087)
 
->   [1.2.33 tbl_rpcacqdata_hist	25](#_Toc134209159)
+>   [1.2.33 tbl_rpcacqdata_hist	27](#_Toc142054088)
 
->   [1.2.34 tbl_rpcacqrawdata	26](#_Toc134209160)
+>   [1.2.34 tbl_rpcacqrawdata	28](#_Toc142054089)
 
->   [1.2.35 tbl_rpcalarminfo_latest	27](#_Toc134209161)
+>   [1.2.35 tbl_rpcalarminfo_latest	29](#_Toc142054090)
 
->   [1.2.36 tbl_rpcalarminfo_hist	27](#_Toc134209162)
+>   [1.2.36 tbl_rpcalarminfo_hist	29](#_Toc142054091)
 
->   [1.2.37 tbl_rpcdailycalculationdata	27](#_Toc134209163)
+>   [1.2.37 tbl_rpcdailycalculationdata	29](#_Toc142054092)
 
->   [1.2.38 tbl_rpcdevicegraphicset	29](#_Toc134209164)
+>   [1.2.38 tbl_rpcdevicegraphicset	31](#_Toc142054093)
 
->   [1.2.39 tbl_pcpacqdata_latest	30](#_Toc134209165)
+>   [1.2.39 tbl_pcpacqdata_latest	33](#_Toc142054094)
 
->   [1.2.40 tbl_pcpacqdata_hist	32](#_Toc134209166)
+>   [1.2.40 tbl_pcpacqdata_hist	35](#_Toc142054095)
 
->   [1.2.41 tbl_pcpacqrawdata	33](#_Toc134209167)
+>   [1.2.41 tbl_pcpacqrawdata	36](#_Toc142054096)
 
->   [1.2.42 tbl_pcpalarminfo_latest	34](#_Toc134209168)
+>   [1.2.42 tbl_pcpalarminfo_latest	37](#_Toc142054097)
 
->   [1.2.43 tbl_pcpalarminfo_hist	34](#_Toc134209169)
+>   [1.2.43 tbl_pcpalarminfo_hist	37](#_Toc142054098)
 
->   [1.2.44 tbl_pcpdailycalculationdata	34](#_Toc134209170)
+>   [1.2.44 tbl_pcpdailycalculationdata	37](#_Toc142054099)
 
->   [1.2.45 tbl_pcpdevicegraphicset	36](#_Toc134209171)
+>   [1.2.45 tbl_pcpdevicegraphicset	39](#_Toc142054100)
 
->   [1.2.46 tbl_deviceoperationlog	37](#_Toc134209172)
+>   [1.2.46 tbl_deviceoperationlog	40](#_Toc142054101)
 
->   [1.2.47 tbl_systemlog	37](#_Toc134209173)
+>   [1.2.47 tbl_systemlog	40](#_Toc142054102)
 
->   [1.2.48 tbl_resourcemonitoring	38](#_Toc134209174)
+>   [1.2.48 tbl_resourcemonitoring	41](#_Toc142054103)
 
-[二、视图	39](#_Toc134209175)
+>   [1.2.49 tbl_videokey	41](#_Toc142054104)
 
->   [2.1 概览	39](#_Toc134209176)
+[二、视图	42](#_Toc142054105)
 
->   [2.2 详述	40](#_Toc134209177)
+>   [2.1 概览	42](#_Toc142054106)
 
->   [2.2.1 viw_org	40](#_Toc134209178)
+>   [2.2 详述	43](#_Toc142054107)
 
->   [2.2.2 viw_rpcdevice	41](#_Toc134209179)
+>   [2.2.1 viw_org	43](#_Toc142054108)
 
->   [2.2.3 viw_pcpdevice	42](#_Toc134209180)
+>   [2.2.2 viw_rpcdevice	44](#_Toc142054109)
 
->   [2.2.4 viw_smsdevice	42](#_Toc134209181)
+>   [2.2.3 viw_pcpdevice	45](#_Toc142054110)
 
->   [2.2.5 viw_rpcacqrawdata	43](#_Toc134209182)
+>   [2.2.4 viw_smsdevice	45](#_Toc142054111)
 
->   [2.2.6 viw_pcpacqrawdata	43](#_Toc134209183)
+>   [2.2.5 viw_rpcacqrawdata	47](#_Toc142054112)
 
->   [2.2.7 viw_rpcalarminfo_latest	44](#_Toc134209184)
+>   [2.2.6 viw_pcpacqrawdata	47](#_Toc142054113)
 
->   [2.2.8 viw_rpcalarminfo_hist	44](#_Toc134209185)
+>   [2.2.7 viw_rpcalarminfo_latest	48](#_Toc142054114)
 
->   [2.2.9 viw_pcpalarminfo_latest	45](#_Toc134209186)
+>   [2.2.8 viw_rpcalarminfo_hist	48](#_Toc142054115)
 
->   [2.2.10 viw_pcpalarminfo_hist	45](#_Toc134209187)
+>   [2.2.9 viw_pcpalarminfo_latest	49](#_Toc142054116)
 
->   [2.2.11 viw_deviceoperationlog	46](#_Toc134209188)
+>   [2.2.10 viw_pcpalarminfo_hist	49](#_Toc142054117)
 
->   [2.2.12 viw_systemlog	46](#_Toc134209189)
+>   [2.2.11 viw_deviceoperationlog	50](#_Toc142054118)
 
->   [2.2.13 viw_rpcdailycalculationdata	46](#_Toc134209190)
+>   [2.2.12 viw_systemlog	50](#_Toc142054119)
 
->   [2.2.14 viw_pcpdailycalculationdata	48](#_Toc134209191)
+>   [2.2.13 viw_rpcdailycalculationdata	50](#_Toc142054120)
 
->   [2.2.15 viw_rpc_calculatemain	49](#_Toc134209192)
+>   [2.2.14 viw_pcpdailycalculationdata	52](#_Toc142054121)
 
->   [2.2.16 viw_pcp_calculatemain	49](#_Toc134209193)
+>   [2.2.15 viw_rpc_calculatemain	53](#_Toc142054122)
 
-[三、存储过程	50](#_Toc134209194)
+>   [2.2.16 viw_pcp_calculatemain	54](#_Toc142054123)
 
-[四、触发器	51](#_Toc134209195)
+[三、存储过程	55](#_Toc142054124)
+
+[四、触发器	56](#_Toc142054125)
 
 # 一、表
 
@@ -206,6 +206,7 @@
 | 46       | tbl_deviceoperationlog      | 设备操作日志表         |
 | 47       | tbl_systemlog               | 系统日志表             |
 | 48       | tbl_resourcemonitoring      | 资源监测数据表         |
+| 49       | tbl_videokey                | 视频秘钥表             |
 
 ## 1.2 详述
 
@@ -246,14 +247,16 @@
 
 表1-4 角色数据表
 
-| **序号** | **代码**   | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注**   |
-|----------|------------|--------------|----------------|----------|----------|--------|------------|
-| 1        | ROLE_ID    | 角色序号     | NUMBER(10)     |          | N        | 主键   |            |
-| 3        | ROLE_NAME  | 角色名称     | VARCHAR2(40)   |          | N        |        |            |
-| 4        | ROLE_FLAG  | 控制权限     | NUMBER(10)     |          | Y        |        | 0-无，1-是 |
-| 5        | ROLE_LEVEL | 角色级别     | NUMBER(3)      |          | Y        |        |            |
-| 6        | SHOWLEVEL  | 数据显示级别 | NUMBER(10)     |          | Y        |        |            |
-| 7        | REMARK     | 角色描述     | VARCHAR2(2000) |          | Y        |        |            |
+| **序号** | **代码**          | **名称**         | **类型**       | **单位** | **为空** | **键** | **备注**   |
+|----------|-------------------|------------------|----------------|----------|----------|--------|------------|
+| 1        | ROLE_ID           | 角色序号         | NUMBER(10)     |          | N        | 主键   |            |
+| 2        | ROLE_NAME         | 角色名称         | VARCHAR2(40)   |          | N        |        |            |
+| 3        | ROLE_FLAG         | 控制权限         | NUMBER(10)     |          | Y        |        | 0-无，1-是 |
+| 4        | ROLE_LEVEL        | 角色级别         | NUMBER(3)      |          | Y        |        |            |
+| 5        | SHOWLEVEL         | 数据显示级别     | NUMBER(10)     |          | Y        |        |            |
+| 6        | ROLE_REPORTEDIT   | 报表编辑权限     | NUMBER(10)     |          | Y        |        | 0-无，1-是 |
+| 7        | ROLE_VIDEOKEYEDIT | 视频账号编辑权限 | NUMBER(10)     |          | Y        |        | 0-无，1-是 |
+| 8        | REMARK            | 角色描述         | VARCHAR2(2000) |          | Y        |        |            |
 
 ### 1.2.4 tbl\_module
 
@@ -624,15 +627,18 @@
 | 12       | ALARMINSTANCECODE        | 报警实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
 | 13       | DISPLAYINSTANCECODE      | 显示实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
 | 14       | REPORTINSTANCECODE       | 报表实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
-| 15       | VIDEOURL                 | 视频监控路径     | VARCHAR2(400)  |          | Y        |        | 多个以;隔开              |
-| 16       | VIDEOACCESSTOKEN         | 视频访问令牌     | VARCHAR2(400)  |          | Y        |        | 预留多个以;隔开          |
-| 17       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
-| 18       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
-| 19       | PUMPINGMODELID           | 抽油机型号ID     | NUMBER(10)     |          | Y        |        |                          |
-| 20       | STROKE                   | 铭牌冲程         | NUMBER(8,2)    |          | Y        |        |                          |
-| 21       | BALANCEINFO              | 平衡块信息       | VARCHAR2(400)  |          | Y        |        | json格式字符串           |
-| 22       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
-| 23       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
+| 15       | VIDEOURL1                | 视频1监控路径    | VARCHAR2(400)  |          | Y        |        |                          |
+| 16       | VIDEOURL2                | 视频2监控路径    | VARCHAR2(400)  |          | Y        |        |                          |
+| 17       | VIDEOKEYID1              | 视频1秘钥编号    | NUMBER(10)     |          | Y        |        | 关联视频秘钥表           |
+| 18       | VIDEOKEYID2              | 视频2秘钥编号    | NUMBER(10)     |          | Y        |        | 关联视频秘钥表           |
+| 19       | VIDEOACCESSTOKEN         | 视频访问令牌     | VARCHAR2(400)  |          | Y        |        | 预留多个以;隔开          |
+| 20       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
+| 21       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
+| 22       | PUMPINGMODELID           | 抽油机型号ID     | NUMBER(10)     |          | Y        |        |                          |
+| 23       | STROKE                   | 铭牌冲程         | NUMBER(8,2)    |          | Y        |        |                          |
+| 24       | BALANCEINFO              | 平衡块信息       | VARCHAR2(400)  |          | Y        |        | json格式字符串           |
+| 25       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
+| 26       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
 
 ### 1.2.28 tbl\_pcpdevice
 
@@ -654,11 +660,14 @@
 | 12       | DISPLAYINSTANCECODE      | 显示实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
 | 13       | REPORTINSTANCECODE       | 报表实例代码     | VARCHAR2(50)   |          | Y        |        |                          |
 | 14       | VIDEOURL                 | 视频地址         | VARCHAR2(400)  |          | Y        |        |                          |
-| 15       | VIDEOACCESSTOKEN         | 视频访问令牌     | VARCHAR2(400)  |          | Y        |        | 预留多个以;隔开          |
-| 16       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
-| 17       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
-| 18       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
-| 19       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
+| 15       | VIDEOURL1                | 视频1监控路径    | VARCHAR2(400)  |          | Y        |        |                          |
+| 16       | VIDEOURL2                | 视频2监控路径    | VARCHAR2(400)  |          | Y        |        |                          |
+| 17       | VIDEOKEYID1              | 视频1秘钥编号    | NUMBER(10)     |          | Y        |        | 关联视频秘钥表           |
+| 18       | VIDEOKEYID2              | 视频2秘钥编号    | NUMBER(10)     |          | Y        |        | 关联视频秘钥表           |
+| 19       | PRODUCTIONDATA           | 生产数据         | VARCHAR2(4000) |          | Y        |        | json格式字符串           |
+| 20       | PRODUCTIONDATAUPDATETIME | 生产数据更新时间 | DATE           |          | Y        |        |                          |
+| 21       | STATUS                   | 状态             | NUMBER(1)      |          | Y        |        | 0-失效 1-使能            |
+| 22       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                          |
 
 ### 1.2.29 tbl\_smsdevice
 
@@ -789,8 +798,8 @@
 | 75       | RODSTRING                      | 抽油杆参数               | VARCHAR2(200)  |          | Y        |        |                        |
 | 76       | PLUNGERSTROKE                  | 柱塞冲程                 | NUMBER(8,2)    |          | Y        |        |                        |
 | 77       | AVAILABLEPLUNGERSTROKE         | 柱塞有效冲程             | NUMBER(8,2)    |          | Y        |        |                        |
-| 78       | LEVELCORRECTVALUE              | 反演液面校正值           | NUMBER(8,2)    |          | Y        |        |                        |
-| 79       | INVERPRODUCINGFLUIDLEVEL       | 反演液面                 | NUMBER(8,2)    |          | Y        |        |                        |
+| 78       | LEVELDIFFERENCEVALUE           | 反演液面校正值           | NUMBER(8,2)    |          | Y        |        |                        |
+| 79       | CALCPRODUCINGFLUIDLEVEL        | 反演液面                 | NUMBER(8,2)    |          | Y        |        |                        |
 | 80       | NOLIQUIDFULLNESSCOEFFICIENT    | 抽空充满系数             | NUMBER(10,4)   |          | Y        |        |                        |
 | 81       | NOLIQUIDAVAILABLEPLUNGERSTROKE | 抽空柱塞有效冲程         | NUMBER(10,4)   |          | Y        |        |                        |
 | 82       | SMAXINDEX                      | 位移最大值索引           | NUMBER(10)     |          | Y        |        |                        |
@@ -824,7 +833,10 @@
 | 110      | OILWEIGHTPRODUCTION_L          | 日累计产油量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
 | 111      | WATERWEIGHTPRODUCTION_L        | 日累计产水量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
 | 112      | SUBMERGENCE                    | 沉没度                   | NUMBER(8,2)    | 米       | Y        |        |                        |
-| 113      | SAVETIME                       | 保存时间                 | DATE           |          | Y        |        |                        |
+| 113      | GASVOLUMETRICPRODUCTION        | 日产气量                 | NUMBER(12,3)   | 方       | Y        |        |                        |
+| 114      | TOTALGASVOLUMETRICPRODUCTION   | 累计产气量               | NUMBER(12,3)   | 方       | Y        |        |                        |
+| 115      | TOTALWATERVOLUMETRICPRODUCTION | 累计产水量               | NUMBER(12,3)   | 方       | Y        |        |                        |
+| 116      | SAVETIME                       | 保存时间                 | DATE           |          | Y        |        |                        |
 | …        | …                              | …                        |                |          | Y        |        | 根据驱动自动生成的字段 |
 | …        | …                              | …                        |                |          | Y        |        |                        |
 
@@ -871,51 +883,64 @@
 
 表1-36 抽油机汇总数据表
 
-| **序号** | **代码**                   | **名称**       | **类型**     | **单位** | **为空** | **键** | **备注**      |
-|----------|----------------------------|----------------|--------------|----------|----------|--------|---------------|
-| 1        | ID                         | 记录编号       | NUMBER(10)   |          | N        | 主键   |               |
-| 2        | WELLID                     | 设备编号       | NUMBER(10)   |          | N        |        |               |
-| 3        | CALDATE                    | 汇总日期       | DATE         |          | Y        |        |               |
-| 4        | COMMSTATUS                 | 通信状态       | NUMBER(2)    |          | Y        |        | 0-离线 1-在线 |
-| 5        | COMMTIME                   | 在线时间       | NUMBER(8,2)  |          | Y        |        |               |
-| 6        | COMMTIMEEFFICIENCY         | 在线时率       | NUMBER(10,4) |          | Y        |        |               |
-| 7        | COMMRANGE                  | 在线区间       | CLOB         |          | Y        |        |               |
-| 8        | RUNSTATUS                  | 运行状态       | NUMBER(2)    |          | Y        |        |               |
-| 9        | RUNTIMEEFFICIENCY          | 运行时率       | NUMBER(8,2)  |          | Y        |        |               |
-| 10       | RUNTIME                    | 运行时间       | NUMBER(10,4) |          | Y        |        |               |
-| 11       | RUNRANGE                   | 运行区间       | CLOB         |          | Y        |        |               |
-| 12       | STROKE                     | 冲程           | NUMBER(8,2)  |          | Y        |        |               |
-| 13       | SPM                        | 冲次           | NUMBER(8,2)  |          | Y        |        |               |
-| 14       | FMAX                       | 最大载荷       | NUMBER(8,2)  |          | Y        |        |               |
-| 15       | FMIN                       | 最小载荷       | NUMBER(8,2)  |          | Y        |        |               |
-| 16       | RESULTCODE                 | 工况代码       | NUMBER(4)    |          | Y        |        |               |
-| 17       | RESULTSTRING               | 工况字符串     | CLOB         |          | Y        |        |               |
-| 18       | FULLNESSCOEFFICIENT        | 充满系数       | NUMBER(8,2)  |          | Y        |        |               |
-| 19       | THEORETICALPRODUCTION      | 理论排量       | NUMBER(8,2)  |          | Y        |        |               |
-| 20       | LIQUIDVOLUMETRICPRODUCTION | 产液量         | NUMBER(8,2)  | 方       | Y        |        |               |
-| 21       | OILVOLUMETRICPRODUCTION    | 产油量         | NUMBER(8,2)  | 方       | Y        |        |               |
-| 22       | WATERVOLUMETRICPRODUCTION  | 产水量         | NUMBER(8,2)  | 方       | Y        |        |               |
-| 23       | VOLUMEWATERCUT             | 体积含水率     | NUMBER(8,2)  |          | Y        |        |               |
-| 24       | LIQUIDWEIGHTPRODUCTION     | 产液量         | NUMBER(8,2)  | 吨       | Y        |        |               |
-| 25       | OILWEIGHTPRODUCTION        | 产油量         | NUMBER(8,2)  | 吨       | Y        |        |               |
-| 26       | WATERWEIGHTPRODUCTION      | 产水量         | NUMBER(8,2)  | 吨       | Y        |        |               |
-| 27       | WEIGHTWATERCUT             | 重量含水率     | NUMBER(8,2)  |          | Y        |        |               |
-| 28       | SURFACESYSTEMEFFICIENCY    | 地面效率       | NUMBER(12,3) |          | Y        |        |               |
-| 29       | WELLDOWNSYSTEMEFFICIENCY   | 井下效率       | NUMBER(12,3) |          | Y        |        |               |
-| 30       | SYSTEMEFFICIENCY           | 系统效率       | NUMBER(12,3) |          | Y        |        |               |
-| 31       | ENERGYPER100MLIFT          | 吨液百米耗电量 | NUMBER(8,2)  |          | Y        |        |               |
-| 32       | PUMPEFF1                   | 冲程损失系数   | NUMBER(12,3) |          | Y        |        |               |
-| 33       | PUMPEFF2                   | 充满系数       | NUMBER(12,3) |          | Y        |        |               |
-| 34       | PUMPEFF3                   | 间隙漏失系数   | NUMBER(12,3) |          | Y        |        |               |
-| 35       | PUMPEFF4                   | 液体收缩系数   | NUMBER(12,3) |          | Y        |        |               |
-| 36       | PUMPEFF                    | 总泵效         | NUMBER(12,3) |          | Y        |        |               |
-| 37       | IDEGREEBALANCE             | 电流平衡度     | NUMBER(8,2)  |          | Y        |        |               |
-| 38       | WATTDEGREEBALANCE          | 功率平衡度     | NUMBER(8,2)  |          | Y        |        |               |
-| 39       | DELTARADIUS                | 移动距离       | NUMBER(8,2)  |          | Y        |        |               |
-| 40       | TOTALKWATTH                | 累计电量       | NUMBER(12,3) |          | Y        |        |               |
-| 41       | TODAYKWATTH                | 日用电量       | NUMBER(12,3) |          | Y        |        |               |
-| 42       | EXTENDEDDAYS               | 沿用天数       | NUMBER(5)    |          | Y        |        |               |
-| 43       | RESULTSTATUS               | 计算状态       | NUMBER(2)    |          | Y        |        |               |
+| **序号** | **代码**                       | **名称**       | **类型**       | **单位** | **为空** | **键** | **备注**      |
+|----------|--------------------------------|----------------|----------------|----------|----------|--------|---------------|
+| 1        | ID                             | 记录编号       | NUMBER(10)     |          | N        | 主键   |               |
+| 2        | WELLID                         | 设备编号       | NUMBER(10)     |          | N        |        |               |
+| 3        | CALDATE                        | 汇总日期       | DATE           |          | Y        |        |               |
+| 4        | COMMSTATUS                     | 通信状态       | NUMBER(2)      |          | Y        |        | 0-离线 1-在线 |
+| 5        | COMMTIME                       | 在线时间       | NUMBER(8,2)    |          | Y        |        |               |
+| 6        | COMMTIMEEFFICIENCY             | 在线时率       | NUMBER(10,4)   |          | Y        |        |               |
+| 7        | COMMRANGE                      | 在线区间       | CLOB           |          | Y        |        |               |
+| 8        | RUNSTATUS                      | 运行状态       | NUMBER(2)      |          | Y        |        |               |
+| 9        | RUNTIMEEFFICIENCY              | 运行时率       | NUMBER(8,2)    |          | Y        |        |               |
+| 10       | RUNTIME                        | 运行时间       | NUMBER(10,4)   |          | Y        |        |               |
+| 11       | RUNRANGE                       | 运行区间       | CLOB           |          | Y        |        |               |
+| 12       | STROKE                         | 冲程           | NUMBER(8,2)    |          | Y        |        |               |
+| 13       | SPM                            | 冲次           | NUMBER(8,2)    |          | Y        |        |               |
+| 14       | FMAX                           | 最大载荷       | NUMBER(8,2)    |          | Y        |        |               |
+| 15       | FMIN                           | 最小载荷       | NUMBER(8,2)    |          | Y        |        |               |
+| 16       | RESULTCODE                     | 工况代码       | NUMBER(4)      |          | Y        |        |               |
+| 17       | RESULTSTRING                   | 工况字符串     | CLOB           |          | Y        |        |               |
+| 18       | FULLNESSCOEFFICIENT            | 充满系数       | NUMBER(8,2)    |          | Y        |        |               |
+| 19       | THEORETICALPRODUCTION          | 理论排量       | NUMBER(8,2)    |          | Y        |        |               |
+| 20       | LIQUIDVOLUMETRICPRODUCTION     | 产液量         | NUMBER(8,2)    | 方       | Y        |        |               |
+| 21       | OILVOLUMETRICPRODUCTION        | 产油量         | NUMBER(8,2)    | 方       | Y        |        |               |
+| 22       | WATERVOLUMETRICPRODUCTION      | 产水量         | NUMBER(8,2)    | 方       | Y        |        |               |
+| 23       | VOLUMEWATERCUT                 | 体积含水率     | NUMBER(8,2)    |          | Y        |        |               |
+| 24       | LIQUIDWEIGHTPRODUCTION         | 产液量         | NUMBER(8,2)    | 吨       | Y        |        |               |
+| 25       | OILWEIGHTPRODUCTION            | 产油量         | NUMBER(8,2)    | 吨       | Y        |        |               |
+| 26       | WATERWEIGHTPRODUCTION          | 产水量         | NUMBER(8,2)    | 吨       | Y        |        |               |
+| 27       | WEIGHTWATERCUT                 | 重量含水率     | NUMBER(8,2)    |          | Y        |        |               |
+| 28       | SURFACESYSTEMEFFICIENCY        | 地面效率       | NUMBER(12,3)   |          | Y        |        |               |
+| 29       | WELLDOWNSYSTEMEFFICIENCY       | 井下效率       | NUMBER(12,3)   |          | Y        |        |               |
+| 30       | SYSTEMEFFICIENCY               | 系统效率       | NUMBER(12,3)   |          | Y        |        |               |
+| 31       | ENERGYPER100MLIFT              | 吨液百米耗电量 | NUMBER(8,2)    |          | Y        |        |               |
+| 32       | PUMPEFF1                       | 冲程损失系数   | NUMBER(12,3)   |          | Y        |        |               |
+| 33       | PUMPEFF2                       | 充满系数       | NUMBER(12,3)   |          | Y        |        |               |
+| 34       | PUMPEFF3                       | 间隙漏失系数   | NUMBER(12,3)   |          | Y        |        |               |
+| 35       | PUMPEFF4                       | 液体收缩系数   | NUMBER(12,3)   |          | Y        |        |               |
+| 36       | PUMPEFF                        | 总泵效         | NUMBER(12,3)   |          | Y        |        |               |
+| 37       | IDEGREEBALANCE                 | 电流平衡度     | NUMBER(8,2)    |          | Y        |        |               |
+| 38       | WATTDEGREEBALANCE              | 功率平衡度     | NUMBER(8,2)    |          | Y        |        |               |
+| 39       | DELTARADIUS                    | 移动距离       | NUMBER(8,2)    |          | Y        |        |               |
+| 40       | TOTALKWATTH                    | 累计电量       | NUMBER(12,3)   |          | Y        |        |               |
+| 41       | TODAYKWATTH                    | 日用电量       | NUMBER(12,3)   |          | Y        |        |               |
+| 42       | TUBINGPRESSURE                 | 油压           | NUMBER(8,2)    | MPa      | Y        |        |               |
+| 43       | CASINGPRESSURE                 | 套压           | NUMBER(8,2)    | MPa      | Y        |        |               |
+| 44       | BOTTOMHOLEPRESSURE             | 井底压力       | NUMBER(8,2)    | MPa      | Y        |        |               |
+| 45       | PRODUCINGFLUIDLEVEL            | 动液面         | NUMBER(8,2)    | m        | Y        |        |               |
+| 46       | PUMPSETTINGDEPTH               | 泵挂           | NUMBER(8,2)    | m        | Y        |        |               |
+| 47       | SUBMERGENCE                    | 沉没度         | NUMBER(8,2)    | m        | Y        |        |               |
+| 48       | CALCPRODUCINGFLUIDLEVEL        | 反演动液面     | NUMBER(8,2)    | m        | Y        |        |               |
+| 49       | LEVELDIFFERENCEVALUE           | 液面反演差值   | NUMBER(8,2)    | MPa      | Y        |        |               |
+| 50       | GASVOLUMETRICPRODUCTION        | 日产气量       | NUMBER(8,2)    | 方       | Y        |        |               |
+| 51       | TOTALGASVOLUMETRICPRODUCTION   | 累计产气量     | NUMBER(8,2)    | 方       | Y        |        |               |
+| 52       | TOTALWATERVOLUMETRICPRODUCTION | 累计产水量     | NUMBER(8,2)    | 方       | Y        |        |               |
+| 53       | HEADERLABELINFO                | 报表表头信息   | VARCHAR2(4000) |          | Y        |        |               |
+| 54       | EXTENDEDDAYS                   | 沿用天数       | NUMBER(5)      |          | Y        |        |               |
+| 55       | RESULTSTATUS                   | 计算状态       | NUMBER(2)      |          | Y        |        |               |
+| 56       | REMARK                         | 备注           | VARCHAR2(4000) |          | Y        |        |               |
 
 ### 1.2.38 tbl\_rpcdevicegraphicset
 
@@ -931,60 +956,64 @@
 
 表1-38 螺杆泵实时数据表
 
-| **序号** | **代码**                     | **名称**           | **类型**       | **单位** | **为空** | **键** | **备注**               |
-|----------|------------------------------|--------------------|----------------|----------|----------|--------|------------------------|
-| 1        | ID                           | 记录编号           | NUMBER(10)     |          | N        | 主键   |                        |
-| 2        | WELLID                       | 设备编号           | NUMBER(10)     |          | N        |        |                        |
-| 3        | ACQTIME                      | 采集时间           | DATE           |          | Y        |        |                        |
-| 4        | COMMSTATUS                   | 通信状态           | NUMBER(2)      |          | Y        |        | 0-离线 1-在线          |
-| 5        | COMMTIME                     | 在线时间           | NUMBER(8,2)    |          | Y        |        |                        |
-| 6        | COMMTIMEEFFICIENCY           | 在线时率           | NUMBER(10,4)   |          | Y        |        |                        |
-| 7        | COMMRANGE                    | 在线区间           | CLOB           |          | Y        |        |                        |
-| 8        | RUNSTATUS                    | 运行状态           | NUMBER(2)      |          | Y        |        |                        |
-| 9        | RUNTIMEEFFICIENCY            | 运行时率           | NUMBER(8,2)    |          | Y        |        |                        |
-| 10       | RUNTIME                      | 运行时间           | NUMBER(10,4)   |          | Y        |        |                        |
-| 11       | RUNRANGE                     | 运行区间           | CLOB           |          | Y        |        |                        |
-| 12       | PRODUCTIONDATA               | 生产数据           | VARCHAR2(4000) |          | Y        |        |                        |
-| 13       | RPM                          | 转速               | NUMBER(8,2)    |          | Y        |        |                        |
-| 14       | TORQUE                       | 扭矩               | NUMBER(8,2)    |          | Y        |        |                        |
-| 15       | RESULTCODE                   | 工况代码           | NUMBER(4)      |          | Y        |        |                        |
-| 16       | THEORETICALPRODUCTION        | 理论排量           | NUMBER(8,2)    |          | Y        |        |                        |
-| 17       | LIQUIDVOLUMETRICPRODUCTION   | 产液量             | NUMBER(8,2)    | 方       | Y        |        |                        |
-| 18       | OILVOLUMETRICPRODUCTION      | 产油量             | NUMBER(8,2)    | 方       | Y        |        |                        |
-| 19       | WATERVOLUMETRICPRODUCTION    | 产水量             | NUMBER(8,2)    | 方       | Y        |        |                        |
-| 20       | LIQUIDWEIGHTPRODUCTION       | 产液量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
-| 21       | OILWEIGHTPRODUCTION          | 产油量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
-| 22       | WATERWEIGHTPRODUCTION        | 产水量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
-| 23       | AVERAGEWATT                  | 有功功率           | NUMBER(8,2)    |          | Y        |        |                        |
-| 24       | WATERPOWER                   | 水功率             | NUMBER(8,2)    |          | Y        |        |                        |
-| 25       | SYSTEMEFFICIENCY             | 系统效率           | NUMBER(12,3)   |          | Y        |        |                        |
-| 26       | ENERGYPER100MLIFT            | 吨液百米耗电量     | NUMBER(8,2)    |          | Y        |        |                        |
-| 27       | PUMPEFF1                     | 容积效率           | NUMBER(12,3)   |          | Y        |        |                        |
-| 28       | PUMPEFF2                     | 液体收缩系数       | NUMBER(12,3)   |          | Y        |        |                        |
-| 29       | PUMPEFF                      | 总泵效             | NUMBER(12,3)   |          | Y        |        |                        |
-| 30       | PUMPINTAKEP                  | 泵入口压力         | NUMBER(8,2)    |          | Y        |        |                        |
-| 31       | PUMPINTAKET                  | 泵入口温度         | NUMBER(8,2)    |          | Y        |        |                        |
-| 32       | PUMPINTAKEGOL                | 泵入口就地气液比   | NUMBER(8,2)    |          | Y        |        |                        |
-| 33       | PUMPINTAKEVISL               | 泵入口粘度         | NUMBER(8,2)    |          | Y        |        |                        |
-| 34       | PUMPINTAKEBO                 | 泵入口原油体积系数 | NUMBER(8,2)    |          | Y        |        |                        |
-| 35       | PUMPOUTLETP                  | 泵出口压力         | NUMBER(8,2)    |          | Y        |        |                        |
-| 36       | PUMPOUTLETT                  | 泵出口温度         | NUMBER(8,2)    |          | Y        |        |                        |
-| 37       | PUMPOUTLETGOL                | 泵出口就地气液比   | NUMBER(8,2)    |          | Y        |        |                        |
-| 38       | PUMPOUTLETVISL               | 泵出口粘度         | NUMBER(8,2)    |          | Y        |        |                        |
-| 39       | PUMPOUTLETBO                 | 泵出口原油体积系数 | NUMBER(8,2)    |          | Y        |        |                        |
-| 40       | RODSTRING                    | 抽油杆参数         | VARCHAR2(200)  |          | Y        |        |                        |
-| 41       | RESULTSTATUS                 | 计算状态           | NUMBER(2)      |          | Y        |        |                        |
-| 42       | TOTALKWATTH                  | 累计电量           | NUMBER(12,3)   |          | Y        |        |                        |
-| 43       | TODAYKWATTH                  | 日用电量           | NUMBER(12,3)   |          | Y        |        |                        |
-| 44       | LIQUIDVOLUMETRICPRODUCTION_L | 日累计产液量       | NUMBER(8,2)    | 方       | Y        |        |                        |
-| 45       | OILVOLUMETRICPRODUCTION_L    | 日累计产油量       | NUMBER(8,2)    | 方       | Y        |        |                        |
-| 46       | WATERVOLUMETRICPRODUCTION_L  | 日累计产水量       | NUMBER(8,2)    | 方       | Y        |        |                        |
-| 47       | LIQUIDWEIGHTPRODUCTION_L     | 日累计产液量       | NUMBER(8,2)    | 吨       | Y        |        |                        |
-| 48       | OILWEIGHTPRODUCTION_L        | 日累计产油量       | NUMBER(8,2)    | 吨       | Y        |        |                        |
-| 49       | WATERWEIGHTPRODUCTION_L      | 日累计产水量       | NUMBER(8,2)    | 吨       | Y        |        |                        |
-| 50       | SAVETIME                     | 保存时间           | DATE           |          | Y        |        |                        |
-| …        | …                            | …                  |                |          | Y        |        | 根据驱动自动生成的字段 |
-| …        | …                            | …                  |                |          | Y        |        |                        |
+| **序号** | **代码**                       | **名称**           | **类型**       | **单位** | **为空** | **键** | **备注**               |
+|----------|--------------------------------|--------------------|----------------|----------|----------|--------|------------------------|
+| 1        | ID                             | 记录编号           | NUMBER(10)     |          | N        | 主键   |                        |
+| 2        | WELLID                         | 设备编号           | NUMBER(10)     |          | N        |        |                        |
+| 3        | ACQTIME                        | 采集时间           | DATE           |          | Y        |        |                        |
+| 4        | COMMSTATUS                     | 通信状态           | NUMBER(2)      |          | Y        |        | 0-离线 1-在线          |
+| 5        | COMMTIME                       | 在线时间           | NUMBER(8,2)    |          | Y        |        |                        |
+| 6        | COMMTIMEEFFICIENCY             | 在线时率           | NUMBER(10,4)   |          | Y        |        |                        |
+| 7        | COMMRANGE                      | 在线区间           | CLOB           |          | Y        |        |                        |
+| 8        | RUNSTATUS                      | 运行状态           | NUMBER(2)      |          | Y        |        |                        |
+| 9        | RUNTIMEEFFICIENCY              | 运行时率           | NUMBER(8,2)    |          | Y        |        |                        |
+| 10       | RUNTIME                        | 运行时间           | NUMBER(10,4)   |          | Y        |        |                        |
+| 11       | RUNRANGE                       | 运行区间           | CLOB           |          | Y        |        |                        |
+| 12       | PRODUCTIONDATA                 | 生产数据           | VARCHAR2(4000) |          | Y        |        |                        |
+| 13       | RPM                            | 转速               | NUMBER(8,2)    |          | Y        |        |                        |
+| 14       | TORQUE                         | 扭矩               | NUMBER(8,2)    |          | Y        |        |                        |
+| 15       | RESULTCODE                     | 工况代码           | NUMBER(4)      |          | Y        |        |                        |
+| 16       | THEORETICALPRODUCTION          | 理论排量           | NUMBER(8,2)    |          | Y        |        |                        |
+| 17       | LIQUIDVOLUMETRICPRODUCTION     | 产液量             | NUMBER(8,2)    | 方       | Y        |        |                        |
+| 18       | OILVOLUMETRICPRODUCTION        | 产油量             | NUMBER(8,2)    | 方       | Y        |        |                        |
+| 19       | WATERVOLUMETRICPRODUCTION      | 产水量             | NUMBER(8,2)    | 方       | Y        |        |                        |
+| 20       | LIQUIDWEIGHTPRODUCTION         | 产液量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
+| 21       | OILWEIGHTPRODUCTION            | 产油量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
+| 22       | WATERWEIGHTPRODUCTION          | 产水量             | NUMBER(8,2)    | 吨       | Y        |        |                        |
+| 23       | AVERAGEWATT                    | 有功功率           | NUMBER(8,2)    |          | Y        |        |                        |
+| 24       | WATERPOWER                     | 水功率             | NUMBER(8,2)    |          | Y        |        |                        |
+| 25       | SYSTEMEFFICIENCY               | 系统效率           | NUMBER(12,3)   |          | Y        |        |                        |
+| 26       | ENERGYPER100MLIFT              | 吨液百米耗电量     | NUMBER(8,2)    |          | Y        |        |                        |
+| 27       | PUMPEFF1                       | 容积效率           | NUMBER(12,3)   |          | Y        |        |                        |
+| 28       | PUMPEFF2                       | 液体收缩系数       | NUMBER(12,3)   |          | Y        |        |                        |
+| 29       | PUMPEFF                        | 总泵效             | NUMBER(12,3)   |          | Y        |        |                        |
+| 30       | PUMPINTAKEP                    | 泵入口压力         | NUMBER(8,2)    |          | Y        |        |                        |
+| 31       | PUMPINTAKET                    | 泵入口温度         | NUMBER(8,2)    |          | Y        |        |                        |
+| 32       | PUMPINTAKEGOL                  | 泵入口就地气液比   | NUMBER(8,2)    |          | Y        |        |                        |
+| 33       | PUMPINTAKEVISL                 | 泵入口粘度         | NUMBER(8,2)    |          | Y        |        |                        |
+| 34       | PUMPINTAKEBO                   | 泵入口原油体积系数 | NUMBER(8,2)    |          | Y        |        |                        |
+| 35       | PUMPOUTLETP                    | 泵出口压力         | NUMBER(8,2)    |          | Y        |        |                        |
+| 36       | PUMPOUTLETT                    | 泵出口温度         | NUMBER(8,2)    |          | Y        |        |                        |
+| 37       | PUMPOUTLETGOL                  | 泵出口就地气液比   | NUMBER(8,2)    |          | Y        |        |                        |
+| 38       | PUMPOUTLETVISL                 | 泵出口粘度         | NUMBER(8,2)    |          | Y        |        |                        |
+| 39       | PUMPOUTLETBO                   | 泵出口原油体积系数 | NUMBER(8,2)    |          | Y        |        |                        |
+| 40       | RODSTRING                      | 抽油杆参数         | VARCHAR2(200)  |          | Y        |        |                        |
+| 41       | RESULTSTATUS                   | 计算状态           | NUMBER(2)      |          | Y        |        |                        |
+| 42       | TOTALKWATTH                    | 累计电量           | NUMBER(12,3)   |          | Y        |        |                        |
+| 43       | TODAYKWATTH                    | 日用电量           | NUMBER(12,3)   |          | Y        |        |                        |
+| 44       | LIQUIDVOLUMETRICPRODUCTION_L   | 日累计产液量       | NUMBER(8,2)    | 方       | Y        |        |                        |
+| 45       | OILVOLUMETRICPRODUCTION_L      | 日累计产油量       | NUMBER(8,2)    | 方       | Y        |        |                        |
+| 46       | WATERVOLUMETRICPRODUCTION_L    | 日累计产水量       | NUMBER(8,2)    | 方       | Y        |        |                        |
+| 47       | LIQUIDWEIGHTPRODUCTION_L       | 日累计产液量       | NUMBER(8,2)    | 吨       | Y        |        |                        |
+| 48       | OILWEIGHTPRODUCTION_L          | 日累计产油量       | NUMBER(8,2)    | 吨       | Y        |        |                        |
+| 49       | WATERWEIGHTPRODUCTION_L        | 日累计产水量       | NUMBER(8,2)    | 吨       | Y        |        |                        |
+| 50       | SUBMERGENCE                    | 沉没度             | NUMBER(8,2)    | 米       | Y        |        |                        |
+| 51       | GASVOLUMETRICPRODUCTION        | 日产气量           | NUMBER(12,3)   | 方       | Y        |        |                        |
+| 52       | TOTALGASVOLUMETRICPRODUCTION   | 累计产气量         | NUMBER(12,3)   | 方       | Y        |        |                        |
+| 53       | TOTALWATERVOLUMETRICPRODUCTION | 累计产水量         | NUMBER(12,3)   | 方       | Y        |        |                        |
+| 54       | SAVETIME                       | 保存时间           | DATE           |          | Y        |        |                        |
+| …        | …                              | …                  |                |          | Y        |        | 根据驱动自动生成的字段 |
+| …        | …                              | …                  |                |          | Y        |        |                        |
 
 ### 1.2.40 tbl\_pcpacqdata_hist
 
@@ -1029,39 +1058,50 @@
 
 表1-41 螺杆泵汇总数据表
 
-| **序号** | **代码**                   | **名称**       | **类型**     | **单位** | **为空** | **键** | **备注**      |
-|----------|----------------------------|----------------|--------------|----------|----------|--------|---------------|
-| 1        | ID                         | 记录编号       | NUMBER(10)   |          | N        | 主键   |               |
-| 2        | WELLID                     | 设备编号       | NUMBER(10)   |          | N        |        |               |
-| 3        | CALDATE                    | 汇总日期       | DATE         |          | Y        |        |               |
-| 4        | COMMSTATUS                 | 通信状态       | NUMBER(2)    |          | Y        |        | 0-离线 1-在线 |
-| 5        | COMMTIME                   | 在线时间       | NUMBER(8,2)  |          | Y        |        |               |
-| 6        | COMMTIMEEFFICIENCY         | 在线时率       | NUMBER(10,4) |          | Y        |        |               |
-| 7        | COMMRANGE                  | 在线区间       | CLOB         |          | Y        |        |               |
-| 8        | RUNSTATUS                  | 运行状态       | NUMBER(2)    |          | Y        |        |               |
-| 9        | RUNTIMEEFFICIENCY          | 运行时率       | NUMBER(8,2)  |          | Y        |        |               |
-| 10       | RUNTIME                    | 运行时间       | NUMBER(10,4) |          | Y        |        |               |
-| 11       | RUNRANGE                   | 运行区间       | CLOB         |          | Y        |        |               |
-| 12       | RPM                        | 转速           | NUMBER(8,2)  |          | Y        |        |               |
-| 13       | RESULTCODE                 | 工况代码       | NUMBER(4)    |          | Y        |        |               |
-| 14       | THEORETICALPRODUCTION      | 理论排量       | NUMBER(8,2)  |          | Y        |        |               |
-| 15       | LIQUIDVOLUMETRICPRODUCTION | 产液量         | NUMBER(8,2)  | 方       | Y        |        |               |
-| 16       | OILVOLUMETRICPRODUCTION    | 产油量         | NUMBER(8,2)  | 方       | Y        |        |               |
-| 17       | WATERVOLUMETRICPRODUCTION  | 产水量         | NUMBER(8,2)  | 方       | Y        |        |               |
-| 18       | VOLUMEWATERCUT             | 体积含水率     | NUMBER(8,2)  |          | Y        |        |               |
-| 19       | LIQUIDWEIGHTPRODUCTION     | 产液量         | NUMBER(8,2)  | 吨       | Y        |        |               |
-| 20       | OILWEIGHTPRODUCTION        | 产油量         | NUMBER(8,2)  | 吨       | Y        |        |               |
-| 21       | WATERWEIGHTPRODUCTION      | 产水量         | NUMBER(8,2)  | 吨       | Y        |        |               |
-| 22       | WEIGHTWATERCUT             | 重量含水率     | NUMBER(8,2)  |          | Y        |        |               |
-| 23       | SYSTEMEFFICIENCY           | 系统效率       | NUMBER(12,3) |          | Y        |        |               |
-| 24       | ENERGYPER100MLIFT          | 吨液百米耗电量 | NUMBER(8,2)  |          | Y        |        |               |
-| 25       | PUMPEFF1                   | 容积效率       | NUMBER(12,3) |          | Y        |        |               |
-| 26       | PUMPEFF2                   | 液体收缩系数   | NUMBER(12,3) |          | Y        |        |               |
-| 27       | PUMPEFF                    | 总泵效         | NUMBER(12,3) |          | Y        |        |               |
-| 28       | TOTALKWATTH                | 累计电量       | NUMBER(12,3) |          | Y        |        |               |
-| 29       | TODAYKWATTH                | 日用电量       | NUMBER(12,3) |          | Y        |        |               |
-| 30       | EXTENDEDDAYS               | 沿用天数       | NUMBER(5)    |          | Y        |        |               |
-| 31       | RESULTSTATUS               | 计算状态       | NUMBER(2)    |          | Y        |        |               |
+| **序号** | **代码**                       | **名称**       | **类型**       | **单位** | **为空** | **键** | **备注**      |
+|----------|--------------------------------|----------------|----------------|----------|----------|--------|---------------|
+| 1        | ID                             | 记录编号       | NUMBER(10)     |          | N        | 主键   |               |
+| 2        | WELLID                         | 设备编号       | NUMBER(10)     |          | N        |        |               |
+| 3        | CALDATE                        | 汇总日期       | DATE           |          | Y        |        |               |
+| 4        | COMMSTATUS                     | 通信状态       | NUMBER(2)      |          | Y        |        | 0-离线 1-在线 |
+| 5        | COMMTIME                       | 在线时间       | NUMBER(8,2)    |          | Y        |        |               |
+| 6        | COMMTIMEEFFICIENCY             | 在线时率       | NUMBER(10,4)   |          | Y        |        |               |
+| 7        | COMMRANGE                      | 在线区间       | CLOB           |          | Y        |        |               |
+| 8        | RUNSTATUS                      | 运行状态       | NUMBER(2)      |          | Y        |        |               |
+| 9        | RUNTIMEEFFICIENCY              | 运行时率       | NUMBER(8,2)    |          | Y        |        |               |
+| 10       | RUNTIME                        | 运行时间       | NUMBER(10,4)   |          | Y        |        |               |
+| 11       | RUNRANGE                       | 运行区间       | CLOB           |          | Y        |        |               |
+| 12       | RPM                            | 转速           | NUMBER(8,2)    |          | Y        |        |               |
+| 13       | RESULTCODE                     | 工况代码       | NUMBER(4)      |          | Y        |        |               |
+| 14       | THEORETICALPRODUCTION          | 理论排量       | NUMBER(8,2)    |          | Y        |        |               |
+| 15       | LIQUIDVOLUMETRICPRODUCTION     | 产液量         | NUMBER(8,2)    | 方       | Y        |        |               |
+| 16       | OILVOLUMETRICPRODUCTION        | 产油量         | NUMBER(8,2)    | 方       | Y        |        |               |
+| 17       | WATERVOLUMETRICPRODUCTION      | 产水量         | NUMBER(8,2)    | 方       | Y        |        |               |
+| 18       | VOLUMEWATERCUT                 | 体积含水率     | NUMBER(8,2)    |          | Y        |        |               |
+| 19       | LIQUIDWEIGHTPRODUCTION         | 产液量         | NUMBER(8,2)    | 吨       | Y        |        |               |
+| 20       | OILWEIGHTPRODUCTION            | 产油量         | NUMBER(8,2)    | 吨       | Y        |        |               |
+| 21       | WATERWEIGHTPRODUCTION          | 产水量         | NUMBER(8,2)    | 吨       | Y        |        |               |
+| 22       | WEIGHTWATERCUT                 | 重量含水率     | NUMBER(8,2)    |          | Y        |        |               |
+| 23       | SYSTEMEFFICIENCY               | 系统效率       | NUMBER(12,3)   |          | Y        |        |               |
+| 24       | ENERGYPER100MLIFT              | 吨液百米耗电量 | NUMBER(8,2)    |          | Y        |        |               |
+| 25       | PUMPEFF1                       | 容积效率       | NUMBER(12,3)   |          | Y        |        |               |
+| 26       | PUMPEFF2                       | 液体收缩系数   | NUMBER(12,3)   |          | Y        |        |               |
+| 27       | PUMPEFF                        | 总泵效         | NUMBER(12,3)   |          | Y        |        |               |
+| 28       | TOTALKWATTH                    | 累计电量       | NUMBER(12,3)   |          | Y        |        |               |
+| 29       | TODAYKWATTH                    | 日用电量       | NUMBER(12,3)   |          | Y        |        |               |
+| 30       | TUBINGPRESSURE                 | 油压           | NUMBER(8,2)    | MPa      | Y        |        |               |
+| 31       | CASINGPRESSURE                 | 套压           | NUMBER(8,2)    | MPa      | Y        |        |               |
+| 32       | BOTTOMHOLEPRESSURE             | 井底压力       | NUMBER(8,2)    | MPa      | Y        |        |               |
+| 33       | PRODUCINGFLUIDLEVEL            | 动液面         | NUMBER(8,2)    | m        | Y        |        |               |
+| 34       | PUMPSETTINGDEPTH               | 泵挂           | NUMBER(8,2)    | m        | Y        |        |               |
+| 35       | SUBMERGENCE                    | 沉没度         | NUMBER(8,2)    | m        | Y        |        |               |
+| 36       | GASVOLUMETRICPRODUCTION        | 日产气量       | NUMBER(8,2)    | 方       | Y        |        |               |
+| 37       | TOTALGASVOLUMETRICPRODUCTION   | 累计产气量     | NUMBER(8,2)    | 方       | Y        |        |               |
+| 38       | TOTALWATERVOLUMETRICPRODUCTION | 累计产水量     | NUMBER(8,2)    | 方       | Y        |        |               |
+| 39       | HEADERLABELINFO                | 报表表头信息   | VARCHAR2(4000) |          | Y        |        |               |
+| 40       | EXTENDEDDAYS                   | 沿用天数       | NUMBER(5)      |          | Y        |        |               |
+| 41       | RESULTSTATUS                   | 计算状态       | NUMBER(2)      |          | Y        |        |               |
+| 42       | REMARK                         | 备注           | VARCHAR2(4000) |          | Y        |        |               |
 
 ### 1.2.45 tbl\_pcpdevicegraphicset
 
@@ -1118,6 +1158,18 @@
 | 9        | TABLESPACESIZE | 数据库表空间大小 | NUMBER(10,2) | Mb       | Y        |        |          |
 | 10       | JEDISSTATUS    | REDIS状态        | NUMBER(2)    |          | Y        |        |          |
 
+### 1.2.49 tbl\_videokey
+
+表1-46 视频秘钥表
+
+| **序号** | **代码** | **名称** | **类型**      | **单位** | **为空** | **键** | **备注** |
+|----------|----------|----------|---------------|----------|----------|--------|----------|
+| 1        | ID       | 记录编号 | NUMBER(10)    |          | N        | 主键   |          |
+| 2        | ORGID    | 单位编号 | NUMBER(10)    |          | Y        |        |          |
+| 3        | ACCOUNT  | 账号名称 | VARCHAR2(200) |          | Y        |        |          |
+| 4        | APPKEY   | APPKEY   | VARCHAR2(400) |          | Y        |        |          |
+| 5        | SECRET   | SECRET   | VARCHAR2(400) |          | Y        |        |          |
+
 # 二、视图
 
 ## 2.1 概览
@@ -1163,80 +1215,90 @@
 
 表2-2 抽油机信息视图
 
-| **序号** | **代码**                 | **名称**       | **类型** | **备注**      |
-|----------|--------------------------|----------------|----------|---------------|
-| 1        | ID                       | 记录编号       | NUMBER   |               |
-| 2        | ORGNAME                  | 组织名称       | VARCHAR2 |               |
-| 3        | ORGID                    | 组织编号       | NUMBER   |               |
-| 4        | ALLPATH                  | 组织全路径     | VARCHAR2 |               |
-| 5        | WELLNAME                 | 设备名称       | VARCHAR2 |               |
-| 6        | DEVICETYPE               | 设备类型       | NUMBER   |               |
-| 7        | DEVICETYPENAME           | 设备类型名称   | VARCHAR2 |               |
-| 8        | APPLICATIONSCENARIOS     | 应用场景       | NUMBER   |               |
-| 9        | APPLICATIONSCENARIOSNAME | 应用场景名称   | VARCHAR2 |               |
-| 10       | TCPTYPE                  | 下位机TCP类型  | VARCHAR2 |               |
-| 11       | SIGNINID                 | 注册包ID       | VARCHAR2 |               |
-| 12       | SLAVE                    | 设备从地址     | VARCHAR2 |               |
-| 13       | PEAKDELAY                | 错峰延时       | NUMBER   |               |
-| 14       | VIDEOURL                 | 视频监控路径   | VARCHAR2 |               |
-| 15       | VIDEOACCESSTOKEN         | 视频访问令牌   | VARCHAR2 | 预留          |
-| 16       | INSTANCECODE             | 采控实例编码   | VARCHAR2 |               |
-| 17       | INSTANCENAME             | 采控实例名称   | VARCHAR2 |               |
-| 18       | ALARMINSTANCECODE        | 报警实例编码   | VARCHAR2 |               |
-| 19       | ALARMINSTANCENAME        | 报警实例名称   | VARCHAR2 |               |
-| 20       | DISPLAYINSTANCECODE      | 显示实例编码   | VARCHAR2 |               |
-| 21       | DISPLAYINSTANCENAME      | 显示实例名称   | VARCHAR2 |               |
-| 22       | REPORTINSTANCECODE       | 报表实例编码   | VARCHAR2 |               |
-| 23       | REPORTINSTANCENAME       | 报表实例名称   | VARCHAR2 |               |
-| 24       | STATUS                   | 状态           | NUMBER   | 0-失效 1-使能 |
-| 25       | STATUSNAME               | 状态名称       | VARCHAR2 | 失效或使能    |
-| 26       | PRODUCTIONDATA           | 生产数据       | VARCHAR2 |               |
-| 27       | BALANCEINFO              | 平衡块数据     | VARCHAR2 |               |
-| 28       | STROKE                   | 铭牌冲程       | NUMBER   |               |
-| 29       | PUMPINGMODELID           | 抽油机型号编号 | NUMBER   |               |
-| 30       | MANUFACTURER             | 抽油机厂家     | VARCHAR2 |               |
-| 31       | MODEL                    | 抽油机型号     | VARCHAR2 |               |
-| 32       | CRANKROTATIONDIRECTION   | 曲柄旋转方向   | VARCHAR2 |               |
-| 33       | OFFSETANGLEOFCRANK       | 曲柄偏置角     | NUMBER   |               |
-| 34       | CRANKGRAVITYRADIUS       | 曲柄重心半径   | NUMBER   |               |
-| 35       | SINGLECRANKWEIGHT        | 单块曲柄重要   | NUMBER   |               |
-| 36       | SINGLECRANKPINWEIGHT     | 单块曲柄销重量 | NUMBER   |               |
-| 37       | STRUCTURALUNBALANCE      | 结构不平衡重   | NUMBER   |               |
-| 38       | SORTNUM                  | 排序编号       | NUMBER   |               |
+| **序号** | **代码**                 | **名称**          | **类型** | **备注**      |
+|----------|--------------------------|-------------------|----------|---------------|
+| 1        | ID                       | 记录编号          | NUMBER   |               |
+| 2        | ORGNAME                  | 组织名称          | VARCHAR2 |               |
+| 3        | ORGID                    | 组织编号          | NUMBER   |               |
+| 4        | ALLPATH                  | 组织全路径        | VARCHAR2 |               |
+| 5        | WELLNAME                 | 设备名称          | VARCHAR2 |               |
+| 6        | DEVICETYPE               | 设备类型          | NUMBER   |               |
+| 7        | DEVICETYPENAME           | 设备类型名称      | VARCHAR2 |               |
+| 8        | APPLICATIONSCENARIOS     | 应用场景          | NUMBER   |               |
+| 9        | APPLICATIONSCENARIOSNAME | 应用场景名称      | VARCHAR2 |               |
+| 10       | TCPTYPE                  | 下位机TCP类型     | VARCHAR2 |               |
+| 11       | SIGNINID                 | 注册包ID          | VARCHAR2 |               |
+| 12       | SLAVE                    | 设备从地址        | VARCHAR2 |               |
+| 13       | PEAKDELAY                | 错峰延时          | NUMBER   |               |
+| 14       | VIDEOURL1                | 视频1监控路径     | VARCHAR2 |               |
+| 15       | VIDEOURL2                | 视频2监控路径     | VARCHAR2 |               |
+| 16       | VIDEOKEYID1              | 视频1秘钥编号     | NUMBER   |               |
+| 17       | VIDEOKEYID2              | 视频2秘钥编号     | NUMBER   |               |
+| 18       | VIDEOKEYNAME1            | 视频1秘钥账号名称 | VARCHAR2 |               |
+| 19       | VIDEOKEYNAME2            | 视频2秘钥账号名称 | VARCHAR2 |               |
+| 20       | VIDEOACCESSTOKEN         | 视频访问令牌      | VARCHAR2 | 预留          |
+| 21       | INSTANCECODE             | 采控实例编码      | VARCHAR2 |               |
+| 22       | INSTANCENAME             | 采控实例名称      | VARCHAR2 |               |
+| 23       | ALARMINSTANCECODE        | 报警实例编码      | VARCHAR2 |               |
+| 24       | ALARMINSTANCENAME        | 报警实例名称      | VARCHAR2 |               |
+| 25       | DISPLAYINSTANCECODE      | 显示实例编码      | VARCHAR2 |               |
+| 26       | DISPLAYINSTANCENAME      | 显示实例名称      | VARCHAR2 |               |
+| 27       | REPORTINSTANCECODE       | 报表实例编码      | VARCHAR2 |               |
+| 28       | REPORTINSTANCENAME       | 报表实例名称      | VARCHAR2 |               |
+| 29       | STATUS                   | 状态              | NUMBER   | 0-失效 1-使能 |
+| 30       | STATUSNAME               | 状态名称          | VARCHAR2 | 失效或使能    |
+| 31       | PRODUCTIONDATA           | 生产数据          | VARCHAR2 |               |
+| 32       | BALANCEINFO              | 平衡块数据        | VARCHAR2 |               |
+| 33       | STROKE                   | 铭牌冲程          | NUMBER   |               |
+| 34       | PUMPINGMODELID           | 抽油机型号编号    | NUMBER   |               |
+| 35       | MANUFACTURER             | 抽油机厂家        | VARCHAR2 |               |
+| 36       | MODEL                    | 抽油机型号        | VARCHAR2 |               |
+| 37       | CRANKROTATIONDIRECTION   | 曲柄旋转方向      | VARCHAR2 |               |
+| 38       | OFFSETANGLEOFCRANK       | 曲柄偏置角        | NUMBER   |               |
+| 39       | CRANKGRAVITYRADIUS       | 曲柄重心半径      | NUMBER   |               |
+| 40       | SINGLECRANKWEIGHT        | 单块曲柄重要      | NUMBER   |               |
+| 41       | SINGLECRANKPINWEIGHT     | 单块曲柄销重量    | NUMBER   |               |
+| 42       | STRUCTURALUNBALANCE      | 结构不平衡重      | NUMBER   |               |
+| 43       | SORTNUM                  | 排序编号          | NUMBER   |               |
 
 ### 2.2.3 viw\_pcpdevice
 
 表2-3 螺杆泵信息视图
 
-| **序号** | **代码**                 | **名称**      | **类型** | **备注**      |
-|----------|--------------------------|---------------|----------|---------------|
-| 1        | ID                       | 记录编号      | NUMBER   |               |
-| 2        | ORGNAME                  | 组织名称      | VARCHAR2 |               |
-| 3        | ORGID                    | 组织编号      | NUMBER   |               |
-| 4        | ALLPATH                  | 组织全路径    | VARCHAR2 |               |
-| 5        | WELLNAME                 | 设备名称      | VARCHAR2 |               |
-| 6        | APPLICATIONSCENARIOS     | 应用场景      | NUMBER   |               |
-| 7        | APPLICATIONSCENARIOSNAME | 应用场景名称  | VARCHAR2 |               |
-| 8        | DEVICETYPE               | 设备类型      | NUMBER   |               |
-| 9        | DEVICETYPENAME           | 设备类型名称  | VARCHAR2 |               |
-| 10       | TCPTYPE                  | 下位机TCP类型 | VARCHAR2 |               |
-| 11       | SIGNINID                 | 注册包ID      | VARCHAR2 |               |
-| 12       | SLAVE                    | 设备从地址    | VARCHAR2 |               |
-| 13       | PEAKDELAY                | 错峰延时      | NUMBER   |               |
-| 14       | VIDEOURL                 | 视频路径      | VARCHAR2 |               |
-| 15       | VIDEOACCESSTOKEN         | 视频访问令牌  | VARCHAR2 | 预留          |
-| 16       | INSTANCECODE             | 采控实例编码  | VARCHAR2 |               |
-| 17       | INSTANCENAME             | 采控实例名称  | VARCHAR2 |               |
-| 18       | ALARMINSTANCECODE        | 报警实例编码  | VARCHAR2 |               |
-| 19       | ALARMINSTANCENAME        | 报警实例名称  | VARCHAR2 |               |
-| 20       | DISPLAYINSTANCECODE      | 显示实例编码  | VARCHAR2 |               |
-| 21       | DISPLAYINSTANCENAME      | 显示实例名称  | VARCHAR2 |               |
-| 22       | REPORTINSTANCECODE       | 报表实例编码  | VARCHAR2 |               |
-| 23       | REPORTINSTANCENAME       | 报表实例名称  | VARCHAR2 |               |
-| 24       | STATUS                   | 状态          | NUMBER   | 0-失效 1-使能 |
-| 25       | STATUSNAME               | 状态名称      | VARCHAR2 | 失效或使能    |
-| 26       | PRODUCTIONDATA           | 生产数据      | VARCHAR2 |               |
-| 27       | SORTNUM                  | 排序编号      | NUMBER   |               |
+| **序号** | **代码**                 | **名称**          | **类型** | **备注**      |
+|----------|--------------------------|-------------------|----------|---------------|
+| 1        | ID                       | 记录编号          | NUMBER   |               |
+| 2        | ORGNAME                  | 组织名称          | VARCHAR2 |               |
+| 3        | ORGID                    | 组织编号          | NUMBER   |               |
+| 4        | ALLPATH                  | 组织全路径        | VARCHAR2 |               |
+| 5        | WELLNAME                 | 设备名称          | VARCHAR2 |               |
+| 6        | APPLICATIONSCENARIOS     | 应用场景          | NUMBER   |               |
+| 7        | APPLICATIONSCENARIOSNAME | 应用场景名称      | VARCHAR2 |               |
+| 8        | DEVICETYPE               | 设备类型          | NUMBER   |               |
+| 9        | DEVICETYPENAME           | 设备类型名称      | VARCHAR2 |               |
+| 10       | TCPTYPE                  | 下位机TCP类型     | VARCHAR2 |               |
+| 11       | SIGNINID                 | 注册包ID          | VARCHAR2 |               |
+| 12       | SLAVE                    | 设备从地址        | VARCHAR2 |               |
+| 13       | PEAKDELAY                | 错峰延时          | NUMBER   |               |
+| 14       | VIDEOURL1                | 视频1监控路径     | VARCHAR2 |               |
+| 15       | VIDEOURL2                | 视频2监控路径     | VARCHAR2 |               |
+| 16       | VIDEOKEYID1              | 视频1秘钥编号     | NUMBER   |               |
+| 17       | VIDEOKEYID2              | 视频2秘钥编号     | NUMBER   |               |
+| 18       | VIDEOKEYNAME1            | 视频1秘钥账号名称 | VARCHAR2 |               |
+| 19       | VIDEOKEYNAME2            | 视频2秘钥账号名称 | VARCHAR2 |               |
+| 20       | VIDEOACCESSTOKEN         | 视频访问令牌      | VARCHAR2 | 预留          |
+| 21       | INSTANCECODE             | 采控实例编码      | VARCHAR2 |               |
+| 22       | INSTANCENAME             | 采控实例名称      | VARCHAR2 |               |
+| 23       | ALARMINSTANCECODE        | 报警实例编码      | VARCHAR2 |               |
+| 24       | ALARMINSTANCENAME        | 报警实例名称      | VARCHAR2 |               |
+| 25       | DISPLAYINSTANCECODE      | 显示实例编码      | VARCHAR2 |               |
+| 26       | DISPLAYINSTANCENAME      | 显示实例名称      | VARCHAR2 |               |
+| 27       | REPORTINSTANCECODE       | 报表实例编码      | VARCHAR2 |               |
+| 28       | REPORTINSTANCENAME       | 报表实例名称      | VARCHAR2 |               |
+| 29       | STATUS                   | 状态              | NUMBER   | 0-失效 1-使能 |
+| 30       | STATUSNAME               | 状态名称          | VARCHAR2 | 失效或使能    |
+| 31       | PRODUCTIONDATA           | 生产数据          | VARCHAR2 |               |
+| 32       | SORTNUM                  | 排序编号          | NUMBER   |               |
 
 ### 2.2.4 viw\_smsdevice
 
@@ -1392,102 +1454,126 @@
 
 表2-11 抽油机汇总视图
 
-| **序号** | **代码**                   | **名称**       | **类型** | **备注** |
-|----------|----------------------------|----------------|----------|----------|
-| 1        | ID                         | 记录编号       | NUMBER   |          |
-| 2        | WELLNAME                   | 设备名称       | VARCHAR2 |          |
-| 3        | WELLID                     | 设备编号       | NUMBER   |          |
-| 4        | CALDATE                    | 汇总日期       | DATE     |          |
-| 5        | EXTENDEDDAYS               | 沿用天数       | NUMBER   |          |
-| 6        | ACQUISITIONDATE            | 功图采集日期   | DATE     |          |
-| 7        | COMMSTATUS                 | 通信状态       | NUMBER   |          |
-| 8        | COMMSTATUSNAME             | 通信状态名称   | VARCHAR2 |          |
-| 9        | COMMTIME                   | 在线时间       | NUMBER   |          |
-| 10       | COMMTIMEEFFICIENCY         | 在线时率       | NUMBER   |          |
-| 11       | COMMRANGE                  | 在线区间       | CLOB     |          |
-| 12       | RUNSTATUS                  | 运行状态       | NUMBER   |          |
-| 13       | RUNSTATUSNAME              | 运行状态名称   | VARCHAR2 |          |
-| 14       | RUNTIMEEFFICIENCY          | 运行时率       | NUMBER   |          |
-| 15       | RUNTIME                    | 运行时间       | CLOB     |          |
-| 16       | RUNTIMEEFFICIENCY          | 运行区间       | NUMBER   |          |
-| 17       | RESULTCODE                 | 工况代码       | NUMBER   |          |
-| 18       | RESULTNAME                 | 工况名称       | VARCHAR2 |          |
-| 19       | RESULTSTRING               | 工况字符串     | CLOB     |          |
-| 20       | OPTIMIZATIONSUGGESTION     | 优化建议       | VARCHAR2 |          |
-| 21       | THEORETICALPRODUCTION      | 理论排量       | NUMBER   |          |
-| 22       | LIQUIDWEIGHTPRODUCTION     | 产液量         | NUMBER   |          |
-| 23       | OILWEIGHTPRODUCTION        | 产油量         | NUMBER   |          |
-| 24       | WATERWEIGHTPRODUCTION      | 产水量         | NUMBER   |          |
-| 25       | WEIGHTWATERCUT             | 体积含水率     | NUMBER   |          |
-| 26       | LIQUIDVOLUMETRICPRODUCTION | 产液量         | NUMBER   |          |
-| 27       | OILVOLUMETRICPRODUCTION    | 产油量         | NUMBER   |          |
-| 28       | WATERVOLUMETRICPRODUCTION  | 产水量         | NUMBER   |          |
-| 29       | VOLUMEWATERCUT             | 重量含水率     | NUMBER   |          |
-| 30       | STROKE                     | 冲程           | NUMBER   |          |
-| 31       | SPM                        | 冲次           | NUMBER   |          |
-| 32       | FMAX                       | 最大载荷       | NUMBER   |          |
-| 33       | FMIN                       | 最小载荷       | NUMBER   |          |
-| 34       | FULLNESSCOEFFICIENT        | 充满系数       | NUMBER   |          |
-| 35       | PUMPEFF                    | 总泵效         | NUMBER   |          |
-| 36       | PUMPEFF1                   | 冲程损失系数   | NUMBER   |          |
-| 37       | PUMPEFF2                   | 充满系数       | NUMBER   |          |
-| 38       | PUMPEFF3                   | 间隙漏失系数   | NUMBER   |          |
-| 39       | PUMPEFF4                   | 液体收缩系数   | NUMBER   |          |
-| 40       | SYSTEMEFFICIENCY           | 系统效率       | NUMBER   |          |
-| 41       | SURFACESYSTEMEFFICIENCY    | 地面效率       | NUMBER   |          |
-| 42       | WELLDOWNSYSTEMEFFICIENCY   | 井下效率       | NUMBER   |          |
-| 43       | ENERGYPER100MLIFT          | 吨液百米耗电量 | NUMBER   |          |
-| 44       | TODAYKWATTH                | 日用电量       | NUMBER   |          |
-| 45       | IDEGREEBALANCE             | 电流平衡度     | NUMBER   |          |
-| 46       | WATTDEGREEBALANCE          | 功率平衡度     | NUMBER   |          |
-| 47       | DELTARADIUS                | 移动距离       | NUMBER   |          |
-| 48       | SORTNUM                    | 排序编号       | NUMBER   |          |
-| 49       | ORG_CODE                   | 组织编码       | VARCHAR2 |          |
-| 50       | ORG_ID                     | 组织编号       | NUMBER   |          |
-| 51       | REMARK                     | 备注           | VARCHAR2 |          |
+| **序号** | **代码**                       | **名称**       | **类型** | **备注** |
+|----------|--------------------------------|----------------|----------|----------|
+| 1        | ID                             | 记录编号       | NUMBER   |          |
+| 2        | WELLNAME                       | 设备名称       | VARCHAR2 |          |
+| 3        | WELLID                         | 设备编号       | NUMBER   |          |
+| 4        | CALDATE                        | 汇总日期       | DATE     |          |
+| 5        | EXTENDEDDAYS                   | 沿用天数       | NUMBER   |          |
+| 6        | ACQUISITIONDATE                | 功图采集日期   | DATE     |          |
+| 7        | COMMSTATUS                     | 通信状态       | NUMBER   |          |
+| 8        | COMMSTATUSNAME                 | 通信状态名称   | VARCHAR2 |          |
+| 9        | COMMTIME                       | 在线时间       | NUMBER   |          |
+| 10       | COMMTIMEEFFICIENCY             | 在线时率       | NUMBER   |          |
+| 11       | COMMRANGE                      | 在线区间       | CLOB     |          |
+| 12       | RUNSTATUS                      | 运行状态       | NUMBER   |          |
+| 13       | RUNSTATUSNAME                  | 运行状态名称   | VARCHAR2 |          |
+| 14       | RUNTIMEEFFICIENCY              | 运行时率       | NUMBER   |          |
+| 15       | RUNTIME                        | 运行时间       | CLOB     |          |
+| 16       | RUNTIMEEFFICIENCY              | 运行区间       | NUMBER   |          |
+| 17       | RESULTCODE                     | 工况代码       | NUMBER   |          |
+| 18       | RESULTNAME                     | 工况名称       | VARCHAR2 |          |
+| 19       | RESULTSTRING                   | 工况字符串     | CLOB     |          |
+| 20       | OPTIMIZATIONSUGGESTION         | 优化建议       | VARCHAR2 |          |
+| 21       | THEORETICALPRODUCTION          | 理论排量       | NUMBER   |          |
+| 22       | LIQUIDWEIGHTPRODUCTION         | 产液量         | NUMBER   |          |
+| 23       | OILWEIGHTPRODUCTION            | 产油量         | NUMBER   |          |
+| 24       | WATERWEIGHTPRODUCTION          | 产水量         | NUMBER   |          |
+| 25       | WEIGHTWATERCUT                 | 体积含水率     | NUMBER   |          |
+| 26       | LIQUIDVOLUMETRICPRODUCTION     | 产液量         | NUMBER   |          |
+| 27       | OILVOLUMETRICPRODUCTION        | 产油量         | NUMBER   |          |
+| 28       | WATERVOLUMETRICPRODUCTION      | 产水量         | NUMBER   |          |
+| 29       | VOLUMEWATERCUT                 | 重量含水率     | NUMBER   |          |
+| 30       | STROKE                         | 冲程           | NUMBER   |          |
+| 31       | SPM                            | 冲次           | NUMBER   |          |
+| 32       | FMAX                           | 最大载荷       | NUMBER   |          |
+| 33       | FMIN                           | 最小载荷       | NUMBER   |          |
+| 34       | FULLNESSCOEFFICIENT            | 充满系数       | NUMBER   |          |
+| 35       | PUMPEFF                        | 总泵效         | NUMBER   |          |
+| 36       | PUMPEFF1                       | 冲程损失系数   | NUMBER   |          |
+| 37       | PUMPEFF2                       | 充满系数       | NUMBER   |          |
+| 38       | PUMPEFF3                       | 间隙漏失系数   | NUMBER   |          |
+| 39       | PUMPEFF4                       | 液体收缩系数   | NUMBER   |          |
+| 40       | SYSTEMEFFICIENCY               | 系统效率       | NUMBER   |          |
+| 41       | SURFACESYSTEMEFFICIENCY        | 地面效率       | NUMBER   |          |
+| 42       | WELLDOWNSYSTEMEFFICIENCY       | 井下效率       | NUMBER   |          |
+| 43       | ENERGYPER100MLIFT              | 吨液百米耗电量 | NUMBER   |          |
+| 44       | TODAYKWATTH                    | 日用电量       | NUMBER   |          |
+| 45       | IDEGREEBALANCE                 | 电流平衡度     | NUMBER   |          |
+| 46       | WATTDEGREEBALANCE              | 功率平衡度     | NUMBER   |          |
+| 47       | DELTARADIUS                    | 移动距离       | NUMBER   |          |
+| 48       | TUBINGPRESSURE                 | 油压           | NUMBER   |          |
+| 49       | CASINGPRESSURE                 | 套压           | NUMBER   |          |
+| 50       | BOTTOMHOLEPRESSURE             | 井底压力       | NUMBER   |          |
+| 51       | PRODUCINGFLUIDLEVEL            | 动液面         | NUMBER   |          |
+| 52       | PUMPSETTINGDEPTH               | 泵挂           | NUMBER   |          |
+| 53       | SUBMERGENCE                    | 沉没度         | NUMBER   |          |
+| 54       | CALCPRODUCINGFLUIDLEVEL        | 反演动液面     | NUMBER   |          |
+| 55       | LEVELDIFFERENCEVALUE           | 液面反演差值   | NUMBER   |          |
+| 56       | GASVOLUMETRICPRODUCTION        | 日产气量       | NUMBER   |          |
+| 57       | TOTALGASVOLUMETRICPRODUCTION   | 累计产气量     | NUMBER   |          |
+| 58       | TOTALWATERVOLUMETRICPRODUCTION | 累计产水量     | NUMBER   |          |
+| 59       | HEADERLABELINFO                | 报表表头信息   | VARCHAR2 |          |
+| 60       | REPORTINSTANCECODE             | 报表示例代码   | VARCHAR2 |          |
+| 61       | SORTNUM                        | 排序编号       | NUMBER   |          |
+| 62       | ORG_CODE                       | 组织编码       | VARCHAR2 |          |
+| 63       | ORG_ID                         | 组织编号       | NUMBER   |          |
+| 64       | REMARK                         | 备注           | VARCHAR2 |          |
 
 ### 2.2.14 viw_pcpdailycalculationdata
 
 表2-12 螺杆泵汇总视图
 
-| **序号** | **代码**                   | **名称**       | **类型** | **备注** |
-|----------|----------------------------|----------------|----------|----------|
-| 1        | ID                         | 记录编号       | NUMBER   |          |
-| 2        | WELLNAME                   | 设备名称       | VARCHAR2 |          |
-| 3        | WELLID                     | 设备编号       | NUMBER   |          |
-| 4        | CALDATE                    | 汇总日期       | DATE     |          |
-| 5        | EXTENDEDDAYS               | 沿用天数       | NUMBER   |          |
-| 6        | ACQUISITIONDATE            | 功图采集日期   | DATE     |          |
-| 7        | COMMSTATUS                 | 通信状态       | NUMBER   |          |
-| 8        | COMMSTATUSNAME             | 通信状态名称   | VARCHAR2 |          |
-| 9        | COMMTIME                   | 在线时间       | NUMBER   |          |
-| 10       | COMMTIMEEFFICIENCY         | 在线时率       | NUMBER   |          |
-| 11       | COMMRANGE                  | 在线区间       | CLOB     |          |
-| 12       | RUNSTATUS                  | 运行状态       | NUMBER   |          |
-| 13       | RUNSTATUSNAME              | 运行状态名称   | VARCHAR2 |          |
-| 14       | RUNTIMEEFFICIENCY          | 运行时率       | NUMBER   |          |
-| 15       | RUNTIME                    | 运行时间       | CLOB     |          |
-| 16       | RUNRANGE                   | 运行区间       | NUMBER   |          |
-| 17       | RPM                        | 转速           | NUMBER   |          |
-| 18       | THEORETICALPRODUCTION      | 理论排量       | NUMBER   |          |
-| 19       | LIQUIDWEIGHTPRODUCTION     | 产液量         | NUMBER   |          |
-| 20       | OILWEIGHTPRODUCTION        | 产油量         | NUMBER   |          |
-| 21       | WATERWEIGHTPRODUCTION      | 产水量         | NUMBER   |          |
-| 22       | WEIGHTWATERCUT             | 体积含水率     | NUMBER   |          |
-| 23       | LIQUIDVOLUMETRICPRODUCTION | 产液量         | NUMBER   |          |
-| 24       | OILVOLUMETRICPRODUCTION    | 产油量         | NUMBER   |          |
-| 25       | WATERVOLUMETRICPRODUCTION  | 产水量         | NUMBER   |          |
-| 26       | VOLUMEWATERCUT             | 重量含水率     | NUMBER   |          |
-| 27       | PUMPEFF                    | 总泵效         | NUMBER   |          |
-| 28       | PUMPEFF1                   | 容积效率       | NUMBER   |          |
-| 29       | PUMPEFF2                   | 液体收缩系数   | NUMBER   |          |
-| 30       | SYSTEMEFFICIENCY           | 系统效率       | NUMBER   |          |
-| 31       | ENERGYPER100MLIFT          | 吨液百米耗电量 | NUMBER   |          |
-| 32       | TODAYKWATTH                | 日用电量       | NUMBER   |          |
-| 33       | SORTNUM                    | 排序编号       | NUMBER   |          |
-| 34       | ORG_CODE                   | 组织编码       | VARCHAR2 |          |
-| 35       | ORG_ID                     | 组织编号       | NUMBER   |          |
-| 36       | REMARK                     | 备注           | VARCHAR2 |          |
+| **序号** | **代码**                       | **名称**       | **类型** | **备注** |
+|----------|--------------------------------|----------------|----------|----------|
+| 1        | ID                             | 记录编号       | NUMBER   |          |
+| 2        | WELLNAME                       | 设备名称       | VARCHAR2 |          |
+| 3        | WELLID                         | 设备编号       | NUMBER   |          |
+| 4        | CALDATE                        | 汇总日期       | DATE     |          |
+| 5        | EXTENDEDDAYS                   | 沿用天数       | NUMBER   |          |
+| 6        | ACQUISITIONDATE                | 功图采集日期   | DATE     |          |
+| 7        | COMMSTATUS                     | 通信状态       | NUMBER   |          |
+| 8        | COMMSTATUSNAME                 | 通信状态名称   | VARCHAR2 |          |
+| 9        | COMMTIME                       | 在线时间       | NUMBER   |          |
+| 10       | COMMTIMEEFFICIENCY             | 在线时率       | NUMBER   |          |
+| 11       | COMMRANGE                      | 在线区间       | CLOB     |          |
+| 12       | RUNSTATUS                      | 运行状态       | NUMBER   |          |
+| 13       | RUNSTATUSNAME                  | 运行状态名称   | VARCHAR2 |          |
+| 14       | RUNTIMEEFFICIENCY              | 运行时率       | NUMBER   |          |
+| 15       | RUNTIME                        | 运行时间       | CLOB     |          |
+| 16       | RUNRANGE                       | 运行区间       | NUMBER   |          |
+| 17       | RPM                            | 转速           | NUMBER   |          |
+| 18       | THEORETICALPRODUCTION          | 理论排量       | NUMBER   |          |
+| 19       | LIQUIDWEIGHTPRODUCTION         | 产液量         | NUMBER   |          |
+| 20       | OILWEIGHTPRODUCTION            | 产油量         | NUMBER   |          |
+| 21       | WATERWEIGHTPRODUCTION          | 产水量         | NUMBER   |          |
+| 22       | WEIGHTWATERCUT                 | 体积含水率     | NUMBER   |          |
+| 23       | LIQUIDVOLUMETRICPRODUCTION     | 产液量         | NUMBER   |          |
+| 24       | OILVOLUMETRICPRODUCTION        | 产油量         | NUMBER   |          |
+| 25       | WATERVOLUMETRICPRODUCTION      | 产水量         | NUMBER   |          |
+| 26       | VOLUMEWATERCUT                 | 重量含水率     | NUMBER   |          |
+| 27       | PUMPEFF                        | 总泵效         | NUMBER   |          |
+| 28       | PUMPEFF1                       | 容积效率       | NUMBER   |          |
+| 29       | PUMPEFF2                       | 液体收缩系数   | NUMBER   |          |
+| 30       | SYSTEMEFFICIENCY               | 系统效率       | NUMBER   |          |
+| 31       | ENERGYPER100MLIFT              | 吨液百米耗电量 | NUMBER   |          |
+| 32       | TODAYKWATTH                    | 日用电量       | NUMBER   |          |
+| 33       | TUBINGPRESSURE                 | 油压           | NUMBER   |          |
+| 34       | CASINGPRESSURE                 | 套压           | NUMBER   |          |
+| 35       | BOTTOMHOLEPRESSURE             | 井底压力       | NUMBER   |          |
+| 36       | PRODUCINGFLUIDLEVEL            | 动液面         | NUMBER   |          |
+| 37       | PUMPSETTINGDEPTH               | 泵挂           | NUMBER   |          |
+| 38       | SUBMERGENCE                    | 沉没度         | NUMBER   |          |
+| 39       | GASVOLUMETRICPRODUCTION        | 日产气量       | NUMBER   |          |
+| 40       | TOTALGASVOLUMETRICPRODUCTION   | 累计产气量     | NUMBER   |          |
+| 41       | TOTALWATERVOLUMETRICPRODUCTION | 累计产水量     | NUMBER   |          |
+| 42       | HEADERLABELINFO                | 报表表头信息   | VARCHAR2 |          |
+| 43       | REPORTINSTANCECODE             | 报表示例代码   | VARCHAR2 |          |
+| 44       | SORTNUM                        | 排序编号       | NUMBER   |          |
+| 45       | ORG_CODE                       | 组织编码       | VARCHAR2 |          |
+| 46       | ORG_ID                         | 组织编号       | NUMBER   |          |
+| 47       | REMARK                         | 备注           | VARCHAR2 |          |
 
 ### 2.2.15 viw_rpc_calculatemain
 
@@ -1506,8 +1592,8 @@
 | 9        | OILWEIGHTPRODUCTION        | 产油量         | NUMBER   |          |
 | 10       | LIQUIDVOLUMETRICPRODUCTION | 产液量         | NUMBER   |          |
 | 11       | OILVOLUMETRICPRODUCTION    | 产油量         | NUMBER   |          |
-| 12       | LEVELCORRECTVALUE          | 反演液面校正值 | NUMBER   |          |
-| 13       | INVERPRODUCINGFLUIDLEVEL   | 反演液面       | NUMBER   |          |
+| 12       | LEVELDIFFERENCEVALUE       | 反演液面校正值 | NUMBER   |          |
+| 13       | CALCPRODUCINGFLUIDLEVEL    | 反演液面       | NUMBER   |          |
 | 14       | PRODUCTIONDATA             | 生产数据       | NUMBER   |          |
 | 15       | ORG_ID                     | 组织编号       | NUMBER   |          |
 
@@ -1568,47 +1654,53 @@
 
 | **序号** | **名称**                       | **描述**                               |
 |----------|--------------------------------|----------------------------------------|
-| 1        | TRG_B_ACQ_GROUP2UNIT_CONF_I    | 采控单元和采控组关系表插入数据前触发   |
-| 2        | TRG_B_ACQ_GROUP_CONF_I         | 采控组表插入数据前触发                 |
-| 3        | TRG_B_ACQ_ITEM2GROUP_CONF_I    | 采控组和采控项项关系表插入数据前触发   |
-| 4        | TRG_B_ACQ_UNIT_CONF_I          | 采控单元表插入数据前触发               |
-| 5        | TRG_B_ALARM_ITEM2UNIT_CONF_I   | 报警单元和报警项关系表插入数据前触发   |
-| 6        | TRG_B_ALARM_UNIT_CONF_I        | 报警单元表插入数据前触发               |
-| 7        | TRG_B_DISPLAY_ITEM2UNIT_CONF_I | 显示单元和显示项关系表插入数据前触发   |
-| 8        | TRG_B_DISPLAY_UNIT_CONF_I      | 显示单元表插入数据前触发               |
-| 9        | TRG_B_CODE_I                   | 代码表插入数据前触发                   |
-| 10       | TRG_B_DATAMAPPING_I            | 字段映射表插入数据前触发               |
-| 11       | TRG_B_DEVICEOPERATIONLOG_I     | 设备操作日志表插入数据前触发           |
-| 12       | BEF_HIBERNATE_SEQUENCE_INSERT  | 数据字典项数据表插入数据前触发         |
-| 13       | TRG_B_MODULE_I                 | 模块表插入数据前触发                   |
-| 14       | TRG_B_MODULE2ROLE_I            | 模块和角色关系表插入数据前触发         |
-| 15       | TRG_B_ORG_I_U                  | 组织表插入、修改数据前触发             |
-| 16       | TRG_B_PCPACQDATA_HIST_I        | 螺杆泵历史数据表插入数据前触发         |
-| 17       | TRG_B_PCPACQDATA_LATEST_I      | 螺杆泵实时数据表插入数据前触发         |
-| 18       | TRG_B_PCPACQRAWDATA_I          | 螺杆泵原始采集数据表插入数据前触发     |
-| 19       | TRG_B_PCPALARMINFO_HIST_I      | 螺杆泵报警历史数据表插入数据前触发触发 |
-| 20       | TRG_B_PCPALARMINFO_L_I         | 螺杆泵报警实时数据表插入数据前触发触发 |
-| 21       | TRG_B_PCPDAILY_I               | 螺杆泵汇总表插入数据后触发             |
-| 22       | TRG_A_PCPDEVICE_I              | 螺杆泵信息表插入数据前触发             |
-| 23       | TRG_B_PCPDEVICE_I              | 螺杆泵信息表插入数据后触发             |
-| 24       | TRG_B_PCPDEVICEGRAPHSET_I      | 螺杆泵图形设置表插入数据前触发         |
-| 25       | TRG_B_PROTOCOLALARMINSTANCE_I  | 报警实例表插入数据前触发               |
-| 26       | TRG_B_PROTOCOLDISPLAYINST_I    | 显示实例表插入数据前触发               |
-| 27       | TRG_B_PROTOCOLINSTANCE_I       | 采控实例表插入数据前触发               |
-| 28       | TRG_B_PROTOCOLSMSINSTANCE_I    | 短信实例表插入数据前触发               |
-| 29       | TRG_B_PUMPINGMODEL_I           | 抽油机型号表插入数据前触发             |
-| 30       | TRG_B_RESOURCEMONITORING_I     | 资源监测表插入数据前触发               |
-| 31       | TRG_B_ROLE_I                   | 角色表插入数据前触发                   |
-| 32       | TRG_B_RPCACQDATA_HIST_I        | 抽油机历史数据表插入数据前触发         |
-| 33       | TRG_B_RPCACQDATA_LATEST_I      | 抽油机实时数据表插入数据前触发         |
-| 34       | TRG_B_RPCACQRAWDATA_I          | 抽油机原始采集数据表插入数据前触发     |
-| 35       | TRG_B_RPCALARMINFO_HIST_I      | 抽油机报警历史数据表插入数据前触发触发 |
-| 36       | TRG_B_RPCALARMINFO_LATEST_I    | 抽油机报警实时数据表插入数据前触发触发 |
-| 37       | TRG_B_RPCDAILY_I               | 抽油机汇总表插入数据前触发             |
-| 38       | TRG_A_RPCDEVICE_I              | 抽油机信息表插入数据后触发             |
-| 39       | TRG_B_RPCDEVICE_I              | 抽油机信息表插入数据前触发             |
-| 40       | TRG_B_RPCDEVICEGRAPHICSET_I    | 抽油机图形设置表插入数据前触发         |
-| 41       | TRG_B_RPC_WORKTYPE_I_U         | 工况表插入数据后触发                   |
-| 42       | TRG_B_SMSDEVICE_I              | 短信设备信息表插入数据后触发           |
-| 43       | TRG_B_SYSTEMLOG_I              | 系统日志表插入数据前触发               |
-| 44       | TRG_B_USER_I                   | 用户表插入数据前触发                   |
+| 1        | TRG_B_PROTOCOL_I               | 协议表插入数据前触发                   |
+| 2        | TRG_B_ACQ_GROUP2UNIT_CONF_I    | 采控单元和采控组关系表插入数据前触发   |
+| 3        | TRG_B_ACQ_GROUP_CONF_I         | 采控组表插入数据前触发                 |
+| 4        | TRG_B_ACQ_ITEM2GROUP_CONF_I    | 采控组和采控项项关系表插入数据前触发   |
+| 5        | TRG_B_ACQ_UNIT_CONF_I          | 采控单元表插入数据前触发               |
+| 6        | TRG_B_ALARM_ITEM2UNIT_CONF_I   | 报警单元和报警项关系表插入数据前触发   |
+| 7        | TRG_B_ALARM_UNIT_CONF_I        | 报警单元表插入数据前触发               |
+| 8        | TRG_B_DISPLAY_ITEM2UNIT_CONF_I | 显示单元和显示项关系表插入数据前触发   |
+| 9        | TRG_B_DISPLAY_UNIT_CONF_I      | 显示单元表插入数据前触发               |
+| 10       | TRG_B_REPORT_ITEM2UNIT_CONF_I  | 报表单元和报表项关系表插入数据前触发   |
+| 11       | TRG_B_REPORT_UNIT_CONF_I       | 报表单元表插入数据前触发               |
+| 12       | TRG_B_CODE_I                   | 代码表插入数据前触发                   |
+| 13       | TRG_B_DATAMAPPING_I            | 字段映射表插入数据前触发               |
+| 14       | TRG_B_DEVICEOPERATIONLOG_I     | 设备操作日志表插入数据前触发           |
+| 15       | BEF_HIBERNATE_SEQUENCE_INSERT  | 数据字典项数据表插入数据前触发         |
+| 16       | TRG_B_MODULE_I                 | 模块表插入数据前触发                   |
+| 17       | TRG_B_MODULE2ROLE_I            | 模块和角色关系表插入数据前触发         |
+| 18       | TRG_B_ORG_I_U                  | 组织表插入、修改数据前触发             |
+| 19       | TRG_B_PCPACQDATA_HIST_I        | 螺杆泵历史数据表插入数据前触发         |
+| 20       | TRG_B_PCPACQDATA_LATEST_I      | 螺杆泵实时数据表插入数据前触发         |
+| 21       | TRG_B_PCPACQRAWDATA_I          | 螺杆泵原始采集数据表插入数据前触发     |
+| 22       | TRG_B_PCPALARMINFO_HIST_I      | 螺杆泵报警历史数据表插入数据前触发触发 |
+| 23       | TRG_B_PCPALARMINFO_L_I         | 螺杆泵报警实时数据表插入数据前触发触发 |
+| 24       | TRG_B_PCPDAILY_I               | 螺杆泵汇总表插入数据后触发             |
+| 25       | TRG_A_PCPDEVICE_I              | 螺杆泵信息表插入数据前触发             |
+| 26       | TRG_B_PCPDEVICE_I              | 螺杆泵信息表插入数据后触发             |
+| 27       | TRG_B_PCPDEVICEGRAPHSET_I      | 螺杆泵图形设置表插入数据前触发         |
+| 28       | TRG_B_PROTOCOLALARMINSTANCE_I  | 报警实例表插入数据前触发               |
+| 29       | TRG_B_PROTOCOLDISPLAYINST_I    | 显示实例表插入数据前触发               |
+| 30       | TRG_B_PROTOCOLINSTANCE_I       | 采控实例表插入数据前触发               |
+| 31       | TRG_B_PROTOCOLSMSINSTANCE_I    | 短信实例表插入数据前触发               |
+| 32       | TRG_B_PROTOCOLREPORTINST_I     | 报表实例表插入数据前触发               |
+| 33       | TRG_B_PUMPINGMODEL_I           | 抽油机型号表插入数据前触发             |
+| 34       | TRG_B_RESOURCEMONITORING_I     | 资源监测表插入数据前触发               |
+| 35       | TRG_B_ROLE_I                   | 角色表插入数据前触发                   |
+| 36       | TRG_B_RPCACQDATA_HIST_I        | 抽油机历史数据表插入数据前触发         |
+| 37       | TRG_B_RPCACQDATA_LATEST_I      | 抽油机实时数据表插入数据前触发         |
+| 38       | TRG_B_RPCACQRAWDATA_I          | 抽油机原始采集数据表插入数据前触发     |
+| 39       | TRG_B_RPCALARMINFO_HIST_I      | 抽油机报警历史数据表插入数据前触发触发 |
+| 40       | TRG_B_RPCALARMINFO_LATEST_I    | 抽油机报警实时数据表插入数据前触发触发 |
+| 41       | TRG_B_RPCDAILY_I               | 抽油机汇总表插入数据前触发             |
+| 42       | TRG_A_RPCDEVICE_I              | 抽油机信息表插入数据后触发             |
+| 43       | TRG_B_RPCDEVICE_I              | 抽油机信息表插入数据前触发             |
+| 44       | TRG_B_RPCDEVICEGRAPHICSET_I    | 抽油机图形设置表插入数据前触发         |
+| 45       | TRG_B_RPC_WORKTYPE_I_U         | 工况表插入数据后触发                   |
+| 46       | TRG_B_SMSDEVICE_I              | 短信设备信息表插入数据后触发           |
+| 47       | TRG_B_SYSTEMLOG_I              | 系统日志表插入数据前触发               |
+| 48       | TRG_B_USER_I                   | 用户表插入数据前触发                   |
+| 49       | TRG_B_RUNSTATUSCONFIG_I        | 运行状态配置表插入数据前触发           |
+| 50       | TRG_B_VIDEOKEY_I               | 视频秘钥表插入数据前触发               |

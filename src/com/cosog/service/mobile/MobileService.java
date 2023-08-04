@@ -2411,7 +2411,8 @@ public class MobileService<T> extends BaseService<T> {
 			String sql = "select id,orgName,wellName,applicationScenariosName,"//3
 					+ " instanceName,displayInstanceName,alarmInstanceName,"//6
 					+ " tcptype,signInId,slave,t.peakdelay,"//10
-					+ " videoUrl,sortNum,statusName,"//13
+					+ " videoUrl,"
+					+ " sortNum,statusName,"//13
 					+ " t.productiondata,"//14
 					+ " t.manufacturer,t.model,t.stroke,"//17
 					+ " decode( lower(t.crankrotationdirection),'clockwise','顺时针','anticlockwise','逆时针','' ) as crankrotationdirection,"

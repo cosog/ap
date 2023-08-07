@@ -246,7 +246,7 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getRealTimeMonitoringRunStatusStatData(String user,String password,String wells,int deviceType) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		int run=0,stop=0,offline=0;
+		int run=0,stop=0,noData=0,offline=0,goOnline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
 		if(userCheckSign==1){
@@ -260,7 +260,7 @@ public class MobileService<T> extends BaseService<T> {
 				tableName="tbl_pcpacqdata_latest";
 				deviceTableName="viw_pcpdevice";
 			}
-			String sql="select decode(t2.commstatus,0,-1,t2.runstatus) as runstatus,count(1) from "+deviceTableName+" t "
+			String sql="select decode(t2.commstatus,0,-1,2,-2,decode(t2.runstatus,null,2,t2.runstatus)) as runstatus,count(1) from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
 					+ " where 1=1 ";
 			if(wellList!=null){
@@ -274,18 +274,21 @@ public class MobileService<T> extends BaseService<T> {
 					run=StringManagerUtils.stringToInteger(obj[1]+"");
 				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==0){
 					stop=StringManagerUtils.stringToInteger(obj[1]+"");
-				}else{
+				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==-1){
 					offline=StringManagerUtils.stringToInteger(obj[1]+"");
+				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==-2){
+					goOnline=StringManagerUtils.stringToInteger(obj[1]+"");
+				}else{
+					noData=StringManagerUtils.stringToInteger(obj[1]+"");
 				}
 			}
 		}
 		result_json.append("\"DataList\":[");
-		result_json.append("{\"Item\":\"运行\",");
-		result_json.append("\"Count\":"+run+"},");
-		result_json.append("{\"Item\":\"停抽\",");
-		result_json.append("\"Count\":"+stop+"},");
-		result_json.append("{\"Item\":\"离线\",");
-		result_json.append("\"Count\":"+offline+"}");
+		result_json.append("{\"Item\":\"运行\",\"Count\":"+run+"},");
+		result_json.append("{\"Item\":\"停抽\",\"Count\":"+stop+"},");
+		result_json.append("{\"Item\":\"无数据\",\"Count\":"+noData+"},");
+		result_json.append("{\"Item\":\"上线\",\"Count\":"+goOnline+"},");
+		result_json.append("{\"Item\":\"离线\",\"Count\":"+offline+"}");
 		result_json.append("]}");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
@@ -396,17 +399,18 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
-					
 					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
 					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
 					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,"
 					+ "t2.pumpEff*100 as pumpEff,"
-					+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
+					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"
+					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"
+					+ "t2.deltaradius*100 as deltaradius,"
 					+ "t2.todayKWattH,"
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
@@ -422,7 +426,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.wellname";
 			
@@ -506,11 +510,17 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"Energyper100mlift\":\""+obj[28]+"\",");
 				result_json.append("\"PumpEff\":\""+obj[29]+"\",");
 				
-				result_json.append("\"IDegreeBalance\":\""+obj[30]+"\",");
-				result_json.append("\"WattDegreeBalance\":\""+obj[31]+"\",");
-				result_json.append("\"Deltaradius\":\""+obj[32]+"\",");
+				result_json.append("\"UpStrokeIMax\":\""+obj[30]+"\",");
+				result_json.append("\"DownStrokeIMax\":\""+obj[31]+"\",");
+				result_json.append("\"IDegreeBalance\":\""+obj[32]+"\",");
 				
-				result_json.append("\"TodayKWattH\":\""+obj[33]+"\",");
+				result_json.append("\"UpStrokeWattMax\":\""+obj[33]+"\",");
+				result_json.append("\"DownStrokeWattMax\":\""+obj[34]+"\",");
+				result_json.append("\"WattDegreeBalance\":\""+obj[35]+"\",");
+				
+				result_json.append("\"Deltaradius\":\""+obj[36]+"\",");
+				
+				result_json.append("\"TodayKWattH\":\""+obj[37]+"\",");
 				
 
 				result_json.append("\"ResultAlarmLevel\":"+resultAlarmLevel+",");
@@ -562,7 +572,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.liquidWeightProduction_L,"
 					+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.liquidVolumetricProduction_L,"
@@ -579,7 +589,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.wellname";
 			
@@ -775,7 +785,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
+					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
@@ -784,7 +794,9 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
 					+ "t2.systemEfficiency*100 as systemEfficiency,"
 					+ "t2.energyper100mlift,t2.pumpEff*100 as pumpEff,"
-					+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
+					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"
+					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"
+					+ "t2.deltaradius*100 as deltaradius,"
 					+ "t2.todayKWattH,"
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
@@ -797,7 +809,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			
 			
@@ -884,10 +896,15 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"Energyper100mlift\":\""+obj[28]+"\",");
 				result_json.append("\"PumpEff\":\""+obj[29]+"\",");
 				
-				result_json.append("\"IDegreeBalance\":\""+obj[30]+"\",");
-				result_json.append("\"WattDegreeBalance\":\""+obj[31]+"\",");
-				result_json.append("\"Deltaradius\":\""+obj[32]+"\",");
-				result_json.append("\"TodayKWattH\":\""+obj[33]+"\",");
+				result_json.append("\"UpStrokeIMax\":\""+obj[30]+"\",");
+				result_json.append("\"DownStrokeIMax\":\""+obj[31]+"\",");
+				result_json.append("\"IDegreeBalance\":\""+obj[32]+"\",");
+				
+				result_json.append("\"UpStrokeWattMax\":\""+obj[33]+"\",");
+				result_json.append("\"DownStrokeWattMax\":\""+obj[34]+"\",");
+				result_json.append("\"WattDegreeBalance\":\""+obj[35]+"\",");
+				result_json.append("\"Deltaradius\":\""+obj[36]+"\",");
+				result_json.append("\"TodayKWattH\":\""+obj[37]+"\",");
 				
 				result_json.append("\"ResultAlarmLevel\":"+resultAlarmLevel+",");
 				result_json.append("\"CommAlarmLevel\":"+commAlarmLevel+",");
@@ -933,7 +950,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
+					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
@@ -950,7 +967,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			sql+= "  order by t2.acqtime desc";
 			
@@ -1114,7 +1131,8 @@ public class MobileService<T> extends BaseService<T> {
 			
 			sql="select t.id, t2.wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
-					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", t3.resultName "
+					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", "
+					+ " t3.resultName,t3.optimizationSuggestion "
 					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
 					+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
 					+ " and t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
@@ -1168,6 +1186,7 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"SPM\":\""+obj[12]+"\",");
 				result_json.append("\"LiquidProduction\":\""+obj[13]+"\",");
 				result_json.append("\"ResultName\":\""+obj[14]+"\",");
+				result_json.append("\"OptimizationSuggestion\":\""+obj[15]+"\",");
 				result_json.append("\"S\":["+sStr+"],"); 
 				result_json.append("\"F\":["+fStr+"],"); 
 				result_json.append("\"Watt\":["+wattStr+"],"); 
@@ -1240,7 +1259,8 @@ public class MobileService<T> extends BaseService<T> {
 			
 			sql="select t.id, t2.wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
-					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", t3.resultName "
+					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", "
+					+ " t3.resultName,t3.optimizationSuggestion "
 					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
 					+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
 					+ " and t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
@@ -1296,6 +1316,7 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"SPM\":\""+obj[12]+"\",");
 				result_json.append("\"LiquidProduction\":\""+obj[13]+"\",");
 				result_json.append("\"ResultName\":\""+obj[14]+"\",");
+				result_json.append("\"OptimizationSuggestion\":\""+obj[15]+"\",");
 				result_json.append("\"S\":["+sStr+"],"); 
 				result_json.append("\"F\":["+fStr+"],"); 
 				result_json.append("\"Watt\":["+wattStr+"],"); 
@@ -1361,19 +1382,25 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				String hisTableName="tbl_rpcacqdata_hist";
 				String deviceTableName="tbl_rpcdevice";
-				String sql="select t3.resultName,"
-						+ " t.wattDegreeBalance,t.iDegreeBalance,t.deltaRadius,"
-						+ prodCol
-						+ " t.theoreticalProduction,"
-						+ " t.plungerstroke,t.availableplungerstroke,"
-						+ " t.submergence,"
-						+ " t.stroke,t.spm,t.fmax,t.fmin,t.fmax-t.fmin as deltaF,t.upperloadline-t.lowerloadline as deltaLoadLine,area,"
-						+ " t.averageWatt,t.polishrodPower,t.waterPower,t.surfaceSystemEfficiency*100,t.welldownSystemEfficiency*100,t.systemEfficiency*100,t.energyPer100mLift,"
-						+ " t.pumpEff1*100,t.pumpEff2*100,t.pumpEff3*100,t.pumpEff4*100,t.pumpEff*100,"
-						+ " t.rodFlexLength,t.tubingFlexLength,t.inertiaLength,"
-						+ " t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpintakevisl,t.pumpintakebo,"
-						+ " t.pumpoutletp,t.pumpoutlett,t.pumpOutletGol,t.pumpoutletvisl,t.pumpoutletbo,"
-						+ " t.productiondata"
+				String sql="select t3.resultName,t3.optimizationSuggestion,"//0~1
+						+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//2~4
+						+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//5~7
+						+ " t.deltaRadius*100,"//8
+						+ prodCol//9~16
+						+ " t.theoreticalProduction,"//17
+						+ " t.fullnessCoefficient,t.plungerstroke,t.availableplungerstroke,"//18~20
+						+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//21~22
+						+ " t.submergence,"//23
+						+ " t.stroke,t.spm,"//24~25
+						+ " t.fmax,t.fmin,t.fmax-t.fmin as deltaF,"//26~28
+						+ " t.upperloadline,t.lowerloadline,t.upperloadline-t.lowerloadline as deltaLoadLine,area,"//29~32
+						+ " t.averageWatt,t.polishrodPower,t.waterPower,"//33~35
+						+ " t.surfaceSystemEfficiency*100,t.welldownSystemEfficiency*100,t.systemEfficiency*100,t.energyPer100mLift,"//36~39
+						+ " t.pumpEff1*100,t.pumpEff2*100,t.pumpEff3*100,t.pumpEff4*100,t.pumpEff*100,"//40~44
+						+ " t.rodFlexLength,t.tubingFlexLength,t.inertiaLength,"//45~47
+						+ " t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpintakevisl,t.pumpintakebo,"//48~52
+						+ " t.pumpoutletp,t.pumpoutlett,t.pumpOutletGol,t.pumpoutletvisl,t.pumpoutletbo,"//53~57
+						+ " t.productiondata"//58
 						+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
 						+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
 						+ " and  t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
@@ -1403,66 +1430,81 @@ public class MobileService<T> extends BaseService<T> {
 					}
 					
 					result_json.append("\"ResultName\":\""+obj[0]+"\",");
+					result_json.append("\"OptimizationSuggestion\":\""+obj[1]+"\",");
 					
-					result_json.append("\"WattDegreeBalance\":\""+obj[1]+"\",");
-					result_json.append("\"IDegreeBalance\":\""+obj[2]+"\",");
-					result_json.append("\"DeltaRadius\":\""+obj[3]+"\",");
+					result_json.append("\"UpStrokeWattMax\":\""+obj[2]+"\",");
+					result_json.append("\"DownStrokeWattMax\":\""+obj[3]+"\",");
+					result_json.append("\"WattDegreeBalance\":\""+obj[4]+"\",");
 					
-					result_json.append("\"LiquidProduction\":\""+obj[4]+"\",");
-					result_json.append("\"OilProduction\":\""+obj[5]+"\",");
-					result_json.append("\"WaterProduction\":\""+obj[6]+"\",");
+					result_json.append("\"UpStrokeIMax\":\""+obj[5]+"\",");
+					result_json.append("\"DownStrokeIMax\":\""+obj[6]+"\",");
+					result_json.append("\"IDegreeBalance\":\""+obj[7]+"\",");
+					
+					result_json.append("\"DeltaRadius\":\""+obj[8]+"\",");
+					
+					result_json.append("\"LiquidProduction\":\""+obj[9]+"\",");
+					result_json.append("\"OilProduction\":\""+obj[10]+"\",");
+					result_json.append("\"WaterProduction\":\""+obj[11]+"\",");
 					result_json.append("\"waterCut\":\""+waterCut+"\",");
 					
-					result_json.append("\"AvailablePlungerstrokeProd\":\""+obj[7]+"\",");
-					result_json.append("\"PumpClearanceLeakProd\":\""+obj[8]+"\",");
-					result_json.append("\"TvleakProduction\":\""+obj[9]+"\",");
-					result_json.append("\"SvleakProduction\":\""+obj[10]+"\",");
-					result_json.append("\"GasInfluenceProd\":\""+obj[11]+"\",");
+					result_json.append("\"AvailablePlungerstrokeProd\":\""+obj[12]+"\",");
+					result_json.append("\"PumpClearanceLeakProd\":\""+obj[13]+"\",");
+					result_json.append("\"TvleakProduction\":\""+obj[14]+"\",");
+					result_json.append("\"SvleakProduction\":\""+obj[15]+"\",");
+					result_json.append("\"GasInfluenceProd\":\""+obj[16]+"\",");
 					
-					result_json.append("\"TheoreticalProduction\":\""+obj[12]+"\",");
-					result_json.append("\"PlungerStroke\":\""+obj[13]+"\",");
-					result_json.append("\"AvailablePlungerStroke\":\""+obj[14]+"\",");
+					result_json.append("\"TheoreticalProduction\":\""+obj[17]+"\",");
+					result_json.append("\"FullnessCoefficient\":\""+obj[18]+"\",");
+					result_json.append("\"PlungerStroke\":\""+obj[19]+"\",");
+					result_json.append("\"AvailablePlungerStroke\":\""+obj[20]+"\",");
 					
 					result_json.append("\"PumpBoreDiameter\":\""+pumpBoreDiameter+"\",");
 					result_json.append("\"PumpSettingDepth\":\""+pumpSettingDepth+"\",");
 					result_json.append("\"ProducingFluidLevel\":\""+producingFluidLevel+"\",");
-					result_json.append("\"Submergence\":\""+obj[15]+"\",");
+					result_json.append("\"LevelDifferenceValue\":\""+obj[21]+"\",");
+					result_json.append("\"CalcProducingfluidLevel\":\""+obj[22]+"\",");
+					result_json.append("\"Submergence\":\""+obj[23]+"\",");
 					
-					result_json.append("\"Stroke\":\""+obj[16]+"\",");
-					result_json.append("\"SPM\":\""+obj[17]+"\",");
-					result_json.append("\"Fmax\":\""+obj[18]+"\",");
-					result_json.append("\"Fmin\":\""+obj[19]+"\",");
-					result_json.append("\"DeltaF\":\""+obj[20]+"\",");
-					result_json.append("\"DeltaLoadLine\":\""+obj[21]+"\",");
-					result_json.append("\"Area\":\""+obj[22]+"\",");
+					result_json.append("\"Stroke\":\""+obj[24]+"\",");
+					result_json.append("\"SPM\":\""+obj[25]+"\",");
+					result_json.append("\"Fmax\":\""+obj[26]+"\",");
+					result_json.append("\"Fmin\":\""+obj[27]+"\",");
+					result_json.append("\"DeltaF\":\""+obj[28]+"\",");
 					
-					result_json.append("\"AverageWatt\":\""+obj[23]+"\",");
-					result_json.append("\"PolishrodPower\":\""+obj[24]+"\",");
-					result_json.append("\"WaterPower\":\""+obj[25]+"\",");
-					result_json.append("\"SurfaceSystemEfficiency\":\""+obj[26]+"\",");
-					result_json.append("\"WelldownSystemEfficiency\":\""+obj[27]+"\",");
-					result_json.append("\"SystemEfficiency\":\""+obj[28]+"\",");
-					result_json.append("\"EnergyPer100mLift\":\""+obj[29]+"\",");
-					result_json.append("\"PumpEff1\":\""+obj[30]+"\",");
-					result_json.append("\"PumpEff2\":\""+obj[31]+"\",");
-					result_json.append("\"PumpEff3\":\""+obj[32]+"\",");
-					result_json.append("\"PumpEff4\":\""+obj[33]+"\",");
-					result_json.append("\"PumpEff\":\""+obj[34]+"\",");
-					result_json.append("\"RodFlexLength\":\""+obj[35]+"\",");
-					result_json.append("\"TubingFlexLength\":\""+obj[36]+"\",");
-					result_json.append("\"InertiaLength\":\""+obj[37]+"\",");
 					
-					result_json.append("\"PumpIntakeP\":\""+obj[38]+"\",");
-					result_json.append("\"PumpIntakeT\":\""+obj[39]+"\",");
-					result_json.append("\"PumpIntakeGOL\":\""+obj[40]+"\",");
-					result_json.append("\"PumpIntakeVisl\":\""+obj[41]+"\",");
-					result_json.append("\"PumpIntakeBo\":\""+obj[42]+"\",");
+					result_json.append("\"UpperLoadLine\":\""+obj[29]+"\",");
+					result_json.append("\"LowerLoadLine\":\""+obj[30]+"\",");
+					result_json.append("\"DeltaLoadLine\":\""+obj[31]+"\",");
+					result_json.append("\"Area\":\""+obj[32]+"\",");
 					
-					result_json.append("\"PumpOutletP\":\""+obj[43]+"\",");
-					result_json.append("\"PumpOutletT\":\""+obj[44]+"\",");
-					result_json.append("\"PumpOutletGOL\":\""+obj[45]+"\",");
-					result_json.append("\"PumpOutletVisl\":\""+obj[46]+"\",");
-					result_json.append("\"PumpOutletBo\":\""+obj[47]+"\"");
+					result_json.append("\"AverageWatt\":\""+obj[33]+"\",");
+					result_json.append("\"PolishrodPower\":\""+obj[34]+"\",");
+					result_json.append("\"WaterPower\":\""+obj[35]+"\",");
+					result_json.append("\"SurfaceSystemEfficiency\":\""+obj[36]+"\",");
+					result_json.append("\"WelldownSystemEfficiency\":\""+obj[37]+"\",");
+					result_json.append("\"SystemEfficiency\":\""+obj[38]+"\",");
+					result_json.append("\"EnergyPer100mLift\":\""+obj[39]+"\",");
+					
+					result_json.append("\"PumpEff1\":\""+obj[40]+"\",");
+					result_json.append("\"PumpEff2\":\""+obj[41]+"\",");
+					result_json.append("\"PumpEff3\":\""+obj[42]+"\",");
+					result_json.append("\"PumpEff4\":\""+obj[43]+"\",");
+					result_json.append("\"PumpEff\":\""+obj[44]+"\",");
+					result_json.append("\"RodFlexLength\":\""+obj[45]+"\",");
+					result_json.append("\"TubingFlexLength\":\""+obj[46]+"\",");
+					result_json.append("\"InertiaLength\":\""+obj[47]+"\",");
+					
+					result_json.append("\"PumpIntakeP\":\""+obj[48]+"\",");
+					result_json.append("\"PumpIntakeT\":\""+obj[49]+"\",");
+					result_json.append("\"PumpIntakeGOL\":\""+obj[50]+"\",");
+					result_json.append("\"PumpIntakeVisl\":\""+obj[51]+"\",");
+					result_json.append("\"PumpIntakeBo\":\""+obj[52]+"\",");
+					
+					result_json.append("\"PumpOutletP\":\""+obj[53]+"\",");
+					result_json.append("\"PumpOutletT\":\""+obj[54]+"\",");
+					result_json.append("\"PumpOutletGOL\":\""+obj[55]+"\",");
+					result_json.append("\"PumpOutletVisl\":\""+obj[56]+"\",");
+					result_json.append("\"PumpOutletBo\":\""+obj[57]+"\"");
 				}
 			}
 		}
@@ -1589,12 +1631,12 @@ public class MobileService<T> extends BaseService<T> {
 			String deviceTableName="tbl_rpcdevice";
 			if(deviceType!=1){
 				tableName="tbl_pcpdailycalculationdata";
-				deviceTableName="tbl_ocodevice";
+				deviceTableName="tbl_pcpdevice";
 			}
 			
 			String sql="select t2.commstatus,count(1) "
-					+ " from "+tableName+" t "
-					+ " left outer join "+deviceTableName+" t2 on t2.wellid=t.id"
+					+ " from "+deviceTableName+" t "
+					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
@@ -1630,7 +1672,7 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getTotalRunStatusStatData(String user,String password,String wells,int deviceType,String date) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		int run=0,stop=0,offline=0;
+		int run=0,stop=0,noData=0,offline=0,goOnline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		
 		if(userCheckSign==1){
@@ -1638,17 +1680,16 @@ public class MobileService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
 			}
-			result_json.append("{ \"Success\":true,\"Date\":\""+date+"\",");
 			String tableName="tbl_rpcdailycalculationdata";
 			String deviceTableName="tbl_rpcdevice";
 			if(deviceType!=1){
 				tableName="tbl_pcpdailycalculationdata";
-				deviceTableName="tbl_ocodevice";
+				deviceTableName="tbl_pcpdevice";
 			}
 			
-			String sql="select decode(t2.commstatus,0,-1,t2.runstatus) as runstatus,count(1) "
-					+ " from "+tableName+" t "
-					+ " left outer join "+deviceTableName+" t2 on t2.wellid=t.id"
+			String sql="select decode(t2.commstatus,0,-1,2,-2,decode(t2.runstatus,null,2,t2.runstatus)) as runstatus,count(1) "
+					+ " from "+deviceTableName+" t "
+					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
@@ -1663,21 +1704,22 @@ public class MobileService<T> extends BaseService<T> {
 					run=StringManagerUtils.stringToInteger(obj[1]+"");
 				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==0){
 					stop=StringManagerUtils.stringToInteger(obj[1]+"");
-				}else{
+				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==-1){
 					offline=StringManagerUtils.stringToInteger(obj[1]+"");
+				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==-2){
+					goOnline=StringManagerUtils.stringToInteger(obj[1]+"");
+				}else{
+					noData=StringManagerUtils.stringToInteger(obj[1]+"");
 				}
 			}
 		}
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",\"Date\":\""+date+"\",\"DataList\":[");
 		
-		result_json.append("{\"Item\":\"运行\",");
-		result_json.append("\"Count\":"+run+"},");
-		
-		result_json.append("{\"Item\":\"停抽\",");
-		result_json.append("\"Count\":"+stop+"},");
-		
-		result_json.append("{\"Item\":\"离线\",");
-		result_json.append("\"Count\":"+offline+"}");
+		result_json.append("{\"Item\":\"运行\",\"Count\":"+run+"},");
+		result_json.append("{\"Item\":\"停抽\",\"Count\":"+stop+"},");
+		result_json.append("{\"Item\":\"无数据\",\"Count\":"+noData+"},");
+		result_json.append("{\"Item\":\"上线\",\"Count\":"+goOnline+"},");
+		result_json.append("{\"Item\":\"离线\",\"Count\":"+offline+"}");
 		result_json.append("]}");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
@@ -1781,12 +1823,13 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as wellId,t.wellName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
 					+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.volumeWaterCut,"
-					+ "t2.wattDegreeBalance,t2.iDegreeBalance,t2.deltaRadius,"
+					+ "t2.fullnesscoefficient,t2.pumpsettingdepth,t2.producingfluidlevel,t2.submergence,"
+					+ "t2.wattDegreeBalance,t2.iDegreeBalance,t2.deltaRadius*100,"
 					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
 					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
 					+ "t2.systemEfficiency*100 as systemEfficiency,"
@@ -1805,7 +1848,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.wellname";
 			
@@ -1869,16 +1912,21 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"WaterVolumetricProduction\":\""+obj[22]+"\",");
 				result_json.append("\"VolumeWaterCut\":\""+obj[23]+"\",");
 				
-				result_json.append("\"IDegreeBalance\":\""+obj[24]+"\",");
-				result_json.append("\"WattDegreeBalance\":\""+obj[25]+"\",");
-				result_json.append("\"Deltaradius\":\""+obj[26]+"\",");
+				result_json.append("\"FullnessCoefficient\":\""+obj[24]+"\",");
+				result_json.append("\"PumpSettingDepth\":\""+obj[25]+"\",");
+				result_json.append("\"ProducingFluidlevel\":\""+obj[26]+"\",");
+				result_json.append("\"Submergence\":\""+obj[27]+"\",");
 				
-				result_json.append("\"SurfaceSystemEfficiency\":\""+obj[27]+"\",");
-				result_json.append("\"WelldownSystemEfficiency\":\""+obj[28]+"\",");
-				result_json.append("\"SystemEfficiency\":\""+obj[29]+"\",");
-				result_json.append("\"Energyper100mlift\":\""+obj[30]+"\",");
-				result_json.append("\"TodayKWattH\":\""+obj[31]+"\",");
-				result_json.append("\"PumpEff\":\""+obj[32]+"\",");
+				result_json.append("\"IDegreeBalance\":\""+obj[28]+"\",");
+				result_json.append("\"WattDegreeBalance\":\""+obj[29]+"\",");
+				result_json.append("\"Deltaradius\":\""+obj[30]+"\",");
+				
+				result_json.append("\"SurfaceSystemEfficiency\":\""+obj[31]+"\",");
+				result_json.append("\"WelldownSystemEfficiency\":\""+obj[32]+"\",");
+				result_json.append("\"SystemEfficiency\":\""+obj[33]+"\",");
+				result_json.append("\"Energyper100mlift\":\""+obj[34]+"\",");
+				result_json.append("\"TodayKWattH\":\""+obj[35]+"\",");
+				result_json.append("\"PumpEff\":\""+obj[36]+"\",");
 
 				result_json.append("\"ResultAlarmLevel\":"+resultAlarmLevel+",");
 				result_json.append("\"CommAlarmLevel\":"+commAlarmLevel+",");
@@ -1925,10 +1973,11 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as wellId,t.wellname,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+					+ "t2.pumpsettingdepth,t2.producingfluidlevel,t2.submergence,"
 					+ "t2.systemEfficiency*100 as systemEfficiency,"
 					+ "t2.todayKWattH,"
 					+ "t2.pumpEff*100 as pumpEff";
@@ -1942,7 +1991,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.wellname";
 			List<?> list = this.findCallSql(sql);
@@ -1998,9 +2047,13 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"WaterVolumetricProduction\":\""+obj[19]+"\",");
 				result_json.append("\"VolumeWaterCut\":\""+obj[20]+"\",");
 				
-				result_json.append("\"SystemEfficiency\":\""+obj[21]+"\",");
-				result_json.append("\"TodayKWattH\":\""+obj[22]+"\",");
-				result_json.append("\"PumpEff\":\""+obj[23]+"\",");
+				result_json.append("\"PumpSettingDepth\":\""+obj[21]+"\",");
+				result_json.append("\"ProducingFluidlevel\":\""+obj[22]+"\",");
+				result_json.append("\"Submergence\":\""+obj[23]+"\",");
+				
+				result_json.append("\"SystemEfficiency\":\""+obj[24]+"\",");
+				result_json.append("\"TodayKWattH\":\""+obj[25]+"\",");
+				result_json.append("\"PumpEff\":\""+obj[26]+"\",");
 
 				result_json.append("\"CommAlarmLevel\":"+commAlarmLevel+",");
 				result_json.append("\"RunAlarmLevel\":"+runAlarmLevel+"},");
@@ -2111,12 +2164,13 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as wellId,t.wellName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
 					+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.volumeWaterCut,"
-					+ "t2.wattDegreeBalance,t2.iDegreeBalance,t2.deltaRadius,"
+					+ "t2.fullnesscoefficient,t2.pumpsettingdepth,t2.producingfluidlevel,t2.submergence,"
+					+ "t2.wattDegreeBalance,t2.iDegreeBalance,t2.deltaRadius*100,"
 					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
 					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
 					+ "t2.systemEfficiency*100 as systemEfficiency,"
@@ -2135,7 +2189,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t2.caldate,t.sortnum,t.wellname";
 			
@@ -2198,16 +2252,21 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"WaterVolumetricProduction\":\""+obj[22]+"\",");
 				result_json.append("\"VolumeWaterCut\":\""+obj[23]+"\",");
 				
-				result_json.append("\"IDegreeBalance\":\""+obj[24]+"\",");
-				result_json.append("\"WattDegreeBalance\":\""+obj[25]+"\",");
-				result_json.append("\"Deltaradius\":\""+obj[26]+"\",");
+				result_json.append("\"FullnessCoefficient\":\""+obj[24]+"\",");
+				result_json.append("\"PumpSettingDepth\":\""+obj[25]+"\",");
+				result_json.append("\"ProducingFluidlevel\":\""+obj[26]+"\",");
+				result_json.append("\"Submergence\":\""+obj[27]+"\",");
 				
-				result_json.append("\"SurfaceSystemEfficiency\":\""+obj[27]+"\",");
-				result_json.append("\"WelldownSystemEfficiency\":\""+obj[28]+"\",");
-				result_json.append("\"SystemEfficiency\":\""+obj[29]+"\",");
-				result_json.append("\"Energyper100mlift\":\""+obj[30]+"\",");
-				result_json.append("\"TodayKWattH\":\""+obj[31]+"\",");
-				result_json.append("\"PumpEff\":\""+obj[32]+"\",");
+				result_json.append("\"IDegreeBalance\":\""+obj[28]+"\",");
+				result_json.append("\"WattDegreeBalance\":\""+obj[29]+"\",");
+				result_json.append("\"Deltaradius\":\""+obj[30]+"\",");
+				
+				result_json.append("\"SurfaceSystemEfficiency\":\""+obj[31]+"\",");
+				result_json.append("\"WelldownSystemEfficiency\":\""+obj[32]+"\",");
+				result_json.append("\"SystemEfficiency\":\""+obj[33]+"\",");
+				result_json.append("\"Energyper100mlift\":\""+obj[34]+"\",");
+				result_json.append("\"TodayKWattH\":\""+obj[35]+"\",");
+				result_json.append("\"PumpEff\":\""+obj[36]+"\",");
 
 				result_json.append("\"ResultAlarmLevel\":"+resultAlarmLevel+",");
 				result_json.append("\"CommAlarmLevel\":"+commAlarmLevel+",");
@@ -2251,10 +2310,11 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as wellId,t.wellname,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+					+ "t2.pumpsettingdepth,t2.producingfluidlevel,t2.submergence,"
 					+ "t2.systemEfficiency*100 as systemEfficiency,"
 					+ "t2.todayKWattH,"
 					+ "t2.pumpEff*100 as pumpEff";
@@ -2268,7 +2328,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t2.caldate,t.sortnum,t.wellname";
 			
@@ -2327,9 +2387,13 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"WaterVolumetricProduction\":\""+obj[19]+"\",");
 				result_json.append("\"VolumeWaterCut\":\""+obj[20]+"\",");
 				
-				result_json.append("\"SystemEfficiency\":\""+obj[21]+"\",");
-				result_json.append("\"TodayKWattH\":\""+obj[22]+"\",");
-				result_json.append("\"PumpEff\":\""+obj[23]+"\",");
+				result_json.append("\"PumpSettingDepth\":\""+obj[21]+"\",");
+				result_json.append("\"ProducingFluidlevel\":\""+obj[22]+"\",");
+				result_json.append("\"Submergence\":\""+obj[23]+"\",");
+				
+				result_json.append("\"SystemEfficiency\":\""+obj[24]+"\",");
+				result_json.append("\"TodayKWattH\":\""+obj[25]+"\",");
+				result_json.append("\"PumpEff\":\""+obj[26]+"\",");
 
 				result_json.append("\"CommAlarmLevel\":"+commAlarmLevel+",");
 				result_json.append("\"RunAlarmLevel\":"+runAlarmLevel+"},");
@@ -2408,17 +2472,21 @@ public class MobileService<T> extends BaseService<T> {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			String tableName="viw_rpcdevice";
-			String sql = "select id,orgName,wellName,applicationScenariosName,"//3
-					+ " instanceName,displayInstanceName,alarmInstanceName,"//6
-					+ " tcptype,signInId,slave,t.peakdelay,"//10
-					+ " videoUrl,"
-					+ " sortNum,statusName,"//13
-					+ " t.productiondata,"//14
-					+ " t.manufacturer,t.model,t.stroke,"//17
-					+ " decode( lower(t.crankrotationdirection),'clockwise','顺时针','anticlockwise','逆时针','' ) as crankrotationdirection,"
-					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,"//23
-					+ " t.balanceinfo"//24
+			String sql = "select t.id,t.orgName,t.wellName,t.applicationScenariosName,"//3
+					+ " t.instanceName,t.displayInstanceName,t.alarmInstanceName,t.reportinstancename,"//4~7
+					+ " t.tcptype,t.signInId,t.slave,t.peakdelay,"//8~11
+					+ " t.videoUrl1,decode(t4.role_videokeyedit,1,t2.appkey,'') as appkey1,decode(t4.role_videokeyedit,1,t2.secret,'') as secret1,"//12~14
+					+ " t.videoUrl2,decode(t4.role_videokeyedit,1,t3.appkey,'') as appkey2,decode(t4.role_videokeyedit,1,t3.secret,'') as secret2,"//15~17
+					+ " t.sortNum,t.statusName,"//18~19
+					+ " t.productiondata,"//20
+					+ " t.manufacturer,t.model,t.stroke,"//21~23
+					+ " decode( lower(t.crankrotationdirection),'clockwise','顺时针','anticlockwise','逆时针','' ) as crankrotationdirection,"//24
+					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,"//25~29
+					+ " t.balanceinfo"//30
 					+ " from "+tableName+" t "
+					+ " left outer join tbl_videokey t2 on t.videokeyid1=t2.id"
+					+ " left outer join tbl_videokey t3 on t.videokeyid2=t3.id"
+					+ " left outer join tbl_role t4 on t4.role_id=(select u.user_type from tbl_user u where u.user_id='"+user+"')"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
 				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
@@ -2429,10 +2497,8 @@ public class MobileService<T> extends BaseService<T> {
 			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
 				obj=(Object[]) list.get(i);
-				String videoUrl=obj[11]+"";
-				String productionDataStr=obj[14]+"";
-				String balanceInfo=obj[24]+"";
-				String videoUrl1="",videoUrl2="";
+				String productionDataStr=obj[20]+"";
+				String balanceInfo=obj[30]+"";
 				String crudeOilDensity="",waterDensity="",naturalGasRelativeDensity="",saturationPressure="",
 						reservoirDepth="",reservoirTemperature="",
 						tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",productionGasOilRatio="",producingfluidLevel="",pumpSettingDepth="",
@@ -2444,17 +2510,6 @@ public class MobileService<T> extends BaseService<T> {
 						rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="",
 						netGrossRatio="",netGrossValue="";
 				String balanceWeight="",balancePosition="";
-				
-				if(StringManagerUtils.isNotNull(videoUrl)){
-					String[] videoUrlArr=videoUrl.split(";");
-					if(videoUrlArr.length>0){
-						videoUrl1=videoUrlArr[0];
-						if(videoUrlArr.length>1){
-							videoUrl2=videoUrlArr[1];
-						}
-					}
-				}
-				
 				if(StringManagerUtils.isNotNull(productionDataStr)){
 					type = new TypeToken<RPCProductionData>() {}.getType();
 					RPCProductionData productionData=gson.fromJson(productionDataStr, type);
@@ -2540,7 +2595,6 @@ public class MobileService<T> extends BaseService<T> {
 					}
 				}
 				
-				
 				result_json.append("{\"Id\":\""+(i+1)+"\",");
 				result_json.append("\"OrgName\":\""+obj[1]+"\",");
 				result_json.append("\"WellName\":\""+obj[2]+"\",");
@@ -2548,17 +2602,23 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"InstanceName\":\""+obj[4]+"\",");
 				result_json.append("\"DisplayInstanceName\":\""+obj[5]+"\",");
 				result_json.append("\"AlarmInstanceName\":\""+obj[6]+"\",");
+				result_json.append("\"ReportInstanceName\":\""+obj[7]+"\",");
 				
-				result_json.append("\"TcpType\":\""+(obj[7]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
-				result_json.append("\"SignInId\":\""+obj[8]+"\",");
-				result_json.append("\"Slave\":\""+obj[9]+"\",");
-				result_json.append("\"PeakDelay\":\""+obj[10]+"\",");
+				result_json.append("\"TcpType\":\""+(obj[8]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
+				result_json.append("\"SignInId\":\""+obj[9]+"\",");
+				result_json.append("\"Slave\":\""+obj[10]+"\",");
+				result_json.append("\"PeakDelay\":\""+obj[11]+"\",");
 				
-				result_json.append("\"VideoUrl1\":\""+videoUrl1+"\",");
-				result_json.append("\"VideoUrl2\":\""+videoUrl2+"\",");
+				result_json.append("\"VideoUrl1\":\""+obj[12]+"\",");
+				result_json.append("\"Appkey1\":\""+obj[13]+"\",");
+				result_json.append("\"Secret1\":\""+obj[14]+"\",");
 				
-				result_json.append("\"SortNum\":\""+obj[12]+"\",");
-				result_json.append("\"StatusName\":\""+obj[13]+"\",");
+				result_json.append("\"VideoUrl2\":\""+obj[15]+"\",");
+				result_json.append("\"appkey2\":\""+obj[16]+"\",");
+				result_json.append("\"secret2\":\""+obj[17]+"\",");
+				
+				result_json.append("\"SortNum\":\""+obj[18]+"\",");
+				result_json.append("\"StatusName\":\""+obj[19]+"\",");
 				
 				result_json.append("\"CrudeOilDensity\":\""+crudeOilDensity+"\",");
 				result_json.append("\"WaterDensity\":\""+waterDensity+"\",");
@@ -2599,15 +2659,15 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"NetGrossRatio\":\""+netGrossRatio+"\",");
 				result_json.append("\"NetGrossValue\":\""+netGrossValue+"\",");
 				
-				result_json.append("\"Manufacturer\":\""+obj[15]+"\",");
-				result_json.append("\"Model\":\""+obj[16]+"\",");
-				result_json.append("\"Stroke\":\""+obj[17]+"\",");
-				result_json.append("\"CrankRotationDirection\":\""+obj[18]+"\",");
-				result_json.append("\"OffsetAngleOfCrank\":\""+obj[19]+"\",");
-				result_json.append("\"CrankGravityRadius\":\""+obj[20]+"\",");
-				result_json.append("\"SingleCrankWeight\":\""+obj[21]+"\",");
-				result_json.append("\"SingleCrankPinWeight\":\""+obj[22]+"\",");
-				result_json.append("\"StructuralUnbalance\":\""+obj[23]+"\",");
+				result_json.append("\"Manufacturer\":\""+obj[21]+"\",");
+				result_json.append("\"Model\":\""+obj[22]+"\",");
+				result_json.append("\"Stroke\":\""+obj[23]+"\",");
+				result_json.append("\"CrankRotationDirection\":\""+obj[24]+"\",");
+				result_json.append("\"OffsetAngleOfCrank\":\""+obj[25]+"\",");
+				result_json.append("\"CrankGravityRadius\":\""+obj[26]+"\",");
+				result_json.append("\"SingleCrankWeight\":\""+obj[27]+"\",");
+				result_json.append("\"SingleCrankPinWeight\":\""+obj[28]+"\",");
+				result_json.append("\"StructuralUnbalance\":\""+obj[29]+"\",");
 				
 				
 				result_json.append("\"BalanceWeight\":\""+balanceWeight+"\",");
@@ -2635,12 +2695,17 @@ public class MobileService<T> extends BaseService<T> {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			String tableName="viw_rpcdevice";
-			String sql = "select id,orgName,wellName,applicationScenariosName,"//3
-					+ " instanceName,displayInstanceName,alarmInstanceName,"//6
-					+ " tcptype,signInId,slave,t.peakdelay,"//10
-					+ " videoUrl,sortNum,statusName,"//13
-					+ " t.productiondata"//14
+			String sql = "select t.id,t.orgName,t.wellName,t.applicationScenariosName,"//0~3
+					+ " t.instanceName,t.displayInstanceName,t.alarmInstanceName,t.reportinstancename,"//4~7
+					+ " t.tcptype,t.signInId,t.slave,t.peakdelay,"//8~11
+					+ " t.videoUrl1,decode(t4.role_videokeyedit,1,t2.appkey,'') as appkey1,decode(t4.role_videokeyedit,1,t2.secret,'') as secret1,"//12~14
+					+ " t.videoUrl2,decode(t4.role_videokeyedit,1,t3.appkey,'') as appkey2,decode(t4.role_videokeyedit,1,t3.secret,'') as secret2,"//15~17
+					+ " t.sortNum,t.statusName,"//18~19
+					+ " t.productiondata"//20
 					+ " from "+tableName+" t "
+					+ " left outer join tbl_videokey t2 on t.videokeyid1=t2.id"
+					+ " left outer join tbl_videokey t3 on t.videokeyid2=t3.id"
+					+ " left outer join tbl_role t4 on t4.role_id=(select u.user_type from tbl_user u where u.user_id='"+user+"')"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
 				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
@@ -2651,9 +2716,7 @@ public class MobileService<T> extends BaseService<T> {
 			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
 				obj=(Object[]) list.get(i);
-				String videoUrl=obj[11]+"";
-				String productionDataStr=obj[14]+"";
-				String videoUrl1="",videoUrl2="";
+				String productionDataStr=obj[20]+"";
 				String crudeOilDensity="",waterDensity="",naturalGasRelativeDensity="",saturationPressure="",
 						reservoirDepth="",reservoirTemperature="",
 						tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",productionGasOilRatio="",producingfluidLevel="",pumpSettingDepth="",
@@ -2664,15 +2727,6 @@ public class MobileService<T> extends BaseService<T> {
 						rodGrade3="",rodOutsideDiameter3="",rodInsideDiameter3="",rodLength3="",
 						rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="",
 						netGrossRatio="",netGrossValue="";
-				if(StringManagerUtils.isNotNull(videoUrl)){
-					String[] videoUrlArr=videoUrl.split(";");
-					if(videoUrlArr.length>0){
-						videoUrl1=videoUrlArr[0];
-						if(videoUrlArr.length>1){
-							videoUrl2=videoUrlArr[1];
-						}
-					}
-				}
 				
 				if(StringManagerUtils.isNotNull(productionDataStr)){
 					type = new TypeToken<PCPProductionData>() {}.getType();
@@ -2747,17 +2801,23 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"InstanceName\":\""+obj[4]+"\",");
 				result_json.append("\"DisplayInstanceName\":\""+obj[5]+"\",");
 				result_json.append("\"AlarmInstanceName\":\""+obj[6]+"\",");
+				result_json.append("\"ReportInstanceName\":\""+obj[7]+"\",");
 				
-				result_json.append("\"TcpType\":\""+(obj[7]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
-				result_json.append("\"SignInId\":\""+obj[8]+"\",");
-				result_json.append("\"Slave\":\""+obj[9]+"\",");
-				result_json.append("\"PeakDelay\":\""+obj[10]+"\",");
+				result_json.append("\"TcpType\":\""+(obj[8]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
+				result_json.append("\"SignInId\":\""+obj[9]+"\",");
+				result_json.append("\"Slave\":\""+obj[10]+"\",");
+				result_json.append("\"PeakDelay\":\""+obj[11]+"\",");
 				
-				result_json.append("\"VideoUrl1\":\""+videoUrl1+"\",");
-				result_json.append("\"VideoUrl2\":\""+videoUrl2+"\",");
+				result_json.append("\"VideoUrl1\":\""+obj[12]+"\",");
+				result_json.append("\"Appkey1\":\""+obj[13]+"\",");
+				result_json.append("\"Secret1\":\""+obj[14]+"\",");
 				
-				result_json.append("\"SortNum\":\""+obj[12]+"\",");
-				result_json.append("\"StatusName\":\""+obj[13]+"\",");
+				result_json.append("\"VideoUrl2\":\""+obj[15]+"\",");
+				result_json.append("\"appkey2\":\""+obj[16]+"\",");
+				result_json.append("\"secret2\":\""+obj[17]+"\",");
+				
+				result_json.append("\"SortNum\":\""+obj[18]+"\",");
+				result_json.append("\"StatusName\":\""+obj[19]+"\",");
 				
 				result_json.append("\"CrudeOilDensity\":\""+crudeOilDensity+"\",");
 				result_json.append("\"WaterDensity\":\""+waterDensity+"\",");

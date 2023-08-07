@@ -4173,7 +4173,7 @@ public class DriverAPIController extends BaseController{
 		
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 			try{
@@ -4230,7 +4230,7 @@ public class DriverAPIController extends BaseController{
 		
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 			try{
@@ -4284,7 +4284,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"rpc01\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"rpc01\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellInformation(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4310,7 +4310,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getPumpingModelInformation(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4336,7 +4336,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"StatType\":2,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":3,\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4355,7 +4355,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4381,7 +4381,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2023-08-01 00:00:00\",\"EndDate\":\"2023-08-04 23:59:59\",\"WellName\":\"rpc01\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2023-08-01 00:00:00\",\"EndDate\":\"2023-08-04 23:59:59\",\"WellName\":\"rpc01\"}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4404,7 +4404,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"WellName\":\"rpc01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellName\":\"rpc01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.getOilWellAnalysisData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4419,7 +4419,7 @@ public class DriverAPIController extends BaseController{
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"WellName\":\"rpc01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"rpc01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.singleFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4434,7 +4434,7 @@ public class DriverAPIController extends BaseController{
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"WellName\":\"rpc01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"rpc01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4453,7 +4453,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":1,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":3,\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4472,7 +4472,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4498,7 +4498,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\": 1,\"WellName\":\"rpc01\",\"StartDate\": \"2023-08-02\",\"EndDate\": \"2023-08-02\",\"StatType\": 1,\"StatValue\": \"正常\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\": 1,\"WellName\":\"rpc01\",\"StartDate\": \"2023-08-02\",\"EndDate\": \"2023-08-02\",\"StatType\": 1,\"StatValue\": \"正常\"}";
 //		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalHistoryData(data,pager);

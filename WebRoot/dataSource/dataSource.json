@@ -1,5 +1,5 @@
 {
-    "Enable":true,
+    "Enable":false,
     "IP":"127.0.0.1",
     "Port":1521,
     "InstanceName":"orclpdb",

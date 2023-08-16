@@ -313,13 +313,69 @@ immediate;”关闭oracle例程后，执行“startup”启动数据库。</p>
 <p>alter tablespace ap_data add datafile
 &#39;/opt/oracle/oradata/ORCLCDB/ORCLPDB1/ap_data02.DBF&#39; size 350M autoextend on
 next 50M Maxsize UNLIMITED;</p>
-<h2 id="3-4-">3.4 数据库备份</h2>
+<h2 id="3-4-oracle-">3.4 oracle内存管理</h2>
+<h3 id="3-4-1-oracle-">3.4.1 oracle内存管理模式</h3>
+<p>Oracle数据库的内存管理模式从自动管理化程度由高到低依次可以分为：</p>
+<p><strong>自动内存管理</strong>：完全由Oracle自动管理内存分配。DBA只需设置MEMORY_TARGET（以及可选初始化参数MEMORY_MAX_TARGET），Oracle就会在SGA和PGA之间自动分配内存。</p>
+<p><strong>自动共享内存管理</strong>：DBA只需设置SGA_TARGET和PGA_AGGREGATE_TARGET两个初始化参数。Oracle会分别在SGA和PGA中自动分配各组件的内存。</p>
+<p><strong>手动内存管理</strong>：由DBA为SGA和PGA中的所有组件逐一手动分配内存。</p>
+<p>在自动共享内存管理模式下，还可以手动为SGA中的某些重要组件指定最小的内存分配值，例如Shared
+Pool和Buffer Cache。</p>
+<h3 id="3-4-2-oracle-">3.4.2 查看oracle内存分配</h3>
+<p>检查各内存参数的TARGET配置：</p>
+<p><img src="media/5b4c134ba55082699f222636da2b76c4.png" alt=""></p>
+<p>其中memory_target和memory_max_target都为0，并且sga_target和pga_aggregate_target不为0，表示当前数据库使用的是自动共享内存管理模式。</p>
+<p>检查SGA和PGA相关参数的配置：</p>
+<p><img src="media/5e5377b4b72644d7b174826f380b5978.png" alt=""></p>
+<p>查看SGA中各组件的内存使用情况：</p>
+<p><img src="media/af6608fe9b025b6bd9170f6536394c9e.png" alt=""></p>
+<p>其中，Buffer Cache Size和Shared Pool Size是需要重点关注的内容。</p>
+<h3 id="3-4-3-oracle-">3.4.3 修改oracle内存分配</h3>
+<p>在自动共享内存管理模式下，一般按照如下原则配置内存：</p>
+<p>SGA_TARGET一般配置为物理内存的30%到70%之间；</p>
+<p>PGA_AGGREGATE_TARGET一般配置为物理内存的5%到25%之间；</p>
+<p>SGA_TARGET和PGA_AGGREGATE_TARGET之和不要超过物理内存的80%；</p>
+<p>Buffer Cache Size一般配置为SGA_TARGET的 20% 左右；</p>
+<p>Shared Pool Size一般配置为SGA_TARGET的 10% 左右。</p>
+<p>修改数据库内存配置：</p>
+<p>--禁用自动内存管理</p>
+<p>alter system set memory_target=0M scope=spfile;</p>
+<p>--设置SGA_TARGET</p>
+<p>alter system set sga_max_size=4G scope=spfile;</p>
+<p>alter system set sga_target=4G scope=spfile;</p>
+<p>--设置Buffer cache、共享池、Java池的最小值</p>
+<p>alter system set db_cache_size=1G scope=spfile;</p>
+<p>alter system set shared_pool_size=512m scope=spfile;</p>
+<p>alter system set java_pool_size=128m scope=spfile;</p>
+<p>--设置PGA_AGGREGATE_TARGET</p>
+<p>alter system set pga_aggregate_target=1G scope=spfile;</p>
+<p>然后重启数据库即可生效。</p>
+<h2 id="3-5-">3.5 数据库备份</h2>
 <p>使用exp命令备份数据库，命令如下：</p>
 <p>exp ap/ap123#@ORCLPDB file=d:/ap.dmp full=y;</p>
 <p>其中：</p>
 <p>ap/ap123#@ORCLPDB 是用户名/密码@数据库名</p>
 <p>file=d:/ap.dmp 是导出的路径</p>
 <p>full=y 是导出全库</p>
+<h2 id="3-6-centos-">3.6 CentOS系统内存管理</h2>
+<p>系统cached占用太高会导致内存不足，部分进程被kill。可以通过定期手动清理缓存或者持久化配置，对内存进行优化。</p>
+<h3 id="3-6-1-">3.6.1手工释放缓存</h3>
+<p>先用root用户执行sync同步一下然后再执行</p>
+<p>1、释放页缓存:</p>
+<p>echo 1 > /proc/sys/vm/drop_caches</p>
+<p>2、释放slab对象:</p>
+<p>echo 2 > /proc/sys/vm/drop_caches</p>
+<p>3、释放slab和页缓存:</p>
+<p>echo 3 > /proc/sys/vm/drop_caches</p>
+<h3 id="3-6-2-">3.6.2持久化配置</h3>
+<p>手工释放缓存后，cached占用会很快回升，可以通过调整min_free_kbytes并持久化配置。</p>
+<p>编辑sysctl.conf文件</p>
+<p>vim /etc/sysctl.conf</p>
+<p>添加：</p>
+<p>vm.min_free_kbytes=200000</p>
+<p>保存退出后执行：</p>
+<p>sysctl –p</p>
+<p>使配置立即生效</p>
 
           	</article>
         </div>

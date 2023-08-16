@@ -100,8 +100,8 @@
         }
 
         function initBannerDisplayInformation() {
-            $("#banner_exit").css("background", "url(" + helpButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
-            $("#banner_help").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+            $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+            $("#banner_help").css("background", "url(" + helpButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
         }
 
     </script>

@@ -54,7 +54,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initSwitch=true;
+	private static boolean initSwitch=false;
 	private static boolean initEnable=initSwitch&&Config.getInstance().configFile.getAp().getOthers().isIot();
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -275,7 +275,7 @@ public class EquipmentDriverServerTask {
 				
 //				new ExampleDataManageThread("rpc11",10,timeDifference*0).start();
 				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*10).start();
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -136,7 +136,7 @@ public class CalculateDataController extends BaseController{
 				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getKeepAliveTime(), 
 				TimeUnit.SECONDS, 
 				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getWattingCount());
-		String wellListSql="select distinct wellid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
+		String wellListSql="select distinct wellid,to_char(t.acqtime,'yyyy-mm-dd') as acqdate "
 				+ " from tbl_pcpacqdata_hist t "
 				+ " where t.productiondata is not null "
 				+ " and t.rpm is not null "

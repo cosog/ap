@@ -478,7 +478,6 @@ function SaveModbusProtocolAcqUnitConfigTreeData(){
 			//给采控组授予采控项
 			grantAcquisitionItemsPermission();
 		}
-		
 	}
 };
 

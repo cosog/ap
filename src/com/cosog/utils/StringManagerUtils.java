@@ -1621,16 +1621,6 @@ public class StringManagerUtils {
         if (clob == null) {
             return "";
         }
-//        BufferedReader reader = null;
-//        InputStreamReader is = new InputStreamReader(clob.getAsciiStream());
-//        reader = new BufferedReader(is);
-//        String result = "";
-//        String line = "";
-//        while ((line = reader.readLine()) != null) {
-//            result += line;
-//        }
-//        is.close();
-//        reader.close();
         
         String  result = clob.getSubString((long)1,(int)clob.length());
         return result;

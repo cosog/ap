@@ -2021,6 +2021,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String data = ParamUtils.getParameter(request, "data");
+		data = ParamUtils.getParameter(request, "data").replaceAll("m³", "m^3").replaceAll("³", "^3").replaceAll("㎡", "m^2").replaceAll("\u00B2", "^2");
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();

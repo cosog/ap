@@ -148,25 +148,6 @@ public class MemoryDataManagerTask {
         	return;
         }
 		
-		
-		
-//		path=stringManagerUtils.getFilePath("modbus.json","protocol/");
-//		protocolConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<ModbusProtocolConfig>() {}.getType();
-//		ModbusProtocolConfig modbusProtocolConfig=gson.fromJson(protocolConfigData, type);
-//		if(modbusProtocolConfig==null){
-//			modbusProtocolConfig=new ModbusProtocolConfig();
-//			modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
-//		}else if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()==null){
-//			modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
-//		}else if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null&&modbusProtocolConfig.getProtocol().size()>0){
-//			Collections.sort(modbusProtocolConfig.getProtocol());
-//			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-//				Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
-//			}
-//		}
-		
-		
 		Jedis jedis=null;
 		ModbusProtocolConfig modbusProtocolConfig=null;
 		try {

@@ -54,7 +54,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initSwitch=false;
+	private static boolean initSwitch=true;
 	private static boolean initEnable=initSwitch&&Config.getInstance().configFile.getAp().getOthers().isIot();
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -74,34 +74,6 @@ public class EquipmentDriverServerTask {
 		}
 		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
-		
-//		
-//		
-//		path=stringManagerUtils.getFilePath("test3.json","example/");
-//		String onLineData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		path=stringManagerUtils.getFilePath("test4.json","example/");
-//		String offLineData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		path=stringManagerUtils.getFilePath("rpc01_01.json","example/");
-//		String testData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		String url=stringManagerUtils.getProjectUrl()+"/api/acq/id/group";
-//		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/online";
-//		
-//		int i=0;
-//		while(true){
-//			if(i%2==0){
-//				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-//			}else{
-//				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
-//			}
-//			i++;
-//			Thread.sleep(1000*5);
-////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-//			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
-//			Thread.sleep(1000*5);
-//		}
 		
 		ThreadPool executor=adInit();
 		
@@ -230,16 +202,6 @@ public class EquipmentDriverServerTask {
 				path=stringManagerUtils.getFilePath(deviceName+"_02.json","example/");
 				String data2=stringManagerUtils.readFile(path,"utf-8");
 				
-//				Gson gson=new Gson();
-//				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
-//				AcqGroup acqGroup1=gson.fromJson(data, type);
-//				AcqGroup acqGroup2=gson.fromJson(data2, type);
-//				
-//				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-//				if(acqGroup1!=null&&acqGroup1.getAddr()!=null&&acqGroup1.getAddr().size()>0){
-//					
-//				}
-				
 				int i=0;
 				while(true){
 					if(i%2==0){
@@ -338,139 +300,145 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings({ "resource" })
 	public static int syncDataMappingTable(){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		int result=0;
-		int dataSaveMode=1;
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		Map<String,String> rpcDeviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("rpcDeviceAcquisitionItemColumns");
-		Map<String,String> pcpDeviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("pcpDeviceAcquisitionItemColumns");
-		
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return -1;
-        }
-		
-		try {
-			String delSql="delete from tbl_datamapping t where t.mappingmode<>"+dataSaveMode;
-			pstmt = conn.prepareStatement(delSql);
-			result=pstmt.executeUpdate();
-			if(result>0){//字段映射模式改变，删除历史数据
-				String delRPCHis="truncate table tbl_rpcacqdata_hist";
-				String delPCPHis="truncate table tbl_pcpacqdata_hist";
-				pstmt = conn.prepareStatement(delRPCHis);
-				result=pstmt.executeUpdate();
-				pstmt = conn.prepareStatement(delPCPHis);
-				result=pstmt.executeUpdate();
-			}
+		if(modbusProtocolConfig!=null){
+			Connection conn = null;   
+			PreparedStatement pstmt = null;   
+			ResultSet rs = null;
+			int dataSaveMode=1;
+			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+			Map<String,String> rpcDeviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("rpcDeviceAcquisitionItemColumns");
+			Map<String,String> pcpDeviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("pcpDeviceAcquisitionItemColumns");
 			
-			Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
-			String sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=0 order by t.id";
-			if(rpcDeviceAcquisitionItemColumns!=null&&rpcDeviceAcquisitionItemColumns.size()>0){
-				//同步抽油机井字段映射表
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
-					if(dataSaveMode==0){//以地址为准
-						mappingTableRecordMap.put(rs.getString(2), rs.getString(1));//以地址为准
-					}else{
-						mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
+			conn=OracleJdbcUtis.getConnection();
+			if(conn==null){
+	        	return -1;
+	        }
+			
+			try {
+				String delSql="delete from tbl_datamapping t where t.mappingmode<>"+dataSaveMode;
+				pstmt = conn.prepareStatement(delSql);
+				result=pstmt.executeUpdate();
+				if(result>0){//字段映射模式改变，删除历史数据
+					String delRPCHis="truncate table tbl_rpcacqdata_hist";
+					String delPCPHis="truncate table tbl_pcpacqdata_hist";
+					pstmt = conn.prepareStatement(delRPCHis);
+					result=pstmt.executeUpdate();
+					pstmt = conn.prepareStatement(delPCPHis);
+					result=pstmt.executeUpdate();
+				}
+				
+				Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
+				String sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=0 order by t.id";
+				if(rpcDeviceAcquisitionItemColumns!=null&&rpcDeviceAcquisitionItemColumns.size()>0){
+					//同步抽油机井字段映射表
+					pstmt = conn.prepareStatement(sql);
+					rs=pstmt.executeQuery();
+					while(rs.next()){
+						if(dataSaveMode==0){//以地址为准
+							mappingTableRecordMap.put(rs.getString(2), rs.getString(1));//以地址为准
+						}else{
+							mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
+						}
+					}
+					
+					//如驱动配置中不存在，删除记录
+					for(String key : mappingTableRecordMap.keySet()) {
+						if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
+							String deleteSql="";
+							if(dataSaveMode==0){//以地址为准
+								deleteSql="delete from tbl_datamapping t where t.name='"+mappingTableRecordMap.get(key)+"' and t.mappingcolumn='"+key+"' and t.protocoltype=0";
+							}else{
+								deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=0";
+							}
+							System.out.println("同步协议映射表："+deleteSql);
+							pstmt = conn.prepareStatement(deleteSql);
+							pstmt.executeUpdate();
+							result++;
+						}
+					}
+					
+					//如数据库中不存在，添加记录
+					for(String key : rpcDeviceAcquisitionItemColumns.keySet()) {
+						if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,rpcDeviceAcquisitionItemColumns.get(key),false)){
+							String addSql="";
+							if(dataSaveMode==0){//以地址为准
+								addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+rpcDeviceAcquisitionItemColumns.get(key)+"','"+key+"',0,"+dataSaveMode+")";
+							}else{
+								addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+rpcDeviceAcquisitionItemColumns.get(key)+"',0,"+dataSaveMode+")";
+							}
+							System.out.println("同步协议映射表："+addSql);
+							pstmt = conn.prepareStatement(addSql);
+							pstmt.executeUpdate();
+							result++;
+						}
 					}
 				}
 				
-				//如驱动配置中不存在，删除记录
-				for(String key : mappingTableRecordMap.keySet()) {
-					if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
-						String deleteSql="";
+				
+				if(pcpDeviceAcquisitionItemColumns!=null&&pcpDeviceAcquisitionItemColumns.size()>0){
+					//同步螺杆泵井字段映射表
+					sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=1 order by t.id";
+					pstmt = conn.prepareStatement(sql);
+					rs=pstmt.executeQuery();
+					mappingTableRecordMap=new HashMap<String,String>();
+					while(rs.next()){
 						if(dataSaveMode==0){//以地址为准
-							deleteSql="delete from tbl_datamapping t where t.name='"+mappingTableRecordMap.get(key)+"' and t.mappingcolumn='"+key+"' and t.protocoltype=0";
+							mappingTableRecordMap.put(rs.getString(2), rs.getString(1));//以地址为准
 						}else{
-							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=0";
+							mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
 						}
-						System.out.println("同步协议映射表："+deleteSql);
-						pstmt = conn.prepareStatement(deleteSql);
-						pstmt.executeUpdate();
-						result++;
+					}
+					//如驱动配置中不存在，删除记录
+					for(String key : mappingTableRecordMap.keySet()) {
+						if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
+							String deleteSql="";
+							if(dataSaveMode==0){//以地址为准
+								deleteSql="delete from tbl_datamapping t where t.name='"+mappingTableRecordMap.get(key)+"' and t.mappingcolumn='"+key+"' and t.protocoltype=1";
+							}else{
+								deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=1";
+							}
+							System.out.println("同步协议映射表："+deleteSql);
+							pstmt = conn.prepareStatement(deleteSql);
+							pstmt.executeUpdate();
+							result++;
+						}
+					}
+					//如数据库中不存在，添加记录
+					for(String key : pcpDeviceAcquisitionItemColumns.keySet()) {
+						if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,pcpDeviceAcquisitionItemColumns.get(key),false)){
+							String addSql="";
+							if(dataSaveMode==0){//以地址为准
+								addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+pcpDeviceAcquisitionItemColumns.get(key)+"','"+key+"',1,"+dataSaveMode+")";
+							}else{
+								addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+pcpDeviceAcquisitionItemColumns.get(key)+"',1,"+dataSaveMode+")";
+							}
+							System.out.println("同步协议映射表："+addSql);
+							pstmt = conn.prepareStatement(addSql);
+							pstmt.executeUpdate();
+							result++;
+						}
 					}
 				}
 				
-				//如数据库中不存在，添加记录
-				for(String key : rpcDeviceAcquisitionItemColumns.keySet()) {
-					if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,rpcDeviceAcquisitionItemColumns.get(key),false)){
-						String addSql="";
-						if(dataSaveMode==0){//以地址为准
-							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+rpcDeviceAcquisitionItemColumns.get(key)+"','"+key+"',0,"+dataSaveMode+")";
-						}else{
-							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+rpcDeviceAcquisitionItemColumns.get(key)+"',0,"+dataSaveMode+")";
-						}
-						System.out.println("同步协议映射表："+addSql);
-						pstmt = conn.prepareStatement(addSql);
-						pstmt.executeUpdate();
-						result++;
-					}
-				}
+				MemoryDataManagerTask.loadProtocolMappingColumn();
+				//同步运行状态配置
+				syncProtocolRunStatusConfig();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally{
+				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			}
-			
-			
-			if(pcpDeviceAcquisitionItemColumns!=null&&pcpDeviceAcquisitionItemColumns.size()>0){
-				//同步螺杆泵井字段映射表
-				sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=1 order by t.id";
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				mappingTableRecordMap=new HashMap<String,String>();
-				while(rs.next()){
-					if(dataSaveMode==0){//以地址为准
-						mappingTableRecordMap.put(rs.getString(2), rs.getString(1));//以地址为准
-					}else{
-						mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
-					}
-				}
-				//如驱动配置中不存在，删除记录
-				for(String key : mappingTableRecordMap.keySet()) {
-					if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
-						String deleteSql="";
-						if(dataSaveMode==0){//以地址为准
-							deleteSql="delete from tbl_datamapping t where t.name='"+mappingTableRecordMap.get(key)+"' and t.mappingcolumn='"+key+"' and t.protocoltype=1";
-						}else{
-							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=1";
-						}
-						System.out.println("同步协议映射表："+deleteSql);
-						pstmt = conn.prepareStatement(deleteSql);
-						pstmt.executeUpdate();
-						result++;
-					}
-				}
-				//如数据库中不存在，添加记录
-				for(String key : pcpDeviceAcquisitionItemColumns.keySet()) {
-					if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,pcpDeviceAcquisitionItemColumns.get(key),false)){
-						String addSql="";
-						if(dataSaveMode==0){//以地址为准
-							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+pcpDeviceAcquisitionItemColumns.get(key)+"','"+key+"',1,"+dataSaveMode+")";
-						}else{
-							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+pcpDeviceAcquisitionItemColumns.get(key)+"',1,"+dataSaveMode+")";
-						}
-						System.out.println("同步协议映射表："+addSql);
-						pstmt = conn.prepareStatement(addSql);
-						pstmt.executeUpdate();
-						result++;
-					}
-				}
-			}
-			
-			MemoryDataManagerTask.loadProtocolMappingColumn();
-			//同步运行状态配置
-			syncProtocolRunStatusConfig();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
-		
 		return result;
 	}
 	
 	public static int syncProtocolRunStatusConfig(){
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		if(modbusProtocolConfig==null){
+			return 0;
+		}
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
 		ResultSet rs = null;
@@ -504,56 +472,58 @@ public class EquipmentDriverServerTask {
 	
 	public static int loadAcquisitionItemNameColumns(){
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		Map<String,String> rpcDeviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
-		Map<String,String> pcpDeviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
-		
-		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
-						String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
-						String itemColumn="";
-						if(!StringManagerUtils.existOrNotByValue(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
-							itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-						}else{
-							for(int index=1;1==1;index++){
-								if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+index),false)){
-									itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
-									break;
+		if(modbusProtocolConfig!=null){
+			Collections.sort(modbusProtocolConfig.getProtocol());
+			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+			Map<String,String> rpcDeviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
+			Map<String,String> pcpDeviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
+			
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
+					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+						if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
+							String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
+							String itemColumn="";
+							if(!StringManagerUtils.existOrNotByValue(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
+								itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							}else{
+								for(int index=1;1==1;index++){
+									if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+index),false)){
+										itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
+										break;
+									}
 								}
 							}
+							rpcDeviceAcquisitionItemColumns.put(itemName, itemColumn);
+						}else{
+							
 						}
-						rpcDeviceAcquisitionItemColumns.put(itemName, itemColumn);
-					}else{
-						
 					}
-				}
-			}else{
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
-						String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
-						String itemColumn="";
-						if(!StringManagerUtils.existOrNotByValue(pcpDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
-							itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-						}else{
-							for(int index=1;1==1;index++){
-								if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+index),false)){
-									itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
-									break;
+				}else{
+					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+						if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
+							String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
+							String itemColumn="";
+							if(!StringManagerUtils.existOrNotByValue(pcpDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
+								itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							}else{
+								for(int index=1;1==1;index++){
+									if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+index),false)){
+										itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
+										break;
+									}
 								}
 							}
+							pcpDeviceAcquisitionItemColumns.put(itemName, itemColumn);
+						}else{
+							
 						}
-						pcpDeviceAcquisitionItemColumns.put(itemName, itemColumn);
-					}else{
-						
 					}
 				}
 			}
+			acquisitionItemColumnsMap.put("rpcDeviceAcquisitionItemColumns", rpcDeviceAcquisitionItemColumns);
+			acquisitionItemColumnsMap.put("pcpDeviceAcquisitionItemColumns", pcpDeviceAcquisitionItemColumns);
 		}
-		acquisitionItemColumnsMap.put("rpcDeviceAcquisitionItemColumns", rpcDeviceAcquisitionItemColumns);
-		acquisitionItemColumnsMap.put("pcpDeviceAcquisitionItemColumns", pcpDeviceAcquisitionItemColumns);
 		return 0;
 	}
 	
@@ -614,7 +584,10 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initAcquisitionItemDataBaseColumns(String tableName,int deviceType){
-		//rpcDeviceAcquisitionItemColumns  pcpDeviceAcquisitionItemColumns
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		if(modbusProtocolConfig==null){
+			return 0;
+		}
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
 		ResultSet rs = null;
@@ -686,6 +659,10 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("resource")
 	public static int initDataDictionary(String dataDictionaryId,int deviceType){
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		if(modbusProtocolConfig==null){
+			return 0;
+		}
 		int result=0;
 		int dataSaveMode=1;
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
@@ -697,8 +674,6 @@ public class EquipmentDriverServerTask {
 			loadAcquisitionItemColumns(deviceType);
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
-		
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
 		Collections.sort(modbusProtocolConfig.getProtocol());
 		List<String> acquisitionItemColumns=new ArrayList<String>();
@@ -1142,6 +1117,8 @@ public class EquipmentDriverServerTask {
 	//初始化短信实例
 	@SuppressWarnings("static-access")
 	public static int initSMSInstanceConfig(List<String> instanceList,String method){
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		Gson gson = new Gson();
 		int result=0;
@@ -1170,7 +1147,7 @@ public class EquipmentDriverServerTask {
 			PreparedStatement pstmt = null;   
 			ResultSet rs = null;
 			conn=OracleJdbcUtis.getConnection();
-			if(conn==null){
+			if(conn==null || modbusProtocolConfig==null){
 	        	return -1;
 	        }
 			try {
@@ -1187,7 +1164,6 @@ public class EquipmentDriverServerTask {
 						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
 					}
 				}
-				
 			} catch (SQLException e) {
 				StringManagerUtils.printLog("ID短信实例初始化sql："+sql);
 				e.printStackTrace();

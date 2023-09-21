@@ -108,6 +108,14 @@ public class ResourceMonitoringTask {
 		
 		Jedis jedis=null;
 		try{
+//			if(redisStatus==0){
+//				RedisUtil.afterPropertiesSet();
+//			}
+//			jedis = RedisUtil.jedisPool.getResource();
+//			if(redisStatus==0){
+//				MemoryDataManagerTask.loadMemoryData();
+//			}
+			
 			jedis = RedisUtil.jedisPool.getResource();
 			if(redisStatus==0){
 				MemoryDataManagerTask.loadMemoryData();
@@ -168,6 +176,7 @@ public class ResourceMonitoringTask {
 					adRunStatus=1;
 					adVersion=adStatusProbeResonanceData.getVer();
 					adLicense=adStatusProbeResonanceData.getLicenseNumber();
+					
 				}
 			}catch(Exception e){
 				e.printStackTrace();

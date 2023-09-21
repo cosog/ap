@@ -65,13 +65,17 @@ public class RedisUtil implements Serializable{
         
     }
 
-    public  static void afterPropertiesSet() throws Exception {
+    public  static void afterPropertiesSet(){
         // TODO Auto-generated method stub
         initialPool(); 
         try {
              jedis = jedisPool.getResource();
         } catch (Exception e) {
             System.out.println("连接jedisPool失败!");
+        } finally{
+        	if(jedis!=null){
+				jedis.close();
+			}
         }
     }
 

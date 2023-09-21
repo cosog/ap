@@ -199,7 +199,11 @@ public class MemoryDataManagerTask {
 					ModbusProtocolConfig.Protocol protocol=gson.fromJson(protocolBuff.toString(), type);
 					
 					if(protocol!=null){
-						Collections.sort(protocol.getItems());
+						if(protocol.getItems()==null){
+							protocol.setItems(new ArrayList<>());
+						}else{
+							Collections.sort(protocol.getItems());
+						}
 						boolean isExist=false;
 						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 							if(protocol.getCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode()) &&  modbusProtocolConfig.getProtocol().get(i).getDeviceType()==protocol.getDeviceType()){

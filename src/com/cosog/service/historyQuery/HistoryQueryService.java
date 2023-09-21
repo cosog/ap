@@ -935,7 +935,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
 							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
-							if(col.equalsIgnoreCase(ddicColumnsList.get(j))){
+							if(col!=null&&col.equalsIgnoreCase(ddicColumnsList.get(j))){
 								item=protocol.getItems().get(k);
 								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
@@ -1320,7 +1320,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
 							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
-							if(col.equalsIgnoreCase(ddicColumnsList.get(j))){
+							if(col!=null&&col.equalsIgnoreCase(ddicColumnsList.get(j))){
 								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
 										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
@@ -1583,7 +1583,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
 							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
-							if(col.equalsIgnoreCase(ddicColumnsList.get(j))){
+							if(col!=null&&col.equalsIgnoreCase(ddicColumnsList.get(j))){
 								item=protocol.getItems().get(k);
 								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
@@ -1834,7 +1834,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
 							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
-							if(col.equalsIgnoreCase(ddicColumnsList.get(j))){
+							if(col!=null&&col.equalsIgnoreCase(ddicColumnsList.get(j))){
 								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
 										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){

@@ -17,9 +17,7 @@ import com.cosog.model.calculate.RPCCalculateResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
-import com.cosog.model.calculate.TimeEffTotalResponseData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
-import com.cosog.model.calculate.TotalCalculateResponseData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -240,7 +238,7 @@ public class CalculateUtils {
 			dataSbf.append("{\"AKString\":\"\",");
 			dataSbf.append("\"WellName\":\""+deviceInfo.getWellName()+"\",");
 			dataSbf.append("\"Date\":\""+date+"\",");
-			dataSbf.append("\"OffsetHour\":0,");
+			dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 			dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 			dataSbf.append("\"CurrentCommTime\":"+deviceInfo.getCommStatus()+",");
@@ -370,7 +368,7 @@ public class CalculateUtils {
 		dataSbf.append("{\"AKString\":\"\",");
 		dataSbf.append("\"WellName\":\""+deviceInfo.getWellName()+"\",");
 		dataSbf.append("\"Date\":\""+date+"\",");
-		dataSbf.append("\"OffsetHour\":0,");
+		dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 		dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 		dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 		dataSbf.append("\"CurrentCommTime\":"+deviceInfo.getCommStatus()+",");

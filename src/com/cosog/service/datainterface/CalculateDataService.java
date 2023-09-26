@@ -421,6 +421,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String commTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+commStatusObj[2]+"\","
 									+ "\"CommStatus\": "+commStatus+","
@@ -455,6 +456,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String runTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+runStatusObj[2]+"\","
 									+ "\"RunStatus\": "+runStatus+","
@@ -625,7 +627,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
 				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
-				dataSbf.append("\"OffsetHour\":0,");
+				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 				dataSbf.append("\"CommTime\":"+commTime+",");
@@ -772,6 +774,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String commTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+commStatusObj[2]+"\","
 									+ "\"CommStatus\": "+commStatus+","
@@ -806,6 +809,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String runTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+runStatusObj[2]+"\","
 									+ "\"RunStatus\": "+runStatus+","
@@ -941,7 +945,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
 				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
-				dataSbf.append("\"OffsetHour\":0,");
+				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 				dataSbf.append("\"CommTime\":"+commTime+",");

@@ -571,6 +571,29 @@ public class ConfigFile {
 		}
 	}
 	
+	public static class Report
+	{
+		private int offsetHour;
+		
+		private int interval;
+
+		public int getOffsetHour() {
+			return offsetHour;
+		}
+
+		public void setOffsetHour(int offsetHour) {
+			this.offsetHour = offsetHour;
+		}
+
+		public int getInterval() {
+			return interval;
+		}
+
+		public void setInterval(int interval) {
+			this.interval = interval;
+		}
+	}
+	
 	public static class Ap
 	{
 	    private Datasource datasource;
@@ -578,6 +601,8 @@ public class ConfigFile {
 	    private RedisConfig redis;
 
 	    private Oem oem;
+	    
+	    private Report report;
 
 	    private Email email;
 	    
@@ -620,6 +645,12 @@ public class ConfigFile {
 		}
 		public void setThreadPool(ThreadPool threadPool) {
 			this.threadPool = threadPool;
+		}
+		public Report getReport() {
+			return report;
+		}
+		public void setReport(Report report) {
+			this.report = report;
 		}
 	}
 	

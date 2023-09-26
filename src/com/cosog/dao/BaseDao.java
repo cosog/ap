@@ -2973,7 +2973,7 @@ public class BaseDao extends HibernateDaoSupport {
 				){
 			int curvecount=calculateResponseData.getFESDiagram().getS().get(0).size();
 			int sPointCount=calculateResponseData.getFESDiagram().getS().size();
-			int fPointCount=calculateResponseData.getFESDiagram().getS().size();
+			int fPointCount=calculateResponseData.getFESDiagram().getF().size();
 			int pointcount=sPointCount;
 			if(fPointCount<sPointCount){
 				pointcount=fPointCount;

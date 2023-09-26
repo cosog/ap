@@ -267,7 +267,7 @@ public class CalculateThread extends Thread{
 					dataSbf.append("{\"AKString\":\"\",");
 					dataSbf.append("\"WellName\":\""+wellNo+"\",");
 					dataSbf.append("\"Date\":\""+acqDate+"\",");
-					dataSbf.append("\"OffsetHour\":0,");
+					dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 					dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 					dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 					dataSbf.append("\"CommTime\":"+commTime+",");
@@ -533,7 +533,7 @@ public class CalculateThread extends Thread{
 					dataSbf.append("{\"AKString\":\"\",");
 					dataSbf.append("\"WellName\":\""+wellNo+"\",");
 					dataSbf.append("\"Date\":\""+acqDate+"\",");
-					dataSbf.append("\"OffsetHour\":0,");
+					dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 					dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 					dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 					dataSbf.append("\"CommTime\":"+commTime+",");

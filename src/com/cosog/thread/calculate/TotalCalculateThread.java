@@ -14,6 +14,7 @@ import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.utils.CalculateUtils;
+import com.cosog.utils.Config;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -190,7 +191,7 @@ public class TotalCalculateThread extends Thread{
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellName+"\",");
 				dataSbf.append("\"Date\":\""+calDate+"\",");
-				dataSbf.append("\"OffsetHour\":0,");
+				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 				dataSbf.append("\"CommTime\":"+totalObj[1]+",");
@@ -358,7 +359,7 @@ public class TotalCalculateThread extends Thread{
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellName+"\",");
 				dataSbf.append("\"Date\":\""+calDate+"\",");
-				dataSbf.append("\"OffsetHour\":0,");
+				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 				dataSbf.append("\"CommTime\":"+totalObj[1]+",");

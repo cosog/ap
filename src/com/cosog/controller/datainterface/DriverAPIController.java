@@ -122,7 +122,8 @@ public class DriverAPIController extends BaseController{
 						if(rpcDeviceInfo.getOnLineCommStatus()>0){
 							String commRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineCommRange())){
 								commRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getOnLineAcqTime()+"\","
@@ -210,7 +211,8 @@ public class DriverAPIController extends BaseController{
 						if(pcpDeviceInfo.getCommStatus()==1){
 							String commRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineCommRange())){
 								commRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getOnLineAcqTime()+"\","
@@ -409,7 +411,8 @@ public class DriverAPIController extends BaseController{
 						}
 						commRequest="{"
 								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineCommRange())){
 							commRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+rpcDeviceInfo.getOnLineAcqTime()+"\","
@@ -551,7 +554,8 @@ public class DriverAPIController extends BaseController{
 						
 						commRequest="{"
 								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineCommRange())){
 							commRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+pcpDeviceInfo.getOnLineAcqTime()+"\","
@@ -795,7 +799,8 @@ public class DriverAPIController extends BaseController{
 						}
 						commRequest="{"
 								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineCommRange())){
 							commRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+rpcDeviceInfo.getOnLineAcqTime()+"\","
@@ -937,7 +942,8 @@ public class DriverAPIController extends BaseController{
 						
 						commRequest="{"
 								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineCommRange())){
 							commRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+pcpDeviceInfo.getOnLineAcqTime()+"\","
@@ -1409,7 +1415,8 @@ public class DriverAPIController extends BaseController{
 					//进行通信计算
 					String commRequest="{"
 							+ "\"AKString\":\"\","
-							+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+							+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+							+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 					if(StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineCommRange())){
 						commRequest+= "\"Last\":{"
 								+ "\"AcqTime\": \""+rpcDeviceInfo.getOnLineAcqTime()+"\","
@@ -1712,7 +1719,8 @@ public class DriverAPIController extends BaseController{
 					
 					String tiemEffRequest="{"
 							+ "\"AKString\":\"\","
-							+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+							+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+							+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 					if(StringManagerUtils.isNotNull(rpcDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getRunRange())){
 						tiemEffRequest+= "\"Last\":{"
 								+ "\"AcqTime\": \""+rpcDeviceInfo.getRunStatusAcqTime()+"\","
@@ -1736,7 +1744,8 @@ public class DriverAPIController extends BaseController{
 						if(totalKWattH >= rpcDeviceInfo.getTotalKWattH()){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) && rpcDeviceInfo.getTotalKWattH()>0){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getKWattHAcqTime()+"\","
@@ -1763,7 +1772,8 @@ public class DriverAPIController extends BaseController{
 						if(totalGasVolumetricProduction>=rpcDeviceInfo.getTotalGasVolumetricProduction()){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalGasAcqTime()) && rpcDeviceInfo.getTotalGasVolumetricProduction()>0){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalGasAcqTime()+"\","
@@ -1790,7 +1800,8 @@ public class DriverAPIController extends BaseController{
 						if(totalWaterVolumetricProduction>=rpcDeviceInfo.getTotalWaterVolumetricProduction()){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalWaterAcqTime()) && rpcDeviceInfo.getTotalWaterVolumetricProduction()>0){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalWaterAcqTime()+"\","
@@ -2802,7 +2813,8 @@ public class DriverAPIController extends BaseController{
 					//进行通信计算
 					String commRequest="{"
 							+ "\"AKString\":\"\","
-							+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+							+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+							+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 					if(StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineCommRange())){
 						commRequest+= "\"Last\":{"
 								+ "\"AcqTime\": \""+pcpDeviceInfo.getOnLineAcqTime()+"\","
@@ -3046,7 +3058,8 @@ public class DriverAPIController extends BaseController{
 					List<ProtocolItemResolutionData> pcpInputItemItemResolutionDataList=getPCPInputItemData(pcpDeviceInfo);
 					String tiemEffRequest="{"
 							+ "\"AKString\":\"\","
-							+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+							+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+							+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 					if(StringManagerUtils.isNotNull(pcpDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getRunRange())){
 						tiemEffRequest+= "\"Last\":{"
 								+ "\"AcqTime\": \""+pcpDeviceInfo.getRunStatusAcqTime()+"\","
@@ -3071,7 +3084,8 @@ public class DriverAPIController extends BaseController{
 						if(totalKWattH >= pcpDeviceInfo.getTotalKWattH()){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) && pcpDeviceInfo.getTotalKWattH()>0){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getKWattHAcqTime()+"\","
@@ -3098,7 +3112,8 @@ public class DriverAPIController extends BaseController{
 						if(totalGasVolumetricProduction>=pcpDeviceInfo.getTotalGasVolumetricProduction()){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalGasAcqTime()) && pcpDeviceInfo.getTotalGasVolumetricProduction()>0){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalGasAcqTime()+"\","
@@ -3125,7 +3140,8 @@ public class DriverAPIController extends BaseController{
 						if(totalWaterVolumetricProduction>=pcpDeviceInfo.getTotalWaterVolumetricProduction()){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
+									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
 							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalWaterAcqTime()) && pcpDeviceInfo.getTotalWaterVolumetricProduction()>0){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalWaterAcqTime()+"\","

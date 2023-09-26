@@ -15,27 +15,27 @@ ap:
       timeOut: 10000     #连接超时时间（毫秒）
    oem:                  #oem配置 名称、简介、背景、图标、样式等
       #heichao
-      #title: 煤层气生产智能监控系统 V8.7   #软件名称
-      #profile: 《煤层气生产智能监控系统 V8.7》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、权限管理、设备管理、系统配置等。系统应用大数据分析方法，对生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
-      #copy: "技术支持：天津黑潮科技有限公司"               #技术支持
-      #linkaddress: ""
-      #linkshow: ""
-      #favicon: "./images/logo/favicon_heichao.ico"      #网页图标
-      #logo: "./images/logo/logo_heichao.png"            #软件logo
-      #loginBackgroundImage: "./images/login/login.jpg"  #登录界面背景图片
-      #loginCSS: "./styles/login_heichao.css"            #登录界面CSS
-      #bannerCSS: "./styles/banner_heichao.css"          #主界面banner CSS
-      #cnpc
-      title: 油气生产智能监控系统 V8.7   #软件名称
-      profile: 《油气生产智能监控系统 V8.7》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、权限管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
-      copy: ""               #技术支持
+      title: 煤层气生产智能监控系统 V8.7   #软件名称
+      profile: 《煤层气生产智能监控系统 V8.7》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、权限管理、设备管理、系统配置等。系统应用大数据分析方法，对生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
+      copy: "技术支持：天津黑潮科技有限公司"               #技术支持
       linkaddress: ""
       linkshow: ""
-      favicon: "./images/logo/favicon_cnpc.ico"
-      logo: "./images/logo/logo_cnpc.png"
-      loginBackgroundImage: "./images/login/login.jpg"
-      loginCSS: "./styles/login_cnpc.css"
-      bannerCSS: "./styles/banner_cnpc.css"
+      favicon: "./images/logo/favicon_heichao.ico"      #网页图标
+      logo: "./images/logo/logo_heichao.png"            #软件logo
+      loginBackgroundImage: "./images/login/login.jpg"  #登录界面背景图片
+      loginCSS: "./styles/login_heichao.css"            #登录界面CSS
+      bannerCSS: "./styles/banner_heichao.css"          #主界面banner CSS
+      #cnpc
+      #title: 油气生产智能监控系统 V8.7   #软件名称
+      #profile: 《油气生产智能监控系统 V8.7》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、权限管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
+      #copy: ""               #技术支持
+      #linkaddress: ""
+      #linkshow: ""
+      #favicon: "./images/logo/favicon_cnpc.ico"
+      #logo: "./images/logo/logo_cnpc.png"
+      #loginBackgroundImage: "./images/login/login.jpg"
+      #loginCSS: "./styles/login_cnpc.css"
+      #bannerCSS: "./styles/banner_cnpc.css"
       #cnooc
       #title: 油气生产智能监控系统 V8.7   #软件名称
       #profile: 《油气生产智能监控系统 V8.7》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、权限管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
@@ -71,9 +71,12 @@ ap:
       #bannerCSS: "./styles/banner_cnpc.css"
       helpButtonIcon: "./images/help.svg"             #帮助按钮图标
       exitButtonIcon: "./images/exit.svg"             #退出按钮图标
-      staticResourceTimestamp: 20230728153030  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+      staticResourceTimestamp: 20230933143030  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
       helpDocument: "./readme/ap_cbm/help.html"             #帮助文档
-      helpDocumentTimestamp: 20230808140030  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+      helpDocumentTimestamp: 20230933143030  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+   report:                                   #报表配置
+      offsetHour: 0,                         #偏移小时
+      interval: 2                            #间隔
    email:                #邮件发送账号配置
       snedAccount:
          account: 123456@126.com          #邮箱账号
@@ -122,8 +125,8 @@ ap:
       vacuateThreshold: 300           #历史曲线、图形抽稀阈值
       productionUnit: stere           #产量单位 stere-立方米 ton-吨
       iot: true                      #是否为物联网模式
-      scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
-      module: all                     #模块 ""-仅监测 rpc-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
+      scene: oil                      #应用场景 all-全部 oil-油井 cbm-煤层气井
+      module: ""                     #模块 ""-仅监测 rpc-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
       showLogo: true                  #是否显示图标
       printLog: true                  #是否打印日志
       exportLimit: 10000              #导出数据上限

@@ -175,7 +175,7 @@ public class CalculateUtils {
 		List<Float> casingPressureList=new ArrayList<Float>();
 		
 		for(RPCCalculateResponseData responseData:deviceTodayData.getRPCCalculateList()){
-			if(responseData.getFESDiagram().getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
+			if(StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour()) && !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
 				acqTimeList.add(responseData.getFESDiagram().getAcqTime());
 				commStatusList.add(deviceInfo.getCommStatus());
 				runStatusList.add(deviceInfo.getRunStatus());
@@ -332,7 +332,7 @@ public class CalculateUtils {
 		List<Float> casingPressureList=new ArrayList<Float>();
 		
 		for(PCPCalculateResponseData responseData:deviceTodayData.getPCPCalculateList()){
-			if(responseData.getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
+			if(StringManagerUtils.timeMatchDate(responseData.getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour()) && !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
 				acqTimeList.add(responseData.getAcqTime());
 				commStatusList.add(deviceInfo.getCommStatus());
 				runStatusList.add(deviceInfo.getRunStatus());

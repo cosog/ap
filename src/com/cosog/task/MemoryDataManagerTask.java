@@ -2485,6 +2485,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 			String wells="";
 			if(condition==0){
@@ -2509,14 +2510,13 @@ public class MemoryDataManagerTask {
 					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 					+ " where t.wellid=t2.id  "
 					+ " and t.resultstatus=1"
-					+ " and t.fesdiagramacqtime between to_date('"+currentDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')+1 ";
+					+ " and t.fesdiagramacqtime between to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 ";
 			if(StringManagerUtils.isNotNull(wells)){
 				if(condition==0){
 					sql+=" and t2.id in("+wells+")";
 				}else{
 					sql+=" and t2.wellName in("+wells+")";
 				}
-				
 			}
 			sql+= "order by t2.id, t.fesdiagramacqtime";
 			pstmt = conn.prepareStatement(sql);
@@ -2613,6 +2613,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 			String wells="";
 			if(condition==0){
@@ -2631,7 +2632,8 @@ public class MemoryDataManagerTask {
 					+ "t.productiondata,"
 					+ "t.submergence "
 					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id and t.resultstatus=1 and t.acqtime between to_date('"+currentDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')+1";
+					+ " where t.wellid=t2.id and t.resultstatus=1 "
+					+ " and t.acqtime between to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1";
 			if(StringManagerUtils.isNotNull(wells)){
 				if(condition==0){
 					sql+=" and t2.id in("+wells+")";

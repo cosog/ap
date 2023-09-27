@@ -1951,7 +1951,8 @@ public class DriverAPIController extends BaseController{
 									RPCCalculateResponseData responseData=(RPCCalculateResponseData)it.next();
 									if(responseData.getFESDiagram()==null 
 											|| !StringManagerUtils.isNotNull(responseData.getFESDiagram().getAcqTime())
-											|| responseData.getFESDiagram().getAcqTime().indexOf(date)<0  ){
+											|| !StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())
+											){
 										it.remove();
 									}
 								}
@@ -3218,7 +3219,7 @@ public class DriverAPIController extends BaseController{
 								while(it.hasNext()){
 									PCPCalculateResponseData responseData=(PCPCalculateResponseData)it.next();
 									if(!StringManagerUtils.isNotNull(responseData.getAcqTime())
-											|| responseData.getAcqTime().indexOf(date)<0  ){
+											|| !StringManagerUtils.timeMatchDate(responseData.getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())  ){
 										it.remove();
 									}
 								}

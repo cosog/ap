@@ -43,6 +43,7 @@ public class TotalCalculateThread extends Thread{
 		long startTime=new Date().getTime();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		if(deviceType==0){
 			String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 					+ " from tbl_rpcdailycalculationdata t,tbl_rpcdevice t2 "
@@ -60,7 +61,7 @@ public class TotalCalculateThread extends Thread{
 					+ "t.submergence "
 					+ " from tbl_rpcacqdata_hist t "
 					+ " where t.wellid="+wellId+" "
-					+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
+					+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.resultstatus=1 "
 					+ " order by t.fesdiagramacqtime";
 			List<?> list = commonDataService.findCallSql(sql);
@@ -262,7 +263,7 @@ public class TotalCalculateThread extends Thread{
 					+ "t.submergence "
 					+ " from tbl_pcpacqdata_hist t "
 					+ " where t.wellid="+wellId+" "
-					+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
+					+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.resultstatus=1 "
 					+ " order by t.acqtime";
 			List<?> list = commonDataService.findCallSql(sql);

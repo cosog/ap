@@ -92,6 +92,7 @@ import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
 
 import com.cosog.model.calculate.AcqInstanceOwnItem;
+import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.google.gson.Gson;
@@ -3829,5 +3830,41 @@ public class StringManagerUtils {
         str = str.replaceAll("8", "₈");
         str = str.replaceAll("9", "₉");
         return str;
+    }
+    
+    public static CommResponseData.Range getTimeRange(String dateStr,int offsetHour){
+    	DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    	DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	Date date = StringManagerUtils.stringToDate(dateStr);
+    	Date startTime = new Date(date.getTime() + 1000 * 60 * 60 * offsetHour);
+    	Date endTime = new Date(startTime.getTime() + 1000 * 60 * 60 * 24);
+    	
+    	String startTimeStr = format2.format(startTime);
+    	String endTimeStr = format2.format(endTime);
+    	
+    	CommResponseData.Range range = new CommResponseData.Range();
+    	range.setStartTime(startTimeStr);
+    	range.setEndTime(endTimeStr);
+    	return range;
+    }
+    
+    public static boolean timeMatchDate(String timeStr,String dateStr,int offsetHour){
+    	boolean result=false;
+		try {
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	    	DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    	
+	    	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
+			Date currentTime = (Date) format2.parse(timeStr);
+			Date startTime=(Date) format2.parse(range.getStartTime());
+	    	Date endTime=(Date) format2.parse(range.getEndTime());
+	    	
+	    	if(currentTime.getTime()>=startTime.getTime() && startTime.getTime()<=endTime.getTime()){
+	    		result=true;
+	    	}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	return result;
     }
 }

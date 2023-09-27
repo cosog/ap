@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import com.cosog.model.AccessToken;
 import com.cosog.model.DataSourceConfig;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
+import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;

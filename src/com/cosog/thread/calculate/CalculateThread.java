@@ -48,17 +48,8 @@ public class CalculateThread extends Thread{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		if(deviceType==0){
-//			String acqDateSql="select distinct(to_char(t.fesdiagramacqtime,'yyyy-mm-dd')) as acqdate"
-//					+ " from tbl_rpcacqdata_hist t "
-//					+ " where 1=1  "
-//					+ " and t.productiondata is not null"
-//					+ " and t.fesdiagramacqtime is not null "
-//					+ " and t.wellid="+wellNo+""
-//					+ " and t.resultstatus =2 "
-//					+ " order by acqdate";
-//			List<?> acqDateList = calculateDataService.findCallSql(acqDateSql);
-
 			String minAcqTime="";
 			String sql="select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 					+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
@@ -72,7 +63,7 @@ public class CalculateThread extends Thread{
 					+ " left outer join tbl_rpcdevice t2 on t.wellid=t2.id"
 					+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 					+ " where 1=1  "
-					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
+					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.productiondata is not null"
 					+ " and t.fesdiagramacqtime is not null "
 					+ " and t.wellid="+wellNo+""
@@ -95,7 +86,7 @@ public class CalculateThread extends Thread{
 					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 					+ " where t.wellid=t2.id "
 					+ " and t.resultstatus=1 "
-					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
+					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.wellid="+wellNo+""
 					+ " order by t.fesdiagramacqTime ";
 			List<?> list = calculateDataService.findCallSql(sql);
@@ -351,20 +342,6 @@ public class CalculateThread extends Thread{
 				MemoryDataManagerTask.loadTodayFESDiagram(wellList,0);
 			}
 		}else{
-//			String acqDateSql="select distinct(to_char(t.acqtime,'yyyy-mm-dd')) as acqdate"
-//					+ " from tbl_pcpacqdata_hist t "
-//					+ " where 1=1  "
-//					+ " and t.productiondata is not null and t.rpm is not null "
-//					+ " and t.wellid="+wellNo+""
-//					+ " and t.resultstatus =2 "
-//					+ " order by acqdate";
-//			List<?> acqDateList = calculateDataService.findCallSql(acqDateSql);
-//			for(int i=0;i<acqDateList.size();i++){
-//				if(acqDateList.get(i)!=null){}
-//			}
-			
-
-//			String acqDate=acqDateList.get(i).toString();
 			String minAcqTime="";
 			String sql="select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 					+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
@@ -373,7 +350,7 @@ public class CalculateThread extends Thread{
 					+ " from tbl_pcpacqdata_hist t"
 					+ " left outer join tbl_pcpdevice t2 on t.wellid=t2.id"
 					+ " where 1=1  "
-					+ " and t.acqTime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
+					+ " and t.acqTime between to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.productiondata is not null and t.rpm is not null "
 					+ " and t.wellid="+wellNo+""
 					+ " and t.resultstatus =2 "
@@ -392,7 +369,7 @@ public class CalculateThread extends Thread{
 					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 					+ " where t.wellid=t2.id "
 					+ " and t.resultstatus=1 "
-					+ " and t.acqtime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
+					+ " and t.acqtime between to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.wellid="+wellNo+""
 					+ " order by t.acqTime ";
 			List<?> list = calculateDataService.findCallSql(sql);

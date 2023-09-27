@@ -337,7 +337,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		}else{
 			date=tatalDate;
 		}
-		
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
@@ -354,16 +354,16 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.submergence "
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
-				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1 "
+				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
 		String commStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
+				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		String runStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
+				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 				+ " from tbl_rpcdailycalculationdata t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
@@ -432,7 +432,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+" 01:00:00\","
+									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
 									+ "\"CommStatus\":true"
 									+ "}"
 									+ "}";
@@ -467,7 +467,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+" 01:00:00\","
+									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
 									+ "\"RunStatus\":true"
 									+ "}"
 									+ "}";
@@ -690,7 +690,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		}else{
 			date=tatalDate;
 		}
-		
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
@@ -705,17 +705,17 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.submergence "
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 				+ " where t.wellid=t2.id "
-				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1 "
+				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
 		String commStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
+				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		
 		String runStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') and  to_date('"+date+"','yyyy-mm-dd')+1 )";
+				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 				+ " from tbl_pcpdailycalculationdata t,tbl_pcpdevice t2 "
@@ -785,7 +785,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+" 01:00:00\","
+									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
 									+ "\"CommStatus\":true"
 									+ "}"
 									+ "}";
@@ -820,7 +820,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+" 01:00:00\","
+									+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
 									+ "\"RunStatus\":true"
 									+ "}"
 									+ "}";

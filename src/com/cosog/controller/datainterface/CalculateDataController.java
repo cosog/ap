@@ -223,6 +223,29 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
+	@RequestMapping("/RPCTimingTotalCalculation")
+	public String RPCTimingTotalCalculation() throws ParseException, SQLException, IOException{
+		String time=ParamUtils.getParameter(request, "time");
+		calculateDataService.RPCTimingTotalCalculation(time);
+		
+		System.out.println("抽油机井曲线数据汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("static-access")
 	@RequestMapping("/RPMDailyCalculation")
 	public String RPMDailyCalculation() throws ParseException, SQLException, IOException{

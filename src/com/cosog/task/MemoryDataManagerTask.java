@@ -1,23 +1,18 @@
 package com.cosog.task;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.cosog.model.AccessToken;
@@ -37,23 +32,18 @@ import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
-import com.cosog.model.calculate.RPCCalculateRequestData.Balance;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.drive.AcquisitionItemInfo;
-import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPDeviceTodayData;
-import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceTodayData;
-import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
-import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;

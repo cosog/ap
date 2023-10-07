@@ -681,6 +681,352 @@ public class CalculateDataService<T> extends BaseService<T> {
 		return requestDataList;
 	}
 	
+	public List<String> RPCTimingTotalCalculation(String timeStr) throws ParseException{
+		String date="";
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
+		
+		StringBuffer dataSbf=null;
+		String sql="select t.id,t.wellname from tbl_rpcdevice t where 1=1";
+		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
+				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
+				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
+				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
+				+ "t.productiondata,"
+				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
+				+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
+				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
+				+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
+				+ "t.submergence "
+				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
+				+ " where t.wellid=t2.id "
+				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+timeStr+"','yyyy-mm-dd') "
+				+ " and t.resultstatus=1 ";
+		String realtimeStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
+				+ "t.totalkwatth,t.todaykwatth,"
+				+ "t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
+				+ "t.totalwatervolumetricproduction,t.watervolumetricproduction "
+				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
+				+ " where t.wellid=t2.id "
+				+ " and t.acqtime=(select max(t3.acqtime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.acqtime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
+		String totalStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.caltime,'yyyy-mm-dd hh24:mi:ss') as caltime,"
+				+ " t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+				+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
+				+ " t.totalkwatth,t.todaykwatth,"
+				+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
+				+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
+				+ " from tbl_rpctimingcalculationdata t,tbl_rpcdevice t2 "
+				+ " where t.wellid=t2.id "
+				+ " and t.caltime=(select max(t3.caltime) from tbl_rpctimingcalculationdata t3 where t3.wellid=t.wellid and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
+
+		sql+=" order by t.id";
+		fesDiagramSql+= " order by t2.id,t.fesdiagramacqtime";
+		realtimeStatusSql+=" order by t2.id";
+		totalStatusSql+=" order by t2.id";
+		List<?> welllist = findCallSql(sql);
+		List<?> singleresultlist = findCallSql(fesDiagramSql);
+		List<?> realtimeStatusQueryList=findCallSql(realtimeStatusSql);
+		for(int i=0;i<welllist.size();i++){
+			try{
+				Object[] wellObj=(Object[]) welllist.get(i);
+				String deviceId=wellObj[0]+"";
+				String wellName=wellObj[1]+"";
+				TimeEffResponseData timeEffResponseData=null;
+				CommResponseData commResponseData=null;
+				
+				String lastTime="";
+				
+				boolean commStatus=false;
+				float commTime=0;
+				float commTimeEfficiency=0;
+				String commRange="";
+				
+				boolean runStatus=false;
+				float runTime=0;
+				float runTimeEfficiency=0;
+				String runRange="";
+				
+				float totalkwatth=0,todaykwatth=0;
+				float totalgasvolumetricproduction=0,gasvolumetricproduction=0;
+				float totalwatervolumetricproduction=0,watervolumetricproduction=0;
+				
+				List<?> diagramList=new ArrayList<>();
+				
+				for(int j=0;j<realtimeStatusQueryList.size();j++){
+					Object[] realtimeStatusObj=(Object[]) realtimeStatusQueryList.get(j);
+					if(deviceId.equals(realtimeStatusObj[1].toString())){
+						lastTime=realtimeStatusObj[3]+"";
+						
+						if(realtimeStatusObj[4]!=null&&StringManagerUtils.stringToInteger(realtimeStatusObj[4]+"")>=1){
+							commStatus=true;
+						}
+						commTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[5]+"");
+						commTime=StringManagerUtils.stringToFloat(realtimeStatusObj[6]+"");
+						commRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[7]));
+						
+						if(realtimeStatusObj[8]!=null&&StringManagerUtils.stringToInteger(realtimeStatusObj[8]+"")>=1){
+							runStatus=true;
+						}
+						runTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[9]+"");
+						runTime=StringManagerUtils.stringToFloat(realtimeStatusObj[10]+"");
+						runRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[11]));
+						
+						totalkwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[12]+"");
+						todaykwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[13]+"");
+						totalgasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[14]+"");
+						gasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[15]+"");
+						totalwatervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[16]+"");
+						watervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[17]+"");
+						break;
+					}
+				}
+				
+				String commTotalRequestData="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+wellName+"\","
+						+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+						+ "\"Last\":{"
+						+ "\"AcqTime\": \""+lastTime+"\","
+						+ "\"CommStatus\": "+commStatus+","
+						+ "\"CommEfficiency\": {"
+						+ "\"Efficiency\": "+commTimeEfficiency+","
+						+ "\"Time\": "+commTime+","
+						+ "\"Range\": "+commRange+""
+						+ "}"
+						+ "},"
+						+ "\"Current\": {"
+						+ "\"AcqTime\":\""+timeStr+"\","
+						+ "\"CommStatus\":"+commStatus+""
+						+ "}"
+						+ "}";
+				commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					commStatus=commResponseData.getCurrent().getCommStatus();
+					commTime=commResponseData.getCurrent().getCommEfficiency().getTime();
+					commTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
+					commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+				}
+				
+				String runTotalRequestData="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+wellName+"\","
+						+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+						+ "\"Last\":{"
+						+ "\"AcqTime\": \""+lastTime+"\","
+						+ "\"RunStatus\": "+runStatus+","
+						+ "\"RunEfficiency\": {"
+						+ "\"Efficiency\": "+runTimeEfficiency+","
+						+ "\"Time\": "+runTime+","
+						+ "\"Range\": "+runRange+""
+						+ "}"
+						+ "},"
+						+ "\"Current\": {"
+						+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
+						+ "\"RunStatus\":true"
+						+ "}"
+						+ "}";
+				timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					runStatus=timeEffResponseData.getCurrent().getRunStatus();
+					runTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+					runTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
+					runRange=timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+				}
+				
+				
+				List<String> acqTimeList=new ArrayList<String>();
+				List<Integer> commStatusList=new ArrayList<Integer>();
+				List<Integer> runStatusList=new ArrayList<Integer>();
+				
+				List<Integer> ResultCodeList=new ArrayList<Integer>();
+				List<Float> strokeList=new ArrayList<Float>();
+				List<Float> spmList=new ArrayList<Float>();
+				
+				List<Float> FMaxList=new ArrayList<Float>();
+				List<Float> FMinList=new ArrayList<Float>();
+				
+				List<Float> fullnessCoefficientList=new ArrayList<Float>();
+				
+				List<Float> theoreticalProductionList=new ArrayList<Float>();
+				List<Float> liquidVolumetricProductionList=new ArrayList<Float>();
+				List<Float> oilVolumetricProductionList=new ArrayList<Float>();
+				List<Float> waterVolumetricProductionList=new ArrayList<Float>();
+				List<Float> volumeWaterCutList=new ArrayList<Float>();
+				
+				List<Float> liquidWeightProductionList=new ArrayList<Float>();
+				List<Float> oilWeightProductionList=new ArrayList<Float>();
+				List<Float> waterWeightProductionList=new ArrayList<Float>();
+				List<Float> weightWaterCutList=new ArrayList<Float>();
+				
+				List<Float> pumpEffList=new ArrayList<Float>();
+				List<Float> pumpEff1List=new ArrayList<Float>();
+				List<Float> pumpEff2List=new ArrayList<Float>();
+				List<Float> pumpEff3List=new ArrayList<Float>();
+				List<Float> pumpEff4List=new ArrayList<Float>();
+				
+				
+				List<Float> wattDegreeBalanceList=new ArrayList<Float>();
+				List<Float> iDegreeBalanceList=new ArrayList<Float>();
+				List<Float> deltaRadiusList=new ArrayList<Float>();
+				
+				List<Float> surfaceSystemEfficiencyList=new ArrayList<Float>();
+				List<Float> wellDownSystemEfficiencyList=new ArrayList<Float>();
+				List<Float> systemEfficiencyList=new ArrayList<Float>();
+				List<Float> energyPer100mLiftList=new ArrayList<Float>();
+				
+				List<Float> pumpSettingDepthList=new ArrayList<Float>();
+				List<Float> producingfluidLevelList=new ArrayList<Float>();
+				List<Float> calcProducingfluidLevelList=new ArrayList<Float>();
+				List<Float> levelDifferenceValueList=new ArrayList<Float>();
+				List<Float> submergenceList=new ArrayList<Float>();
+				
+				List<Float> tubingPressureList=new ArrayList<Float>();
+				List<Float> casingPressureList=new ArrayList<Float>();
+				
+				for(int j=0;j<singleresultlist.size();j++){
+					Object[] resuleObj=(Object[]) singleresultlist.get(j);
+					if(deviceId.toString().equals(resuleObj[0].toString())){
+						String productionData=resuleObj[15].toString();
+						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+						RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+						
+						acqTimeList.add(resuleObj[1]+"");
+						commStatusList.add(commStatus?1:0);
+						runStatusList.add(runStatus?1:0);
+					
+						ResultCodeList.add(StringManagerUtils.stringToInteger(resuleObj[2]+""));
+						strokeList.add(StringManagerUtils.stringToFloat(resuleObj[3]+""));
+						spmList.add(StringManagerUtils.stringToFloat(resuleObj[4]+""));
+						FMaxList.add(StringManagerUtils.stringToFloat(resuleObj[5]+""));
+						FMinList.add(StringManagerUtils.stringToFloat(resuleObj[6]+""));
+						fullnessCoefficientList.add(StringManagerUtils.stringToFloat(resuleObj[7]+""));
+						
+						theoreticalProductionList.add(StringManagerUtils.stringToFloat(resuleObj[8]+""));
+						liquidVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[9]+""));
+						oilVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[10]+""));
+						waterVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
+						
+						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+							volumeWaterCutList.add(rpcProductionData.getProduction().getWaterCut());
+						}else{
+							volumeWaterCutList.add(0.0f);
+						}
+						
+						liquidWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
+						oilWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
+						waterWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[14]+""));
+						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+							weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
+						}else{
+							weightWaterCutList.add(0.0f);
+						}
+						
+						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+							tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
+							casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
+							pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
+							producingfluidLevelList.add(rpcProductionData.getProduction().getProducingfluidLevel());
+						}else{
+							tubingPressureList.add(0.0f);
+							casingPressureList.add(0.0f);
+							pumpSettingDepthList.add(0.0f);
+							producingfluidLevelList.add(0.0f);
+						}
+						
+						
+						pumpEffList.add(StringManagerUtils.stringToFloat(resuleObj[16]+""));
+						pumpEff1List.add(StringManagerUtils.stringToFloat(resuleObj[17]+""));
+						pumpEff2List.add(StringManagerUtils.stringToFloat(resuleObj[18]+""));
+						pumpEff3List.add(StringManagerUtils.stringToFloat(resuleObj[19]+""));
+						pumpEff4List.add(StringManagerUtils.stringToFloat(resuleObj[20]+""));
+						
+						wattDegreeBalanceList.add(StringManagerUtils.stringToFloat(resuleObj[21]+""));
+						iDegreeBalanceList.add(StringManagerUtils.stringToFloat(resuleObj[22]+""));
+						deltaRadiusList.add(StringManagerUtils.stringToFloat(resuleObj[23]+""));
+						
+						surfaceSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[24]+""));
+						wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
+						systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[26]+""));
+						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[27]+""));
+						
+						calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
+						levelDifferenceValueList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
+						submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[30]+""));
+					}
+				}
+				
+				dataSbf = new StringBuffer();
+				dataSbf.append("{\"AKString\":\"\",");
+				dataSbf.append("\"WellName\":\""+deviceId+"\",");
+				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
+				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
+				dataSbf.append("\"Date\":\""+date+"\",");
+				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
+				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
+				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
+				dataSbf.append("\"CommTime\":"+commTime+",");
+				dataSbf.append("\"CommTimeEfficiency\":"+commTimeEfficiency+",");
+				dataSbf.append("\"CommRange\":\""+commRange+"\",");
+				dataSbf.append("\"RunStatus\":["+StringUtils.join(runStatusList, ",")+"],");
+				dataSbf.append("\"RunTime\":"+runTime+",");
+				dataSbf.append("\"RunTimeEfficiency\":"+runTimeEfficiency+",");
+				dataSbf.append("\"RunRange\":\""+runRange+"\",");
+				dataSbf.append("\"ResultCode\":["+StringUtils.join(ResultCodeList, ",")+"],");
+				dataSbf.append("\"TheoreticalProduction\":["+StringUtils.join(theoreticalProductionList, ",")+"],");
+				dataSbf.append("\"LiquidVolumetricProduction\":["+StringUtils.join(liquidVolumetricProductionList, ",")+"],");
+				dataSbf.append("\"OilVolumetricProduction\":["+StringUtils.join(oilVolumetricProductionList, ",")+"],");
+				dataSbf.append("\"WaterVolumetricProduction\":["+StringUtils.join(waterVolumetricProductionList, ",")+"],");
+				dataSbf.append("\"VolumeWaterCut\":["+StringUtils.join(volumeWaterCutList, ",")+"],");
+				dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
+				dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
+				dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
+				dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+				dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
+				dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
+				dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
+				dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
+				dataSbf.append("\"Stroke\":["+StringUtils.join(strokeList, ",")+"],");
+				dataSbf.append("\"SPM\":["+StringUtils.join(spmList, ",")+"],");
+				dataSbf.append("\"FMax\":["+StringUtils.join(FMaxList, ",")+"],");
+				dataSbf.append("\"FMin\":["+StringUtils.join(FMinList, ",")+"],");
+				dataSbf.append("\"FullnessCoefficient\":["+StringUtils.join(fullnessCoefficientList, ",")+"],");
+				dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
+				dataSbf.append("\"PumpEff1\":["+StringUtils.join(pumpEff1List, ",")+"],");
+				dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
+				dataSbf.append("\"PumpEff3\":["+StringUtils.join(pumpEff3List, ",")+"],");
+				dataSbf.append("\"PumpEff4\":["+StringUtils.join(pumpEff4List, ",")+"],");
+				dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
+				dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
+				dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"],");
+				dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
+				dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
+				dataSbf.append("\"CalcProducingfluidLevel\":["+StringUtils.join(calcProducingfluidLevelList, ",")+"],");
+				dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
+				dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
+				dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
+				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
+				dataSbf.append("}");
+				
+				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), type);
+				TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
+				
+				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					this.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,date);
+				}else{
+					System.out.println("抽油机井曲线数据汇总error:"+dataSbf.toString());
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				continue;
+			}
+		}
+		return null;
+	}
+	
 	public List<String> getRPMDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
 		String date="";
 		Gson gson = new Gson();

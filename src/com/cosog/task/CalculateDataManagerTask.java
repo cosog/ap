@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,7 +19,12 @@ import com.cosog.utils.StringManagerUtils;
 
 @Component("calculateDataManagerTast")  
 public class CalculateDataManagerTask {
-	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	public void timer(){
+		timingCalculate();
+	}
+	
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -36,7 +44,7 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -56,10 +64,16 @@ public class CalculateDataManagerTask {
 	 * 抽油机井汇总计算
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(cron = "0 0 1/24 * * ?")
+//	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/FESDiagramDailyCalculation";
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+	}
+	
+	public static void RPCTimingTotalCalculation(String timeStr){
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPCTimingTotalCalculation?time="+timeStr;
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
@@ -67,18 +81,24 @@ public class CalculateDataManagerTask {
 	 * 螺杆泵井汇总计算
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(cron = "0 0 1/24 * * ?")
+//	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void PCPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPMDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
+	public static void PCPTimingTotalCalculation(String timeStr){
+//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPMDailyCalculation";
+//		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+	}
+	
 	/**
 	 * 报表数据初始化
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(cron = "1 0 0/24 * * ?")
+//	@Scheduled(cron = "1 0 0/24 * * ?")
 	public void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=0";
@@ -86,6 +106,38 @@ public class CalculateDataManagerTask {
 		url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=1";
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
+	
+	
+	public static void timingCalculate() {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
+//        interval=5 * 60 * 1000;
+        long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
+//        initDelay=StringManagerUtils.getTimeMillis("8:00:00") - System.currentTimeMillis();
+        while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+//        initDelay = initDelay > 0 ? initDelay : interval + initDelay;
+        executor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+//                System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"----------------------------------");
+                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            	try {
+					RPCTimingTotalCalculation(timeStr);
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                try {
+					PCPTimingTotalCalculation(timeStr);
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+    }
 	
 	public static  int getCount(String sql){  
         int result=0;

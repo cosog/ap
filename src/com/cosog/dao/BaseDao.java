@@ -4036,6 +4036,114 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
+	public Boolean saveFSDiagramTimingTotalCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String timeStr,int recordCount) throws SQLException, ParseException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		
+		CLOB resultStrClob=new CLOB((OracleConnection) conn);
+		resultStrClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		resultStrClob.putString(1, totalAnalysisResponseData.getResultString());
+		
+		CLOB commRanceClob=new CLOB((OracleConnection) conn);
+		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		
+		CLOB runRanceClob=new CLOB((OracleConnection) conn);
+		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
+		
+		
+		try {
+			cs = conn.prepareCall("{call prd_save_rpc_diagramtimingtotal("
+					+ "?,?,"
+					+ "?,?,?,"
+					+ "?,?,?,?,?,"
+					+ "?,"
+					+ "?,?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,?,?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,?,?,"
+					+ "?,?,?,?,?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,"
+					+ "?"
+					+ ")}");
+			cs.setInt(1,StringManagerUtils.stringToInteger(totalAnalysisRequestData.getWellName()));
+			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
+			
+			cs.setInt(3,totalAnalysisResponseData.getResultCode());
+			cs.setClob(4,resultStrClob);
+			cs.setInt(5,totalAnalysisResponseData.getExtendedDays());
+			
+			cs.setFloat(6, totalAnalysisResponseData.getStroke().getValue());
+			cs.setFloat(7, totalAnalysisResponseData.getSPM().getValue());
+			cs.setFloat(8, totalAnalysisResponseData.getFMax().getValue());
+			cs.setFloat(9, totalAnalysisResponseData.getFMin().getValue());
+			cs.setFloat(10, totalAnalysisResponseData.getFullnessCoefficient().getValue());
+			
+			cs.setFloat(11, totalAnalysisResponseData.getTheoreticalProduction().getValue());
+			
+			cs.setFloat(12, totalAnalysisResponseData.getLiquidVolumetricProduction().getValue());
+			cs.setFloat(13, totalAnalysisResponseData.getOilVolumetricProduction().getValue());
+			cs.setFloat(14, totalAnalysisResponseData.getWaterVolumetricProduction().getValue());
+			cs.setFloat(15, totalAnalysisResponseData.getVolumeWaterCut().getValue());
+			
+			cs.setFloat(16, totalAnalysisResponseData.getLiquidWeightProduction().getValue());
+			cs.setFloat(17, totalAnalysisResponseData.getOilWeightProduction().getValue());
+			cs.setFloat(18, totalAnalysisResponseData.getWaterWeightProduction().getValue());
+			cs.setFloat(19, totalAnalysisResponseData.getWeightWaterCut().getValue());
+			
+			cs.setFloat(20, totalAnalysisResponseData.getPumpEff().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getPumpEff1().getValue());
+			cs.setFloat(22, totalAnalysisResponseData.getPumpEff2().getValue());
+			cs.setFloat(23, totalAnalysisResponseData.getPumpEff3().getValue());
+			cs.setFloat(24, totalAnalysisResponseData.getPumpEff4().getValue());
+			
+			cs.setFloat(25, totalAnalysisResponseData.getWellDownSystemEfficiency().getValue());
+			cs.setFloat(26, totalAnalysisResponseData.getSurfaceSystemEfficiency().getValue());
+			cs.setFloat(27, totalAnalysisResponseData.getSystemEfficiency().getValue());
+			cs.setFloat(28, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
+			
+			cs.setFloat(29, totalAnalysisResponseData.getIDegreeBalance().getValue());
+			cs.setFloat(30, totalAnalysisResponseData.getWattDegreeBalance().getValue());
+			cs.setFloat(31, totalAnalysisResponseData.getDeltaRadius().getValue());
+			
+			cs.setFloat(32, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(34, totalAnalysisResponseData.getCalcProducingfluidLevel().getValue());
+			cs.setFloat(35, totalAnalysisResponseData.getLevelDifferenceValue().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
+			cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
+			
+			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(40, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(41, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(42,commRanceClob);
+			
+			cs.setInt(43,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(44, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(45, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(46,runRanceClob);
+			
+			cs.setString(47, timeStr);
+			cs.setInt(48, recordCount);
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
 	
 	public Boolean saveFESDiagramReTotalData(String recordId,TotalAnalysisResponseData totalAnalysisResponseData,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();

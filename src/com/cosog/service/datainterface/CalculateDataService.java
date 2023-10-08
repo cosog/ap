@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
 import com.cosog.model.calculate.CommResponseData;
+import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCProductionData;
@@ -681,15 +682,18 @@ public class CalculateDataService<T> extends BaseService<T> {
 		return requestDataList;
 	}
 	
-	public List<String> RPCTimingTotalCalculation(String timeStr) throws ParseException{
-		String date="";
+	public List<String> RPCTimingTotalCalculation(String timeStr){
+		String date=timeStr.split(" ")[0];
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
 		
 		StringBuffer dataSbf=null;
-		String sql="select t.id,t.wellname from tbl_rpcdevice t where 1=1";
+		String sql="select t.id,t.wellname,t3.singlewellreporttemplate,t2.unid from tbl_rpcdevice t "
+				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
+				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id and t3.devicetype=0 "
+				+ " where 1=1";
 		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -723,6 +727,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.wellid=t2.id "
 				+ " and t.caltime=(select max(t3.caltime) from tbl_rpctimingcalculationdata t3 where t3.wellid=t.wellid and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
 
+		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_rpcdailycalculationdata t "
+				+ " where t.caldate=( select max(t2.caldate) from tbl_rpcdailycalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+		
 		sql+=" order by t.id";
 		fesDiagramSql+= " order by t2.id,t.fesdiagramacqtime";
 		realtimeStatusSql+=" order by t2.id";
@@ -730,22 +737,29 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<?> welllist = findCallSql(sql);
 		List<?> singleresultlist = findCallSql(fesDiagramSql);
 		List<?> realtimeStatusQueryList=findCallSql(realtimeStatusSql);
+		List<?> labelInfoQueryList=findCallSql(labelInfoSql);
+		
 		for(int i=0;i<welllist.size();i++){
 			try{
 				Object[] wellObj=(Object[]) welllist.get(i);
 				String deviceId=wellObj[0]+"";
 				String wellName=wellObj[1]+"";
+				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
+				String reportUnitId=wellObj[3]+"";
 				TimeEffResponseData timeEffResponseData=null;
 				CommResponseData commResponseData=null;
+				EnergyCalculateResponseData energyCalculateResponseData=null;
+				EnergyCalculateResponseData totalGasCalculateResponseData=null;
+				EnergyCalculateResponseData totalWaterCalculateResponseData=null;
 				
 				String lastTime="";
 				
-				boolean commStatus=false;
+				int commStatus=0;
 				float commTime=0;
 				float commTimeEfficiency=0;
 				String commRange="";
 				
-				boolean runStatus=false;
+				int runStatus=0;
 				float runTime=0;
 				float runTimeEfficiency=0;
 				String runRange="";
@@ -754,31 +768,114 @@ public class CalculateDataService<T> extends BaseService<T> {
 				float totalgasvolumetricproduction=0,gasvolumetricproduction=0;
 				float totalwatervolumetricproduction=0,watervolumetricproduction=0;
 				
-				List<?> diagramList=new ArrayList<>();
+				boolean isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
+				
+				String labelInfo="";
+				ReportTemplate.Template template=null;
+				
+				//继承表头信息
+				for(int j=0;j<labelInfoQueryList.size();j++){
+					Object[] labelInfoObj=(Object[]) labelInfoQueryList.get(j);
+					if(deviceId.equals(labelInfoObj[0].toString())){
+						labelInfo=labelInfoObj[1]+"";
+						break;
+					}
+				}
+				
+				String insertHistSql="insert into tbl_rpctimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
+				String updateSql="update tbl_rpctimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
+				
+				try {
+					int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				//报表继承可编辑数据
+				if(StringManagerUtils.isNotNull(templateCode)){
+					template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(templateCode);
+				}
+				if(template!=null){
+					if(template.getEditable()!=null && template.getEditable().size()>0){
+						String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+								+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+								+ " where t.unitid="+reportUnitId+" "
+								+ " and t.sort>=0"
+								+ " and t.reporttype=0"
+								+ " order by t.sort";
+						List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+						List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+						
+						for(int k=0;k<reportItemQuertList.size();k++){
+							Object[] reportItemObj=(Object[]) reportItemQuertList.get(k);
+							ReportUnitItem reportUnitItem=new ReportUnitItem();
+							reportUnitItem.setItemName(reportItemObj[0]+"");
+							reportUnitItem.setItemCode(reportItemObj[1]+"");
+							reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+							reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+							
+							
+							for(int l=0;l<template.getEditable().size();l++){
+								ReportTemplate.Editable editable=template.getEditable().get(l);
+								if(editable.getStartRow()>=template.getHeader().size() && reportUnitItem.getSort()-1>=editable.getStartColumn() && reportUnitItem.getSort()-1<=editable.getEndColumn()){//索引起始不同
+									reportItemList.add(reportUnitItem);
+									break;
+								}
+							}
+						}
+						if(reportItemList.size()>0){
+							StringBuffer updateColBuff = new StringBuffer();
+							for(int m=0;m<reportItemList.size();m++){
+								updateColBuff.append(reportItemList.get(m).getItemCode()+",");
+							}
+							if(updateColBuff.toString().endsWith(",")){
+								updateColBuff.deleteCharAt(updateColBuff.length() - 1);
+							}
+							
+							String updateEditDataSql="update tbl_rpctimingcalculationdata t set ("+updateColBuff+")="
+									+ " (select "+updateColBuff+" from tbl_rpctimingcalculationdata t2 "
+											+ " where t2.wellid=t.wellid "
+											+ " and t2.caltime=(select max(caltime) from tbl_rpctimingcalculationdata t3 where t3.wellid=t2.wellid and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )"
+										+ ") "
+									+ " where t.wellid="+deviceId
+									+ " and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+							try {
+								int r=this.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				
+				
 				
 				for(int j=0;j<realtimeStatusQueryList.size();j++){
 					Object[] realtimeStatusObj=(Object[]) realtimeStatusQueryList.get(j);
 					if(deviceId.equals(realtimeStatusObj[1].toString())){
 						lastTime=realtimeStatusObj[3]+"";
-						
-						if(realtimeStatusObj[4]!=null&&StringManagerUtils.stringToInteger(realtimeStatusObj[4]+"")>=1){
-							commStatus=true;
-						}
+						commStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[4]+"");
 						commTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[5]+"");
 						commTime=StringManagerUtils.stringToFloat(realtimeStatusObj[6]+"");
 						commRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[7]));
 						
-						if(realtimeStatusObj[8]!=null&&StringManagerUtils.stringToInteger(realtimeStatusObj[8]+"")>=1){
-							runStatus=true;
-						}
+						runStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[8]+"");
 						runTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[9]+"");
 						runTime=StringManagerUtils.stringToFloat(realtimeStatusObj[10]+"");
 						runRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[11]));
-						
+						if(realtimeStatusObj[12]!=null){
+							isAcqEnergy=true;
+						}
 						totalkwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[12]+"");
 						todaykwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[13]+"");
+						if(realtimeStatusObj[14]!=null){
+							isAcqTotalGasProd=true;
+						}
 						totalgasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[14]+"");
 						gasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[15]+"");
+						if(realtimeStatusObj[16]!=null){
+							isAcqTotalWaterProd=true;
+						}
 						totalwatervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[16]+"");
 						watervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[17]+"");
 						break;
@@ -788,10 +885,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String commTotalRequestData="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+wellName+"\","
-						+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+						+ "\"OffsetHour\":"+offsetHour+","
 						+ "\"Last\":{"
 						+ "\"AcqTime\": \""+lastTime+"\","
-						+ "\"CommStatus\": "+commStatus+","
+						+ "\"CommStatus\": "+(commStatus>=1)+","
 						+ "\"CommEfficiency\": {"
 						+ "\"Efficiency\": "+commTimeEfficiency+","
 						+ "\"Time\": "+commTime+","
@@ -800,24 +897,26 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ "},"
 						+ "\"Current\": {"
 						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"CommStatus\":"+commStatus+""
+						+ "\"CommStatus\":"+(commStatus>=1)+""
 						+ "}"
 						+ "}";
 				commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
+				
+				updateSql+=",CommStatus="+commStatus;
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					commStatus=commResponseData.getCurrent().getCommStatus();
 					commTime=commResponseData.getCurrent().getCommEfficiency().getTime();
 					commTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
 					commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+					updateSql+=",commTimeEfficiency="+commTimeEfficiency+",commTime="+commTime;
 				}
 				
 				String runTotalRequestData="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+wellName+"\","
-						+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+						+ "\"OffsetHour\":"+offsetHour+","
 						+ "\"Last\":{"
 						+ "\"AcqTime\": \""+lastTime+"\","
-						+ "\"RunStatus\": "+runStatus+","
+						+ "\"RunStatus\": "+(runStatus>=1)+","
 						+ "\"RunEfficiency\": {"
 						+ "\"Efficiency\": "+runTimeEfficiency+","
 						+ "\"Time\": "+runTime+","
@@ -825,16 +924,101 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ "}"
 						+ "},"
 						+ "\"Current\": {"
-						+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
-						+ "\"RunStatus\":true"
+						+ "\"AcqTime\":\""+timeStr+"\","
+						+ "\"RunStatus\":"+(runStatus>=1)+""
 						+ "}"
 						+ "}";
 				timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
+				updateSql+=",runStatus="+runStatus;
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-					runStatus=timeEffResponseData.getCurrent().getRunStatus();
 					runTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
 					runTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
 					runRange=timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+					updateSql+=",runTimeEfficiency="+runTimeEfficiency+",runTime="+runTime;
+				}
+				
+				//判断是否采集了电量，如采集则进行电量计算
+				if(isAcqEnergy){
+					String energyRequest="{"
+							+ "\"AKString\":\"\","
+							+ "\"WellName\":\""+wellName+"\","
+							+ "\"OffsetHour\":"+offsetHour+",";
+					energyRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+lastTime+"\","
+							+ "\"Total\":{"
+							+ "\"KWattH\":"+totalkwatth
+							+ "},\"Today\":{"
+							+ "\"KWattH\":"+todaykwatth
+							+ "}"
+							+ "},";
+					energyRequest+= "\"Current\": {"
+							+ "\"AcqTime\":\""+timeStr+"\","
+							+ "\"Total\":{"
+							+ "\"KWattH\":"+totalkwatth
+							+ "}"
+							+ "}"
+							+ "}";
+					energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+					updateSql+=",totalKWattH="+totalkwatth;
+					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
+						updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
+					}
+				}
+				
+				//判断是否采集了累计气量，如采集则进行日产气量计算
+				if(isAcqTotalGasProd){
+					String energyRequest="{"
+							+ "\"AKString\":\"\","
+							+ "\"WellName\":\""+wellName+"\","
+							+ "\"OffsetHour\":"+offsetHour+",";
+					energyRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+lastTime+"\","
+							+ "\"Total\":{"
+							+ "\"KWattH\":"+totalgasvolumetricproduction
+							+ "},\"Today\":{"
+							+ "\"KWattH\":"+gasvolumetricproduction
+							+ "}"
+							+ "},";
+					energyRequest+= "\"Current\": {"
+							+ "\"AcqTime\":\""+timeStr+"\","
+							+ "\"Total\":{"
+							+ "\"KWattH\":"+totalgasvolumetricproduction
+							+ "}"
+							+ "}"
+							+ "}";
+					updateSql+=",totalgasvolumetricproduction="+totalgasvolumetricproduction;
+					totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+					if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
+						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
+					}
+				}
+				
+				//判断是否采集了累计水量，如采集则进行日产水量计算
+				if(isAcqTotalWaterProd){
+					String energyRequest="{"
+							+ "\"AKString\":\"\","
+							+ "\"WellName\":\""+wellName+"\","
+							+ "\"OffsetHour\":"+offsetHour+",";
+					energyRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+lastTime+"\","
+							+ "\"Total\":{"
+							+ "\"KWattH\":"+totalwatervolumetricproduction
+							+ "},\"Today\":{"
+							+ "\"KWattH\":"+watervolumetricproduction
+							+ "}"
+							+ "},";
+					energyRequest+= "\"Current\": {"
+							+ "\"AcqTime\":\""+timeStr+"\","
+							+ "\"Total\":{"
+							+ "\"KWattH\":"+totalwatervolumetricproduction
+							+ "}"
+							+ "}"
+							+ "}";
+					updateSql+=",totalWatervolumetricproduction="+totalwatervolumetricproduction;
+					totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+					if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
+						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
+					}
 				}
 				
 				
@@ -895,8 +1079,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 						RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 						
 						acqTimeList.add(resuleObj[1]+"");
-						commStatusList.add(commStatus?1:0);
-						runStatusList.add(runStatus?1:0);
+						commStatusList.add(commStatus>=1?1:0);
+						runStatusList.add(runStatus>=1?1:0);
 					
 						ResultCodeList.add(StringManagerUtils.stringToInteger(resuleObj[2]+""));
 						strokeList.add(StringManagerUtils.stringToFloat(resuleObj[3]+""));
@@ -962,8 +1146,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf = new StringBuffer();
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+deviceId+"\",");
-				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
-				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
+				dataSbf.append("\"CurrentCommStatus\":"+(commStatus>=1?1:0)+",");
+				dataSbf.append("\"CurrentRunStatus\":"+(runStatus>=1?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
 				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -1014,11 +1198,34 @@ public class CalculateDataService<T> extends BaseService<T> {
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), type);
 				TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
 				
-				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
-					this.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,date);
-				}else{
-					System.out.println("抽油机井曲线数据汇总error:"+dataSbf.toString());
+				updateSql+=" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+				try {
+					int r=this.getBaseDao().updateOrDeleteBySql(updateSql);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					List<String> clobCont=new ArrayList<String>();
+					String updateHisRangeClobSql="update tbl_rpctimingcalculationdata t set t.commrange=?";
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+						updateHisRangeClobSql+=", t.runrange=?";
+						clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+					}
+					updateHisRangeClobSql+=" where t.wellid="+deviceId +" and t.caltime="+"to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+					try {
+						int r=this.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
+				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					this.saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr);
+				}
+				
 			}catch(Exception e){
 				e.printStackTrace();
 				continue;
@@ -1341,6 +1548,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 		this.getBaseDao().saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate,recordCount);
 	}
 	
+	public void saveFSDiagramTimingTotalCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String timeStr) throws SQLException, ParseException{
+		int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+		this.getBaseDao().saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr,recordCount);
+	}
+	
 	@SuppressWarnings("unused")
 	public void initDailyReportData(int deviceType){
 		String deviceTableName="tbl_rpcdevice";
@@ -1353,7 +1565,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		boolean initResult=this.getBaseDao().initDailyReportData();
 		
-		String instanceSql="select t.id,t.code,t.unitid,t2.singlewellreporttemplate from tbl_protocolreportinstance t,tbl_report_unit_conf t2 where t.unitid=t2.id and t.devicetype="+deviceType;
+		String instanceSql="select t.id,t.code,t.unitid,t2.singlewellreporttemplate "
+				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
+				+ " where t.unitid=t2.id and t.devicetype="+deviceType;
 		List<?> instanceList = this.findCallSql(instanceSql);
 		if(instanceList.size()>0){
 			ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();

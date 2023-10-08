@@ -24,7 +24,7 @@ public class CalculateDataManagerTask {
 		timingCalculate();
 	}
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -44,7 +44,7 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){

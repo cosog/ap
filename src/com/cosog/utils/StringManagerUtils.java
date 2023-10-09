@@ -1395,25 +1395,40 @@ public class StringManagerUtils {
         try {
             s_date = (Date) sdf.parse(strDate);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return s_date;
+    }
+    
+    public static long stringToTimeStamp(String time,String simeStamp) {
+        Date s_date = null;
+        long result=0;
+        SimpleDateFormat sdf = new SimpleDateFormat(simeStamp);
+        try {
+            s_date = (Date) sdf.parse(time);
+            result=s_date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public static String timeStampToString(long time,String simeStamp) {
+        DateFormat format = new SimpleDateFormat(simeStamp);
+        String strdate = format.format(new Date(time));
+        return strdate;
     }
 
     public static Timestamp stringToTimeStamp(String time) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         format.setLenient(false);
         Timestamp ts1 = null;
-        // 要转换字符串 str_test
         String str_test = time;
         try {
             long time1 = format.parse(str_test).getTime();
             Timestamp ts = new Timestamp(time1);
             ts1 = Timestamp.valueOf(str_test);
-            // StringManagerUtils.printLog(ts.toString() + "%%%%%%%" + ts1.toString());
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return ts1;
@@ -1564,6 +1579,22 @@ public class StringManagerUtils {
                     sum = (int) Math.floor(Double.parseDouble(value));
                 } else {
                     sum = Integer.parseInt(value);
+                }
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+        return sum;
+    }
+    
+    public static long stringToLong(String value) {
+    	long sum = 0;
+        if (StringManagerUtils.isNotNull(value)) {
+            try {
+                if (value.contains(".")) {
+                    sum = (long) Math.floor(Double.parseDouble(value));
+                } else {
+                    sum = Long.parseLong(value);
                 }
             } catch (Exception e) {
                 return 0;

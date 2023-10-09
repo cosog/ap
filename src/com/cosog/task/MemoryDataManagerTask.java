@@ -2477,6 +2477,11 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
+			String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			if(!StringManagerUtils.timeMatchDate(currentTime, currentDate, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
+				currentDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(currentDate),-1);
+			}
+			
 			String wells="";
 			if(condition==0){
 				wells=StringUtils.join(wellList, ",");
@@ -2605,6 +2610,10 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
+			String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			if(!StringManagerUtils.timeMatchDate(currentTime, currentDate, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
+				currentDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(currentDate),-1);
+			}
 			String wells="";
 			if(condition==0){
 				wells=StringUtils.join(wellList, ",");

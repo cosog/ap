@@ -226,7 +226,10 @@ public class CalculateDataController extends BaseController{
 	@RequestMapping("/RPCTimingTotalCalculation")
 	public String RPCTimingTotalCalculation() throws ParseException, SQLException, IOException{
 		String time=ParamUtils.getParameter(request, "time");
-		calculateDataService.RPCTimingTotalCalculation(time);
+		
+		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+		
+		calculateDataService.RPCTimingTotalCalculation(timeStr);
 		
 		System.out.println("抽油机井曲线数据汇总完成");
 		

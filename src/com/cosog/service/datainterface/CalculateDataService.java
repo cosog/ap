@@ -422,7 +422,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String commTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+									+ "\"OffsetHour\":"+offsetHour+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+commStatusObj[2]+"\","
 									+ "\"CommStatus\": "+commStatus+","
@@ -457,7 +457,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String runTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+									+ "\"OffsetHour\":"+offsetHour+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+runStatusObj[2]+"\","
 									+ "\"RunStatus\": "+runStatus+","
@@ -628,7 +628,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
 				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
-				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
+				dataSbf.append("\"OffsetHour\":"+offsetHour+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 				dataSbf.append("\"CommTime\":"+commTime+",");
@@ -684,13 +684,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	public List<String> RPCTimingTotalCalculation(String timeStr){
 		String date=timeStr.split(" ")[0];
+		
+		if(!StringManagerUtils.timeMatchDate(timeStr, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
+		}
+		
+		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
 		
 		StringBuffer dataSbf=null;
-		String sql="select t.id,t.wellname,t3.singlewellreporttemplate,t2.unid from tbl_rpcdevice t "
+		String sql="select t.id,t.wellname,t3.singlewellreporttemplate,t2.unitid from tbl_rpcdevice t "
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id and t3.devicetype=0 "
 				+ " where 1=1";
@@ -706,7 +712,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.submergence "
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
-				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+timeStr+"','yyyy-mm-dd') "
+				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.resultstatus=1 ";
 		String realtimeStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
@@ -1149,7 +1155,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"CurrentCommStatus\":"+(commStatus>=1?1:0)+",");
 				dataSbf.append("\"CurrentRunStatus\":"+(runStatus>=1?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
-				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
+				dataSbf.append("\"OffsetHour\":"+offsetHour+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 				dataSbf.append("\"CommTime\":"+commTime+",");
@@ -1195,7 +1201,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 				dataSbf.append("}");
 				
-				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), type);
+				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), new TypeToken<TotalAnalysisRequestData>() {}.getType());
 				TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
 				
 				updateSql+=" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
@@ -1327,7 +1333,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String commTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+									+ "\"OffsetHour\":"+offsetHour+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+commStatusObj[2]+"\","
 									+ "\"CommStatus\": "+commStatus+","
@@ -1362,7 +1368,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							String runTotalRequestData="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellName+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+","
+									+ "\"OffsetHour\":"+offsetHour+","
 									+ "\"Last\":{"
 									+ "\"AcqTime\": \""+runStatusObj[2]+"\","
 									+ "\"RunStatus\": "+runStatus+","
@@ -1498,7 +1504,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"CurrentCommStatus\":"+(commStatus?1:0)+",");
 				dataSbf.append("\"CurrentRunStatus\":"+(runStatus?1:0)+",");
 				dataSbf.append("\"Date\":\""+date+"\",");
-				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
+				dataSbf.append("\"OffsetHour\":"+offsetHour+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
 				dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
 				dataSbf.append("\"CommTime\":"+commTime+",");

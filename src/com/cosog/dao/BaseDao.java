@@ -4404,6 +4404,92 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
+	public Boolean saveRPMTimingTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String timeStr,int recordCount) throws SQLException, ParseException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		
+		CLOB commRanceClob=new CLOB((OracleConnection) conn);
+		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		
+		CLOB runRanceClob=new CLOB((OracleConnection) conn);
+		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
+		
+		
+		try {
+			cs = conn.prepareCall("{call prd_save_pcp_rpmtimingtotal("
+					+ "?,?,"
+					+ "?,"
+					+ "?,"
+					+ "?,"
+					+ "?,?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,?,?,"
+					+ "?,?,"
+					+ "?,?,?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,?"
+					+ ")}");
+			cs.setInt(1,StringManagerUtils.stringToInteger(totalAnalysisRequestData.getWellName()));
+			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
+			
+			cs.setInt(3,totalAnalysisResponseData.getExtendedDays());
+			
+			cs.setFloat(4, totalAnalysisResponseData.getRPM().getValue());
+			
+			cs.setFloat(5, totalAnalysisResponseData.getTheoreticalProduction().getValue());
+			
+			cs.setFloat(6, totalAnalysisResponseData.getLiquidVolumetricProduction().getValue());
+			cs.setFloat(7, totalAnalysisResponseData.getOilVolumetricProduction().getValue());
+			cs.setFloat(8, totalAnalysisResponseData.getWaterVolumetricProduction().getValue());
+			cs.setFloat(9, totalAnalysisResponseData.getVolumeWaterCut().getValue());
+			
+			cs.setFloat(10, totalAnalysisResponseData.getLiquidWeightProduction().getValue());
+			cs.setFloat(11, totalAnalysisResponseData.getOilWeightProduction().getValue());
+			cs.setFloat(12, totalAnalysisResponseData.getWaterWeightProduction().getValue());
+			cs.setFloat(13, totalAnalysisResponseData.getWeightWaterCut().getValue());
+			
+			cs.setFloat(14, totalAnalysisResponseData.getPumpEff().getValue());
+			cs.setFloat(15, totalAnalysisResponseData.getPumpEff1().getValue());
+			cs.setFloat(16, totalAnalysisResponseData.getPumpEff2().getValue());
+			
+			cs.setFloat(17, totalAnalysisResponseData.getSystemEfficiency().getValue());
+			cs.setFloat(18, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
+			
+			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
+			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
+			
+			cs.setInt(24,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(25, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(26, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(27,commRanceClob);
+			
+			cs.setInt(28,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(29, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(30, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(31,runRanceClob);
+			
+			cs.setString(32, timeStr);
+			cs.setInt(33, recordCount);
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
 	public Boolean saveRPMReTotalData(String recordId,TotalAnalysisResponseData totalAnalysisResponseData,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;

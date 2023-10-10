@@ -69,7 +69,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         	
                         	var tabPanel = Ext.getCmp("ModbusProtocolReportInstanceReportTemplateTabPanel_Id");
             				var activeId = tabPanel.getActiveTab().id;
-            				if(activeId=="ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id"){
+            				if(activeId=="ModbusProtocolReportInstanceSingleWellRangeReportTemplatePanel_Id"){
             					reportType=0;
             				}else if(activeId=="ModbusProtocolReportInstanceProductionReportTemplatePanel_Id"){
             					reportType=1;
@@ -80,7 +80,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         			selectedUnitId=record.data.children[0].unitId;
                         			selectedInstanceName=record.data.children[0].text;
                         			if(reportType==0){
-                        				selectedTemplateCode=record.data.children[0].singleWellReportTemplate;
+                        				selectedTemplateCode=record.data.children[0].singleWellRangeReportTemplate;
                         			}else{
                         				selectedTemplateCode=record.data.children[0].productionReportTemplate;
                         			}
@@ -89,7 +89,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         		selectedUnitId=record.data.unitId;
                         		selectedInstanceName=record.parentNode.data.text;
                         		if(reportType==0){
-                    				selectedTemplateCode=record.data.singleWellReportTemplate;
+                    				selectedTemplateCode=record.data.singleWellRangeReportTemplate;
                     			}else{
                     				selectedTemplateCode=record.data.productionReportTemplate;
                     			}
@@ -97,7 +97,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         		selectedUnitId=record.data.unitId;
                         		selectedInstanceName=record.data.text;
                         		if(reportType==0){
-                    				selectedTemplateCode=record.data.singleWellReportTemplate;
+                    				selectedTemplateCode=record.data.singleWellRangeReportTemplate;
                     			}else{
                     				selectedTemplateCode=record.data.productionReportTemplate;
                     			}

@@ -368,17 +368,17 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     				}
     				
     				//报表单元
-    				if(singleWellReportTemplateHandsontableHelper!=null){
-    					if(singleWellReportTemplateHandsontableHelper.hot!=undefined){
-    						singleWellReportTemplateHandsontableHelper.hot.destroy();
+    				if(singleWellRangeReportTemplateHandsontableHelper!=null){
+    					if(singleWellRangeReportTemplateHandsontableHelper.hot!=undefined){
+    						singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
     					}
-    					singleWellReportTemplateHandsontableHelper=null;
+    					singleWellRangeReportTemplateHandsontableHelper=null;
     				}
-    				if(singleWellReportTemplateContentHandsontableHelper!=null){
-    					if(singleWellReportTemplateContentHandsontableHelper.hot!=undefined){
-    						singleWellReportTemplateContentHandsontableHelper.hot.destroy();
+    				if(singleWellRangeReportTemplateContentHandsontableHelper!=null){
+    					if(singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
+    						singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
     					}
-    					singleWellReportTemplateContentHandsontableHelper=null;
+    					singleWellRangeReportTemplateContentHandsontableHelper=null;
     				}
     				if(reportUnitPropertiesHandsontableHelper!=null){
     					if(reportUnitPropertiesHandsontableHelper.hot!=undefined){

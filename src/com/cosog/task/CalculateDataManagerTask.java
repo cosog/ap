@@ -130,15 +130,18 @@ public class CalculateDataManagerTask {
         }), initDelay, interval, TimeUnit.MILLISECONDS);
 	}
 	
+	@SuppressWarnings("static-access")
 	public static void PCPTimingTotalCalculation(String timeStr){
-//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPMDailyCalculation";
-//		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/PCPTimingTotalCalculation?time="+time;
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	/**
 	 * 报表数据初始化
 	 * */
+	@SuppressWarnings("static-access")
 	public static void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=0";
@@ -173,7 +176,7 @@ public class CalculateDataManagerTask {
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
         interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
-        initDelay=StringManagerUtils.getTimeMillis("10:00:00") - System.currentTimeMillis();
+//        initDelay=StringManagerUtils.getTimeMillis("08:00:00") - System.currentTimeMillis();
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
@@ -187,12 +190,6 @@ public class CalculateDataManagerTask {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-                try {
-					PCPTimingTotalCalculation(timeStr);
-				}catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
             }
         }), initDelay, interval, TimeUnit.MILLISECONDS);
     }
@@ -202,7 +199,7 @@ public class CalculateDataManagerTask {
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
         interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
-        initDelay=StringManagerUtils.getTimeMillis("10:00:00") - System.currentTimeMillis();
+//        initDelay=StringManagerUtils.getTimeMillis("10:00:00") - System.currentTimeMillis();
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }

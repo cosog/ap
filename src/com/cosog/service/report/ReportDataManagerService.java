@@ -860,7 +860,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			tableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
 		ReportTemplate.Template template=null;
-		String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
 				+ " and t.id="+wellId;
@@ -876,7 +876,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		if(StringManagerUtils.isNotNull(reportTemplateCode)){
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+				template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(reportTemplateCode);
 			}else{
 				template=MemoryDataManagerTask.getProductionReportTemplateByCode(reportTemplateCode);
 			}
@@ -1039,7 +1039,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				deviceTableName="tbl_pcpdevice";
 			}
 			ReportTemplate.Template template=null;
-			String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
 					+ " and t.id="+wellId;
@@ -1054,7 +1054,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			if(StringManagerUtils.isNotNull(reportTemplateCode)){
-				template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+				template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(reportTemplateCode);
 			}
 			if(template!=null){
 				int columnCount=0;
@@ -1226,7 +1226,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			tableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
 		ReportTemplate.Template template=null;
-		String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
 				+ " and t3.id="+unitId;
@@ -1241,7 +1241,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		if(StringManagerUtils.isNotNull(reportTemplateCode)){
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+				template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(reportTemplateCode);
 			}else{
 				template=MemoryDataManagerTask.getProductionReportTemplateByCode(reportTemplateCode);
 			}
@@ -1455,7 +1455,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				tableName="VIW_PCPDAILYCALCULATIONDATA";
 			}
 			ReportTemplate.Template template=null;
-			String reportTemplateCodeSql="select t3.id,t3.singlewellreporttemplate,t3.productionreporttemplate "
+			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
 					+ " and t3.id="+unitId;
@@ -1470,7 +1470,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			if(StringManagerUtils.isNotNull(reportTemplateCode)){
 				if(StringManagerUtils.stringToInteger(reportType)==0){
-					template=MemoryDataManagerTask.getSingleWellReportTemplateByCode(reportTemplateCode);
+					template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(reportTemplateCode);
 				}else{
 					template=MemoryDataManagerTask.getProductionReportTemplateByCode(reportTemplateCode);
 				}
@@ -2554,14 +2554,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
 			tableName="tbl_pcpdevice";
 		}
-		String sql="select t3.singlewellreporttemplate,t3.productionreporttemplate "
+		String sql="select t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 				+ " from tbl_rpcdevice t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
 				+ " and t.orgid in("+orgId+")";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and t.wellName='"+wellName+"'";
 		}
-		sql+=" group by t3.singlewellreporttemplate,t3.productionreporttemplate";
+		sql+=" group by t3.singleWellRangeReportTemplate,t3.productionreporttemplate";
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -2572,7 +2572,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		int totalCount=0;
 		if(reportTemplate!=null){
 			List<?> list = this.findCallSql(sql);
-			List<Template> templateList=reportTemplate.getSingleWellReportTemplate();
+			List<Template> templateList=reportTemplate.getSingleWellRangeReportTemplate();
 			if(StringManagerUtils.stringToInteger(reportType)==1){
 				templateList=reportTemplate.getProductionReportTemplate();
 			}

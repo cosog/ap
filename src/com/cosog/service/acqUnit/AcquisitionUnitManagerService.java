@@ -3720,7 +3720,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		rpcTree_json.append("[");
 		pcpTree_json.append("[");
-		String unitSql="select t.id,t.unit_code,t.unit_name,t.singlewellreporttemplate,t.productionreporttemplate,t.devicetype,t.sort from tbl_report_unit_conf t order by t.devicetype,t.sort";
+		String unitSql="select t.id,t.unit_code,t.unit_name,t.singleWellRangeReportTemplate,t.productionreporttemplate,t.devicetype,t.sort from tbl_report_unit_conf t order by t.devicetype,t.sort";
 		List<?> unitList=this.findCallSql(unitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
@@ -3730,7 +3730,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				rpcTree_json.append("\"id\":"+obj[0]+",");
 				rpcTree_json.append("\"code\":\""+obj[1]+"\",");
 				rpcTree_json.append("\"text\":\""+obj[2]+"\",");
-				rpcTree_json.append("\"singlewellReportTemplate\":\""+obj[3]+"\",");
+				rpcTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[3]+"\",");
 				rpcTree_json.append("\"productionReportTemplate\":\""+obj[4]+"\",");
 				rpcTree_json.append("\"deviceType\":"+deviceType+",");
 				rpcTree_json.append("\"sort\":\""+obj[6]+"\",");
@@ -3742,7 +3742,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				pcpTree_json.append("\"id\":"+obj[0]+",");
 				pcpTree_json.append("\"code\":\""+obj[1]+"\",");
 				pcpTree_json.append("\"text\":\""+obj[2]+"\",");
-				pcpTree_json.append("\"singlewellReportTemplate\":\""+obj[3]+"\",");
+				pcpTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[3]+"\",");
 				pcpTree_json.append("\"productionReportTemplate\":\""+obj[4]+"\",");
 				pcpTree_json.append("\"deviceType\":"+deviceType+",");
 				pcpTree_json.append("\"sort\":\""+obj[6]+"\",");
@@ -3753,25 +3753,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 		}
 		
-//		if(reportTemplate!=null && reportTemplate.getSingleWellReportTemplate()!=null && reportTemplate.getSingleWellReportTemplate().size()>0){
+//		if(reportTemplate!=null && reportTemplate.getSingleWellRangeReportTemplate()!=null && reportTemplate.getSingleWellRangeReportTemplate().size()>0){
 //			//排序
-//			Collections.sort(reportTemplate.getSingleWellReportTemplate());
-//			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
-//				if(reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()==0){
+//			Collections.sort(reportTemplate.getSingleWellRangeReportTemplate());
+//			for(int i=0;i<reportTemplate.getSingleWellRangeReportTemplate().size();i++){
+//				if(reportTemplate.getSingleWellRangeReportTemplate().get(i).getDeviceType()==0){
 //					rpcTree_json.append("{\"classes\":1,");
-//					rpcTree_json.append("\"text\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()+"\",");
-//					rpcTree_json.append("\"code\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()+"\",");
-//					rpcTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()+",");
-//					rpcTree_json.append("\"sort\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getSort()+"\",");
+//					rpcTree_json.append("\"text\":\""+reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName()+"\",");
+//					rpcTree_json.append("\"code\":\""+reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode()+"\",");
+//					rpcTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellRangeReportTemplate().get(i).getDeviceType()+",");
+//					rpcTree_json.append("\"sort\":\""+reportTemplate.getSingleWellRangeReportTemplate().get(i).getSort()+"\",");
 //					rpcTree_json.append("\"iconCls\": \"protocol\",");
 //					rpcTree_json.append("\"leaf\": true");
 //					rpcTree_json.append("},");
 //				}else{
 //					pcpTree_json.append("{\"classes\":1,");
-//					pcpTree_json.append("\"text\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName()+"\",");
-//					pcpTree_json.append("\"code\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode()+"\",");
-//					pcpTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()+",");
-//					pcpTree_json.append("\"sort\":\""+reportTemplate.getSingleWellReportTemplate().get(i).getSort()+"\",");
+//					pcpTree_json.append("\"text\":\""+reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName()+"\",");
+//					pcpTree_json.append("\"code\":\""+reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode()+"\",");
+//					pcpTree_json.append("\"deviceType\":"+reportTemplate.getSingleWellRangeReportTemplate().get(i).getDeviceType()+",");
+//					pcpTree_json.append("\"sort\":\""+reportTemplate.getSingleWellRangeReportTemplate().get(i).getSort()+"\",");
 //					pcpTree_json.append("\"iconCls\": \"protocol\",");
 //					pcpTree_json.append("\"leaf\": true");
 //					pcpTree_json.append("},");
@@ -3808,7 +3808,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(reportTemplate!=null){
 			List<Template> templateList=null;
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getSingleWellReportTemplate();
+				templateList=reportTemplate.getSingleWellRangeReportTemplate();
 			}else{
 				templateList=reportTemplate.getProductionReportTemplate();
 			}
@@ -3840,7 +3840,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(reportTemplate!=null){
 			List<Template> templateList=null;
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getSingleWellReportTemplate();
+				templateList=reportTemplate.getSingleWellRangeReportTemplate();
 			}else{
 				templateList=reportTemplate.getProductionReportTemplate();
 			}
@@ -4363,7 +4363,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		rpcTree_json.append("[");
 		pcpTree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.devicetype,t.sort,"
-				+ " t2.singlewellreporttemplate,t2.productionreporttemplate "
+				+ " t2.singleWellRangeReportTemplate,t2.productionreporttemplate "
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id "
 				+ " order by t.devicetype,t.sort,t.id";
@@ -4380,7 +4380,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				rpcTree_json.append("\"unitName\":\""+obj[4]+"\",");
 				rpcTree_json.append("\"deviceType\":"+deviceType+",");
 				rpcTree_json.append("\"sort\":\""+obj[6]+"\",");
-				rpcTree_json.append("\"singleWellReportTemplate\":\""+obj[7]+"\",");
+				rpcTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
 				rpcTree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
 				rpcTree_json.append("\"iconCls\": \"protocol\",");
 				rpcTree_json.append("\"expanded\": true,");
@@ -4388,7 +4388,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				rpcTree_json.append("{\"classes\":2,");
 				rpcTree_json.append("\"unitId\":"+obj[3]+",");
 				rpcTree_json.append("\"text\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"singleWellReportTemplate\":\""+obj[7]+"\",");
+				rpcTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
 				rpcTree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
 				rpcTree_json.append("\"deviceType\":"+deviceType+",");
 				rpcTree_json.append("\"iconCls\": \"acqUnit\","); 
@@ -4404,7 +4404,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				pcpTree_json.append("\"unitName\":\""+obj[4]+"\",");
 				pcpTree_json.append("\"deviceType\":"+deviceType+",");
 				pcpTree_json.append("\"sort\":\""+obj[6]+"\",");
-				pcpTree_json.append("\"singleWellReportTemplate\":\""+obj[7]+"\",");
+				pcpTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
 				pcpTree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
 				pcpTree_json.append("\"iconCls\": \"protocol\",");
 				pcpTree_json.append("\"expanded\": true,");
@@ -4412,7 +4412,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				pcpTree_json.append("{\"classes\":2,");
 				pcpTree_json.append("\"unitId\":"+obj[3]+",");
 				pcpTree_json.append("\"text\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"singleWellReportTemplate\":\""+obj[7]+"\",");
+				pcpTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
 				pcpTree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
 				pcpTree_json.append("\"deviceType\":"+deviceType+",");
 				pcpTree_json.append("\"iconCls\": \"acqUnit\","); 
@@ -4566,14 +4566,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getReportTemplateCombList(String deviceType){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
-		result_json.append("{\"totals\":"+( (reportTemplate!=null&&reportTemplate.getSingleWellReportTemplate()!=null)?reportTemplate.getSingleWellReportTemplate().size():0 )+",\"list\":[");
-		if(reportTemplate!=null&&reportTemplate.getSingleWellReportTemplate()!=null){
+		result_json.append("{\"totals\":"+( (reportTemplate!=null&&reportTemplate.getSingleWellRangeReportTemplate()!=null)?reportTemplate.getSingleWellRangeReportTemplate().size():0 )+",\"list\":[");
+		if(reportTemplate!=null&&reportTemplate.getSingleWellRangeReportTemplate()!=null){
 			//排序
-			Collections.sort(reportTemplate.getSingleWellReportTemplate());
-			for(int i=0;i<reportTemplate.getSingleWellReportTemplate().size();i++){
-				if(StringManagerUtils.stringToInteger(deviceType)==reportTemplate.getSingleWellReportTemplate().get(i).getDeviceType()){
-					result_json.append("{boxkey:\"" + reportTemplate.getSingleWellReportTemplate().get(i).getTemplateCode() + "\",");
-					result_json.append("boxval:\"" + reportTemplate.getSingleWellReportTemplate().get(i).getTemplateName() + "\"},");
+			Collections.sort(reportTemplate.getSingleWellRangeReportTemplate());
+			for(int i=0;i<reportTemplate.getSingleWellRangeReportTemplate().size();i++){
+				if(StringManagerUtils.stringToInteger(deviceType)==reportTemplate.getSingleWellRangeReportTemplate().get(i).getDeviceType()){
+					result_json.append("{boxkey:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode() + "\",");
+					result_json.append("boxval:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName() + "\"},");
 				}
 			}
 		}

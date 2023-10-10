@@ -7,7 +7,8 @@ public class ModbusProtocolReportUnitSaveData {
 	int id;
 	String unitCode;
 	String unitName;
-	String singlewellReportTemplate;
+	String singleWellRangeReportTemplate;
+	String singleWellDailyReportTemplate;
 	String productionReportTemplate;
 	int deviceType=0;
 	String sort;
@@ -38,12 +39,20 @@ public class ModbusProtocolReportUnitSaveData {
 		this.unitName = unitName;
 	}
 
-	public String getSinglewellReportTemplate() {
-		return singlewellReportTemplate;
+	public String getSingleWellRangeReportTemplate() {
+		return singleWellRangeReportTemplate;
 	}
 
-	public void setSinglewellReportTemplate(String singlewellReportTemplate) {
-		this.singlewellReportTemplate = singlewellReportTemplate;
+	public void setSingleWellRangeReportTemplate(String singleWellRangeReportTemplate) {
+		this.singleWellRangeReportTemplate = singleWellRangeReportTemplate;
+	}
+
+	public String getSingleWellDailyReportTemplate() {
+		return singleWellDailyReportTemplate;
+	}
+
+	public void setSingleWellDailyReportTemplate(String singleWellDailyReportTemplate) {
+		this.singleWellDailyReportTemplate = singleWellDailyReportTemplate;
 	}
 
 	public String getProductionReportTemplate() {

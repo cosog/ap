@@ -226,9 +226,7 @@ public class CalculateDataController extends BaseController{
 	@RequestMapping("/RPCTimingTotalCalculation")
 	public String RPCTimingTotalCalculation() throws ParseException, SQLException, IOException{
 		String time=ParamUtils.getParameter(request, "time");
-		
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
-		
 		calculateDataService.RPCTimingTotalCalculation(timeStr);
 		
 		System.out.println("抽油机井曲线数据汇总完成");
@@ -283,6 +281,29 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
+		System.out.println("螺杆泵井转速数据汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/PCPTimingTotalCalculation")
+	public String PCPTimingTotalCalculation() throws ParseException, SQLException, IOException{
+		String time=ParamUtils.getParameter(request, "time");
+		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+		calculateDataService.PCPTimingTotalCalculation(timeStr);
 		System.out.println("螺杆泵井转速数据汇总完成");
 		
 		String json ="";

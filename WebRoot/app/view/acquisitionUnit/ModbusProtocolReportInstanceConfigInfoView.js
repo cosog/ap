@@ -100,7 +100,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     tabPosition: 'top',
                     items: [{
                     	title:'单井日报',
-                    	id:'ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id',
+                    	id:'ModbusProtocolReportInstanceSingleWellRangeReportTemplatePanel_Id',
                     	border: false,
                     	region: 'center',
                     	layout: "border",
@@ -227,7 +227,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         	var selectedUnitId='';
                         	var selectedTemplateCode='';
                         	var selectedInstanceName='';
-                        	if(newCard.id=="ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id"){
+                        	if(newCard.id=="ModbusProtocolReportInstanceSingleWellRangeReportTemplatePanel_Id"){
                         		reportType=0;
                         	}else if(newCard.id=="ModbusProtocolReportInstanceProductionReportTemplatePanel_Id"){
                         		reportType=1;
@@ -241,7 +241,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                             			selectedUnitId=record.data.children[0].unitId;
                             			selectedInstanceName=record.data.children[0].text;
                             			if(reportType==0){
-                            				selectedTemplateCode=record.data.children[0].singleWellReportTemplate;
+                            				selectedTemplateCode=record.data.children[0].singleWellRangeReportTemplate;
                             			}else{
                             				selectedTemplateCode=record.data.children[0].productionReportTemplate;
                             			}
@@ -250,7 +250,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                             		selectedUnitId=record.data.unitId;
                             		selectedInstanceName=record.parentNode.data.text;
                             		if(reportType==0){
-                        				selectedTemplateCode=record.data.singleWellReportTemplate;
+                        				selectedTemplateCode=record.data.singleWellRangeReportTemplate;
                         			}else{
                         				selectedTemplateCode=record.data.productionReportTemplate;
                         			}
@@ -258,7 +258,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                             		selectedUnitId=record.data.unitId;
                             		selectedInstanceName=record.data.text;
                             		if(reportType==0){
-                        				selectedTemplateCode=record.data.singleWellReportTemplate;
+                        				selectedTemplateCode=record.data.singleWellRangeReportTemplate;
                         			}else{
                         				selectedTemplateCode=record.data.productionReportTemplate;
                         			}

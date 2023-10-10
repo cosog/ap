@@ -576,6 +576,8 @@ public class ConfigFile {
 		private int offsetHour;
 		
 		private int interval;
+		
+		private int delay;
 
 		public int getOffsetHour() {
 			return offsetHour;
@@ -591,6 +593,14 @@ public class ConfigFile {
 
 		public void setInterval(int interval) {
 			this.interval = interval;
+		}
+
+		public int getDelay() {
+			return delay;
+		}
+
+		public void setDelay(int delay) {
+			this.delay = delay;
 		}
 	}
 	

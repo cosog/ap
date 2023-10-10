@@ -20,6 +20,17 @@ public class Config {
 			if(configFile.getAp().getOthers().getVacuateThreshold()<=0){
 				configFile.getAp().getOthers().setVacuateThreshold(500);
 			}
+			if(configFile.getAp()!=null && configFile.getAp().getReport()!=null){
+				if(configFile.getAp().getReport().getInterval()<=0){
+					configFile.getAp().getReport().setInterval(2);
+				}
+				if(configFile.getAp().getReport().getOffsetHour()<0 || configFile.getAp().getReport().getOffsetHour()>12){
+					configFile.getAp().getReport().setOffsetHour(0);
+				}
+				if(configFile.getAp().getReport().getDelay()<0 || configFile.getAp().getReport().getDelay()>30){
+					configFile.getAp().getReport().setDelay(5);
+				}
+			}
 		}
 		return instance;
 	}

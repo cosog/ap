@@ -8,7 +8,9 @@ public class ReportTemplate  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private List<Template> singleWellReportTemplate;
+	private List<Template> singleWellRangeReportTemplate;
+	
+	private List<Template> singleWellDailyReportTemplate;
 
 	private List<Template> productionReportTemplate;
 	
@@ -271,19 +273,27 @@ public class ReportTemplate  implements Serializable{
 		}
 	}
 
-	public List<Template> getSingleWellReportTemplate() {
-		return singleWellReportTemplate;
-	}
-
-	public void setSingleWellReportTemplate(List<Template> singleWellReportTemplate) {
-		this.singleWellReportTemplate = singleWellReportTemplate;
-	}
-
 	public List<Template> getProductionReportTemplate() {
 		return productionReportTemplate;
 	}
 
 	public void setProductionReportTemplate(List<Template> productionReportTemplate) {
 		this.productionReportTemplate = productionReportTemplate;
+	}
+
+	public List<Template> getSingleWellRangeReportTemplate() {
+		return singleWellRangeReportTemplate;
+	}
+
+	public void setSingleWellRangeReportTemplate(List<Template> singleWellRangeReportTemplate) {
+		this.singleWellRangeReportTemplate = singleWellRangeReportTemplate;
+	}
+
+	public List<Template> getSingleWellDailyReportTemplate() {
+		return singleWellDailyReportTemplate;
+	}
+
+	public void setSingleWellDailyReportTemplate(List<Template> singleWellDailyReportTemplate) {
+		this.singleWellDailyReportTemplate = singleWellDailyReportTemplate;
 	}
 }

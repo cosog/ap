@@ -1,6 +1,6 @@
-Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore', {
+Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.ModbusProtocolSingleWellReportTemplateStore',
+    alias: 'widget.ModbusProtocolSingleWellRangeReportTemplateStore',
     fields: ['templateName','templateCode','deviceType'],
     autoLoad: true,
     proxy: {
@@ -18,10 +18,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	var gridPanel = Ext.getCmp("ReportUnitSingleWellReportTemplateListGridPanel_Id");
+        	var gridPanel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
             if (!isNotVal(gridPanel)) {
             	gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "ReportUnitSingleWellReportTemplateListGridPanel_Id",
+                    id: "ReportUnitSingleWellRangeReportTemplateListGridPanel_Id",
 //                    layout: "fit",
                     columnLines: true,
                     forceFit: true,
@@ -62,12 +62,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-                        	CreateSingleWellReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
+                        	CreateSingleWellRangeReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
                         }
                     }
 
                 });
-                var panel = Ext.getCmp("ReportUnitSingleWellReportTemplateListPanel_Id");
+                var panel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListPanel_Id");
                 panel.add(gridPanel);
             }
             
@@ -78,12 +78,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
         		var selectUnit = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data;
             	if(selectUnit.classes==0){
             		if(isNotVal(selectUnit.children) && selectUnit.children.length>0){
-            			selectUnitReportTemplateCode=selectUnit.children[0].singlewellReportTemplate;
+            			selectUnitReportTemplateCode=selectUnit.children[0].singleWellRangeReportTemplate;
             		}else{
             			
             		}
             	}else if(selectUnit.classes==1){
-            		selectUnitReportTemplateCode=selectUnit.singlewellReportTemplate;
+            		selectUnitReportTemplateCode=selectUnit.singleWellRangeReportTemplate;
             	}
             	
             	var store = gridPanel.getStore();
@@ -97,13 +97,13 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellReportTemplateStore
 					}
 				}
             	if(!selected){
-            		if(singleWellReportTemplateHandsontableHelper!=null){
-    					if(singleWellReportTemplateHandsontableHelper.hot!=undefined){
-    						singleWellReportTemplateHandsontableHelper.hot.destroy();
+            		if(singleWellRangeReportTemplateHandsontableHelper!=null){
+    					if(singleWellRangeReportTemplateHandsontableHelper.hot!=undefined){
+    						singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
     					}
-    					singleWellReportTemplateHandsontableHelper=null;
+    					singleWellRangeReportTemplateHandsontableHelper=null;
     				}
-            		Ext.getCmp("ModbusProtocolReportUnitTemplateTableInfoPanel_Id").setTitle('单井报表模板：');
+            		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井报表模板：');
             	}
         	}
 //            gridPanel.getSelectionModel().deselectAll(true);

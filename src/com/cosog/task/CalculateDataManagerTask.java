@@ -21,7 +21,11 @@ import com.cosog.utils.StringManagerUtils;
 public class CalculateDataManagerTask {
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
-		timingCalculate();
+		timingInitDailyReportData();
+		RPCTotalCalculation();
+		PCPTotalCalculation();
+		RPCTimingCalculate();
+		PCPTimingCalculate();
 	}
 	
 	@Scheduled(cron = "0/1 * * * * ?")
@@ -63,43 +67,82 @@ public class CalculateDataManagerTask {
 	/**
 	 * 抽油机井汇总计算
 	 * */
-	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(cron = "0 0 1/24 * * ?")
-	public void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
+	public static void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/FESDiagramDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
+	//抽油机井跨天汇总
+	public static void RPCTotalCalculation(){
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		long interval=24 * 60 * 60 * 1000;
+		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ Config.getInstance().configFile.getAp().getReport().getDelay() * 60 * 1000 - System.currentTimeMillis();
+		while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+		executor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	try {
+            		RPCTotalCalculationTast();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+	}
 	
 	public static void RPCTimingTotalCalculation(String timeStr){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPCTimingTotalCalculation?time="+timeStr;
+		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPCTimingTotalCalculation?time="+time;
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	/**
 	 * 螺杆泵井汇总计算
 	 * */
-	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(cron = "0 0 1/24 * * ?")
-	public void PCPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
+	public static void PCPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPMDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
+	//螺杆泵井跨天汇总
+	public static void PCPTotalCalculation(){
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		long interval=24 * 60 * 60 * 1000;
+		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ Config.getInstance().configFile.getAp().getReport().getDelay() * 60 * 1000 - System.currentTimeMillis();
+		while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+		executor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	try {
+            		PCPTotalCalculationTast();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+	}
+	
+	@SuppressWarnings("static-access")
 	public static void PCPTimingTotalCalculation(String timeStr){
-//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPMDailyCalculation";
-//		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/PCPTimingTotalCalculation?time="+time;
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	/**
 	 * 报表数据初始化
 	 * */
-	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(cron = "1 0 0/24 * * ?")
-	public void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
+	@SuppressWarnings("static-access")
+	public static void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=0";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
@@ -107,21 +150,39 @@ public class CalculateDataManagerTask {
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
+	//跨天初始化报表
+	public static void timingInitDailyReportData(){
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		long interval=24 * 60 * 60 * 1000;
+		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ 1 * 60 * 1000 - System.currentTimeMillis();
+		while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+		executor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	try {
+            		initDailyReportDataTast();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+	}
 	
-	public static void timingCalculate() {
+	public static void RPCTimingCalculate() {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
-//        interval=5 * 60 * 1000;
+        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
-//        initDelay=StringManagerUtils.getTimeMillis("8:00:00") - System.currentTimeMillis();
+//        initDelay=StringManagerUtils.getTimeMillis("08:00:00") - System.currentTimeMillis();
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-//        initDelay = initDelay > 0 ? initDelay : interval + initDelay;
         executor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
-//                System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"----------------------------------");
                 String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
             	try {
 					RPCTimingTotalCalculation(timeStr);
@@ -129,6 +190,23 @@ public class CalculateDataManagerTask {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+    }
+	
+	public static void PCPTimingCalculate() {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
+        interval=5 * 60 * 1000;
+        long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
+//        initDelay=StringManagerUtils.getTimeMillis("10:00:00") - System.currentTimeMillis();
+        while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+        executor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
                 try {
 					PCPTimingTotalCalculation(timeStr);
 				}catch (Exception e) {

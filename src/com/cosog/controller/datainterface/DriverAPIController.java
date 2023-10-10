@@ -1378,6 +1378,11 @@ public class DriverAPIController extends BaseController{
 					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
 					String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 					String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
+					
+					if(!StringManagerUtils.timeMatchDate(acqTime, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
+						date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
+					}
+					
 					long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
 					if(save_cycle<=acq_cycle || timeDiff>=save_cycle*1000){
 						save=true;
@@ -2771,6 +2776,11 @@ public class DriverAPIController extends BaseController{
 					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
 					String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 					String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
+					
+					if(!StringManagerUtils.timeMatchDate(acqTime, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
+						date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
+					}
+					
 					long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
 					if(save_cycle<=acq_cycle || timeDiff>=save_cycle*1000){
 						save=true;

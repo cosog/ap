@@ -2938,7 +2938,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				reportUnit.setId(modbusProtocolReportUnitSaveData.getId());
 				reportUnit.setUnitCode(modbusProtocolReportUnitSaveData.getUnitCode());
 				reportUnit.setUnitName(modbusProtocolReportUnitSaveData.getUnitName());
-				reportUnit.setSingleWellReportTemplate(modbusProtocolReportUnitSaveData.getSinglewellReportTemplate());
+				reportUnit.setSingleWellRangeReportTemplate(modbusProtocolReportUnitSaveData.getSingleWellRangeReportTemplate());
 				reportUnit.setProductionReportTemplate(modbusProtocolReportUnitSaveData.getProductionReportTemplate());
 				reportUnit.setDeviceType(modbusProtocolReportUnitSaveData.getDeviceType());
 				if(StringManagerUtils.isNum(modbusProtocolReportUnitSaveData.getSort()) || StringManagerUtils.isNumber(modbusProtocolReportUnitSaveData.getSort())){

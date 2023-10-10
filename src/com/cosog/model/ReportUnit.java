@@ -22,7 +22,8 @@ public class ReportUnit implements java.io.Serializable {
 	private Integer id;
 	private String unitCode;
 	private String unitName;
-	private String singleWellReportTemplate;
+	private String singleWellRangeReportTemplate;
+	private String singleWellDailyReportTemplate;
 	private String productionReportTemplate;
 	private Integer deviceType;
 	private Integer sort;
@@ -33,13 +34,14 @@ public class ReportUnit implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ReportUnit(Integer id, String unitCode, String unitName, String singleWellReportTemplate,
+	public ReportUnit(Integer id, String unitCode, String unitName, String singleWellRangeReportTemplate,String singleWellDailyReportTemplate,
 			String productionReportTemplate, Integer deviceType, Integer sort) {
 		super();
 		this.id = id;
 		this.unitCode = unitCode;
 		this.unitName = unitName;
-		this.singleWellReportTemplate = singleWellReportTemplate;
+		this.singleWellRangeReportTemplate = singleWellRangeReportTemplate;
+		this.singleWellDailyReportTemplate = singleWellDailyReportTemplate;
 		this.productionReportTemplate = productionReportTemplate;
 		this.deviceType = deviceType;
 		this.sort = sort;
@@ -74,13 +76,13 @@ public class ReportUnit implements java.io.Serializable {
 		this.unitName = unitName;
 	}
 
-	@Column(name = "singleWellReportTemplate", length = 40)
-	public String getSingleWellReportTemplate() {
-		return singleWellReportTemplate;
+	@Column(name = "singleWellRangeReportTemplate", length = 40)
+	public String getSingleWellRangeReportTemplate() {
+		return singleWellRangeReportTemplate;
 	}
 
-	public void setSingleWellReportTemplate(String singleWellReportTemplate) {
-		this.singleWellReportTemplate = singleWellReportTemplate;
+	public void setSingleWellRangeReportTemplate(String singleWellRangeReportTemplate) {
+		this.singleWellRangeReportTemplate = singleWellRangeReportTemplate;
 	}
 
 	@Column(name = "productionReportTemplate", length = 40)
@@ -108,6 +110,15 @@ public class ReportUnit implements java.io.Serializable {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	@Column(name = "singleWellDailyReportTemplate", length = 40)
+	public String getSingleWellDailyReportTemplate() {
+		return singleWellDailyReportTemplate;
+	}
+
+	public void setSingleWellDailyReportTemplate(String singleWellDailyReportTemplate) {
+		this.singleWellDailyReportTemplate = singleWellDailyReportTemplate;
 	}
 
 }

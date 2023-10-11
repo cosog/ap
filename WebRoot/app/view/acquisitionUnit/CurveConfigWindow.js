@@ -196,7 +196,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			}else if(parseInt(col)==7){
                 				protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),9,curveConfig);
                 			}
-                		}else if(tableType==21){//单井报表汇总计算项
+                		}else if(tableType==21){//单井区间报表汇总计算项
                 			singleWellRangeReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
@@ -217,6 +217,17 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.color=color;
                 			if(parseInt(col)==8){
                 				productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),10,curveConfig);
+                			}
+                		}else if(tableType==23){//单井单日报表汇总计算项
+                			singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
+                			var curveConfig={};
+                			curveConfig.sort=sort;
+                			curveConfig.lineWidth=lineWidth;
+                			curveConfig.dashStyle=dashStyle;
+                			curveConfig.yAxisOpposite=yAxisOpposite;
+                			curveConfig.color=color;
+                			if(parseInt(col)==6){
+                				singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),7,curveConfig);
                 			}
                 		}
                 	}

@@ -1,6 +1,6 @@
-Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore', {
+Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.ModbusProtocolSingleWellRangeReportTemplateStore',
+    alias: 'widget.ModbusProtocolSingleWellDailyReportTemplateStore',
     fields: ['templateName','templateCode','deviceType'],
     autoLoad: true,
     proxy: {
@@ -18,10 +18,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	var gridPanel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
+        	var gridPanel = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
             if (!isNotVal(gridPanel)) {
             	gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "ReportUnitSingleWellRangeReportTemplateListGridPanel_Id",
+                    id: "ReportUnitSingleWellDailyReportTemplateListGridPanel_Id",
 //                    layout: "fit",
                     columnLines: true,
                     forceFit: true,
@@ -37,7 +37,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
                     },
                     store: store,
                     columns: [{
-                    	text: '单井区间报表模板列表',
+                    	text: '单井单日报表模板列表',
                         flex: 8,
                         align: 'left',
                         dataIndex: 'templateName',
@@ -62,12 +62,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-                        	CreateSingleWellRangeReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
+                        	CreateSingleWellDailyReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
                         }
                     }
 
                 });
-                var panel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListPanel_Id");
+                var panel = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListPanel_Id");
                 panel.add(gridPanel);
             }
             
@@ -78,12 +78,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
         		var selectUnit = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data;
             	if(selectUnit.classes==0){
             		if(isNotVal(selectUnit.children) && selectUnit.children.length>0){
-            			selectUnitReportTemplateCode=selectUnit.children[0].singleWellRangeReportTemplate;
+            			selectUnitReportTemplateCode=selectUnit.children[0].singleWellDailyReportTemplate;
             		}else{
             			
             		}
             	}else if(selectUnit.classes==1){
-            		selectUnitReportTemplateCode=selectUnit.singleWellRangeReportTemplate;
+            		selectUnitReportTemplateCode=selectUnit.singleWellDailyReportTemplate;
             	}
             	
             	var store = gridPanel.getStore();
@@ -97,21 +97,19 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
 					}
 				}
             	if(!selected){
-            		if(singleWellRangeReportTemplateHandsontableHelper!=null){
-    					if(singleWellRangeReportTemplateHandsontableHelper.hot!=undefined){
-    						singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
+            		if(singleWellDailyReportTemplateHandsontableHelper!=null){
+    					if(singleWellDailyReportTemplateHandsontableHelper.hot!=undefined){
+    						singleWellDailyReportTemplateHandsontableHelper.hot.destroy();
     					}
-    					singleWellRangeReportTemplateHandsontableHelper=null;
+    					singleWellDailyReportTemplateHandsontableHelper=null;
     				}
-            		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井区间报表模板：');
+            		Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle('单井单日报表模板：');
             	}
         	}
-//            gridPanel.getSelectionModel().deselectAll(true);
-//            gridPanel.getSelectionModel().select(0, true);
         },
         beforeload: function (store, options) {
         	var deviceType=0;
-        	var reportType=0;
+        	var reportType=2;
         	var selectRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
         	if(selectRow>=0){
         		deviceType = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceType;

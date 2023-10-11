@@ -1771,13 +1771,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getSingleWellReportDataTemplateList")
-	public String getSingleWellReportDataTemplateList() throws IOException {
+	@RequestMapping("/getReportDataTemplateList")
+	public String getReportDataTemplateList() throws IOException {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		String reportType=ParamUtils.getParameter(request, "reportType");
-		
-		
-		String json = acquisitionUnitItemManagerService.getSingleWellReportDataTemplateList(reportType,deviceType);
+		String json = acquisitionUnitItemManagerService.getReportDataTemplateList(reportType,deviceType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2939,6 +2937,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				reportUnit.setUnitCode(modbusProtocolReportUnitSaveData.getUnitCode());
 				reportUnit.setUnitName(modbusProtocolReportUnitSaveData.getUnitName());
 				reportUnit.setSingleWellRangeReportTemplate(modbusProtocolReportUnitSaveData.getSingleWellRangeReportTemplate());
+				reportUnit.setSingleWellDailyReportTemplate(modbusProtocolReportUnitSaveData.getSingleWellDailyReportTemplate());
 				reportUnit.setProductionReportTemplate(modbusProtocolReportUnitSaveData.getProductionReportTemplate());
 				reportUnit.setDeviceType(modbusProtocolReportUnitSaveData.getDeviceType());
 				if(StringManagerUtils.isNum(modbusProtocolReportUnitSaveData.getSort()) || StringManagerUtils.isNumber(modbusProtocolReportUnitSaveData.getSort())){

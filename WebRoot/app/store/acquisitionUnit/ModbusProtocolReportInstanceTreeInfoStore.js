@@ -69,8 +69,13 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         	
                         	var tabPanel = Ext.getCmp("ModbusProtocolReportInstanceReportTemplateTabPanel_Id");
             				var activeId = tabPanel.getActiveTab().id;
-            				if(activeId=="ModbusProtocolReportInstanceSingleWellRangeReportTemplatePanel_Id"){
-            					reportType=0;
+            				if(activeId=="ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id"){
+            					var singleWellReportActiveId=Ext.getCmp("ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id").getActiveTab().id;
+            					if(singleWellReportActiveId=='ModbusProtocolReportInstanceSingleWellDailyReportTemplatePanel_Id'){
+            						reportType=2;
+            					}else if(singleWellReportActiveId=='ModbusProtocolReportInstanceSingleWellRangeReportTemplatePanel_Id'){
+            						reportType=0;
+            					}
             				}else if(activeId=="ModbusProtocolReportInstanceProductionReportTemplatePanel_Id"){
             					reportType=1;
             				}
@@ -81,6 +86,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         			selectedInstanceName=record.data.children[0].text;
                         			if(reportType==0){
                         				selectedTemplateCode=record.data.children[0].singleWellRangeReportTemplate;
+                        			}else if(reportType==2){
+                        				selectedTemplateCode=record.data.children[0].singleWellDailyReportTemplate;
                         			}else{
                         				selectedTemplateCode=record.data.children[0].productionReportTemplate;
                         			}
@@ -90,6 +97,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         		selectedInstanceName=record.parentNode.data.text;
                         		if(reportType==0){
                     				selectedTemplateCode=record.data.singleWellRangeReportTemplate;
+                    			}else if(reportType==2){
+                    				selectedTemplateCode=record.data.singleWellDailyReportTemplate;
                     			}else{
                     				selectedTemplateCode=record.data.productionReportTemplate;
                     			}
@@ -98,19 +107,24 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         		selectedInstanceName=record.data.text;
                         		if(reportType==0){
                     				selectedTemplateCode=record.data.singleWellRangeReportTemplate;
+                    			}else if(reportType==2){
+                    				selectedTemplateCode=record.data.singleWellDailyReportTemplate;
                     			}else{
                     				selectedTemplateCode=record.data.productionReportTemplate;
                     			}
                         	}
                         	
                         	if(reportType==0){
-                    			CreateReportInstanceSingleWellTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                    			CreateSingleWellReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                    			CreateReportInstanceSingleWellRangeReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
+                    			CreateSingleWellRangeReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                        	}else if(reportType==2){
+                    			CreateReportInstanceSingleWellDailyReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
+                    			CreateSingleWellDailyReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
                         	}else{
                         		CreateReportInstanceProductionTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
                         		CreateProductionReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
                         	}
-//                        	
+                        	
                         	CreateProtocolReportInstancePropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单

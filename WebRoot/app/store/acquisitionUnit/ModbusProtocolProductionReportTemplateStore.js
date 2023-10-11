@@ -5,7 +5,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
     autoLoad: true,
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/getSingleWellReportDataTemplateList',
+        url: context + '/acquisitionUnitManagerController/getReportDataTemplateList',
         actionMethods: {
             read: 'POST'
         },

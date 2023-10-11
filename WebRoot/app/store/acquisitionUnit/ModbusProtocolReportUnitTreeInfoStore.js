@@ -79,7 +79,14 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
             				if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
             					var singleWellReportActiveId=Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
             					if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id'){
-            						
+            						var ReportUnitSingleWellDailyReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
+                                	if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
+                                		ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
+                                	}else{
+                                		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
+                                	}
+                                	CreateSingleWellDailyReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                                	
             					}else if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id'){
             						var ReportUnitSingleWellRangeReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
                                 	if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
@@ -87,7 +94,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                                 	}else{
                                 		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
                                 	}
-                                	CreateSingleWellReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
             					}
             				}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
             					var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");

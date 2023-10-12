@@ -37,13 +37,13 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 	var deviceType=0;
                 	var selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
                 	var gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
-                	var divId="RPCSingleWellDailyReportCurveDiv_Id";
+                	var divId="RPCSingleWellRangeReportCurveDiv_Id";
                 	
                 	if(activeId=="PCPDailyReportPanel_Id"){
                 		deviceType=1;
                 		selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
                 		gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
-                		divId="PCPSingleWellDailyReportCurveDiv_Id";
+                		divId="PCPSingleWellRangeReportCurveDiv_Id";
                 	}
                 	var deviceName='';
                 	var deviceId=0;
@@ -164,7 +164,7 @@ function CreateDeviceReportCurveSetTable(){
 	var reportType=0;
 	var selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
 	var gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
-	var divId="RPCSingleWellDailyReportCurveDiv_Id";
+	var divId="RPCSingleWellRangeReportCurveDiv_Id";
 	
 	if(activeId=="RPCDailyReportPanel_Id"){
 		deviceType=0;
@@ -173,7 +173,7 @@ function CreateDeviceReportCurveSetTable(){
 			reportType=0;
 			selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
 			gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
-			divId="RPCSingleWellDailyReportCurveDiv_Id";
+			divId="RPCSingleWellRangeReportCurveDiv_Id";
 		}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
 			reportType=1;
 			selectRowId="RPCProductionDailyReportInstanceListSelectRow_Id";
@@ -187,7 +187,7 @@ function CreateDeviceReportCurveSetTable(){
 			reportType=0;
 			selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
 			gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
-			divId="PCPSingleWellDailyReportCurveDiv_Id";
+			divId="PCPSingleWellRangeReportCurveDiv_Id";
 		}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
 			reportType=1;
 			selectRowId="PCPProductionDailyReportDeviceListSelectRow_Id";

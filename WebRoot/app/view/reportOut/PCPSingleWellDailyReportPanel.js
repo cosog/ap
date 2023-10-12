@@ -1,4 +1,4 @@
-var pcpSingleWellDailyReportHelper=null
+var pcpSingleWellRangeReportHelper=null
 Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.PCPSingleWellDailyReportPanel',
@@ -67,7 +67,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                         wellListCombo.getStore().loadPage(1); // 加载井下拉框的store
                     },
                     specialkey: function (field, e) {
-                        onEnterKeyDownFN(field, e, 'PCPSingleWellDailyReportPanel_Id');
+                        onEnterKeyDownFN(field, e, 'PCPSingleWellDailyReportGridPanel_Id');
                     },
                     select: function (combo, record, index) {
                     	Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
@@ -101,8 +101,8 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
-                        	CreatePCPSingleWellDailyReportTable();
-                        	CreatePCPSingleWellDailyReportCurve();
+                        	CreatePCPSingleWellRangeReportTable();
+                        	CreatePCPSingleWellRangeReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -121,8 +121,8 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
-                        	CreatePCPSingleWellDailyReportTable();
-                        	CreatePCPSingleWellDailyReportCurve();
+                        	CreatePCPSingleWellRangeReportTable();
+                        	CreatePCPSingleWellRangeReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -134,8 +134,8 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 iconCls: 'search',
                 hidden:false,
                 handler: function (v, o) {
-                	CreatePCPSingleWellDailyReportTable();
-                	CreatePCPSingleWellDailyReportCurve();
+                	CreatePCPSingleWellRangeReportTable();
+                	CreatePCPSingleWellRangeReportCurve();
                 }
     		},'-', {
                 xtype: 'button',
@@ -155,7 +155,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                     	wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                     }
                 	
-                	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=1&reportType=0&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
+                	var url=context + '/reportDataMamagerController/exportSingleWellRangeReportData?deviceType=1&reportType=0&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
             }, '->',{
@@ -164,7 +164,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 iconCls: 'save',
                 disabled: loginUserRoleReportEdit!=1,
                 handler: function (v, o) {
-                	pcpSingleWellDailyReportHelper.saveData();
+                	pcpSingleWellRangeReportHelper.saveData();
                 }
             },'-', {
                 id: 'PCPSingleWellDailyReportTotalCount_Id',
@@ -199,12 +199,12 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
             		collapsible: true, // 是否可折叠
                     collapsed:false,//是否折叠
                     split: true, // 竖折叠条
-                    id:'PCPSingleWellDailyReportCurvePanel_id',
-                    html: '<div id="PCPSingleWellDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                    id:'PCPSingleWellRangeReportCurvePanel_id',
+                    html: '<div id="PCPSingleWellRangeReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
                     listeners: {
                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                            if ($("#PCPSingleWellDailyReportCurveDiv_Id").highcharts() != undefined) {
-                            	highchartsResize("PCPSingleWellDailyReportCurveDiv_Id");
+                            if ($("#PCPSingleWellRangeReportCurveDiv_Id").highcharts() != undefined) {
+                            	highchartsResize("PCPSingleWellRangeReportCurveDiv_Id");
                             }
                         }
                     }
@@ -212,20 +212,20 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
             		region: 'center',
             		title:'报表数据',
                     layout: "fit",
-                	id:'PCPSingleWellDailyReportPanel_id',
+                	id:'PCPSingleWellRangeReportPanel_id',
 //                    border: false,
-                    html:'<div class="PCPSingleWellDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPSingleWellDailyReportDiv_id"></div></div>',
+                    html:'<div class="PCPSingleWellRangeReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPSingleWellRangeReportDiv_id"></div></div>',
                     listeners: {
                     	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    		if(pcpSingleWellDailyReportHelper!=null && pcpSingleWellDailyReportHelper.hot!=undefined){
-//                    			pcpSingleWellDailyReportHelper.hot.refreshDimensions();
+                    		if(pcpSingleWellRangeReportHelper!=null && pcpSingleWellRangeReportHelper.hot!=undefined){
+//                    			pcpSingleWellRangeReportHelper.hot.refreshDimensions();
                     			var newWidth=width;
                         		var newHeight=height;
                         		var header=thisPanel.getHeader();
                         		if(header){
                         			newHeight=newHeight-header.lastBox.height-2;
                         		}
-                        		pcpSingleWellDailyReportHelper.hot.updateSettings({
+                        		pcpSingleWellRangeReportHelper.hot.updateSettings({
                         			width:newWidth,
                         			height:newHeight
                         		});
@@ -240,7 +240,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
     }
 });
 
-function CreatePCPSingleWellDailyReportTable(){
+function CreatePCPSingleWellRangeReportTable(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 //    var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();
     var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
@@ -254,12 +254,12 @@ function CreatePCPSingleWellDailyReportTable(){
     	wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     }
     
-    Ext.getCmp("PCPSingleWellDailyReportPanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("PCPSingleWellRangeReportPanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/reportDataMamagerController/getSingleWellDailyReportData',
+		url:context + '/reportDataMamagerController/getSingleWellRangeReportData',
 		success:function(response) {
-			Ext.getCmp("PCPSingleWellDailyReportPanel_id").getEl().unmask();
+			Ext.getCmp("PCPSingleWellRangeReportPanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			var startDate=Ext.getCmp('PCPSingleWellDailyReportStartDate_Id');
@@ -271,19 +271,19 @@ function CreatePCPSingleWellDailyReportTable(){
             	endDate.setValue(result.endDate);
             }
             
-			if(pcpSingleWellDailyReportHelper!=null){
-				if(pcpSingleWellDailyReportHelper.hot!=undefined){
-					pcpSingleWellDailyReportHelper.hot.destroy();
+			if(pcpSingleWellRangeReportHelper!=null){
+				if(pcpSingleWellRangeReportHelper.hot!=undefined){
+					pcpSingleWellRangeReportHelper.hot.destroy();
 				}
-				pcpSingleWellDailyReportHelper=null;
+				pcpSingleWellRangeReportHelper=null;
 			}
 			if(result.success){
-				if(pcpSingleWellDailyReportHelper==null || pcpSingleWellDailyReportHelper.hot==undefined){
-					pcpSingleWellDailyReportHelper = PCPSingleWellDailyReportHelper.createNew("PCPSingleWellDailyReportDiv_id","PCPSingleWellDailyReportContainer",result.template,result.data,result.columns);
-					pcpSingleWellDailyReportHelper.createTable();
+				if(pcpSingleWellRangeReportHelper==null || pcpSingleWellRangeReportHelper.hot==undefined){
+					pcpSingleWellRangeReportHelper = PCPSingleWellRangeReportHelper.createNew("PCPSingleWellRangeReportDiv_id","PCPSingleWellRangeReportContainer",result.template,result.data,result.columns);
+					pcpSingleWellRangeReportHelper.createTable();
 				}
 			}else{
-				$("#PCPSingleWellDailyReportDiv_id").html('');
+				$("#PCPSingleWellRangeReportDiv_id").html('');
 			}
 			
 			Ext.getCmp("PCPSingleWellDailyReportTotalCount_Id").update({count: result.data.length});
@@ -304,97 +304,97 @@ function CreatePCPSingleWellDailyReportTable(){
 };
 
 
-var PCPSingleWellDailyReportHelper = {
+var PCPSingleWellRangeReportHelper = {
 	    createNew: function (divId, containerid,templateData,contentData,columns) {
-	        var pcpSingleWellDailyReportHelper = {};
-	        pcpSingleWellDailyReportHelper.templateData=templateData;
-	        pcpSingleWellDailyReportHelper.contentData=contentData;
-	        pcpSingleWellDailyReportHelper.columns=columns;
-	        pcpSingleWellDailyReportHelper.get_data = {};
-	        pcpSingleWellDailyReportHelper.data=[];
-	        pcpSingleWellDailyReportHelper.sourceData=[];
-	        pcpSingleWellDailyReportHelper.hot = '';
-	        pcpSingleWellDailyReportHelper.container = document.getElementById(divId);
-	        pcpSingleWellDailyReportHelper.columnCount=0;
-	        pcpSingleWellDailyReportHelper.editData={};
-	        pcpSingleWellDailyReportHelper.contentUpdateList = [];
+	        var pcpSingleWellRangeReportHelper = {};
+	        pcpSingleWellRangeReportHelper.templateData=templateData;
+	        pcpSingleWellRangeReportHelper.contentData=contentData;
+	        pcpSingleWellRangeReportHelper.columns=columns;
+	        pcpSingleWellRangeReportHelper.get_data = {};
+	        pcpSingleWellRangeReportHelper.data=[];
+	        pcpSingleWellRangeReportHelper.sourceData=[];
+	        pcpSingleWellRangeReportHelper.hot = '';
+	        pcpSingleWellRangeReportHelper.container = document.getElementById(divId);
+	        pcpSingleWellRangeReportHelper.columnCount=0;
+	        pcpSingleWellRangeReportHelper.editData={};
+	        pcpSingleWellRangeReportHelper.contentUpdateList = [];
 	        
-	        pcpSingleWellDailyReportHelper.initData=function(){
-	        	pcpSingleWellDailyReportHelper.data=[];
-	        	for(var i=0;i<pcpSingleWellDailyReportHelper.templateData.header.length;i++){
-	        		pcpSingleWellDailyReportHelper.templateData.header[i].title.push('');
-	        		pcpSingleWellDailyReportHelper.columnCount=pcpSingleWellDailyReportHelper.templateData.header[i].title.length;
+	        pcpSingleWellRangeReportHelper.initData=function(){
+	        	pcpSingleWellRangeReportHelper.data=[];
+	        	for(var i=0;i<pcpSingleWellRangeReportHelper.templateData.header.length;i++){
+	        		pcpSingleWellRangeReportHelper.templateData.header[i].title.push('');
+	        		pcpSingleWellRangeReportHelper.columnCount=pcpSingleWellRangeReportHelper.templateData.header[i].title.length;
 	        		
 	        		var valueArr=[];
 	        		var sourceValueArr=[];
-	        		for(var j=0;j<pcpSingleWellDailyReportHelper.templateData.header[i].title.length;j++){
-	        			valueArr.push(pcpSingleWellDailyReportHelper.templateData.header[i].title[j]);
-	        			sourceValueArr.push(pcpSingleWellDailyReportHelper.templateData.header[i].title[j]);
+	        		for(var j=0;j<pcpSingleWellRangeReportHelper.templateData.header[i].title.length;j++){
+	        			valueArr.push(pcpSingleWellRangeReportHelper.templateData.header[i].title[j]);
+	        			sourceValueArr.push(pcpSingleWellRangeReportHelper.templateData.header[i].title[j]);
 	        		}
 	        		
-	        		pcpSingleWellDailyReportHelper.data.push(valueArr);
-	        		pcpSingleWellDailyReportHelper.sourceData.push(sourceValueArr);
+	        		pcpSingleWellRangeReportHelper.data.push(valueArr);
+	        		pcpSingleWellRangeReportHelper.sourceData.push(sourceValueArr);
 		        }
-	        	for(var i=0;i<pcpSingleWellDailyReportHelper.contentData.length;i++){
+	        	for(var i=0;i<pcpSingleWellRangeReportHelper.contentData.length;i++){
 	        		var valueArr=[];
 	        		var sourceValueArr=[];
-	        		for(var j=0;j<pcpSingleWellDailyReportHelper.contentData[i].length;j++){
-	        			valueArr.push(pcpSingleWellDailyReportHelper.contentData[i][j]);
-	        			sourceValueArr.push(pcpSingleWellDailyReportHelper.contentData[i][j]);
+	        		for(var j=0;j<pcpSingleWellRangeReportHelper.contentData[i].length;j++){
+	        			valueArr.push(pcpSingleWellRangeReportHelper.contentData[i][j]);
+	        			sourceValueArr.push(pcpSingleWellRangeReportHelper.contentData[i][j]);
 	        		}
 	        		
-	        		pcpSingleWellDailyReportHelper.data.push(valueArr);
-		        	pcpSingleWellDailyReportHelper.sourceData.push(sourceValueArr);
+	        		pcpSingleWellRangeReportHelper.data.push(valueArr);
+		        	pcpSingleWellRangeReportHelper.sourceData.push(sourceValueArr);
 		        }
-	        	for(var i=pcpSingleWellDailyReportHelper.templateData.header.length;i<pcpSingleWellDailyReportHelper.data.length;i++){
-	        		for(var j=0;j<pcpSingleWellDailyReportHelper.data[i].length;j++){
+	        	for(var i=pcpSingleWellRangeReportHelper.templateData.header.length;i<pcpSingleWellRangeReportHelper.data.length;i++){
+	        		for(var j=0;j<pcpSingleWellRangeReportHelper.data[i].length;j++){
 	        			var editable=false
-	        			for(var k=0;k<pcpSingleWellDailyReportHelper.templateData.editable.length;k++){
-	        				if( i>=pcpSingleWellDailyReportHelper.templateData.editable[k].startRow 
-	                				&& i<=pcpSingleWellDailyReportHelper.templateData.editable[k].endRow
-	                				&& j>=pcpSingleWellDailyReportHelper.templateData.editable[k].startColumn 
-	                				&& j<=pcpSingleWellDailyReportHelper.templateData.editable[k].endColumn
+	        			for(var k=0;k<pcpSingleWellRangeReportHelper.templateData.editable.length;k++){
+	        				if( i>=pcpSingleWellRangeReportHelper.templateData.editable[k].startRow 
+	                				&& i<=pcpSingleWellRangeReportHelper.templateData.editable[k].endRow
+	                				&& j>=pcpSingleWellRangeReportHelper.templateData.editable[k].startColumn 
+	                				&& j<=pcpSingleWellRangeReportHelper.templateData.editable[k].endColumn
 	                		){
 	        					editable=true;
 	        					break;
 	                		}
 	        			}
 	        			
-	        			var value=pcpSingleWellDailyReportHelper.data[i][j];
+	        			var value=pcpSingleWellRangeReportHelper.data[i][j];
 		                if((!editable)&&value.length>12){
 		                	value=value.substring(0, 11)+"...";
-		                	pcpSingleWellDailyReportHelper.data[i][j]=value;
+		                	pcpSingleWellRangeReportHelper.data[i][j]=value;
 		                }
 	        		}
 	        	}
 	        }
 	        
-	        pcpSingleWellDailyReportHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        pcpSingleWellRangeReportHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
-	        	if(pcpSingleWellDailyReportHelper!=null && pcpSingleWellDailyReportHelper.hot!=null){
-	        		for(var i=0;i<pcpSingleWellDailyReportHelper.templateData.header.length;i++){
+	        	if(pcpSingleWellRangeReportHelper!=null && pcpSingleWellRangeReportHelper.hot!=null){
+	        		for(var i=0;i<pcpSingleWellRangeReportHelper.templateData.header.length;i++){
 		        		if(row==i){
-		        			if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle)){
-		        				if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.fontWeight)){
-		        					td.style.fontWeight = pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.fontWeight;
+		        			if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle)){
+		        				if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.fontWeight)){
+		        					td.style.fontWeight = pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.fontWeight;
 		        				}
-		        				if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.fontSize)){
-		        					td.style.fontSize = pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.fontSize;
+		        				if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.fontSize)){
+		        					td.style.fontSize = pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
-		        				if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.fontFamily;
+		        				if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.fontFamily)){
+		        					td.style.fontFamily = pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
-		        				if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.height)){
-		        					td.style.height = pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.height;
+		        				if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.height)){
+		        					td.style.height = pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.height;
 		        				}
-		        				if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.color)){
-		        					td.style.color = pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.color;
+		        				if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.color)){
+		        					td.style.color = pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.color;
 		        				}
-		        				if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.backgroundColor)){
-		        					td.style.backgroundColor = pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.backgroundColor;
+		        				if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.backgroundColor)){
+		        					td.style.backgroundColor = pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.backgroundColor;
 		        				}
-		        				if(isNotVal(pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.textAlign)){
-		        					td.style.textAlign = pcpSingleWellDailyReportHelper.templateData.header[i].tdStyle.textAlign;
+		        				if(isNotVal(pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.textAlign)){
+		        					td.style.textAlign = pcpSingleWellRangeReportHelper.templateData.header[i].tdStyle.textAlign;
 		        				}
 		        			}
 		        			break;
@@ -404,12 +404,12 @@ var PCPSingleWellDailyReportHelper = {
 	        	}
 	        }
 	        
-	        pcpSingleWellDailyReportHelper.addEditableColor = function (instance, td, row, col, prop, value, cellProperties) {
+	        pcpSingleWellRangeReportHelper.addEditableColor = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.color='#ff0000';    
 	        }
 	        
-	        pcpSingleWellDailyReportHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        pcpSingleWellRangeReportHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
 	            if (row <= 2&&row>=1) {
@@ -420,7 +420,7 @@ var PCPSingleWellDailyReportHelper = {
 	            }
 	        }
 			
-			pcpSingleWellDailyReportHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+			pcpSingleWellRangeReportHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if (row < 1) {
 	                td.style.fontWeight = 'bold';
@@ -430,7 +430,7 @@ var PCPSingleWellDailyReportHelper = {
 			    }      
 	        }
 			
-			pcpSingleWellDailyReportHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+			pcpSingleWellRangeReportHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';
 		         if(row < 3){
@@ -441,44 +441,44 @@ var PCPSingleWellDailyReportHelper = {
 	        }
 			
 
-	        pcpSingleWellDailyReportHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
+	        pcpSingleWellRangeReportHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(183, 222, 232)';
 	        }
 
-	        pcpSingleWellDailyReportHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
+	        pcpSingleWellRangeReportHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(216, 228, 188)';
 	        }
 	        
-	        pcpSingleWellDailyReportHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
+	        pcpSingleWellRangeReportHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
 	        }
 
 	        // 实现标题居中
-	        pcpSingleWellDailyReportHelper.titleCenter = function () {
+	        pcpSingleWellRangeReportHelper.titleCenter = function () {
 	            $(containerid).width($($('.wtHider')[0]).width());
 	        }
 
-	        pcpSingleWellDailyReportHelper.createTable = function () {
-	            pcpSingleWellDailyReportHelper.container.innerHTML = "";
-	            pcpSingleWellDailyReportHelper.hot = new Handsontable(pcpSingleWellDailyReportHelper.container, {
+	        pcpSingleWellRangeReportHelper.createTable = function () {
+	            pcpSingleWellRangeReportHelper.container.innerHTML = "";
+	            pcpSingleWellRangeReportHelper.hot = new Handsontable(pcpSingleWellRangeReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	            	data: pcpSingleWellDailyReportHelper.data,
+	            	data: pcpSingleWellRangeReportHelper.data,
 	            	hiddenColumns: {
-	                    columns: [pcpSingleWellDailyReportHelper.columnCount-1],
+	                    columns: [pcpSingleWellRangeReportHelper.columnCount-1],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-//	            	columns:pcpSingleWellDailyReportHelper.columns,
-	            	fixedRowsTop:pcpSingleWellDailyReportHelper.templateData.fixedRowsTop, 
-	                fixedRowsBottom: pcpSingleWellDailyReportHelper.templateData.fixedRowsBottom,
+//	            	columns:pcpSingleWellRangeReportHelper.columns,
+	            	fixedRowsTop:pcpSingleWellRangeReportHelper.templateData.fixedRowsTop, 
+	                fixedRowsBottom: pcpSingleWellRangeReportHelper.templateData.fixedRowsBottom,
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
 	                rowHeaders: false,
 	                colHeaders: false,
-					rowHeights: pcpSingleWellDailyReportHelper.templateData.rowHeights,
-					colWidths: pcpSingleWellDailyReportHelper.templateData.columnWidths,
+					rowHeights: pcpSingleWellRangeReportHelper.templateData.rowHeights,
+					colWidths: pcpSingleWellRangeReportHelper.templateData.columnWidths,
 					rowHeaders: false, //显示行头
 //					rowHeaders(index) {
 //					    return 'Row ' + (index + 1);
@@ -496,31 +496,31 @@ var PCPSingleWellDailyReportHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
-	                mergeCells: pcpSingleWellDailyReportHelper.templateData.mergeCells,
+	                mergeCells: pcpSingleWellRangeReportHelper.templateData.mergeCells,
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.renderer = pcpSingleWellDailyReportHelper.addStyle;
+	                    cellProperties.renderer = pcpSingleWellRangeReportHelper.addStyle;
 	                    cellProperties.readOnly = true;
-	                    if(pcpSingleWellDailyReportHelper.templateData.editable!=null && pcpSingleWellDailyReportHelper.templateData.editable.length>0){
-	                    	for(var i=0;i<pcpSingleWellDailyReportHelper.templateData.editable.length;i++){
-	                    		if( row>=pcpSingleWellDailyReportHelper.templateData.editable[i].startRow 
-	                    				&& row<=pcpSingleWellDailyReportHelper.templateData.editable[i].endRow
-	                    				&& col>=pcpSingleWellDailyReportHelper.templateData.editable[i].startColumn 
-	                    				&& col<=pcpSingleWellDailyReportHelper.templateData.editable[i].endColumn
+	                    if(pcpSingleWellRangeReportHelper.templateData.editable!=null && pcpSingleWellRangeReportHelper.templateData.editable.length>0){
+	                    	for(var i=0;i<pcpSingleWellRangeReportHelper.templateData.editable.length;i++){
+	                    		if( row>=pcpSingleWellRangeReportHelper.templateData.editable[i].startRow 
+	                    				&& row<=pcpSingleWellRangeReportHelper.templateData.editable[i].endRow
+	                    				&& col>=pcpSingleWellRangeReportHelper.templateData.editable[i].startColumn 
+	                    				&& col<=pcpSingleWellRangeReportHelper.templateData.editable[i].endColumn
 	                    		){
 	                    			cellProperties.readOnly = false;
-	                    			cellProperties.renderer = pcpSingleWellDailyReportHelper.addEditableColor;
+	                    			cellProperties.renderer = pcpSingleWellRangeReportHelper.addEditableColor;
 	                    		}
 	                    	}
 	                    }
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(pcpSingleWellDailyReportHelper!=null&&pcpSingleWellDailyReportHelper.hot!=''&&pcpSingleWellDailyReportHelper.hot!=undefined && pcpSingleWellDailyReportHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=pcpSingleWellDailyReportHelper.sourceData[coords.row][coords.col];
-	                		if(coords.row>=pcpSingleWellDailyReportHelper.templateData.header.length){
+	                	if(pcpSingleWellRangeReportHelper!=null&&pcpSingleWellRangeReportHelper.hot!=''&&pcpSingleWellRangeReportHelper.hot!=undefined && pcpSingleWellRangeReportHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=pcpSingleWellRangeReportHelper.sourceData[coords.row][coords.col];
+	                		if(coords.row>=pcpSingleWellRangeReportHelper.templateData.header.length){
 	                			if(isNotVal(rawValue)){
 	                				var showValue=rawValue;
 	            					var rowChar=90;
@@ -559,25 +559,25 @@ var PCPSingleWellDailyReportHelper = {
 	                	}
 	                },
 	                afterOnCellMouseOut: function(event, coords, TD){
-	                	if(pcpSingleWellDailyReportHelper!=null&&pcpSingleWellDailyReportHelper.hot!=''&&pcpSingleWellDailyReportHelper.hot!=undefined && pcpSingleWellDailyReportHelper.hot.getDataAtCell!=undefined){
-	                		var value=pcpSingleWellDailyReportHelper.sourceData[coords.row][coords.col];
-	                		if(coords.row>=pcpSingleWellDailyReportHelper.templateData.header.length){
+	                	if(pcpSingleWellRangeReportHelper!=null&&pcpSingleWellRangeReportHelper.hot!=''&&pcpSingleWellRangeReportHelper.hot!=undefined && pcpSingleWellRangeReportHelper.hot.getDataAtCell!=undefined){
+	                		var value=pcpSingleWellRangeReportHelper.sourceData[coords.row][coords.col];
+	                		if(coords.row>=pcpSingleWellRangeReportHelper.templateData.header.length){
 //	                			TD.outerHTML='<td class="htDimmed">'+TD.innerText+'</td>';
 	                		}
 	                	}
 	                },
 	                afterChange: function (changes, source) {
 	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
-	                    if (pcpSingleWellDailyReportHelper!=null && pcpSingleWellDailyReportHelper.hot!=undefined && pcpSingleWellDailyReportHelper.hot!='' && changes != null) {
+	                    if (pcpSingleWellRangeReportHelper!=null && pcpSingleWellRangeReportHelper.hot!=undefined && pcpSingleWellRangeReportHelper.hot!='' && changes != null) {
 	                        for (var i = 0; i < changes.length; i++) {
 	                            var params = [];
 	                            var index = changes[i][0]; //行号码
-	                            var rowdata = pcpSingleWellDailyReportHelper.hot.getDataAtRow(index);
+	                            var rowdata = pcpSingleWellRangeReportHelper.hot.getDataAtRow(index);
 	                            
 	                            var editCellInfo={};
 	                            var editRow=changes[i][0];
 	                            var editCol=changes[i][1];
-	                            var column=pcpSingleWellDailyReportHelper.columns[editCol];
+	                            var column=pcpSingleWellRangeReportHelper.columns[editCol];
 	                            
 	                            editCellInfo.editRow=editRow;
 	                            editCellInfo.editCol=editCol;
@@ -586,33 +586,33 @@ var PCPSingleWellDailyReportHelper = {
 	                            editCellInfo.oldValue=changes[i][2];
 	                            editCellInfo.newValue=changes[i][3];
 	                            editCellInfo.header=false;
-	                            if(editCellInfo.editRow<pcpSingleWellDailyReportHelper.templateData.header.length){
+	                            if(editCellInfo.editRow<pcpSingleWellRangeReportHelper.templateData.header.length){
 	                            	editCellInfo.header=true;
 	                            }
 	                            
 	                            var isExit=false;
-	                            for(var j=0;j<pcpSingleWellDailyReportHelper.contentUpdateList.length;j++){
-	                            	if(editCellInfo.editRow==pcpSingleWellDailyReportHelper.contentUpdateList[j].editRow && editCellInfo.editCol==pcpSingleWellDailyReportHelper.contentUpdateList[j].editCol){
-	                            		pcpSingleWellDailyReportHelper.contentUpdateList[j].newValue=editCellInfo.newValue;
+	                            for(var j=0;j<pcpSingleWellRangeReportHelper.contentUpdateList.length;j++){
+	                            	if(editCellInfo.editRow==pcpSingleWellRangeReportHelper.contentUpdateList[j].editRow && editCellInfo.editCol==pcpSingleWellRangeReportHelper.contentUpdateList[j].editCol){
+	                            		pcpSingleWellRangeReportHelper.contentUpdateList[j].newValue=editCellInfo.newValue;
 	                            		isExit=true;
 	                            		break;
 	                            	}
 	                            }
 	                            if(!isExit){
-	                            	pcpSingleWellDailyReportHelper.contentUpdateList.push(editCellInfo);
+	                            	pcpSingleWellRangeReportHelper.contentUpdateList.push(editCellInfo);
 	                            }
 	                        }
 	                    }
 	                }
 	            });
 	        }
-	        pcpSingleWellDailyReportHelper.getData = function (data) {
+	        pcpSingleWellRangeReportHelper.getData = function (data) {
 	        	
 	        }
 	        
-	        pcpSingleWellDailyReportHelper.saveData = function () {
-	        	if(pcpSingleWellDailyReportHelper.contentUpdateList.length>0){
-	        		pcpSingleWellDailyReportHelper.editData.contentUpdateList=pcpSingleWellDailyReportHelper.contentUpdateList;
+	        pcpSingleWellRangeReportHelper.saveData = function () {
+	        	if(pcpSingleWellRangeReportHelper.contentUpdateList.length>0){
+	        		pcpSingleWellRangeReportHelper.editData.contentUpdateList=pcpSingleWellRangeReportHelper.contentUpdateList;
 	        		var wellName='';
 	        	    var wellId=0;
 	        	    var selectRow= Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").getValue();
@@ -620,19 +620,19 @@ var PCPSingleWellDailyReportHelper = {
 	        	    	wellName=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
 	        	    	wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	        	    }
-//	        		alert(JSON.stringify(pcpSingleWellDailyReportHelper.editData));
+//	        		alert(JSON.stringify(pcpSingleWellRangeReportHelper.editData));
 	        		Ext.Ajax.request({
 	                    method: 'POST',
-	                    url: context + '/reportDataMamagerController/saveDailyReportData',
+	                    url: context + '/reportDataMamagerController/saveSingleWellRangeDailyReportData',
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
 	                        	Ext.MessageBox.alert("信息", '保存成功');
-	                        	pcpSingleWellDailyReportHelper.clearContainer();
-	                        	CreatePCPSingleWellDailyReportTable();
-	                        	CreatePCPSingleWellDailyReportCurve();
+	                        	pcpSingleWellRangeReportHelper.clearContainer();
+	                        	CreatePCPSingleWellRangeReportTable();
+	                        	CreatePCPSingleWellRangeReportCurve();
 	                        } else {
-	                        	pcpSingleWellDailyReportHelper.clearContainer();
+	                        	pcpSingleWellRangeReportHelper.clearContainer();
 	                        	Ext.MessageBox.alert("信息", "数据保存失败");
 	                        }
 	                    },
@@ -642,7 +642,7 @@ var PCPSingleWellDailyReportHelper = {
 	                    params: {
 	                    	wellId:wellId,
 	                    	wellName:wellName,
-	                    	data: JSON.stringify(pcpSingleWellDailyReportHelper.editData),
+	                    	data: JSON.stringify(pcpSingleWellRangeReportHelper.editData),
 	                        deviceType: 1
 	                    }
 	                });
@@ -650,17 +650,17 @@ var PCPSingleWellDailyReportHelper = {
 	        		Ext.MessageBox.alert("信息", "无数据变化！");
 	        	}
 	        }
-	        pcpSingleWellDailyReportHelper.clearContainer = function () {
-	        	pcpSingleWellDailyReportHelper.editData={};
-            	pcpSingleWellDailyReportHelper.contentUpdateList=[];
+	        pcpSingleWellRangeReportHelper.clearContainer = function () {
+	        	pcpSingleWellRangeReportHelper.editData={};
+            	pcpSingleWellRangeReportHelper.contentUpdateList=[];
 	        }
 
 	        var init = function () {
-	        	pcpSingleWellDailyReportHelper.initData();
+	        	pcpSingleWellRangeReportHelper.initData();
 	        }
 
 	        init();
-	        return pcpSingleWellDailyReportHelper;
+	        return pcpSingleWellRangeReportHelper;
 	    }
 	};
 
@@ -704,7 +704,7 @@ function createPCPSingleWellDailyReportWellListDataColumn(columnInfo) {
     return myColumns;
 };
 
-function CreatePCPSingleWellDailyReportCurve(){
+function CreatePCPSingleWellRangeReportCurve(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 //  var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();
   var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
@@ -718,12 +718,12 @@ function CreatePCPSingleWellDailyReportCurve(){
   	wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
   }
   
-  Ext.getCmp("PCPSingleWellDailyReportCurvePanel_id").el.mask(cosog.string.loading).show();
+  Ext.getCmp("PCPSingleWellRangeReportCurvePanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getSingleWellDailyReportCurveData',
 		success:function(response) {
-			Ext.getCmp("PCPSingleWellDailyReportCurvePanel_id").getEl().unmask();
+			Ext.getCmp("PCPSingleWellRangeReportCurvePanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			var startDate=Ext.getCmp('PCPSingleWellDailyReportStartDate_Id');
@@ -869,7 +869,7 @@ function CreatePCPSingleWellDailyReportCurve(){
 		    for(var i=0;i<color_r.length;i++){
 		    	color_all.push(color_r[i]);
 		    }
-		    initPCPSingleWellDailyReportCurveChartFn(series, tickInterval, 'PCPSingleWellDailyReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
+		    initPCPSingleWellDailyReportCurveChartFn(series, tickInterval, 'PCPSingleWellRangeReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");

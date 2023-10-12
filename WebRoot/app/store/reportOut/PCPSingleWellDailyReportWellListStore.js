@@ -52,8 +52,8 @@ Ext.define('AP.store.reportOut.PCPSingleWellDailyReportWellListStore', {
                         		Ext.getCmp("selectedPCPDeviceId_global").setValue(record.data.id);
                     		}
                     		
-                    		CreatePCPSingleWellDailyReportTable();
-                    		CreatePCPSingleWellDailyReportCurve();
+                    		CreatePCPSingleWellRangeReportTable();
+                    		CreatePCPSingleWellRangeReportCurve();
                         }
                     }
                 });
@@ -75,14 +75,14 @@ Ext.define('AP.store.reportOut.PCPSingleWellDailyReportWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
-            	if(pcpSingleWellDailyReportHelper!=null){
-    				if(pcpSingleWellDailyReportHelper.hot!=undefined){
-    					pcpSingleWellDailyReportHelper.hot.destroy();
+            	if(pcpSingleWellRangeReportHelper!=null){
+    				if(pcpSingleWellRangeReportHelper.hot!=undefined){
+    					pcpSingleWellRangeReportHelper.hot.destroy();
     				}
-    				pcpSingleWellDailyReportHelper=null;
+    				pcpSingleWellRangeReportHelper=null;
     			}
-            	$("#PCPSingleWellDailyReportDiv_id").html('');
-                $("#PCPSingleWellDailyReportCurveDiv_Id").html('');
+            	$("#PCPSingleWellRangeReportDiv_id").html('');
+                $("#PCPSingleWellRangeReportCurveDiv_Id").html('');
             }
         },
         beforeload: function (store, options) {

@@ -134,8 +134,8 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getSingleWellDailyReportData")
-	public String getSingleWellDailyReportData() throws Exception {
+	@RequestMapping("/getSingleWellRangeReportData")
+	public String getSingleWellRangeReportData() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
@@ -143,7 +143,7 @@ public class ReportDataMamagerController extends BaseController {
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
-		String reportType = ParamUtils.getParameter(request, "deviceType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -173,7 +173,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellDailyReportData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellRangeReportData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -189,8 +189,8 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		return null;
 	}
-	@RequestMapping("/exportSingleWellDailyReportData")
-	public String exportSingleWellDailyReportData() throws Exception {
+	@RequestMapping("/exportSingleWellRangeReportData")
+	public String exportSingleWellRangeReportData() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
@@ -239,7 +239,124 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
+		return null;
+	}
+	
+	@RequestMapping("/getSingleWellDailyReportData")
+	public String getSingleWellDailyReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_rpcdailycalculationdata";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			if(StringManagerUtils.isNotNull(wellId)){
+				sql+= " and t.wellId="+wellId+" ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getSingleWellDailyReportData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@RequestMapping("/exportSingleWellDailyReportData")
+	public String exportSingleWellDailyReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_rpcdailycalculationdata";
+		String deviceTypeName="抽油机井";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
+			deviceTypeName="螺杆泵井";
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			if(StringManagerUtils.isNotNull(wellId)){
+				sql+= " and t.wellId="+wellId+" ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		String fileName = deviceTypeName;
+		String title = deviceTypeName+"单日生产报表";
+        if(StringManagerUtils.isNotNull(wellName)){
+        	fileName+=wellName;
+        }
+        fileName+="生产报表-"+startDate;
+        if(!startDate.equalsIgnoreCase(endDate)){
+        	fileName+="~"+endDate;
+        }
+		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
 		return null;
 	}
 	
@@ -349,8 +466,8 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getSingleWellDailyReportCurveData")
-	public String getSingleWellDailyReportCurveData() throws Exception {
+	@RequestMapping("/getSingleWellRangeReportCurveData")
+	public String getSingleWellRangeReportCurveData() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
@@ -388,7 +505,67 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellRangeReportCurveData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/getSingleWellDailyReportCurveData")
+	public String getSingleWellDailyReportCurveData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_rpcdailycalculationdata";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			if(StringManagerUtils.isNotNull(wellId)){
+				sql+= " and t.wellId="+wellId+" ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -501,8 +678,8 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/saveDailyReportData")
-	public String saveDailyReportData() throws Exception {
+	@RequestMapping("/saveSingleWellRangeDailyReportData")
+	public String saveSingleWellRangeDailyReportData() throws Exception {
 		String json = "{success:false}";
 		HttpSession session=request.getSession();
 		String data = ParamUtils.getParameter(request, "data");
@@ -510,7 +687,27 @@ public class ReportDataMamagerController extends BaseController {
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		int result = reportDataManagerService.saveDailyReportData(wellId,wellName,deviceType,data);
+		int result = reportDataManagerService.saveSingleWellRangeDailyReportData(wellId,wellName,deviceType,data);
+		json = "{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveSingleWellDailyDailyReportData")
+	public String saveSingleWellDailyDailyReportData() throws Exception {
+		String json = "{success:false}";
+		HttpSession session=request.getSession();
+		String data = ParamUtils.getParameter(request, "data");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		int result = reportDataManagerService.saveSingleWellDailyDailyReportData(wellId,wellName,deviceType,data);
 		json = "{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

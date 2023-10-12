@@ -848,7 +848,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getSingleWellRangeReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
 		String reportTemplateCode="";
@@ -1020,7 +1020,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportSingleWellDailyReportData(HttpServletResponse response,
+	public boolean exportSingleWellRangeReportData(HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
 			String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		try{
@@ -1030,8 +1030,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCode="";
 			String reportUnitId="";
 			int headerRowCount=0;
-			String title=wellName+"井生产报表";
-			String fileName=wellName+"井生产报表";
+			String title=wellName+"井区间生产报表";
+			String fileName=wellName+"井区间生产报表";
 			String deviceTableName="tbl_rpcdevice";
 			String tableName="VIW_RPCDAILYCALCULATIONDATA";
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -1214,6 +1214,357 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
+	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		Gson gson =new Gson();
+		String reportTemplateCode="";
+		String reportUnitId="";
+		String deviceTableName="tbl_rpcdevice";
+		String tableName="VIW_RPCTIMINGCALCULATIONDATA";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			deviceTableName="tbl_pcpdevice";
+			tableName="VIW_PCPTIMINGCALCULATIONDATA";
+		}
+		ReportTemplate.Template template=null;
+		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate "
+				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t.id="+wellId;
+		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+		if(reportTemplateCodeList.size()>0){
+			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+			reportUnitId=(obj[0]+"").replaceAll("null", "");
+			reportTemplateCode=(obj[1]+"").replaceAll("null", "");
+		}
+		if(StringManagerUtils.isNotNull(reportTemplateCode)){
+			template=MemoryDataManagerTask.getSingleWellDailyReportTemplateByCode(reportTemplateCode);
+		}
+		if(template!=null){
+			int columnCount=0;
+			if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
+				columnCount=template.getHeader().get(0).getTitle().size();
+				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
+					String header=template.getHeader().get(0).getTitle().get(i);
+					if(StringManagerUtils.isNotNull(header)){
+						template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+					}
+				}
+			}
+			if(template.getHeader().size()>0){
+				String labelInfoStr="";
+				String[] labelInfoArr=null;
+				String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+						+ " where t.wellid="+wellId+" "
+						+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+				List<?> labelInfoList = this.findCallSql(labelInfoSql);
+				if(labelInfoList.size()>0){
+					labelInfoStr=labelInfoList.get(0).toString();
+					if(StringManagerUtils.isNotNull(labelInfoStr)){
+						labelInfoArr=labelInfoStr.split(",");
+					}
+				}
+				if(labelInfoArr!=null && labelInfoArr.length>0){
+					for(int i=0;i<labelInfoArr.length;i++){
+						if("label".equals(labelInfoArr[i])){
+							labelInfoArr[i]="";
+						}
+						for(int j=0;j<template.getHeader().size();j++){
+							boolean exit=false;
+							if(template.getHeader().get(j).getTitle()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
+										exit=true;
+										break;
+									}
+								}
+							}
+							if(exit){
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			
+			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
+			List<List<String>> dataList=new ArrayList<>();
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+					+ " where t.unitid="+reportUnitId+" "
+					+ " and t.reportType="+reportType
+					+ " and t.sort>=0"
+					+ " and t.sort<="+columnCount
+					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " order by t.sort";
+			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+			for(int i=0;i<reportItemQuertList.size();i++){
+				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+				ReportUnitItem reportUnitItem=new ReportUnitItem();
+				reportUnitItem.setItemName(reportItemObj[0]+"");
+				reportUnitItem.setItemCode(reportItemObj[1]+"");
+				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				reportItemList.add(reportUnitItem);
+			}
+			
+			StringBuffer sqlBuff = new StringBuffer();
+			sqlBuff.append("select id");
+			
+			for(int i=0;i<reportItemList.size();i++){
+				if(reportItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
+				}else if(reportItemList.get(i).getDataType()==4){
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
+				}else{
+					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+				}
+			}
+			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
+			sqlBuff.append(" order by t.calTime");
+			
+			List<String> colList=StringManagerUtils.getColumnListFromSql(sqlBuff.toString());
+			
+			List<String> allColList=new ArrayList<String>();;
+			
+			List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+			for(int i=0;i<reportDataList.size();i++){
+				Object[] reportDataObj=(Object[]) reportDataList.get(i);
+				String recordId=reportDataObj[0]+"";
+				List<String> everyDaya=new ArrayList<String>();
+				for(int j=0;j<columnCount;j++){
+					everyDaya.add("");
+				}
+				everyDaya.set(0, (i+1)+"");
+				everyDaya.add(recordId);
+				for(int j=0;j<reportItemList.size();j++){
+					if(reportItemList.get(j).getSort()>=1){
+						String addValue="";
+						if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
+							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+						}else{
+							addValue=reportDataObj[j+1]+"";
+						}
+						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+					}
+				}
+				dataList.add(everyDaya);
+				
+				if(allColList.size()==0){
+					for(int j=0;j<columnCount;j++){
+						allColList.add("\"\"");
+					}
+					allColList.add("\"recordId\"");
+					for(int j=0;j<reportItemList.size();j++){
+						if(reportItemList.get(j).getSort()>=1){
+							allColList.set(reportItemList.get(j).getSort()-1, "\""+reportItemList.get(j).getItemCode()+"\"");
+						}
+					}
+				}
+			}
+			result_json.append("\"data\":"+gson.toJson(dataList)+",\"columns\":"+allColList.toString());
+		}else{
+			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
+		}
+		result_json.append(",\"wellName\":\""+wellName+"\"");
+		result_json.append(",\"startDate\":\""+startDate+"\"");
+		result_json.append(",\"endDate\":\""+endDate+"\"");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public boolean exportSingleWellDailyReportData(HttpServletResponse response,
+			Page pager,String orgId,String deviceType,String reportType,
+			String wellId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			List<List<Object>> sheetDataList = new ArrayList<>();
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+			Gson gson =new Gson();
+			String reportTemplateCode="";
+			String reportUnitId="";
+			int headerRowCount=0;
+			String title=wellName+"井单日生产报表";
+			String fileName=wellName+"井单日生产报表";
+			String deviceTableName="tbl_rpcdevice";
+			String tableName="VIW_RPCTIMINGCALCULATIONDATA";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				deviceTableName="tbl_pcpdevice";
+				tableName="VIW_PCPTIMINGCALCULATIONDATA";
+			}
+			ReportTemplate.Template template=null;
+			String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate "
+					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+					+ " and t.id="+wellId;
+			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+			if(reportTemplateCodeList.size()>0){
+				Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+				reportUnitId=(obj[0]+"").replaceAll("null", "");
+				reportTemplateCode=(obj[1]+"").replaceAll("null", "");
+			}
+			if(StringManagerUtils.isNotNull(reportTemplateCode)){
+				template=MemoryDataManagerTask.getSingleWellDailyReportTemplateByCode(reportTemplateCode);
+			}
+			if(template!=null){
+				int columnCount=0;
+				headerRowCount=template.getHeader().size();
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
+					columnCount=template.getHeader().get(0).getTitle().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
+						String header=template.getHeader().get(0).getTitle().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							title=header.replaceAll("wellNameLabel", wellName);
+							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+						}
+					}
+				}
+				
+				if(template.getHeader().size()>0){
+					String labelInfoStr="";
+					String[] labelInfoArr=null;
+					String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+							+ " where t.wellid="+wellId+" "
+							+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+					List<?> labelInfoList = this.findCallSql(labelInfoSql);
+					if(labelInfoList.size()>0){
+						labelInfoStr=labelInfoList.get(0).toString();
+						if(StringManagerUtils.isNotNull(labelInfoStr)){
+							labelInfoArr=labelInfoStr.split(",");
+						}
+					}
+					if(labelInfoArr!=null && labelInfoArr.length>0){
+						for(int i=0;i<labelInfoArr.length;i++){
+							if("label".equals(labelInfoArr[i])){
+								labelInfoArr[i]="";
+							}
+							for(int j=0;j<template.getHeader().size();j++){
+								boolean exit=false;
+								if(template.getHeader().get(j).getTitle()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+										if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
+									}
+								}
+								if(exit){
+									break;
+								}
+							}
+						}
+					}
+				}
+				fileName="";
+				fileName+=title+"-"+reportDate;
+				
+				List<List<String>> dataList=new ArrayList<>();
+				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+						+ " where t.unitid="+reportUnitId+" "
+						+ " and t.reportType="+reportType
+						+ " and t.sort>=0"
+						+ " and t.sort<="+columnCount
+						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+						+ " order by t.sort";
+				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+				for(int i=0;i<reportItemQuertList.size();i++){
+					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+					ReportUnitItem reportUnitItem=new ReportUnitItem();
+					reportUnitItem.setItemName(reportItemObj[0]+"");
+					reportUnitItem.setItemCode(reportItemObj[1]+"");
+					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+					reportItemList.add(reportUnitItem);
+				}
+				
+				StringBuffer sqlBuff = new StringBuffer();
+				sqlBuff.append("select id");
+				
+				for(int i=0;i<reportItemList.size();i++){
+					if(reportItemList.get(i).getDataType()==3){
+						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
+					}else if(reportItemList.get(i).getDataType()==4){
+						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
+					}else{
+						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
+					}
+				}
+				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+				sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
+				sqlBuff.append(" order by t.calTime");
+				
+				List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+				for(int i=0;i<reportDataList.size();i++){
+					Object[] reportDataObj=(Object[]) reportDataList.get(i);
+					String recordId=reportDataObj[0]+"";
+					List<String> everyDaya=new ArrayList<String>();
+					for(int j=0;j<columnCount;j++){
+						everyDaya.add("");
+					}
+					everyDaya.set(0, (i+1)+"");
+					for(int j=0;j<reportItemList.size();j++){
+						if(reportItemList.get(j).getSort()>=1){
+							String addValue="";
+							if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
+								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+							}else{
+								addValue=reportDataObj[j+1]+"";
+							}
+							everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+						}
+					}
+					dataList.add(everyDaya);
+				}
+				
+				for(int i=0;i<template.getHeader().size();i++){
+					List<Object> record = new ArrayList<>();
+					for(int j=0;j<template.getHeader().get(i).getTitle().size();j++){
+						record.add(template.getHeader().get(i).getTitle().get(j));
+					}
+					sheetDataList.add(record);
+				}
+				for(int i=0;i<dataList.size();i++){
+					List<Object> record = new ArrayList<>();
+					for(int j=0;j<dataList.get(i).size();j++){
+						record.add(dataList.get(i).get(j));
+					}
+					sheetDataList.add(record);
+				}
+				if(template.getMergeCells()!=null && template.getMergeCells().size()>0){
+					for(int i=0;i<template.getMergeCells().size();i++){
+						if(template.getMergeCells().get(i).getRowspan()==1&&template.getMergeCells().get(i).getColspan()>1){
+							for(int j=template.getMergeCells().get(i).getCol();j<template.getMergeCells().get(i).getCol()+template.getMergeCells().get(i).getColspan();j++){
+								String value=sheetDataList.get(template.getMergeCells().get(i).getRow()).get(j)+"";
+								if(!StringManagerUtils.isNotNull(value)){
+									sheetDataList.get(template.getMergeCells().get(i).getRow()).set(j, ExcelUtils.COLUMN_MERGE);
+								}
+							}
+						}else if(template.getMergeCells().get(i).getRowspan()>1&&template.getMergeCells().get(i).getColspan()==1){
+							for(int j=template.getMergeCells().get(i).getRow();j<template.getMergeCells().get(i).getRow()+template.getMergeCells().get(i).getRowspan();j++){
+								String value=sheetDataList.get(j).get(template.getMergeCells().get(i).getCol())+"";
+								if(!StringManagerUtils.isNotNull(value)){
+									sheetDataList.get(j).set(template.getMergeCells().get(i).getCol(), ExcelUtils.ROW_MERGE);
+								}
+							}
+						}
+					}
+				}
+			}
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	public String getProductionDailyReportData(Page pager, String orgId,String deviceType,String reportType,
 			String instanceCode,String unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
@@ -1257,8 +1608,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			
-			
 			
 			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
 			List<List<String>> dataList=new ArrayList<>();
@@ -1358,18 +1707,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
 						
-//						if(reportItemList.get(j).getSumSign()!=null && reportItemList.get(j).getSumSign()==1){//求和
-//							if(StringManagerUtils.isNumber(addValue)){
-//								avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
-//								String currentSum=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
-//								if(StringManagerUtils.isNumber(currentSum)){
-//									statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
-//								}else{
-//									statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
-//								}
-//							}
-//						}
-						
 						//求和
 						if(StringManagerUtils.isNumber(addValue)){
 							avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
@@ -1413,17 +1750,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			
-//			statDataShowValueList
-			
-//			for(int i=0;i<statDataList.size();i++){
-//				List<String> showList=new ArrayList<String>();
-//				for(int j=0;j<statDataList.get(i).size();j++){
-//					showList.add(statDataList.get(i).get(j));
-//				}
-//				statDataShowValueList.add(showList);
-//			}
-			
 			
 			result_json.append("\"data\":"+gson.toJson(dataList)+",\"statData\":"+gson.toJson(statDataShowValueList)+",\"columns\":"+allColList.toString());
 		}else{
@@ -1670,7 +1996,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getSingleWellRangeReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -1799,6 +2125,158 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 			cueveSqlBuff.append(" order by t.calDate");
+			
+			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
+			for(int i=0;i<reportCurveDataList.size();i++){
+				Object[] obj=(Object[]) reportCurveDataList.get(i);
+				result_json.append("{\"calDate\":\"" + obj[1] + "\",\"data\":[");
+				for(int j=2;j<obj.length;j++){
+					result_json.append(obj[j]+",");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]},");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer itemsBuff = new StringBuffer();
+		StringBuffer itemsCodeBuff = new StringBuffer();
+		StringBuffer curveConfBuff = new StringBuffer();
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		
+		Gson gson =new Gson();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String reportTemplateCode="";
+		String graphicSet="{}";
+		
+		String tableName="VIW_RPCTIMINGCALCULATIONDATA";
+		String deviceTableName="tbl_rpcdevice";
+		String graphicSetTableName="tbl_rpcdevicegraphicset";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			tableName="VIW_PCPTIMINGCALCULATIONDATA";
+			deviceTableName="tbl_pcpdevice";
+			graphicSetTableName="tbl_pcpdevicegraphicset";
+		}
+		result_json.append("{\"success\":true,");
+		
+		
+		
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+wellId;
+		List<?> graphicSetList = this.findCallSql(graphicSetSql);
+		if(graphicSetList.size()>0){
+			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+		}
+		
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype "
+				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
+				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
+				+ " and t3.id="+wellId
+				+ " and t.sort>=0"
+				+ " and t.reportType= "+reportType
+				+ " and t.reportcurveconf is not null "
+				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
+				+ " order by t.sort,t.id";
+		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
+		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+		for(int i=0;i<reportCurveItemQuertList.size();i++){
+			Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
+			ReportUnitItem reportUnitItem=new ReportUnitItem();
+			reportUnitItem.setItemName(reportCurveItemObj[0]+"");
+			reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
+			reportUnitItem.setReportCurveConf((reportCurveItemObj[2]+"").replaceAll("null", ""));
+			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
+			if(reportUnitItem.getDataType()==2){
+				reportCurveItemList.add(reportUnitItem);
+			}
+		}
+		
+		Collections.sort(reportCurveItemList,new Comparator<ReportUnitItem>(){
+			@Override
+			public int compare(ReportUnitItem item1,ReportUnitItem item2){
+				Gson gson = new Gson();
+				java.lang.reflect.Type type=null;
+				int sort1=0;
+				int sort2=0;
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj1=gson.fromJson(item1.getReportCurveConf(), type);
+				
+				type = new TypeToken<CurveConf>() {}.getType();
+				CurveConf curveConfObj2=gson.fromJson(item2.getReportCurveConf(), type);
+				
+				if(curveConfObj1!=null){
+					sort1=curveConfObj1.getSort();
+				}
+				
+				if(curveConfObj2!=null){
+					sort2=curveConfObj2.getSort();
+				}
+				
+				int diff=sort1-sort2;
+				if(diff>0){
+					return 1;
+				}else if(diff<0){
+					return -1;
+				}
+				return 0;
+			}
+		});
+		
+		
+		itemsBuff.append("[");
+		for(int i=0;i<reportCurveItemList.size();i++){
+			itemsBuff.append("\""+reportCurveItemList.get(i).getItemName()+"\",");
+		}
+		if (itemsBuff.toString().endsWith(",")) {
+			itemsBuff.deleteCharAt(itemsBuff.length() - 1);
+		}
+		itemsBuff.append("]");
+		
+		itemsCodeBuff.append("[");
+		for(int i=0;i<reportCurveItemList.size();i++){
+			itemsCodeBuff.append("\""+reportCurveItemList.get(i).getItemCode()+"\",");
+		}
+		if (itemsCodeBuff.toString().endsWith(",")) {
+			itemsCodeBuff.deleteCharAt(itemsCodeBuff.length() - 1);
+		}
+		itemsCodeBuff.append("]");
+		
+		curveConfBuff.append("[");
+		for(int i=0;i<reportCurveItemList.size();i++){
+			curveConfBuff.append(""+reportCurveItemList.get(i).getReportCurveConf()+",");
+		}
+		if (curveConfBuff.toString().endsWith(",")) {
+			curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
+		}
+		curveConfBuff.append("]");
+		
+		result_json.append("\"wellName\":\""+wellName+"\","
+				+ "\"startDate\":\""+startDate+"\","
+				+ "\"endDate\":\""+endDate+"\","
+				+ "\"reportDate\":\""+reportDate+"\","
+				+ "\"curveItems\":"+itemsBuff+","
+				+ "\"curveItemCodes\":"+itemsCodeBuff+","
+				+ "\"curveConf\":"+curveConfBuff+","
+				+ "\"graphicSet\":"+graphicSet+","
+				+ "\"list\":[");
+		if(reportCurveItemList.size()>0){
+			StringBuffer cueveSqlBuff = new StringBuffer();
+			
+			cueveSqlBuff.append("select t.id,to_char(calTime,'yyyy-mm-dd hh24:mi:ss') as calDate");
+			for(int i=0;i<reportCurveItemList.size();i++){
+				cueveSqlBuff.append(","+reportCurveItemList.get(i).getItemCode()+"");
+			}
+			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			cueveSqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
+			cueveSqlBuff.append(" order by t.calTime");
 			
 			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
 			for(int i=0;i<reportCurveDataList.size();i++){
@@ -2154,7 +2632,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public int saveDailyReportData(String wellId,String wellName,String deviceType,String data) {
+	public int saveSingleWellRangeDailyReportData(String wellId,String wellName,String deviceType,String data) {
 		int result=0;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -2210,6 +2688,76 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								labelBuff.deleteCharAt(labelBuff.length() - 1);
 							}
 							updateSql="update "+tableName+" t set t.headerlabelinfo='"+labelBuff.toString()+"' where t.wellid="+wellId+" and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.wellid=t.wellid )";
+						}
+						if(StringManagerUtils.isNotNull(updateSql)){
+							result+=this.getBaseDao().updateOrDeleteBySql(updateSql);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+		return result;
+	}
+	
+	public int saveSingleWellDailyDailyReportData(String wellId,String wellName,String deviceType,String data) {
+		int result=0;
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		type = new TypeToken<CellEditData>() {}.getType();
+		CellEditData cellEditData=gson.fromJson(data, type);
+		
+		if(cellEditData!=null && cellEditData.getContentUpdateList().size()>0){
+			String tableName="tbl_rpctimingcalculationdata";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				tableName="tbl_pcptimingcalculationdata";
+			}
+			String updateSql="";
+			for(int i=0;i<cellEditData.getContentUpdateList().size();i++){
+				try {
+					if(StringManagerUtils.isNotNull(cellEditData.getContentUpdateList().get(i).getColumn())){
+						String updateValue=cellEditData.getContentUpdateList().get(i).getNewValue();
+						if(!cellEditData.getContentUpdateList().get(i).getHeader()){
+							if( (!StringManagerUtils.isNum(updateValue)) && (!StringManagerUtils.isNumber(updateValue)) ){
+								updateValue="'"+updateValue+"'";
+							}
+							updateSql="update "+tableName+" t set t."+cellEditData.getContentUpdateList().get(i).getColumn()+"="+updateValue+" where t.id="+cellEditData.getContentUpdateList().get(i).getRecordId();
+						}else{
+							updateValue=updateValue.replaceAll(" ", " ").replaceAll("：", ":");
+							List<String> updateValueList=new ArrayList<>();
+							String[] arr = new String[updateValue.length()];
+							StringBuffer updateValueBuff = new StringBuffer();
+							StringBuffer labelBuff = new StringBuffer();
+							for (int j = 0; j < updateValue.length(); j++) {
+						        arr[j] = String.valueOf(updateValue.charAt(j));
+						    }
+							for (int j = 0; j < arr.length; j++) {
+								if(!" ".equals(arr[j])){
+									updateValueList.add(arr[j]);
+								}else{
+									if(updateValueList.size()>1 && ( !" ".equals(updateValueList.get(updateValueList.size()-1)) ) && ( !":".equals(updateValueList.get(updateValueList.size()-1)) )){
+										updateValueList.add(arr[j]);
+									}
+								}
+							}
+							for(int j=0;j<updateValueList.size();j++){
+								updateValueBuff.append(updateValueList.get(j));
+							}
+							String[] labelArr=updateValueBuff.toString().split(" ");
+							for(int j=0;j<labelArr.length;j++){
+								String[] everyLabelArr=labelArr[j].split(":");
+								if(everyLabelArr.length==2){
+									labelBuff.append(everyLabelArr[1]+",");
+								}else{
+									labelBuff.append(",");
+								}
+							}
+							if(labelBuff.toString().endsWith(",")){
+								labelBuff.deleteCharAt(labelBuff.length() - 1);
+							}
+							updateSql="update "+tableName+" t set t.headerlabelinfo='"+labelBuff.toString()+"' where t.wellid="+wellId+" and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.wellid=t.wellid )";
 						}
 						if(StringManagerUtils.isNotNull(updateSql)){
 							result+=this.getBaseDao().updateOrDeleteBySql(updateSql);

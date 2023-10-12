@@ -1016,7 +1016,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(deviceType,unitId,unitNa
 	Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
+		url:context + '/acquisitionUnitManagerController/getReportUnitTimingTotalCalItemsConfigData',
 		success:function(response) {
 			Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);

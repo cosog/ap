@@ -1303,6 +1303,23 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getReportUnitTimingTotalCalItemsConfigData")
+	public String getReportUnitTimingTotalCalItemsConfigData() throws Exception {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportUnitTimingTotalCalItemsConfigData(deviceType,reportType,unitId,classes);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getReportInstanceTotalCalItemsConfigData")
 	public String getReportInstanceTotalCalItemsConfigData() throws Exception {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -1310,6 +1327,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getReportInstanceTotalCalItemsConfigData(deviceType,unitId,reportType);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getReportInstanceTimingTotalCalItemsConfigData")
+	public String getReportInstanceTimingTotalCalItemsConfigData() throws Exception {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportInstanceTimingTotalCalItemsConfigData(deviceType,unitId,reportType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

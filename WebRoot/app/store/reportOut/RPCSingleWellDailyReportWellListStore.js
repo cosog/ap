@@ -52,8 +52,8 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
                         		Ext.getCmp("selectedRPCDeviceId_global").setValue(record.data.id);
                     		}
                     		
-                    		CreateRPCSingleWellDailyReportTable();
-                    		CreateRPCSingleWellDailyReportCurve();
+                    		CreateRPCSingleWellReportTable();
+                    		CreateRPCSingleWellReportCurve();
                         }
                     }
                 });
@@ -75,14 +75,27 @@ Ext.define('AP.store.reportOut.RPCSingleWellDailyReportWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("RPCSingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
-            	if(rpcSingleWellDailyReportHelper!=null){
-    				if(rpcSingleWellDailyReportHelper.hot!=undefined){
-    					rpcSingleWellDailyReportHelper.hot.destroy();
-    				}
-    				rpcSingleWellDailyReportHelper=null;
-    			}
-            	$("#RPCSingleWellDailyReportDiv_id").html('');
-                $("#RPCSingleWellDailyReportCurveDiv_Id").html('');
+            	
+            	var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
+            	if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
+            		if(rpcSingleWellDailyReportHelper!=null){
+        				if(rpcSingleWellDailyReportHelper.hot!=undefined){
+        					rpcSingleWellDailyReportHelper.hot.destroy();
+        				}
+        				rpcSingleWellDailyReportHelper=null;
+        			}
+                	$("#RPCSingleWellDailyReportDiv_id").html('');
+                    $("#RPCSingleWellDailyReportCurveDiv_Id").html('');
+            	}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
+            		if(rpcSingleWellRangeReportHelper!=null){
+        				if(rpcSingleWellRangeReportHelper.hot!=undefined){
+        					rpcSingleWellRangeReportHelper.hot.destroy();
+        				}
+        				rpcSingleWellRangeReportHelper=null;
+        			}
+                	$("#RPCSingleWellRangeReportDiv_id").html('');
+                    $("#RPCSingleWellRangeReportCurveDiv_Id").html('');
+            	}
             }
         },
         beforeload: function (store, options) {

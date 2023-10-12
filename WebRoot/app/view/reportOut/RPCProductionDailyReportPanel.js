@@ -727,7 +727,7 @@ var RPCProductionDailyReportHelper = {
 //	        		alert(JSON.stringify(rpcProductionDailyReportHelper.editData));
 	        		Ext.Ajax.request({
 	                    method: 'POST',
-	                    url: context + '/reportDataMamagerController/saveDailyReportData',
+	                    url: context + '/reportDataMamagerController/saveSingleWellRangeDailyReportData',
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {

@@ -6,6 +6,7 @@ public class GraphicSetData {
 
 	public List<Graphic> History;
 	public List<Graphic> Report;
+	public List<Graphic> DailyReport;
 	
 	public static class  Graphic{
 		private String itemCode;
@@ -53,5 +54,13 @@ public class GraphicSetData {
 
 	public void setReport(List<Graphic> report) {
 		Report = report;
+	}
+
+	public List<Graphic> getDailyReport() {
+		return DailyReport;
+	}
+
+	public void setDailyReport(List<Graphic> dailyReport) {
+		DailyReport = dailyReport;
 	}
 }

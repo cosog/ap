@@ -665,9 +665,10 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
 		String graphicSetData = ParamUtils.getParameter(request, "graphicSetData");
 		this.pager = new Page("pagerForm", request);
-		int result = reportDataManagerService.setReportDataGraphicInfo(deviceId,deviceType,graphicSetData);
+		int result = reportDataManagerService.setReportDataGraphicInfo(deviceId,deviceType,reportType,graphicSetData);
 		json = "{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

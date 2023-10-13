@@ -31,6 +31,7 @@ import com.cosog.model.ReportUnitItem;
 import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.gridmodel.GraphicSetData;
+import com.cosog.model.gridmodel.GraphicSetData.Graphic;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
@@ -2494,11 +2495,22 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		List<?> curveItemList = this.findCallSql(curveItemsSql);
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
-		GraphicSetData graphicSetData=null;
+		List<GraphicSetData.Graphic> graphicList=null;
 		if(graphicSetList.size()>0){
 			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
 			type = new TypeToken<GraphicSetData>() {}.getType();
-			graphicSetData=gson.fromJson(graphicSet, type);
+			GraphicSetData graphicSetData=gson.fromJson(graphicSet, type);
+			if(graphicSetData!=null){
+				if(StringManagerUtils.stringToInteger(reportType)==0){
+					if(graphicSetData.getReport()!=null){
+						graphicList=graphicSetData.getReport();
+					}
+				}else if(StringManagerUtils.stringToInteger(reportType)==2){
+					if(graphicSetData.getDailyReport()!=null){
+						graphicList=graphicSetData.getDailyReport();
+					}
+				}
+			}
 		}
 		
 		for(int i=0;i<curveItemList.size();i++){
@@ -2553,11 +2565,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String yAxisMaxValue="";
 			String yAxisMinValue="";
 			result_json.append("{\"curveName\":\"" + curveName + "\",\"itemCode\":\"" + itemCode + "\",\"itemType\":\""+itemType+"\",");
-			if(graphicSetData!=null && graphicSetData.getReport()!=null && graphicSetData.getReport().size()>0){
-				for(int j=0;j<graphicSetData.getReport().size();j++){
-					if(itemCode.equalsIgnoreCase(graphicSetData.getReport().get(j).getItemCode())){
-						yAxisMaxValue=graphicSetData.getReport().get(j).getyAxisMaxValue();
-						yAxisMinValue=graphicSetData.getReport().get(j).getyAxisMinValue();
+			
+			
+			if(graphicList!=null && graphicList.size()>0){
+				for(int j=0;j<graphicList.size();j++){
+					if(itemCode.equalsIgnoreCase(graphicList.get(j).getItemCode())){
+						yAxisMaxValue=graphicList.get(j).getyAxisMaxValue();
+						yAxisMinValue=graphicList.get(j).getyAxisMinValue();
 						break;
 					}
 				}
@@ -2574,7 +2588,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public int setReportDataGraphicInfo(String deviceId,String deviceType,String graphicSetSaveDataStr)throws Exception {
+	public int setReportDataGraphicInfo(String deviceId,String deviceType,String reportType,String graphicSetSaveDataStr)throws Exception {
 		int result=0;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -2599,23 +2613,44 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			String saveStr=graphicSetSaveDataStr;
 			if(graphicSetData!=null){
-				if(graphicSetData.getReport()!=null&&graphicSetData.getReport().size()>0){
-					for(int i=0;i<graphicSetSaveData.getReport().size();i++){
-						boolean isExit=false;
-						for(int j=0;j<graphicSetData.getReport().size();j++){
-							if(graphicSetSaveData.getReport().get(i).getItemCode().equalsIgnoreCase(graphicSetData.getReport().get(j).getItemCode())){
-								isExit=true;
-								graphicSetData.getReport().get(j).setyAxisMaxValue(graphicSetSaveData.getReport().get(i).getyAxisMaxValue());
-								graphicSetData.getReport().get(j).setyAxisMinValue(graphicSetSaveData.getReport().get(i).getyAxisMinValue());
-								break;
+				if(StringManagerUtils.stringToInteger(reportType)==0){
+					if(graphicSetData.getReport()!=null&&graphicSetData.getReport().size()>0){
+						for(int i=0;i<graphicSetSaveData.getReport().size();i++){
+							boolean isExit=false;
+							for(int j=0;j<graphicSetData.getReport().size();j++){
+								if(graphicSetSaveData.getReport().get(i).getItemCode().equalsIgnoreCase(graphicSetData.getReport().get(j).getItemCode())){
+									isExit=true;
+									graphicSetData.getReport().get(j).setyAxisMaxValue(graphicSetSaveData.getReport().get(i).getyAxisMaxValue());
+									graphicSetData.getReport().get(j).setyAxisMinValue(graphicSetSaveData.getReport().get(i).getyAxisMinValue());
+									break;
+								}
+							}
+							if(!isExit){
+								graphicSetData.getReport().add(graphicSetSaveData.getReport().get(i));
 							}
 						}
-						if(!isExit){
-							graphicSetData.getReport().add(graphicSetSaveData.getReport().get(i));
-						}
+					}else{
+						graphicSetData.setReport(graphicSetSaveData.getReport());
 					}
-				}else{
-					graphicSetData.setReport(graphicSetSaveData.getReport());
+				}else if(StringManagerUtils.stringToInteger(reportType)==2){
+					if(graphicSetData.getDailyReport()!=null&&graphicSetData.getDailyReport().size()>0){
+						for(int i=0;i<graphicSetSaveData.getDailyReport().size();i++){
+							boolean isExit=false;
+							for(int j=0;j<graphicSetData.getDailyReport().size();j++){
+								if(graphicSetSaveData.getDailyReport().get(i).getItemCode().equalsIgnoreCase(graphicSetData.getDailyReport().get(j).getItemCode())){
+									isExit=true;
+									graphicSetData.getDailyReport().get(j).setyAxisMaxValue(graphicSetSaveData.getDailyReport().get(i).getyAxisMaxValue());
+									graphicSetData.getDailyReport().get(j).setyAxisMinValue(graphicSetSaveData.getDailyReport().get(i).getyAxisMinValue());
+									break;
+								}
+							}
+							if(!isExit){
+								graphicSetData.getDailyReport().add(graphicSetSaveData.getDailyReport().get(i));
+							}
+						}
+					}else{
+						graphicSetData.setDailyReport(graphicSetSaveData.getDailyReport());
+					}
 				}
 				saveStr=gson.toJson(graphicSetData);
 			}

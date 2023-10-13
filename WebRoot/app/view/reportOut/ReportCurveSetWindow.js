@@ -35,15 +35,33 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 handler: function (v, o) {
                 	var activeId = Ext.getCmp("ProductionWellDailyReportPanel_Id").getActiveTab().id;
                 	var deviceType=0;
+                	var reportType=0;
                 	var selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
                 	var gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
                 	var divId="RPCSingleWellRangeReportCurveDiv_Id";
+                	
+                	var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
+        			if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
+        				reportType=2;
+        				divId="RPCSingleWellDailyReportCurveDiv_Id";
+        			}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
+        				reportType=0;
+        				divId="RPCSingleWellRangeReportCurveDiv_Id";
+        			}
                 	
                 	if(activeId=="PCPDailyReportPanel_Id"){
                 		deviceType=1;
                 		selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
                 		gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
-                		divId="PCPSingleWellRangeReportCurveDiv_Id";
+                		
+                		var PCPSingleWellReportTabPanelActiveId=Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id;
+            			if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellDailyReportTabPanel_id'){
+            				reportType=2;
+            				divId="PCPSingleWellDailyReportCurveDiv_Id";
+            			}else if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellRangeReportTabPanel_id'){
+            				reportType=0;
+            				divId="PCPSingleWellRangeReportCurveDiv_Id";
+            			}
                 	}
                 	var deviceName='';
                 	var deviceId=0;
@@ -56,43 +74,82 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 	var chart = $("#"+divId).highcharts();
                 	var curveSetData = deviceReportCurveSetHandsontableHelper.hot.getData();
                 	var graphicSetData={};
-                	graphicSetData.Report=[];
                 	
-                	Ext.Array.each(curveSetData, function (name, index, countriesItSelf) {
-                		var maxValue=null,minValue=null;
-                		if(isNotVal(curveSetData[index][1])){
-                			maxValue=parseFloat(curveSetData[index][1]);
-                		}
-                		if(isNotVal(curveSetData[index][2])){
-                			minValue=parseFloat(curveSetData[index][2]);
-                		}
-                		for(var i=0;i<chart.yAxis.length;i++){
-                			var match=false;
-                			if(chart.yAxis[i].series.length>0){
-                				for(var j=0;j<chart.yAxis[i].series.length;j++){
-                					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
-                					if(serieName==curveSetData[index][0]){
-                						match=true;
-                						chart.yAxis[i].update({max: maxValue,min: minValue});
-                						break;
-                					}
-                				}
-                			}
-                			
-                			if(match){
-                				break;
-                			}
-                		}
-                		
-                		var graphicInfo={};
-                		graphicInfo.yAxisMaxValue=isNotVal(curveSetData[index][1])?curveSetData[index][1]:"";
-                		graphicInfo.yAxisMinValue=isNotVal(curveSetData[index][2])?curveSetData[index][2]:"";
-                		graphicInfo.itemCode=curveSetData[index][3];
-                		graphicInfo.itemType=curveSetData[index][4];
-                		
-                		graphicSetData.Report.push(graphicInfo);
-                	});
-                	
+                	if(reportType==0){
+                		graphicSetData.Report=[];
+                    	
+                    	Ext.Array.each(curveSetData, function (name, index, countriesItSelf) {
+                    		var maxValue=null,minValue=null;
+                    		if(isNotVal(curveSetData[index][1])){
+                    			maxValue=parseFloat(curveSetData[index][1]);
+                    		}
+                    		if(isNotVal(curveSetData[index][2])){
+                    			minValue=parseFloat(curveSetData[index][2]);
+                    		}
+                    		for(var i=0;i<chart.yAxis.length;i++){
+                    			var match=false;
+                    			if(chart.yAxis[i].series.length>0){
+                    				for(var j=0;j<chart.yAxis[i].series.length;j++){
+                    					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
+                    					if(serieName==curveSetData[index][0]){
+                    						match=true;
+                    						chart.yAxis[i].update({max: maxValue,min: minValue});
+                    						break;
+                    					}
+                    				}
+                    			}
+                    			
+                    			if(match){
+                    				break;
+                    			}
+                    		}
+                    		
+                    		var graphicInfo={};
+                    		graphicInfo.yAxisMaxValue=isNotVal(curveSetData[index][1])?curveSetData[index][1]:"";
+                    		graphicInfo.yAxisMinValue=isNotVal(curveSetData[index][2])?curveSetData[index][2]:"";
+                    		graphicInfo.itemCode=curveSetData[index][3];
+                    		graphicInfo.itemType=curveSetData[index][4];
+                    		
+                    		graphicSetData.Report.push(graphicInfo);
+                    	});
+                	}else if(reportType==2){
+                		graphicSetData.DailyReport=[];
+                    	
+                    	Ext.Array.each(curveSetData, function (name, index, countriesItSelf) {
+                    		var maxValue=null,minValue=null;
+                    		if(isNotVal(curveSetData[index][1])){
+                    			maxValue=parseFloat(curveSetData[index][1]);
+                    		}
+                    		if(isNotVal(curveSetData[index][2])){
+                    			minValue=parseFloat(curveSetData[index][2]);
+                    		}
+                    		for(var i=0;i<chart.yAxis.length;i++){
+                    			var match=false;
+                    			if(chart.yAxis[i].series.length>0){
+                    				for(var j=0;j<chart.yAxis[i].series.length;j++){
+                    					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
+                    					if(serieName==curveSetData[index][0]){
+                    						match=true;
+                    						chart.yAxis[i].update({max: maxValue,min: minValue});
+                    						break;
+                    					}
+                    				}
+                    			}
+                    			
+                    			if(match){
+                    				break;
+                    			}
+                    		}
+                    		
+                    		var graphicInfo={};
+                    		graphicInfo.yAxisMaxValue=isNotVal(curveSetData[index][1])?curveSetData[index][1]:"";
+                    		graphicInfo.yAxisMinValue=isNotVal(curveSetData[index][2])?curveSetData[index][2]:"";
+                    		graphicInfo.itemCode=curveSetData[index][3];
+                    		graphicInfo.itemType=curveSetData[index][4];
+                    		
+                    		graphicSetData.DailyReport.push(graphicInfo);
+                    	});
+                	}
                 	Ext.Ajax.request({
                 		method:'POST',
                 		url:context + '/reportDataMamagerController/setReportDataGraphicInfo',
@@ -110,6 +167,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 			deviceName:deviceName,
                 			deviceId:deviceId,
                 			deviceType:deviceType,
+                			reportType:reportType,
                 			graphicSetData:JSON.stringify(graphicSetData)
                         }
                 	});
@@ -170,10 +228,17 @@ function CreateDeviceReportCurveSetTable(){
 		deviceType=0;
 		var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
 		if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
-			reportType=0;
 			selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
 			gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
-			divId="RPCSingleWellRangeReportCurveDiv_Id";
+			
+			var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
+			if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
+				reportType=2;
+				divId="RPCSingleWellDailyReportCurveDiv_Id";
+			}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
+				reportType=0;
+				divId="RPCSingleWellRangeReportCurveDiv_Id";
+			}
 		}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
 			reportType=1;
 			selectRowId="RPCProductionDailyReportInstanceListSelectRow_Id";
@@ -184,10 +249,16 @@ function CreateDeviceReportCurveSetTable(){
 		deviceType=1;
 		var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
 		if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
-			reportType=0;
 			selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
 			gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
-			divId="PCPSingleWellRangeReportCurveDiv_Id";
+			var PCPSingleWellReportTabPanelActiveId=Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id;
+			if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellDailyReportTabPanel_id'){
+				reportType=2;
+				divId="PCPSingleWellDailyReportCurveDiv_Id";
+			}else if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellRangeReportTabPanel_id'){
+				reportType=0;
+				divId="PCPSingleWellRangeReportCurveDiv_Id";
+			}
 		}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
 			reportType=1;
 			selectRowId="PCPProductionDailyReportDeviceListSelectRow_Id";

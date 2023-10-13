@@ -3899,6 +3899,25 @@ public class StringManagerUtils {
     	return result;
     }
     
+    
+    public static boolean timeMatchDate(String timeStr,String startStr,String endStr,String formatStr){
+    	boolean result=false;
+		try {
+			DateFormat format = new SimpleDateFormat(formatStr);
+			if(isNotNull(timeStr)){
+				Date currentTime = (Date) format.parse(timeStr);
+				Date startTime=(Date) format.parse(startStr);
+		    	Date endTime=(Date) format.parse(endStr);
+		    	if(currentTime.getTime()>=startTime.getTime() && startTime.getTime()<=endTime.getTime()){
+		    		result=true;
+		    	}
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	return result;
+    }
+    
     /**
      * 获取指定时间对应的毫秒数
      * 

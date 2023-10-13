@@ -98,7 +98,6 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 width: 136,
                 format: 'Y-m-d',
                 id: 'RPCSingleWellDailyReportStartDate_Id',
-//                value: new Date(),
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
@@ -143,7 +142,7 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 text: cosog.string.exportExcel,
                 iconCls: 'export',
                 handler: function (v, o) {
-                	ExportSingleWellReportData();
+                	ExportRPCSingleWellReportData();
                 }
             }, '->',{
                 xtype: 'button',
@@ -346,11 +345,6 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 }],
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
-                    	if(newCard.id=="RPCSingleWellDailyReportTabPanel_id"){
-                    		
-                    	}else if(newCard.id=="RPCSingleWellRangeReportTabPanel_id"){
-                    		
-                    	}
                     	CreateRPCSingleWellReportTable();
                 		CreateRPCSingleWellReportCurve();
                     }
@@ -1257,7 +1251,6 @@ function createRPCSingleWellDailyReportWellListDataColumn(columnInfo) {
             myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
         } else {
             myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
         }
         myColumns += "}";
         if (i < myArr.length - 1) {
@@ -1267,6 +1260,7 @@ function createRPCSingleWellDailyReportWellListDataColumn(columnInfo) {
     myColumns += "]";
     return myColumns;
 };
+
 function CreateRPCSingleWellReportCurve(){
 	var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
 	if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
@@ -1278,7 +1272,6 @@ function CreateRPCSingleWellReportCurve(){
 
 function CreateRPCSingleWellRangeReportCurve(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-//    var wellName = Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
     var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('RPCSingleWellDailyReportEndDate_Id').rawValue;
     
@@ -1382,14 +1375,14 @@ function CreateRPCSingleWellRangeReportCurve(){
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
-			    	for(var j=0;j<graphicSet.History.length;j++){
-			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
-			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
-					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
+		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.Report) ){
+			    	for(var j=0;j<graphicSet.Report.length;j++){
+			    		if(graphicSet.Report[j].itemCode!=undefined && graphicSet.Report[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+			    			if(isNotVal(graphicSet.Report[j].yAxisMaxValue)){
+					    		maxValue=parseFloat(graphicSet.Report[j].yAxisMaxValue);
 					    	}
-					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
-					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
+					    	if(isNotVal(graphicSet.Report[j].yAxisMinValue)){
+					    		minValue=parseFloat(graphicSet.Report[j].yAxisMinValue);
 					    	}
 					    	break;
 			    		}
@@ -1570,14 +1563,14 @@ function CreateRPCSingleWellDailyReportCurve(){
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
-			    	for(var j=0;j<graphicSet.History.length;j++){
-			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
-			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
-					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
+		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.DailyReport) ){
+			    	for(var j=0;j<graphicSet.DailyReport.length;j++){
+			    		if(graphicSet.DailyReport[j].itemCode!=undefined && graphicSet.DailyReport[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+			    			if(isNotVal(graphicSet.DailyReport[j].yAxisMaxValue)){
+					    		maxValue=parseFloat(graphicSet.DailyReport[j].yAxisMaxValue);
 					    	}
-					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
-					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
+					    	if(isNotVal(graphicSet.DailyReport[j].yAxisMinValue)){
+					    		minValue=parseFloat(graphicSet.DailyReport[j].yAxisMinValue);
 					    	}
 					    	break;
 			    		}
@@ -1764,16 +1757,16 @@ function initRPCSingleWellDailyReportCurveChartFn(series, tickInterval, divId, t
     });
 };
 
-function ExportSingleWellReportData(){
+function ExportRPCSingleWellReportData(){
 	var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
 	if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
-		ExportSingleWellDailyReportData();
+		ExportRPCSingleWellDailyReportData();
 	}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
-		ExportSingleWellRangeReportData();
+		ExportRPCSingleWellRangeReportData();
 	}
 }
 
-function ExportSingleWellRangeReportData(){
+function ExportRPCSingleWellRangeReportData(){
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
 	var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
@@ -1791,7 +1784,7 @@ function ExportSingleWellRangeReportData(){
 	document.location.href = url;
 }
 
-function ExportSingleWellDailyReportData(){
+function ExportRPCSingleWellDailyReportData(){
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
 	var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;

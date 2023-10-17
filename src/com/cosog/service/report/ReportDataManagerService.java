@@ -1319,7 +1319,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(reportItemList.get(i).getDataType()==3){
 					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 				}else if(reportItemList.get(i).getDataType()==4){
-					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
 				}else{
 					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 				}
@@ -1330,7 +1330,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			List<String> colList=StringManagerUtils.getColumnListFromSql(sqlBuff.toString());
 			
-			List<String> allColList=new ArrayList<String>();;
+			List<String> allColList=new ArrayList<String>();
 			
 			List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
 			for(int i=0;i<reportDataList.size();i++){
@@ -1492,7 +1492,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(reportItemList.get(i).getDataType()==3){
 						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 					}else if(reportItemList.get(i).getDataType()==4){
-						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
+						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
 					}else{
 						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 					}

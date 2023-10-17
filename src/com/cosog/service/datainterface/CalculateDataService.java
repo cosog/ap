@@ -683,6 +683,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public List<String> RPCTimingTotalCalculation(String timeStr){
+//		timeStr="2023-10-17 08:00:00";
 		String date=timeStr.split(" ")[0];
 		
 		if(!StringManagerUtils.timeMatchDate(timeStr, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
@@ -723,23 +724,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
 				+ " and t.acqtime=(select max(t3.acqtime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.acqtime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
-		String totalStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.caltime,'yyyy-mm-dd hh24:mi:ss') as caltime,"
-				+ " t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
-				+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
-				+ " t.totalkwatth,t.todaykwatth,"
-				+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
-				+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-				+ " from tbl_rpctimingcalculationdata t,tbl_rpcdevice t2 "
-				+ " where t.wellid=t2.id "
-				+ " and t.caltime=(select max(t3.caltime) from tbl_rpctimingcalculationdata t3 where t3.wellid=t.wellid and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
-
 		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_rpcdailycalculationdata t "
 				+ " where t.caldate=( select max(t2.caldate) from tbl_rpcdailycalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
 		
 		sql+=" order by t.id";
 		fesDiagramSql+= " order by t2.id,t.fesdiagramacqtime";
 		realtimeStatusSql+=" order by t2.id";
-		totalStatusSql+=" order by t2.id";
 		List<?> welllist = findCallSql(sql);
 		List<?> singleresultlist = findCallSql(fesDiagramSql);
 		List<?> realtimeStatusQueryList=findCallSql(realtimeStatusSql);
@@ -788,11 +778,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 					}
 				}
 				
-				String insertHistSql="insert into tbl_rpctimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
+				String insertHistSql="insert into tbl_rpctimingcalculationdata (wellid,caltime,stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
+						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
+						+ " from TBL_RPCDAILYCALCULATIONDATA t2 "
+						+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') "
+						+ " and t2.wellid="+deviceId+""
+						+ " and rownum=1";
+				String insertHistSql2="insert into tbl_rpctimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
 				String updateSql="update tbl_rpctimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
-				
 				try {
 					int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
+					if(r==0){
+						r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1560,7 +1558,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		StringBuffer dataSbf=null;
 		String sql="select t.id,t.wellname,t3.singleWellRangeReportTemplate,t2.unitid "
-				+ " from tbl_rpcdevice t "
+				+ " from tbl_pcpdevice t "
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id and t3.devicetype=0 "
 				+ " where 1=1";
@@ -1649,12 +1647,21 @@ public class CalculateDataService<T> extends BaseService<T> {
 						break;
 					}
 				}
+				String insertHistSql="insert into tbl_pcptimingcalculationdata (wellid,caltime,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
+						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
+						+ " from TBL_PCPDAILYCALCULATIONDATA t2 "
+						+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') "
+						+ " and t2.wellid="+deviceId+""
+						+ " and rownum=1";
 				
-				String insertHistSql="insert into tbl_pcptimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
+				String insertHistSql2="insert into tbl_pcptimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
 				String updateSql="update tbl_pcptimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
 				
 				try {
 					int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
+					if(r==0){
+						r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

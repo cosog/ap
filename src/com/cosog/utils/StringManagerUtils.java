@@ -3890,7 +3890,7 @@ public class StringManagerUtils {
 			Date startTime=(Date) format2.parse(range.getStartTime());
 	    	Date endTime=(Date) format2.parse(range.getEndTime());
 	    	
-	    	if(currentTime.getTime()>=startTime.getTime() && startTime.getTime()<=endTime.getTime()){
+	    	if(currentTime.getTime()>startTime.getTime() && startTime.getTime()<=endTime.getTime()){
 	    		result=true;
 	    	}
 		} catch (ParseException e) {
@@ -3935,5 +3935,25 @@ public class StringManagerUtils {
             e.printStackTrace();
             return 0;
         }
+    }
+    
+    public static List<String> getTimeRangeList(String dateStr,int offsetHour,int interval) {
+    	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
+    	List<String> timeList=new ArrayList<>();
+    	DateFormat dateFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+        DateFormat dayFormat = new SimpleDateFormat("yy-MM-dd");
+    	int index=1;
+    	do{
+    		try {
+				long time=((Date) dateFormat.parse(range.getStartTime())).getTime()+(interval*index*60*60*1000);
+				String startTimeStr = dateFormat.format(time);
+				timeList.add(startTimeStr);
+				index++;
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+    	}while(interval*index<=24);
+    	
+    	return timeList;
     }
 }

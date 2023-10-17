@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -174,7 +175,7 @@ public class CalculateDataManagerTask {
 	public static void RPCTimingCalculate() {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
-//        interval=5 * 60 * 1000;
+        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
 //        initDelay=StringManagerUtils.getTimeMillis("08:00:00") - System.currentTimeMillis();
         while(initDelay<0){

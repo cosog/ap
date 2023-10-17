@@ -438,7 +438,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["wellNameLabel井排采数据总表", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["wellNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -449,7 +449,7 @@
                 "backgroundColor": "",
                 "textAlign": "center"
             },
-            "title": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -459,7 +459,7 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["时间", "当日生产时间/h", "工作制度", "", "动液面（m）", "日 产 量", "", "压 力（Mpa）", "", "累计产量", "", "备注"]
+            "title": ["时间", "当日生产时间/h", "工作制度", "", "动液面（m）", "日 产 量", "", "压 力（Mpa）", "", "累计产量", "", "返排率%", "氯离子浓度mg/L", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -469,22 +469,22 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "冲次", "冲程", "", "气(方）", "水(方）", "井底压力", "套压", "气 (方)", "水 (方)", ""]
+            "title": ["", "", "冲次", "冲程", "", "气(方）", "水(方）", "井底压力", "套压", "气 (方)", "水 (方)", "", "", ""]
         }],
         "fixedRowsTop": 4,
         "fixedRowsBottom": 0,
         "rowHeights": [50],
-        "columnWidths": [120, 80,80,80,80,80,80,80,80,80,80,1000],
+        "columnWidths": [80, 80,80,80,80,80,80,80,80,80,80,80,80,1000],
         "mergeCells": [{
             "row": 0,
             "col": 0,
             "rowspan": 1,
-            "colspan": 12
+            "colspan": 14
         },{
             "row": 1,
             "col": 0,
             "rowspan": 1,
-            "colspan": 12
+            "colspan": 14
         }, {
             "row": 2,
             "col": 0,
@@ -525,6 +525,16 @@
             "col": 11,
             "rowspan": 2,
             "colspan": 1
+        }, {
+            "row": 2,
+            "col": 12,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 13,
+            "rowspan": 2,
+            "colspan": 1
         }],
         "editable": [{
             "startRow": 1,
@@ -541,6 +551,16 @@
             "startColumn": 11,
             "endRow": 999999999,
             "endColumn": 11
+        },{
+            "startRow": 4,
+            "startColumn": 12,
+            "endRow": 999999999,
+            "endColumn": 12
+        },{
+            "startRow": 4,
+            "startColumn": 13,
+            "endRow": 999999999,
+            "endColumn": 13
         }]
     }, {
         "deviceType": 1,

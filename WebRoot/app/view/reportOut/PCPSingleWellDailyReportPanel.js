@@ -188,7 +188,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 tabPosition: 'top',
                 items: [{
                 	id:'PCPSingleWellDailyReportTabPanel_id',
-                	title:'单日报表',
+                	title:'班报表',
                 	layout:'border',
                 	border: false,
                 	items:[{
@@ -298,7 +298,7 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 	}]
                 },{
                 	id:'PCPSingleWellRangeReportTabPanel_id',
-                	title:'区间报表',
+                	title:'日报表',
                 	layout:'border',
                 	border: false,
                 	items:[{
@@ -829,7 +829,7 @@ function CreatePCPSingleWellDailyReportTable(){
 			}
 			if(result.success){
 				if(pcpSingleWellDailyReportHelper==null || pcpSingleWellDailyReportHelper.hot==undefined){
-					pcpSingleWellDailyReportHelper = PCPSingleWellDailyReportHelper.createNew("PCPSingleWellDailyReportDiv_id","PCPSingleWellDailyReportContainer",result.template,result.data,result.columns);
+					pcpSingleWellDailyReportHelper = PCPSingleWellDailyReportHelper.createNew("PCPSingleWellDailyReportDiv_id","PCPSingleWellDailyReportContainer",result.template,result.data,result.columns,result.totalCount);
 					pcpSingleWellDailyReportHelper.createTable();
 				}
 			}else{
@@ -856,7 +856,7 @@ function CreatePCPSingleWellDailyReportTable(){
 
 
 var PCPSingleWellDailyReportHelper = {
-	    createNew: function (divId, containerid,templateData,contentData,columns) {
+	    createNew: function (divId, containerid,templateData,contentData,columns,totalCount) {
 	        var pcpSingleWellDailyReportHelper = {};
 	        pcpSingleWellDailyReportHelper.templateData=templateData;
 	        pcpSingleWellDailyReportHelper.contentData=contentData;
@@ -869,6 +869,7 @@ var PCPSingleWellDailyReportHelper = {
 	        pcpSingleWellDailyReportHelper.columnCount=0;
 	        pcpSingleWellDailyReportHelper.editData={};
 	        pcpSingleWellDailyReportHelper.contentUpdateList = [];
+	        pcpSingleWellDailyReportHelper.totalCount=totalCount;
 	        
 	        pcpSingleWellDailyReportHelper.initData=function(){
 	        	pcpSingleWellDailyReportHelper.data=[];
@@ -1069,6 +1070,9 @@ var PCPSingleWellDailyReportHelper = {
 	                    			cellProperties.renderer = pcpSingleWellDailyReportHelper.addEditableColor;
 	                    		}
 	                    	}
+	                    }
+	                    if(row>=pcpSingleWellDailyReportHelper.templateData.header.length+pcpSingleWellDailyReportHelper.totalCount){
+	                    	cellProperties.readOnly = true;
 	                    }
 	                    return cellProperties;
 	                },
@@ -1307,7 +1311,7 @@ function CreatePCPSingleWellRangeReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.wellName + "报表曲线";
+		    var title = result.wellName + "日报表曲线";
 		    var xTitle='日期';
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
@@ -1495,7 +1499,7 @@ function CreatePCPSingleWellDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.wellName + "单日报表曲线-"+result.reportDate;
+		    var title = result.wellName + "班报表曲线-"+result.reportDate;
 		    var xTitle='时间';
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;

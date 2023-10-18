@@ -37,7 +37,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
                     },
                     store: store,
                     columns: [{
-                    	text: '单井区间报表模板列表',
+                    	text: '单井日报表模板列表',
                         flex: 8,
                         align: 'left',
                         dataIndex: 'templateName',
@@ -103,7 +103,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
     					}
     					singleWellRangeReportTemplateHandsontableHelper=null;
     				}
-            		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井区间报表模板：');
+            		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井日报表模板：');
             	}
         	}
 //            gridPanel.getSelectionModel().deselectAll(true);

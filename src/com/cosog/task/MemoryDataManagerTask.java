@@ -2128,6 +2128,12 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),48, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
 			
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),49, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),50, SerializeObjectUnils.serialize(new CalItem("备用1","reservedcol1","",1,"备用1")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),51, SerializeObjectUnils.serialize(new CalItem("备用2","reservedcol2","",1,"备用2")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),52, SerializeObjectUnils.serialize(new CalItem("备用3","reservedcol3","",1,"备用3")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),53, SerializeObjectUnils.serialize(new CalItem("备用4","reservedcol4","",1,"备用4")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),54, SerializeObjectUnils.serialize(new CalItem("备用5","reservedcol5","",1,"备用5")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -2190,6 +2196,12 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
 			
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("备用1","reservedcol1","",1,"备用1")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("备用2","reservedcol2","",1,"备用2")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("备用3","reservedcol3","",1,"备用3")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("备用4","reservedcol4","",1,"备用4")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),40, SerializeObjectUnils.serialize(new CalItem("备用5","reservedcol5","",1,"备用5")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

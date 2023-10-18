@@ -188,7 +188,7 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 tabPosition: 'top',
                 items: [{
                 	id:'RPCSingleWellDailyReportTabPanel_id',
-                	title:'单日报表',
+                	title:'班报表',
                 	layout:'border',
                 	border: false,
                 	items:[{
@@ -298,7 +298,7 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 	}]
                 },{
                 	id:'RPCSingleWellRangeReportTabPanel_id',
-                	title:'区间报表',
+                	title:'日报表',
                 	layout:'border',
                 	border: false,
                 	items:[{
@@ -832,7 +832,7 @@ function CreateRPCSingleWellDailyReportTable(){
 			}
 			if(result.success){
 				if(rpcSingleWellDailyReportHelper==null || rpcSingleWellDailyReportHelper.hot==undefined){
-					rpcSingleWellDailyReportHelper = RPCSingleWellDailyReportHelper.createNew("RPCSingleWellDailyReportDiv_id","RPCSingleWellDailyReportContainer",result.template,result.data,result.columns);
+					rpcSingleWellDailyReportHelper = RPCSingleWellDailyReportHelper.createNew("RPCSingleWellDailyReportDiv_id","RPCSingleWellDailyReportContainer",result.template,result.data,result.columns,result.totalCount);
 					rpcSingleWellDailyReportHelper.createTable();
 				}
 			}else{
@@ -859,7 +859,7 @@ function CreateRPCSingleWellDailyReportTable(){
 
 
 var RPCSingleWellDailyReportHelper = {
-	    createNew: function (divId, containerid,templateData,contentData,columns) {
+	    createNew: function (divId, containerid,templateData,contentData,columns,totalCount) {
 	        var rpcSingleWellDailyReportHelper = {};
 	        rpcSingleWellDailyReportHelper.templateData=templateData;
 	        rpcSingleWellDailyReportHelper.contentData=contentData;
@@ -872,6 +872,7 @@ var RPCSingleWellDailyReportHelper = {
 	        rpcSingleWellDailyReportHelper.columnCount=0;
 	        rpcSingleWellDailyReportHelper.editData={};
 	        rpcSingleWellDailyReportHelper.contentUpdateList = [];
+	        rpcSingleWellDailyReportHelper.totalCount=totalCount;
 	        
 	        rpcSingleWellDailyReportHelper.initData=function(){
 	        	rpcSingleWellDailyReportHelper.data=[];
@@ -1072,6 +1073,9 @@ var RPCSingleWellDailyReportHelper = {
 	                    			cellProperties.renderer = rpcSingleWellDailyReportHelper.addEditableColor;
 	                    		}
 	                    	}
+	                    }
+	                    if(row>=rpcSingleWellDailyReportHelper.templateData.header.length+rpcSingleWellDailyReportHelper.totalCount){
+	                    	cellProperties.readOnly = true;
 	                    }
 	                    return cellProperties;
 	                },
@@ -1309,7 +1313,7 @@ function CreateRPCSingleWellRangeReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.wellName + "区间报表曲线";
+		    var title = result.wellName + "日报表曲线";
 		    var xTitle='日期';
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
@@ -1497,7 +1501,7 @@ function CreateRPCSingleWellDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.wellName + "单日报表曲线-"+result.reportDate;
+		    var title = result.wellName + "班报表曲线-"+result.reportDate;
 		    var xTitle='时间';
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;

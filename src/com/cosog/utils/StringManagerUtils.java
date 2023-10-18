@@ -3956,4 +3956,19 @@ public class StringManagerUtils {
     	
     	return timeList;
     }
+    
+    public static String timeFormatConverter(String timeStr,String fromFormat,String toFormat){
+    	String r="";
+    	if(StringManagerUtils.isNotNull(timeStr) && StringManagerUtils.isNotNull(fromFormat) && StringManagerUtils.isNotNull(toFormat)){
+			try {
+				DateFormat fromTimeFormat = new SimpleDateFormat(fromFormat);
+	            DateFormat toTimeFormat = new SimpleDateFormat(toFormat);
+				long time = ((Date) fromTimeFormat.parse(timeStr)).getTime();
+				r = toTimeFormat.format(time);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+    	}
+    	return r;
+    }
 }

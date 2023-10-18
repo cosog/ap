@@ -1215,9 +1215,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,
+			String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
 		Gson gson =new Gson();
 		String reportTemplateCode="";
 		String reportUnitId="";
@@ -1227,6 +1229,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			deviceTableName="tbl_pcpdevice";
 			tableName="VIW_PCPTIMINGCALCULATIONDATA";
 		}
+		
+		List<List<String>> dataList=new ArrayList<>();
+		int totalCount=0;
+		int timeColIndex=-99;
+		int wellNameColIndex=-99;
+		String maxTimeStr="";
+		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,interval);
+		
+		
 		ReportTemplate.Template template=null;
 		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
@@ -1291,7 +1302,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			
 			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
-			List<List<String>> dataList=new ArrayList<>();
+			
 			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 					+ " where t.unitid="+reportUnitId+" "
@@ -1313,7 +1324,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
-			sqlBuff.append("select id");
+			sqlBuff.append("select id,to_char(t.calTime@'yyyy-mm-dd hh24:mi:ss')");
 			
 			for(int i=0;i<reportItemList.size();i++){
 				if(reportItemList.get(i).getDataType()==3){
@@ -1323,6 +1334,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}else{
 					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 				}
+				if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
+					timeColIndex=reportItemList.get(i).getSort()-1;
+				}
+				
+				if(wellNameColIndex<0 && "wellName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
+					wellNameColIndex=reportItemList.get(i).getSort()-1;
+				}
+				
 			}
 			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 			sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
@@ -1333,9 +1352,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<String> allColList=new ArrayList<String>();
 			
 			List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+			totalCount=reportDataList.size();
 			for(int i=0;i<reportDataList.size();i++){
 				Object[] reportDataObj=(Object[]) reportDataList.get(i);
 				String recordId=reportDataObj[0]+"";
+				maxTimeStr=reportDataObj[1]+"";
+				
 				List<String> everyDaya=new ArrayList<String>();
 				for(int j=0;j<columnCount;j++){
 					everyDaya.add("");
@@ -1345,10 +1367,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int j=0;j<reportItemList.size();j++){
 					if(reportItemList.get(j).getSort()>=1){
 						String addValue="";
-						if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+						if(reportDataObj[j+2] instanceof CLOB || reportDataObj[j+2] instanceof Clob){
+							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+2]);
 						}else{
-							addValue=reportDataObj[j+1]+"";
+							addValue=reportDataObj[j+2]+"";
 						}
 						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
 					}
@@ -1367,6 +1389,28 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			
+			//补充记录
+			long timeDiff=StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(defaultTimeList.size()-1), "yyyy-MM-dd HH:mm:ss");
+			if(timeDiff<0){
+				int rownum=totalCount+1;
+				for(int i=0;i<defaultTimeList.size();i++){
+					if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")<0){
+						List<String> everyDaya=new ArrayList<String>();
+						for(int j=0;j<columnCount;j++){
+							everyDaya.add("");
+						}
+						everyDaya.set(0, rownum+"");
+						everyDaya.add("-99");
+						
+						if(timeColIndex>=0){
+							everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yy-MM-dd HH:mm:ss", "HH:mm"));
+						}
+						dataList.add(everyDaya);
+						rownum++;
+					}
+				}
+			}
 			result_json.append("\"data\":"+gson.toJson(dataList)+",\"columns\":"+allColList.toString());
 		}else{
 			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
@@ -1374,6 +1418,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append(",\"wellName\":\""+wellName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
 		result_json.append(",\"endDate\":\""+endDate+"\"");
+		result_json.append(",\"totalCount\":"+totalCount+"");
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -1385,6 +1430,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
 			Gson gson =new Gson();
 			String reportTemplateCode="";
 			String reportUnitId="";
@@ -1397,6 +1443,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				deviceTableName="tbl_pcpdevice";
 				tableName="VIW_PCPTIMINGCALCULATIONDATA";
 			}
+			
+			int totalCount=0;
+			int timeColIndex=-99;
+			int wellNameColIndex=-99;
+			String maxTimeStr="";
+			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,interval);
+			
 			ReportTemplate.Template template=null;
 			String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
@@ -1486,7 +1539,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
-				sqlBuff.append("select id");
+				sqlBuff.append("select id,to_char(t.calTime@'yyyy-mm-dd hh24:mi:ss')");
 				
 				for(int i=0;i<reportItemList.size();i++){
 					if(reportItemList.get(i).getDataType()==3){
@@ -1496,15 +1549,25 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}else{
 						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 					}
+					
+					if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
+						timeColIndex=reportItemList.get(i).getSort()-1;
+					}
+					
+					if(wellNameColIndex<0 && "wellName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
+						wellNameColIndex=reportItemList.get(i).getSort()-1;
+					}
 				}
 				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 				sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 				sqlBuff.append(" order by t.calTime");
 				
 				List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+				totalCount=reportDataList.size();
 				for(int i=0;i<reportDataList.size();i++){
 					Object[] reportDataObj=(Object[]) reportDataList.get(i);
 					String recordId=reportDataObj[0]+"";
+					maxTimeStr=reportDataObj[1]+"";
 					List<String> everyDaya=new ArrayList<String>();
 					for(int j=0;j<columnCount;j++){
 						everyDaya.add("");
@@ -1513,15 +1576,36 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int j=0;j<reportItemList.size();j++){
 						if(reportItemList.get(j).getSort()>=1){
 							String addValue="";
-							if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+							if(reportDataObj[j+2] instanceof CLOB || reportDataObj[j+2] instanceof Clob){
+								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+2]);
 							}else{
-								addValue=reportDataObj[j+1]+"";
+								addValue=reportDataObj[j+2]+"";
 							}
 							everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
 						}
 					}
 					dataList.add(everyDaya);
+				}
+				
+				//补充记录
+				long timeDiff=StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(defaultTimeList.size()-1), "yyyy-MM-dd HH:mm:ss");
+				if(timeDiff<0){
+					int rownum=totalCount+1;
+					for(int i=0;i<defaultTimeList.size();i++){
+						if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")<0){
+							List<String> everyDaya=new ArrayList<String>();
+							for(int j=0;j<columnCount;j++){
+								everyDaya.add("");
+							}
+							everyDaya.set(0, rownum+"");
+							
+							if(timeColIndex>=0){
+								everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yy-MM-dd HH:mm:ss", "HH:mm"));
+							}
+							dataList.add(everyDaya);
+							rownum++;
+						}
+					}
 				}
 				
 				for(int i=0;i<template.getHeader().size();i++){

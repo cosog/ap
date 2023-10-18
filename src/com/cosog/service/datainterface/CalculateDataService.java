@@ -684,17 +684,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	public List<String> RPCTimingTotalCalculation(String timeStr){
 //		timeStr="2023-10-17 08:00:00";
-		String date=timeStr.split(" ")[0];
-		
-		if(!StringManagerUtils.timeMatchDate(timeStr, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
-			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
-		}
-		
-		
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
+		String date=timeStr.split(" ")[0];
+		if(!StringManagerUtils.timeMatchDate(timeStr, date, offsetHour)){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
+		}
+		CommResponseData.Range range= StringManagerUtils.getTimeRange(date,offsetHour);
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
 		
 		StringBuffer dataSbf=null;
 		String sql="select t.id,t.wellname,t3.singleWellRangeReportTemplate,t2.unitid from tbl_rpcdevice t "
@@ -909,9 +907,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				updateSql+=",CommStatus="+commStatus;
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					commTime=commResponseData.getCurrent().getCommEfficiency().getTime();
-					commTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
-					commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+					if(timeStr.equalsIgnoreCase(range.getEndTime()) && commResponseData.getDaily()!=null && StringManagerUtils.isNotNull(commResponseData.getDaily().getDate()) ){
+						commTime=commResponseData.getDaily().getCommEfficiency().getTime();
+						commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
+						commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+					}else{
+						commTime=commResponseData.getCurrent().getCommEfficiency().getTime();
+						commTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
+						commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+					}
 					updateSql+=",commTimeEfficiency="+commTimeEfficiency+",commTime="+commTime;
 				}
 				
@@ -936,9 +940,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 				timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
 				updateSql+=",runStatus="+runStatus;
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-					runTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
-					runTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
-					runRange=timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+					if(timeStr.equalsIgnoreCase(range.getEndTime()) && timeEffResponseData.getDaily()!=null && StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate()) ){
+						runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
+						runTimeEfficiency=timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
+						runRange=timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
+					}else{
+						runTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+						runTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
+						runRange=timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+					}
 					updateSql+=",runTimeEfficiency="+runTimeEfficiency+",runTime="+runTime;
 				}
 				

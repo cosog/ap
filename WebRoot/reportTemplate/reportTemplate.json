@@ -2,7 +2,7 @@
     "singleWellRangeReportTemplate": [{
         "deviceType": 0,
         "templateCode": "oilWell_Pumping",
-        "templateName": "油井_抽油机井单井区间报表",
+        "templateName": "油井_抽油机井单井日报表",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -12,7 +12,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["抽油机井wellNameLabel生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["抽油机井wellNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -108,7 +108,7 @@
     },{
         "deviceType": 0,
         "templateCode": "CBMWell_heichao",
-        "templateName": "煤层气井排采数据表_单井区间报表",
+        "templateName": "煤层气井排采数据表_单井日报表",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -118,7 +118,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["wellNameLabel井排采数据总表", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["wellNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -225,7 +225,7 @@
     }, {
         "deviceType": 1,
         "templateCode": "oilWell_ScrewPump",
-        "templateName": "油井_螺杆泵井单井区间报表",
+        "templateName": "油井_螺杆泵井单井日报表",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -235,7 +235,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["螺杆泵wellNameLabel井生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["螺杆泵wellNameLabel井日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -322,7 +322,7 @@
     "singleWellDailyReportTemplate": [{
         "deviceType": 0,
         "templateCode": "oilWell_PumpingDailyReport",
-        "templateName": "油井_抽油机井单井日报表",
+        "templateName": "油井_抽油机井单井班报表",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -332,7 +332,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["抽油机井wellNameLabel生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["抽油机井wellNameLabel班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -428,7 +428,7 @@
     },{
         "deviceType": 0,
         "templateCode": "CBMWell_heichaoDailyReport",
-        "templateName": "煤层气井排采数据表_单井日报表",
+        "templateName": "煤层气井排采数据表_单井班报表",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -438,7 +438,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["wellNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["wellNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -565,7 +565,7 @@
     }, {
         "deviceType": 1,
         "templateCode": "oilWell_ScrewPumpDailyReport",
-        "templateName": "油井_螺杆泵井单井日报",
+        "templateName": "油井_螺杆泵井单井班报表",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -575,7 +575,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["螺杆泵wellNameLabel井生产报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["螺杆泵wellNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",

@@ -111,7 +111,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         border: false,
                         tabPosition: 'top',
                         items: [{
-                        	title:'单日报表',
+                        	title:'班报表',
                         	id:'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id',
                         	layout: "border",
                         	border: false,
@@ -131,7 +131,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         		border: false,
                         		items: [{
                             		region: 'center',
-                            		title:'单井单日报表模板',
+                            		title:'单井班报表模板',
                             		id:"ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id",
                                     layout: 'fit',
                                     border: false,
@@ -155,7 +155,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	},{
                             		region: 'south',
                                 	height:'50%',
-                                	title:'单井单日报表内容配置',
+                                	title:'单井班报表内容配置',
                                 	collapsible: true,
                                     split: true,
                                 	layout: 'fit',
@@ -182,7 +182,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	}]
                         	}]
                         },{
-                        	title:'区间报表',
+                        	title:'日报表',
                         	id:'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id',
                         	layout: "border",
                         	border: false,
@@ -202,7 +202,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         		border: false,
                         		items: [{
                             		region: 'center',
-                            		title:'单井区间报表模板',
+                            		title:'单井日报表模板',
                             		id:"ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id",
                                     layout: 'fit',
                                     border: false,
@@ -226,7 +226,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	},{
                             		region: 'south',
                                 	height:'50%',
-                                	title:'单井区间报表内容配置',
+                                	title:'单井日报表内容配置',
                                 	collapsible: true,
                                     split: true,
                                 	layout: 'fit',
@@ -332,7 +332,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	},{
                         		region: 'south',
                             	height:'50%',
-                            	title:'单井区间报表内容配置',
+                            	title:'单井日报表内容配置',
                             	collapsible: true,
                                 split: true,
                             	layout: 'fit',
@@ -418,7 +418,7 @@ function CreateSingleWellRangeReportTemplateInfoTable(name,deviceType,code){
 		url:context + '/acquisitionUnitManagerController/getReportTemplateData',
 		success:function(response) {
 			Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井区间报表模板：'+name);
+			Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井日报表模板：'+name);
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			if(singleWellRangeReportTemplateHandsontableHelper!=null){
@@ -610,7 +610,7 @@ function CreateSingleWellDailyReportTemplateInfoTable(name,deviceType,code){
 		url:context + '/acquisitionUnitManagerController/getReportTemplateData',
 		success:function(response) {
 			Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle('单井区间报表模板：'+name);
+			Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle('单井班报表模板：'+name);
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			if(singleWellDailyReportTemplateHandsontableHelper!=null){
@@ -804,9 +804,9 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(deviceType,unitId,unitNa
 			Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==0){
-				Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle('单井区间报表内容配置');
+				Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle('单井日报表内容配置');
 			}else{
-				Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/单井区间报表内容配置');
+				Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/单井日报表内容配置');
 			}
 			if(singleWellRangeReportTemplateContentHandsontableHelper==null || singleWellRangeReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
@@ -1021,9 +1021,9 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(deviceType,unitId,unitNa
 			Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==0){
-				Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle('单井单日报表内容配置');
+				Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle('单井班报表内容配置');
 			}else{
-				Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/单井单日报表内容配置');
+				Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/单井班报表内容配置');
 			}
 			if(singleWellDailyReportTemplateContentHandsontableHelper==null || singleWellDailyReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellDailyReportTemplateContentHandsontableHelper = SingleWellDailyReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
@@ -1139,7 +1139,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 		                			if(selectedItem.data.classes==1){
 		                				var CurveConfigWindow=Ext.create("AP.view.acquisitionUnit.CurveConfigWindow");
 		                				
-		                				Ext.getCmp("curveConfigSelectedTableType_Id").setValue(23);//单井单日报表内容表
+		                				Ext.getCmp("curveConfigSelectedTableType_Id").setValue(23);//单井班报表内容表
 		                				Ext.getCmp("curveConfigSelectedRow_Id").setValue(row);
 		                				Ext.getCmp("curveConfigSelectedCol_Id").setValue(column);
 		                				

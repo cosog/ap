@@ -1392,10 +1392,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			//补充记录
 			long timeDiff=StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(defaultTimeList.size()-1), "yyyy-MM-dd HH:mm:ss");
-			if(timeDiff<0){
+			if(timeDiff>0){
 				int rownum=totalCount+1;
 				for(int i=0;i<defaultTimeList.size();i++){
-					if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")<0){
+					if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")>0){
 						List<String> everyDaya=new ArrayList<String>();
 						for(int j=0;j<columnCount;j++){
 							everyDaya.add("");
@@ -1404,7 +1404,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						everyDaya.add("-99");
 						
 						if(timeColIndex>=0){
-							everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yy-MM-dd HH:mm:ss", "HH:mm"));
+							everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
 						}
 						dataList.add(everyDaya);
 						rownum++;
@@ -1589,10 +1589,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				//补充记录
 				long timeDiff=StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(defaultTimeList.size()-1), "yyyy-MM-dd HH:mm:ss");
-				if(timeDiff<0){
+				if(timeDiff>0){
 					int rownum=totalCount+1;
 					for(int i=0;i<defaultTimeList.size();i++){
-						if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")<0){
+						if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")>0){
 							List<String> everyDaya=new ArrayList<String>();
 							for(int j=0;j<columnCount;j++){
 								everyDaya.add("");
@@ -1600,7 +1600,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							everyDaya.set(0, rownum+"");
 							
 							if(timeColIndex>=0){
-								everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yy-MM-dd HH:mm:ss", "HH:mm"));
+								everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
 							}
 							dataList.add(everyDaya);
 							rownum++;

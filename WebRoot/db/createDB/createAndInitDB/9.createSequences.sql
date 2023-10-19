@@ -99,7 +99,7 @@ cache 20;
 create sequence SEQ_REPORT_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 120
+start with 200
 increment by 1
 cache 20;
 
@@ -365,6 +365,20 @@ cache 20;
 create sequence SEQ_VIDEOKEY
 minvalue 1
 maxvalue 9999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
+create sequence SEQ_RPCTIMINGCALCULATIONDATA
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
+create sequence SEQ_PCPTIMINGCALCULATIONDATA
+minvalue 1
+maxvalue 999999999999999999999999
 start with 1
 increment by 1
 cache 20;

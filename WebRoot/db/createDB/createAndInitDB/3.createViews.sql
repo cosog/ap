@@ -316,3 +316,72 @@ from tbl_systemlog t,tbl_user t2,tbl_code t3,tbl_role t4
 where t.user_id=t2.user_id and t2.user_type=t4.role_id
 and t.action=t3.itemvalue and upper(t3.itemcode)=upper('systemAction');
 /
+
+create or replace view viw_rpctimingcalculationdata as
+select
+ t.id,well.wellname,well.id as wellid,
+ t.calTime,t.extendeddays,t.calTime-t.extendeddays as acquisitionDate,
+ t.commstatus,decode(t.commstatus,1,'在线','离线') as commStatusName,t.commtime,t.commtimeefficiency,t.commrange,
+ t.runStatus,
+ case when t.commstatus=1 then
+           decode(t.runstatus,1,'运行','停抽')
+      else '离线' end as runStatusName,
+ t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,
+ decode(t.resultcode,null,1100,0,1100,t.resultcode) as resultcode,
+ status.resultname as resultname,t.resultString,status.optimizationsuggestion,
+ t.theoreticalproduction,
+ t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,t.weightwatercut,
+ t.liquidVolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,t.volumewatercut,
+ t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,
+ t.pumpeff*100 as pumpeff,t.pumpeff1*100 as pumpeff1,t.pumpeff2*100 as pumpeff2,t.pumpeff3*100 as pumpeff3,t.pumpeff4*100 as pumpeff4,
+ t.systemefficiency*100 as systemEfficiency,t.surfacesystemefficiency*100 as surfaceSystemEfficiency,t.welldownsystemefficiency*100 as welldownSystemEfficiency,
+ t.energyper100mlift,
+ t.todayKWattH,
+ t.iDegreeBalance,
+ t.wattDegreeBalance,
+ t.deltaradius*100 as deltaradius,
+ t.tubingpressure,t.casingpressure,t.BottomHolePressure,
+ t.pumpsettingdepth,
+ t.producingfluidlevel,t.calcproducingfluidlevel,t.leveldifferencevalue,
+ t.submergence,
+ t.gasvolumetricproduction,t.totalgasvolumetricproduction,t.totalwatervolumetricproduction,
+ t.headerLabelInfo,
+ well.reportinstancecode,
+ well.sortnum,org.org_code,org.org_id,t.remark as remark,
+ t.reservedcol1,t.reservedcol2,t.reservedcol3,t.reservedcol4,t.reservedcol5
+from
+tbl_rpcdevice well
+left outer join  tbl_org org  on well.orgid=org.org_id
+left outer join  tbl_rpctimingcalculationdata t  on t.wellid=well.id
+left outer join  tbl_rpc_worktype status  on  status.resultcode=decode(t.resultcode,null,1100,0,1100,t.resultcode);
+/
+
+create or replace view viw_pcptimingcalculationdata as
+select
+ t.id,well.wellname,well.id as wellid,
+ t.calTime,t.extendeddays,t.calTime-t.extendeddays as acquisitionDate,
+ t.commstatus,decode(t.commstatus,1,'在线','离线') as commStatusName,t.commtime,t.commtimeefficiency,t.commrange,
+ t.runStatus,
+ case when t.commstatus=1 then
+           decode(t.runstatus,1,'运行','停抽')
+      else '离线' end as runStatusName,
+ t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,
+ t.rpm,
+ t.theoreticalproduction,
+ t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,t.weightwatercut,
+ t.liquidVolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,t.volumewatercut,
+ t.pumpeff*100 as pumpeff,t.pumpeff1*100 as pumpeff1,t.pumpeff2*100 as pumpeff2,
+ t.systemefficiency*100 as systemEfficiency,t.energyper100mlift,
+ t.todayKWattH,
+ t.tubingpressure,t.casingpressure,t.BottomHolePressure,
+ t.pumpsettingdepth,t.producingfluidlevel,t.submergence,
+ t.gasvolumetricproduction,t.totalgasvolumetricproduction,t.totalwatervolumetricproduction,
+ t.headerLabelInfo,
+ well.reportinstancecode,
+ well.sortnum,org.org_code,org.org_id,t.remark as remark,
+ t.reservedcol1,t.reservedcol2,t.reservedcol3,t.reservedcol4,t.reservedcol5
+from
+tbl_pcpdevice well
+left outer join  tbl_org org  on well.orgid=org.org_id
+left outer join  tbl_pcptimingcalculationdata t  on t.wellid=well.id;
+/

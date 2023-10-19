@@ -3927,8 +3927,8 @@ public class StringManagerUtils {
      */
     public static long getTimeMillis(String time) {
         try {
-            DateFormat dateFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
-            DateFormat dayFormat = new SimpleDateFormat("yy-MM-dd");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date curDate = dateFormat.parse(dayFormat.format(new Date()) + " " + time);
             return curDate.getTime();
         } catch (ParseException e) {
@@ -3940,8 +3940,8 @@ public class StringManagerUtils {
     public static List<String> getTimeRangeList(String dateStr,int offsetHour,int interval) {
     	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
     	List<String> timeList=new ArrayList<>();
-    	DateFormat dateFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
-        DateFormat dayFormat = new SimpleDateFormat("yy-MM-dd");
+    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
     	int index=1;
     	do{
     		try {

@@ -1935,3 +1935,186 @@ Exception
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_update_smsdevice;
 /
+
+CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramtimingtotal (
+  v_wellId in number,v_ResultStatus in number,
+  v_resultcode in number,v_resultString in tbl_rpcdailycalculationdata.resultstring%TYPE,
+  v_ExtendedDays in number,
+  v_Stroke in number,v_SPM in number,
+  v_FMax in number,v_FMin in number,v_fullnessCoefficient in number,
+  v_TheoreticalProduction in number,
+  v_liquidVolumetricProduction in number,v_oilVolumetricProduction in number,v_waterVolumetricProduction in number,v_volumewatercut in number,
+  v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
+  v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
+  v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
+  v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
+  v_pumpSettingDepth in number,
+  v_producingfluidLevel in number,v_calcProducingfluidLevel in number,v_levelDifferenceValue in number,
+  v_submergence in number,
+  v_casingPressure in number,v_tubingPressure in number,
+
+  v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
+  v_commRange in tbl_rpctimingcalculationdata.commrange%TYPE,
+  v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
+  v_runRange in tbl_rpctimingcalculationdata.runrange%TYPE,
+  v_calTime in varchar2,
+  v_recordCount in number
+  ) is
+  p_msg varchar2(3000) := 'error';
+  p_count number:=0;
+begin
+  select count(*) into p_count from tbl_rpctimingcalculationdata t where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+  if p_count>0 then
+    p_msg := '记录存在';
+    update tbl_rpctimingcalculationdata t
+    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
+    t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
+    where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+    commit;
+
+    if v_recordCount>0 then
+      update tbl_rpctimingcalculationdata t
+      set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
+          t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
+          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
+          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
+          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
+          t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
+          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+          t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
+          t.pumpsettingdepth=v_pumpSettingDepth,
+          t.producingfluidlevel=v_producingfluidLevel,t.calcproducingfluidlevel=v_calcProducingfluidLevel,t.leveldifferencevalue=v_levelDifferenceValue,
+          t.submergence=v_submergence,
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+      where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+      commit;
+    end if;
+
+    p_msg := '更新成功';
+  elsif p_count=0 then
+    p_msg := '记录不存在';
+    insert into tbl_rpctimingcalculationdata(
+           wellid,caltime,resultstatus,resultcode,resultstring,extendeddays,
+    stroke,spm,fmax,fmin,fullnesscoefficient,
+    theoreticalproduction,
+    liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
+    liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
+    pumpeff,pumpeff1,pumpeff2,pumpeff3,pumpeff4,
+    welldownsystemefficiency,surfacesystemefficiency,systemefficiency,energyper100mlift,
+    idegreebalance,wattdegreebalance,deltaradius,
+    pumpsettingdepth,
+    producingfluidlevel,calcproducingfluidlevel,leveldifferencevalue,
+    submergence,
+    casingpressure,tubingpressure,
+    commstatus,commtime,commtimeefficiency,commrange,
+    runstatus,runtime,runtimeefficiency,runrange
+    )values(
+    v_wellId,to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss'),
+    v_ResultStatus,v_resultcode,v_resultString,v_ExtendedDays,
+    v_Stroke,v_SPM,v_FMax,v_FMin,v_fullnessCoefficient,
+    v_TheoreticalProduction,
+    v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_volumewatercut,
+    v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
+    v_pumpEff,v_pumpEff1,v_pumpEff2,v_pumpEff3,v_pumpEff4,
+    v_wellDownSystemEfficiency,v_surfaceSystemEfficiency,v_systemEfficiency,v_energyper100mlift,
+    v_iDegreeBalance,v_wattDegreeBalance,v_DeltaRadius,
+    v_pumpSettingDepth,
+    v_producingfluidLevel,v_calcProducingfluidLevel,v_levelDifferenceValue,
+    v_submergence,
+    v_casingPressure,v_tubingPressure,
+    v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
+    v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
+    );
+    commit;
+    p_msg := '添加成功';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_rpc_diagramtimingtotal;
+/
+
+CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmtimingtotal (
+  v_wellId in number,v_ResultStatus in number,
+  v_ExtendedDays in number,
+  v_rpm in number,
+  v_TheoreticalProduction in number,
+  v_liquidVolumetricProduction in number,v_oilVolumetricProduction in number,v_waterVolumetricProduction in number,v_volumewatercut in number,
+  v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
+  v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
+  v_systemEfficiency in number,v_energyper100mlift in number,
+  v_pumpSettingDepth in number,v_producingfluidLevel in number,v_submergence in number,
+  v_casingPressure in number,v_tubingPressure in number,
+  v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
+  v_commRange in tbl_pcptimingcalculationdata.commrange%TYPE,
+  v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
+  v_runRange in tbl_pcptimingcalculationdata.runrange%TYPE,
+  v_calTime in varchar2,v_recordCount in number
+  ) is
+  p_msg varchar2(3000) := 'error';
+  p_count number:=0;
+begin
+  select count(*) into p_count from tbl_pcptimingcalculationdata t where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+  if p_count>0 then
+    p_msg := '记录存在';
+    update tbl_pcptimingcalculationdata t
+    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
+    t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
+    where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+    commit;
+    if v_recordCount>0 then
+      update tbl_pcptimingcalculationdata t
+      set t.resultstatus=v_ResultStatus,t.extendeddays=v_ExtendedDays,
+          t.rpm=v_rpm,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
+          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
+          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
+          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
+          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+          t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+       where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+       commit;
+    end if;
+    p_msg := '更新成功';
+  elsif p_count=0 then
+    p_msg := '记录不存在';
+    insert into tbl_pcptimingcalculationdata(
+           wellid,caltime,resultstatus,extendeddays,rpm,
+    theoreticalproduction,
+    liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
+    liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
+    pumpeff,pumpeff1,pumpeff2,
+    systemefficiency,energyper100mlift,
+    producingfluidlevel,casingpressure,tubingpressure,
+    commstatus,commtime,commtimeefficiency,commrange,
+    runstatus,runtime,runtimeefficiency,runrange
+    )values(
+    v_wellId,to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss'),
+    v_ResultStatus,v_ExtendedDays,v_rpm,
+    v_TheoreticalProduction,
+    v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_volumewatercut,
+    v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
+    v_pumpEff,v_pumpEff1,v_pumpEff2,
+    v_systemEfficiency,v_energyper100mlift,
+    v_producingfluidLevel,v_casingPressure,v_tubingPressure,
+    v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
+    v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
+    );
+    commit;
+    p_msg := '添加成功';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_pcp_rpmtimingtotal;
+/

@@ -102,7 +102,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     border: false,
                     tabPosition: 'top',
                     items: [{
-                    	title:'单井日报',
+                    	title:'单井报表',
                     	id:'ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id',
                     	xtype: 'tabpanel',
                     	activeTab: 0,
@@ -285,13 +285,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                             }
                         }
                     },{
-                    	title:'区域日报',
+                    	title:'区域报表',
                     	id:'ModbusProtocolReportInstanceProductionReportTemplatePanel_Id',
-                    	border: false,
-                    	region: 'center',
-                    	layout: "border",
-                    	items: [{
-                    		region: 'center',
+                    	xtype: 'tabpanel',
+                    	activeTab: 0,
+                        border: false,
+                        tabPosition: 'top',
+                        items: [{
+                        	id:'ModbusProtocolReportInstanceProductionRangeReportTemplatePanel_Id',
+                        	title:'日报表',
+                        	border: false,
                     		layout: "border",
                     		items: [{
                         		region: 'center',
@@ -344,7 +347,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                                     }
                                 }
                         	}]
-                    	}]
+                        }],
+                        listeners: {
+                        	tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        		
+                        	}
+                        }
                     }],
                     listeners: {
                         tabchange: function (tabPanel, newCard, oldCard, obj) {

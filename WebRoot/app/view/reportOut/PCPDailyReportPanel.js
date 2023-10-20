@@ -16,13 +16,13 @@ Ext.define("AP.view.reportOut.PCPDailyReportPanel", {
         		border: false,
         		tabPosition: 'left',
         		items: [{
-    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">单井日报</div>',
+    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">单井报表</div>',
     				id:'PCPSingleWellDailyReportTabPanel_Id',
     				items: [PCPSingleWellDailyReportPanel],
     				layout: "fit",
     				border: false
     			},{
-    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">区域日报</div>',
+    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">区域报表</div>',
     				id:'PCPProductionDailyReportTabPanel_Id',
     				items: [PCPProductionDailyReportPanel],
     				layout: "fit",

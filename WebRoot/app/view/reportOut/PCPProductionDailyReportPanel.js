@@ -148,6 +148,22 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                 text: cosog.string.exportExcel,
                 iconCls: 'export',
                 handler: function (v, o) {
+                	var selectedOrgName="";
+                	var selectedOrgId="";
+                	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+                	var count=IframeViewStore.getCount();
+                	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+                	if (IframeViewSelection.length > 0) {
+//                		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
+                		selectedOrgName=IframeViewSelection[0].data.text;
+                		selectedOrgId=IframeViewSelection[0].data.orgId;
+                	} else {
+                		if(count>0){
+                			selectedOrgName=IframeViewStore.getAt(0).data.text;
+                			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+                		}
+                	}
+                	
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                     var startDate = Ext.getCmp('PCPProductionDailyReportStartDate_Id').rawValue;
                     var endDate = Ext.getCmp('PCPProductionDailyReportEndDate_Id').rawValue;
@@ -165,6 +181,7 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                 	var url=context + '/reportDataMamagerController/exportProductionDailyReportData?deviceType=1'
                 	+'&reportType=1'
                 	+'&wellName='+URLencode(URLencode(wellName))
+                	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))
                 	+'&instanceCode='+instanceCode
                 	+'&unitId='+unitId
                 	+'&startDate='+startDate
@@ -205,115 +222,129 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
             	layout: "fit"
             },{
             	region: 'center',
-            	layout:'border',
-            	border: false,
-            	items:[{
-            		region:'north',
-            		height:'50%',
-            		title:'报表曲线',
-            		collapsible: true, // 是否可折叠
-                    collapsed:false,//是否折叠
-                    split: true, // 竖折叠条
-                    border: false,
-                    id:'PCPProductionDailyReportCurvePanel_id',
-                    html: '<div id="PCPProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
-                    listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                            if ($("#PCPProductionDailyReportCurveDiv_Id").highcharts() != undefined) {
-                            	highchartsResize("PCPProductionDailyReportCurveDiv_Id");
+            	xtype: 'tabpanel',
+            	id:"PCPProductionReportTabPanel_Id",
+                activeTab: 0,
+                border: false,
+                tabPosition: 'top',
+                items: [{
+                	id:'PCPProductionRangeReportTabPanel_id',
+                	title:'日报表',
+                	layout:'border',
+                	border: false,
+                	items:[{
+                		region:'north',
+                		height:'50%',
+                		title:'报表曲线',
+                		collapsible: true, // 是否可折叠
+                        collapsed:false,//是否折叠
+                        split: true, // 竖折叠条
+                        border: false,
+                        id:'PCPProductionDailyReportCurvePanel_id',
+                        html: '<div id="PCPProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                if ($("#PCPProductionDailyReportCurveDiv_Id").highcharts() != undefined) {
+                                	highchartsResize("PCPProductionDailyReportCurveDiv_Id");
+                                }
                             }
                         }
-                    }
-            	},{
-            		region: 'center',
-            		title:'报表数据',
-                    layout: "fit",
-                	id:'PCPProductionDailyReportPanel_id',
-                    border: false,
-                    tbar:[{
-                        xtype: 'button',
-                        text: '前一天',
-                        iconCls: 'forward',
-                        id:'PCPProductionDailyReportForwardBtn_Id',
-                        handler: function (v, o) {
-                        	var str = Ext.getCmp("PCPProductionDailyReportDate_Id").rawValue;
-                        	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
-                        	var day=-1;
-                        	var value = startDate.getTime();
-                        	value += day * (24 * 3600 * 1000);
-                        	var endDate = new Date(value);
-                        	Ext.getCmp("PCPProductionDailyReportDate_Id").setValue(endDate);
-                        	CreatePCPProductionDailyReportTable();
-                        }
-                    },'-',{
-                        xtype: 'datefield',
-                        anchor: '100%',
-                        hidden: false,
-                        editable:false,
-                        readOnly:true,
-                        width: 90,
-                        format: 'Y-m-d ',
-                        id: 'PCPProductionDailyReportDate_Id',
-//                        value: new Date(),
+                	},{
+                		region: 'center',
+                		title:'报表数据',
+                        layout: "fit",
+                    	id:'PCPProductionDailyReportPanel_id',
+                        border: false,
+                        tbar:[{
+                            xtype: 'button',
+                            text: '前一天',
+                            iconCls: 'forward',
+                            id:'PCPProductionDailyReportForwardBtn_Id',
+                            handler: function (v, o) {
+                            	var str = Ext.getCmp("PCPProductionDailyReportDate_Id").rawValue;
+                            	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
+                            	var day=-1;
+                            	var value = startDate.getTime();
+                            	value += day * (24 * 3600 * 1000);
+                            	var endDate = new Date(value);
+                            	Ext.getCmp("PCPProductionDailyReportDate_Id").setValue(endDate);
+                            	CreatePCPProductionDailyReportTable();
+                            }
+                        },'-',{
+                            xtype: 'datefield',
+                            anchor: '100%',
+                            hidden: false,
+                            editable:false,
+                            readOnly:true,
+                            width: 90,
+                            format: 'Y-m-d ',
+                            id: 'PCPProductionDailyReportDate_Id',
+//                            value: new Date(),
+                            listeners: {
+                            	change ( thisField, newValue, oldValue, eOpts )  {
+                            		var startDateStr=Ext.getCmp("PCPProductionDailyReportStartDate_Id").rawValue;
+                            		var endDateStr=Ext.getCmp("PCPProductionDailyReportEndDate_Id").rawValue;
+                            		var reportDateStr=Ext.getCmp("PCPProductionDailyReportDate_Id").rawValue;
+                            		
+                            		var startDate = new Date(Date.parse(startDateStr .replace(/-/g, '/'))).getTime();
+                            		var endDate = new Date(Date.parse(endDateStr .replace(/-/g, '/'))).getTime();
+                            		var reportDate = new Date(Date.parse(reportDateStr .replace(/-/g, '/'))).getTime();
+                            		
+                            		
+                            		if(reportDate>startDate){
+                            			Ext.getCmp("PCPProductionDailyReportForwardBtn_Id").enable();
+                            		}else{
+                            			Ext.getCmp("PCPProductionDailyReportForwardBtn_Id").disable();
+                            		}
+                            		
+                            		if(reportDate<endDate){
+                            			Ext.getCmp("PCPProductionDailyReportBackwardsBtn_Id").enable();
+                            		}else{
+                            			Ext.getCmp("PCPProductionDailyReportBackwardsBtn_Id").disable();
+                            		}
+                            	}
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: '后一天',
+                            id:'PCPProductionDailyReportBackwardsBtn_Id',
+                            iconCls: 'backwards',
+                            handler: function (v, o) {
+                            	var str = Ext.getCmp("PCPProductionDailyReportDate_Id").rawValue;
+                            	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
+                            	var day=1;
+                            	var value = startDate .getTime();
+                            	value += day * (24 * 3600 * 1000);
+                            	var endDate = new Date(value);
+                            	Ext.getCmp("PCPProductionDailyReportDate_Id").setValue(endDate);
+                            	CreatePCPProductionDailyReportTable();
+                            }
+                        }],
+                        html:'<div class="PCPProductionDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPProductionDailyReportDiv_id"></div></div>',
                         listeners: {
-                        	change ( thisField, newValue, oldValue, eOpts )  {
-                        		var startDateStr=Ext.getCmp("PCPProductionDailyReportStartDate_Id").rawValue;
-                        		var endDateStr=Ext.getCmp("PCPProductionDailyReportEndDate_Id").rawValue;
-                        		var reportDateStr=Ext.getCmp("PCPProductionDailyReportDate_Id").rawValue;
-                        		
-                        		var startDate = new Date(Date.parse(startDateStr .replace(/-/g, '/'))).getTime();
-                        		var endDate = new Date(Date.parse(endDateStr .replace(/-/g, '/'))).getTime();
-                        		var reportDate = new Date(Date.parse(reportDateStr .replace(/-/g, '/'))).getTime();
-                        		
-                        		
-                        		if(reportDate>startDate){
-                        			Ext.getCmp("PCPProductionDailyReportForwardBtn_Id").enable();
-                        		}else{
-                        			Ext.getCmp("PCPProductionDailyReportForwardBtn_Id").disable();
-                        		}
-                        		
-                        		if(reportDate<endDate){
-                        			Ext.getCmp("PCPProductionDailyReportBackwardsBtn_Id").enable();
-                        		}else{
-                        			Ext.getCmp("PCPProductionDailyReportBackwardsBtn_Id").disable();
-                        		}
+                        	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        		if(pcpProductionDailyReportHelper!=null && pcpProductionDailyReportHelper.hot!=undefined){
+//                        			pcpProductionDailyReportHelper.hot.refreshDimensions();
+                        			var newWidth=width;
+                            		var newHeight=height-22-1;//减去工具条高度
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		pcpProductionDailyReportHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
                         	}
                         }
-                    },'-',{
-                        xtype: 'button',
-                        text: '后一天',
-                        id:'PCPProductionDailyReportBackwardsBtn_Id',
-                        iconCls: 'backwards',
-                        handler: function (v, o) {
-                        	var str = Ext.getCmp("PCPProductionDailyReportDate_Id").rawValue;
-                        	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
-                        	var day=1;
-                        	var value = startDate .getTime();
-                        	value += day * (24 * 3600 * 1000);
-                        	var endDate = new Date(value);
-                        	Ext.getCmp("PCPProductionDailyReportDate_Id").setValue(endDate);
-                        	CreatePCPProductionDailyReportTable();
-                        }
-                    }],
-                    html:'<div class="PCPProductionDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPProductionDailyReportDiv_id"></div></div>',
-                    listeners: {
-                    	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    		if(pcpProductionDailyReportHelper!=null && pcpProductionDailyReportHelper.hot!=undefined){
-//                    			pcpProductionDailyReportHelper.hot.refreshDimensions();
-                    			var newWidth=width;
-                        		var newHeight=height-22-1;//减去工具条高度
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		pcpProductionDailyReportHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                        	}
-                    	}
+                	}]
+                }],
+                listeners: {
+                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	
                     }
-            	}]
+                }
             }]
 
         });
@@ -809,6 +840,22 @@ function createPCPProductionDailyReportTemplateListDataColumn(columnInfo) {
 };
 
 function CreatePCPProductionDailyReportCurve(){
+	var selectedOrgName="";
+	var selectedOrgId="";
+	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+	var count=IframeViewStore.getCount();
+	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+	if (IframeViewSelection.length > 0) {
+//		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
+		selectedOrgName=IframeViewSelection[0].data.text;
+		selectedOrgId=IframeViewSelection[0].data.orgId;
+	} else {
+		if(count>0){
+			selectedOrgName=IframeViewStore.getAt(0).data.text;
+			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+		}
+	}
+	
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var startDate = Ext.getCmp('PCPProductionDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('PCPProductionDailyReportEndDate_Id').rawValue;
@@ -848,7 +895,7 @@ function CreatePCPProductionDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.wellName + "报表曲线";
+		    var title = result.selectedOrgName + "报表曲线";
 		    var xTitle='日期';
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
@@ -983,6 +1030,7 @@ function CreatePCPProductionDailyReportCurve(){
 			instanceCode:instanceCode,
 			unitId:unitId,
 			wellName: wellName,
+			selectedOrgName: selectedOrgName,
 			startDate: startDate,
 			endDate: endDate,
 			reportType: 1,

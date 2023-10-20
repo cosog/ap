@@ -1215,7 +1215,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,
+	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,
+			String wellId,String wellName,
 			String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
@@ -1405,6 +1406,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						if(timeColIndex>=0){
 							everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
+						}
+						if(wellNameColIndex>=0){
+							everyDaya.set(wellNameColIndex,wellName);
 						}
 						dataList.add(everyDaya);
 						rownum++;
@@ -1601,6 +1605,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 							if(timeColIndex>=0){
 								everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
+							}
+							if(wellNameColIndex>=0){
+								everyDaya.set(wellNameColIndex,wellName);
 							}
 							dataList.add(everyDaya);
 							rownum++;
@@ -1848,14 +1855,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public boolean exportProductionDailyReportData(HttpServletResponse response,
-			Page pager,String orgId,String deviceType,String reportType,
+			Page pager,String orgId,String selectedOrgName,
+			String deviceType,String reportType,
 			String instanceCode,String  unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			Gson gson =new Gson();
-			String title=wellName+"井生产报表";
-			String fileName=wellName+"井生产报表";
+			String title=selectedOrgName+"日报表";
+			String fileName=selectedOrgName+"日报表";
 			int headerRowCount=0;
 			
 			String reportTemplateCode="";
@@ -2383,7 +2391,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProductionDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String unitId,String instanceCode,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getProductionDailyReportCurveData(Page pager, String orgId,String selectedOrgName,String deviceType,String reportType,String unitId,String instanceCode,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -2501,6 +2509,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		curveConfBuff.append("]");
 		
 		result_json.append("\"wellName\":\""+wellName+"\","
+				+ "\"selectedOrgName\":\""+selectedOrgName+"\","
 				+ "\"startDate\":\""+startDate+"\","
 				+ "\"endDate\":\""+endDate+"\","
 				+ "\"curveItems\":"+itemsBuff+","

@@ -104,7 +104,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     border: false,
                     tabPosition: 'top',
                     items: [{
-                    	title:'单井日报',
+                    	title:'单井报表',
                     	id:'ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id',
                     	xtype: 'tabpanel',
                     	activeTab: 0,
@@ -288,76 +288,89 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             }
                         }
                     },{
-                    	title:'区域日报',
+                    	title:'区域报表',
                     	id:'ModbusProtocolReportUnitProductionReportTemplatePanel_Id',
-                    	layout: "border",
-                    	border: false,
-                    	items: [{
-                    		region: 'west',
-                        	width:'16%',
-                        	layout: 'fit',
-                            border: false,
-                            id:'ReportUnitProductionReportTemplateListPanel_Id',
-                            title:'报表模板列表',
-                            header: false,
-                            split: true,
-                            collapsible: true
-                    	},{
-                    		region: 'center',
-                    		layout: "border",
-                    		border: false,
-                    		items: [{
-                        		region: 'center',
-                        		title:'区间日报模板',
-                        		id:"ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id",
-                                layout: 'fit',
-                                border: false,
-                                html:'<div class="ModbusProtocolReportUnitProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitProductionTemplateTableInfoDiv_id"></div></div>',
-                                listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (productionReportTemplateHandsontableHelper != null && productionReportTemplateHandsontableHelper.hot != null && productionReportTemplateHandsontableHelper.hot != undefined) {
-                                    		var newWidth=width;
-                                    		var newHeight=height;
-                                    		var header=thisPanel.getHeader();
-                                    		if(header){
-                                    			newHeight=newHeight-header.lastBox.height-2;
-                                    		}
-                                    		productionReportTemplateHandsontableHelper.hot.updateSettings({
-                                    			width:newWidth,
-                                    			height:newHeight
-                                    		});
-                                        }
-                                    }
-                                }
-                        	},{
-                        		region: 'south',
-                            	height:'50%',
-                            	title:'单井日报表内容配置',
-                            	collapsible: true,
-                                split: true,
+                    	xtype: 'tabpanel',
+                    	activeTab: 0,
+                        border: false,
+                        tabPosition: 'top',
+                        items: [{
+                        	title:'日报表',
+                        	id:'ModbusProtocolReportUnitProductionRangeReportTemplatePanel_Id',
+                        	layout: "border",
+                        	border: false,
+                        	items: [{
+                        		region: 'west',
+                            	width:'16%',
                             	layout: 'fit',
-                            	border: false,
-                            	id:"ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id",
-                                layout: 'fit',
-                                html:'<div class="ModbusProtocolProductionReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id"></div></div>',
-                                listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (productionReportTemplateContentHandsontableHelper != null && productionReportTemplateContentHandsontableHelper.hot != null && productionReportTemplateContentHandsontableHelper.hot != undefined) {
-                                    		var newWidth=width;
-                                    		var newHeight=height;
-                                    		var header=thisPanel.getHeader();
-                                    		if(header){
-                                    			newHeight=newHeight-header.lastBox.height-2;
-                                    		}
-                                    		productionReportTemplateContentHandsontableHelper.hot.updateSettings({
-                                    			width:newWidth,
-                                    			height:newHeight
-                                    		});
+                                border: false,
+                                id:'ReportUnitProductionReportTemplateListPanel_Id',
+                                title:'报表模板列表',
+                                header: false,
+                                split: true,
+                                collapsible: true
+                        	},{
+                        		region: 'center',
+                        		layout: "border",
+                        		border: false,
+                        		items: [{
+                            		region: 'center',
+                            		title:'区间日报模板',
+                            		id:"ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id",
+                                    layout: 'fit',
+                                    border: false,
+                                    html:'<div class="ModbusProtocolReportUnitProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitProductionTemplateTableInfoDiv_id"></div></div>',
+                                    listeners: {
+                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                        	if (productionReportTemplateHandsontableHelper != null && productionReportTemplateHandsontableHelper.hot != null && productionReportTemplateHandsontableHelper.hot != undefined) {
+                                        		var newWidth=width;
+                                        		var newHeight=height;
+                                        		var header=thisPanel.getHeader();
+                                        		if(header){
+                                        			newHeight=newHeight-header.lastBox.height-2;
+                                        		}
+                                        		productionReportTemplateHandsontableHelper.hot.updateSettings({
+                                        			width:newWidth,
+                                        			height:newHeight
+                                        		});
+                                            }
                                         }
                                     }
-                                }
+                            	},{
+                            		region: 'south',
+                                	height:'50%',
+                                	title:'单井日报表内容配置',
+                                	collapsible: true,
+                                    split: true,
+                                	layout: 'fit',
+                                	border: false,
+                                	id:"ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id",
+                                    layout: 'fit',
+                                    html:'<div class="ModbusProtocolProductionReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id"></div></div>',
+                                    listeners: {
+                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                        	if (productionReportTemplateContentHandsontableHelper != null && productionReportTemplateContentHandsontableHelper.hot != null && productionReportTemplateContentHandsontableHelper.hot != undefined) {
+                                        		var newWidth=width;
+                                        		var newHeight=height;
+                                        		var header=thisPanel.getHeader();
+                                        		if(header){
+                                        			newHeight=newHeight-header.lastBox.height-2;
+                                        		}
+                                        		productionReportTemplateContentHandsontableHelper.hot.updateSettings({
+                                        			width:newWidth,
+                                        			height:newHeight
+                                        		});
+                                            }
+                                        }
+                                    }
+                            	}]
                         	}]
-                    	}]
+                        }],
+                        listeners: {
+                        	tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        		
+                        	}
+                        }
                     }],
                     listeners: {
                         tabchange: function (tabPanel, newCard, oldCard, obj) {

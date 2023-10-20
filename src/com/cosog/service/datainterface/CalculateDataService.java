@@ -713,33 +713,42 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.wellid=t2.id "
 				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.resultstatus=1 ";
-		String realtimeStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
-				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
-				+ "t.totalkwatth,t.todaykwatth,"
-				+ "t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
-				+ "t.totalwatervolumetricproduction,t.watervolumetricproduction "
-				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-				+ " where t.wellid=t2.id "
-				+ " and t.acqtime=(select max(t3.acqtime) from tbl_rpcacqdata_hist t3 where t3.wellid=t.wellid and t3.acqtime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
+		
 		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_rpcdailycalculationdata t "
 				+ " where t.caldate=( select max(t2.caldate) from tbl_rpcdailycalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
 		
 		sql+=" order by t.id";
 		fesDiagramSql+= " order by t2.id,t.fesdiagramacqtime";
-		realtimeStatusSql+=" order by t2.id";
 		List<?> welllist = findCallSql(sql);
 		List<?> singleresultlist = findCallSql(fesDiagramSql);
-		List<?> realtimeStatusQueryList=findCallSql(realtimeStatusSql);
 		List<?> labelInfoQueryList=findCallSql(labelInfoSql);
-		
 		for(int i=0;i<welllist.size();i++){
 			try{
+				int recordCount=0;
 				Object[] wellObj=(Object[]) welllist.get(i);
 				String deviceId=wellObj[0]+"";
 				String wellName=wellObj[1]+"";
 				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
 				String reportUnitId=wellObj[3]+"";
+				
+				
+				String realtimeStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+						+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+						+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
+						+ "t.totalkwatth,t.todaykwatth,"
+						+ "t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
+						+ "t.totalwatervolumetricproduction,t.watervolumetricproduction "
+						+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
+						+ " where t.wellid=t2.id "
+						+ " and t.acqtime=("
+						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
+						+ " where t3.wellid="+deviceId+" and t3.acqtime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')"
+						+ " )"
+						+ " and t.wellid="+deviceId;
+				
+//				realtimeStatusSql+=" order by t2.id";
+				List<?> realtimeStatusQueryList=findCallSql(realtimeStatusSql);
+				
 				TimeEffResponseData timeEffResponseData=null;
 				CommResponseData commResponseData=null;
 				EnergyCalculateResponseData energyCalculateResponseData=null;
@@ -775,6 +784,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 						break;
 					}
 				}
+				String recordCountSql="select count(1) from tbl_rpctimingcalculationdata t  where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+				List<?> recordCountList = this.findCallSql(recordCountSql);
+				if(recordCountList.size()>0){
+					recordCount=StringManagerUtils.stringToInteger(recordCountList.get(0)+"");
+				}
 				
 				String insertHistSql="insert into tbl_rpctimingcalculationdata (wellid,caltime,stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
 						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
@@ -784,13 +798,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " and rownum=1";
 				String insertHistSql2="insert into tbl_rpctimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
 				String updateSql="update tbl_rpctimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
-				try {
-					int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
-					if(r==0){
-						r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+				if(recordCount==0){
+					try {
+						int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
+						if(r==0){
+							r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 				
 				//报表继承可编辑数据
@@ -803,7 +819,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 								+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 								+ " where t.unitid="+reportUnitId+" "
 								+ " and t.sort>=0"
-								+ " and t.reporttype=0"
+								+ " and t.reporttype=2"
 								+ " order by t.sort";
 						List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
 						List<?> reportItemQuertList = this.findCallSql(reportItemSql);
@@ -851,38 +867,34 @@ public class CalculateDataService<T> extends BaseService<T> {
 					}
 				}
 				
-				
-				
-				for(int j=0;j<realtimeStatusQueryList.size();j++){
-					Object[] realtimeStatusObj=(Object[]) realtimeStatusQueryList.get(j);
-					if(deviceId.equals(realtimeStatusObj[1].toString())){
-						lastTime=realtimeStatusObj[3]+"";
-						commStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[4]+"");
-						commTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[5]+"");
-						commTime=StringManagerUtils.stringToFloat(realtimeStatusObj[6]+"");
-						commRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[7]));
-						
-						runStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[8]+"");
-						runTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[9]+"");
-						runTime=StringManagerUtils.stringToFloat(realtimeStatusObj[10]+"");
-						runRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[11]));
-						if(realtimeStatusObj[12]!=null){
-							isAcqEnergy=true;
-						}
-						totalkwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[12]+"");
-						todaykwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[13]+"");
-						if(realtimeStatusObj[14]!=null){
-							isAcqTotalGasProd=true;
-						}
-						totalgasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[14]+"");
-						gasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[15]+"");
-						if(realtimeStatusObj[16]!=null){
-							isAcqTotalWaterProd=true;
-						}
-						totalwatervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[16]+"");
-						watervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[17]+"");
-						break;
+				if(realtimeStatusQueryList.size()>0){
+					Object[] realtimeStatusObj=(Object[]) realtimeStatusQueryList.get(0);
+					
+					lastTime=realtimeStatusObj[3]+"";
+					commStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[4]+"");
+					commTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[5]+"");
+					commTime=StringManagerUtils.stringToFloat(realtimeStatusObj[6]+"");
+					commRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[7]));
+					
+					runStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[8]+"");
+					runTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[9]+"");
+					runTime=StringManagerUtils.stringToFloat(realtimeStatusObj[10]+"");
+					runRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[11]));
+					if(realtimeStatusObj[12]!=null){
+						isAcqEnergy=true;
 					}
+					totalkwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[12]+"");
+					todaykwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[13]+"");
+					if(realtimeStatusObj[14]!=null){
+						isAcqTotalGasProd=true;
+					}
+					totalgasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[14]+"");
+					gasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[15]+"");
+					if(realtimeStatusObj[16]!=null){
+						isAcqTotalWaterProd=true;
+					}
+					totalwatervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[16]+"");
+					watervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[17]+"");
 				}
 				
 				String commTotalRequestData="{"
@@ -1212,7 +1224,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), new TypeToken<TotalAnalysisRequestData>() {}.getType());
 				TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
-				
 				updateSql+=" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				try {
 					int r=this.getBaseDao().updateOrDeleteBySql(updateSql);
@@ -1240,7 +1251,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					this.saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr);
 				}
-				
 			}catch(Exception e){
 				e.printStackTrace();
 				continue;
@@ -1584,39 +1594,18 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.wellid=t2.id "
 				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
-		String realtimeStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
-				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
-				+ "t.totalkwatth,t.todaykwatth,"
-				+ "t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
-				+ "t.totalwatervolumetricproduction,t.watervolumetricproduction "
-				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-				+ " where t.wellid=t2.id "
-				+ " and t.acqtime=(select max(t3.acqtime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.acqtime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
-		String totalStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.caltime,'yyyy-mm-dd hh24:mi:ss') as caltime,"
-				+ " t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
-				+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
-				+ " t.totalkwatth,t.todaykwatth,"
-				+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
-				+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-				+ " from tbl_pcptimingcalculationdata t,tbl_pcpdevice t2 "
-				+ " where t.wellid=t2.id "
-				+ " and t.caltime=(select max(t3.caltime) from tbl_pcptimingcalculationdata t3 where t3.wellid=t.wellid and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )";
-
 		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_pcpdailycalculationdata t "
 				+ " where t.caldate=( select max(t2.caldate) from tbl_pcpdailycalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
 		
 		sql+=" order by t.id";
 		rpmSql+= " order by t2.id,t.acqtime";
-		realtimeStatusSql+=" order by t2.id";
-		totalStatusSql+=" order by t2.id";
 		List<?> welllist = findCallSql(sql);
 		List<?> singleresultlist = findCallSql(rpmSql);
-		List<?> realtimeStatusQueryList=findCallSql(realtimeStatusSql);
 		List<?> labelInfoQueryList=findCallSql(labelInfoSql);
 		
 		for(int i=0;i<welllist.size();i++){
 			try{
+				int recordCount=0;
 				Object[] wellObj=(Object[]) welllist.get(i);
 				String deviceId=wellObj[0]+"";
 				String wellName=wellObj[1]+"";
@@ -1649,6 +1638,23 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String labelInfo="";
 				ReportTemplate.Template template=null;
 				
+				String realtimeStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+						+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+						+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
+						+ "t.totalkwatth,t.todaykwatth,"
+						+ "t.totalgasvolumetricproduction,t.gasvolumetricproduction,"
+						+ "t.totalwatervolumetricproduction,t.watervolumetricproduction "
+						+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
+						+ " where t.wellid=t2.id "
+						+ " and t.acqtime=("
+						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
+						+ " where t3.wellid="+deviceId+" and t3.acqtime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')"
+						+ " )"
+						+ " and t.wellid="+deviceId;
+				
+//				realtimeStatusSql+=" order by t2.id";
+				List<?> realtimeStatusQueryList=findCallSql(realtimeStatusSql);
+				
 				//继承表头信息
 				for(int j=0;j<labelInfoQueryList.size();j++){
 					Object[] labelInfoObj=(Object[]) labelInfoQueryList.get(j);
@@ -1656,6 +1662,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 						labelInfo=labelInfoObj[1]+"";
 						break;
 					}
+				}
+				String recordCountSql="select count(1) from tbl_pcptimingcalculationdata t  where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+				List<?> recordCountList = this.findCallSql(recordCountSql);
+				if(recordCountList.size()>0){
+					recordCount=StringManagerUtils.stringToInteger(recordCountList.get(0)+"");
 				}
 				String insertHistSql="insert into tbl_pcptimingcalculationdata (wellid,caltime,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
 						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
@@ -1666,14 +1677,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				String insertHistSql2="insert into tbl_pcptimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
 				String updateSql="update tbl_pcptimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
-				
-				try {
-					int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
-					if(r==0){
-						r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+				if(recordCount==0){
+					try {
+						int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
+						if(r==0){
+							r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 				
 				//报表继承可编辑数据
@@ -1686,7 +1698,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 								+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 								+ " where t.unitid="+reportUnitId+" "
 								+ " and t.sort>=0"
-								+ " and t.reporttype=0"
+								+ " and t.reporttype=2"
 								+ " order by t.sort";
 						List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
 						List<?> reportItemQuertList = this.findCallSql(reportItemSql);
@@ -1734,38 +1746,34 @@ public class CalculateDataService<T> extends BaseService<T> {
 					}
 				}
 				
-				
-				
-				for(int j=0;j<realtimeStatusQueryList.size();j++){
-					Object[] realtimeStatusObj=(Object[]) realtimeStatusQueryList.get(j);
-					if(deviceId.equals(realtimeStatusObj[1].toString())){
-						lastTime=realtimeStatusObj[3]+"";
-						commStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[4]+"");
-						commTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[5]+"");
-						commTime=StringManagerUtils.stringToFloat(realtimeStatusObj[6]+"");
-						commRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[7]));
-						
-						runStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[8]+"");
-						runTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[9]+"");
-						runTime=StringManagerUtils.stringToFloat(realtimeStatusObj[10]+"");
-						runRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[11]));
-						if(realtimeStatusObj[12]!=null){
-							isAcqEnergy=true;
-						}
-						totalkwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[12]+"");
-						todaykwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[13]+"");
-						if(realtimeStatusObj[14]!=null){
-							isAcqTotalGasProd=true;
-						}
-						totalgasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[14]+"");
-						gasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[15]+"");
-						if(realtimeStatusObj[16]!=null){
-							isAcqTotalWaterProd=true;
-						}
-						totalwatervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[16]+"");
-						watervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[17]+"");
-						break;
+				if(realtimeStatusQueryList.size()>0){
+					Object[] realtimeStatusObj=(Object[]) realtimeStatusQueryList.get(0);
+					
+					lastTime=realtimeStatusObj[3]+"";
+					commStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[4]+"");
+					commTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[5]+"");
+					commTime=StringManagerUtils.stringToFloat(realtimeStatusObj[6]+"");
+					commRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[7]));
+					
+					runStatus=StringManagerUtils.stringToInteger(realtimeStatusObj[8]+"");
+					runTimeEfficiency=StringManagerUtils.stringToFloat(realtimeStatusObj[9]+"");
+					runTime=StringManagerUtils.stringToFloat(realtimeStatusObj[10]+"");
+					runRange=StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(realtimeStatusObj[11]));
+					if(realtimeStatusObj[12]!=null){
+						isAcqEnergy=true;
 					}
+					totalkwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[12]+"");
+					todaykwatth=StringManagerUtils.stringToFloat(realtimeStatusObj[13]+"");
+					if(realtimeStatusObj[14]!=null){
+						isAcqTotalGasProd=true;
+					}
+					totalgasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[14]+"");
+					gasvolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[15]+"");
+					if(realtimeStatusObj[16]!=null){
+						isAcqTotalWaterProd=true;
+					}
+					totalwatervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[16]+"");
+					watervolumetricproduction=StringManagerUtils.stringToFloat(realtimeStatusObj[17]+"");
 				}
 				
 				String commTotalRequestData="{"

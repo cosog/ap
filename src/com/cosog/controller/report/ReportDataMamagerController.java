@@ -426,7 +426,8 @@ public class ReportDataMamagerController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String instanceCode = ParamUtils.getParameter(request, "instanceCode");
 		String unitId = ParamUtils.getParameter(request, "unitId");
-		String wellName = ParamUtils.getParameter(request, "wellName");
+		String wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
+		String selectedOrgName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "selectedOrgName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
@@ -462,7 +463,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setEnd_date(endDate);
 		
 		
-		boolean bool = reportDataManagerService.exportProductionDailyReportData(response,pager, orgId,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportProductionDailyReportData(response,pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
 		return null;
 	}
 	
@@ -590,6 +591,7 @@ public class ReportDataMamagerController extends BaseController {
 		String instanceCode = ParamUtils.getParameter(request, "instanceCode");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String wellName = ParamUtils.getParameter(request, "wellName");
+		String selectedOrgName = ParamUtils.getParameter(request, "selectedOrgName");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
@@ -619,7 +621,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getProductionDailyReportCurveData(pager, orgId,deviceType,reportType, unitId,instanceCode, wellName, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getProductionDailyReportCurveData(pager, orgId,selectedOrgName,deviceType,reportType, unitId,instanceCode, wellName, startDate,endDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

@@ -53,6 +53,11 @@ Ext.define('AP.store.reportOut.RPCProductionDailyReportInstanceListStore', {
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(0, true);
+            	if(get_rawData.totalCount==1){
+            		Ext.getCmp("RPCProductionDailyReportInstanceListPanel_Id").hide();
+            	}else{
+            		Ext.getCmp("RPCProductionDailyReportInstanceListPanel_Id").show();
+            	}
             }else{
             	Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").setValue(-1);
             	if(rpcProductionDailyReportHelper!=null){
@@ -66,6 +71,7 @@ Ext.define('AP.store.reportOut.RPCProductionDailyReportInstanceListStore', {
             }
         },
         beforeload: function (store, options) {
+        	Ext.getCmp("RPCProductionDailyReportInstanceListPanel_Id").show();
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var wellName = Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').getValue();
             var new_params = {

@@ -1657,7 +1657,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getProductionDailyReportData(Page pager, String orgId,String deviceType,String reportType,
+	public String getProductionDailyReportData(Page pager, String orgId,String selectedOrgName,String deviceType,String reportType,
 			String instanceCode,String unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
@@ -1696,7 +1696,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
 					String header=template.getHeader().get(0).getTitle().get(i);
 					if(StringManagerUtils.isNotNull(header)){
-						template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+						template.getHeader().get(0).getTitle().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
 					}
 				}
 			}
@@ -1902,8 +1902,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
 						String header=template.getHeader().get(0).getTitle().get(i);
 						if(StringManagerUtils.isNotNull(header)){
-							title=header.replaceAll("wellNameLabel", wellName);
-							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+							title=header.replaceAll("orgNameLabel", selectedOrgName);
+							template.getHeader().get(0).getTitle().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
 						}
 					}
 				}

@@ -368,6 +368,7 @@ public class ReportDataMamagerController extends BaseController {
 		String instanceCode = ParamUtils.getParameter(request, "instanceCode");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String wellName = ParamUtils.getParameter(request, "wellName");
+		String selectedOrgName = ParamUtils.getParameter(request, "selectedOrgName");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
@@ -402,7 +403,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getProductionDailyReportData(pager, orgId,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
+			json = reportDataManagerService.getProductionDailyReportData(pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

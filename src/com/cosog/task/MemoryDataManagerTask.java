@@ -1762,11 +1762,11 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
 			jedis.zadd("rpcCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"在线时间")));
-			jedis.zadd("rpcCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2,"在线时率")));
+			jedis.zadd("rpcCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","小数",2,"在线时率")));
 			jedis.zadd("rpcCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线区间","CommRange","",1,"在线区间")));
 			
 			jedis.zadd("rpcCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("运行时间","RunTime","h",2,"运行时间")));
-			jedis.zadd("rpcCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","",2,"运行时率")));
+			jedis.zadd("rpcCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","小数",2,"运行时率")));
 			jedis.zadd("rpcCalItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("运行区间","RunRange","",1,"运行区间")));
 			
 			
@@ -1870,11 +1870,11 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
 			jedis.zadd("pcpCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"在线时间")));
-			jedis.zadd("pcpCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2,"在线时率")));
+			jedis.zadd("pcpCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","小数",2,"在线时率")));
 			jedis.zadd("pcpCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线区间","CommRange","",1,"在线区间")));
 			
 			jedis.zadd("pcpCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("运行时间","RunTime","h",2,"运行时间")));
-			jedis.zadd("pcpCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","",2,"运行时率")));
+			jedis.zadd("pcpCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","小数",2,"运行时率")));
 			jedis.zadd("pcpCalItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("运行区间","RunRange","",1,"运行区间")));
 			
 			jedis.zadd("pcpCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2,"理论排量")));
@@ -1928,11 +1928,11 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,"日期")));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"在线时间,通信计算所得")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2,"在线时率,通信计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","小数",2,"在线时率,通信计算所得")));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("在线区间","CommRange","",1,"在线区间,通信计算所得")));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("运行时间","RunTime","h",2,"运行时间,时率计算所得")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","",2,"运行时率,时率计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","小数",2,"运行时率,时率计算所得")));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("运行区间","RunRange","",1,"运行区间,时率计算所得")));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("工况","ResultName","",1,"功图工况")));
@@ -2006,11 +2006,11 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,"日期")));
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"在线时间,通信计算所得")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2,"在线时率,通信计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","小数",2,"在线时率,通信计算所得")));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("在线区间","CommRange","",1,"在线区间,通信计算所得")));
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("运行时间","RunTime","h",2,"运行时间,时率计算所得")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","",2,"运行时率,时率计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","小数",2,"运行时率,时率计算所得")));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("运行区间","RunRange","",1,"运行区间,时率计算所得")));
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("转速","RPM","r/min",2,"转速")));
@@ -2068,11 +2068,11 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,"时间")));
 			
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"在线时间,通信计算所得")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2,"在线时率,通信计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","小数",2,"在线时率,通信计算所得")));
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("在线区间","CommRange","",1,"在线区间,通信计算所得")));
 			
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("运行时间","RunTime","h",2,"运行时间,时率计算所得")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","",2,"运行时率,时率计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","小数",2,"运行时率,时率计算所得")));
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("运行区间","RunRange","",1,"运行区间,时率计算所得")));
 			
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("工况","ResultName","",1,"功图工况")));
@@ -2152,11 +2152,11 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,"时间")));
 			
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"在线时间,通信计算所得")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2,"在线时率,通信计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","小数",2,"在线时率,通信计算所得")));
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("在线区间","CommRange","",1,"在线区间,通信计算所得")));
 			
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("运行时间","RunTime","h",2,"运行时间,时率计算所得")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","",2,"运行时率,时率计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","小数",2,"运行时率,时率计算所得")));
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("运行区间","RunRange","",1,"运行区间,时率计算所得")));
 			
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("转速","RPM","r/min",2,"转速")));

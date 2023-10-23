@@ -353,6 +353,22 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
 });
 
 function CreatePCPProductionDailyReportTable(){
+	var selectedOrgName="";
+	var selectedOrgId="";
+	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+	var count=IframeViewStore.getCount();
+	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+	if (IframeViewSelection.length > 0) {
+//		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
+		selectedOrgName=IframeViewSelection[0].data.text;
+		selectedOrgId=IframeViewSelection[0].data.orgId;
+	} else {
+		if(count>0){
+			selectedOrgName=IframeViewStore.getAt(0).data.text;
+			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+		}
+	}
+	
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var startDate = Ext.getCmp('PCPProductionDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('PCPProductionDailyReportEndDate_Id').rawValue;
@@ -412,6 +428,7 @@ function CreatePCPProductionDailyReportTable(){
 			instanceCode:instanceCode,
 			unitId:unitId,
 			wellName: wellName,
+			selectedOrgName: selectedOrgName,
 			startDate: startDate,
 			endDate: endDate,
 			reportDate: reportDate,

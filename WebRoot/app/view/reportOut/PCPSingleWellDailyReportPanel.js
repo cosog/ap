@@ -1274,21 +1274,21 @@ function CreatePCPSingleWellReportCurve(){
 
 function CreatePCPSingleWellRangeReportCurve(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-  var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
-  var endDate = Ext.getCmp('PCPSingleWellDailyReportEndDate_Id').rawValue;
+	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
+	var endDate = Ext.getCmp('PCPSingleWellDailyReportEndDate_Id').rawValue;
   
-  var wellName='';
-  var wellId=0;
-  var selectRow= Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").getValue();
-  if(selectRow>=0){
-  	wellName=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-  	wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-  }
+	var wellName='';
+	var wellId=0;
+	var selectRow= Ext.getCmp("PCPSingleWellDailyReportDeviceListSelectRow_Id").getValue();
+	if(selectRow>=0){
+		wellName=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+		wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+	}
   
-  Ext.getCmp("PCPSingleWellRangeReportCurvePanel_id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("PCPSingleWellRangeReportCurvePanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/reportDataMamagerController/getSingleWellDailyReportCurveData',
+		url:context + '/reportDataMamagerController/getSingleWellRangeReportCurveData',
 		success:function(response) {
 			Ext.getCmp("PCPSingleWellRangeReportCurvePanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);

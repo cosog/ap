@@ -858,8 +858,7 @@ public class ExcelUtils {
     		File file, Map<Integer, List<String>> selectMap,int headerRowCount,ReportTemplate.Template template) {
     	// 整个 Excel 表格 book 对象
     	SXSSFWorkbook book = new SXSSFWorkbook();
-
-		
+    	sheetName=sheetName.replaceAll("\\*", "x");
 		Sheet sheet = book.createSheet(sheetName);
 		Drawing<?> patriarch = sheet.createDrawingPatriarch();
 		// 设置标题背景色（默认色）

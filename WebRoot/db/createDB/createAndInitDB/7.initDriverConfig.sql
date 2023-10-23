@@ -815,544 +815,532 @@ values (3, 'unit3', '螺杆泵井报表单元一', 'oilWell_ScrewPump', 'oilWell_PumpingD
 /* 初始化TBL_REPORT_ITEMS2UNIT_CONF数据                                          */
 /*==============================================================*/
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (1, null, '井名', 'WellName', 1, 2, null, null, null, null, null, 1, 0, '0,0,0');
+values (1, null, '日期', 'CalDate', 1, 2, null, null, null, null, null, 3, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (2, null, '日期', 'CalDate', 1, 3, null, null, null, null, null, 3, 0, '0,0,0');
+values (2, null, '在线时间', 'CommTime', 1, 3, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (3, null, '在线时间', 'CommTime', 1, 4, null, null, null, null, null, 2, 0, '0,0,0');
+values (3, null, '在线时率', 'CommTimeEfficiency', 1, 5, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (4, null, '在线时率', 'CommTimeEfficiency', 1, 6, null, null, null, null, null, 2, 0, '0,0,0');
+values (4, null, '在线区间', 'CommRange', 1, 4, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (5, null, '在线区间', 'CommRange', 1, 5, null, null, null, null, null, 1, 0, '0,0,0');
+values (5, null, '运行时间', 'RunTime', 1, 6, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (6, null, '运行时间', 'RunTime', 1, 7, null, null, null, null, null, 2, 0, '0,0,0');
+values (6, null, '运行时率', 'RunTimeEfficiency', 1, 8, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (7, null, '运行时率', 'RunTimeEfficiency', 1, 9, null, null, null, null, null, 2, 0, '0,0,0');
+values (7, null, '运行区间', 'RunRange', 1, 7, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (8, null, '运行区间', 'RunRange', 1, 8, null, null, null, null, null, 1, 0, '0,0,0');
+values (8, null, '工况', 'ResultName', 1, 9, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (9, null, '工况', 'ResultName', 1, 10, null, null, null, null, null, 1, 0, '0,0,0');
+values (9, null, '优化建议', 'OptimizationSuggestion', 1, 10, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (10, null, '优化建议', 'OptimizationSuggestion', 1, 11, null, null, null, null, null, 1, 0, '0,0,0');
+values (10, null, '充满系数', 'FullnessCoefficient', 1, 15, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (11, null, '充满系数', 'FullnessCoefficient', 1, 16, null, null, null, null, null, 2, 0, '0,0,0');
+values (11, null, '日产液量', 'LiquidWeightProduction', 1, 11, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"d12b2b"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (12, null, '日产液量', 'LiquidWeightProduction', 1, 12, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"d12b2b"}', null, 2, 0, '0,0,0');
+values (12, null, '日产油量', 'OilWeightProduction', 1, 12, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"e99314"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (13, null, '日产油量', 'OilWeightProduction', 1, 13, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"e99314"}', null, 2, 0, '0,0,0');
+values (13, null, '日产水量', 'WaterWeightProduction', 1, 13, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"19c2eb"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (14, null, '日产水量', 'WaterWeightProduction', 1, 14, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"19c2eb"}', null, 2, 0, '0,0,0');
+values (14, null, '重量含水率', 'WeightWaterCut', 1, 14, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (15, null, '重量含水率', 'WeightWaterCut', 1, 15, null, null, null, null, null, 2, 0, '0,0,0');
+values (15, null, '地面效率', 'SurfaceSystemEfficiency', 1, 23, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (16, null, '地面效率', 'SurfaceSystemEfficiency', 1, 24, null, null, null, null, null, 2, 0, '0,0,0');
+values (16, null, '井下效率', 'WellDownSystemEfficiency', 1, 24, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (17, null, '井下效率', 'WellDownSystemEfficiency', 1, 25, null, null, null, null, null, 2, 0, '0,0,0');
+values (17, null, '系统效率', 'SystemEfficiency', 1, 22, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (18, null, '系统效率', 'SystemEfficiency', 1, 23, null, null, null, null, null, 2, 0, '0,0,0');
+values (18, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 25, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (19, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 26, null, null, null, null, null, 2, 0, '0,0,0');
+values (19, null, '电流平衡度', 'IDegreeBalance', 1, 20, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (20, null, '电流平衡度', 'IDegreeBalance', 1, 21, null, null, null, null, null, 2, 0, '0,0,0');
+values (20, null, '功率平衡度', 'WattDegreeBalance', 1, 19, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (21, null, '功率平衡度', 'WattDegreeBalance', 1, 20, null, null, null, null, null, 2, 0, '0,0,0');
+values (21, null, '移动距离', 'DeltaRadius', 1, 21, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (22, null, '移动距离', 'DeltaRadius', 1, 22, null, null, null, null, null, 2, 0, '0,0,0');
+values (22, null, '日用电量', 'TodayKWattH', 1, 26, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (23, null, '日用电量', 'TodayKWattH', 1, 27, null, null, null, null, null, 2, 0, '0,0,0');
+values (23, null, '泵挂', 'PumpSettingDepth', 1, 16, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (24, null, '泵挂', 'PumpSettingDepth', 1, 17, null, null, null, null, null, 2, 0, '0,0,0');
+values (24, null, '反演动液面', 'CalcProducingfluidLevel', 1, 17, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (25, null, '反演动液面', 'CalcProducingfluidLevel', 1, 18, null, null, null, null, null, 2, 0, '0,0,0');
+values (25, null, '沉没度', 'Submergence', 1, 18, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (26, null, '沉没度', 'Submergence', 1, 19, null, null, null, null, null, 2, 0, '0,0,0');
+values (26, null, '备注', 'Remark', 1, 27, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (27, null, '备注', 'Remark', 1, 28, null, null, null, null, null, 1, 0, '0,0,0');
+values (27, null, '井名', 'WellName', 1, 2, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (28, null, '井名', 'WellName', 1, 2, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (28, null, '日期', 'CalDate', 1, 3, null, 0, 0, null, null, 3, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (29, null, '日期', 'CalDate', 1, 3, null, 0, 0, null, null, 3, 1, '0,0,0');
+values (29, null, '在线时间', 'CommTime', 1, 4, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (30, null, '在线时间', 'CommTime', 1, 4, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (30, null, '在线时率', 'CommTimeEfficiency', 1, 6, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (31, null, '在线时率', 'CommTimeEfficiency', 1, 6, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (31, null, '在线区间', 'CommRange', 1, 5, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (32, null, '在线区间', 'CommRange', 1, 5, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (32, null, '运行时间', 'RunTime', 1, 7, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (33, null, '运行时间', 'RunTime', 1, 7, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (33, null, '运行时率', 'RunTimeEfficiency', 1, 9, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (34, null, '运行时率', 'RunTimeEfficiency', 1, 9, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (34, null, '运行区间', 'RunRange', 1, 8, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (35, null, '运行区间', 'RunRange', 1, 8, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (35, null, '工况', 'ResultName', 1, 10, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (36, null, '工况', 'ResultName', 1, 10, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (36, null, '优化建议', 'OptimizationSuggestion', 1, 11, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (37, null, '优化建议', 'OptimizationSuggestion', 1, 11, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (37, null, '充满系数', 'FullnessCoefficient', 1, 16, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (38, null, '充满系数', 'FullnessCoefficient', 1, 16, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (38, null, '日产液量', 'LiquidWeightProduction', 1, 12, null, 1, 1, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"d42626"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (39, null, '日产液量', 'LiquidWeightProduction', 1, 12, null, 0, 0, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"d42626"}', 1, 2, 1, '0,0,0');
+values (39, null, '日产油量', 'OilWeightProduction', 1, 13, null, 1, 1, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"ebbc1a"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (40, null, '日产油量', 'OilWeightProduction', 1, 13, null, 0, 0, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"ebbc1a"}', 1, 2, 1, '0,0,0');
+values (40, null, '日产水量', 'WaterWeightProduction', 1, 14, null, 1, 1, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"1beef3"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (41, null, '日产水量', 'WaterWeightProduction', 1, 14, null, 0, 0, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"1beef3"}', 1, 2, 1, '0,0,0');
+values (41, null, '重量含水率', 'WeightWaterCut', 1, 15, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (42, null, '重量含水率', 'WeightWaterCut', 1, 15, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (42, null, '地面效率', 'SurfaceSystemEfficiency', 1, 24, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (43, null, '地面效率', 'SurfaceSystemEfficiency', 1, 24, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (43, null, '井下效率', 'WellDownSystemEfficiency', 1, 25, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (44, null, '井下效率', 'WellDownSystemEfficiency', 1, 25, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (44, null, '系统效率', 'SystemEfficiency', 1, 23, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (45, null, '系统效率', 'SystemEfficiency', 1, 23, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (45, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 26, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (46, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 26, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (46, null, '电流平衡度', 'IDegreeBalance', 1, 21, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (47, null, '电流平衡度', 'IDegreeBalance', 1, 21, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (47, null, '功率平衡度', 'WattDegreeBalance', 1, 20, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (48, null, '功率平衡度', 'WattDegreeBalance', 1, 20, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (48, null, '移动距离', 'DeltaRadius', 1, 22, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (49, null, '移动距离', 'DeltaRadius', 1, 22, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (49, null, '日用电量', 'TodayKWattH', 1, 27, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (50, null, '日用电量', 'TodayKWattH', 1, 27, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (50, null, '泵挂', 'PumpSettingDepth', 1, 17, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (51, null, '泵挂', 'PumpSettingDepth', 1, 17, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (51, null, '动液面', 'ProducingfluidLevel', 1, 18, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (52, null, '动液面', 'ProducingfluidLevel', 1, 18, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (52, null, '沉没度', 'Submergence', 1, 19, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (53, null, '沉没度', 'Submergence', 1, 19, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (53, null, '备注', 'Remark', 1, 28, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (54, null, '备注', 'Remark', 1, 28, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (54, null, '时间', 'CalTime', 1, 2, null, null, null, null, null, 4, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (55, null, '井名', 'WellName', 1, 2, null, null, null, null, null, 1, 2, '0,0,0');
+values (55, null, '在线时间', 'CommTime', 1, 3, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (56, null, '时间', 'CalTime', 1, 3, null, null, null, null, null, 4, 2, '0,0,0');
+values (56, null, '在线时率', 'CommTimeEfficiency', 1, 5, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (57, null, '在线时间', 'CommTime', 1, 4, null, null, null, null, null, 2, 2, '0,0,0');
+values (57, null, '在线区间', 'CommRange', 1, 4, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (58, null, '在线时率', 'CommTimeEfficiency', 1, 6, null, null, null, null, null, 2, 2, '0,0,0');
+values (58, null, '运行时间', 'RunTime', 1, 6, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (59, null, '在线区间', 'CommRange', 1, 5, null, null, null, null, null, 1, 2, '0,0,0');
+values (59, null, '运行时率', 'RunTimeEfficiency', 1, 8, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (60, null, '运行时间', 'RunTime', 1, 7, null, null, null, null, null, 2, 2, '0,0,0');
+values (60, null, '运行区间', 'RunRange', 1, 7, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (61, null, '运行时率', 'RunTimeEfficiency', 1, 9, null, null, null, null, null, 2, 2, '0,0,0');
+values (61, null, '工况', 'ResultName', 1, 9, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (62, null, '运行区间', 'RunRange', 1, 8, null, null, null, null, null, 1, 2, '0,0,0');
+values (62, null, '优化建议', 'OptimizationSuggestion', 1, 10, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (63, null, '工况', 'ResultName', 1, 10, null, null, null, null, null, 1, 2, '0,0,0');
+values (63, null, '充满系数', 'FullnessCoefficient', 1, 15, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (64, null, '优化建议', 'OptimizationSuggestion', 1, 11, null, null, null, null, null, 1, 2, '0,0,0');
+values (64, null, '日产液量', 'LiquidWeightProduction', 1, 11, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"ff0000"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (65, null, '充满系数', 'FullnessCoefficient', 1, 16, null, null, null, null, null, 2, 2, '0,0,0');
+values (65, null, '日产油量', 'OilWeightProduction', 1, 12, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"232432"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (66, null, '日产液量', 'LiquidWeightProduction', 1, 12, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"ff0000"}', null, 2, 2, '0,0,0');
+values (66, null, '日产水量', 'WaterWeightProduction', 1, 13, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"3ba4ac"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (67, null, '日产油量', 'OilWeightProduction', 1, 13, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"232432"}', null, 2, 2, '0,0,0');
+values (67, null, '重量含水率', 'WeightWaterCut', 1, 14, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (68, null, '日产水量', 'WaterWeightProduction', 1, 14, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"3ba4ac"}', null, 2, 2, '0,0,0');
+values (68, null, '地面效率', 'SurfaceSystemEfficiency', 1, 23, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (69, null, '重量含水率', 'WeightWaterCut', 1, 15, null, null, null, null, null, 2, 2, '0,0,0');
+values (69, null, '井下效率', 'WellDownSystemEfficiency', 1, 24, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (70, null, '地面效率', 'SurfaceSystemEfficiency', 1, 24, null, null, null, null, null, 2, 2, '0,0,0');
+values (70, null, '系统效率', 'SystemEfficiency', 1, 22, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (71, null, '井下效率', 'WellDownSystemEfficiency', 1, 25, null, null, null, null, null, 2, 2, '0,0,0');
+values (71, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 25, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (72, null, '系统效率', 'SystemEfficiency', 1, 23, null, null, null, null, null, 2, 2, '0,0,0');
+values (72, null, '电流平衡度', 'IDegreeBalance', 1, 20, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (73, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 26, null, null, null, null, null, 2, 2, '0,0,0');
+values (73, null, '功率平衡度', 'WattDegreeBalance', 1, 19, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (74, null, '电流平衡度', 'IDegreeBalance', 1, 21, null, null, null, null, null, 2, 2, '0,0,0');
+values (74, null, '移动距离', 'DeltaRadius', 1, 21, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (75, null, '功率平衡度', 'WattDegreeBalance', 1, 20, null, null, null, null, null, 2, 2, '0,0,0');
+values (75, null, '日用电量', 'TodayKWattH', 1, 26, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (76, null, '移动距离', 'DeltaRadius', 1, 22, null, null, null, null, null, 2, 2, '0,0,0');
+values (76, null, '泵挂', 'PumpSettingDepth', 1, 16, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (77, null, '日用电量', 'TodayKWattH', 1, 27, null, null, null, null, null, 2, 2, '0,0,0');
+values (77, null, '反演动液面', 'CalcProducingfluidLevel', 1, 17, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (78, null, '泵挂', 'PumpSettingDepth', 1, 17, null, null, null, null, null, 2, 2, '0,0,0');
+values (78, null, '沉没度', 'Submergence', 1, 18, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (79, null, '反演动液面', 'CalcProducingfluidLevel', 1, 18, null, null, null, null, null, 2, 2, '0,0,0');
+values (79, null, '备注', 'Remark', 1, 27, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (80, null, '沉没度', 'Submergence', 1, 19, null, null, null, null, null, 2, 2, '0,0,0');
+values (80, null, '日期', 'CalDate', 3, 1, null, null, null, null, null, 3, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (81, null, '备注', 'Remark', 1, 28, null, null, null, null, null, 1, 2, '0,0,0');
+values (81, null, '运行时间', 'RunTime', 3, 2, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (82, null, '井名', 'WellName', 2, 2, null, null, null, null, null, 1, 0, '0,0,0');
+values (82, null, '冲程', 'Stroke', 3, 4, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (83, null, '日期', 'CalDate', 2, 3, null, null, null, null, null, 3, 0, '0,0,0');
+values (83, null, '冲次', 'SPM', 3, 3, null, null, null, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"ecd211"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (84, null, '在线时间', 'CommTime', 2, 4, null, null, null, null, null, 2, 0, '0,0,0');
+values (84, null, '日产水量', 'WaterVolumetricProduction', 3, 7, null, null, null, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"00d8ff"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (85, null, '在线时率', 'CommTimeEfficiency', 2, 6, null, null, null, null, null, 2, 0, '0,0,0');
+values (85, null, '日产气量', 'GasVolumetricProduction', 3, 6, null, null, null, '{"sort":3,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"1424f1"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (86, null, '在线区间', 'CommRange', 2, 5, null, null, null, null, null, 1, 0, '0,0,0');
+values (86, null, '累计产气量', 'TotalGasVolumetricProduction', 3, 10, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (87, null, '运行时间', 'RunTime', 2, 7, null, null, null, null, null, 2, 0, '0,0,0');
+values (87, null, '累计产水量', 'TotalWaterVolumetricProduction', 3, 11, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (88, null, '运行时率', 'RunTimeEfficiency', 2, 9, null, null, null, null, null, 2, 0, '0,0,0');
+values (88, null, '动液面', 'ProducingfluidLevel', 3, 5, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (89, null, '运行区间', 'RunRange', 2, 8, null, null, null, null, null, 1, 0, '0,0,0');
+values (89, null, '套压', 'CasingPressure', 3, 9, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (90, null, '转速', 'RPM', 2, 14, null, null, null, null, null, 2, 0, '0,0,0');
+values (90, null, '井底压力', 'BottomHolePressure', 3, 8, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (91, null, '日产液量', 'LiquidWeightProduction', 2, 10, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"ff0000"}', null, 2, 0, '0,0,0');
+values (91, null, '备注', 'Remark', 3, 12, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (92, null, '日产油量', 'OilWeightProduction', 2, 11, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"4f4444"}', null, 2, 0, '0,0,0');
+values (92, null, '井名', 'WellName', 3, 2, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (93, null, '日产水量', 'WaterWeightProduction', 2, 12, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"31bbbe"}', null, 2, 0, '0,0,0');
+values (93, null, '日期', 'CalDate', 3, 1, null, 0, 0, null, null, 3, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (94, null, '重量含水率', 'WeightWaterCut', 2, 13, null, null, null, null, null, 2, 0, '0,0,0');
+values (94, null, '运行时间', 'RunTime', 3, 3, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (95, null, '系统效率', 'SystemEfficiency', 2, 18, null, null, null, null, null, 2, 0, '0,0,0');
+values (95, null, '冲程', 'Stroke', 3, 5, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (96, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 19, null, null, null, null, null, 2, 0, '0,0,0');
+values (96, null, '冲次', 'SPM', 3, 4, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (97, null, '日用电量', 'TodayKWattH', 2, 20, null, null, null, null, null, 2, 0, '0,0,0');
+values (97, null, '日产水量', 'WaterVolumetricProduction', 3, 8, null, 1, 1, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"00d8ff"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (98, null, '泵挂', 'PumpSettingDepth', 2, 15, null, null, null, null, null, 2, 0, '0,0,0');
+values (98, null, '日产气量', 'GasVolumetricProduction', 3, 7, null, 1, 1, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"1424f1"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (99, null, '动液面', 'ProducingfluidLevel', 2, 16, null, null, null, null, null, 2, 0, '0,0,0');
+values (99, null, '累计产气量', 'TotalGasVolumetricProduction', 3, 11, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (100, null, '沉没度', 'Submergence', 2, 17, null, null, null, null, null, 2, 0, '0,0,0');
+values (100, null, '累计产水量', 'TotalWaterVolumetricProduction', 3, 12, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (101, null, '备注', 'Remark', 2, 21, null, null, null, null, null, 1, 0, '0,0,0');
+values (101, null, '动液面', 'ProducingfluidLevel', 3, 6, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (102, null, '井名', 'WellName', 2, 2, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (102, null, '套压', 'CasingPressure', 3, 10, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (103, null, '日期', 'CalDate', 2, 3, null, 0, 0, null, null, 3, 1, '0,0,0');
+values (103, null, '井底压力', 'BottomHolePressure', 3, 9, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (104, null, '在线时间', 'CommTime', 2, 4, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (104, null, '备注', 'Remark', 3, 13, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (105, null, '在线时率', 'CommTimeEfficiency', 2, 6, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (105, null, '时间', 'CalTime', 3, 1, null, null, null, null, null, 4, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (106, null, '在线区间', 'CommRange', 2, 5, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (106, null, '运行时间', 'RunTime', 3, 2, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (107, null, '运行时间', 'RunTime', 2, 7, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (107, null, '冲程', 'Stroke', 3, 4, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (108, null, '运行时率', 'RunTimeEfficiency', 2, 9, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (108, null, '冲次', 'SPM', 3, 3, null, null, null, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"ecd211"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (109, null, '运行区间', 'RunRange', 2, 8, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (109, null, '日产水量', 'WaterVolumetricProduction', 3, 7, null, null, null, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"00d8ff"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (110, null, '转速', 'RPM', 2, 14, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (110, null, '日产气量', 'GasVolumetricProduction', 3, 6, null, null, null, '{"sort":3,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"1424f1"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (111, null, '日产液量', 'LiquidWeightProduction', 2, 10, null, 0, 0, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"e40c54"}', 1, 2, 1, '0,0,0');
+values (111, null, '累计产气量', 'TotalGasVolumetricProduction', 3, 10, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (112, null, '日产油量', 'OilWeightProduction', 2, 11, null, 0, 0, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"d7bb14"}', 1, 2, 1, '0,0,0');
+values (112, null, '累计产水量', 'TotalWaterVolumetricProduction', 3, 11, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (113, null, '日产水量', 'WaterWeightProduction', 2, 12, null, 0, 0, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"1dbfb4"}', 1, 2, 1, '0,0,0');
+values (113, null, '动液面', 'ProducingfluidLevel', 3, 5, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (114, null, '重量含水率', 'WeightWaterCut', 2, 13, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (114, null, '套压', 'CasingPressure', 3, 9, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (115, null, '系统效率', 'SystemEfficiency', 2, 18, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (115, null, '井底压力', 'BottomHolePressure', 3, 8, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (116, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 19, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (116, null, '备注', 'Remark', 3, 14, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (117, null, '日用电量', 'TodayKWattH', 2, 20, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (117, null, '备用1', 'reservedcol1', 3, 12, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (118, null, '泵挂', 'PumpSettingDepth', 2, 15, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (118, null, '备用2', 'reservedcol2', 3, 13, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (119, null, '动液面', 'ProducingfluidLevel', 2, 16, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (119, null, '日期', 'CalDate', 2, 2, null, null, null, null, null, 3, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (120, null, '沉没度', 'Submergence', 2, 17, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (120, null, '在线时间', 'CommTime', 2, 3, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (121, null, '备注', 'Remark', 2, 21, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (121, null, '在线时率', 'CommTimeEfficiency', 2, 5, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (122, null, '井名', 'WellName', 2, 2, null, null, null, null, null, 1, 2, '0,0,0');
+values (122, null, '在线区间', 'CommRange', 2, 4, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (123, null, '时间', 'CalTime', 2, 3, null, null, null, null, null, 4, 2, '0,0,0');
+values (123, null, '运行时间', 'RunTime', 2, 6, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (124, null, '在线时间', 'CommTime', 2, 4, null, null, null, null, null, 2, 2, '0,0,0');
+values (124, null, '运行时率', 'RunTimeEfficiency', 2, 8, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (125, null, '在线时率', 'CommTimeEfficiency', 2, 6, null, null, null, null, null, 2, 2, '0,0,0');
+values (125, null, '运行区间', 'RunRange', 2, 7, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (126, null, '在线区间', 'CommRange', 2, 5, null, null, null, null, null, 1, 2, '0,0,0');
+values (126, null, '转速', 'RPM', 2, 13, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (127, null, '运行时间', 'RunTime', 2, 7, null, null, null, null, null, 2, 2, '0,0,0');
+values (127, null, '日产液量', 'LiquidWeightProduction', 2, 9, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"ff0000"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (128, null, '运行时率', 'RunTimeEfficiency', 2, 9, null, null, null, null, null, 2, 2, '0,0,0');
+values (128, null, '日产油量', 'OilWeightProduction', 2, 10, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"4f4444"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (129, null, '运行区间', 'RunRange', 2, 8, null, null, null, null, null, 1, 2, '0,0,0');
+values (129, null, '日产水量', 'WaterWeightProduction', 2, 11, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"31bbbe"}', null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (130, null, '转速', 'RPM', 2, 14, null, null, null, null, null, 2, 2, '0,0,0');
+values (130, null, '重量含水率', 'WeightWaterCut', 2, 12, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (131, null, '日产液量', 'LiquidWeightProduction', 2, 10, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"ff0000"}', null, 2, 2, '0,0,0');
+values (131, null, '系统效率', 'SystemEfficiency', 2, 17, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (132, null, '日产油量', 'OilWeightProduction', 2, 11, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"995353"}', null, 2, 2, '0,0,0');
+values (132, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 18, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (133, null, '日产水量', 'WaterWeightProduction', 2, 12, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"57a6a8"}', null, 2, 2, '0,0,0');
+values (133, null, '日用电量', 'TodayKWattH', 2, 19, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (134, null, '重量含水率', 'WeightWaterCut', 2, 13, null, null, null, null, null, 2, 2, '0,0,0');
+values (134, null, '泵挂', 'PumpSettingDepth', 2, 14, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (135, null, '系统效率', 'SystemEfficiency', 2, 18, null, null, null, null, null, 2, 2, '0,0,0');
+values (135, null, '动液面', 'ProducingfluidLevel', 2, 15, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (136, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 19, null, null, null, null, null, 2, 2, '0,0,0');
+values (136, null, '沉没度', 'Submergence', 2, 16, null, null, null, null, null, 2, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (137, null, '日用电量', 'TodayKWattH', 2, 20, null, null, null, null, null, 2, 2, '0,0,0');
+values (137, null, '备注', 'Remark', 2, 20, null, null, null, null, null, 1, 0, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (138, null, '泵挂', 'PumpSettingDepth', 2, 15, null, null, null, null, null, 2, 2, '0,0,0');
+values (138, null, '井名', 'WellName', 2, 2, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (139, null, '动液面', 'ProducingfluidLevel', 2, 16, null, null, null, null, null, 2, 2, '0,0,0');
+values (139, null, '日期', 'CalDate', 2, 3, null, 0, 0, null, null, 3, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (140, null, '沉没度', 'Submergence', 2, 17, null, null, null, null, null, 2, 2, '0,0,0');
+values (140, null, '在线时间', 'CommTime', 2, 4, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (141, null, '备注', 'Remark', 2, 21, null, null, null, null, null, 1, 2, '0,0,0');
+values (141, null, '在线时率', 'CommTimeEfficiency', 2, 6, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (142, null, '日期', 'CalDate', 3, 1, null, null, null, null, null, 3, 0, '0,0,0');
+values (142, null, '在线区间', 'CommRange', 2, 5, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (143, null, '运行时间', 'RunTime', 3, 2, null, null, null, null, null, 2, 0, '0,0,0');
+values (143, null, '运行时间', 'RunTime', 2, 7, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (144, null, '冲程', 'Stroke', 3, 4, null, null, null, null, null, 2, 0, '0,0,0');
+values (144, null, '运行时率', 'RunTimeEfficiency', 2, 9, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (145, null, '冲次', 'SPM', 3, 3, null, null, null, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"ecd211"}', null, 2, 0, '0,0,0');
+values (145, null, '运行区间', 'RunRange', 2, 8, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (146, null, '日产水量', 'WaterVolumetricProduction', 3, 7, null, null, null, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"00d8ff"}', null, 2, 0, '0,0,0');
+values (146, null, '转速', 'RPM', 2, 14, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (147, null, '日产气量', 'GasVolumetricProduction', 3, 6, null, null, null, '{"sort":3,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"1424f1"}', null, 2, 0, '0,0,0');
+values (147, null, '日产液量', 'LiquidWeightProduction', 2, 10, null, 0, 0, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"e40c54"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (148, null, '累计产气量', 'TotalGasVolumetricProduction', 3, 10, null, null, null, null, null, 2, 0, '0,0,0');
+values (148, null, '日产油量', 'OilWeightProduction', 2, 11, null, 0, 0, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"d7bb14"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (149, null, '累计产水量', 'TotalWaterVolumetricProduction', 3, 11, null, null, null, null, null, 2, 0, '0,0,0');
+values (149, null, '日产水量', 'WaterWeightProduction', 2, 12, null, 0, 0, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"1dbfb4"}', 1, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (150, null, '动液面', 'ProducingfluidLevel', 3, 5, null, null, null, null, null, 2, 0, '0,0,0');
+values (150, null, '重量含水率', 'WeightWaterCut', 2, 13, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (151, null, '套压', 'CasingPressure', 3, 9, null, null, null, null, null, 2, 0, '0,0,0');
+values (151, null, '系统效率', 'SystemEfficiency', 2, 18, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (152, null, '井底压力', 'BottomHolePressure', 3, 8, null, null, null, null, null, 2, 0, '0,0,0');
+values (152, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 19, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (153, null, '备注', 'Remark', 3, 12, null, null, null, null, null, 1, 0, '0,0,0');
+values (153, null, '日用电量', 'TodayKWattH', 2, 20, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (154, null, '井名', 'WellName', 3, 2, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (154, null, '泵挂', 'PumpSettingDepth', 2, 15, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (155, null, '日期', 'CalDate', 3, 1, null, 0, 0, null, null, 3, 1, '0,0,0');
+values (155, null, '动液面', 'ProducingfluidLevel', 2, 16, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (156, null, '运行时间', 'RunTime', 3, 3, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (156, null, '沉没度', 'Submergence', 2, 17, null, 0, 0, null, null, 2, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (157, null, '冲程', 'Stroke', 3, 5, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (157, null, '备注', 'Remark', 2, 21, null, 0, 0, null, null, 1, 1, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (158, null, '冲次', 'SPM', 3, 4, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (158, null, '时间', 'CalTime', 2, 2, null, null, null, null, null, 4, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (159, null, '日产水量', 'WaterVolumetricProduction', 3, 8, null, 1, 1, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"00d8ff"}', 1, 2, 1, '0,0,0');
+values (159, null, '在线时间', 'CommTime', 2, 3, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (160, null, '日产气量', 'GasVolumetricProduction', 3, 7, null, 1, 1, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"1424f1"}', 1, 2, 1, '0,0,0');
+values (160, null, '在线时率', 'CommTimeEfficiency', 2, 5, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (161, null, '累计产气量', 'TotalGasVolumetricProduction', 3, 11, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (161, null, '在线区间', 'CommRange', 2, 4, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (162, null, '累计产水量', 'TotalWaterVolumetricProduction', 3, 12, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (162, null, '运行时间', 'RunTime', 2, 6, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (163, null, '动液面', 'ProducingfluidLevel', 3, 6, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (163, null, '运行时率', 'RunTimeEfficiency', 2, 8, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (164, null, '套压', 'CasingPressure', 3, 10, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (164, null, '运行区间', 'RunRange', 2, 7, null, null, null, null, null, 1, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (165, null, '井底压力', 'BottomHolePressure', 3, 9, null, 0, 0, null, null, 2, 1, '0,0,0');
+values (165, null, '转速', 'RPM', 2, 13, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (166, null, '备注', 'Remark', 3, 13, null, 0, 0, null, null, 1, 1, '0,0,0');
+values (166, null, '日产液量', 'LiquidWeightProduction', 2, 9, null, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"ff0000"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (167, null, '时间', 'CalTime', 3, 1, null, null, null, null, null, 4, 2, '0,0,0');
+values (167, null, '日产油量', 'OilWeightProduction', 2, 10, null, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"995353"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (168, null, '运行时间', 'RunTime', 3, 2, null, null, null, null, null, 2, 2, '0,0,0');
+values (168, null, '日产水量', 'WaterWeightProduction', 2, 11, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"57a6a8"}', null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (169, null, '冲程', 'Stroke', 3, 4, null, null, null, null, null, 2, 2, '0,0,0');
+values (169, null, '重量含水率', 'WeightWaterCut', 2, 12, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (170, null, '冲次', 'SPM', 3, 3, null, null, null, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"ecd211"}', null, 2, 2, '0,0,0');
+values (170, null, '系统效率', 'SystemEfficiency', 2, 17, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (171, null, '日产水量', 'WaterVolumetricProduction', 3, 7, null, null, null, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"00d8ff"}', null, 2, 2, '0,0,0');
+values (171, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 18, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (172, null, '日产气量', 'GasVolumetricProduction', 3, 6, null, null, null, '{"sort":3,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":true,"color":"1424f1"}', null, 2, 2, '0,0,0');
+values (172, null, '日用电量', 'TodayKWattH', 2, 19, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (173, null, '累计产气量', 'TotalGasVolumetricProduction', 3, 10, null, null, null, null, null, 2, 2, '0,0,0');
+values (173, null, '泵挂', 'PumpSettingDepth', 2, 14, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (174, null, '累计产水量', 'TotalWaterVolumetricProduction', 3, 11, null, null, null, null, null, 2, 2, '0,0,0');
+values (174, null, '动液面', 'ProducingfluidLevel', 2, 15, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (175, null, '动液面', 'ProducingfluidLevel', 3, 5, null, null, null, null, null, 2, 2, '0,0,0');
+values (175, null, '沉没度', 'Submergence', 2, 16, null, null, null, null, null, 2, 2, '0,0,0');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (176, null, '套压', 'CasingPressure', 3, 9, null, null, null, null, null, 2, 2, '0,0,0');
-
-insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (177, null, '井底压力', 'BottomHolePressure', 3, 8, null, null, null, null, null, 2, 2, '0,0,0');
-
-insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (178, null, '备注', 'Remark', 3, 14, null, null, null, null, null, 1, 2, '0,0,0');
-
-insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (179, null, '备用1', 'reservedcol1', 3, 12, null, null, null, null, null, 1, 2, '0,0,0');
-
-insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX)
-values (180, null, '备用2', 'reservedcol2', 3, 13, null, null, null, null, null, 1, 2, '0,0,0');
+values (176, null, '备注', 'Remark', 2, 20, null, null, null, null, null, 1, 2, '0,0,0');
 
 
 /*==============================================================*/

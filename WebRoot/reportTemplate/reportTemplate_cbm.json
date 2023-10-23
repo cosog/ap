@@ -268,7 +268,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["排采数据总表", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["orgNameLabel排采日报表", "", "", "", "", "", "", "", "", "", "", "", ""]
         },{
             "tdStyle": {
                 "fontWeight": "bold",

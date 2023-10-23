@@ -53,6 +53,12 @@ Ext.define('AP.store.reportOut.PCPProductionDailyReportInstanceListStore', {
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(0, true);
+            	
+            	if(get_rawData.totalCount==1){
+            		Ext.getCmp("PCPProductionDailyReportInstanceListPanel_Id").hide();
+            	}else{
+            		Ext.getCmp("PCPProductionDailyReportInstanceListPanel_Id").show();
+            	}
             }else{
             	Ext.getCmp("PCPProductionDailyReportInstanceListSelectRow_Id").setValue(-1);
             	if(pcpProductionDailyReportHelper!=null){
@@ -66,6 +72,7 @@ Ext.define('AP.store.reportOut.PCPProductionDailyReportInstanceListStore', {
             }
         },
         beforeload: function (store, options) {
+        	Ext.getCmp("PCPProductionDailyReportInstanceListPanel_Id").show();
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var wellName = Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').getValue();
             var new_params = {

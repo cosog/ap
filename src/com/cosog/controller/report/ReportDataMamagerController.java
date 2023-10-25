@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.User;
+import com.cosog.model.calculate.CommResponseData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.report.ReportDataManagerService;
 import com.cosog.utils.Config;
@@ -92,7 +93,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellName)){
 				sql+= " and t.wellname='"+wellName+"' ";
 			}	
@@ -153,7 +154,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -210,7 +211,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -258,12 +259,14 @@ public class ReportDataMamagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_rpcdailycalculationdata";
+		String timingcalculationTableName="tbl_rpctimingcalculationdata";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
 			tableName="tbl_pcpdailycalculationdata";
+			timingcalculationTableName="tbl_pcptimingcalculationdata";
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -279,7 +282,22 @@ public class ReportDataMamagerController extends BaseController {
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
-			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
+			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			
+			String sql = " select * from (select  to_char(t.calTime,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
+					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			if(StringManagerUtils.isNotNull(wellId)){
+				sql+= " and t.wellId="+wellId+" ";
+			}	
+			sql+= "order by calTime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
 		}
 		String json = "";
 		this.pager = new Page("pagerForm", request);
@@ -317,14 +335,16 @@ public class ReportDataMamagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_rpcdailycalculationdata";
+		String timingcalculationTableName="tbl_rpctimingcalculationdata";
 		String deviceTypeName="抽油机井";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
 			tableName="tbl_pcpdailycalculationdata";
 			deviceTypeName="螺杆泵井";
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -340,7 +360,22 @@ public class ReportDataMamagerController extends BaseController {
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
-			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
+			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			
+			String sql = " select * from (select  to_char(t.calTime,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
+					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			if(StringManagerUtils.isNotNull(wellId)){
+				sql+= " and t.wellId="+wellId+" ";
+			}	
+			sql+= "order by calTime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
 		}
 		String json = "";
 		this.pager = new Page("pagerForm", request);
@@ -382,7 +417,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			
 			sql+= "order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
@@ -442,7 +477,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			
 			sql+= "order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
@@ -487,7 +522,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -539,12 +574,14 @@ public class ReportDataMamagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_rpcdailycalculationdata";
+		String timingcalculationTableName="tbl_rpctimingcalculationdata";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
 			tableName="tbl_pcpdailycalculationdata";
+			timingcalculationTableName="tbl_pcptimingcalculationdata";
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -560,7 +597,22 @@ public class ReportDataMamagerController extends BaseController {
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
-			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
+			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			
+			String sql = " select * from (select  to_char(t.calTime,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
+					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			if(StringManagerUtils.isNotNull(wellId)){
+				sql+= " and t.wellId="+wellId+" ";
+			}	
+			sql+= "order by calTime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
 		}
 		String json = "";
 		this.pager = new Page("pagerForm", request);
@@ -605,7 +657,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			sql+= "order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
@@ -744,7 +796,7 @@ public class ReportDataMamagerController extends BaseController {
 			}
 		}
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellName)){
 				sql+= " and t.wellname='"+wellName+"' ";
 			}	
@@ -801,7 +853,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellName)){
 				sql+= " and t.wellname='"+wellName+"' ";
 			}	
@@ -1173,7 +1225,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(wellName)){
 				sql+= " and t.wellname='"+wellName+"' ";
 			}	

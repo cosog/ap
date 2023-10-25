@@ -1043,7 +1043,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 					energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 					updateSql+=",totalKWattH="+totalkwatth;
 					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
+						if(timeStr.equalsIgnoreCase(range.getEndTime()) && energyCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate()) ){
+							updateSql+=",todayKWattH="+energyCalculateResponseData.getDaily().getKWattH();
+						}else{
+							updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
+						}
 					}
 				}
 				
@@ -1071,7 +1075,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 					updateSql+=",totalgasvolumetricproduction="+totalgasvolumetricproduction;
 					totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 					if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
+						if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalGasCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalGasCalculateResponseData.getDaily().getDate()) ){
+							updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getDaily().getKWattH();
+						}else{
+							updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
+						}
 					}
 				}
 				
@@ -1099,7 +1107,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 					updateSql+=",totalWatervolumetricproduction="+totalwatervolumetricproduction;
 					totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 					if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
+						if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalWaterCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalWaterCalculateResponseData.getDaily().getDate()) ){
+							updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getDaily().getKWattH();
+						}else{
+							updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
+						}
 					}
 				}
 				
@@ -1620,16 +1632,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	public List<String> PCPTimingTotalCalculation(String timeStr){
 		String date=timeStr.split(" ")[0];
-		
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
 		if(!StringManagerUtils.timeMatchDate(timeStr, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
 			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 		}
-		
-		
+		CommResponseData.Range range= StringManagerUtils.getTimeRange(date,offsetHour);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
-		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
-		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
 		
 		StringBuffer dataSbf=null;
 		String sql="select t.id,t.wellname,t3.singleWellRangeReportTemplate,t2.unitid "
@@ -1908,9 +1918,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				updateSql+=",CommStatus="+commStatus;
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					commTime=commResponseData.getCurrent().getCommEfficiency().getTime();
-					commTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
-					commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+					if(timeStr.equalsIgnoreCase(range.getEndTime()) && commResponseData.getDaily()!=null && StringManagerUtils.isNotNull(commResponseData.getDaily().getDate()) ){
+						commTime=commResponseData.getDaily().getCommEfficiency().getTime();
+						commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
+						commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+					}else{
+						commTime=commResponseData.getCurrent().getCommEfficiency().getTime();
+						commTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
+						commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+					}
 					updateSql+=",commTimeEfficiency="+commTimeEfficiency+",commTime="+commTime;
 				}
 				
@@ -1935,9 +1951,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 				timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
 				updateSql+=",runStatus="+runStatus;
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-					runTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
-					runTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
-					runRange=timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+					if(timeStr.equalsIgnoreCase(range.getEndTime()) && timeEffResponseData.getDaily()!=null && StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate()) ){
+						runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
+						runTimeEfficiency=timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
+						runRange=timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
+					}else{
+						runTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+						runTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
+						runRange=timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+					}
 					updateSql+=",runTimeEfficiency="+runTimeEfficiency+",runTime="+runTime;
 				}
 				
@@ -1965,7 +1987,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 					energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 					updateSql+=",totalKWattH="+totalkwatth;
 					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
+						if(timeStr.equalsIgnoreCase(range.getEndTime()) && energyCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate()) ){
+							updateSql+=",todayKWattH="+energyCalculateResponseData.getDaily().getKWattH();
+						}else{
+							updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
+						}
 					}
 				}
 				
@@ -1993,7 +2019,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 					updateSql+=",totalgasvolumetricproduction="+totalgasvolumetricproduction;
 					totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 					if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
+						if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalGasCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalGasCalculateResponseData.getDaily().getDate()) ){
+							updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getDaily().getKWattH();
+						}else{
+							updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
+						}
 					}
 				}
 				
@@ -2021,10 +2051,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 					updateSql+=",totalWatervolumetricproduction="+totalwatervolumetricproduction;
 					totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 					if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
+						if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalWaterCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalWaterCalculateResponseData.getDaily().getDate()) ){
+							updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getDaily().getKWattH();
+						}else{
+							updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
+						}
 					}
 				}
-				
 				
 				List<String> acqTimeList=new ArrayList<String>();
 				List<Integer> commStatusList=new ArrayList<Integer>();

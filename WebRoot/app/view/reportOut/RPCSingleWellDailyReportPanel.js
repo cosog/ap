@@ -821,7 +821,7 @@ function CreateRPCSingleWellDailyReportTable(){
             }
             var reportDate = Ext.getCmp('RPCSingleWellDailyReportDate_Id');
             if(reportDate.rawValue==''||null==reportDate.rawValue){
-            	reportDate.setValue(result.endDate);
+            	reportDate.setValue(result.reportDate);
             }
             
 			if(rpcSingleWellDailyReportHelper!=null){

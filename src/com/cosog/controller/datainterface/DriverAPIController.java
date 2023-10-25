@@ -1663,6 +1663,9 @@ public class DriverAPIController extends BaseController{
 										String FESDiagramAcqtime="";
 										if(rawValue.endsWith("simulate")){
 											FESDiagramAcqtime=acqTime;
+											if(isAcqEnergy){
+												totalKWattH=System.currentTimeMillis()/1000/60;
+											}
 										}else{
 											if("bcd".equalsIgnoreCase(protocol.getItems().get(j).getStoreDataType())&&rawValue.length()==24){
 									        	String[] acqTimeStrArr=StringManagerUtils.stringToStringArray(rawValue,2);
@@ -1751,7 +1754,7 @@ public class DriverAPIController extends BaseController{
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) && rpcDeviceInfo.getTotalKWattH()>0){
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) && rpcDeviceInfo.getTotalKWattH()>0 && rpcDeviceInfo.getTotalKWattH()<=totalKWattH){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getKWattHAcqTime()+"\","
 										+ "\"Total\":{"
@@ -3097,7 +3100,7 @@ public class DriverAPIController extends BaseController{
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) && pcpDeviceInfo.getTotalKWattH()>0){
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) && pcpDeviceInfo.getTotalKWattH()>0 && pcpDeviceInfo.getTotalKWattH()<=totalKWattH){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getKWattHAcqTime()+"\","
 										+ "\"Total\":{"

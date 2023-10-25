@@ -1217,7 +1217,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,
 			String wellId,String wellName,
-			String startDate,String endDate,String reportDate,int userNo)throws Exception {
+			String startDate,String endDate,String reportDate,
+			int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
@@ -1422,6 +1423,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append(",\"wellName\":\""+wellName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
 		result_json.append(",\"endDate\":\""+endDate+"\"");
+		result_json.append(",\"reportDate\":\""+reportDate+"\"");
 		result_json.append(",\"totalCount\":"+totalCount+"");
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");

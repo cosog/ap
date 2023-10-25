@@ -818,7 +818,7 @@ function CreatePCPSingleWellDailyReportTable(){
             }
             var reportDate = Ext.getCmp('PCPSingleWellDailyReportDate_Id');
             if(reportDate.rawValue==''||null==reportDate.rawValue){
-            	reportDate.setValue(result.endDate);
+            	reportDate.setValue(result.reportDate);
             }
             
 			if(pcpSingleWellDailyReportHelper!=null){

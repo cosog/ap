@@ -20,6 +20,12 @@ import com.cosog.utils.StringManagerUtils;
 
 @Component("calculateDataManagerTast")  
 public class CalculateDataManagerTask {
+	public static ScheduledExecutorService RPCTotalCalculationExecutor=null;
+	public static ScheduledExecutorService PCPTotalCalculationExecutor=null;
+	public static ScheduledExecutorService timingInitDailyReportDataExecutor=null;
+	public static ScheduledExecutorService RPCTimingCalculateexecutor=null;
+	public static ScheduledExecutorService PCPTimingCalculateexecutor=null;
+	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
 		timingInitDailyReportData();
@@ -75,13 +81,13 @@ public class CalculateDataManagerTask {
 	}
 	//抽油机井跨天汇总
 	public static void RPCTotalCalculation(){
-		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		RPCTotalCalculationExecutor = Executors.newScheduledThreadPool(1);
 		long interval=24 * 60 * 60 * 1000;
 		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ Config.getInstance().configFile.getAp().getReport().getDelay() * 60 * 1000 - System.currentTimeMillis();
 		while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-		executor.scheduleAtFixedRate(new Thread(new Runnable() {
+		RPCTotalCalculationExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
             	try {
@@ -112,13 +118,13 @@ public class CalculateDataManagerTask {
 	
 	//螺杆泵井跨天汇总
 	public static void PCPTotalCalculation(){
-		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		PCPTotalCalculationExecutor = Executors.newScheduledThreadPool(1);
 		long interval=24 * 60 * 60 * 1000;
 		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ Config.getInstance().configFile.getAp().getReport().getDelay() * 60 * 1000 - System.currentTimeMillis();
 		while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-		executor.scheduleAtFixedRate(new Thread(new Runnable() {
+		PCPTotalCalculationExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
             	try {
@@ -153,13 +159,13 @@ public class CalculateDataManagerTask {
 	
 	//跨天初始化报表
 	public static void timingInitDailyReportData(){
-		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		timingInitDailyReportDataExecutor = Executors.newScheduledThreadPool(1);
 		long interval=24 * 60 * 60 * 1000;
 		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ 1 * 60 * 1000 - System.currentTimeMillis();
 		while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-		executor.scheduleAtFixedRate(new Thread(new Runnable() {
+		timingInitDailyReportDataExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
             	try {
@@ -173,7 +179,7 @@ public class CalculateDataManagerTask {
 	}
 	
 	public static void RPCTimingCalculate() {
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		RPCTimingCalculateexecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
 //        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
@@ -181,7 +187,7 @@ public class CalculateDataManagerTask {
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-        executor.scheduleAtFixedRate(new Thread(new Runnable() {
+        RPCTimingCalculateexecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
                 String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -196,7 +202,7 @@ public class CalculateDataManagerTask {
     }
 	
 	public static void PCPTimingCalculate() {
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		PCPTimingCalculateexecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
 //        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
@@ -204,7 +210,7 @@ public class CalculateDataManagerTask {
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-        executor.scheduleAtFixedRate(new Thread(new Runnable() {
+        PCPTimingCalculateexecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
                 String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -240,4 +246,24 @@ public class CalculateDataManagerTask {
         }
         return result;
     }
+	
+	public static void scheduledDestory(){
+		if(RPCTotalCalculationExecutor!=null && !RPCTotalCalculationExecutor.isShutdown()){
+			RPCTotalCalculationExecutor.shutdownNow();
+		}
+		if(PCPTotalCalculationExecutor!=null && !PCPTotalCalculationExecutor.isShutdown()){
+			PCPTotalCalculationExecutor.shutdownNow();
+		}
+		if(timingInitDailyReportDataExecutor!=null && !timingInitDailyReportDataExecutor.isShutdown()){
+			timingInitDailyReportDataExecutor.shutdownNow();
+		}
+		if(RPCTimingCalculateexecutor!=null && !RPCTimingCalculateexecutor.isShutdown()){
+			RPCTimingCalculateexecutor.shutdownNow();
+		}
+		if(PCPTimingCalculateexecutor!=null && !PCPTimingCalculateexecutor.isShutdown()){
+			PCPTimingCalculateexecutor.shutdownNow();
+		}
+		
+		StringManagerUtils.printLog("scheduledDestory!");
+	}
 }

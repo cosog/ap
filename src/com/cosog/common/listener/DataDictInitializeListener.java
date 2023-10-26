@@ -1,5 +1,8 @@
 package com.cosog.common.listener;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -8,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.task.CalculateDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.StringManagerUtils;
 
@@ -21,6 +25,9 @@ public class DataDictInitializeListener implements ServletContextListener {
 	 private boolean cache=true;
 	public void contextDestroyed(ServletContextEvent event) { 
 		ServletContext context = event.getServletContext();
+		CalculateDataManagerTask.scheduledDestory();
+        
+		StringManagerUtils.printLog("context game over ");
 		context.log("context game over ", new Throwable());
 	}
 

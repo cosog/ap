@@ -63,7 +63,7 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
-	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+	public void driveServerTast(){
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -76,7 +76,14 @@ public class EquipmentDriverServerTask {
 		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
 		
-		ThreadPool executor=adInit();
+		ThreadPool executor=null;
+		try {
+			executor = adInit();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
 			boolean sendMsg=false;
@@ -87,7 +94,11 @@ public class EquipmentDriverServerTask {
 				if(driverProbeResponse!=null){
 					sendMsg=false;
 					if(!driverProbeResponse.getHttpServerInitStatus()){
-						initServerConfig();
+						try {
+							initServerConfig();
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
 						driverProbeResponse=adInitProbe();
 					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
@@ -117,7 +128,7 @@ public class EquipmentDriverServerTask {
 							driverProbeResponse=adInitProbe();
 						}
 						
-						if(executor.isCompletedByTaskCount()){
+						if(executor!=null && executor.isCompletedByTaskCount()){
 							//清空内存
 							AdInitMap.cleanData();
 							initRPCDriverAcquisitionInfoConfig(null,0,"");
@@ -131,7 +142,11 @@ public class EquipmentDriverServerTask {
 						sendMsg=true;
 					}
 				}
-				Thread.sleep(1000*1);
+				try {
+					Thread.sleep(1000*1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}while(true);
 		}
 	}

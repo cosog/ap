@@ -31,12 +31,12 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
                     autoLoad: false,
                     columnLines: true,
                     forceFit: false,
-//                    selModel:{
-//                    	selType: 'checkboxmodel',
-//                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-//                    	checkOnly:false,
-//                    	allowDeselect:false
-//                    },
+                    selModel:{
+                    	selType: 'checkboxmodel',
+                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	checkOnly:false,
+                    	allowDeselect:true
+                    },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },
@@ -50,46 +50,76 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
                     		
                     	},
                     	select: function(grid, record, index, eOpts) {
-                    		var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
-                            if (isNotVal(gridPanel)) {
-                            	gridPanel.getSelectionModel().deselectAll(true);
-                            	gridPanel.getStore().load();
-                            }else{
-                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore');
-                            }
-                            
-                            var gridPanel2 = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id");
-                            if (isNotVal(gridPanel2)) {
-                            	gridPanel2.getSelectionModel().deselectAll(true);
-                            	gridPanel2.getStore().load();
-                            }else{
-                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore');
-                            }
+//                    		var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
+//                            if (isNotVal(gridPanel)) {
+//                            	gridPanel.getSelectionModel().deselectAll(true);
+//                            	gridPanel.getStore().load();
+//                            }else{
+//                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore');
+//                            }
+//                            
+//                            var gridPanel2 = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id");
+//                            if (isNotVal(gridPanel2)) {
+//                            	gridPanel2.getSelectionModel().deselectAll(true);
+//                            	gridPanel2.getStore().load();
+//                            }else{
+//                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore');
+//                            }
                     	}
                     }
                 });
                 var panel = Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsPanel_Id");
                 panel.add(gridPanel);
             }
+            
+            
+            
+        	var protocolName='';
+        	var protocolTreeSelection=Ext.getCmp("DatabaseColumnProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+        	if(protocolTreeSelection.length>0){
+        		var selectedProtocol=protocolTreeSelection[0];
+        		if(selectedProtocol.data.classes==1){
+            		protocolName=selectedProtocol.data.text;
+            	}else{
+            		if(selectedProtocol.childNodes.length>0){
+            			protocolName=selectedProtocol.childNodes[0].data.text;
+            		}
+            	}
+        	}
+        	if(isNotVal(protocolName)){
+				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle(protocolName+"/运行状态配置");
+			}else{
+				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle("运行状态配置");
+			}
+            
+            
             gridPanel.getSelectionModel().deselectAll(true);
             if(get_rawData.totalCount>0){
-            	gridPanel.getSelectionModel().select(0, true);
+//            	gridPanel.getSelectionModel().select(0, true);
             }else{
             	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel1_Id").removeAll();
             	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id").removeAll();
             }
         },
         beforeload: function (store, options) {
-        	var classes=0;
+        	var classes=1;
         	var deviceType=0;
         	var protocolCode="";
+        	var protocolName='';
         	var protocolTreeSelection=Ext.getCmp("DatabaseColumnProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
         	if(protocolTreeSelection.length>0){
         		var selectedProtocol=protocolTreeSelection[0];
-        		classes=selectedProtocol.data.classes;
         		deviceType=selectedProtocol.data.deviceType;
-        		if(classes==1){
+        		if(selectedProtocol.data.classes==1){
             		protocolCode=selectedProtocol.data.code;
+            		protocolName=selectedProtocol.data.text;
+            		classes=selectedProtocol.data.classes;
+            	}else{
+            		if(selectedProtocol.childNodes.length>0){
+            			protocolCode=selectedProtocol.childNodes[0].data.code;
+            			protocolName=selectedProtocol.childNodes[0].data.text;
+            			classes=selectedProtocol.childNodes[0].data.classes;
+            		}
             	}
         	}
             var new_params = {

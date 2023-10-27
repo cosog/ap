@@ -61,11 +61,21 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                         	
                         },
                         select( v, record, index, eOpts ){
+                        	var protocolName='';
                         	var protocolCode="";
+                        	var classes=1;
                         	if(record.data.classes==1){
                         		protocolCode=record.data.code;
+                        		protocolName=record.data.text;
+                        		classes=record.data.classes;
+                        	}else{
+                        		if(record.childNodes.length>0){
+                        			protocolCode=record.childNodes[0].data.code;
+                        			protocolName=record.childNodes[0].data.text;
+                        			classes=record.childNodes[0].data.classes;
+                        		}
                         	}
-                        	CreateDatabaseColumnMappingTable(record.data.classes,record.data.deviceType,protocolCode);
+                        	CreateDatabaseColumnMappingTable(classes,record.data.deviceType,protocolCode,protocolName);
                         	
                         	var databaseColumnMappingTableRunStatusItemsGridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id");
                         	if (isNotVal(databaseColumnMappingTableRunStatusItemsGridPanel)) {

@@ -5079,13 +5079,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 				
 				
-		sql+=" and upper(t.calcolumn)='RUNSTATUS' order by t.id";
+//		sql+=" and upper(t.calcolumn)='RUNSTATUS' ";
+		sql+= "order by t.id";
 		String columns="["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-				+ "{ \"header\":\"协议\",\"dataIndex\":\"protocolName\",\"flex\":3,\"children\":[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] },"
-				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",\"flex\":2,\"children\":[] },"
-				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",\"flex\":3,\"children\":[] }"
+//				+ "{ \"header\":\"协议\",\"dataIndex\":\"protocolName\",\"flex\":3,\"children\":[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
+//				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",\"flex\":2,\"children\":[] },"
+//				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",\"flex\":3,\"children\":[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sql);
 		List<String> protocolNameList=new ArrayList<>();

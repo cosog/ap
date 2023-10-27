@@ -286,7 +286,7 @@ public class ReportDataMamagerController extends BaseController {
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
 			
-			String sql = " select * from (select  to_char(t.calTime,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
+			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
 					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
@@ -364,7 +364,7 @@ public class ReportDataMamagerController extends BaseController {
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
 			
-			String sql = " select * from (select  to_char(t.calTime,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
+			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
 					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
@@ -601,7 +601,7 @@ public class ReportDataMamagerController extends BaseController {
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
 			
-			String sql = " select * from (select  to_char(t.calTime,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
+			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd') from "+timingcalculationTableName+" t "
 					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";

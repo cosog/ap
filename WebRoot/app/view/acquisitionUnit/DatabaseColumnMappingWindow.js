@@ -13,7 +13,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1200,
+    width: 1400,
     minWidth: 1200,
     height: 700,
     draggable: true, // 是否可拖曳
@@ -25,7 +25,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             layout: "border",
             items: [{
             	region: 'west',
-            	width:'25%',
+            	width:'15%',
             	layout: 'fit',
             	split: true,
                 collapsible: true,
@@ -37,6 +37,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             	items: [{
             		region: 'center',
                 	title:'存储字段表',
+                	id:'DatabaseColumnMappingTablePanel_Id',
                 	layout: 'fit',
                 	header:true,
                 	tbar: ['->',{
@@ -66,9 +67,12 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                         }
                 	}
             	},{
-            		region: 'south',
-                	height:'33%',
+//            		region: 'south',
+//                	height:'50%',
+                	region: 'east',
+                	width:'50%',
                 	title:'运行状态配置',
+                	id:'DatabaseColumnMappingTableRunStatusConfigPanel_Id',
                 	layout: "border",
                 	split: true,
                     collapsible: true,
@@ -82,9 +86,9 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                     }],
                 	items: [{
                 		region: 'west',
-                		width:'50%',
+                		width:'33%',
                     	layout: 'fit',
-                    	title:'运行状态字段列表',
+                    	title:'采控项列表',
                     	id:"DatabaseColumnMappingTableRunStatusItemsPanel_Id"
                 	},{
                 		region: 'center',
@@ -93,7 +97,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                     	id:"DatabaseColumnMappingTableRunStatusMeaningPanel1_Id"
                 	},{
                 		region: 'east',
-                		width:'25%',
+                		width:'33%',
                 		layout: 'fit',
                 		title:'隶属停止项配置',
                     	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
@@ -118,13 +122,17 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     }
 });
 
-function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode){
+function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protocolName){
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getDatabaseColumnMappingTable',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			
+			if(isNotVal(protocolName)){
+				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(protocolName+"/存储字段表");
+			}else{
+				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle("存储字段表");
+			}
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
 				var colHeaders="['序号','名称','字段','关联计算字段']";

@@ -1581,6 +1581,8 @@ public class DriverAPIController extends BaseController{
 													runStatus=0;
 												}
 											}
+										}else{
+											isAcqRunStatus=false;
 										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
@@ -1724,28 +1726,29 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					List<ProtocolItemResolutionData> rpcInputItemItemResolutionDataList=getRPCInputItemData(rpcDeviceInfo);
-					
-					String tiemEffRequest="{"
-							+ "\"AKString\":\"\","
-							+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
-							+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-					if(StringManagerUtils.isNotNull(rpcDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getRunRange())){
-						tiemEffRequest+= "\"Last\":{"
-								+ "\"AcqTime\": \""+rpcDeviceInfo.getRunStatusAcqTime()+"\","
-								+ "\"RunStatus\": "+(rpcDeviceInfo.getRunStatus()==1?true:false)+","
-								+ "\"RunEfficiency\": {"
-								+ "\"Efficiency\": "+rpcDeviceInfo.getRunEff()+","
-								+ "\"Time\": "+rpcDeviceInfo.getRunTime()+","
-								+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getRunRange())+""
+					if(isAcqRunStatus){
+						String tiemEffRequest="{"
+								+ "\"AKString\":\"\","
+								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
+								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getRunRange())){
+							tiemEffRequest+= "\"Last\":{"
+									+ "\"AcqTime\": \""+rpcDeviceInfo.getRunStatusAcqTime()+"\","
+									+ "\"RunStatus\": "+(rpcDeviceInfo.getRunStatus()==1?true:false)+","
+									+ "\"RunEfficiency\": {"
+									+ "\"Efficiency\": "+rpcDeviceInfo.getRunEff()+","
+									+ "\"Time\": "+rpcDeviceInfo.getRunTime()+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getRunRange())+""
+									+ "}"
+									+ "},";
+						}	
+						tiemEffRequest+= "\"Current\": {"
+								+ "\"AcqTime\":\""+acqTime+"\","
+								+ "\"RunStatus\":"+(runStatus==1?true:false)+""
 								+ "}"
-								+ "},";
-					}	
-					tiemEffRequest+= "\"Current\": {"
-							+ "\"AcqTime\":\""+acqTime+"\","
-							+ "\"RunStatus\":"+(runStatus==1?true:false)+""
-							+ "}"
-							+ "}";
-					timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
+								+ "}";
+						timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
+					}
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
@@ -2125,17 +2128,22 @@ public class DriverAPIController extends BaseController{
 						totalAnalysisResponseData=CalculateUtils.totalCalculate(totalRequestData);
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量",totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+"",totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+"","","liquidVolumetricProduction_l","","","","m^3/d",1));
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量",totalAnalysisResponseData.getLiquidWeightProduction().getValue()+"",totalAnalysisResponseData.getLiquidWeightProduction().getValue()+"","","liquidWeightProduction_l","","","","t/d",1));
+					}else{
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量","","","","liquidVolumetricProduction_l","","","","m^3/d",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量","","","","liquidWeightProduction_l","","","","t/d",1));
 					}
 					
 					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+",t.liquidweightproduction_l="+totalAnalysisResponseData.getLiquidWeightProduction().getValue();
 						insertHistColumns+=",liquidvolumetricproduction_l,liquidweightproduction_l";
 						insertHistValue+=","+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+","+totalAnalysisResponseData.getLiquidWeightProduction().getValue();
+					}else{
+//						updateRealtimeData+=",t.liquidvolumetricproduction_l=null,t.liquidweightproduction_l=null";
 					}
 					
 					updateRealtimeData+=" where t.wellId= "+rpcDeviceInfo.getId();
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
-					updateTotalDataSql+=" where t.wellId= "+rpcDeviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+					updateTotalDataSql+=" where t.wellId= "+rpcDeviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
 					//排序
 					Collections.sort(protocolItemResolutionDataList);
@@ -2984,6 +2992,8 @@ public class DriverAPIController extends BaseController{
 													runStatus=0;
 												}
 											}
+										}else{
+											isAcqRunStatus=false;
 										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
@@ -3070,28 +3080,29 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					List<ProtocolItemResolutionData> pcpInputItemItemResolutionDataList=getPCPInputItemData(pcpDeviceInfo);
-					String tiemEffRequest="{"
-							+ "\"AKString\":\"\","
-							+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
-							+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-					if(StringManagerUtils.isNotNull(pcpDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getRunRange())){
-						tiemEffRequest+= "\"Last\":{"
-								+ "\"AcqTime\": \""+pcpDeviceInfo.getRunStatusAcqTime()+"\","
-								+ "\"RunStatus\": "+(pcpDeviceInfo.getRunStatus()==1?true:false)+","
-								+ "\"RunEfficiency\": {"
-								+ "\"Efficiency\": "+pcpDeviceInfo.getRunEff()+","
-								+ "\"Time\": "+pcpDeviceInfo.getRunTime()+","
-								+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getRunRange())+""
+					if(isAcqRunStatus){
+						String tiemEffRequest="{"
+								+ "\"AKString\":\"\","
+								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
+								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getRunRange())){
+							tiemEffRequest+= "\"Last\":{"
+									+ "\"AcqTime\": \""+pcpDeviceInfo.getRunStatusAcqTime()+"\","
+									+ "\"RunStatus\": "+(pcpDeviceInfo.getRunStatus()==1?true:false)+","
+									+ "\"RunEfficiency\": {"
+									+ "\"Efficiency\": "+pcpDeviceInfo.getRunEff()+","
+									+ "\"Time\": "+pcpDeviceInfo.getRunTime()+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getRunRange())+""
+									+ "}"
+									+ "},";
+						}	
+						tiemEffRequest+= "\"Current\": {"
+								+ "\"AcqTime\":\""+acqTime+"\","
+								+ "\"RunStatus\":"+(runStatus==1?true:false)+""
 								+ "}"
-								+ "},";
-					}	
-					tiemEffRequest+= "\"Current\": {"
-							+ "\"AcqTime\":\""+acqTime+"\","
-							+ "\"RunStatus\":"+(runStatus==1?true:false)+""
-							+ "}"
-							+ "}";
-					timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
-				
+								+ "}";
+						timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
+					}
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
@@ -3383,7 +3394,7 @@ public class DriverAPIController extends BaseController{
 					
 					updateRealtimeData+=" where t.wellId= "+pcpDeviceInfo.getId();
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
-					updateTotalDataSql+=" where t.wellId= "+pcpDeviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+					updateTotalDataSql+=" where t.wellId= "+pcpDeviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
 					//排序
 					Collections.sort(protocolItemResolutionDataList);

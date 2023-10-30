@@ -5081,6 +5081,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 //		sql+=" and upper(t.calcolumn)='RUNSTATUS' ";
 		sql+= "order by t.id";
+		
+		String configedRunStatusSql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.protocoltype,t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition "
+				+ " from TBL_RUNSTATUSCONFIG t "
+				+ " where t.protocol='"+protocolCode+"' "
+				+ " and t.protocoltype="+deviceType;
+		
+		int configedRunStatusIndex=-99;
+		String configedRunStatusol="";
+		
 		String columns="["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
 //				+ "{ \"header\":\"协议\",\"dataIndex\":\"protocolName\",\"flex\":3,\"children\":[] },"
@@ -5089,11 +5098,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 //				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",\"flex\":3,\"children\":[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sql);
+		List<?> configedRunStatusList=this.findCallSql(configedRunStatusSql);
+		if(configedRunStatusList.size()>0){
+			Object[] obj = (Object[]) configedRunStatusList.get(0);
+			configedRunStatusol=obj[3]+"";
+		}
+		
 		List<String> protocolNameList=new ArrayList<>();
 		List<String> protocolCodeList=new ArrayList<>();
 		List<String> itemNameList=new ArrayList<>();
 		List<String> itemColumnList=new ArrayList<>();
 		List<String> calColumnList=new ArrayList<>();
+		List<Integer> resolutionModeList=new ArrayList<>();
 		if(modbusProtocolConfig!=null){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)){
@@ -5106,6 +5122,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									if((obj[2]+"").equalsIgnoreCase(columnName)){
 										protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
 										protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+										resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
 										itemNameList.add(obj[1]+"");
 										itemColumnList.add(obj[2]+"");
 										calColumnList.add(obj[3]+"");
@@ -5122,6 +5139,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								if((obj[2]+"").equalsIgnoreCase(columnName)){
 									protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
 									protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+									resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
 									itemNameList.add(obj[1]+"");
 									itemColumnList.add(obj[2]+"");
 									calColumnList.add(obj[3]+"");
@@ -5139,18 +5157,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"deviceType\":"+deviceType+",");
 			result_json.append("\"protocolName\":\""+protocolNameList.get(i)+"\",");
 			result_json.append("\"protocolCode\":\""+protocolCodeList.get(i)+"\",");
+			result_json.append("\"resolutionMode\":"+resolutionModeList.get(i)+",");
 			result_json.append("\"itemName\":\""+itemNameList.get(i)+"\",");
 			result_json.append("\"itemColumn\":\""+itemColumnList.get(i)+"\",");
 			result_json.append("\"calColumn\":\""+calColumnList.get(i)+"\"},");
+			
+			if(configedRunStatusol.equalsIgnoreCase(itemColumnList.get(i))){
+				configedRunStatusIndex=i;
+			}
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
-		result_json.append("]}");
+		result_json.append("],\"configedRunStatusIndex\":"+configedRunStatusIndex+"}");
+		
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolRunStatusItemsMeaning(String status,String deviceType,String protocolCode,String itemName,String itemColumn) {
+	public String getProtocolRunStatusItemsMeaning(String status,String deviceType,String protocolCode,String itemName,String itemColumn,String resolutionMode) {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
@@ -5167,15 +5191,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<Integer> runValueIndexList=new ArrayList<Integer>();
 		List<Integer> runConfigValueList=new ArrayList<Integer>();
+		List<String> runConditionList=new ArrayList<>();
+		
 		List<Integer> stopValueIndexList=new ArrayList<Integer>();
 		List<Integer> stopConfigValueList=new ArrayList<Integer>();
-		String setValueSql="select t.runvalue,t.stopvalue from tbl_runstatusconfig t "
+		List<String> stopConditionList=new ArrayList<>();
+		String setValueSql="select t.runvalue,t.stopvalue,t.runcondition,t.stopcondition"
+				+ " from tbl_runstatusconfig t "
 				+ " where t.protocol='"+protocolCode+"' and t.itemname='"+itemName+"' and t.itemmappingcolumn='"+itemColumn+"' and t.protocoltype="+deviceType;
 		List<?> list=this.findCallSql(setValueSql);
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
 			String runValueStr=obj[0]+"";
 			String stopValueStr=obj[1]+"";
+			String runConditionStr=obj[2]+"";
+			String stopConditionStr=obj[3]+"";
 			if(StringManagerUtils.isNotNull(runValueStr)){
 				String[] runValueArr=runValueStr.split(",");
 				for(int i=0;i<runValueArr.length;i++){
@@ -5192,45 +5222,145 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			if(StringManagerUtils.isNotNull(runConditionStr)){//>=,0;
+				String[] runrunConditionArr=runConditionStr.split(";");
+				for(int i=0;i<runrunConditionArr.length;i++){
+					if(StringManagerUtils.isNotNull(runrunConditionArr[i])){
+						runConditionList.add(runrunConditionArr[i]);
+					}
+				}
+			}
+			
+			if(StringManagerUtils.isNotNull(stopConditionStr)){
+				String[] stoprunConditionArr=stopConditionStr.split(";");
+				for(int i=0;i<stoprunConditionArr.length;i++){
+					if(StringManagerUtils.isNotNull(stoprunConditionArr[i])){
+						stopConditionList.add(stoprunConditionArr[i]);
+					}
+					
+				}
+			}
 		}
-//		StringManagerUtils.existOrNot(runValueIndexList, 1)
 		String columns="["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
 				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] },"
 				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",\"flex\":2,\"children\":[] }"
 				+ "]";
-		result_json.append("{\"success\":true,\"columns\":"+columns+",\"totalRoot\":[");
+		
+		if(StringManagerUtils.stringToInteger(resolutionMode)==2){//数据量
+			columns="["
+					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\"运算关系\",\"dataIndex\":\"condition\",\"flex\":1,\"children\":[] },"
+					+ "{ \"header\":\"值\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] }"
+					+ "]";
+		}
+		
+		result_json.append("{\"success\":true,\"resolutionMode\":"+resolutionMode+",\"columns\":"+columns+",\"totalRoot\":[");
 		int totalCount=0;
-		if(modbusProtocolConfig!=null){
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-						&& protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-						String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-						if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
-							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
-								for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
-									totalCount++;
-									result_json.append("{\"id\":\""+(k+1)+"\",");
-									result_json.append("\"value\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()+"\",");
-									result_json.append("\"meaning\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getMeaning()+"\"},");
-									
-									if(StringManagerUtils.existOrNot(runConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
-										runValueIndexList.add(k);
-									}else if(StringManagerUtils.existOrNot(stopConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
-										stopValueIndexList.add(k);
+		if(StringManagerUtils.stringToInteger(resolutionMode)==1){//枚举量
+			if(modbusProtocolConfig!=null){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
+							&& protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
+									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
+										totalCount++;
+										result_json.append("{\"id\":\""+(k+1)+"\",");
+										result_json.append("\"value\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()+"\",");
+										result_json.append("\"meaning\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getMeaning()+"\"},");
+										
+										if(StringManagerUtils.existOrNot(runConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
+											runValueIndexList.add(k);
+										}else if(StringManagerUtils.existOrNot(stopConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
+											stopValueIndexList.add(k);
+										}
 									}
 								}
+								break;
 							}
-							break;
 						}
+						break;
 					}
-					break;
 				}
 			}
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+		}else if(StringManagerUtils.stringToInteger(resolutionMode)==2){//数据量
+			totalCount=4;
+			String runValue1="",runValue2="",runValue3="",runValue4="";
+			String stopValue1="",stopValue2="",stopValue3="",stopValue4="";
+			for(int i=0;i<runConditionList.size();i++){
+				String[] runConditionArr= runConditionList.get(i).split(",");
+				if(runConditionArr.length==2){
+					if(">".equalsIgnoreCase(runConditionArr[0])){
+						runValue1=runConditionArr[1];
+						runValueIndexList.add(0);
+					}else if(">=".equalsIgnoreCase(runConditionArr[0])){
+						runValue2=runConditionArr[1];
+						runValueIndexList.add(1);
+					}else if("<=".equalsIgnoreCase(runConditionArr[0])){
+						runValue3=runConditionArr[1];
+						runValueIndexList.add(2);
+					}else if("<".equalsIgnoreCase(runConditionArr[0])){
+						runValue4=runConditionArr[1];
+						runValueIndexList.add(3);
+					}
+				}
+			}
+			for(int i=0;i<stopConditionList.size();i++){
+				String[] stopConditionArr= stopConditionList.get(i).split(",");
+				if(stopConditionArr.length==2){
+					if(">".equalsIgnoreCase(stopConditionArr[0])){
+						stopValue1=stopConditionArr[1];
+						stopValueIndexList.add(0);
+					}else if(">=".equalsIgnoreCase(stopConditionArr[0])){
+						stopValue2=stopConditionArr[1];
+						stopValueIndexList.add(1);
+					}else if("<=".equalsIgnoreCase(stopConditionArr[0])){
+						stopValue3=stopConditionArr[1];
+						stopValueIndexList.add(2);
+					}else if("<".equalsIgnoreCase(stopConditionArr[0])){
+						stopValue4=stopConditionArr[1];
+						stopValueIndexList.add(3);
+					}
+				}
+			}
+			
+			result_json.append("{\"id\":1,");
+			result_json.append("\"condition\":\"大于\",");
+			if("1".equals(status)){
+				result_json.append("\"value\":\""+runValue1+"\"},");
+			}else{
+				result_json.append("\"value\":\""+stopValue1+"\"},");
+			}
+			
+			result_json.append("{\"id\":2,");
+			result_json.append("\"condition\":\"大于等于\",");
+			if("1".equals(status)){
+				result_json.append("\"value\":\""+runValue2+"\"},");
+			}else{
+				result_json.append("\"value\":\""+stopValue2+"\"},");
+			}
+			
+			result_json.append("{\"id\":3,");
+			result_json.append("\"condition\":\"小于等于\",");
+			if("1".equals(status)){
+				result_json.append("\"value\":\""+runValue3+"\"},");
+			}else{
+				result_json.append("\"value\":\""+stopValue3+"\"},");
+			}
+			
+			result_json.append("{\"id\":4,");
+			result_json.append("\"condition\":\"小于\",");
+			if("1".equals(status)){
+				result_json.append("\"value\":\""+runValue4+"\"}");
+			}else{
+				result_json.append("\"value\":\""+stopValue4+"\"}");
+			}
 		}
 		String runValueIndex=StringUtils.join(runValueIndexList, ",");
 		String stopValueIndex=StringUtils.join(stopValueIndexList, ",");
@@ -5253,23 +5383,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public int saveProtocolRunStatusConfig(String protocolCode,String itemName,String itemColumn,String deviceType,String runValue,String stopValue) throws Exception {
+	public int saveProtocolRunStatusConfig(String protocolCode,String resolutionMode,String itemName,String itemColumn,String deviceType,
+			String runValue,String stopValue,String runCondition,String stopCondition) throws Exception {
 		String recordCountSql="select count(1) from tbl_runstatusconfig t "
 				+ " where t.protocol='"+protocolCode+"' "
-				+ " and t.itemname='"+itemName+"' "
-				+ " and t.itemmappingcolumn='"+itemColumn+"' "
 				+ " and t.protocoltype="+deviceType;
 		int recordCount=this.getTotalCountRows(recordCountSql);
 		String insertOrUpdateSql="";
 		if(recordCount==0){
-			insertOrUpdateSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,runvalue,stopvalue,protocoltype) "
-					+ "values ('"+protocolCode+"','"+itemName+"','"+itemColumn+"','"+runValue+"','"+stopValue+"',"+deviceType+")";
+			insertOrUpdateSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,resolutionMode,runvalue,stopvalue,runCondition,stopCondition,protocoltype) "
+					+ "values ('"+protocolCode+"','"+itemName+"','"+itemColumn+"',"+resolutionMode+",'"+runValue+"','"+stopValue+"','"+runCondition+"','"+stopCondition+"',"+deviceType+")";
 		}else{
 			insertOrUpdateSql="update tbl_runstatusconfig t"
-					+ " set t.runValue='"+runValue+"',t.stopValue='"+stopValue+"' "
+					+ " set t.resolutionMode="+resolutionMode+","
+					+ " t.itemname='"+itemName+"',t.itemmappingcolumn='"+itemColumn+"', "
+					+ " t.runValue='"+runValue+"',t.stopValue='"+stopValue+"', "
+					+ " t.runCondition='"+runCondition+"',t.stopCondition='"+stopCondition+"' "
 					+ " where t.protocol='"+protocolCode+"' "
-					+ " and t.itemname='"+itemName+"' "
-					+ " and t.itemmappingcolumn='"+itemColumn+"' "
 					+ " and t.protocoltype="+deviceType;
 		}
 		

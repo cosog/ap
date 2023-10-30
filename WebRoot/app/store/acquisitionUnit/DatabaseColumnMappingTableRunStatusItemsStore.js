@@ -35,7 +35,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
                     	selType: 'checkboxmodel',
                     	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly:false,
-                    	allowDeselect:true
+                    	allowDeselect:false
                     },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
@@ -50,21 +50,24 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
                     		
                     	},
                     	select: function(grid, record, index, eOpts) {
-//                    		var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
-//                            if (isNotVal(gridPanel)) {
-//                            	gridPanel.getSelectionModel().deselectAll(true);
-//                            	gridPanel.getStore().load();
-//                            }else{
-//                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore');
-//                            }
-//                            
-//                            var gridPanel2 = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id");
-//                            if (isNotVal(gridPanel2)) {
-//                            	gridPanel2.getSelectionModel().deselectAll(true);
-//                            	gridPanel2.getStore().load();
-//                            }else{
-//                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore');
-//                            }
+                    		Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel1_Id").removeAll();
+                    		Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id").removeAll();
+                    		
+                    		var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
+                            if (isNotVal(gridPanel)) {
+                            	gridPanel.getSelectionModel().deselectAll(true);
+                            	gridPanel.getStore().load();
+                            }else{
+                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore');
+                            }
+                            
+                            var gridPanel2 = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id");
+                            if (isNotVal(gridPanel2)) {
+                            	gridPanel2.getSelectionModel().deselectAll(true);
+                            	gridPanel2.getStore().load();
+                            }else{
+                            	Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore');
+                            }
                     	}
                     }
                 });
@@ -94,11 +97,11 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
             
             
             gridPanel.getSelectionModel().deselectAll(true);
-            if(get_rawData.totalCount>0){
-//            	gridPanel.getSelectionModel().select(0, true);
+            if(get_rawData.configedRunStatusIndex>=0){
+            	gridPanel.getSelectionModel().select(get_rawData.configedRunStatusIndex, true);
             }else{
-            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel1_Id").removeAll();
-            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id").removeAll();
+//            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel1_Id").removeAll();
+//            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id").removeAll();
             }
         },
         beforeload: function (store, options) {

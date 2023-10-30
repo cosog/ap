@@ -3247,7 +3247,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemName = ParamUtils.getParameter(request, "itemName");
 		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
-		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItemsMeaning(status,deviceType,protocolCode,itemName,itemColumn);
+		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
+		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItemsMeaning(status,deviceType,protocolCode,itemName,itemColumn,resolutionMode);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3286,7 +3287,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String runValue = ParamUtils.getParameter(request, "runValue");
 		String stopValue = ParamUtils.getParameter(request, "stopValue");
-		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,itemName,itemColumn,deviceType,runValue,stopValue);
+		String runCondition = ParamUtils.getParameter(request, "runCondition");
+		String stopCondition = ParamUtils.getParameter(request, "stopCondition");
+		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
+		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,resolutionMode,itemName,itemColumn,deviceType,runValue,stopValue,runCondition,stopCondition);
 		MemoryDataManagerTask.loadProtocolRunStatusConfig();
 		String json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

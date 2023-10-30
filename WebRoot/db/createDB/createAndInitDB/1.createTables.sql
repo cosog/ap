@@ -1293,8 +1293,8 @@ create table TBL_RPCDAILYCALCULATIONDATA
   calcproducingfluidlevel        NUMBER(8,2),
   leveldifferencevalue           NUMBER(8,2),
   gasvolumetricproduction        NUMBER(8,2),
-  totalgasvolumetricproduction   NUMBER(8,2),
-  totalwatervolumetricproduction NUMBER(8,2),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
   remark                         VARCHAR2(4000)
 )
@@ -1653,8 +1653,8 @@ create table TBL_PCPDAILYCALCULATIONDATA
   pumpsettingdepth               NUMBER(8,2),
   submergence                    NUMBER(8,2),
   gasvolumetricproduction        NUMBER(8,2),
-  totalgasvolumetricproduction   NUMBER(8,2),
-  totalwatervolumetricproduction NUMBER(8,2),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
   remark                         VARCHAR2(4000)
 )
@@ -1866,8 +1866,8 @@ create table TBL_RPCTIMINGCALCULATIONDATA
   bottomholepressure             NUMBER(8,2),
   producingfluidlevel            NUMBER(8,2),
   gasvolumetricproduction        NUMBER(8,2),
-  totalgasvolumetricproduction   NUMBER(8,2),
-  totalwatervolumetricproduction NUMBER(8,2),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
   remark                         VARCHAR2(4000),
   calcproducingfluidlevel        NUMBER(8,2),
@@ -1932,8 +1932,8 @@ create table TBL_PCPTIMINGCALCULATIONDATA
   bottomholepressure             NUMBER(8,2),
   producingfluidlevel            NUMBER(8,2),
   gasvolumetricproduction        NUMBER(8,2),
-  totalgasvolumetricproduction   NUMBER(8,2),
-  totalwatervolumetricproduction NUMBER(8,2),
+  totalgasvolumetricproduction   NUMBER(12,3),
+  totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
   remark                         VARCHAR2(4000),
   pumpsettingdepth               NUMBER(8,2),

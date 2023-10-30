@@ -12,6 +12,7 @@ public class ProtocolRunStatusConfig   implements Serializable{
 	public List<Integer> runValue;
 	public List<Integer> stopValue;
 	public Integer protocolType;
+	public Integer resolutionMode;
 	
 	public ProtocolRunStatusConfig() {
 		super();
@@ -83,5 +84,13 @@ public class ProtocolRunStatusConfig   implements Serializable{
 
 	public void setProtocolType(Integer protocolType) {
 		this.protocolType = protocolType;
+	}
+
+	public Integer getResolutionMode() {
+		return resolutionMode;
+	}
+
+	public void setResolutionMode(Integer resolutionMode) {
+		this.resolutionMode = resolutionMode;
 	}
 }

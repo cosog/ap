@@ -86,21 +86,25 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                     }],
                 	items: [{
                 		region: 'west',
-                		width:'33%',
+                		width:'50%',
                     	layout: 'fit',
-                    	title:'采控项列表',
+                    	title:'运行状态项选择',
                     	id:"DatabaseColumnMappingTableRunStatusItemsPanel_Id"
                 	},{
                 		region: 'center',
-                		layout: 'fit',
-                		title:'隶属运行项配置',
-                    	id:"DatabaseColumnMappingTableRunStatusMeaningPanel1_Id"
-                	},{
-                		region: 'east',
-                		width:'33%',
-                		layout: 'fit',
-                		title:'隶属停止项配置',
-                    	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
+                		layout: "border",
+                		items: [{
+                    		region: 'center',
+                    		layout: 'fit',
+                    		title:'隶属运行项配置',
+                        	id:"DatabaseColumnMappingTableRunStatusMeaningPanel1_Id"
+                    	},{
+                    		region: 'south',
+                    		height:'50%',
+                    		layout: 'fit',
+                    		title:'隶属停止项配置',
+                        	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
+                    	}]
                 	}]
             	}]
             }],
@@ -457,31 +461,81 @@ function saveProtocolRunStatusConfig(){
 	var runStatusItemsSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id").getSelectionModel().getSelection();
 	if(runStatusItemsSelection.length>0){
 		var selectedRunStatusItem=runStatusItemsSelection[0];
-		protocolCode=selectedRunStatusItem.data.protocolCode;
-		itemName=selectedRunStatusItem.data.itemName;
-		itemColumn=selectedRunStatusItem.data.itemColumn;
-		deviceType=selectedRunStatusItem.data.deviceType;
+		var protocolCode=selectedRunStatusItem.data.protocolCode;
+		var itemName=selectedRunStatusItem.data.itemName;
+		var itemColumn=selectedRunStatusItem.data.itemColumn;
+		var deviceType=selectedRunStatusItem.data.deviceType;
+		var resolutionMode=selectedRunStatusItem.data.resolutionMode;
 		
 		var runValue="";
 		var stopValue="";
+		
+		var runCondition="";
+		var stopCondition="";
+		
 		var runValueSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id").getSelectionModel().getSelection();
 		var stopValueSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id").getSelectionModel().getSelection();
-		if(runValueSelection.length>0){
-			for(var i=0;i<runValueSelection.length;i++){
-				runValue+=runValueSelection[i].data.value;
-				if(i<runValueSelection.length-1){
-					runValue+=",";
+		if(resolutionMode==1){
+			if(runValueSelection.length>0){
+				for(var i=0;i<runValueSelection.length;i++){
+					runValue+=runValueSelection[i].data.value;
+					if(i<runValueSelection.length-1){
+						runValue+=",";
+					}
 				}
 			}
-		}
-		if(stopValueSelection.length>0){
-			for(var i=0;i<stopValueSelection.length;i++){
-				stopValue+=stopValueSelection[i].data.value;
-				if(i<stopValueSelection.length-1){
-					stopValue+=",";
+			if(stopValueSelection.length>0){
+				for(var i=0;i<stopValueSelection.length;i++){
+					stopValue+=stopValueSelection[i].data.value;
+					if(i<stopValueSelection.length-1){
+						stopValue+=",";
+					}
 				}
 			}
+		}else if(resolutionMode==2){
+			if(runValueSelection.length>0){
+				for(var i=0;i<runValueSelection.length;i++){
+					if(isNumber(runValueSelection[i].data.value)){
+						var sign="";
+						if(runValueSelection[i].data.condition=="大于"){
+							sign=">";
+						}else if(runValueSelection[i].data.condition=="大于等于"){
+							sign=">=";
+						}else if(runValueSelection[i].data.condition=="小于等于"){
+							sign="<=";
+						}else if(runValueSelection[i].data.condition=="小于"){
+							sign="<";
+						}
+						runCondition+=sign+","+runValueSelection[i].data.value+";"
+					}
+				}
+				if (isNotVal(runCondition)) {
+					runCondition = runCondition.substring(0, runCondition.length - 1);
+			    }
+			}
+			
+			if(stopValueSelection.length>0){
+				for(var i=0;i<stopValueSelection.length;i++){
+					if(isNumber(stopValueSelection[i].data.value)){
+						var sign="";
+						if(stopValueSelection[i].data.condition=="大于"){
+							sign=">";
+						}else if(stopValueSelection[i].data.condition=="大于等于"){
+							sign=">=";
+						}else if(stopValueSelection[i].data.condition=="小于等于"){
+							sign="<=";
+						}else if(stopValueSelection[i].data.condition=="小于"){
+							sign="<";
+						}
+						stopCondition+=sign+","+stopValueSelection[i].data.value+";"
+					}
+				}
+				if (isNotVal(stopCondition)) {
+					stopCondition = stopCondition.substring(0, stopCondition.length - 1);
+			    }
+			}
 		}
+		
 		
 		Ext.Ajax.request({
 			method:'POST',
@@ -509,14 +563,15 @@ function saveProtocolRunStatusConfig(){
 			},
 			params: {
 				protocolCode: protocolCode,
+				resolutionMode: resolutionMode,
 				itemName: itemName,
 				itemColumn: itemColumn,
 				deviceType: deviceType,
 				runValue: runValue,
-				stopValue: stopValue
+				stopValue: stopValue,
+				runCondition: runCondition,
+				stopCondition: stopCondition
 	        }
 		});
-		
-		
 	}
 }

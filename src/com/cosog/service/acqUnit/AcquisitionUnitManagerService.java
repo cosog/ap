@@ -5223,10 +5223,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 			}
 			if(StringManagerUtils.isNotNull(runConditionStr)){//>=,0;
-				String[] runrunConditionArr=runConditionStr.split(";");
-				for(int i=0;i<runrunConditionArr.length;i++){
-					if(StringManagerUtils.isNotNull(runrunConditionArr[i])){
-						runConditionList.add(runrunConditionArr[i]);
+				String[] runConditionArr=runConditionStr.split(";");
+				for(int i=0;i<runConditionArr.length;i++){
+					if(StringManagerUtils.isNotNull(runConditionArr[i])){
+						runConditionList.add(runConditionArr[i]);
 					}
 				}
 			}

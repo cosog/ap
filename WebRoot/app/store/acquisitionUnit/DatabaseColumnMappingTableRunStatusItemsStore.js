@@ -100,8 +100,8 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
             if(get_rawData.configedRunStatusIndex>=0){
             	gridPanel.getSelectionModel().select(get_rawData.configedRunStatusIndex, true);
             }else{
-//            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel1_Id").removeAll();
-//            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id").removeAll();
+            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel1_Id").removeAll();
+            	Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id").removeAll();
             }
         },
         beforeload: function (store, options) {

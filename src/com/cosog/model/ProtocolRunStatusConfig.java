@@ -11,6 +11,8 @@ public class ProtocolRunStatusConfig   implements Serializable{
 	public String itemMappingColumn;
 	public List<Integer> runValue;
 	public List<Integer> stopValue;
+	public List<RunStatusCondition> runConditionList;
+	public List<RunStatusCondition> stopConditionList;
 	public Integer protocolType;
 	public Integer resolutionMode;
 	
@@ -19,7 +21,9 @@ public class ProtocolRunStatusConfig   implements Serializable{
 	}
 
 	public ProtocolRunStatusConfig(Integer id, String protocol, String itemName, String itemMappingColumn,
-			List<Integer> runValue, List<Integer> stopValue, Integer protocolType) {
+			List<Integer> runValue, List<Integer> stopValue, 
+			List<RunStatusCondition> runConditionList,List<RunStatusCondition> stopConditionList,
+			Integer protocolType,Integer resolutionMode) {
 		super();
 		this.id = id;
 		this.protocol = protocol;
@@ -27,6 +31,9 @@ public class ProtocolRunStatusConfig   implements Serializable{
 		this.itemMappingColumn = itemMappingColumn;
 		this.runValue = runValue;
 		this.stopValue = stopValue;
+		this.runConditionList = runConditionList;
+		this.stopConditionList = stopConditionList;
+		this.resolutionMode = resolutionMode;
 		this.protocolType = protocolType;
 	}
 
@@ -92,5 +99,40 @@ public class ProtocolRunStatusConfig   implements Serializable{
 
 	public void setResolutionMode(Integer resolutionMode) {
 		this.resolutionMode = resolutionMode;
+	}
+	
+	public static class RunStatusCondition implements Serializable{
+		private static final long serialVersionUID = 1L;
+		
+		public int logic;
+		public float value;
+		public int getLogic() {
+			return logic;
+		}
+		public void setLogic(int logic) {
+			this.logic = logic;
+		}
+		public float getValue() {
+			return value;
+		}
+		public void setValue(float value) {
+			this.value = value;
+		}
+	}
+
+	public List<RunStatusCondition> getRunConditionList() {
+		return runConditionList;
+	}
+
+	public void setRunConditionList(List<RunStatusCondition> runConditionList) {
+		this.runConditionList = runConditionList;
+	}
+
+	public List<RunStatusCondition> getStopConditionList() {
+		return stopConditionList;
+	}
+
+	public void setStopConditionList(List<RunStatusCondition> stopConditionList) {
+		this.stopConditionList = stopConditionList;
 	}
 }

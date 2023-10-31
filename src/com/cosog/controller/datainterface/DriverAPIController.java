@@ -1559,31 +1559,129 @@ public class DriverAPIController extends BaseController{
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 									
-									
-									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
-										isAcqRunStatus=true;
-										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-											ProtocolRunStatusConfig protocolRunStatusConfig=null;
-											if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-												protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-											}
-											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue)){
+											if(protocolRunStatusConfig.getResolutionMode()==1){
+												int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
 												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 													runStatus=1;
+													isAcqRunStatus=true;
 												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
 													runStatus=0;
-												}
-											}else{
-												if(rawRunStatus==1){
-													runStatus=1;
+													isAcqRunStatus=true;
 												}else{
-													runStatus=0;
+													isAcqRunStatus=false;
+												}
+											}else if(protocolRunStatusConfig.getResolutionMode()==2){
+												if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
+													float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
+													boolean runConditionMatch=false;
+													boolean stopConditionMatch=false;
+													for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
+														if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
+															if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
+															if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
+															if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
+															if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}
+													}
+													
+													for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
+														if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
+															if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
+															if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
+															if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
+															if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}
+													}
+													
+													if(runConditionMatch){
+														runStatus=1;
+														isAcqRunStatus=true;
+													}else if(stopConditionMatch){
+														runStatus=0;
+														isAcqRunStatus=true;
+													}else{
+														isAcqRunStatus=false;
+													}
 												}
 											}
 										}else{
 											isAcqRunStatus=false;
 										}
+									}
+									
+									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
+//										isAcqRunStatus=true;
+//										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
+//											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+//											ProtocolRunStatusConfig protocolRunStatusConfig=null;
+//											if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+//												protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+//											}
+//											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+//												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+//													runStatus=1;
+//												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+//													runStatus=0;
+//												}
+//											}else{
+//												if(rawRunStatus==1){
+//													runStatus=1;
+//												}else{
+//													runStatus=0;
+//												}
+//											}
+//										}else{
+//											isAcqRunStatus=false;
+//										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqEnergy=true;
@@ -2971,30 +3069,129 @@ public class DriverAPIController extends BaseController{
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 									
-									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
-										isAcqRunStatus=true;
-										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-											ProtocolRunStatusConfig protocolRunStatusConfig=null;
-											if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-												protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-											}
-											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue)){
+											if(protocolRunStatusConfig.getResolutionMode()==1){
+												int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
 												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 													runStatus=1;
+													isAcqRunStatus=true;
 												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
 													runStatus=0;
-												}
-											}else{
-												if(rawRunStatus==1){
-													runStatus=1;
+													isAcqRunStatus=true;
 												}else{
-													runStatus=0;
+													isAcqRunStatus=false;
+												}
+											}else if(protocolRunStatusConfig.getResolutionMode()==2){
+												if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
+													float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
+													boolean runConditionMatch=false;
+													boolean stopConditionMatch=false;
+													for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
+														if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
+															if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
+															if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
+															if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
+															if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+																runConditionMatch=true;
+															}else{
+																runConditionMatch=false;
+																break;
+															}
+														}
+													}
+													
+													for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
+														if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
+															if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
+															if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
+															if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
+															if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+																stopConditionMatch=true;
+															}else{
+																stopConditionMatch=false;
+																break;
+															}
+														}
+													}
+													
+													if(runConditionMatch){
+														runStatus=1;
+														isAcqRunStatus=true;
+													}else if(stopConditionMatch){
+														runStatus=0;
+														isAcqRunStatus=true;
+													}else{
+														isAcqRunStatus=false;
+													}
 												}
 											}
 										}else{
 											isAcqRunStatus=false;
 										}
+									}
+									
+									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
+//										isAcqRunStatus=true;
+//										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
+//											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+//											ProtocolRunStatusConfig protocolRunStatusConfig=null;
+//											if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+//												protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+//											}
+//											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
+//												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+//													runStatus=1;
+//												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+//													runStatus=0;
+//												}
+//											}else{
+//												if(rawRunStatus==1){
+//													runStatus=1;
+//												}else{
+//													runStatus=0;
+//												}
+//											}
+//										}else{
+//											isAcqRunStatus=false;
+//										}
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqEnergy=true;

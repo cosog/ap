@@ -286,7 +286,9 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			jedis.del("ProtocolRunStatusConfig".getBytes());
-			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.runvalue,t.stopvalue,t.protocoltype "
+			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,"
+					+ " t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition,"
+					+ " t.protocoltype "
 					+ " from tbl_runstatusconfig t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
@@ -296,11 +298,21 @@ public class MemoryDataManagerTask {
 				protocolRunStatusConfig.setProtocol(rs.getString(2));
 				protocolRunStatusConfig.setItemName(rs.getString(3));
 				protocolRunStatusConfig.setItemMappingColumn(rs.getString(4));
-				protocolRunStatusConfig.setProtocolType(rs.getInt(7));
+				protocolRunStatusConfig.setResolutionMode(rs.getInt(5));
+				
+				String runValueStr=rs.getString(6);
+				String stopValueStr=rs.getString(7);
+				
+				String runConditionStr=rs.getString(8);
+				String stopConditionStr=rs.getString(9);
+				
+				protocolRunStatusConfig.setProtocolType(rs.getInt(10));
 				protocolRunStatusConfig.setRunValue(new ArrayList<Integer>());
 				protocolRunStatusConfig.setStopValue(new ArrayList<Integer>());
-				String runValueStr=rs.getString(5);
-				String stopValueStr=rs.getString(6);
+				
+				protocolRunStatusConfig.setRunConditionList(new ArrayList<ProtocolRunStatusConfig.RunStatusCondition>());
+				protocolRunStatusConfig.setStopConditionList(new ArrayList<ProtocolRunStatusConfig.RunStatusCondition>());
+				
 				if(StringManagerUtils.isNotNull(runValueStr)){
 					String[] runValueArr=runValueStr.split(",");
 					for(int i=0;i<runValueArr.length;i++){
@@ -314,6 +326,52 @@ public class MemoryDataManagerTask {
 					for(int i=0;i<stopValueArr.length;i++){
 						if(StringManagerUtils.isNum(stopValueArr[i])){
 							protocolRunStatusConfig.getStopValue().add(StringManagerUtils.stringToInteger(stopValueArr[i]));
+						}
+					}
+				}
+				
+				if(StringManagerUtils.isNotNull(runConditionStr)){//>=,0;
+					String[] runConditionStrArr=runConditionStr.split(";");
+					for(int i=0;i<runConditionStrArr.length;i++){
+						if(StringManagerUtils.isNotNull(runConditionStrArr[i])){
+							String[] runConditionArr= runConditionStrArr[i].split(",");
+							if(runConditionArr.length==2 && StringManagerUtils.isNumber(runConditionArr[1])){
+								ProtocolRunStatusConfig.RunStatusCondition runCondition=new ProtocolRunStatusConfig.RunStatusCondition();
+								if(">".equalsIgnoreCase(runConditionArr[0])){
+									runCondition.setLogic(1);
+								}else if(">=".equalsIgnoreCase(runConditionArr[0])){
+									runCondition.setLogic(2);
+								}else if("<=".equalsIgnoreCase(runConditionArr[0])){
+									runCondition.setLogic(3);
+								}else if("<".equalsIgnoreCase(runConditionArr[0])){
+									runCondition.setLogic(4);
+								}
+								runCondition.setValue(StringManagerUtils.stringToFloat(runConditionArr[1]));
+								protocolRunStatusConfig.getRunConditionList().add(runCondition);
+							}
+						}
+					}
+				}
+				
+				if(StringManagerUtils.isNotNull(stopConditionStr)){//>=,0;
+					String[] stopConditionStrArr=stopConditionStr.split(";");
+					for(int i=0;i<stopConditionStrArr.length;i++){
+						if(StringManagerUtils.isNotNull(stopConditionStrArr[i])){
+							String[] stopConditionArr= stopConditionStrArr[i].split(",");
+							if(stopConditionArr.length==2 && StringManagerUtils.isNumber(stopConditionArr[1])){
+								ProtocolRunStatusConfig.RunStatusCondition stopCondition=new ProtocolRunStatusConfig.RunStatusCondition();
+								if(">".equalsIgnoreCase(stopConditionArr[0])){
+									stopCondition.setLogic(1);
+								}else if(">=".equalsIgnoreCase(stopConditionArr[0])){
+									stopCondition.setLogic(2);
+								}else if("<=".equalsIgnoreCase(stopConditionArr[0])){
+									stopCondition.setLogic(3);
+								}else if("<".equalsIgnoreCase(stopConditionArr[0])){
+									stopCondition.setLogic(4);
+								}
+								stopCondition.setValue(StringManagerUtils.stringToFloat(stopConditionArr[1]));
+								protocolRunStatusConfig.getStopConditionList().add(stopCondition);
+							}
 						}
 					}
 				}

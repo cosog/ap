@@ -35,7 +35,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
         		    sortable: false,
         		    locked: false
         		}, {
-        		    text: '运算关系',
+        		    text: '逻辑',
         		    lockable: true,
         		    align: 'center',
         		    flex: 1,
@@ -47,7 +47,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
         		        }
         		    }
         		}, {
-        		    text: '值',
+        		    text: '数值',
         		    lockable: true,
         		    align: 'center',
         		    flex: 1,

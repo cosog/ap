@@ -88,7 +88,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 		region: 'west',
                 		width:'50%',
                     	layout: 'fit',
-                    	title:'运行状态项选择',
+                    	title:'运行状态字段选择',
                     	id:"DatabaseColumnMappingTableRunStatusItemsPanel_Id"
                 	},{
                 		region: 'center',

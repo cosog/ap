@@ -253,7 +253,8 @@ public class EquipmentDriverServerTask {
 				
 //				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
 				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
+				new ExampleDataManageThread("pcp01",300,timeDifference*0).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -467,7 +468,9 @@ public class EquipmentDriverServerTask {
 			String deleteRunStatusConfigSql="delete from tbl_runstatusconfig t where t.id not in"
 					+ "( select t2.id from tbl_runstatusconfig t2,tbl_datamapping t3 "
 					+ " where t2.protocoltype=t3.protocoltype and t2.itemname=t3.name "
-					+ " and t2.itemmappingcolumn=t3.mappingcolumn and upper(t3.calcolumn)='RUNSTATUS')";
+					+ " and t2.itemmappingcolumn=t3.mappingcolumn "
+//					+ "and upper(t3.calcolumn)='RUNSTATUS'"
+					+ ")";
 			pstmt = conn.prepareStatement(deleteRunStatusConfigSql);
 			result=pstmt.executeUpdate();
 			MemoryDataManagerTask.loadProtocolRunStatusConfig();

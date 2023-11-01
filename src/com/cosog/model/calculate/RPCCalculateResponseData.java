@@ -786,22 +786,22 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 	        return this.GasInfluenceWeightProduction;
 	    }
 		public float getWeightWaterCut() {
-			return WeightWaterCut;
+			return this.WeightWaterCut;
 		}
-		public void setWeightWaterCut(float weightWaterCut) {
-			WeightWaterCut = weightWaterCut;
+		public void setWeightWaterCut(float WeightWaterCut) {
+			this.WeightWaterCut = WeightWaterCut;
 		}
 		public float getCalcProducingfluidLevel() {
-			return CalcProducingfluidLevel;
+			return this.CalcProducingfluidLevel;
 		}
-		public void setCalcProducingfluidLevel(float calcProducingfluidLevel) {
-			CalcProducingfluidLevel = calcProducingfluidLevel;
+		public void setCalcProducingfluidLevel(float CalcProducingfluidLevel) {
+			this.CalcProducingfluidLevel = CalcProducingfluidLevel;
 		}
 		public float getLevelDifferenceValue() {
-			return LevelDifferenceValue;
+			return this.LevelDifferenceValue;
 		}
-		public void setLevelDifferenceValue(float levelDifferenceValue) {
-			LevelDifferenceValue = levelDifferenceValue;
+		public void setLevelDifferenceValue(float LevelDifferenceValue) {
+			this.LevelDifferenceValue = LevelDifferenceValue;
 		}
 	}
 

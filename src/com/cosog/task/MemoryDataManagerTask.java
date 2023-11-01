@@ -3373,8 +3373,74 @@ public class MemoryDataManagerTask {
 		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-电流","Current_Curve",28) );
 		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-功率","Power_Curve",29) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产气量","TotalGasVolumetricProduction",30) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产水量","TotalWaterVolumetricProduction",31) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("螺杆泵转速","RPM",30) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产气量","TotalGasVolumetricProduction",31) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产水量","TotalWaterVolumetricProduction",32) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图工况","ResultCode",33) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("最大载荷","FMax",34) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("最小载荷","FMin",35) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图充满系数","FullnessCoefficient",36) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论上载荷","UpperLoadLine",37) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论下载荷","LowerLoadLine",38) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论排量","TheoreticalProduction",39) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产液量（方）","LiquidVolumetricProduction",40) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产油量（方）","OilVolumetricProduction",41) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产水量（方）","WaterVolumetricProduction",42) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（方）","AvailablePlungerStrokeProd_v",43) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（方）","PumpClearanceLeakProd_v",44) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（方）","TVLeakVolumetricProduction",45) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（方）","SVLeakVolumetricProduction",46) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（方）","GasInfluenceProd_v",47) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产液量（吨）","LiquidWeightProduction",48) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产油量（吨）","OilWeightProduction",49) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产水量（吨）","WaterWeightProduction",50) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（吨）","AvailablePlungerStrokeProd_w",51) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（吨）","PumpClearanceLeakProd_w",52) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（吨）","TVLeakWeightProduction",53) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（吨）","SVLeakWeightProduction",54) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（吨）","GasInfluenceProd_w",55) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("平均总有功功率","AverageWatt",56) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("光杆功率","PolishRodPower",57) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("水功率","WaterPower",58) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("地面效率","SurfaceSystemEfficiency",59) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("井下效率","WellDownSystemEfficiency",60) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("系统效率","SystemEfficiency",61) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("吨液百米耗电量","EnergyPer100mLift",62) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图面积","Area",63) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("抽油杆伸长量","RodFlexLength",64) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("油管伸缩值","TubingFlexLength",65) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("惯性载荷增量","InertiaLength",66) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("冲程损失系数","PumpEff1",67) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("充满系数","PumpEff2",68) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("间隙漏失系数","PumpEff3",69) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("液体收缩系数","PumpEff4",70) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("容积效率","PumpEff1",71) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("液体收缩系数","PumpEff2",72) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("总泵效","PumpEff",73) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("反演动液面","CalcProducingfluidLevel",74) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("液面校正差值","LevelDifferenceValue",75) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程功率最大值","UpStrokeWattMax",76) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程功率最大值","DownStrokeWattMax",77) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功率平衡度","WattDegreeBalance",78) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程电流最大值","UpStrokeIMax",79) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程电流最大值","DownStrokeIMax",80) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("电流平衡度","IDegreeBalance",81) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("移动距离","DeltaRadius",82) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("沉没度","Submergence",83) );
 		
 		//螺杆泵井
 		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("运行状态","RunStatus",1) );
@@ -3408,6 +3474,8 @@ public class MemoryDataManagerTask {
 		
 		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("累计产气量","TotalGasVolumetricProduction",23) );
 		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("累计产水量","TotalWaterVolumetricProduction",24) );
+		
+		
 		
 		return calculateColumnInfo;
 	}

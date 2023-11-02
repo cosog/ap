@@ -80,6 +80,7 @@ public class CalculateThread extends Thread{
 					+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
 					+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"//28~39
 					+ "t.submergence,"//30
+					+ "t.rpm,"//31
 					+ "t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
 					+ "t.runstatus,t.runtime,t.runtimeefficiency,t.runrange,"
 					+ "t.id as recordId"
@@ -128,6 +129,8 @@ public class CalculateThread extends Thread{
 			List<String> acqTimeList=new ArrayList<String>();
 			List<Integer> commStatusList=new ArrayList<Integer>();
 			List<Integer> runStatusList=new ArrayList<Integer>();
+			
+			List<Float> rpmList=new ArrayList<Float>();
 			
 			List<Integer> ResultCodeList=new ArrayList<Integer>();
 			List<Float> strokeList=new ArrayList<Float>();
@@ -182,15 +185,15 @@ public class CalculateThread extends Thread{
 				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 				RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 				
-				commStatus=StringManagerUtils.stringToInteger(resuleObj[31]+"")==1;
-				commTime=StringManagerUtils.stringToFloat(resuleObj[32]+"");
-				commTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[33]+"");
-				commRange=StringManagerUtils.CLOBObjectToString(resuleObj[34]);
+				commStatus=StringManagerUtils.stringToInteger(resuleObj[32]+"")==1;
+				commTime=StringManagerUtils.stringToFloat(resuleObj[33]+"");
+				commTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[34]+"");
+				commRange=StringManagerUtils.CLOBObjectToString(resuleObj[35]);
 				
-				runStatus=StringManagerUtils.stringToInteger(resuleObj[35]+"")==1;
-				runTime=StringManagerUtils.stringToFloat(resuleObj[36]+"");
-				runTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[37]+"");
-				runRange=StringManagerUtils.CLOBObjectToString(resuleObj[38]);
+				runStatus=StringManagerUtils.stringToInteger(resuleObj[36]+"")==1;
+				runTime=StringManagerUtils.stringToFloat(resuleObj[37]+"");
+				runTimeEfficiency=StringManagerUtils.stringToFloat(resuleObj[38]+"");
+				runRange=StringManagerUtils.CLOBObjectToString(resuleObj[39]);
 				
 				acqTimeList.add(fesdiagramAcqtime);
 				commStatusList.add(commStatus?1:0);
@@ -251,6 +254,8 @@ public class CalculateThread extends Thread{
 				calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
 				levelDifferenceValueList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
 				submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[30]+""));
+
+				rpmList.add(StringManagerUtils.stringToFloat(resuleObj[31]+""));
 				
 				long timeDifference=StringManagerUtils.getTimeDifference(minAcqTime, fesdiagramAcqtime+"", "yyyy-MM-dd HH:mm:ss");
 				if(timeDifference>=0){
@@ -302,7 +307,9 @@ public class CalculateThread extends Thread{
 					dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 					dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 					dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
-					dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
+					dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+					
+					dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
 					
 					dataSbf.append("}");
 					

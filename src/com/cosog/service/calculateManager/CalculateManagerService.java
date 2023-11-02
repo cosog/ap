@@ -1522,7 +1522,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
 				+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
-				+ "t.submergence "
+				+ "t.submergence,"
+				+ "t.rpm "
 				+ " from tbl_rpcacqdata_hist t "
 				+ " where t.wellid="+wellId+" "
 				+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
@@ -1535,6 +1536,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			List<String> acqTimeList=new ArrayList<String>();
 			List<Integer> commStatusList=new ArrayList<Integer>();
 			List<Integer> runStatusList=new ArrayList<Integer>();
+			
+			List<Float> rpmList=new ArrayList<Float>();
 			
 			List<Integer> ResultCodeList=new ArrayList<Integer>();
 			List<Float> strokeList=new ArrayList<Float>();
@@ -1651,6 +1654,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(obj[27]+""));
 				levelDifferenceValueList.add(StringManagerUtils.stringToFloat(obj[28]+""));
 				submergenceList.add(StringManagerUtils.stringToFloat(obj[29]+""));
+				
+				rpmList.add(StringManagerUtils.stringToFloat(obj[30]+""));
 			}
 			dataSbf.append("{\"AKString\":\"\",");
 			dataSbf.append("\"WellName\":\""+wellName+"\",");
@@ -1698,7 +1703,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 			dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
-			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
+			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+			dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
 			dataSbf.append("}");
 		}
 	

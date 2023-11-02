@@ -276,7 +276,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.wellName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -351,7 +351,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.wellName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -451,7 +451,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			sql+=" and t.wellName='"+deviceName+"'";
 		}
 		if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-			sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+			sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
 			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -524,7 +524,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.wellName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -688,7 +688,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"//8~9
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
-					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
+					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ "t2.TheoreticalProduction,"//16
 					+ prodCol+""//17~25
 					+ "t2.FMax,t2.FMin,"//26~27
@@ -1127,7 +1127,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"//8~9
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
-					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
+					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ "t2.TheoreticalProduction,"//16
 					+ prodCol+""//17~25
 					+ "t2.FMax,t2.FMin,"//26~27

@@ -15,6 +15,8 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 	 private String WellName;
 	 
 	 private String Scene;
+	 
+	 private float RPM;
 
 	 private CalculationStatus CalculationStatus;
 
@@ -44,8 +46,31 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 		 this.setProduction(new Production());
 		 
 		 this.setFESDiagram(new FESDiagram());
+		 this.getFESDiagram().setF(new ArrayList<>());
+		 this.getFESDiagram().getF().add(new ArrayList<>());
+		 
+		 this.getFESDiagram().setS(new ArrayList<>());
+		 this.getFESDiagram().getS().add(new ArrayList<>());
+		 
+		 this.getFESDiagram().setWatt(new ArrayList<>());
+		 this.getFESDiagram().setI(new ArrayList<Float>());
+		 
 		 this.getFESDiagram().setFMax(new ArrayList<Float>());
 		 this.getFESDiagram().setFMin(new ArrayList<Float>());
+		 
+		 this.getFESDiagram().setDeltaF(new ArrayList<Float>());
+		 
+		 this.getFESDiagram().setCrankAngle(new ArrayList<Float>());
+		 this.getFESDiagram().setV(new ArrayList<Float>());
+		 this.getFESDiagram().setA(new ArrayList<Float>());
+		 this.getFESDiagram().setPR(new ArrayList<Float>());
+		 this.getFESDiagram().setTF(new ArrayList<Float>());
+		 this.getFESDiagram().setLoadTorque(new ArrayList<Float>());
+		 this.getFESDiagram().setCrankTorque(new ArrayList<Float>());
+		 this.getFESDiagram().setCurrentBalanceTorque(new ArrayList<Float>());
+		 this.getFESDiagram().setCurrentNetTorque(new ArrayList<Float>());
+		 this.getFESDiagram().setExpectedBalanceTorque(new ArrayList<Float>());
+		 this.getFESDiagram().setExpectedNetTorque(new ArrayList<Float>());
 		 
 		 this.setPumpEfficiency(new PumpEfficiency());
 		 
@@ -1430,5 +1455,13 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 
 	public void setScene(String scene) {
 		Scene = scene;
+	}
+
+	public float getRPM() {
+		return RPM;
+	}
+
+	public void setRPM(float RPM) {
+		this.RPM = RPM;
 	}
 }

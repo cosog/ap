@@ -173,7 +173,7 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			String tableName="tbl_rpcacqdata_latest";
 			String deviceTableName="viw_rpcdevice";
-			String sql="select decode(t2.resultcode,null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
+			String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on  t2.wellid=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on  t2.resultcode=t3.resultcode"
@@ -401,7 +401,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
+					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
 					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
@@ -422,7 +422,7 @@ public class MobileService<T> extends BaseService<T> {
 				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+statValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+statValue+"'";
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
@@ -787,7 +787,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
+					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
 					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
@@ -805,7 +805,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.fesdiagramAcqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+statValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+statValue+"'";
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
@@ -1592,7 +1592,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
 			}
-			String sql="select decode(t2.resultcode,null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
+			String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
 					+ " from tbl_rpcdevice t "
 					+ " left outer join tbl_rpcdailycalculationdata t2 on t2.wellid=t.id "
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
@@ -1825,7 +1825,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
+					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
 					+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.volumeWaterCut,"
 					+ "t2.fullnesscoefficient,t2.pumpsettingdepth,t2.producingfluidlevel,t2.submergence,"
@@ -1844,7 +1844,7 @@ public class MobileService<T> extends BaseService<T> {
 				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+statValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+statValue+"'";
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
@@ -2166,7 +2166,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
+					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
 					+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.volumeWaterCut,"
 					+ "t2.fullnesscoefficient,t2.pumpsettingdepth,t2.producingfluidlevel,t2.submergence,"
@@ -2185,7 +2185,7 @@ public class MobileService<T> extends BaseService<T> {
 				sql+= "and t.wellname='"+wellName+"'";
 			}
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+statValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+statValue+"'";
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){

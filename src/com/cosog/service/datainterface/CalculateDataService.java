@@ -352,7 +352,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
 				+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
-				+ "t.submergence "
+				+ "t.submergence,"
+				+ "t.rpm "
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
 				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
@@ -505,6 +506,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				List<Integer> commStatusList=new ArrayList<Integer>();
 				List<Integer> runStatusList=new ArrayList<Integer>();
 				
+				List<Float> rpmList=new ArrayList<Float>();
+				
 				List<Integer> ResultCodeList=new ArrayList<Integer>();
 				List<Float> strokeList=new ArrayList<Float>();
 				List<Float> spmList=new ArrayList<Float>();
@@ -619,6 +622,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 						calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
 						levelDifferenceValueList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
 						submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[30]+""));
+						
+						rpmList.add(StringManagerUtils.stringToFloat(resuleObj[31]+""));
 					}
 				}
 				
@@ -671,7 +676,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 				dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 				dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
-				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
+				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+				dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
 				dataSbf.append("}");
 				requestDataList.add(dataSbf.toString());
 			}catch(Exception e){
@@ -708,7 +714,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
 				+ "t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
 				+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
-				+ "t.submergence "
+				+ "t.submergence,"
+				+ "t.rpm "
 				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
 				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
@@ -1126,6 +1133,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				List<Integer> commStatusList=new ArrayList<Integer>();
 				List<Integer> runStatusList=new ArrayList<Integer>();
 				
+				List<Float> rpmList=new ArrayList<Float>();
+				
 				List<Integer> ResultCodeList=new ArrayList<Integer>();
 				List<Float> strokeList=new ArrayList<Float>();
 				List<Float> spmList=new ArrayList<Float>();
@@ -1240,6 +1249,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 						calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
 						levelDifferenceValueList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
 						submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[30]+""));
+						
+						rpmList.add(StringManagerUtils.stringToFloat(resuleObj[31]+""));
 					}
 				}
 				
@@ -1292,7 +1303,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 				dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 				dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
-				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
+				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+				dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
 				dataSbf.append("}");
 				
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), new TypeToken<TotalAnalysisRequestData>() {}.getType());

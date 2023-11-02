@@ -107,7 +107,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String tableName="tbl_rpcacqdata_latest";
 				String deviceTableName="viw_rpcdevice";
 				
-				String sql="select decode(t2.resultcode,null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) from "+deviceTableName+" t "
+				String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) from "+deviceTableName+" t "
 						+ " left outer join "+tableName+" t2 on  t2.wellid=t.id"
 						+ " left outer join tbl_rpc_worktype t3 on  t2.resultcode=t3.resultcode"
 						+ " where t.orgid in("+orgId+") ";
@@ -567,7 +567,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and t.wellName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -670,7 +670,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
-					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//18~20
+					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//18~20
 					+ "t2.TheoreticalProduction,"//21
 					+ prodCol+""//22~30
 					+ "t2.FMax,t2.FMin,"//31~32
@@ -720,7 +720,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and t.wellName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -1115,7 +1115,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
-					+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//18~20
+					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//18~20
 					+ "t2.TheoreticalProduction,"//21
 					+ prodCol+""//22~30
 					+ "t2.FMax,t2.FMin,"//31~32
@@ -1166,7 +1166,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and t.wellName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";

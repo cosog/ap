@@ -2906,8 +2906,6 @@ public class BaseDao extends HibernateDaoSupport {
 		StringBuffer wellboreSliceStrBuff = new StringBuffer();
 		Gson gson=new Gson();
 		
-		
-		
 		CLOB diagramClob_S=new CLOB((OracleConnection) conn);
 		diagramClob_S = oracle.sql.CLOB.createTemporary(conn,false,1);
 		diagramClob_S.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getS(), ","));
@@ -3060,7 +3058,8 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,"
-					+ "?,?,?,?"
+					+ "?,?,?,?,"
+					+ "?"
 					+ ")}");
 			cs.setString(1,rpcDeviceInfo.getId()+"");
 			cs.setString(2,rpcDeviceInfo.getAcqTime());
@@ -3293,6 +3292,12 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(93,expectedNetTorqueClob);
 			//井深切片
 			cs.setClob(94,wellboreSliceClob);
+			
+			if(calculateResponseData!=null){
+				cs.setFloat(95, calculateResponseData.getRPM());
+			}else{
+				cs.setFloat(95, 0);
+			}
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3652,7 +3657,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		try {
 			cs = conn.prepareCall("{call prd_save_pcp_rpm("
-					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, deviceInfo.getId()+"");
 			cs.setString(2,deviceInfo.getAcqTime());
 			
@@ -3671,28 +3676,29 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(11,calculateResponseData.getProduction().getLiquidWeightProduction());
 				cs.setFloat(12,calculateResponseData.getProduction().getOilWeightProduction());
 				cs.setFloat(13,calculateResponseData.getProduction().getWaterWeightProduction());
+				cs.setFloat(14,calculateResponseData.getProduction().getSubmergence());
 				//系统效率
-				cs.setFloat(14,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
-				cs.setFloat(15,calculateResponseData.getSystemEfficiency().getWaterPower());
-				cs.setFloat(16,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
-				cs.setFloat(17,calculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
+				cs.setFloat(15,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
+				cs.setFloat(16,calculateResponseData.getSystemEfficiency().getWaterPower());
+				cs.setFloat(17,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
+				cs.setFloat(18,calculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
 //				//泵效
-				cs.setFloat(18,calculateResponseData.getPumpEfficiency().getPumpEff1());
-				cs.setFloat(19,calculateResponseData.getPumpEfficiency().getPumpEff2());
-				cs.setFloat(20,calculateResponseData.getPumpEfficiency().getPumpEff());
+				cs.setFloat(19,calculateResponseData.getPumpEfficiency().getPumpEff1());
+				cs.setFloat(20,calculateResponseData.getPumpEfficiency().getPumpEff2());
+				cs.setFloat(21,calculateResponseData.getPumpEfficiency().getPumpEff());
 //				//泵入口出口参数
-				cs.setFloat(21,calculateResponseData.getProduction().getPumpIntakeP());
-				cs.setFloat(22,calculateResponseData.getProduction().getPumpIntakeT());
-				cs.setFloat(23,calculateResponseData.getProduction().getPumpIntakeGOL());
-				cs.setFloat(24,calculateResponseData.getProduction().getPumpIntakeVisl());
-				cs.setFloat(25,calculateResponseData.getProduction().getPumpIntakeBo());
-				cs.setFloat(26,calculateResponseData.getProduction().getPumpOutletP());
-				cs.setFloat(27,calculateResponseData.getProduction().getPumpOutletT());
-				cs.setFloat(28,calculateResponseData.getProduction().getPumpOutletGOL());
-				cs.setFloat(29,calculateResponseData.getProduction().getPumpOutletVisl());
-				cs.setFloat(30,calculateResponseData.getProduction().getPumpOutletBo());
+				cs.setFloat(22,calculateResponseData.getProduction().getPumpIntakeP());
+				cs.setFloat(23,calculateResponseData.getProduction().getPumpIntakeT());
+				cs.setFloat(24,calculateResponseData.getProduction().getPumpIntakeGOL());
+				cs.setFloat(25,calculateResponseData.getProduction().getPumpIntakeVisl());
+				cs.setFloat(26,calculateResponseData.getProduction().getPumpIntakeBo());
+				cs.setFloat(27,calculateResponseData.getProduction().getPumpOutletP());
+				cs.setFloat(28,calculateResponseData.getProduction().getPumpOutletT());
+				cs.setFloat(29,calculateResponseData.getProduction().getPumpOutletGOL());
+				cs.setFloat(30,calculateResponseData.getProduction().getPumpOutletVisl());
+				cs.setFloat(31,calculateResponseData.getProduction().getPumpOutletBo());
 //				//杆参数
-				cs.setString(31,calculateResponseData.getRodCalData());
+				cs.setString(32,calculateResponseData.getRodCalData());
 			}else{
 				cs.setString(6,"");
 				cs.setString(7,"");
@@ -3722,6 +3728,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(29,"");
 				cs.setString(30,"");
 				cs.setString(31,"");
+				cs.setString(32,"");
 			}
 			cs.executeUpdate();
 		} catch (SQLException e) {
@@ -3743,7 +3750,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmcaldata("
 					+ "?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,"
-					+ "?,?,?,?,?,?,?,?)}");
+					+ "?,?,?,?,?,?,?,?,?)}");
 			cs.setInt(1, recordId);
 			cs.setInt(2,calculateResponseData==null?0:calculateResponseData.getCalculationStatus().getResultStatus());//计算标志
 			if(calculateResponseData!=null&&(calculateResponseData.getCalculationStatus().getResultStatus()==1||calculateResponseData.getCalculationStatus().getResultStatus()==-99)){//如果计算成功
@@ -3757,28 +3764,29 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(8,calculateResponseData.getProduction().getLiquidWeightProduction());
 				cs.setFloat(9,calculateResponseData.getProduction().getOilWeightProduction());
 				cs.setFloat(10,calculateResponseData.getProduction().getWaterWeightProduction());
+				cs.setFloat(11,calculateResponseData.getProduction().getSubmergence());
 				//系统效率
-				cs.setFloat(11,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
-				cs.setFloat(12,calculateResponseData.getSystemEfficiency().getWaterPower());
-				cs.setFloat(13,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
-				cs.setFloat(14,calculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
+				cs.setFloat(12,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
+				cs.setFloat(13,calculateResponseData.getSystemEfficiency().getWaterPower());
+				cs.setFloat(14,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
+				cs.setFloat(15,calculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
 //				//泵效
-				cs.setFloat(15,calculateResponseData.getPumpEfficiency().getPumpEff1());
-				cs.setFloat(16,calculateResponseData.getPumpEfficiency().getPumpEff2());
-				cs.setFloat(17,calculateResponseData.getPumpEfficiency().getPumpEff());
+				cs.setFloat(16,calculateResponseData.getPumpEfficiency().getPumpEff1());
+				cs.setFloat(17,calculateResponseData.getPumpEfficiency().getPumpEff2());
+				cs.setFloat(18,calculateResponseData.getPumpEfficiency().getPumpEff());
 //				//泵入口出口参数
-				cs.setFloat(18,calculateResponseData.getProduction().getPumpIntakeP());
-				cs.setFloat(19,calculateResponseData.getProduction().getPumpIntakeT());
-				cs.setFloat(20,calculateResponseData.getProduction().getPumpIntakeGOL());
-				cs.setFloat(21,calculateResponseData.getProduction().getPumpIntakeVisl());
-				cs.setFloat(22,calculateResponseData.getProduction().getPumpIntakeBo());
-				cs.setFloat(23,calculateResponseData.getProduction().getPumpOutletP());
-				cs.setFloat(24,calculateResponseData.getProduction().getPumpOutletT());
-				cs.setFloat(25,calculateResponseData.getProduction().getPumpOutletGOL());
-				cs.setFloat(26,calculateResponseData.getProduction().getPumpOutletVisl());
-				cs.setFloat(27,calculateResponseData.getProduction().getPumpOutletBo());
+				cs.setFloat(19,calculateResponseData.getProduction().getPumpIntakeP());
+				cs.setFloat(20,calculateResponseData.getProduction().getPumpIntakeT());
+				cs.setFloat(21,calculateResponseData.getProduction().getPumpIntakeGOL());
+				cs.setFloat(22,calculateResponseData.getProduction().getPumpIntakeVisl());
+				cs.setFloat(23,calculateResponseData.getProduction().getPumpIntakeBo());
+				cs.setFloat(24,calculateResponseData.getProduction().getPumpOutletP());
+				cs.setFloat(25,calculateResponseData.getProduction().getPumpOutletT());
+				cs.setFloat(26,calculateResponseData.getProduction().getPumpOutletGOL());
+				cs.setFloat(27,calculateResponseData.getProduction().getPumpOutletVisl());
+				cs.setFloat(28,calculateResponseData.getProduction().getPumpOutletBo());
 //				//杆参数
-				cs.setString(28,calculateResponseData.getRodCalData());
+				cs.setString(29,calculateResponseData.getRodCalData());
 			}else{
 				cs.setString(3,"");
 				cs.setString(4,"");
@@ -3806,6 +3814,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(26,"");
 				cs.setString(27,"");
 				cs.setString(28,"");
+				cs.setString(29,"");
 			}
 			cs.executeUpdate();
 		} catch (SQLException e) {
@@ -3851,6 +3860,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,?,?,?,"
+					+ "?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,"
@@ -3904,18 +3914,20 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
 			
-			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
-			cs.setFloat(40, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(41, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(42,commRanceClob);
+			cs.setFloat(39, totalAnalysisResponseData.getRPM().getValue());
 			
-			cs.setInt(43,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
-			cs.setFloat(44, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(45, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(46,runRanceClob);
+			cs.setInt(40,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(41, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(42, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(43,commRanceClob);
 			
-			cs.setString(47, date);
-			cs.setInt(48, recordCount);
+			cs.setInt(44,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(45, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(46, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(47,runRanceClob);
+			
+			cs.setString(48, date);
+			cs.setInt(49, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3959,6 +3971,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,?,?,?,"
+					+ "?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,"
@@ -4012,18 +4025,20 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
 			
-			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
-			cs.setFloat(40, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(41, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(42,commRanceClob);
+			cs.setFloat(39, totalAnalysisResponseData.getRPM().getValue());
 			
-			cs.setInt(43,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
-			cs.setFloat(44, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(45, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(46,runRanceClob);
+			cs.setInt(40,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(41, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(42, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(43,commRanceClob);
 			
-			cs.setString(47, date);
-			cs.setInt(48, recordCount);
+			cs.setInt(44,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(45, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(46, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(47,runRanceClob);
+			
+			cs.setString(48, date);
+			cs.setInt(49, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4067,6 +4082,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,?,?,?,"
+					+ "?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,"
@@ -4120,18 +4136,20 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
 			
-			cs.setInt(39,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
-			cs.setFloat(40, totalAnalysisResponseData.getCommTime());
-			cs.setFloat(41, totalAnalysisResponseData.getCommTimeEfficiency());
-			cs.setClob(42,commRanceClob);
+			cs.setFloat(39, totalAnalysisResponseData.getRPM().getValue());
 			
-			cs.setInt(43,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
-			cs.setFloat(44, totalAnalysisResponseData.getRunTime());
-			cs.setFloat(45, totalAnalysisResponseData.getRunTimeEfficiency());
-			cs.setClob(46,runRanceClob);
+			cs.setInt(40,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+			cs.setFloat(41, totalAnalysisResponseData.getCommTime());
+			cs.setFloat(42, totalAnalysisResponseData.getCommTimeEfficiency());
+			cs.setClob(43,commRanceClob);
 			
-			cs.setString(47, timeStr);
-			cs.setInt(48, recordCount);
+			cs.setInt(44,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+			cs.setFloat(45, totalAnalysisResponseData.getRunTime());
+			cs.setFloat(46, totalAnalysisResponseData.getRunTimeEfficiency());
+			cs.setClob(47,runRanceClob);
+			
+			cs.setString(48, timeStr);
+			cs.setInt(49, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4166,7 +4184,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,"
-					+ "?,?,?,?,?"
+					+ "?,?,?,?,?,?"
 					+ ")}");
 			cs.setInt(1,StringManagerUtils.stringToInteger(recordId));
 			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
@@ -4217,7 +4235,9 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(37, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getCasingPressure().getValue());
 			
-			cs.setInt(39, recordCount);
+			cs.setFloat(39, totalAnalysisResponseData.getRPM().getValue());
+			
+			cs.setInt(40, recordCount);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

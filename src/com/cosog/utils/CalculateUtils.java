@@ -129,6 +129,8 @@ public class CalculateUtils {
 		List<Integer> commStatusList=new ArrayList<Integer>();
 		List<Integer> runStatusList=new ArrayList<Integer>();
 		
+		List<Float> rpmList=new ArrayList<Float>();
+		
 		List<Integer> ResultCodeList=new ArrayList<Integer>();
 		List<Float> strokeList=new ArrayList<Float>();
 		List<Float> spmList=new ArrayList<Float>();
@@ -179,6 +181,8 @@ public class CalculateUtils {
 				acqTimeList.add(responseData.getFESDiagram().getAcqTime());
 				commStatusList.add(deviceInfo.getCommStatus());
 				runStatusList.add(deviceInfo.getRunStatus());
+				
+				rpmList.add(responseData.getRPM());
 				
 				ResultCodeList.add(responseData.getCalculationStatus().getResultCode());
 				strokeList.add(responseData.getFESDiagram().getStroke());
@@ -283,7 +287,8 @@ public class CalculateUtils {
 			dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
 			dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
 			dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
-			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
+			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
+			dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
 			dataSbf.append("}");
 			if("d1e3643c110d11d4".equalsIgnoreCase(deviceInfo.getSignInId())){
 				System.out.println("d1e3643c110d11d4汇总数据长度："+dataSbf.length());

@@ -1750,7 +1750,8 @@ public class DriverAPIController extends BaseController{
 												rpcDeviceInfo.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
 										}
-									}else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
+									}
+									else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
 										FESDiagramCalculate=true;
 									}else if("FESDiagramAcqtime".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
@@ -1808,7 +1809,8 @@ public class DriverAPIController extends BaseController{
 											}
 										}
 										FESDiagramCalculate=true;
-									}else if("ResultCode".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//功图工况
+									}
+									else if("ResultCode".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//功图工况
 										isAcqCalResultData=true;
 										acqResultCode=StringManagerUtils.stringToInteger(rawValue);
 									}else if("FMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
@@ -2081,76 +2083,82 @@ public class DriverAPIController extends BaseController{
 					
 					//进行功图计算
 					WorkType workType=null;
+					boolean fesDiagramEnabled=false;
 					
 					//如果采集了计算数据
 					if(isAcqCalResultData){
-						if(!isAcqRPMData){//如果不是螺杆泵数据
-							rpcCalculateResponseData=new RPCCalculateResponseData();
-							rpcCalculateResponseData.init();
-							
-							rpcCalculateResponseData.getCalculationStatus().setResultStatus(acqResultStatus);
-							rpcCalculateResponseData.getCalculationStatus().setResultCode(acqResultCode);
-							
-							rpcCalculateResponseData.getFESDiagram().getFMax().add(acqFMax);
-							rpcCalculateResponseData.getFESDiagram().getFMin().add(acqFMin);
-							rpcCalculateResponseData.getFESDiagram().setFullnessCoefficient(acqFullnessCoefficient);
-							rpcCalculateResponseData.getFESDiagram().setUpperLoadLine(acqUpperLoadLine);
-							rpcCalculateResponseData.getFESDiagram().setLowerLoadLine(acqLowerLoadLine);
-							
-							rpcCalculateResponseData.getProduction().setTheoreticalProduction(acqTheoreticalProduction);
-							rpcCalculateResponseData.getProduction().setLiquidVolumetricProduction(acqLiquidVolumetricProduction);
-							rpcCalculateResponseData.getProduction().setOilVolumetricProduction(acqOilVolumetricProduction);
-							rpcCalculateResponseData.getProduction().setWaterVolumetricProduction(acqWaterVolumetricProduction);
-							rpcCalculateResponseData.getProduction().setAvailablePlungerStrokeVolumetricProduction(acqAvailablePlungerStrokeProd_v);
-							rpcCalculateResponseData.getProduction().setPumpClearanceLeakVolumetricProduction(acqPumpClearanceLeakProd_v);
-							rpcCalculateResponseData.getProduction().setTVLeakVolumetricProduction(acqTVLeakWeightProduction);
-							rpcCalculateResponseData.getProduction().setSVLeakVolumetricProduction(acqSVLeakWeightProduction);
-							rpcCalculateResponseData.getProduction().setGasInfluenceVolumetricProduction(acqGasInfluenceProd_v);
-							
-							rpcCalculateResponseData.getProduction().setLiquidWeightProduction(acqLiquidWeightProduction);
-							rpcCalculateResponseData.getProduction().setOilWeightProduction(acqOilWeightProduction);
-							rpcCalculateResponseData.getProduction().setWaterWeightProduction(acqWaterWeightProduction);
-							rpcCalculateResponseData.getProduction().setAvailablePlungerStrokeWeightProduction(acqAvailablePlungerStrokeProd_w);
-							rpcCalculateResponseData.getProduction().setPumpClearanceLeakWeightProduction(acqPumpClearanceLeakProd_w);
-							rpcCalculateResponseData.getProduction().setTVLeakWeightProduction(acqTVLeakWeightProduction);
-							rpcCalculateResponseData.getProduction().setSVLeakWeightProduction(acqSVLeakWeightProduction);
-							rpcCalculateResponseData.getProduction().setGasInfluenceWeightProduction(acqGasInfluenceProd_w);
-							
-							rpcCalculateResponseData.getFESDiagram().setAvgWatt(acqAverageWatt);
-							rpcCalculateResponseData.getSystemEfficiency().setPolishRodPower(acqPolishRodPower);
-							rpcCalculateResponseData.getSystemEfficiency().setWaterPower(acqWaterPower);
-							rpcCalculateResponseData.getSystemEfficiency().setSurfaceSystemEfficiency(acqSurfaceSystemEfficiency);
-							rpcCalculateResponseData.getSystemEfficiency().setWellDownSystemEfficiency(acqWellDownSystemEfficiency);
-							rpcCalculateResponseData.getSystemEfficiency().setSystemEfficiency(acqSystemEfficiency);
-							rpcCalculateResponseData.getSystemEfficiency().setEnergyPer100mLift(acqEnergyPer100mLift);
-							rpcCalculateResponseData.getFESDiagram().setArea(acqArea);
-							
-							rpcCalculateResponseData.getPumpEfficiency().setRodFlexLength(acqRodFlexLength);
-							rpcCalculateResponseData.getPumpEfficiency().setTubingFlexLength(acqTubingFlexLength);
-							rpcCalculateResponseData.getPumpEfficiency().setInertiaLength(acqInertiaLength);
-							rpcCalculateResponseData.getPumpEfficiency().setPumpEff1(acqPumpEff1);
-							rpcCalculateResponseData.getPumpEfficiency().setPumpEff2(acqPumpEff2);
-							rpcCalculateResponseData.getPumpEfficiency().setPumpEff3(acqPumpEff3);
-							rpcCalculateResponseData.getPumpEfficiency().setPumpEff4(acqPumpEff4);
-							rpcCalculateResponseData.getPumpEfficiency().setPumpEff(acqPumpEff);
-							
-							rpcCalculateResponseData.getProduction().setCalcProducingfluidLevel(acqCalcProducingfluidLevel);
-							rpcCalculateResponseData.getProduction().setLevelDifferenceValue(acqLevelDifferenceValue);
-							
-							rpcCalculateResponseData.getFESDiagram().setUpStrokeWattMax(acqUpStrokeWattMax);
-							rpcCalculateResponseData.getFESDiagram().setDownStrokeWattMax(acqDownStrokeWattMax);
-							rpcCalculateResponseData.getFESDiagram().setWattDegreeBalance(acqWattDegreeBalance);
-							rpcCalculateResponseData.getFESDiagram().setUpStrokeIMax(acqUpStrokeIMax);
-							rpcCalculateResponseData.getFESDiagram().setDownStrokeIMax(acqDownStrokeIMax);
-							rpcCalculateResponseData.getFESDiagram().setIDegreeBalance(acqIDegreeBalance);
-							rpcCalculateResponseData.getFESDiagram().setDeltaRadius(acqDeltaRadius);
-							
-							rpcCalculateResponseData.getProduction().setSubmergence(acqSubmergence);
+						fesDiagramEnabled=true;
+						
+						rpcCalculateResponseData=new RPCCalculateResponseData();
+						rpcCalculateResponseData.init();
+						
+						rpcCalculateResponseData.getFESDiagram().setAcqTime(acqTime);
+						rpcCalculateRequestData.getFESDiagram().setAcqTime(acqTime);
+						
+						rpcCalculateResponseData.getCalculationStatus().setResultStatus(acqResultStatus);
+						rpcCalculateResponseData.getCalculationStatus().setResultCode(acqResultCode);
+						
+						rpcCalculateResponseData.getFESDiagram().getFMax().add(acqFMax);
+						rpcCalculateResponseData.getFESDiagram().getFMin().add(acqFMin);
+						rpcCalculateResponseData.getFESDiagram().setFullnessCoefficient(acqFullnessCoefficient);
+						rpcCalculateResponseData.getFESDiagram().setUpperLoadLine(acqUpperLoadLine);
+						rpcCalculateResponseData.getFESDiagram().setLowerLoadLine(acqLowerLoadLine);
+						
+						rpcCalculateResponseData.getProduction().setTheoreticalProduction(acqTheoreticalProduction);
+						rpcCalculateResponseData.getProduction().setLiquidVolumetricProduction(acqLiquidVolumetricProduction);
+						rpcCalculateResponseData.getProduction().setOilVolumetricProduction(acqOilVolumetricProduction);
+						rpcCalculateResponseData.getProduction().setWaterVolumetricProduction(acqWaterVolumetricProduction);
+						rpcCalculateResponseData.getProduction().setAvailablePlungerStrokeVolumetricProduction(acqAvailablePlungerStrokeProd_v);
+						rpcCalculateResponseData.getProduction().setPumpClearanceLeakVolumetricProduction(acqPumpClearanceLeakProd_v);
+						rpcCalculateResponseData.getProduction().setTVLeakVolumetricProduction(acqTVLeakWeightProduction);
+						rpcCalculateResponseData.getProduction().setSVLeakVolumetricProduction(acqSVLeakWeightProduction);
+						rpcCalculateResponseData.getProduction().setGasInfluenceVolumetricProduction(acqGasInfluenceProd_v);
+						
+						rpcCalculateResponseData.getProduction().setLiquidWeightProduction(acqLiquidWeightProduction);
+						rpcCalculateResponseData.getProduction().setOilWeightProduction(acqOilWeightProduction);
+						rpcCalculateResponseData.getProduction().setWaterWeightProduction(acqWaterWeightProduction);
+						rpcCalculateResponseData.getProduction().setAvailablePlungerStrokeWeightProduction(acqAvailablePlungerStrokeProd_w);
+						rpcCalculateResponseData.getProduction().setPumpClearanceLeakWeightProduction(acqPumpClearanceLeakProd_w);
+						rpcCalculateResponseData.getProduction().setTVLeakWeightProduction(acqTVLeakWeightProduction);
+						rpcCalculateResponseData.getProduction().setSVLeakWeightProduction(acqSVLeakWeightProduction);
+						rpcCalculateResponseData.getProduction().setGasInfluenceWeightProduction(acqGasInfluenceProd_w);
+						
+						rpcCalculateResponseData.getFESDiagram().setAvgWatt(acqAverageWatt);
+						rpcCalculateResponseData.getSystemEfficiency().setPolishRodPower(acqPolishRodPower);
+						rpcCalculateResponseData.getSystemEfficiency().setWaterPower(acqWaterPower);
+						rpcCalculateResponseData.getSystemEfficiency().setSurfaceSystemEfficiency(acqSurfaceSystemEfficiency);
+						rpcCalculateResponseData.getSystemEfficiency().setWellDownSystemEfficiency(acqWellDownSystemEfficiency);
+						rpcCalculateResponseData.getSystemEfficiency().setSystemEfficiency(acqSystemEfficiency);
+						rpcCalculateResponseData.getSystemEfficiency().setEnergyPer100mLift(acqEnergyPer100mLift);
+						rpcCalculateResponseData.getFESDiagram().setArea(acqArea);
+						
+						rpcCalculateResponseData.getPumpEfficiency().setRodFlexLength(acqRodFlexLength);
+						rpcCalculateResponseData.getPumpEfficiency().setTubingFlexLength(acqTubingFlexLength);
+						rpcCalculateResponseData.getPumpEfficiency().setInertiaLength(acqInertiaLength);
+						rpcCalculateResponseData.getPumpEfficiency().setPumpEff1(acqPumpEff1);
+						rpcCalculateResponseData.getPumpEfficiency().setPumpEff2(acqPumpEff2);
+						rpcCalculateResponseData.getPumpEfficiency().setPumpEff3(acqPumpEff3);
+						rpcCalculateResponseData.getPumpEfficiency().setPumpEff4(acqPumpEff4);
+						rpcCalculateResponseData.getPumpEfficiency().setPumpEff(acqPumpEff);
+						
+						rpcCalculateResponseData.getProduction().setCalcProducingfluidLevel(acqCalcProducingfluidLevel);
+						rpcCalculateResponseData.getProduction().setLevelDifferenceValue(acqLevelDifferenceValue);
+						
+						rpcCalculateResponseData.getFESDiagram().setUpStrokeWattMax(acqUpStrokeWattMax);
+						rpcCalculateResponseData.getFESDiagram().setDownStrokeWattMax(acqDownStrokeWattMax);
+						rpcCalculateResponseData.getFESDiagram().setWattDegreeBalance(acqWattDegreeBalance);
+						rpcCalculateResponseData.getFESDiagram().setUpStrokeIMax(acqUpStrokeIMax);
+						rpcCalculateResponseData.getFESDiagram().setDownStrokeIMax(acqDownStrokeIMax);
+						rpcCalculateResponseData.getFESDiagram().setIDegreeBalance(acqIDegreeBalance);
+						rpcCalculateResponseData.getFESDiagram().setDeltaRadius(acqDeltaRadius);
+						
+						rpcCalculateResponseData.getProduction().setSubmergence(acqSubmergence);
+						
+						if(isAcqRPMData){
+							rpcCalculateResponseData.setRPM(acqRPM);
 						}
 					}
 					
-					
-					boolean fesDiagramEnabled=false;
 					if(FESDiagramCalculate){
 						fesDiagramEnabled=true;
 						if(FESDiagramAcqCount>0){
@@ -2193,6 +2201,10 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 						rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
+						
+						if(rpcCalculateResponseData!=null && isAcqRPMData){
+							rpcCalculateResponseData.setRPM(acqRPM);
+						}
 					}
 					
 					//计算结果回写
@@ -2214,6 +2226,7 @@ public class DriverAPIController extends BaseController{
 						responseResultData.init();
 						
 						responseResultData.setWellName(rpcCalculateResponseData.getWellName());
+						responseResultData.setRPM(rpcCalculateResponseData.getRPM());
 						responseResultData.getCalculationStatus().setResultCode(rpcCalculateResponseData.getCalculationStatus().getResultCode());
 						if(responseResultData.getFESDiagram()!=null && rpcCalculateResponseData.getFESDiagram()!=null){
 							responseResultData.getFESDiagram().setAcqTime(rpcCalculateResponseData.getFESDiagram().getAcqTime());
@@ -2691,7 +2704,7 @@ public class DriverAPIController extends BaseController{
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}
 						
-						if(FESDiagramCalculate){
+						if(FESDiagramCalculate || isAcqCalResultData){
 							commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(rpcDeviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
 						}
 						

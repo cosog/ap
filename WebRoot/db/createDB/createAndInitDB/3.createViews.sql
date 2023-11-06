@@ -1,7 +1,7 @@
 /*==============================================================*/
 /* View: viw_deviceoperationlog                                         */
 /*==============================================================*/
-create or replace force view viw_deviceoperationlog as
+create or replace view viw_deviceoperationlog as
 select t.id,t.devicetype,code1.itemname as deviceTypeName,
 t.wellname,t.createtime,u.user_no,t.user_id,r.role_id,r.role_level,t.loginip,t.action,code2.itemname as actionname,t.remark ,
 (case when t.devicetype>=100 and t.devicetype<200 then t2.orgid
@@ -20,7 +20,7 @@ left outer join tbl_code code2 on t.action=code2.itemvalue and upper(code2.itemc
 /*==============================================================*/
 /* View: viw_org                                         */
 /*==============================================================*/
-create or replace force view viw_org as
+create or replace view viw_org as
 select t.org_id,t.org_code,t.org_name,t.org_memo,t.org_parent,t.org_seq,
 substr(sys_connect_by_path(t.org_name,'/'),2) as allpath
 from tbl_org t
@@ -31,7 +31,7 @@ connect by   t.org_parent= prior t.org_id;
 /*==============================================================*/
 /* View: viw_pcpacqrawdata                                         */
 /*==============================================================*/
-create or replace force view viw_pcpacqrawdata as
+create or replace view viw_pcpacqrawdata as
 select t2.id,t2.wellid,t.wellname,t.devicetype,t3.itemname as deviceTypeName,t.signinid,t.slave,t2.acqtime,t2.rawdata,t.orgid,t4.allpath
 from tbl_pcpdevice t,tbl_pcpacqrawdata t2,tbl_code t3,viw_org t4
 where t.id=t2.wellid and t.orgid=t4.org_id
@@ -41,7 +41,7 @@ and t3.itemcode='DEVICETYPE' and t3.itemvalue=t.devicetype;
 /*==============================================================*/
 /* View: viw_pcpalarminfo_hist                                         */
 /*==============================================================*/
-create or replace force view viw_pcpalarminfo_hist as
+create or replace view viw_pcpalarminfo_hist as
 select t2.id,t2.wellid,t.wellname,
 t.devicetype,t4.itemname as deviceTypeName,
 t2.alarmtime,t2.itemname,t2.alarmtype,t5.itemname as alarmTypeName,
@@ -59,7 +59,7 @@ t2.recoverytime,t.orgid
 /*==============================================================*/
 /* View: viw_pcpalarminfo_latest                                         */
 /*==============================================================*/
-create or replace force view viw_pcpalarminfo_latest as
+create or replace view viw_pcpalarminfo_latest as
 select t2.id,t2.wellid,t.wellname,
 t.devicetype,t4.itemname as deviceTypeName,
 t2.alarmtime,t2.itemname,t2.alarmtype,t5.itemname as alarmTypeName,
@@ -77,7 +77,7 @@ t2.recoverytime,t.orgid
 /*==============================================================*/
 /* View: viw_pcpdailycalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_pcpdailycalculationdata as
+create or replace view viw_pcpdailycalculationdata as
 select
  t.id,well.wellname,well.id as wellid,
  t.calDate,t.extendeddays,t.calDate-t.extendeddays as acquisitionDate,
@@ -109,7 +109,7 @@ left outer join  tbl_pcpdailycalculationdata t  on t.wellid=well.id;
 /*==============================================================*/
 /* View: viw_pcpdevice                                         */
 /*==============================================================*/
-create or replace force view viw_pcpdevice as
+create or replace view viw_pcpdevice as
 select t.id,org.org_name as orgName,org.org_id as orgid,org.allpath,
 t.wellname,
 t.devicetype,c2.itemname as devicetypename,
@@ -141,7 +141,7 @@ left outer join tbl_code c2 on c2.itemcode='DEVICETYPE' and t.devicetype=c2.item
 /*==============================================================*/
 /* View: viw_pcp_calculatemain                                         */
 /*==============================================================*/
-create or replace force view viw_pcp_calculatemain as
+create or replace view viw_pcp_calculatemain as
 select t.id as id,
 well.id as wellid,well.wellName,
 t.acqtime,t.resultstatus,
@@ -157,7 +157,7 @@ left outer join tbl_pcpdevice well on t.wellid=well.id;
 /*==============================================================*/
 /* View: viw_rpcacqrawdata                                         */
 /*==============================================================*/
-create or replace force view viw_rpcacqrawdata as
+create or replace view viw_rpcacqrawdata as
 select t2.id,t2.wellid,t.wellname,t.devicetype,t3.itemname as deviceTypeName,t.signinid,t.slave,t2.acqtime,t2.rawdata,t.orgid,t4.allpath
 from tbl_rpcdevice t,tbl_rpcacqrawdata t2,tbl_code t3,viw_org t4
 where t.id=t2.wellid and t.orgid=t4.org_id
@@ -167,7 +167,7 @@ and t3.itemcode='DEVICETYPE' and t3.itemvalue=t.devicetype;
 /*==============================================================*/
 /* View: viw_rpcalarminfo_hist                                         */
 /*==============================================================*/
-create or replace force view viw_rpcalarminfo_hist as
+create or replace view viw_rpcalarminfo_hist as
 select t2.id,t2.wellid,t.wellname,
 t.devicetype,t4.itemname as deviceTypeName,
 t2.alarmtime,t2.itemname,t2.alarmtype,t5.itemname as alarmTypeName,
@@ -185,7 +185,7 @@ t2.recoverytime,t.orgid
 /*==============================================================*/
 /* View: viw_rpcalarminfo_latest                                         */
 /*==============================================================*/
-create or replace force view viw_rpcalarminfo_latest as
+create or replace view viw_rpcalarminfo_latest as
 select t2.id,t2.wellid,t.wellname,
 t.devicetype,t4.itemname as deviceTypeName,
 t2.alarmtime,t2.itemname,t2.alarmtype,t5.itemname as alarmTypeName,
@@ -203,7 +203,7 @@ t2.recoverytime,t.orgid
 /*==============================================================*/
 /* View: viw_rpcdailycalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_rpcdailycalculationdata as
+create or replace view viw_rpcdailycalculationdata as
 select
  t.id,well.wellname,well.id as wellid,
  t.calDate,t.extendeddays,t.calDate-t.extendeddays as acquisitionDate,
@@ -231,6 +231,7 @@ select
  t.producingfluidlevel,t.calcproducingfluidlevel,t.leveldifferencevalue,
  t.submergence,
  t.gasvolumetricproduction,t.totalgasvolumetricproduction,t.totalwatervolumetricproduction,
+ t.rpm,
  t.headerLabelInfo,
  well.reportinstancecode,
  well.sortnum,org.org_code,org.org_id,t.remark as remark
@@ -244,7 +245,7 @@ left outer join  tbl_rpc_worktype status  on  status.resultcode=decode(t.resultc
 /*==============================================================*/
 /* View: viw_rpcdevice                                         */
 /*==============================================================*/
-create or replace force view viw_rpcdevice as
+create or replace view viw_rpcdevice as
 select t.id,org.org_name as orgName,org.org_id as orgid,org.allpath,
 t.wellname,
 t.devicetype,c2.itemname as devicetypename,
@@ -278,7 +279,7 @@ left outer join tbl_code c2 on c2.itemcode='DEVICETYPE' and t.devicetype=c2.item
 /*==============================================================*/
 /* View: viw_rpc_calculatemain                                         */
 /*==============================================================*/
-create or replace force view viw_rpc_calculatemain as
+create or replace view viw_rpc_calculatemain as
 select t.id as id,
 well.id as wellid,well.wellName,
 t.fesdiagramacqtime,t.resultstatus,t.resultcode,ws.resultName,
@@ -295,7 +296,7 @@ left outer join tbl_rpc_worktype ws on  t.resultcode=ws.resultcode;
 /*==============================================================*/
 /* View: viw_smsdevice                                         */
 /*==============================================================*/
-create or replace force view viw_smsdevice as
+create or replace view viw_smsdevice as
 select t.id,org.org_name as orgName,org.org_id as orgid,
 t.wellname,
 t.signinid,
@@ -310,7 +311,7 @@ left outer join tbl_protocolsmsinstance t2 on t.instancecode =t2.code;
 /*==============================================================*/
 /* View: viw_systemlog                                         */
 /*==============================================================*/
-create or replace force view viw_systemlog as
+create or replace view viw_systemlog as
 select t.id,t.createtime,t2.user_no,t.user_id,t4.role_id,t4.role_level,t.loginip,t.action,t3.itemname as actionname,t.remark ,t2.user_orgid as orgid
 from tbl_systemlog t,tbl_user t2,tbl_code t3,tbl_role t4
 where t.user_id=t2.user_id and t2.user_type=t4.role_id
@@ -345,6 +346,7 @@ select
  t.producingfluidlevel,t.calcproducingfluidlevel,t.leveldifferencevalue,
  t.submergence,
  t.gasvolumetricproduction,t.totalgasvolumetricproduction,t.totalwatervolumetricproduction,
+ t.rpm,
  t.headerLabelInfo,
  well.reportinstancecode,
  well.sortnum,org.org_code,org.org_id,t.remark as remark,

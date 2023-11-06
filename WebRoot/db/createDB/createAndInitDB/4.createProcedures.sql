@@ -580,6 +580,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpm (
        v_TheoreticalProduction in NUMBER,
        v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
        v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
+       v_Submergence in NUMBER,
        v_averagewatt in NUMBER,v_WaterPower in NUMBER,
        v_SystemEfficiency in NUMBER,v_energyper100mlift in NUMBER,
        v_PumpEff1 in NUMBER,v_PumpEff2 in NUMBER,v_PumpEff in NUMBER,
@@ -595,6 +596,7 @@ begin
           t.theoreticalproduction=v_TheoreticalProduction,
           t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,
           t.liquidweightproduction=v_LiquidWeightProduction,t.oilweightproduction=v_OilWeightProduction,t.waterweightproduction=v_WaterWeightProduction,
+          t.submergence=v_Submergence,
           t.averagewatt=v_averagewatt,t.waterpower=v_WaterPower,
           t.systemefficiency=v_SystemEfficiency,t.energyper100mlift=v_energyper100mlift,
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
@@ -610,6 +612,7 @@ begin
           t.theoreticalproduction=v_TheoreticalProduction,
           t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,
           t.liquidweightproduction=v_LiquidWeightProduction,t.oilweightproduction=v_OilWeightProduction,t.waterweightproduction=v_WaterWeightProduction,
+          t.submergence=v_Submergence,
           t.averagewatt=v_averagewatt,t.waterpower=v_WaterPower,
           t.systemefficiency=v_SystemEfficiency,t.energyper100mlift=v_energyper100mlift,
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
@@ -634,6 +637,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmcaldata (
        v_TheoreticalProduction in NUMBER,
        v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
        v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
+       v_Submergence in NUMBER,
        v_averagewatt in NUMBER,v_WaterPower in NUMBER,
        v_SystemEfficiency in NUMBER,v_energyper100mlift in NUMBER,
        v_PumpEff1 in NUMBER,v_PumpEff2 in NUMBER,v_PumpEff in NUMBER,
@@ -648,6 +652,7 @@ begin
           t.theoreticalproduction=v_TheoreticalProduction,
           t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,
           t.liquidweightproduction=v_LiquidWeightProduction,t.oilweightproduction=v_OilWeightProduction,t.waterweightproduction=v_WaterWeightProduction,
+          t.submergence=v_Submergence,
           t.averagewatt=v_averagewatt,t.waterpower=v_WaterPower,
           t.systemefficiency=v_SystemEfficiency,t.energyper100mlift=v_energyper100mlift,
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
@@ -1233,7 +1238,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
 
        v_LevelDifferenceValue in NUMBER,v_CalcProducingfluidLevel in NUMBER,
-       
+
        v_Submergence in NUMBER,
 
        v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
@@ -1255,7 +1260,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_currentNetTorque in tbl_rpcacqdata_hist.currentnettorque%TYPE,
        v_expectedBalanceTorque in tbl_rpcacqdata_hist.expectedbalancetorque%TYPE,
        v_expectedNetTorque in tbl_rpcacqdata_hist.expectednettorque%TYPE,
-       v_wellboreSlice in tbl_rpcacqdata_hist.wellboreslice%TYPE) as
+       v_wellboreSlice in tbl_rpcacqdata_hist.wellboreslice%TYPE,
+       v_rpm in NUMBER) as
   p_msg varchar2(3000) := 'error';
 begin
   update tbl_rpcacqdata_latest t
@@ -1296,7 +1302,8 @@ begin
           t.crankangle=v_crankAngle,t.polishrodv=v_polishRodV,t.polishroda=v_polishRodA,t.pr=v_PR,t.tf=v_TF,
           t.loadtorque=v_loadTorque,t.cranktorque=v_crankTorque,t.currentbalancetorque=v_currentBalanceTorque,t.currentnettorque=v_currentNetTorque,
           t.expectedbalancetorque=v_expectedBalanceTorque,t.expectednettorque=v_expectedNetTorque,
-          t.wellboreslice=v_wellboreSlice
+          t.wellboreslice=v_wellboreSlice,
+          t.rpm=v_rpm
       where t.wellid=v_wellId;
   commit;
   update tbl_rpcacqdata_hist t
@@ -1337,7 +1344,8 @@ begin
           t.crankangle=v_crankAngle,t.polishrodv=v_polishRodV,t.polishroda=v_polishRodA,t.pr=v_PR,t.tf=v_TF,
           t.loadtorque=v_loadTorque,t.cranktorque=v_crankTorque,t.currentbalancetorque=v_currentBalanceTorque,t.currentnettorque=v_currentNetTorque,
           t.expectedbalancetorque=v_expectedBalanceTorque,t.expectednettorque=v_expectedNetTorque,
-          t.wellboreslice=v_wellboreSlice
+          t.wellboreslice=v_wellboreSlice,
+          t.rpm=v_rpm
       where t.wellid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
   commit;
   p_msg := '修改成功';
@@ -1456,7 +1464,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_producingfluidLevel in number,v_calcProducingfluidLevel in number,v_levelDifferenceValue in number,
   v_submergence in number,
   v_casingPressure in number,v_tubingPressure in number,
-
+  v_rpm in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_rpcdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
@@ -1492,7 +1500,8 @@ begin
           t.pumpsettingdepth=v_pumpSettingDepth,
           t.producingfluidlevel=v_producingfluidLevel,t.calcproducingfluidlevel=v_calcProducingfluidLevel,t.leveldifferencevalue=v_levelDifferenceValue,
           t.submergence=v_submergence,
-          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,
+          t.rpm=v_rpm
       where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
       commit;
     end if;
@@ -1512,7 +1521,7 @@ begin
     pumpsettingdepth,
     producingfluidlevel,calcproducingfluidlevel,leveldifferencevalue,
     submergence,
-    casingpressure,tubingpressure,
+    casingpressure,tubingpressure,rpm,
     commstatus,commtime,commtimeefficiency,commrange,
     runstatus,runtime,runtimeefficiency,runrange
     )values(
@@ -1528,7 +1537,7 @@ begin
     v_pumpSettingDepth,
     v_producingfluidLevel,v_calcProducingfluidLevel,v_levelDifferenceValue,
     v_submergence,
-    v_casingPressure,v_tubingPressure,
+    v_casingPressure,v_tubingPressure,v_rpm,
     v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
     v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
     );
@@ -1559,6 +1568,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdailyrecal (
   v_producingfluidLevel in number,v_calcProducingfluidLevel in number,v_levelDifferenceValue in number,
   v_submergence in number,
   v_tubingPressure in number,v_casingPressure in number,
+  v_rpm in number,
   v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
@@ -1579,7 +1589,8 @@ begin
         t.pumpsettingdepth=v_pumpSettingDepth,
         t.producingfluidlevel=v_producingfluidLevel,t.calcproducingfluidlevel=v_calcProducingfluidLevel,t.leveldifferencevalue=v_levelDifferenceValue,
         t.submergence=v_submergence,
-        t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+        t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,
+        t.rpm=v_rpm
     where t.id=v_recordId ;
     commit;
     p_msg := '更新成功';
@@ -1952,6 +1963,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramtimingtotal (
   v_producingfluidLevel in number,v_calcProducingfluidLevel in number,v_levelDifferenceValue in number,
   v_submergence in number,
   v_casingPressure in number,v_tubingPressure in number,
+  v_rpm in number,
 
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_rpctimingcalculationdata.commrange%TYPE,
@@ -1988,7 +2000,8 @@ begin
           t.pumpsettingdepth=v_pumpSettingDepth,
           t.producingfluidlevel=v_producingfluidLevel,t.calcproducingfluidlevel=v_calcProducingfluidLevel,t.leveldifferencevalue=v_levelDifferenceValue,
           t.submergence=v_submergence,
-          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,
+          t.rpm=v_rpm
       where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
       commit;
     end if;

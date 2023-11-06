@@ -1577,7 +1577,7 @@ public class DriverAPIController extends BaseController{
 									
 									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
 										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue)){
+										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
 											if(protocolRunStatusConfig.getResolutionMode()==1){
 												int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
 												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
@@ -1745,9 +1745,11 @@ public class DriverAPIController extends BaseController{
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											if(rpcCalculateRequestData.getProduction()!=null){
 												rpcCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
+												rpcCalculateRequestData.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(rpcDeviceInfo.getProduction()!=null){
 												rpcDeviceInfo.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
+												rpcDeviceInfo.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
 										}
 									}
@@ -2110,8 +2112,8 @@ public class DriverAPIController extends BaseController{
 						rpcCalculateResponseData.getProduction().setWaterVolumetricProduction(acqWaterVolumetricProduction);
 						rpcCalculateResponseData.getProduction().setAvailablePlungerStrokeVolumetricProduction(acqAvailablePlungerStrokeProd_v);
 						rpcCalculateResponseData.getProduction().setPumpClearanceLeakVolumetricProduction(acqPumpClearanceLeakProd_v);
-						rpcCalculateResponseData.getProduction().setTVLeakVolumetricProduction(acqTVLeakWeightProduction);
-						rpcCalculateResponseData.getProduction().setSVLeakVolumetricProduction(acqSVLeakWeightProduction);
+						rpcCalculateResponseData.getProduction().setTVLeakVolumetricProduction(acqTVLeakVolumetricProduction);
+						rpcCalculateResponseData.getProduction().setSVLeakVolumetricProduction(acqSVLeakVolumetricProduction);
 						rpcCalculateResponseData.getProduction().setGasInfluenceVolumetricProduction(acqGasInfluenceProd_v);
 						
 						rpcCalculateResponseData.getProduction().setLiquidWeightProduction(acqLiquidWeightProduction);
@@ -2196,8 +2198,10 @@ public class DriverAPIController extends BaseController{
 							
 							
 							if(rpcCalculateRequestData.getProduction()!=null && rpcCalculateRequestData.getFluidPVT()!=null){
-								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcCalculateRequestData.getProduction().getWaterCut(), rpcCalculateRequestData.getFluidPVT().getCrudeOilDensity(), rpcCalculateRequestData.getFluidPVT().getWaterDensity());
+//								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcCalculateRequestData.getProduction().getWaterCut(), rpcCalculateRequestData.getFluidPVT().getCrudeOilDensity(), rpcCalculateRequestData.getFluidPVT().getWaterDensity());
+								float weightWaterCut=rpcCalculateRequestData.getProduction().getWaterCut();
 								rpcCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
+								rpcDeviceInfo.getProduction().setWaterCut(weightWaterCut);
 							}
 						}
 						rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));

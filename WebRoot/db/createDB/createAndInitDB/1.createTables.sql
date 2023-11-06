@@ -935,6 +935,7 @@ create table TBL_RPCACQDATA_LATEST
   gasvolumetricproduction        NUMBER(12,3),
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
+  rpm                            NUMBER(8,2),
   c_yxzt                         VARCHAR2(50),
   c_qtkz                         VARCHAR2(50),
   c_ggwd                         VARCHAR2(50),
@@ -1104,6 +1105,7 @@ create table TBL_RPCACQDATA_HIST
   gasvolumetricproduction        NUMBER(12,3),
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
+  rpm                            NUMBER(8,2),
   c_yxzt                         VARCHAR2(50),
   c_qtkz                         VARCHAR2(50),
   c_ggwd                         VARCHAR2(50),
@@ -1295,6 +1297,7 @@ create table TBL_RPCDAILYCALCULATIONDATA
   gasvolumetricproduction        NUMBER(8,2),
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
+  rpm                            NUMBER(8,2),
   headerlabelinfo                VARCHAR2(4000),
   remark                         VARCHAR2(4000)
 )
@@ -1776,8 +1779,11 @@ create table TBL_RUNSTATUSCONFIG
   protocol          VARCHAR2(50),
   itemname          VARCHAR2(50),
   itemmappingcolumn VARCHAR2(50),
+  resolutionmode    NUMBER(1) default 1,
   runvalue          VARCHAR2(50),
   stopvalue         VARCHAR2(50),
+  runcondition      VARCHAR2(50),
+  stopcondition     VARCHAR2(50),
   protocoltype      NUMBER(1) not null
 )
 tablespace AP_DATA
@@ -1874,6 +1880,7 @@ create table TBL_RPCTIMINGCALCULATIONDATA
   leveldifferencevalue           NUMBER(8,2),
   pumpsettingdepth               NUMBER(8,2),
   submergence                    NUMBER(8,2),
+  rpm                            NUMBER(8,2),
   reservedcol1                   VARCHAR2(4000),
   reservedcol2                   VARCHAR2(4000),
   reservedcol3                   VARCHAR2(4000),

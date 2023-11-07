@@ -701,9 +701,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
 		
 		StringBuffer dataSbf=null;
-		String sql="select t.id,t.wellname,t3.singleWellRangeReportTemplate,t2.unitid from tbl_rpcdevice t "
+		String sql="select t.id,t.wellname,t3.singleWellDailyReportTemplate,t2.unitid from tbl_rpcdevice t "
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
-				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id and t3.devicetype=0 "
+				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
 				+ " where 1=1";
 		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
@@ -721,8 +721,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.resultstatus=1 ";
 		
-		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_rpcdailycalculationdata t "
-				+ " where t.caldate=( select max(t2.caldate) from tbl_rpcdailycalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_rpctimingcalculationdata t "
+				+ " where t.caltime=( select max(t2.caltime) from tbl_rpctimingcalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
 		
 		sql+=" order by t.id";
 		fesDiagramSql+= " order by t2.id,t.fesdiagramacqtime";
@@ -855,7 +855,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				//报表继承可编辑数据
 				if(StringManagerUtils.isNotNull(templateCode)){
-					template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(templateCode);
+					template=MemoryDataManagerTask.getSingleWellDailyReportTemplateByCode(templateCode);
 				}
 				if(template!=null){
 					if(template.getEditable()!=null && template.getEditable().size()>0){
@@ -1660,10 +1660,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=new TypeToken<TotalAnalysisRequestData>() {}.getType();
 		
 		StringBuffer dataSbf=null;
-		String sql="select t.id,t.wellname,t3.singleWellRangeReportTemplate,t2.unitid "
+		String sql="select t.id,t.wellname,t3.singleWellDailyReportTemplate,t2.unitid "
 				+ " from tbl_pcpdevice t "
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
-				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id and t3.devicetype=0 "
+				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
 				+ " where 1=1";
 		String rpmSql="select t2.id, "
 				+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
@@ -1677,8 +1677,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.wellid=t2.id "
 				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
-		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_pcpdailycalculationdata t "
-				+ " where t.caldate=( select max(t2.caldate) from tbl_pcpdailycalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_pcptimingcalculationdata t "
+				+ " where t.caltime=( select max(t2.caltime) from tbl_pcptimingcalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
 		
 		sql+=" order by t.id";
 		rpmSql+= " order by t2.id,t.acqtime";
@@ -1811,7 +1811,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				//报表继承可编辑数据
 				if(StringManagerUtils.isNotNull(templateCode)){
-					template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(templateCode);
+					template=MemoryDataManagerTask.getSingleWellDailyReportTemplateByCode(templateCode);
 				}
 				if(template!=null){
 					if(template.getEditable()!=null && template.getEditable().size()>0){

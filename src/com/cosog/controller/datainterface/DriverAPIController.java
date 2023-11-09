@@ -1752,6 +1752,16 @@ public class DriverAPIController extends BaseController{
 												rpcDeviceInfo.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
 										}
+									}else if("RealtimeLiquidVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
+											|| "RealtimeOilVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
+											|| "RealtimeWaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
+											|| "RealtimeGasVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
+											){
+										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
+											updateRealtimeData+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											insertHistColumns+=","+dataMappingColumn.getCalColumn();
+											insertHistValue+=","+StringManagerUtils.stringToFloat(rawValue)+"";
+										}
 									}
 									else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
@@ -2438,7 +2448,9 @@ public class DriverAPIController extends BaseController{
 					//更新液面反演值
 					if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
 							&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
-							&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0){
+							&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0
+							&& FESDiagramCalculate
+							&& !updateTotalDataSql.toLowerCase().contains("producingfluidLevel")){
 						updateTotalDataSql+=",t.producingfluidLevel= "+rpcCalculateResponseData.getProduction().getProducingfluidLevel();
 					}
 					

@@ -788,6 +788,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
+				String updateRealtimeProdSql="update tbl_rpctimingcalculationdata t set (t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
+						+" =( select t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction "
+						+ " from tbl_rpcacqdata_hist t2 "
+						+ " where t2.acqtime=("
+						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " )"
+						+ " and t2.wellid="+deviceId+" )"
+						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				TimeEffResponseData timeEffResponseData=null;
 				CommResponseData commResponseData=null;
 				EnergyCalculateResponseData energyCalculateResponseData=null;
@@ -851,6 +860,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				}
+				
+				try {
+					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeProdSql);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				
 				//报表继承可编辑数据
@@ -1776,6 +1791,16 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
+				String updateRealtimeProdSql="update tbl_pcptimingcalculationdata t set (t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
+						+" =( select t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction "
+						+ " from tbl_pcpacqdata_hist t2 "
+						+ " where t2.acqtime=("
+						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " )"
+						+ " and t2.wellid="+deviceId+" )"
+						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+				
 				//继承表头信息
 				for(int j=0;j<labelInfoQueryList.size();j++){
 					Object[] labelInfoObj=(Object[]) labelInfoQueryList.get(j);
@@ -1807,6 +1832,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				}
+				
+				try {
+					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeProdSql);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				
 				//报表继承可编辑数据

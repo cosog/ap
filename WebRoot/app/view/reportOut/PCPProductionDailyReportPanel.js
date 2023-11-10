@@ -143,72 +143,12 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                 	CreatePCPProductionDailyReportTable();
                 	CreatePCPProductionDailyReportCurve();
                 }
-    		},'-', {
-                xtype: 'button',
-                text: cosog.string.exportExcel,
-                iconCls: 'export',
-                handler: function (v, o) {
-                	var selectedOrgName="";
-                	var selectedOrgId="";
-                	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
-                	var count=IframeViewStore.getCount();
-                	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-                	if (IframeViewSelection.length > 0) {
-//                		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
-                		selectedOrgName=IframeViewSelection[0].data.text;
-                		selectedOrgId=IframeViewSelection[0].data.orgId;
-                	} else {
-                		if(count>0){
-                			selectedOrgName=IframeViewStore.getAt(0).data.text;
-                			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
-                		}
-                	}
-                	
-                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    var startDate = Ext.getCmp('PCPProductionDailyReportStartDate_Id').rawValue;
-                    var endDate = Ext.getCmp('PCPProductionDailyReportEndDate_Id').rawValue;
-                    var reportDate = Ext.getCmp('PCPProductionDailyReportDate_Id').rawValue;
-                    
-                    var wellName='';
-                    var unitId=0;
-                    var instanceCode='';
-                    var selectRow= Ext.getCmp("PCPProductionDailyReportInstanceListSelectRow_Id").getValue();
-                    if(selectRow>=0){
-                    	instanceCode=Ext.getCmp("PCPProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
-                    	unitId=Ext.getCmp("PCPProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
-                    }
-                	
-                	var url=context + '/reportDataMamagerController/exportProductionDailyReportData?deviceType=1'
-                	+'&reportType=1'
-                	+'&wellName='+URLencode(URLencode(wellName))
-                	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))
-                	+'&instanceCode='+instanceCode
-                	+'&unitId='+unitId
-                	+'&startDate='+startDate
-                	+'&endDate='+endDate
-                	+'&reportDate='+reportDate
-                	+'&orgId='+orgId;
-                	document.location.href = url;
-                }
-            }, '->',{
-                xtype: 'button',
-                text: cosog.string.save,
-                iconCls: 'save',
-                disabled: loginUserRoleReportEdit!=1,
-                handler: function (v, o) {
-                	pcpProductionDailyReportHelper.saveData();
-                }
-            },'-', {
-                id: 'PCPProductionDailyReportTotalCount_Id',
-                xtype: 'component',
-                tpl: cosog.string.totalCount + ': {count}',
-                style: 'margin-right:15px'
-            },{
+    		},{
             	id: 'PCPProductionDailyReportInstanceListSelectRow_Id',
             	xtype: 'textfield',
                 value: -1,
                 hidden: true
-             }],
+            }],
             layout: 'border',
             border: false,
             items: [{
@@ -319,6 +259,65 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                             	Ext.getCmp("PCPProductionDailyReportDate_Id").setValue(endDate);
                             	CreatePCPProductionDailyReportTable();
                             }
+                        },'->', {
+                            xtype: 'button',
+                            text: cosog.string.exportExcel,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	var selectedOrgName="";
+                            	var selectedOrgId="";
+                            	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+                            	var count=IframeViewStore.getCount();
+                            	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+                            	if (IframeViewSelection.length > 0) {
+                            		selectedOrgName=IframeViewSelection[0].data.text;
+                            		selectedOrgId=IframeViewSelection[0].data.orgId;
+                            	} else {
+                            		if(count>0){
+                            			selectedOrgName=IframeViewStore.getAt(0).data.text;
+                            			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+                            		}
+                            	}
+                            	
+                            	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                                var startDate = Ext.getCmp('PCPProductionDailyReportStartDate_Id').rawValue;
+                                var endDate = Ext.getCmp('PCPProductionDailyReportEndDate_Id').rawValue;
+                                var reportDate = Ext.getCmp('PCPProductionDailyReportDate_Id').rawValue;
+                                
+                                var wellName='';
+                                var unitId=0;
+                                var instanceCode='';
+                                var selectRow= Ext.getCmp("PCPProductionDailyReportInstanceListSelectRow_Id").getValue();
+                                if(selectRow>=0){
+                                	instanceCode=Ext.getCmp("PCPProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
+                                	unitId=Ext.getCmp("PCPProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
+                                }
+                            	
+                            	var url=context + '/reportDataMamagerController/exportProductionDailyReportData?deviceType=1'
+                            	+'&reportType=1'
+                            	+'&wellName='+URLencode(URLencode(wellName))
+                            	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))
+                            	+'&instanceCode='+instanceCode
+                            	+'&unitId='+unitId
+                            	+'&startDate='+startDate
+                            	+'&endDate='+endDate
+                            	+'&reportDate='+reportDate
+                            	+'&orgId='+orgId;
+                            	document.location.href = url;
+                            }
+                        }, '-',{
+                            xtype: 'button',
+                            text: cosog.string.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            handler: function (v, o) {
+                            	pcpProductionDailyReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'PCPProductionDailyReportTotalCount_Id',
+                            xtype: 'component',
+                            tpl: cosog.string.totalCount + ': {count}',
+                            style: 'margin-right:15px'
                         }],
                         html:'<div class="PCPProductionDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPProductionDailyReportDiv_id"></div></div>',
                         listeners: {

@@ -137,32 +137,34 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 	CreateRPCSingleWellReportTable();
                 	CreateRPCSingleWellReportCurve();
                 }
-    		},'-', {
-                xtype: 'button',
-                text: cosog.string.exportExcel,
-                iconCls: 'export',
-                handler: function (v, o) {
-                	ExportRPCSingleWellReportData();
-                }
-            }, '->',{
-                xtype: 'button',
-                text: cosog.string.save,
-                iconCls: 'save',
-                disabled: loginUserRoleReportEdit!=1,
-                handler: function (v, o) {
-                	var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
-                	if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
-                		rpcSingleWellDailyReportHelper.saveData();
-                	}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
-                		rpcSingleWellRangeReportHelper.saveData();
-                	}
-                }
-            },'-', {
-                id: 'RPCSingleWellDailyReportTotalCount_Id',
-                xtype: 'component',
-                tpl: cosog.string.totalCount + ': {count}',
-                style: 'margin-right:15px'
-            },{
+    		}
+//            ,'-', {
+//                xtype: 'button',
+//                text: cosog.string.exportExcel,
+//                iconCls: 'export',
+//                handler: function (v, o) {
+//                	ExportRPCSingleWellReportData();
+//                }
+//            }, '->',{
+//                xtype: 'button',
+//                text: cosog.string.save,
+//                iconCls: 'save',
+//                disabled: loginUserRoleReportEdit!=1,
+//                handler: function (v, o) {
+//                	var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
+//                	if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
+//                		rpcSingleWellDailyReportHelper.saveData();
+//                	}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
+//                		rpcSingleWellRangeReportHelper.saveData();
+//                	}
+//                }
+//            },'-', {
+//                id: 'RPCSingleWellDailyReportTotalCount_Id',
+//                xtype: 'component',
+//                tpl: cosog.string.totalCount + ': {count}',
+//                style: 'margin-right:15px'
+//            }
+            ,{
             	id: 'RPCSingleWellDailyReportDeviceListSelectRow_Id',
             	xtype: 'textfield',
                 value: -1,
@@ -277,6 +279,33 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                             	CreateRPCSingleWellDailyReportTable();
                             	CreateRPCSingleWellDailyReportCurve();
                             }
+                        }, '->',{
+                            xtype: 'button',
+                            text: cosog.string.exportExcel,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportRPCSingleWellDailyReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: '批量导出',
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	batchExportRPCSingleWellDailyReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: cosog.string.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            handler: function (v, o) {
+                            	rpcSingleWellDailyReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'RPCSingleWellDailyReportTotalCount_Id',
+                            xtype: 'component',
+                            tpl: cosog.string.totalCount + ': {count}',
+                            style: 'margin-right:15px'
                         }],
                         html:'<div class="RPCSingleWellDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="RPCSingleWellDailyReportDiv_id"></div></div>',
                         listeners: {
@@ -322,7 +351,27 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 		title:'报表数据',
                         layout: "fit",
                     	id:'RPCSingleWellRangeReportPanel_id',
-//                        border: false,
+                    	tbar:['->',{
+                            xtype: 'button',
+                            text: cosog.string.exportExcel,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportRPCSingleWellRangeReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: cosog.string.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            handler: function (v, o) {
+                            	rpcSingleWellRangeReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'RPCSingleWellRangeReportTotalCount_Id',
+                            xtype: 'component',
+                            tpl: cosog.string.totalCount + ': {count}',
+                            style: 'margin-right:15px'
+                        }],
                         html:'<div class="RPCSingleWellRangeReportContainer" style="width:100%;height:100%;"><div class="con" id="RPCSingleWellRangeReportDiv_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -411,7 +460,7 @@ function CreateRPCSingleWellRangeReportTable(){
 				$("#RPCSingleWellRangeReportDiv_id").html('');
 			}
 			
-			Ext.getCmp("RPCSingleWellDailyReportTotalCount_Id").update({count: result.data.length});
+			Ext.getCmp("RPCSingleWellRangeReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -1803,6 +1852,33 @@ function ExportRPCSingleWellDailyReportData(){
 		wellId=Ext.getCmp("RPCSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	}
 
-	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=0&reportType=2&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&reportDate='+reportDate+'&orgId='+leftOrg_Id;
+	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=0'
+	+'&reportType=2'
+	+'&wellName='+URLencode(URLencode(wellName))
+	+'&wellId='+wellId
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&reportDate='+reportDate
+	+'&orgId='+leftOrg_Id;
 	document.location.href = url;
+}
+
+function batchExportRPCSingleWellDailyReportData(){
+	var leftOrg_Id = obtainParams('leftOrg_Id');
+	var wellName = Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
+	var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
+	var endDate = Ext.getCmp('RPCSingleWellDailyReportEndDate_Id').rawValue;
+	var reportDate = Ext.getCmp('RPCSingleWellDailyReportDate_Id').rawValue;
+
+	var url=context + '/reportDataMamagerController/batchExportSingleWellDailyReportData?deviceType=0'
+	+'&reportType=2'
+	+'&wellName='+URLencode(URLencode(wellName))
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&reportDate='+reportDate
+	+'&orgId='+leftOrg_Id;
+	
+//	Ext.getCmp("RPCSingleWellDailyReportPanel_id").el.mask('正在导出...').show();
+	document.location.href = url;
+//	Ext.getCmp("RPCSingleWellDailyReportPanel_id").getEl().unmask();
 }

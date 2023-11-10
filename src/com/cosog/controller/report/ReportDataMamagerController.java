@@ -403,6 +403,69 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/batchExportSingleWellDailyReportData")
+	public String batchExportSingleWellDailyReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_rpcdailycalculationdata";
+		String timingcalculationTableName="tbl_rpctimingcalculationdata";
+		String deviceTypeName="抽油机井";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
+			tableName="tbl_pcpdailycalculationdata";
+			deviceTypeName="螺杆泵井";
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
+			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			
+			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') from "+timingcalculationTableName+" t "
+					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			sql+= "order by calTime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				String[] calTimeArr=list.get(0).toString().split(" ");
+				reportDate = calTimeArr[0];
+				if(calTimeArr.length==2 && "00:00:00".equalsIgnoreCase(calTimeArr[1])){
+					reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),-1);
+				}
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		boolean bool = reportDataManagerService.batchExportSingleWellDailyReportData(response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,user.getUserNo());
+		return null;
+	}
+	
 	@RequestMapping("/getProductionDailyReportData")
 	public String getProductionDailyReportData() throws Exception {
 		log.debug("reportOutputWell enter==");

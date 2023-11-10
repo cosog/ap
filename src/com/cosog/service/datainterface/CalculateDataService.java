@@ -788,12 +788,46 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
-				String updateRealtimeProdSql="update tbl_rpctimingcalculationdata t set (t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
-						+" =( select t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction "
+				String updateRealtimeAcqProdSql="update tbl_rpctimingcalculationdata t set "
+						+ " (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
+						+" =( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction"
 						+ " from tbl_rpcacqdata_hist t2 "
 						+ " where t2.acqtime=("
 						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
 						+ " where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " )"
+						+ " and t2.wellid="+deviceId+" )"
+						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+				
+				String updateRealtimeCalDataSql="update tbl_rpctimingcalculationdata t set "
+						+ " ("
+						+ " t.resultcode,t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
+						+ " t.theoreticalproduction,"
+						+ " t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,"
+						+ " t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,"
+						+ " t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,"
+						+ " t.wattdegreebalance,t.idegreebalance,t.deltaradius,"
+						+ " t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,"
+						+ " t.calcProducingfluidLevel,t.levelDifferenceValue,"
+						+ " t.submergence,"
+						+ " t.rpm"
+						+ " ) "
+						+" =( "
+						+ " select "
+						+ " t2.resultcode,t2.stroke,t2.spm,t2.fmax,t2.fmin,t2.fullnesscoefficient,"
+						+ " t2.theoreticalproduction,"
+						+ " t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,"
+						+ " t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,"
+						+ " t2.pumpeff,t2.pumpeff1,t2.pumpeff2,t2.pumpeff3,t2.pumpeff4,"
+						+ " t2.wattdegreebalance,t2.idegreebalance,t2.deltaradius,"
+						+ " t2.surfacesystemefficiency,t2.welldownsystemefficiency,t2.systemefficiency,t2.energyper100mlift,"
+						+ " t2.calcProducingfluidLevel,t2.levelDifferenceValue,"
+						+ " t2.submergence,"
+						+ " t2.rpm"
+						+ " from tbl_rpcacqdata_hist t2 "
+						+ " where t2.acqtime=("
+						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.resultstatus=1 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
 						+ " )"
 						+ " and t2.wellid="+deviceId+" )"
 						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
@@ -863,7 +897,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				}
 				
 				try {
-					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeProdSql);
+					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeAcqProdSql);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1350,6 +1384,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					this.saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr);
+					
+					if((totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0)>0){
+						try {
+							int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeCalDataSql);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -1791,8 +1833,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
-				String updateRealtimeProdSql="update tbl_pcptimingcalculationdata t set (t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
-						+" =( select t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction "
+				String updateRealtimeAcqProdSql="update tbl_pcptimingcalculationdata t set "
+						+ " (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
+						+" =( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction"
 						+ " from tbl_pcpacqdata_hist t2 "
 						+ " where t2.acqtime=("
 						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
@@ -1801,6 +1844,32 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " and t2.wellid="+deviceId+" )"
 						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				
+				String updateRealtimeCalDataSql="update tbl_pcptimingcalculationdata t set "
+						+ " ("
+						+ " t.theoreticalproduction,"
+						+ " t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,"
+						+ " t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,"
+						+ " t.pumpeff,t.pumpeff1,t.pumpeff2,"
+						+ " t.systemefficiency,t.energyper100mlift,"
+						+ " t.submergence,"
+						+ " t.rpm"
+						+ " ) "
+						+" =( "
+						+ " select "
+						+ " t2.theoreticalproduction,"
+						+ " t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,"
+						+ " t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,"
+						+ " t2.pumpeff,t2.pumpeff1,t2.pumpeff2,"
+						+ " t2.systemefficiency,t2.energyper100mlift,"
+						+ " t2.submergence,"
+						+ " t2.rpm"
+						+ " from tbl_pcpacqdata_hist t2 "
+						+ " where t2.acqtime=("
+						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.resultstatus=1 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " )"
+						+ " and t2.wellid="+deviceId+" )"
+						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				//继承表头信息
 				for(int j=0;j<labelInfoQueryList.size();j++){
 					Object[] labelInfoObj=(Object[]) labelInfoQueryList.get(j);
@@ -1835,7 +1904,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				}
 				
 				try {
-					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeProdSql);
+					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeAcqProdSql);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -2268,8 +2337,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					this.saveRPMTimingTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr);
+					if((totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0)>0){
+						try {
+							int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeCalDataSql);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
-				
 			}catch(Exception e){
 				e.printStackTrace();
 				continue;

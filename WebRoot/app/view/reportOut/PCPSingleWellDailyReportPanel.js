@@ -137,37 +137,12 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 	CreatePCPSingleWellReportTable();
                 	CreatePCPSingleWellReportCurve();
                 }
-    		},'-', {
-                xtype: 'button',
-                text: cosog.string.exportExcel,
-                iconCls: 'export',
-                handler: function (v, o) {
-                	ExportPCPSingleWellReportData();
-                }
-            }, '->',{
-                xtype: 'button',
-                text: cosog.string.save,
-                iconCls: 'save',
-                disabled: loginUserRoleReportEdit!=1,
-                handler: function (v, o) {
-                	var PCPSingleWellReportTabPanelActiveId=Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id;
-                	if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellDailyReportTabPanel_id'){
-                		pcpSingleWellDailyReportHelper.saveData();
-                	}else if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellRangeReportTabPanel_id'){
-                		pcpSingleWellRangeReportHelper.saveData();
-                	}
-                }
-            },'-', {
-                id: 'PCPSingleWellDailyReportTotalCount_Id',
-                xtype: 'component',
-                tpl: cosog.string.totalCount + ': {count}',
-                style: 'margin-right:15px'
-            },{
+    		},{
             	id: 'PCPSingleWellDailyReportDeviceListSelectRow_Id',
             	xtype: 'textfield',
                 value: -1,
                 hidden: true
-             }],
+            }],
             layout: 'border',
             border: false,
             items: [{
@@ -277,6 +252,33 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                             	CreatePCPSingleWellDailyReportTable();
                             	CreatePCPSingleWellDailyReportCurve();
                             }
+                        }, '->',{
+                            xtype: 'button',
+                            text: cosog.string.exportExcel,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportPCPSingleWellDailyReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: '批量导出',
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	batchExportPCPSingleWellDailyReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: cosog.string.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            handler: function (v, o) {
+                            	pcpSingleWellDailyReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'PCPSingleWellDailyReportTotalCount_Id',
+                            xtype: 'component',
+                            tpl: cosog.string.totalCount + ': {count}',
+                            style: 'margin-right:15px'
                         }],
                         html:'<div class="PCPSingleWellDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPSingleWellDailyReportDiv_id"></div></div>',
                         listeners: {
@@ -322,6 +324,27 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 		title:'报表数据',
                         layout: "fit",
                     	id:'PCPSingleWellRangeReportPanel_id',
+                    	tbar:['->',{
+                            xtype: 'button',
+                            text: cosog.string.exportExcel,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportPCPSingleWellRangeReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: cosog.string.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            handler: function (v, o) {
+                            	pcpSingleWellRangeReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'PCPSingleWellRangeReportTotalCount_Id',
+                            xtype: 'component',
+                            tpl: cosog.string.totalCount + ': {count}',
+                            style: 'margin-right:15px'
+                        }],
                         html:'<div class="PCPSingleWellRangeReportContainer" style="width:100%;height:100%;"><div class="con" id="PCPSingleWellRangeReportDiv_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -408,7 +431,7 @@ function CreatePCPSingleWellRangeReportTable(){
 				$("#PCPSingleWellRangeReportDiv_id").html('');
 			}
 			
-			Ext.getCmp("PCPSingleWellDailyReportTotalCount_Id").update({count: result.data.length});
+			Ext.getCmp("PCPSingleWellRangeReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -1803,4 +1826,24 @@ function ExportPCPSingleWellDailyReportData(){
 
 	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=1&reportType=2&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&reportDate='+reportDate+'&orgId='+leftOrg_Id;
 	document.location.href = url;
+}
+
+function batchExportPCPSingleWellDailyReportData(){
+	var leftOrg_Id = obtainParams('leftOrg_Id');
+	var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();
+	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
+	var endDate = Ext.getCmp('PCPSingleWellDailyReportEndDate_Id').rawValue;
+	var reportDate = Ext.getCmp('PCPSingleWellDailyReportDate_Id').rawValue;
+
+	var url=context + '/reportDataMamagerController/batchExportSingleWellDailyReportData?deviceType=1'
+	+'&reportType=2'
+	+'&wellName='+URLencode(URLencode(wellName))
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&reportDate='+reportDate
+	+'&orgId='+leftOrg_Id;
+	
+//	Ext.getCmp("PCPSingleWellDailyReportPanel_id").el.mask('正在导出...').show();
+	document.location.href = url;
+//	Ext.getCmp("PCPSingleWellDailyReportPanel_id").getEl().unmask();
 }

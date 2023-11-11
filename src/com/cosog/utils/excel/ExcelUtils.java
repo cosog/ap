@@ -961,6 +961,119 @@ public class ExcelUtils {
     		}
     	}
     }
+    
+    public static void exportDataWithTitleAndHead(HttpServletResponse response, String fileName, 
+    		List<String> titleList,List<String> sheetNameList, List<List<List<Object>>> sheetList, 
+    		File file, Map<Integer, List<String>> selectMap,List<ReportTemplate.Template> sheetTemplateList) {
+    	// 整个 Excel 表格 book 对象
+    	SXSSFWorkbook book = new SXSSFWorkbook();
+    	// 设置标题背景色（默认色）
+    	CellStyle titleStyle = book.createCellStyle();
+		titleStyle.setAlignment(HorizontalAlignment.CENTER);
+		titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		Font titlefont = book.createFont();
+		titlefont.setFontHeightInPoints((short) 15);
+		titleStyle.setFont(titlefont);
+		titleStyle.setBorderBottom(BorderStyle.THIN); //下边框
+		titleStyle.setBorderLeft(BorderStyle.THIN); //左边框
+		titleStyle.setBorderRight(BorderStyle.THIN); //右边框
+		titleStyle.setBorderTop(BorderStyle.THIN); //上边框
+		// 设置表头背景色（灰色）
+		CellStyle headStyle = book.createCellStyle();
+		headStyle.setFillForegroundColor(IndexedColors.GREY_80_PERCENT.index);
+		headStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+		headStyle.setAlignment(HorizontalAlignment.CENTER);
+		headStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		headStyle.setBorderBottom(BorderStyle.THIN); //下边框
+		headStyle.setBorderLeft(BorderStyle.THIN); //左边框
+		headStyle.setBorderRight(BorderStyle.THIN); //右边框
+		headStyle.setBorderTop(BorderStyle.THIN); //上边框
+		// 设置表身背景色（默认色）
+		CellStyle rowStyle = book.createCellStyle();
+		rowStyle.setAlignment(HorizontalAlignment.CENTER);
+		rowStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		rowStyle.setBorderBottom(BorderStyle.THIN); //下边框
+		rowStyle.setBorderLeft(BorderStyle.THIN); //左边框
+		rowStyle.setBorderRight(BorderStyle.THIN); //右边框
+		rowStyle.setBorderTop(BorderStyle.THIN); //上边框
+    	for(int n=0;n<sheetList.size();n++){
+    		String sheetName=sheetNameList.get(n).replaceAll("\\*", "x");
+    		Sheet sheet = book.createSheet(sheetName);
+    		Drawing<?> patriarch = sheet.createDrawingPatriarch();
+    		int headerRowCount=0;
+    		// 设置表格列宽度（默认为15个字节）
+    		sheet.setDefaultColumnWidth(15);
+    		if(sheetTemplateList.get(n)!=null && sheetTemplateList.get(n).getColumnWidths()!=null && sheetTemplateList.get(n).getColumnWidths().size()>0){
+    			headerRowCount=sheetTemplateList.get(n).getHeader().size();
+    			for(int i=0;i<sheetTemplateList.get(n).getColumnWidths().size();i++){
+    				int colummWidth=15;
+    				float coefficient=((float)sheetTemplateList.get(n).getColumnWidths().get(i))/((float)80);
+    				colummWidth=(int) (colummWidth*coefficient);
+    				sheet.setColumnWidth(i, colummWidth*256+184);//列宽7 宽度的单位是字符数的256分之一
+    			}
+    		}
+    		
+    		// 创建合并算法数组
+    		int rowLength = sheetList.get(n).size();
+    		int columnLength = rowLength>0?sheetList.get(n).get(0).size():0;
+    		int[][] mergeArray = new int[rowLength][columnLength];
+    		for (int i = 0; i < sheetList.get(n).size(); i++) {
+    			// 每个 Sheet 页中的行数据
+    			Row row = sheet.createRow(i);
+    			if(i==0){
+    				row.setHeight((short) 500);
+    			}
+    			List<Object> rowList = sheetList.get(n).get(i);
+    			for (int j = 0; j < rowList.size(); j++) {
+    				// 每个行数据中的单元格数据
+    				Object o = rowList.get(j);
+    				int v = 0;
+    				if (o instanceof URL) {
+    					// 如果要导出图片的话, 链接需要传递 URL 对象
+    					setCellPicture(book, row, patriarch, i, j, (URL) o);
+    				} else {
+    					Cell cell = row.createCell(j);
+    					if(i == 0 && i<headerRowCount){
+    						v = setCellValue(cell, o, titleStyle);
+    					}
+    					else if (i>0 && i<headerRowCount) {
+    						v = setCellValue(cell, o, headStyle);
+    					} else {
+    						v = setCellValue(cell, o, rowStyle);
+    					}
+    				}
+    				mergeArray[i][j] = v;
+    			}
+    		}
+    		// 合并单元格
+    		mergeCells(sheet, mergeArray);
+    		// 设置下拉列表
+    		setSelect(sheet, selectMap);
+    	}
+    	
+    	// 写数据
+    	if (response != null) {
+    		// 前端导出
+    		try {
+    			write(response, book, fileName);
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    	} else {
+    		// 本地导出
+    		FileOutputStream fos;
+    		try {
+    			fos = new FileOutputStream(file);
+    			ByteArrayOutputStream ops = new ByteArrayOutputStream();
+    			book.write(ops);
+    			fos.write(ops.toByteArray());
+    			fos.close();
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
+    	}
+    }
  
     /**
      * 合并当前Sheet页的单元格

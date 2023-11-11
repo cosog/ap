@@ -1756,6 +1756,9 @@ public class DriverAPIController extends BaseController{
 											|| "RealtimeOilVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
 											|| "RealtimeWaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
 											|| "RealtimeGasVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
+											|| "RealtimeLiquidWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
+											|| "RealtimeOilWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
+											|| "RealtimeWaterWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
 											){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											updateRealtimeData+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";

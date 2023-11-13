@@ -934,7 +934,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
 			List<List<String>> dataList=new ArrayList<>();
-			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 					+ " where t.unitid="+reportUnitId+" "
 					+ " and t.reportType="+reportType
@@ -943,6 +943,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
 			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+			List<String> reportItemPrecList=new ArrayList<>();
 			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 			for(int i=0;i<reportItemQuertList.size();i++){
 				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -952,6 +953,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 				reportItemList.add(reportUnitItem);
+				reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
@@ -962,6 +964,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 				}else if(reportItemList.get(i).getDataType()==4){
 					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+				}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
+					sqlBuff.append(",round("+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
 				}else{
 					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 				}
@@ -1067,7 +1071,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String header=template.getHeader().get(0).getTitle().get(i);
 						if(StringManagerUtils.isNotNull(header)){
 							title=header.replaceAll("wellNameLabel", wellName);
-							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
 						}
 					}
 				}
@@ -1077,7 +1081,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					String[] labelInfoArr=null;
 					String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
 							+ " where t.wellid="+wellId+" "
-							+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+							+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.wellid="+wellId+")";
 					List<?> labelInfoList = this.findCallSql(labelInfoSql);
 					if(labelInfoList.size()>0){
 						labelInfoStr=labelInfoList.get(0).toString();
@@ -1107,6 +1111,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 						}
 					}
+					for(int j=0;j<template.getHeader().size();j++){
+						if(template.getHeader().get(j).getTitle()!=null){
+							for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+								if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+								}
+							}
+						}
+					}
 				}
 				fileName="";
 				fileName+=title+"-"+startDate;
@@ -1115,7 +1128,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		        }
 				
 				List<List<String>> dataList=new ArrayList<>();
-				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec "
 						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 						+ " where t.unitid="+reportUnitId+" "
 						+ " and t.reportType="+reportType
@@ -1124,6 +1137,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 						+ " order by t.sort";
 				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+				List<String> reportItemPrecList=new ArrayList<>();
 				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 				for(int i=0;i<reportItemQuertList.size();i++){
 					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -1133,6 +1147,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 					reportItemList.add(reportUnitItem);
+					reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
@@ -1143,6 +1158,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 					}else if(reportItemList.get(i).getDataType()==4){
 						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+					}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
+						sqlBuff.append(",round("+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
 					}else{
 						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 					}
@@ -1177,7 +1194,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<template.getHeader().size();i++){
 					List<Object> record = new ArrayList<>();
 					for(int j=0;j<template.getHeader().get(i).getTitle().size();j++){
-						record.add(template.getHeader().get(i).getTitle().get(j));
+						if(i==0 && j==0){
+							record.add(title);
+						}else{
+							record.add(template.getHeader().get(i).getTitle().get(j));
+						}
 					}
 					sheetDataList.add(record);
 				}
@@ -1209,6 +1230,235 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean batchExportSingleWellRangeReportData(HttpServletResponse response,
+			Page pager,String orgId,String deviceType,String reportType,
+			String wellName,String startDate,String endDate,int userNo)throws Exception {
+		try{
+			List<List<List<Object>>> sheetList =new ArrayList<>();
+			List<String> sheetNameList =new ArrayList<>();
+			List<String> titleList =new ArrayList<>();
+			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
+			
+			
+			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
+			String fileName="日报表-"+startDate+"~"+endDate;
+			
+			String deviceTableName="tbl_rpcdevice";
+			String tableName="VIW_RPCDAILYCALCULATIONDATA";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				deviceTableName="tbl_pcpdevice";
+				tableName="VIW_PCPDAILYCALCULATIONDATA";
+			}
+			
+			String wellListSql="select t.id,t.wellname,t3.id as unitid,t3.singlewellrangereporttemplate "
+					+ " from "+deviceTableName+" t "
+					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
+					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
+					+ " where t.orgid in ("+orgId+")";
+			if(StringManagerUtils.isNotNull(wellName)){
+				wellListSql+=" and t.wellName='"+wellName+"'";
+			}
+			wellListSql+=" order by t.sortnum,t.wellname";
+			
+			List<?> wellList = this.findCallSql(wellListSql);
+			
+			for(int i=0;i<wellList.size();i++){
+				Object[] obj=(Object[]) wellList.get(i);
+				String wellId=obj[0]+"";
+				wellName=obj[1]+"";
+				String reportUnitId=(obj[2]+"").replaceAll("null", "");
+				String reportTemplateCode=(obj[3]+"").replaceAll("null", "");
+				
+				String sheetName=wellName+"井"+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
+				String title="";
+				
+				List<List<Object>> sheetDataList = new ArrayList<>();
+				
+				
+				ReportTemplate.Template template=null;
+				
+				if(StringManagerUtils.isNotNull(reportTemplateCode)){
+					template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(reportTemplateCode);
+				}
+				
+				if(template!=null){
+					sheetNameList.add(sheetName);
+					sheetTemplateList.add(template);
+					
+					int columnCount=0;
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
+						columnCount=template.getHeader().get(0).getTitle().size();
+						for(int j=0;j<template.getHeader().get(0).getTitle().size();j++){
+							String header=template.getHeader().get(0).getTitle().get(j);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("wellNameLabel", wellName);
+//								template.getHeader().get(0).getTitle().set(j, header.replaceAll("wellNameLabel", wellName));
+							}
+						}
+					}
+					
+					titleList.add(title);
+					
+					if(template.getHeader().size()>0){
+						String labelInfoStr="";
+						String[] labelInfoArr=null;
+						String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+								+ " where t.wellid="+wellId+" "
+								+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.wellid="+wellId+")";
+						List<?> labelInfoList = this.findCallSql(labelInfoSql);
+						if(labelInfoList.size()>0){
+							labelInfoStr=labelInfoList.get(0).toString();
+							if(StringManagerUtils.isNotNull(labelInfoStr)){
+								labelInfoArr=labelInfoStr.split(",");
+							}
+						}
+						if(labelInfoArr!=null && labelInfoArr.length>0){
+							for(int j=0;j<labelInfoArr.length;j++){
+								if("label".equals(labelInfoArr[j])){
+									labelInfoArr[j]="";
+								}
+								for(int l=0;l<template.getHeader().size();l++){
+									boolean exit=false;
+									if(template.getHeader().get(l).getTitle()!=null){
+										for(int k=0;k<template.getHeader().get(l).getTitle().size();k++){
+											if(template.getHeader().get(l).getTitle().get(k).indexOf("label")>=0){
+												template.getHeader().get(l).getTitle().set(k, template.getHeader().get(l).getTitle().get(k).replaceFirst("label", labelInfoArr[j]));
+												exit=true;
+												break;
+											}
+										}
+									}
+									if(exit){
+										break;
+									}
+								}
+							}
+						}
+						for(int j=0;j<template.getHeader().size();j++){
+							if(template.getHeader().get(j).getTitle()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+									}
+								}
+							}
+						}
+					}
+					
+					List<List<String>> dataList=new ArrayList<>();
+					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec "
+							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+							+ " where t.unitid="+reportUnitId+" "
+							+ " and t.reportType="+reportType
+							+ " and t.sort>=0"
+							+ " and t.sort<="+columnCount
+							+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+							+ " order by t.sort";
+					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+					List<String> reportItemPrecList=new ArrayList<>();
+					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+					for(int j=0;j<reportItemQuertList.size();j++){
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
+						ReportUnitItem reportUnitItem=new ReportUnitItem();
+						reportUnitItem.setItemName(reportItemObj[0]+"");
+						reportUnitItem.setItemCode(reportItemObj[1]+"");
+						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+						reportItemList.add(reportUnitItem);
+						reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
+					}
+					
+					StringBuffer sqlBuff = new StringBuffer();
+					sqlBuff.append("select id");
+					
+					for(int j=0;j<reportItemList.size();j++){
+						if(reportItemList.get(j).getDataType()==3){
+							sqlBuff.append(",to_char(t."+reportItemList.get(j).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(j).getItemCode()+"");
+						}else if(reportItemList.get(j).getDataType()==4){
+							sqlBuff.append(",to_char(t."+reportItemList.get(j).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(j).getItemCode()+"");
+						}else if(reportItemList.get(j).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(j))){
+							sqlBuff.append(",round("+reportItemList.get(j).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(j))+")");
+						}else{
+							sqlBuff.append(","+reportItemList.get(j).getItemCode()+"");
+						}
+					}
+					sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+					sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+					sqlBuff.append(" order by t.calDate");
+					
+					List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+					for(int k=0;k<reportDataList.size();k++){
+						Object[] reportDataObj=(Object[]) reportDataList.get(k);
+						String recordId=reportDataObj[0]+"";
+						List<String> everyDaya=new ArrayList<String>();
+						for(int j=0;j<columnCount;j++){
+							everyDaya.add("");
+						}
+						everyDaya.set(0, (k+1)+"");
+						for(int j=0;j<reportItemList.size();j++){
+							if(reportItemList.get(j).getSort()>=1){
+								String addValue="";
+								if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
+									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+								}else{
+									addValue=reportDataObj[j+1]+"";
+								}
+								everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+							}
+						}
+						dataList.add(everyDaya);
+					}
+					
+					for(int k=0;k<template.getHeader().size();k++){
+						List<Object> record = new ArrayList<>();
+						for(int j=0;j<template.getHeader().get(k).getTitle().size();j++){
+							if(k==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(k).getTitle().get(j));
+							}
+						}
+						sheetDataList.add(record);
+					}
+					for(int k=0;k<dataList.size();k++){
+						List<Object> record = new ArrayList<>();
+						for(int j=0;j<dataList.get(k).size();j++){
+							record.add(dataList.get(k).get(j));
+						}
+						sheetDataList.add(record);
+					}
+					if(template.getMergeCells()!=null && template.getMergeCells().size()>0){
+						for(int k=0;k<template.getMergeCells().size();k++){
+							if(template.getMergeCells().get(k).getRowspan()==1&&template.getMergeCells().get(k).getColspan()>1){
+								for(int j=template.getMergeCells().get(k).getCol();j<template.getMergeCells().get(k).getCol()+template.getMergeCells().get(k).getColspan();j++){
+									String value=sheetDataList.get(template.getMergeCells().get(k).getRow()).get(j)+"";
+									if(!StringManagerUtils.isNotNull(value)){
+										sheetDataList.get(template.getMergeCells().get(k).getRow()).set(j, ExcelUtils.COLUMN_MERGE);
+									}
+								}
+							}else if(template.getMergeCells().get(k).getRowspan()>1&&template.getMergeCells().get(k).getColspan()==1){
+								for(int j=template.getMergeCells().get(k).getRow();j<template.getMergeCells().get(k).getRow()+template.getMergeCells().get(k).getRowspan();j++){
+									String value=sheetDataList.get(j).get(template.getMergeCells().get(k).getCol())+"";
+									if(!StringManagerUtils.isNotNull(value)){
+										sheetDataList.get(j).set(template.getMergeCells().get(k).getCol(), ExcelUtils.ROW_MERGE);
+									}
+								}
+							}
+						}
+					}
+					sheetList.add(sheetDataList);
+				}
+			}
+			
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1306,7 +1556,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
 			
-			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 					+ " where t.unitid="+reportUnitId+" "
 					+ " and t.reportType="+reportType
@@ -1315,6 +1565,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
 			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+			List<String> reportItemPrecList=new ArrayList<>();
 			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 			for(int i=0;i<reportItemQuertList.size();i++){
 				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -1324,6 +1575,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 				reportItemList.add(reportUnitItem);
+				reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
@@ -1334,6 +1586,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 				}else if(reportItemList.get(i).getDataType()==4){
 					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
+				}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
+					sqlBuff.append(",round("+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
 				}else{
 					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 				}
@@ -1478,7 +1732,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String header=template.getHeader().get(0).getTitle().get(i);
 						if(StringManagerUtils.isNotNull(header)){
 							title=header.replaceAll("wellNameLabel", wellName);
-							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
 						}
 					}
 				}
@@ -1518,12 +1772,21 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 						}
 					}
+					for(int j=0;j<template.getHeader().size();j++){
+						if(template.getHeader().get(j).getTitle()!=null){
+							for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+								if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+								}
+							}
+						}
+					}
 				}
 				fileName="";
 				fileName+=title+"-"+reportDate;
 				
 				List<List<String>> dataList=new ArrayList<>();
-				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec "
 						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 						+ " where t.unitid="+reportUnitId+" "
 						+ " and t.reportType="+reportType
@@ -1532,6 +1795,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 						+ " order by t.sort";
 				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+				List<String> reportItemPrecList=new ArrayList<>();
 				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 				for(int i=0;i<reportItemQuertList.size();i++){
 					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -1541,6 +1805,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 					reportItemList.add(reportUnitItem);
+					reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
@@ -1551,6 +1816,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 					}else if(reportItemList.get(i).getDataType()==4){
 						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
+					}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
+						sqlBuff.append(",round("+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
 					}else{
 						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 					}
@@ -1619,7 +1886,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<template.getHeader().size();i++){
 					List<Object> record = new ArrayList<>();
 					for(int j=0;j<template.getHeader().get(i).getTitle().size();j++){
-						record.add(template.getHeader().get(i).getTitle().get(j));
+						if(i==0 && j==0){
+							record.add(title);
+						}else{
+							record.add(template.getHeader().get(i).getTitle().get(j));
+						}
 					}
 					sheetDataList.add(record);
 				}
@@ -1726,7 +1997,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							String header=template.getHeader().get(0).getTitle().get(j);
 							if(StringManagerUtils.isNotNull(header)){
 								title=header.replaceAll("wellNameLabel", wellName);
-								template.getHeader().get(0).getTitle().set(j, header.replaceAll("wellNameLabel", wellName));
+//								template.getHeader().get(0).getTitle().set(j, header.replaceAll("wellNameLabel", wellName));
 							}
 						}
 					}
@@ -1767,10 +2038,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								}
 							}
 						}
+						for(int j=0;j<template.getHeader().size();j++){
+							if(template.getHeader().get(j).getTitle()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+									}
+								}
+							}
+						}
 					}
 					
 					List<List<String>> dataList=new ArrayList<>();
-					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
+					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec "
 							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 							+ " where t.unitid="+reportUnitId+" "
 							+ " and t.reportType="+reportType
@@ -1779,6 +2059,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 							+ " order by t.sort";
 					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+					List<String> reportItemPrecList=new ArrayList<>();
 					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 					for(int j=0;j<reportItemQuertList.size();j++){
 						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
@@ -1788,6 +2069,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 						reportItemList.add(reportUnitItem);
+						reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
 					}
 					
 					StringBuffer sqlBuff = new StringBuffer();
@@ -1798,6 +2080,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(j).getItemCode()+"");
 						}else if(reportItemList.get(j).getDataType()==4){
 							sqlBuff.append(",to_char(t."+reportItemList.get(j).getItemCode()+"@'hh24:mi') as "+reportItemList.get(j).getItemCode()+"");
+						}else if(reportItemList.get(j).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(j))){
+							sqlBuff.append(",round("+reportItemList.get(j).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(j))+")");
 						}else{
 							sqlBuff.append(","+reportItemList.get(j).getItemCode()+"");
 						}
@@ -1866,7 +2150,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int k=0;k<template.getHeader().size();k++){
 						List<Object> record = new ArrayList<>();
 						for(int j=0;j<template.getHeader().get(k).getTitle().size();j++){
-							record.add(template.getHeader().get(k).getTitle().get(j));
+							if(k==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(k).getTitle().get(j));
+							}
 						}
 						sheetDataList.add(record);
 					}
@@ -1982,7 +2270,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			statDataShowValueList.add(sumShowDataList);
 			statDataShowValueList.add(avgShowDataList);
 			
-			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.sumsign,t.averagesign "
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.sumsign,t.averagesign,t.prec "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 					+ " where t.unitid="+unitId+" "
 					+ " and t.reportType="+reportType
@@ -1991,6 +2279,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
 			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+			List<String> reportItemPrecList=new ArrayList<>();
 			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 			for(int i=0;i<reportItemQuertList.size();i++){
 				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -2004,6 +2293,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
 				
 				reportItemList.add(reportUnitItem);
+				reportItemPrecList.add((reportItemObj[6]+"").replaceAll("null", ""));
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
@@ -2014,6 +2304,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 				}else if(reportItemList.get(i).getDataType()==4){
 					sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+				}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
+					sqlBuff.append(",round("+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
 				}else{
 					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 				}
@@ -2191,7 +2483,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				statDataShowValueList.add(sumShowDataList);
 				statDataShowValueList.add(avgShowDataList);
 				
-				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.sumsign,t.averagesign "
+				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.sumsign,t.averagesign,t.prec "
 						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 						+ " where t.unitid="+unitId+" "
 						+ " and t.reportType="+reportType
@@ -2200,6 +2492,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 						+ " order by t.sort";
 				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+				List<String> reportItemPrecList=new ArrayList<>();
 				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 				for(int i=0;i<reportItemQuertList.size();i++){
 					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -2213,6 +2506,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
 					
 					reportItemList.add(reportUnitItem);
+					reportItemPrecList.add((reportItemObj[6]+"").replaceAll("null", ""));
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
@@ -2223,6 +2517,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
 					}else if(reportItemList.get(i).getDataType()==4){
 						sqlBuff.append(",to_char(t."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(i).getItemCode()+"");
+					}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
+						sqlBuff.append(",round("+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
 					}else{
 						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 					}
@@ -2334,6 +2630,258 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean batchExportProductionDailyReportData(HttpServletResponse response,
+			Page pager,String orgId,String selectedOrgName,
+			String deviceType,String reportType,
+			String reportDate,int userNo)throws Exception {
+		try{
+			List<List<List<Object>>> sheetList =new ArrayList<>();
+			List<String> sheetNameList =new ArrayList<>();
+			List<String> titleList =new ArrayList<>();
+			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
+			String fileName=selectedOrgName+"日报表-"+reportDate;
+			
+			String deviceTableName="tbl_rpcdevice";
+			String tableName="VIW_RPCDAILYCALCULATIONDATA";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				deviceTableName="tbl_pcpdevice";
+				tableName="VIW_PCPDAILYCALCULATIONDATA";
+			}
+			
+			String reportTemplateCodeSql="select t2.id,t2.productionreporttemplate,t.name,t.code "
+					+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
+					+ " where t.unitid=t2.id and t2.devicetype="+deviceType
+					+ " order by t.sort";
+			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+			
+			for(int i=0;i<reportTemplateCodeList.size();i++){
+				Object[] obj=(Object[]) reportTemplateCodeList.get(i);
+				String unitId=obj[0]+"";
+				String reportTemplateCode=(obj[1]+"").replaceAll("null", "");
+				String reportInstanceName=(obj[2]+"").replaceAll("null", "");
+				String reportInstanceCode=(obj[3]+"").replaceAll("null", "");
+				
+				String sheetName=reportInstanceName+""+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
+				String title="";
+				
+				List<List<Object>> sheetDataList = new ArrayList<>();
+				
+				ReportTemplate.Template template=null;
+				
+				if(StringManagerUtils.isNotNull(reportTemplateCode)){
+					template=MemoryDataManagerTask.getProductionReportTemplateByCode(reportTemplateCode);
+				}
+				
+				if(template!=null){
+					sheetNameList.add(sheetName);
+					sheetTemplateList.add(template);
+					
+					int columnCount=0;
+					
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
+						columnCount=template.getHeader().get(0).getTitle().size();
+						for(int j=0;j<template.getHeader().get(0).getTitle().size();j++){
+							String header=template.getHeader().get(0).getTitle().get(j);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("orgNameLabel", selectedOrgName);
+//								template.getHeader().get(0).getTitle().set(j, header.replaceAll("orgNameLabel", selectedOrgName));
+							}
+						}
+					}
+					titleList.add(title);
+					
+					
+					
+					List<List<String>> dataList=new ArrayList<>();
+					List<List<String>> statDataList=new ArrayList<>();
+					List<List<String>> statDataShowValueList=new ArrayList<>();
+					List<String> sumDataList=new ArrayList<>();
+					List<String> avgDataList=new ArrayList<>();
+					List<String> sumShowDataList=new ArrayList<>();
+					List<String> avgShowDataList=new ArrayList<>();
+					List<Integer> avgRecordsList=new ArrayList<>();
+					for(int j=0;j<columnCount;j++){
+						sumDataList.add("");
+						avgDataList.add("");
+						avgRecordsList.add(0);
+						
+						sumShowDataList.add("");
+						avgShowDataList.add("");
+					}
+					sumDataList.set(0, "合计");
+					avgDataList.set(0, "平均值");
+					
+					sumShowDataList.set(0, "合计");
+					avgShowDataList.set(0, "平均值");
+					
+					statDataList.add(sumDataList);
+					statDataList.add(avgDataList);
+					
+					statDataShowValueList.add(sumShowDataList);
+					statDataShowValueList.add(avgShowDataList);
+					
+					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.sumsign,t.averagesign,t.prec "
+							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+							+ " where t.unitid="+unitId+" "
+							+ " and t.reportType="+reportType
+							+ " and t.sort>=0"
+							+ " and t.sort<="+columnCount
+							+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+							+ " order by t.sort";
+					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
+					List<String> reportItemPrecList=new ArrayList<>();
+					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+					for(int j=0;j<reportItemQuertList.size();j++){
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
+						ReportUnitItem reportUnitItem=new ReportUnitItem();
+						reportUnitItem.setItemName(reportItemObj[0]+"");
+						reportUnitItem.setItemCode(reportItemObj[1]+"");
+						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+						
+						reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
+						reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
+						
+						reportItemList.add(reportUnitItem);
+						reportItemPrecList.add((reportItemObj[6]+"").replaceAll("null", ""));
+					}
+					
+					StringBuffer sqlBuff = new StringBuffer();
+					sqlBuff.append("select id");
+					
+					for(int j=0;j<reportItemList.size();j++){
+						if(reportItemList.get(j).getDataType()==3){
+							sqlBuff.append(",to_char(t."+reportItemList.get(j).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(j).getItemCode()+"");
+						}else if(reportItemList.get(j).getDataType()==4){
+							sqlBuff.append(",to_char(t."+reportItemList.get(j).getItemCode()+"@'yyyy-mm-dd hh24:mi:ss') as "+reportItemList.get(j).getItemCode()+"");
+						}else if(reportItemList.get(j).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(j))){
+							sqlBuff.append(",round("+reportItemList.get(j).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(j))+")");
+						}else{
+							sqlBuff.append(","+reportItemList.get(j).getItemCode()+"");
+						}
+					}
+					sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.reportinstancecode='"+reportInstanceCode+"' ");
+					sqlBuff.append(" and t.calDate = to_date('"+reportDate+"','yyyy-mm-dd')");
+					sqlBuff.append(" order by t.sortnum");
+					
+					List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+					for(int k=0;k<reportDataList.size();k++){
+						Object[] reportDataObj=(Object[]) reportDataList.get(k);
+						String recordId=reportDataObj[0]+"";
+						List<String> everyDaya=new ArrayList<String>();
+						for(int j=0;j<columnCount;j++){
+							everyDaya.add("");
+						}
+						everyDaya.set(0, (i+1)+"");
+						for(int j=0;j<reportItemList.size();j++){
+							if(reportItemList.get(j).getSort()>=1){
+								String addValue="";
+								if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
+									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+								}else{
+									addValue=reportDataObj[j+1]+"";
+								}
+								
+								if(reportItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
+									if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
+										addValue="";
+									}
+								}
+								
+								addValue=addValue.replaceAll("null", "");
+								everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+								
+								//求和
+								if(StringManagerUtils.isNumber(addValue)){
+									avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
+									String currentSum=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+									if(StringManagerUtils.isNumber(currentSum)){
+										statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+									}else{
+										statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+									}
+									
+									if(reportItemList.get(j).getSumSign()!=null && reportItemList.get(j).getSumSign()==1){
+										if(StringManagerUtils.isNumber(currentSum)){
+											statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+										}else{
+											statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+										}
+									}
+								}
+							
+								//求平均						
+								if(reportItemList.get(j).getAverageSign()!=null && reportItemList.get(j).getAverageSign()==1){
+									String sumStr=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+									int avgRecordCount=avgRecordsList.get(reportItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportItemList.get(j).getSort()-1);
+									float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
+									statDataList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+									statDataShowValueList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+								}
+							}
+						}
+						dataList.add(everyDaya);
+					}
+					
+					for(int k=0;k<template.getHeader().size();k++){
+						List<Object> record = new ArrayList<>();
+						for(int j=0;j<template.getHeader().get(k).getTitle().size();j++){
+							if(k==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(k).getTitle().get(j));
+							}
+						}
+						sheetDataList.add(record);
+					}
+					for(int k=0;k<dataList.size();k++){
+						List<Object> record = new ArrayList<>();
+						for(int j=0;j<dataList.get(k).size();j++){
+							record.add(dataList.get(k).get(j));
+						}
+						sheetDataList.add(record);
+					}
+					
+					for(int k=0;k<statDataShowValueList.size();k++){
+						List<Object> record = new ArrayList<>();
+						for(int j=0;j<statDataShowValueList.get(k).size();j++){
+							record.add(statDataShowValueList.get(k).get(j));
+						}
+						sheetDataList.add(record);
+					}
+					
+					if(template.getMergeCells()!=null && template.getMergeCells().size()>0){
+						for(int k=0;k<template.getMergeCells().size();k++){
+							if(template.getMergeCells().get(k).getRowspan()==1&&template.getMergeCells().get(k).getColspan()>1){
+								for(int j=template.getMergeCells().get(k).getCol();j<template.getMergeCells().get(k).getCol()+template.getMergeCells().get(k).getColspan();j++){
+									String value=sheetDataList.get(template.getMergeCells().get(k).getRow()).get(j)+"";
+									if(!StringManagerUtils.isNotNull(value)){
+										sheetDataList.get(template.getMergeCells().get(k).getRow()).set(j, ExcelUtils.COLUMN_MERGE);
+									}
+								}
+							}else if(template.getMergeCells().get(k).getRowspan()>1&&template.getMergeCells().get(k).getColspan()==1){
+								for(int j=template.getMergeCells().get(k).getRow();j<template.getMergeCells().get(k).getRow()+template.getMergeCells().get(k).getRowspan();j++){
+									String value=sheetDataList.get(j).get(template.getMergeCells().get(k).getCol())+"";
+									if(!StringManagerUtils.isNotNull(value)){
+										sheetDataList.get(j).set(template.getMergeCells().get(k).getCol(), ExcelUtils.ROW_MERGE);
+									}
+								}
+							}
+						}
+					}
+					
+					sheetList.add(sheetDataList);
+				}
+			}
+			
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

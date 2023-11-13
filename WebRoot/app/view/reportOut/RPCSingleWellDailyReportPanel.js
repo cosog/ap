@@ -360,6 +360,13 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                             }
                         },'-',{
                             xtype: 'button',
+                            text: '批量导出',
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	batchExportRPCSingleWellRangeReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
                             text: cosog.string.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
@@ -1837,6 +1844,24 @@ function ExportRPCSingleWellRangeReportData(){
 	document.location.href = url;
 }
 
+function batchExportRPCSingleWellRangeReportData(){
+	var leftOrg_Id = obtainParams('leftOrg_Id');
+	var wellName = Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
+	var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
+	var endDate = Ext.getCmp('RPCSingleWellDailyReportEndDate_Id').rawValue;
+	var reportDate = Ext.getCmp('RPCSingleWellDailyReportDate_Id').rawValue;
+
+	var url=context + '/reportDataMamagerController/batchExportSingleWellRangeReportData?deviceType=0'
+	+'&reportType=0'
+	+'&wellName='+URLencode(URLencode(wellName))
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&reportDate='+reportDate
+	+'&orgId='+leftOrg_Id;
+	
+	document.location.href = url;
+}
+
 function ExportRPCSingleWellDailyReportData(){
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').getValue();
@@ -1878,7 +1903,5 @@ function batchExportRPCSingleWellDailyReportData(){
 	+'&reportDate='+reportDate
 	+'&orgId='+leftOrg_Id;
 	
-//	Ext.getCmp("RPCSingleWellDailyReportPanel_id").el.mask('正在导出...').show();
 	document.location.href = url;
-//	Ext.getCmp("RPCSingleWellDailyReportPanel_id").getEl().unmask();
 }

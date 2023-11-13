@@ -15,6 +15,8 @@ public class TotalCalItemsToReportUnitSaveData {
 	    private String itemShowLevel;
 
 	    private String itemSort;
+	    
+	    private String itemPrec;
 
 	    private String sumSign;
 
@@ -87,6 +89,12 @@ public class TotalCalItemsToReportUnitSaveData {
 		}
 		public void setReportCurveConf(String reportCurveConf) {
 			this.reportCurveConf = reportCurveConf;
+		}
+		public String getItemPrec() {
+			return itemPrec;
+		}
+		public void setItemPrec(String itemPrec) {
+			this.itemPrec = itemPrec;
 		}
 	}
 

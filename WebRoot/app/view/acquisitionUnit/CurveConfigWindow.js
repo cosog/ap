@@ -204,8 +204,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==6){
-                				singleWellRangeReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),7,curveConfig);
+                			if(parseInt(col)==7){
+                				singleWellRangeReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),8,curveConfig);
                 			}
                 		}else if(tableType==22){//区域报表汇总计算项
                 			productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
@@ -215,8 +215,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==8){
-                				productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),10,curveConfig);
+                			if(parseInt(col)==9){
+                				productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),11,curveConfig);
                 			}
                 		}else if(tableType==23){//单井单日报表汇总计算项
                 			singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
@@ -226,8 +226,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==6){
-                				singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),7,curveConfig);
+                			if(parseInt(col)==7){
+                				singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),8,curveConfig);
                 			}
                 		}
                 	}

@@ -244,6 +244,56 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/batchExportSingleWellRangeReportData")
+	public String batchExportSingleWellRangeReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_rpcdailycalculationdata";
+		String deviceTypeName="抽油机井";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
+			deviceTypeName="螺杆泵井";
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		String fileName = deviceTypeName;
+		String title = deviceTypeName+"生产报表";
+        if(StringManagerUtils.isNotNull(wellName)){
+        	fileName+=wellName;
+        }
+        fileName+="生产报表-"+startDate;
+        if(!startDate.equalsIgnoreCase(endDate)){
+        	fileName+="~"+endDate;
+        }
+		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,user.getUserNo());
+		return null;
+	}
+	
 	@RequestMapping("/getSingleWellDailyReportData")
 	public String getSingleWellDailyReportData() throws Exception {
 		log.debug("reportOutputWell enter==");
@@ -571,6 +621,50 @@ public class ReportDataMamagerController extends BaseController {
 		
 		
 		boolean bool = reportDataManagerService.exportProductionDailyReportData(response,pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		return null;
+	}
+	
+	@RequestMapping("/batchExportProductionDailyReportData")
+	public String batchExportProductionDailyReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String selectedOrgName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "selectedOrgName"),"utf-8");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_rpcdailycalculationdata";
+		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+			tableName="tbl_pcpdailycalculationdata";
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		
+		boolean bool = reportDataManagerService.batchExportProductionDailyReportData(response,pager, orgId,selectedOrgName,deviceType,reportType,reportDate,user.getUserNo());
 		return null;
 	}
 	

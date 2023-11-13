@@ -219,7 +219,6 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             width: 90,
                             format: 'Y-m-d ',
                             id: 'RPCProductionDailyReportDate_Id',
-//                            value: new Date(),
                             listeners: {
                             	change ( thisField, newValue, oldValue, eOpts )  {
                             		var startDateStr=Ext.getCmp("RPCProductionDailyReportStartDate_Id").rawValue;
@@ -270,7 +269,6 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	var count=IframeViewStore.getCount();
                             	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
                             	if (IframeViewSelection.length > 0) {
-//                            		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
                             		selectedOrgName=IframeViewSelection[0].data.text;
                             		selectedOrgId=IframeViewSelection[0].data.orgId;
                             	} else {
@@ -295,6 +293,52 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                                 }
                             	
                             	var url=context + '/reportDataMamagerController/exportProductionDailyReportData?deviceType=0'
+                            	+'&reportType=1'
+                            	+'&wellName='+URLencode(URLencode(wellName))
+                            	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))
+                            	+'&instanceCode='+instanceCode
+                            	+'&unitId='+unitId
+                            	+'&startDate='+startDate
+                            	+'&endDate='+endDate
+                            	+'&reportDate='+reportDate
+                            	+'&orgId='+orgId;
+                            	document.location.href = url;
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: '批量导出',
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	var selectedOrgName="";
+                            	var selectedOrgId="";
+                            	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+                            	var count=IframeViewStore.getCount();
+                            	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+                            	if (IframeViewSelection.length > 0) {
+                            		selectedOrgName=IframeViewSelection[0].data.text;
+                            		selectedOrgId=IframeViewSelection[0].data.orgId;
+                            	} else {
+                            		if(count>0){
+                            			selectedOrgName=IframeViewStore.getAt(0).data.text;
+                            			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+                            		}
+                            	}
+                            	
+                            	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                                var startDate = Ext.getCmp('RPCProductionDailyReportStartDate_Id').rawValue;
+                                var endDate = Ext.getCmp('RPCProductionDailyReportEndDate_Id').rawValue;
+                                var reportDate = Ext.getCmp('RPCProductionDailyReportDate_Id').rawValue;
+                                
+                                var wellName='';
+                                var unitId=0;
+                                var instanceCode='';
+                                var selectRow= Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").getValue();
+                                if(selectRow>=0){
+                                	instanceCode=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
+                                	unitId=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
+                                }
+                            	
+                            	var url=context + '/reportDataMamagerController/batchExportProductionDailyReportData?deviceType=0'
                             	+'&reportType=1'
                             	+'&wellName='+URLencode(URLencode(wellName))
                             	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))

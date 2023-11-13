@@ -823,7 +823,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(deviceType,unitId,unitNa
 			}
 			if(singleWellRangeReportTemplateContentHandsontableHelper==null || singleWellRangeReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','报表曲线','','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','小数位数','报表曲线','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -831,6 +831,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(deviceType,unitId,unitNa
 					 	+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'reportCurveConfShowValue'},"
 						+"{data:'reportCurveConf'},"
 						+"{data:'code'},"
@@ -889,11 +890,11 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7,8,9,10],
+	                    columns: [8,9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,85,85,],
+	                colWidths: [25,30,140,80,60,60,85,85,85],
 	                columns:singleWellRangeReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -918,7 +919,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                		}else{
 	                			if (visualColIndex >=1 && visualColIndex<=3) {
 	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==6){
+	    		                }else if(visualColIndex==7){
 	    		                	cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
 	    		                }
 	                		}
@@ -928,7 +929,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(singleWellRangeReportTemplateContentHandsontableHelper!=null && singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==6)){
+		                	if(row1[0] && (column==7)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
@@ -942,8 +943,8 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 		                				CurveConfigWindow.show();
 		                				
 		                				var curveConfig=null;
-		                				if(column==6 && isNotVal(row1[7])){
-		                					curveConfig=row1[7];
+		                				if(column==7 && isNotVal(row1[8])){
+		                					curveConfig=row1[8];
 		                				}
 		                				var value='ff0000';
 		                				
@@ -973,7 +974,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(singleWellRangeReportTemplateContentHandsontableHelper!=null&&singleWellRangeReportTemplateContentHandsontableHelper.hot!=''&&singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined && singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		if(coords.col==2){
-	                			var remark=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,10);
+	                			var remark=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,11);
 	                			if(isNotVal(remark)){
 	                				var showValue=remark;
 	            					var rowChar=90;
@@ -1040,7 +1041,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(deviceType,unitId,unitNa
 			}
 			if(singleWellDailyReportTemplateContentHandsontableHelper==null || singleWellDailyReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellDailyReportTemplateContentHandsontableHelper = SingleWellDailyReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','报表曲线','','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','小数位数','报表曲线','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -1048,6 +1049,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(deviceType,unitId,unitNa
 					 	+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'reportCurveConfShowValue'},"
 						+"{data:'reportCurveConf'},"
 						+"{data:'code'},"
@@ -1106,11 +1108,11 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7,8,9,10],
+	                    columns: [8,9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,85,85,],
+	                colWidths: [25,30,140,80,60,60,85,85,85],
 	                columns:singleWellDailyReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1135,7 +1137,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	                		}else{
 	                			if (visualColIndex >=1 && visualColIndex<=3) {
 	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==6){
+	    		                }else if(visualColIndex==7){
 	    		                	cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg;
 	    		                }
 	                		}
@@ -1145,7 +1147,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(singleWellDailyReportTemplateContentHandsontableHelper!=null && singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==6)){
+		                	if(row1[0] && (column==7)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
@@ -1159,8 +1161,8 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 		                				CurveConfigWindow.show();
 		                				
 		                				var curveConfig=null;
-		                				if(column==6 && isNotVal(row1[7])){
-		                					curveConfig=row1[7];
+		                				if(column==7 && isNotVal(row1[8])){
+		                					curveConfig=row1[8];
 		                				}
 		                				var value='ff0000';
 		                				
@@ -1190,7 +1192,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(singleWellDailyReportTemplateContentHandsontableHelper!=null&&singleWellDailyReportTemplateContentHandsontableHelper.hot!=''&&singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined && singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		if(coords.col==2){
-	                			var remark=singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,10);
+	                			var remark=singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,11);
 	                			if(isNotVal(remark)){
 	                				var showValue=remark;
 	            					var rowChar=90;
@@ -1565,7 +1567,7 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			}
 			if(productionReportTemplateContentHandsontableHelper==null || productionReportTemplateContentHandsontableHelper.hot==undefined){
 				productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','求和','求平均','报表曲线','曲线统计类型','','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','小数位数','求和','求平均','报表曲线','曲线统计类型','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -1573,6 +1575,8 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 					 	+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
+						
+						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						
 						+"{data:'sumSign',type:'checkbox'}," 
 						+"{data:'averageSign',type:'checkbox'}," 
@@ -1638,11 +1642,11 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [10,11,12,13],
+	                    columns: [11,12,13,14],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,30,45,85,70],
+	                colWidths: [25,30,140,80,60,60,60,30,45,85,70],
 	                columns:productionReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1667,7 +1671,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                		}else{
 	                			if (visualColIndex >=1 && visualColIndex<=3) {
 	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==8){
+	    		                }else if(visualColIndex==9){
 	    		                	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCurveBg;
 	    		                }
 	                		}
@@ -1677,7 +1681,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(productionReportTemplateContentHandsontableHelper!=null && productionReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=productionReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==8)){
+		                	if(row1[0] && (column==9)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
@@ -1691,8 +1695,8 @@ var ProductionReportTemplateContentHandsontableHelper = {
 		                				CurveConfigWindow.show();
 		                				
 		                				var curveConfig=null;
-		                				if(column==8 && isNotVal(row1[10])){
-		                					curveConfig=row1[10];
+		                				if(column==9 && isNotVal(row1[11])){
+		                					curveConfig=row1[11];
 		                				}
 		                				var value='ff0000';
 		                				
@@ -1722,7 +1726,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(productionReportTemplateContentHandsontableHelper!=null&&productionReportTemplateContentHandsontableHelper.hot!=''&&productionReportTemplateContentHandsontableHelper.hot!=undefined && productionReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		if(coords.col==2){
-	                			var remark=productionReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,13);
+	                			var remark=productionReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,14);
 	                			if(isNotVal(remark)){
 	                				var showValue=remark;
 	            					var rowChar=90;
@@ -1901,16 +1905,20 @@ var grantReportTotalCalItemsPermission = function () {
         		
         		var reportCurveConfig=null;
         		var reportCurveConfigStr="";
-    			if(isNotVal(calItemsData[index][6]) && isNotVal(calItemsData[index][7])){
-    				reportCurveConfig=calItemsData[index][7];
+    			if(isNotVal(calItemsData[index][7]) && isNotVal(calItemsData[index][8])){
+    				reportCurveConfig=calItemsData[index][8];
     				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
     			}
         		
         		
         		item.reportCurveConf=reportCurveConfigStr;
             	
-        		item.itemCode = calItemsData[index][8];
-        		item.dataType = calItemsData[index][9];
+        		item.itemCode = calItemsData[index][9];
+        		item.dataType = calItemsData[index][10];
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=calItemsData[index][6];
+        		}
         	}else if(reportType==1){
         		item.itemName = calItemsData[index][2];
             	
@@ -1918,27 +1926,27 @@ var grantReportTotalCalItemsPermission = function () {
         		item.itemSort = calItemsData[index][5];
         		
         		item.sumSign='0';
-        		if((calItemsData[index][6]+'')==='true'){
+        		if((calItemsData[index][7]+'')==='true'){
         			item.sumSign='1';
         		}
         		
         		item.averageSign='0';
-        		if((calItemsData[index][7]+'')==='true'){
+        		if((calItemsData[index][8]+'')==='true'){
         			item.averageSign='1';
         		}
         		
         		var reportCurveConfig=null;
         		var reportCurveConfigStr="";
-    			if(isNotVal(calItemsData[index][8]) && isNotVal(calItemsData[index][10])){
-    				reportCurveConfig=calItemsData[index][10];
+    			if(isNotVal(calItemsData[index][9]) && isNotVal(calItemsData[index][11])){
+    				reportCurveConfig=calItemsData[index][11];
     				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
     			}
         		
         		
         		item.reportCurveConf=reportCurveConfigStr;
         		
-        		item.curveStatType = calItemsData[index][9];
-        		if(calItemsData[index][9]=='合计'){
+        		item.curveStatType = calItemsData[index][10];
+        		if(calItemsData[index][10]=='合计'){
         			item.curveStatType='1';
         		}else if(calItemsData[index][9]=='平均'){
         			item.curveStatType='2';
@@ -1949,8 +1957,12 @@ var grantReportTotalCalItemsPermission = function () {
         		}
         		
             	
-        		item.itemCode = calItemsData[index][11];
-        		item.dataType = calItemsData[index][12]+"";
+        		item.itemCode = calItemsData[index][12];
+        		item.dataType = calItemsData[index][13]+"";
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=calItemsData[index][6];
+        		}
         	}
         	saveData.itemList.push(item);
         }

@@ -305,6 +305,52 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                             	+'&orgId='+orgId;
                             	document.location.href = url;
                             }
+                        },'-',{
+                            xtype: 'button',
+                            text: '批量导出',
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	var selectedOrgName="";
+                            	var selectedOrgId="";
+                            	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+                            	var count=IframeViewStore.getCount();
+                            	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+                            	if (IframeViewSelection.length > 0) {
+                            		selectedOrgName=IframeViewSelection[0].data.text;
+                            		selectedOrgId=IframeViewSelection[0].data.orgId;
+                            	} else {
+                            		if(count>0){
+                            			selectedOrgName=IframeViewStore.getAt(0).data.text;
+                            			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+                            		}
+                            	}
+                            	
+                            	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                                var startDate = Ext.getCmp('PCPProductionDailyReportStartDate_Id').rawValue;
+                                var endDate = Ext.getCmp('PCPProductionDailyReportEndDate_Id').rawValue;
+                                var reportDate = Ext.getCmp('PCPProductionDailyReportDate_Id').rawValue;
+                                
+                                var wellName='';
+                                var unitId=0;
+                                var instanceCode='';
+                                var selectRow= Ext.getCmp("PCPProductionDailyReportInstanceListSelectRow_Id").getValue();
+                                if(selectRow>=0){
+                                	instanceCode=Ext.getCmp("PCPProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
+                                	unitId=Ext.getCmp("PCPProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
+                                }
+                            	
+                            	var url=context + '/reportDataMamagerController/batchExportProductionDailyReportData?deviceType=1'
+                            	+'&reportType=1'
+                            	+'&wellName='+URLencode(URLencode(wellName))
+                            	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))
+                            	+'&instanceCode='+instanceCode
+                            	+'&unitId='+unitId
+                            	+'&startDate='+startDate
+                            	+'&endDate='+endDate
+                            	+'&reportDate='+reportDate
+                            	+'&orgId='+orgId;
+                            	document.location.href = url;
+                            }
                         }, '-',{
                             xtype: 'button',
                             text: cosog.string.save,

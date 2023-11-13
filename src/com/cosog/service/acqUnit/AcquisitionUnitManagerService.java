@@ -1769,6 +1769,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -1783,6 +1784,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsSortList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		
+		List<String> itemsPrecList=new ArrayList<String>();
+		
 		List<String> sumSignList=new ArrayList<String>();
 		List<String> averageSignList=new ArrayList<String>();
 		
@@ -1790,7 +1793,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> curveStatTypeList=new ArrayList<String>();
 		if("1".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype "
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec "
 					+ " from tbl_report_items2unit_conf t "
 					+ " where t.unitid="+unitId+" and t.reportType="+reportType
 					+ " order by t.sort";
@@ -1811,6 +1814,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				reportCurveConfList.add(reportCurveConf);
 				curveStatTypeList.add(obj[7]+"");
+				
+				itemsPrecList.add(obj[8]+"");
 			}
 		}
 		
@@ -1822,6 +1827,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				boolean checked=false;
 				String sort="";
 				String showLevel="";
+				
+				String prec="";
 				
 				boolean sumSign=false;
 				boolean averageSign=false;
@@ -1837,6 +1844,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 							sort=itemsSortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
+							
+							prec=itemsPrecList.get(k);
 							
 							if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
 								if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
@@ -1889,6 +1898,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"unit\":\""+calItem.getUnit()+"\","
 						+ "\"showLevel\":\""+showLevel+"\","
 						+ "\"sort\":\""+sort+"\","
+						+ "\"prec\":\""+prec+"\","
 						+ "\"sumSign\":"+sumSign+","
 						+ "\"averageSign\":"+averageSign+","
 						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
@@ -1943,6 +1953,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -1955,6 +1966,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
 		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsPrecList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		
 		List<String> sumSignList=new ArrayList<String>();
@@ -1964,7 +1976,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> curveStatTypeList=new ArrayList<String>();
 		if("1".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype "
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec "
 					+ " from tbl_report_items2unit_conf t "
 					+ " where t.unitid="+unitId+" and t.reportType="+reportType
 					+ " order by t.sort";
@@ -1985,6 +1997,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				reportCurveConfList.add(reportCurveConf);
 				curveStatTypeList.add(obj[7]+"");
+				itemsPrecList.add(obj[8]+"");
 			}
 		}
 		
@@ -1996,6 +2009,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				boolean checked=false;
 				String sort="";
 				String showLevel="";
+				String prec="";
 				
 				boolean sumSign=false;
 				boolean averageSign=false;
@@ -2011,6 +2025,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 							sort=itemsSortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
+							prec=itemsPrecList.get(k);
 							
 							if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
 								if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
@@ -2063,6 +2078,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"unit\":\""+calItem.getUnit()+"\","
 						+ "\"showLevel\":\""+showLevel+"\","
 						+ "\"sort\":\""+sort+"\","
+						+ "\"prec\":\""+prec+"\","
 						+ "\"sumSign\":"+sumSign+","
 						+ "\"averageSign\":"+averageSign+","
 						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
@@ -2117,6 +2133,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -2126,7 +2143,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype "
+		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec "
 				+ " from tbl_report_items2unit_conf t "
 				+ " where t.unitid="+unitId+" and t.reportType="+reportType
 				+ " order by t.sort";
@@ -2205,6 +2222,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"unit\":\""+unit+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","
 					+ "\"sort\":\""+obj[2]+""+"\","
+					+ "\"prec\":\""+obj[8]+""+"\","
 					+ "\"sumSign\":"+sumSign+""+","
 					+ "\"averageSign\":"+averageSign+""+","
 					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+""+"\","
@@ -2255,6 +2273,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -2264,7 +2283,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype "
+		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec "
 				+ " from tbl_report_items2unit_conf t "
 				+ " where t.unitid="+unitId+" and t.reportType="+reportType
 				+ " order by t.sort";
@@ -2343,6 +2362,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"unit\":\""+unit+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","
 					+ "\"sort\":\""+obj[2]+""+"\","
+					+ "\"prec\":\""+obj[8]+""+"\","
 					+ "\"sumSign\":"+sumSign+""+","
 					+ "\"averageSign\":"+averageSign+""+","
 					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+""+"\","

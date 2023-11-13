@@ -1011,6 +1011,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
 					reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
 					
+					reportUnitItem.setPrec( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()):null);
+					
 					reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
 					reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
 					

@@ -1902,6 +1902,7 @@ function batchExportRPCSingleWellDailyReportData(){
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
 	+'&orgId='+leftOrg_Id;
-	
+//	Ext.getCmp("RPCSingleWellDailyReportPanel_id").el.mask(cosog.string.loading).show();
 	document.location.href = url;
+//	Ext.getCmp("RPCSingleWellDailyReportPanel_id").getEl().unmask();
 }

@@ -1143,9 +1143,9 @@ public class ReportDataMamagerController extends BaseController {
 	        Label header5_3=new Label(8,2,"运行时率(小数)",wcf_head);
 	       
 	       Label header6=new Label(9,1,"产量",wcf_head);
-	       Label header6_1=new Label(9,2,"产液量("+productionUnit+")",wcf_head);
-	       Label header6_2=new Label(10,2,"产油量("+productionUnit+")",wcf_head);
-	       Label header6_3=new Label(11,2,"产水量("+productionUnit+")",wcf_head);
+	       Label header6_1=new Label(9,2,"日累计产液量("+productionUnit+")",wcf_head);
+	       Label header6_2=new Label(10,2,"日累计产油量("+productionUnit+")",wcf_head);
+	       Label header6_3=new Label(11,2,"日累计产水量("+productionUnit+")",wcf_head);
 	       Label header6_4=new Label(12,2,"含水率(%)",wcf_head);
 	       Label header6_5=new Label(13,2,"转速(r/min)",wcf_head);
 	       

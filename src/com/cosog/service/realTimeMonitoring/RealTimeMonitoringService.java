@@ -4408,7 +4408,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("fmin:\""+obj[6]+"\",");         // 最小载荷
 	        dataSbf.append("stroke:\""+obj[7]+"\",");         // 冲程
 	        dataSbf.append("spm:\""+obj[8]+"\",");         // 冲次
-	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日产液量
+	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日累计产液量
 	        dataSbf.append("resultName:\""+obj[10]+"\",");         // 工况类型
 	        dataSbf.append("resultCode:\""+obj[11]+"\",");         // 工况代码
 	        dataSbf.append("optimizationSuggestion:\""+obj[12]+"\",");         // 优化建议

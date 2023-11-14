@@ -158,9 +158,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"运行时率(%)\",\"dataIndex\":\"runTimeEfficiency\"},"
 				+ "{ \"header\":\"功图工况\",\"dataIndex\":\"resultName\"},"
 				+ "{ \"header\":\"优化建议\",\"dataIndex\":\"optimizationSuggestion\",width:120},"
-				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidProduction\"},"
-				+ "{ \"header\":\"产油量(t/d)\",\"dataIndex\":\"oilProduction\"},"
-				+ "{ \"header\":\"产水量(t/d)\",\"dataIndex\":\"waterProduction\"},"
+				+ "{ \"header\":\"日累计产液量(t/d)\",\"dataIndex\":\"liquidProduction\"},"
+				+ "{ \"header\":\"日累计产油量(t/d)\",\"dataIndex\":\"oilProduction\"},"
+				+ "{ \"header\":\"日累计产水量(t/d)\",\"dataIndex\":\"waterProduction\"},"
 				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\"},"
 				+ "{ \"header\":\"充满系数\",\"dataIndex\":\"fullnesscoEfficient\"},"
 				+ "{ \"header\":\"功率平衡度(%)\",\"dataIndex\":\"wattDegreeBalance\"},"
@@ -472,9 +472,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			headerRow2.add("运行时率(小数)");
 			headerRow2.add("功图工况");
 			headerRow2.add("优化建议");
-			headerRow2.add("产液量("+productionUnit+")");
-			headerRow2.add("产油量("+productionUnit+")");
-			headerRow2.add("产水量("+productionUnit+")");
+			headerRow2.add("日累计产液量("+productionUnit+")");
+			headerRow2.add("日累计产油量("+productionUnit+")");
+			headerRow2.add("日累计产水量("+productionUnit+")");
 			headerRow2.add("含水率(%)");
 			headerRow2.add("充满系数(小数)");
 			headerRow2.add("功率平衡度(%)");
@@ -721,9 +721,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"运行区间\",\"dataIndex\":\"runRange\"},"
 				+ "{ \"header\":\"运行时率(%)\",\"dataIndex\":\"runTimeEfficiency\"},"
 				
-				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidProduction\"},"
-				+ "{ \"header\":\"产油量(t/d)\",\"dataIndex\":\"oilProduction\"},"
-				+ "{ \"header\":\"产水量(t/d)\",\"dataIndex\":\"waterProduction\"},"
+				+ "{ \"header\":\"日累计产液量(t/d)\",\"dataIndex\":\"liquidProduction\"},"
+				+ "{ \"header\":\"日累计产油量(t/d)\",\"dataIndex\":\"oilProduction\"},"
+				+ "{ \"header\":\"日累计产水量(t/d)\",\"dataIndex\":\"waterProduction\"},"
 				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\"},"
 				+ "{ \"header\":\"转速(r/min)\",\"dataIndex\":\"rpm\"},"
 				
@@ -3827,9 +3827,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			headerRow2.add("运行时间(h)");
 			headerRow2.add("运行区间");
 			headerRow2.add("运行时率(小数)");
-			headerRow2.add("产液量("+productionUnit+")");
-			headerRow2.add("产油量("+productionUnit+")");
-			headerRow2.add("产水量("+productionUnit+")");
+			headerRow2.add("日累计产液量("+productionUnit+")");
+			headerRow2.add("日累计产油量("+productionUnit+")");
+			headerRow2.add("日累计产水量("+productionUnit+")");
 			headerRow2.add("含水率(%)");
 			headerRow2.add("转速(r/min)");
 			headerRow2.add("系统效率(%)");

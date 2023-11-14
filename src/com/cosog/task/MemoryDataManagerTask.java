@@ -1847,25 +1847,25 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("rpcCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2,"理论排量")));
 			
-			jedis.zadd("rpcCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidVolumetricProduction","m^3/d",2,"产液量")));
-			jedis.zadd("rpcCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("产油量","OilVolumetricProduction","m^3/d",2,"产油量")));
-			jedis.zadd("rpcCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("产水量","WaterVolumetricProduction","m^3/d",2,"产水量")));
+			jedis.zadd("rpcCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","LiquidVolumetricProduction","m^3/d",2,"瞬时产液量")));
+			jedis.zadd("rpcCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","OilVolumetricProduction","m^3/d",2,"瞬时产油量")));
+			jedis.zadd("rpcCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","WaterVolumetricProduction","m^3/d",2,"瞬时产水量")));
 			jedis.zadd("rpcCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("柱塞有效冲程计算产量","AvailablePlungerStrokeProd_v","m^3/d",2,"柱塞有效冲程计算产量")));
 			jedis.zadd("rpcCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("泵间隙漏失量","PumpClearanceleakProd_v","m^3/d",2,"泵间隙漏失量")));
 			jedis.zadd("rpcCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("游动凡尔漏失量","TVLeakVolumetricProduction","m^3/d",2,"游动凡尔漏失量")));
 			jedis.zadd("rpcCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("固定凡尔漏失量","SVLeakVolumetricProduction","m^3/d",2,"固定凡尔漏失量")));
 			jedis.zadd("rpcCalItemList".getBytes(),27, SerializeObjectUnils.serialize(new CalItem("气影响","GasInfluenceProd_v","m^3/d",2,"气影响")));
-			jedis.zadd("rpcCalItemList".getBytes(),28, SerializeObjectUnils.serialize(new CalItem("累计产液量","LiquidVolumetricProduction_l","m^3/d",2,"累计产液量")));
+			jedis.zadd("rpcCalItemList".getBytes(),28, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidVolumetricProduction_l","m^3/d",2,"日累计产液量")));
 			
-			jedis.zadd("rpcCalItemList".getBytes(),29, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidWeightProduction","t/d",2,"产液量")));
-			jedis.zadd("rpcCalItemList".getBytes(),30, SerializeObjectUnils.serialize(new CalItem("产油量","OilWeightProduction","t/d",2,"产油量")));
-			jedis.zadd("rpcCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("产水量","WaterWeightProduction","t/d",2,"产水量")));
+			jedis.zadd("rpcCalItemList".getBytes(),29, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","LiquidWeightProduction","t/d",2,"瞬时产液量")));
+			jedis.zadd("rpcCalItemList".getBytes(),30, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","OilWeightProduction","t/d",2,"瞬时产油量")));
+			jedis.zadd("rpcCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","WaterWeightProduction","t/d",2,"瞬时产水量")));
 			jedis.zadd("rpcCalItemList".getBytes(),32, SerializeObjectUnils.serialize(new CalItem("柱塞有效冲程计算产量","AvailablePlungerStrokeProd_w","t/d",2,"柱塞有效冲程计算产量")));
 			jedis.zadd("rpcCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("泵间隙漏失量","PumpClearanceleakProd_w","t/d",2,"泵间隙漏失量")));
 			jedis.zadd("rpcCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("游动凡尔漏失量","TVLeakWeightProduction","t/d",2,"游动凡尔漏失量")));
 			jedis.zadd("rpcCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("固定凡尔漏失量","SVLeakWeightProduction","t/d",2,"固定凡尔漏失量")));
 			jedis.zadd("rpcCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("气影响","GasInfluenceProd_w","t/d",2,"气影响")));
-			jedis.zadd("rpcCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("累计产液量","LiquidWeightProduction_l","t/d",2,"累计产液量")));
+			jedis.zadd("rpcCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidWeightProduction_l","t/d",2,"日累计产液量")));
 			
 			jedis.zadd("rpcCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("有功功率","AverageWatt","kW",2,"有功功率")));
 			jedis.zadd("rpcCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("光杆功率","PolishRodPower","kW",2,"光杆功率")));
@@ -1937,15 +1937,15 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("pcpCalItemList".getBytes(),7, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2,"理论排量")));
 			
-			jedis.zadd("pcpCalItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidVolumetricProduction","m^3/d",2,"产液量")));
-			jedis.zadd("pcpCalItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("产油量","OilVolumetricProduction","m^3/d",2,"产油量")));
-			jedis.zadd("pcpCalItemList".getBytes(),10, SerializeObjectUnils.serialize(new CalItem("产水量","WaterVolumetricProduction","m^3/d",2,"产水量")));
-			jedis.zadd("pcpCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("累计产液量","LiquidVolumetricProduction_l","m^3/d",2,"累计产液量")));
+			jedis.zadd("pcpCalItemList".getBytes(),8, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","LiquidVolumetricProduction","m^3/d",2,"瞬时产液量")));
+			jedis.zadd("pcpCalItemList".getBytes(),9, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","OilVolumetricProduction","m^3/d",2,"瞬时产油量")));
+			jedis.zadd("pcpCalItemList".getBytes(),10, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","WaterVolumetricProduction","m^3/d",2,"瞬时产水量")));
+			jedis.zadd("pcpCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidVolumetricProduction_l","m^3/d",2,"日累计产液量")));
 			
-			jedis.zadd("pcpCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("产液量","LiquidWeightProduction","t/d",2,"产液量")));
-			jedis.zadd("pcpCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("产油量","OilWeightProduction","t/d",2,"产油量")));
-			jedis.zadd("pcpCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("产水量","WaterWeightProduction","t/d",2,"产水量")));
-			jedis.zadd("pcpCalItemList".getBytes(),15, SerializeObjectUnils.serialize(new CalItem("累计产液量","LiquidWeightProduction_l","t/d",2,"累计产液量")));
+			jedis.zadd("pcpCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","LiquidWeightProduction","t/d",2,"瞬时产液量")));
+			jedis.zadd("pcpCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","OilWeightProduction","t/d",2,"瞬时产油量")));
+			jedis.zadd("pcpCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","WaterWeightProduction","t/d",2,"瞬时产水量")));
+			jedis.zadd("pcpCalItemList".getBytes(),15, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidWeightProduction_l","t/d",2,"日累计产液量")));
 			
 			jedis.zadd("pcpCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("有功功率","AverageWatt","kW",2,"有功功率")));
 			jedis.zadd("pcpCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("水功率","WaterPower","kW",2,"水功率")));
@@ -2004,15 +2004,15 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2,"理论排量")));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidVolumetricProduction","m^3/d",2,"日产液量,功图汇总计算所得")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日产油量","OilVolumetricProduction","m^3/d",2,"日产油量,功图汇总计算所得")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterVolumetricProduction","m^3/d",2,"日产水量,功图汇总计算或者累计产水量计算所得")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2,"日产气量，累计产气量计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidVolumetricProduction","m^3/d",2,"日累计产液量,功图汇总计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilVolumetricProduction","m^3/d",2,"日累计产油量,功图汇总计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterVolumetricProduction","m^3/d",2,"日累计产水量,功图汇总计算或者累计产水量计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("日累计产气量","GasVolumetricProduction","m^3/d",2,"日累计产气量，累计产气量计算所得")));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2,"体积含水率")));
 			
-			jedis.zadd("rpcTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidWeightProduction","t/d",2,"日产液量,功图汇总计算所得")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("日产油量","OilWeightProduction","t/d",2,"日产油量,功图汇总计算所得")));
-			jedis.zadd("rpcTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterWeightProduction","t/d",2,"日产水量,功图汇总计算或者累计产水量计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidWeightProduction","t/d",2,"日累计产液量,功图汇总计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilWeightProduction","t/d",2,"日累计产油量,功图汇总计算所得")));
+			jedis.zadd("rpcTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterWeightProduction","t/d",2,"日累计产水量,功图汇总计算或者累计产水量计算所得")));
 			jedis.zadd("rpcTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2,"重量含水率")));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("地面效率","SurfaceSystemEfficiency","",2,"地面效率")));
@@ -2080,15 +2080,15 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),10, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2,"理论排量")));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidVolumetricProduction","m^3/d",2,"日产液量,转速汇总计算所得")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("日产油量","OilVolumetricProduction","m^3/d",2,"日产油量,转速汇总计算所得")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterVolumetricProduction","m^3/d",2,"日产水量,转速汇总计算或者累计产水量计算所得")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2,"日产气量,累计产气量计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidVolumetricProduction","m^3/d",2,"日累计产液量,转速汇总计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilVolumetricProduction","m^3/d",2,"日累计产油量,转速汇总计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterVolumetricProduction","m^3/d",2,"日累计产水量,转速汇总计算或者累计产水量计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("日累计产气量","GasVolumetricProduction","m^3/d",2,"日累计产气量,累计产气量计算所得")));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),15, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2,"体积含水率")));
 			
-			jedis.zadd("pcpTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidWeightProduction","t/d",2,"日产液量,转速汇总计算所得")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日产油量","OilWeightProduction","t/d",2,"日产油量,转速汇总计算所得")));
-			jedis.zadd("pcpTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterWeightProduction","t/d",2,"日产水量,转速汇总计算或者累计产水量计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidWeightProduction","t/d",2,"日累计产液量,转速汇总计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilWeightProduction","t/d",2,"日累计产油量,转速汇总计算所得")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterWeightProduction","t/d",2,"日累计产水量,转速汇总计算或者累计产水量计算所得")));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2,"重量含水率")));
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("系统效率","SystemEfficiency","",2,"系统效率")));
@@ -2149,15 +2149,15 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2,"理论排量")));
 			
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidVolumetricProduction","m^3/d",2,"日产液量,功图汇总计算所得")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日产油量","OilVolumetricProduction","m^3/d",2,"日产油量,功图汇总计算所得")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterVolumetricProduction","m^3/d",2,"日产水量,功图汇总计算或者累计产水量计算所得")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2,"日产气量，累计产气量计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidVolumetricProduction","m^3/d",2,"日累计产液量,功图汇总计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilVolumetricProduction","m^3/d",2,"日累计产油量,功图汇总计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterVolumetricProduction","m^3/d",2,"日累计产水量,功图汇总计算或者累计产水量计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("日累计产气量","GasVolumetricProduction","m^3/d",2,"日累计产气量，累计产气量计算所得")));
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),21, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2,"体积含水率")));
 			
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidWeightProduction","t/d",2,"日产液量,功图汇总计算所得")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("日产油量","OilWeightProduction","t/d",2,"日产油量,功图汇总计算所得")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterWeightProduction","t/d",2,"日产水量,功图汇总计算或者累计产水量计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),22, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidWeightProduction","t/d",2,"日累计产液量,功图汇总计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),23, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilWeightProduction","t/d",2,"日累计产油量,功图汇总计算所得")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),24, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterWeightProduction","t/d",2,"日累计产水量,功图汇总计算或者累计产水量计算所得")));
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),25, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2,"重量含水率")));
 			
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),26, SerializeObjectUnils.serialize(new CalItem("地面效率","SurfaceSystemEfficiency","",2,"地面效率")));
@@ -2186,27 +2186,31 @@ public class MemoryDataManagerTask {
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2,"累计产气量,当日最新采集数据")));
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2,"累计产水量,当日最新采集数据")));
 			
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","RealtimeLiquidVolumetricProduction","m^3",2,"瞬时产液量")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","RealtimeOilVolumetricProduction","m^3",2,"瞬时产油量")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","RealtimeWaterVolumetricProduction","m^3",2,"瞬时产水量")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),47, SerializeObjectUnils.serialize(new CalItem("瞬时产气量","RealtimeGasVolumetricProduction","m^3",2,"瞬时产气量")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","RealtimeLiquidVolumetricProduction","m^3/d",2,"瞬时产液量")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","RealtimeOilVolumetricProduction","m^3/d",2,"瞬时产油量")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","RealtimeWaterVolumetricProduction","m^3/d",2,"瞬时产水量")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),47, SerializeObjectUnils.serialize(new CalItem("瞬时产气量","RealtimeGasVolumetricProduction","m^3/d",2,"瞬时产气量")));
 			
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),48, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),49, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),50, SerializeObjectUnils.serialize(new CalItem("反演动液面","CalcProducingfluidLevel","m",2,"反演动液面")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),51, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),48, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","RealtimeLiquidWeightProduction","t/d",2,"瞬时产液量")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),49, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","RealtimeOilWeightProduction","t/d",2,"瞬时产油量")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),50, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","RealtimeWaterWeightProduction","t/d",2,"瞬时产水量")));
 			
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),52, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),53, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),54, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),51, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),52, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),53, SerializeObjectUnils.serialize(new CalItem("反演动液面","CalcProducingfluidLevel","m",2,"反演动液面")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),54, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
 			
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),55, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),55, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),56, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),57, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
 			
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),56, SerializeObjectUnils.serialize(new CalItem("备用1","reservedcol1","",1,"备用1")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),57, SerializeObjectUnils.serialize(new CalItem("备用2","reservedcol2","",1,"备用2")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),58, SerializeObjectUnils.serialize(new CalItem("备用3","reservedcol3","",1,"备用3")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),59, SerializeObjectUnils.serialize(new CalItem("备用4","reservedcol4","",1,"备用4")));
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),60, SerializeObjectUnils.serialize(new CalItem("备用5","reservedcol5","",1,"备用5")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),58, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),59, SerializeObjectUnils.serialize(new CalItem("备用1","reservedcol1","",1,"备用1")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),60, SerializeObjectUnils.serialize(new CalItem("备用2","reservedcol2","",1,"备用2")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),61, SerializeObjectUnils.serialize(new CalItem("备用3","reservedcol3","",1,"备用3")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),62, SerializeObjectUnils.serialize(new CalItem("备用4","reservedcol4","",1,"备用4")));
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),63, SerializeObjectUnils.serialize(new CalItem("备用5","reservedcol5","",1,"备用5")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -2236,15 +2240,15 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),10, SerializeObjectUnils.serialize(new CalItem("理论排量","TheoreticalProduction","m^3/d",2,"理论排量")));
 			
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidVolumetricProduction","m^3/d",2,"日产液量,转速汇总计算所得")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("日产油量","OilVolumetricProduction","m^3/d",2,"日产油量,转速汇总计算所得")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterVolumetricProduction","m^3/d",2,"日产水量,转速汇总计算或者累计产水量计算所得")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("日产气量","GasVolumetricProduction","m^3/d",2,"日产气量,累计产气量计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),11, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidVolumetricProduction","m^3/d",2,"日产液量,转速汇总计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),12, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilVolumetricProduction","m^3/d",2,"日产油量,转速汇总计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),13, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterVolumetricProduction","m^3/d",2,"日产水量,转速汇总计算或者累计产水量计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),14, SerializeObjectUnils.serialize(new CalItem("日累计产气量","GasVolumetricProduction","m^3/d",2,"日产气量,累计产气量计算所得")));
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),15, SerializeObjectUnils.serialize(new CalItem("体积含水率","VolumeWaterCut","%",2,"体积含水率")));
 			
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("日产液量","LiquidWeightProduction","t/d",2,"日产液量,转速汇总计算所得")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日产油量","OilWeightProduction","t/d",2,"日产油量,转速汇总计算所得")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日产水量","WaterWeightProduction","t/d",2,"日产水量,转速汇总计算或者累计产水量计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),16, SerializeObjectUnils.serialize(new CalItem("日累计产液量","LiquidWeightProduction","t/d",2,"日产液量,转速汇总计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),17, SerializeObjectUnils.serialize(new CalItem("日累计产油量","OilWeightProduction","t/d",2,"日产油量,转速汇总计算所得")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),18, SerializeObjectUnils.serialize(new CalItem("日累计产水量","WaterWeightProduction","t/d",2,"日产水量,转速汇总计算或者累计产水量计算所得")));
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),19, SerializeObjectUnils.serialize(new CalItem("重量含水率","WeightWaterCut","%",2,"重量含水率")));
 			
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),20, SerializeObjectUnils.serialize(new CalItem("系统效率","SystemEfficiency","",2,"系统效率")));
@@ -3403,69 +3407,73 @@ public class MemoryDataManagerTask {
 		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产水量（方）","RealtimeWaterVolumetricProduction",35) );
 		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产气量（方）","RealtimeGasVolumetricProduction",36) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图工况","ResultCode",37) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产液量（吨）","RealtimeLiquidWeightProduction",37) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产油量（吨）","RealtimeOilWeightProduction",38) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产水量（吨）","RealtimeWaterWeightProduction",39) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("最大载荷","FMax",38) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("最小载荷","FMin",39) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图工况","ResultCode",40) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图充满系数","FullnessCoefficient",40) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论上载荷","UpperLoadLine",41) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论下载荷","LowerLoadLine",42) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("最大载荷","FMax",41) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("最小载荷","FMin",42) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论排量","TheoreticalProduction",43) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图充满系数","FullnessCoefficient",43) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论上载荷","UpperLoadLine",44) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论下载荷","LowerLoadLine",45) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产液量（方）","LiquidVolumetricProduction",44) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产油量（方）","OilVolumetricProduction",45) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产水量（方）","WaterVolumetricProduction",46) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产气量（方）","GasVolumetricProduction",47) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（方）","AvailablePlungerStrokeProd_v",48) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（方）","PumpClearanceLeakProd_v",49) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（方）","TVLeakVolumetricProduction",50) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（方）","SVLeakVolumetricProduction",51) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（方）","GasInfluenceProd_v",52) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("理论排量","TheoreticalProduction",46) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产液量（吨）","LiquidWeightProduction",53) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产油量（吨）","OilWeightProduction",54) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("产水量（吨）","WaterWeightProduction",555) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（吨）","AvailablePlungerStrokeProd_w",56) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（吨）","PumpClearanceLeakProd_w",57) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（吨）","TVLeakWeightProduction",58) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（吨）","SVLeakWeightProduction",59) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（吨）","GasInfluenceProd_w",60) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产液量（方）","LiquidVolumetricProduction",47) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产油量（方）","OilVolumetricProduction",48) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产水量（方）","WaterVolumetricProduction",49) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产气量（方）","GasVolumetricProduction",50) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（方）","AvailablePlungerStrokeProd_v",51) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（方）","PumpClearanceLeakProd_v",52) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（方）","TVLeakVolumetricProduction",53) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（方）","SVLeakVolumetricProduction",54) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（方）","GasInfluenceProd_v",55) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("平均总有功功率","AverageWatt",61) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("光杆功率","PolishRodPower",62) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("水功率","WaterPower",63) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("地面效率","SurfaceSystemEfficiency",64) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("井下效率","WellDownSystemEfficiency",65) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("系统效率","SystemEfficiency",66) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("吨液百米耗电量","EnergyPer100mLift",67) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图面积","Area",68) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产液量（吨）","LiquidWeightProduction",56) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产油量（吨）","OilWeightProduction",57) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产水量（吨）","WaterWeightProduction",58) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（吨）","AvailablePlungerStrokeProd_w",59) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（吨）","PumpClearanceLeakProd_w",60) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（吨）","TVLeakWeightProduction",61) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（吨）","SVLeakWeightProduction",62) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（吨）","GasInfluenceProd_w",63) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("抽油杆伸长量","RodFlexLength",69) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("油管伸缩值","TubingFlexLength",70) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("惯性载荷增量","InertiaLength",71) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("冲程损失系数","PumpEff1",72) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("充满系数","PumpEff2",73) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("间隙漏失系数","PumpEff3",74) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("液体收缩系数","PumpEff4",75) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("平均总有功功率","AverageWatt",64) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("光杆功率","PolishRodPower",65) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("水功率","WaterPower",66) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("地面效率","SurfaceSystemEfficiency",67) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("井下效率","WellDownSystemEfficiency",68) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("系统效率","SystemEfficiency",69) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("吨液百米耗电量","EnergyPer100mLift",70) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图面积","Area",71) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("容积效率","PumpEff1",76) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("抽油杆伸长量","RodFlexLength",72) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("油管伸缩值","TubingFlexLength",73) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("惯性载荷增量","InertiaLength",74) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("冲程损失系数","PumpEff1",75) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("充满系数","PumpEff2",76) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("间隙漏失系数","PumpEff3",77) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("液体收缩系数","PumpEff4",78) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("总泵效","PumpEff",77) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("容积效率","PumpEff1",79) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("反演动液面","CalcProducingfluidLevel",78) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("液面校正差值","LevelDifferenceValue",79) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("总泵效","PumpEff",80) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程功率最大值","UpStrokeWattMax",80) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程功率最大值","DownStrokeWattMax",81) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功率平衡度","WattDegreeBalance",82) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程电流最大值","UpStrokeIMax",83) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程电流最大值","DownStrokeIMax",84) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("电流平衡度","IDegreeBalance",85) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("移动距离","DeltaRadius",86) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("反演动液面","CalcProducingfluidLevel",81) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("液面校正差值","LevelDifferenceValue",82) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("沉没度","Submergence",87) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程功率最大值","UpStrokeWattMax",83) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程功率最大值","DownStrokeWattMax",84) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功率平衡度","WattDegreeBalance",85) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程电流最大值","UpStrokeIMax",86) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程电流最大值","DownStrokeIMax",87) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("电流平衡度","IDegreeBalance",88) );
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("移动距离","DeltaRadius",89) );
+		
+		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("沉没度","Submergence",90) );
 		
 		//螺杆泵井
 		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("运行状态","RunStatus",1) );

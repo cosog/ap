@@ -602,7 +602,11 @@ begin
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
           t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
           t.pumpoutletp=v_PumpOutletP,t.pumpoutlett=v_PumpOutletT,t.pumpoutletgol=v_PumpOutletGOL,t.pumpoutletvisl=v_PumpOutletVisl,t.pumpoutletbo=v_PumpOutletBo,
-          t.rodstring=v_RodString
+          t.rodstring=v_RodString,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.wellid=v_wellId;
   commit;
   update tbl_pcpacqdata_hist t
@@ -618,7 +622,11 @@ begin
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
           t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
           t.pumpoutletp=v_PumpOutletP,t.pumpoutlett=v_PumpOutletT,t.pumpoutletgol=v_PumpOutletGOL,t.pumpoutletvisl=v_PumpOutletVisl,t.pumpoutletbo=v_PumpOutletBo,
-          t.rodstring=v_RodString
+          t.rodstring=v_RodString,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.wellid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
   commit;
   p_msg := '修改成功';
@@ -658,7 +666,11 @@ begin
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
           t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
           t.pumpoutletp=v_PumpOutletP,t.pumpoutlett=v_PumpOutletT,t.pumpoutletgol=v_PumpOutletGOL,t.pumpoutletvisl=v_PumpOutletVisl,t.pumpoutletbo=v_PumpOutletBo,
-          t.rodstring=v_RodString
+          t.rodstring=v_RodString,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.id=v_recordId;
   commit;
   p_msg := '修改成功';
@@ -1303,7 +1315,11 @@ begin
           t.loadtorque=v_loadTorque,t.cranktorque=v_crankTorque,t.currentbalancetorque=v_currentBalanceTorque,t.currentnettorque=v_currentNetTorque,
           t.expectedbalancetorque=v_expectedBalanceTorque,t.expectednettorque=v_expectedNetTorque,
           t.wellboreslice=v_wellboreSlice,
-          t.rpm=v_rpm
+          t.rpm=v_rpm,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.wellid=v_wellId;
   commit;
   update tbl_rpcacqdata_hist t
@@ -1345,7 +1361,11 @@ begin
           t.loadtorque=v_loadTorque,t.cranktorque=v_crankTorque,t.currentbalancetorque=v_currentBalanceTorque,t.currentnettorque=v_currentNetTorque,
           t.expectedbalancetorque=v_expectedBalanceTorque,t.expectednettorque=v_expectedNetTorque,
           t.wellboreslice=v_wellboreSlice,
-          t.rpm=v_rpm
+          t.rpm=v_rpm,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.wellid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
   commit;
   p_msg := '修改成功';
@@ -1379,7 +1399,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramcaldata (
        v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
 
        v_LevelDifferenceValue in NUMBER,v_CalcProducingfluidLevel in NUMBER,
-       
+
        v_Submergence in NUMBER,
 
        v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
@@ -1436,7 +1456,11 @@ begin
           t.crankangle=v_crankAngle,t.polishrodv=v_polishRodV,t.polishroda=v_polishRodA,t.pr=v_PR,t.tf=v_TF,
           t.loadtorque=v_loadTorque,t.cranktorque=v_crankTorque,t.currentbalancetorque=v_currentBalanceTorque,t.currentnettorque=v_currentNetTorque,
           t.expectedbalancetorque=v_expectedBalanceTorque,t.expectednettorque=v_expectedNetTorque,
-          t.wellboreslice=v_wellboreSlice
+          t.wellboreslice=v_wellboreSlice,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.id=v_recordId;
   commit;
   p_msg := '修改成功';

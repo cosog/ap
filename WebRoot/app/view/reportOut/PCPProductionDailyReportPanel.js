@@ -264,6 +264,9 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                             text: cosog.string.exportExcel,
                             iconCls: 'export',
                             handler: function (v, o) {
+                            	var timestamp=new Date().getTime();
+                            	var key='exportPCPProductionDailyReportData'+timestamp;
+                            	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
                             	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -302,7 +305,9 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                             	+'&startDate='+startDate
                             	+'&endDate='+endDate
                             	+'&reportDate='+reportDate
-                            	+'&orgId='+orgId;
+                            	+'&orgId='+orgId
+                            	+'&key='+key;
+                            	exportDataMask(key,"PCPProductionDailyReportPanel_view",cosog.string.loading);
                             	document.location.href = url;
                             }
                         },'-',{
@@ -310,6 +315,9 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                             text: '批量导出',
                             iconCls: 'export',
                             handler: function (v, o) {
+                            	var timestamp=new Date().getTime();
+                            	var key='batchExportPCPProductionDailyReportData'+timestamp;
+                            	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
                             	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -348,7 +356,9 @@ Ext.define("AP.view.reportOut.PCPProductionDailyReportPanel", {
                             	+'&startDate='+startDate
                             	+'&endDate='+endDate
                             	+'&reportDate='+reportDate
-                            	+'&orgId='+orgId;
+                            	+'&orgId='+orgId
+                            	+'&key='+key;
+                            	exportDataMask(key,"PCPProductionDailyReportPanel_view",cosog.string.loading);
                             	document.location.href = url;
                             }
                         }, '-',{

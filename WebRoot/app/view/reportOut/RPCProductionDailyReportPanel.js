@@ -263,6 +263,9 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             text: cosog.string.exportExcel,
                             iconCls: 'export',
                             handler: function (v, o) {
+                            	var timestamp=new Date().getTime();
+                            	var key='exportRPCProductionDailyReportData'+timestamp;
+                            	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
                             	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -301,7 +304,9 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	+'&startDate='+startDate
                             	+'&endDate='+endDate
                             	+'&reportDate='+reportDate
-                            	+'&orgId='+orgId;
+                            	+'&orgId='+orgId
+                            	+'&key='+key;
+                            	exportDataMask(key,"RPCProductionDailyReportPanel_view",cosog.string.loading);
                             	document.location.href = url;
                             }
                         },'-',{
@@ -309,6 +314,9 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             text: '批量导出',
                             iconCls: 'export',
                             handler: function (v, o) {
+                            	var timestamp=new Date().getTime();
+                            	var key='batchExportRPCProductionDailyReportData'+timestamp;
+                            	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
                             	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -347,7 +355,9 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	+'&startDate='+startDate
                             	+'&endDate='+endDate
                             	+'&reportDate='+reportDate
-                            	+'&orgId='+orgId;
+                            	+'&orgId='+orgId
+                            	+'&key='+key;
+                            	exportDataMask(key,"RPCProductionDailyReportPanel_view",cosog.string.loading);
                             	document.location.href = url;
                             }
                         },'-', {

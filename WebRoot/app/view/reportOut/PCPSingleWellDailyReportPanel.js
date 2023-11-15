@@ -1799,6 +1799,9 @@ function ExportPCPSingleWellReportData(){
 }
 
 function ExportPCPSingleWellRangeReportData(){
+	var timestamp=new Date().getTime();
+	var key='ExportRPCSingleWellRangeReportData'+timestamp;
+	
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();
 	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
@@ -1812,11 +1815,22 @@ function ExportPCPSingleWellRangeReportData(){
 		wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	}
 
-	var url=context + '/reportDataMamagerController/exportSingleWellRangeReportData?deviceType=1&reportType=0&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
+	var url=context + '/reportDataMamagerController/exportSingleWellRangeReportData?deviceType=1'
+	+'&reportType=0'
+	+'&wellName='+URLencode(URLencode(wellName))
+	+'&wellId='+wellId
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&orgId='+leftOrg_Id
+	+'&key='+key;
+	exportDataMask(key,"PCPSingleWellDailyReportPanel_view",cosog.string.loading);
 	document.location.href = url;
 }
 
 function batchExportPCPSingleWellRangeReportData(){
+	var timestamp=new Date().getTime();
+	var key='batchExportPCPSingleWellRangeReportData'+timestamp;
+	
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();
 	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
@@ -1829,12 +1843,16 @@ function batchExportPCPSingleWellRangeReportData(){
 	+'&startDate='+startDate
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
-	+'&orgId='+leftOrg_Id;
-	
+	+'&orgId='+leftOrg_Id
+	+'&key='+key;
+	exportDataMask(key,"PCPSingleWellDailyReportPanel_view",cosog.string.loading);
 	document.location.href = url;
 }
 
 function ExportPCPSingleWellDailyReportData(){
+	var timestamp=new Date().getTime();
+	var key='ExportPCPSingleWellDailyReportData'+timestamp;
+	
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();
 	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
@@ -1849,11 +1867,23 @@ function ExportPCPSingleWellDailyReportData(){
 		wellId=Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	}
 
-	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=1&reportType=2&wellName='+URLencode(URLencode(wellName))+'&wellId='+wellId+'&startDate='+startDate+'&endDate='+endDate+'&reportDate='+reportDate+'&orgId='+leftOrg_Id;
+	var url=context + '/reportDataMamagerController/exportSingleWellDailyReportData?deviceType=1'
+	+'&reportType=2'
+	+'&wellName='+URLencode(URLencode(wellName))
+	+'&wellId='+wellId
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&reportDate='+reportDate
+	+'&orgId='+leftOrg_Id
+	+'&key='+key;
+	exportDataMask(key,"PCPSingleWellDailyReportPanel_view",cosog.string.loading);
 	document.location.href = url;
 }
 
 function batchExportPCPSingleWellDailyReportData(){
+	var timestamp=new Date().getTime();
+	var key='batchExportPCPSingleWellDailyReportData'+timestamp;
+	
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();
 	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
@@ -1866,7 +1896,8 @@ function batchExportPCPSingleWellDailyReportData(){
 	+'&startDate='+startDate
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
-	+'&orgId='+leftOrg_Id;
-	
+	+'&orgId='+leftOrg_Id
+	+'&key='+key;
+	exportDataMask(key,"PCPSingleWellDailyReportPanel_view",cosog.string.loading);
 	document.location.href = url;
 }

@@ -201,8 +201,11 @@ public class ReportDataMamagerController extends BaseController {
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
 		String deviceTypeName="抽油机井";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -241,6 +244,7 @@ public class ReportDataMamagerController extends BaseController {
         	fileName+="~"+endDate;
         }
 		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
@@ -254,8 +258,11 @@ public class ReportDataMamagerController extends BaseController {
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
 		String deviceTypeName="抽油机井";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -291,6 +298,7 @@ public class ReportDataMamagerController extends BaseController {
         	fileName+="~"+endDate;
         }
 		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,user.getUserNo());
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
@@ -386,8 +394,11 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
 		String timingcalculationTableName="tbl_rpctimingcalculationdata";
 		String deviceTypeName="抽油机井";
@@ -450,13 +461,14 @@ public class ReportDataMamagerController extends BaseController {
         	fileName+="~"+endDate;
         }
 		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
 	@RequestMapping("/batchExportSingleWellDailyReportData")
 	public String batchExportSingleWellDailyReportData() throws Exception {
-		log.debug("reportOutputWell enter==");
-		Vector<String> v = new Vector<String>();
+		HttpSession session=request.getSession();
+		
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String startDate = ParamUtils.getParameter(request, "startDate");
@@ -464,8 +476,10 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		HttpSession session=request.getSession();
+		String key = ParamUtils.getParameter(request, "key");
 		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
 		String timingcalculationTableName="tbl_rpctimingcalculationdata";
 		String deviceTypeName="抽油机井";
@@ -511,8 +525,9 @@ public class ReportDataMamagerController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		
+//		Thread.sleep(1000*10);
 		boolean bool = reportDataManagerService.batchExportSingleWellDailyReportData(response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,user.getUserNo());
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
@@ -590,8 +605,12 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String key = ParamUtils.getParameter(request, "key");
+		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
 			tableName="tbl_pcpdailycalculationdata";
@@ -621,6 +640,7 @@ public class ReportDataMamagerController extends BaseController {
 		
 		
 		boolean bool = reportDataManagerService.exportProductionDailyReportData(response,pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
@@ -635,8 +655,11 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
 			tableName="tbl_pcpdailycalculationdata";
@@ -665,6 +688,7 @@ public class ReportDataMamagerController extends BaseController {
 		
 		
 		boolean bool = reportDataManagerService.batchExportProductionDailyReportData(response,pager, orgId,selectedOrgName,deviceType,reportType,reportDate,user.getUserNo());
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
@@ -1574,6 +1598,22 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 
+	@RequestMapping("/getSessionFlag")
+	public String getSessionFlag() throws Exception {
+		HttpSession session=request.getSession();
+		String key = ParamUtils.getParameter(request, "key");
+		String flag=(session!=null && session.getAttribute(key)!=null)?(session.getAttribute(key).toString()):"0";
+		JSONObject json = new JSONObject();
+		json.put("flag",flag);
+		String jsonStr=json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonStr);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	public static String formatStringDate(Calendar Month) {
 		Month = Calendar.getInstance();

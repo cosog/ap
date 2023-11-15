@@ -2269,21 +2269,25 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),31, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","RealtimeWaterVolumetricProduction","m^3",2,"瞬时产水量")));
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),32, SerializeObjectUnils.serialize(new CalItem("瞬时产气量","RealtimeGasVolumetricProduction","m^3",2,"瞬时产气量")));
 			
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),33, SerializeObjectUnils.serialize(new CalItem("瞬时产液量","RealtimeLiquidWeightProduction","t/d",2,"瞬时产液量")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("瞬时产油量","RealtimeOilWeightProduction","t/d",2,"瞬时产油量")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("瞬时产水量","RealtimeWaterWeightProduction","t/d",2,"瞬时产水量")));
 			
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("泵挂","PumpSettingDepth","m",2,"泵挂")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),37, SerializeObjectUnils.serialize(new CalItem("动液面","ProducingfluidLevel","m",2,"动液面")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),38, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"沉没度")));
 			
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),39, SerializeObjectUnils.serialize(new CalItem("油压","TubingPressure","MPa",2,"油压")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),40, SerializeObjectUnils.serialize(new CalItem("套压","CasingPressure","MPa",2,"套压")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),41, SerializeObjectUnils.serialize(new CalItem("井底压力","BottomHolePressure","MPa",2,"井底压力")));
 			
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),40, SerializeObjectUnils.serialize(new CalItem("备用1","reservedcol1","",1,"备用1")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),41, SerializeObjectUnils.serialize(new CalItem("备用2","reservedcol2","",1,"备用2")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("备用3","reservedcol3","",1,"备用3")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("备用4","reservedcol4","",1,"备用4")));
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("备用5","reservedcol5","",1,"备用5")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),42, SerializeObjectUnils.serialize(new CalItem("备注","Remark","",1,"备注")));
+			
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),43, SerializeObjectUnils.serialize(new CalItem("备用1","reservedcol1","",1,"备用1")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),44, SerializeObjectUnils.serialize(new CalItem("备用2","reservedcol2","",1,"备用2")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),45, SerializeObjectUnils.serialize(new CalItem("备用3","reservedcol3","",1,"备用3")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),46, SerializeObjectUnils.serialize(new CalItem("备用4","reservedcol4","",1,"备用4")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),47, SerializeObjectUnils.serialize(new CalItem("备用5","reservedcol5","",1,"备用5")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

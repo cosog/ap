@@ -60,6 +60,10 @@ Ext.define("AP.view.well.ExportDeviceInfoWindow", {
                       fields = fields.substring(0, fields.length - 1);
                       heads = heads.substring(0, heads.length - 1);
                   }
+                  
+                  var timestamp=new Date().getTime();
+              	  var key='exportWellInformationDetailsData'+deviceType+'_'+timestamp;
+              	  var maskPanelId='ExportDeviceInfoWindow_Id';
 
                   var param = "&fields=" + fields 
                   + "&heads=" + URLencode(URLencode(heads)) 
@@ -68,7 +72,10 @@ Ext.define("AP.view.well.ExportDeviceInfoWindow", {
                   + "&applicationScenarios="+applicationScenarios
                   + "&wellInformationName=" + URLencode(URLencode(wellInformationName)) 
                   + "&recordCount=10000" 
-                  + "&fileName=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName)) + "&title=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName));
+                  + "&fileName=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName)) 
+                  + "&title=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName))
+                  + '&key='+key;
+                  exportDataMask(key,maskPanelId,cosog.string.loading);
                   openExcelWindow(url + '?flag=true' + param);
                 }
             }],

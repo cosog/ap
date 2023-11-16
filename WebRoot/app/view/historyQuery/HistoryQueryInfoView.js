@@ -169,7 +169,15 @@ function createHistoryQueryColumn(columnInfo) {
 };
 
 function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
-    var url = context + '/historyQueryController/exportHistoryQueryDeviceListExcel';
+	var timestamp=new Date().getTime();
+	var key='exportHistoryQueryDeviceListData_'+deviceType+'_'+timestamp;
+	
+	var maskPanelId='RPCHistoryQueryInfoPanel_Id';
+	if(deviceType==1){
+		maskPanelId='PCPHistoryQueryInfoPanel_Id';
+	}
+	
+	var url = context + '/historyQueryController/exportHistoryQueryDeviceListExcel';
     var fields = "";
     var heads = "";
     var lockedheads = "";
@@ -211,12 +219,22 @@ function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagra
     + "&runStatusStatValue=" + URLencode(URLencode(runStatusStatValue))
     + "&deviceTypeStatValue=" + URLencode(URLencode(deviceTypeStatValue))
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
 function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title,columnStr) {
-    var url = context + '/historyQueryController/exportHistoryQueryDataExcel';
+	var timestamp=new Date().getTime();
+	var key='exportHistoryQueryData_'+deviceType+'_'+timestamp;
+	
+	var maskPanelId='RPCHistoryQueryInfoPanel_Id';
+	if(deviceType==1){
+		maskPanelId='PCPHistoryQueryInfoPanel_Id';
+	}
+	
+	var url = context + '/historyQueryController/exportHistoryQueryDataExcel';
     var fields = "";
     var heads = "";
     var lockedheads = "";
@@ -258,12 +276,19 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startD
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
 function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title,columnStr) {
-    var url = context + '/historyQueryController/exportHistoryQueryFESDiagramOverlayDataExcel';
+	var timestamp=new Date().getTime();
+	var key='exportHistoryQueryData_'+timestamp;
+	
+	var maskPanelId='RPCHistoryQueryInfoPanel_Id';
+	
+	var url = context + '/historyQueryController/exportHistoryQueryFESDiagramOverlayDataExcel';
     var fields = "";
     var heads = "";
     var lockedheads = "";
@@ -305,12 +330,18 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
 function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title) {
-    var url = context + '/historyQueryController/exportHistoryQueryFESDiagramDataExcel';
+	var timestamp=new Date().getTime();
+	var key='exportHistoryQueryData_'+timestamp;
+	var maskPanelId='RPCHistoryQueryInfoPanel_Id';
+	
+	var url = context + '/historyQueryController/exportHistoryQueryFESDiagramDataExcel';
     var fields = "";
     var heads = "";
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
@@ -321,7 +352,9 @@ function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceN
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 

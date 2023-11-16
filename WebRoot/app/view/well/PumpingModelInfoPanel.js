@@ -137,6 +137,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
         	items: [{
                 layout: "border",
                 border: false,
+                id: 'PumpingModelInformationPanel_Id',
                 items: [{
                 	region: 'center',
                     layout: 'fit',
@@ -179,7 +180,11 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         iconCls: 'export',
                         hidden: false,
                         handler: function (v, o) {
-                            var fields = "";
+                        	var timestamp=new Date().getTime();
+                        	var key='exportPumpingModelData'+timestamp;
+                        	var maskPanelId='PumpingModelInformationPanel_Id';
+                        	
+                        	var fields = "";
                             var heads = "";
                             var manufacturer = Ext.getCmp('pumpingManufacturerListComb_Id').getValue();
                             var model = Ext.getCmp('pumpingModelListComb_Id').getValue();
@@ -199,7 +204,9 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                             + "&manufacturer=" + URLencode(URLencode(manufacturer)) 
                             + "&model=" + URLencode(URLencode(model)) 
                             + "&fileName=" + URLencode(URLencode(fileName)) 
-                            + "&title=" + URLencode(URLencode(title));
+                            + "&title=" + URLencode(URLencode(title))
+                            + '&key='+key;
+                            exportDataMask(key,maskPanelId,cosog.string.loading);
                             openExcelWindow(url + '?flag=true' + param);
                         }
                     },'-', {

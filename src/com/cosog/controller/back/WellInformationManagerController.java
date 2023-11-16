@@ -622,6 +622,14 @@ public class WellInformationManagerController extends BaseController {
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
+		
+		HttpSession session=request.getSession();
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
@@ -629,6 +637,9 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		boolean bool = this.wellInformationManagerService.exportPumpingModelData(response,fileName,title, heads, fields,manufacturer,model);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
 		return null;
 	}
 	
@@ -748,6 +759,7 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/exportWellInformationData")
 	public String exportWellInformationData() throws Exception {
+		HttpSession session=request.getSession();
 		boolean bool=false;
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
@@ -760,10 +772,14 @@ public class WellInformationManagerController extends BaseController {
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
 		orgId=ParamUtils.getParameter(request, "orgId");
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
 		User user=null;
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
 			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
@@ -789,11 +805,15 @@ public class WellInformationManagerController extends BaseController {
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
 		return null;
 	}
 	
 	@RequestMapping("/exportWellInformationDetailsData")
 	public String exportWellInformationDetailsData() throws Exception {
+		HttpSession session=request.getSession();
 		boolean bool=false;
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
@@ -805,10 +825,14 @@ public class WellInformationManagerController extends BaseController {
 		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
 		orgId=ParamUtils.getParameter(request, "orgId");
 		User user=null;
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
 			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
@@ -833,6 +857,9 @@ public class WellInformationManagerController extends BaseController {
 			bool = this.wellInformationManagerService.exportPCPDeviceInfoDetailsData(response,fileName,title, orgId,applicationScenarios,wellInformationName);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 //			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
+		}
+		if(session!=null){
+			session.setAttribute(key, 1);
 		}
 		return null;
 	}
@@ -2187,9 +2214,16 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/exportWaterCutRawData")
 	public String exportWaterCutRawData() throws IOException {
+		HttpSession session=request.getSession();
 		String json="";
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
+		String key = ParamUtils.getParameter(request, "key");
+		
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
 		WaterCutRawData waterCutRawData=null;
 		String acqTime="";
 		String title="含水仪数据";
@@ -2237,6 +2271,9 @@ public class WellInformationManagerController extends BaseController {
 		}
 	    // 导出数据
 	    ExcelUtils.export(response,title,sheetName, sheetDataList);
+	    if(session!=null){
+			session.setAttribute(key, 1);
+		}
 		return null;
 	}
 	

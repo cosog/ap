@@ -1902,7 +1902,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"energyper100mlift\":\""+obj[25]+"\",");
 				result_json.append("\"pumpEff\":\""+obj[26]+"\",");
 				
-				result_json.append("\"todayKWattH\":\""+obj[27]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[27]+"\"");
 				for(int j=0;j<ddicColumnsList.size();j++){
 					String value=obj[28+j]+"";
 					if(protocol!=null){

@@ -105,7 +105,12 @@ public class LogQueryController extends BaseController{
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
 		
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
@@ -133,6 +138,9 @@ public class LogQueryController extends BaseController{
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		boolean bool = logQueryService.exportDeviceOperationLogData(response,fileName,title, heads, fields,orgId,deviceType,deviceName,operationType,pager,user);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
 		return null;
 	}
 	
@@ -191,7 +199,12 @@ public class LogQueryController extends BaseController{
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
 		
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
@@ -217,6 +230,9 @@ public class LogQueryController extends BaseController{
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		boolean bool = logQueryService.exportSystemLogData(response,fileName,title, heads, fields,orgId,operationType,pager,user);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
 		return null;
 	}
 	

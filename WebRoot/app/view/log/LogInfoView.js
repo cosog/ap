@@ -157,7 +157,11 @@ function createSystemLogColumn(columnInfo) {
 };
 
 function exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType,startDate,endDate,fileName,title,columnStr) {
-    var url = context + '/logQueryController/exportDeviceOperationLogExcelData';
+	var timestamp=new Date().getTime();
+	var key='exportDeviceOperationLogExcelData'+timestamp;
+	var maskPanelId='DeviceOperationLogInfoPanel_Id';
+	
+	var url = context + '/logQueryController/exportDeviceOperationLogExcelData';
     var fields = "";
     var heads = "";
     var lockedheads = "";
@@ -201,12 +205,19 @@ function exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
 function exportSystemLogExcel(orgId,startDate,endDate,fileName,title,columnStr) {
-    var url = context + '/logQueryController/exportSystemLogExcelData';
+	var timestamp=new Date().getTime();
+	var key='exportSystemLogExcelData'+timestamp;
+	
+	var maskPanelId='SystemLogInfoPanel_Id';
+	
+	var url = context + '/logQueryController/exportSystemLogExcelData';
     var fields = "";
     var heads = "";
     var lockedheads = "";
@@ -247,6 +258,8 @@ function exportSystemLogExcel(orgId,startDate,endDate,fileName,title,columnStr) 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
     openExcelWindow(url + '?flag=true' + param);
 };

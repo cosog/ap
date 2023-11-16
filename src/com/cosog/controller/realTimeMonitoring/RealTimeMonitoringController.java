@@ -253,6 +253,7 @@ public class RealTimeMonitoringController extends BaseController {
 	
 	@RequestMapping("/exportDeviceRealTimeOverviewDataExcel")
 	public String exportDeviceRealTimeOverviewDataExcel() throws Exception {
+		HttpSession session=request.getSession();
 		boolean bool=false;
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
@@ -267,6 +268,13 @@ public class RealTimeMonitoringController extends BaseController {
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
+		String key = ParamUtils.getParameter(request, "key");
+		
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		
 		DataDictionary ddic = null;
 		String ddicName="realTimeMonitoring_RPCOverview";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -278,7 +286,6 @@ public class RealTimeMonitoringController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		User user=null;
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
 			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
@@ -288,6 +295,9 @@ public class RealTimeMonitoringController extends BaseController {
 			bool = realTimeMonitoringService.exportDeviceRealTimeOverviewData(response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
 		}else{
 			bool = realTimeMonitoringService.exportPCPDeviceRealTimeOverviewData(response,fileName,title, heads, fields,orgId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+		}
+		if(session!=null){
+			session.setAttribute(key, 1);
 		}
 		return null;
 	}

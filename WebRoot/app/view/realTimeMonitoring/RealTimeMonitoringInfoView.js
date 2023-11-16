@@ -463,7 +463,15 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 
 
 function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
-    var url = context + '/realTimeMonitoringController/exportDeviceRealTimeOverviewDataExcel';
+	var timestamp=new Date().getTime();
+	var key='exportDeviceRealTimeOverviewData'+deviceType+'_'+timestamp;
+	
+	var maskPanelId='RPCRealTimeMonitoringInfoPanel_Id';
+	if(deviceType==1){
+		maskPanelId='PCPRealTimeMonitoringInfoPanel_Id';
+	}
+	
+	var url = context + '/realTimeMonitoringController/exportDeviceRealTimeOverviewDataExcel';
     var fields = "";
     var heads = "";
     var lockedheads = "";
@@ -506,7 +514,9 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagra
     + "&runStatusStatValue=" + URLencode(URLencode(runStatusStatValue))
     + "&deviceTypeStatValue=" + URLencode(URLencode(deviceTypeStatValue))
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 

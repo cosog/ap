@@ -108,7 +108,12 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-                    var fields = "";
+                	var timestamp=new Date().getTime();
+                	var key='exportWellInformationData_300_'+timestamp;
+                	
+                	var maskPanelId='SMSDeviceTablePanel_id';
+                	
+                	var fields = "";
                     var heads = "";
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
                     var wellInformationName = Ext.getCmp('SMSDeviceListComb_Id').getValue();
@@ -122,7 +127,15 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                         heads = heads.substring(0, heads.length - 1);
                     }
 
-                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=300&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("短信设备")) + "&title=" + URLencode(URLencode("短信设备"));
+                    var param = "&fields=" + fields 
+                    + "&heads=" + URLencode(URLencode(heads)) 
+                    + "&orgId=" + leftOrg_Id 
+                    + "&deviceType=300&wellInformationName=" + URLencode(URLencode(wellInformationName)) 
+                    + "&recordCount=10000" 
+                    + "&fileName=" + URLencode(URLencode("短信设备")) 
+                    + "&title=" + URLencode(URLencode("短信设备"))
+                    + '&key='+key;
+                    exportDataMask(key,maskPanelId,cosog.string.loading);
                     openExcelWindow(url + '?flag=true' + param);
                 }
     		}, '-', {
@@ -238,7 +251,6 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 listeners: {
                 	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         if (smsDeviceInfoHandsontableHelper != null && smsDeviceInfoHandsontableHelper.hot != null && smsDeviceInfoHandsontableHelper.hot != undefined) {
-//                            smsDeviceInfoHandsontableHelper.hot.refreshDimensions();
                         	var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

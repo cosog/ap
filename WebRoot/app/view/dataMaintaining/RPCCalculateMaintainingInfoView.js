@@ -869,7 +869,7 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex >= 1 && visualColIndex <= 6) {
+	                    if (visualColIndex >= 1 && visualColIndex <= 7) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcFESDiagramCalculateMaintainingHandsontableHelper.addBoldBg;
 		                }else if(rpcFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='pumpGrade'.toUpperCase()

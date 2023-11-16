@@ -129,9 +129,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			columns = ddic.getTableHeader();
 			
-			String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+			String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
+				prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 			}
 			
 			sql="select t.id,t.wellId,t.wellName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
@@ -178,7 +178,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"totalRoot\":[");
 			for(int i=0;i<list.size();i++){
 				Object[] obj = (Object[]) list.get(i);
-				String productionData=obj[8].toString();
+				String productionData=obj[9].toString();
 				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 				RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 				
@@ -192,9 +192,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 					result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
 					result_json.append("\"oilWeightProduction\":\""+obj[7]+"\",");
+					result_json.append("\"waterWeightProduction\":\""+obj[8]+"\",");
 				}else{
 					result_json.append("\"liquidVolumetricProduction\":\""+obj[6]+"\",");
 					result_json.append("\"oilVolumetricProduction\":\""+obj[7]+"\",");
+					result_json.append("\"waterVolumetricProduction\":\""+obj[8]+"\",");
 				}
 				
 				if(rpcProductionData!=null){
@@ -309,9 +311,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		
-		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
+			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
@@ -346,7 +348,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String productionData=obj[8].toString();
+			String productionData=obj[9].toString();
 			type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 			PCPCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			
@@ -359,11 +361,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				result_json.append("\"liquidWeightProduction\":\""+obj[5]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[6]+"\",");
+				result_json.append("\"waterWeightProduction\":\""+obj[7]+"\",");
 			}else{
 				result_json.append("\"liquidVolumetricProduction\":\""+obj[5]+"\",");
 				result_json.append("\"oilVolumetricProduction\":\""+obj[6]+"\",");
+				result_json.append("\"waterVolumetricProduction\":\""+obj[7]+"\",");
 			}
-			result_json.append("\"rpm\":\""+obj[7]+"\",");
+			result_json.append("\"rpm\":\""+obj[8]+"\",");
 			if(calculateRequestData!=null){
 				if(calculateRequestData.getFluidPVT()!=null){
 					result_json.append("\"crudeoilDensity\":\""+calculateRequestData.getFluidPVT().getCrudeOilDensity()+"\",");
@@ -1311,9 +1315,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		
-		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
+			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.caldate,'yyyy-mm-dd'),"
@@ -1346,16 +1350,18 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[7]+"\",");
+				result_json.append("\"waterWeightProduction\":\""+obj[8]+"\",");
 			}else{
 				result_json.append("\"liquidVolumetricProduction\":\""+obj[6]+"\",");
 				result_json.append("\"oilVolumetricProduction\":\""+obj[7]+"\",");
+				result_json.append("\"waterVolumetricProduction\":\""+obj[8]+"\",");
 			}
 			
-			result_json.append("\"pumpEff\":\""+obj[8]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[9]+"\",");
-			result_json.append("\"wattDegreeBalance\":\""+obj[10]+"\",");
-			result_json.append("\"iDegreeBalance\":\""+obj[11]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[12]+"\"},");
+			result_json.append("\"pumpEff\":\""+obj[9]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[10]+"\",");
+			result_json.append("\"wattDegreeBalance\":\""+obj[11]+"\",");
+			result_json.append("\"iDegreeBalance\":\""+obj[12]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[13]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json = result_json.deleteCharAt(result_json.length() - 1);
@@ -1381,9 +1387,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		
-		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
+			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.caldate,'yyyy-mm-dd'),"
@@ -1413,14 +1419,16 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				result_json.append("\"liquidWeightProduction\":\""+obj[4]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[5]+"\",");
+				result_json.append("\"waterWeightProduction\":\""+obj[6]+"\",");
 			}else{
 				result_json.append("\"liquidVolumetricProduction\":\""+obj[4]+"\",");
 				result_json.append("\"oilVolumetricProduction\":\""+obj[5]+"\",");
+				result_json.append("\"waterVolumetricProduction\":\""+obj[6]+"\",");
 			}
 			
-			result_json.append("\"pumpEff\":\""+obj[6]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[7]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[8]+"\"},");
+			result_json.append("\"pumpEff\":\""+obj[7]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[8]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[9]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json = result_json.deleteCharAt(result_json.length() - 1);

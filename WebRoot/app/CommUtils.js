@@ -4642,3 +4642,17 @@ function refreshHistoryDeviceListDataByPage(selectedDeviceId,deviceType,gridPane
 		gridStore.loadPage(loadPage);
 	}
 }
+
+function exportDataMask(key,panelId,info){
+	var flagUrl=context + '/reportDataMamagerController/getSessionFlag?key='+key;
+	Ext.getCmp(panelId).el.mask(info).show();
+	var exportFlatTime = setInterval(function () {
+	    $.post(flagUrl, null, function (result) {
+	            var flag = result.flag;
+	            if (flag == "1") {
+	                clearInterval(exportFlatTime);
+	            	Ext.getCmp(panelId).getEl().unmask();
+	            }
+	        },"json");
+	}, 1000);
+}

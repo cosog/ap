@@ -194,6 +194,7 @@ public class ReportDataMamagerController extends BaseController {
 	public String exportSingleWellRangeReportData() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
+		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String wellId = ParamUtils.getParameter(request, "wellId");
 		String wellName = ParamUtils.getParameter(request, "wellName");
@@ -202,10 +203,14 @@ public class ReportDataMamagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String key = ParamUtils.getParameter(request, "key");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		session.removeAttribute(key);
-		session.setAttribute(key, 0);
+		
+		User user=null;
+		if(session!=null){
+			user = (User) session.getAttribute("userLogin");
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		
 		String tableName="tbl_rpcdailycalculationdata";
 		String deviceTypeName="抽油机井";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -244,7 +249,9 @@ public class ReportDataMamagerController extends BaseController {
         	fileName+="~"+endDate;
         }
 		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
-		session.setAttribute(key, 1);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
 		return null;
 	}
 	
@@ -1606,6 +1613,9 @@ public class ReportDataMamagerController extends BaseController {
 		JSONObject json = new JSONObject();
 		json.put("flag",flag);
 		String jsonStr=json.toString();
+		if("1".equalsIgnoreCase(flag)){
+			session.removeAttribute(key);
+		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

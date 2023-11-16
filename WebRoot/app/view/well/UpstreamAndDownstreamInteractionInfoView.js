@@ -229,7 +229,9 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             iconCls: 'export',
                             hidden: false,
                             handler: function (v, o) {
-                            	Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").el.mask("含水数据导出中...").show();
+                            	var timestamp=new Date().getTime();
+                            	var key='exportWaterCutRawData'+timestamp;
+                            	var maskPanelId='UpstreamAndDownstreamInteractionConfigPanel2_Id';
                             	var fields = "";
                                 var heads = "";
                                 var lockedheads = "";
@@ -252,9 +254,11 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                                 + "&heads=" + URLencode(URLencode(heads)) 
                                 + "&signinId=" + signinId 
                                 + "&slave=" + slave
-                                + "&fileName=" + URLencode(URLencode(wellName+"含水数据")) + "&title=" + URLencode(URLencode(wellName+"含水数据"));
+                                + "&fileName=" + URLencode(URLencode(wellName+"含水数据")) 
+                                + "&title=" + URLencode(URLencode(wellName+"含水数据"))
+                                + '&key='+key;
+                                exportDataMask(key,maskPanelId,cosog.string.loading);
                                 openExcelWindow(url + '?flag=true' + param);
-                                Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
                             }
                         }, '-',{
                              xtype: 'button',

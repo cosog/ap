@@ -402,7 +402,8 @@ begin
           t.videourl1=v_videourl1,t.videokeyid1=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName1 and rownum=1),
           t.videourl2=v_videourl2,t.videokeyid2=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName2 and rownum=1),
           t.status=v_status,t.sortnum=v_sortNum,
-          t.productiondata=v_productionData
+          t.productiondata=v_productionData,
+          t.productiondataupdatetime=sysdate
         Where t.wellName=v_wellName and t.orgid=v_orgId;
         commit;
         v_result:=1;
@@ -449,8 +450,8 @@ begin
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData);
+            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,productiondataupdatetime)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,sysdate);
             commit;
             update tbl_pcpdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -516,8 +517,8 @@ begin
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData);
+            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,productiondataupdatetime)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,sysdate);
             commit;
             update tbl_pcpdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -1049,7 +1050,8 @@ begin
           t.status=v_status, t.sortnum=v_sortNum,
           t.productiondata=v_productionData,
           t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model),
-          t.stroke=v_stroke,t.balanceinfo=v_balanceinfo
+          t.stroke=v_stroke,t.balanceinfo=v_balanceinfo,
+          t.productiondataupdatetime=sysdate
         Where t.wellName=v_wellName and t.orgid=v_orgId;
         commit;
         v_result:=1;
@@ -1096,8 +1098,8 @@ begin
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,stroke,balanceinfo)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
+            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,stroke,balanceinfo,productiondataupdatetime)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo,sysdate);
             commit;
             update tbl_rpcdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -1164,8 +1166,8 @@ begin
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,stroke,balanceinfo)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
+            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,stroke,balanceinfo,productiondataupdatetime)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo,sysdate);
             commit;
             update tbl_rpcdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -1756,7 +1758,8 @@ begin
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
                t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
-               t.sortnum=v_sortNum
+               t.sortnum=v_sortNum,
+               t.productiondataupdatetime=sysdate
            Where t.id=v_recordId;
            commit;
            v_result:=1;
@@ -1895,7 +1898,8 @@ begin
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
                t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
-               t.sortnum=v_sortNum
+               t.sortnum=v_sortNum,
+               t.productiondataupdatetime=sysdate
            Where t.id=v_recordId;
            commit;
            v_result:=1;

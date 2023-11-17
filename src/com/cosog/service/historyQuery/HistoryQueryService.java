@@ -676,10 +676,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				tableColumnsList.add(columnList.get(i).toString());
 			}
 			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
+			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
+					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
 					+ "availablePlungerStrokeProd_v,pumpClearanceleakProd_v,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_v,";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
+				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
+						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
 						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
 			}
 			String sql="select t2.id,t.wellname,"//0~1
@@ -690,30 +692,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
 					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ "t2.TheoreticalProduction,"//16
-					+ prodCol+""//17~25
-					+ "t2.FMax,t2.FMin,"//26~27
-					+ "t2.Stroke,t2.SPM,"//28~29
-					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//30~32
-					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//33~34
-					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//35~37
-					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//38
-					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//39
-					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//40~42
-					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//43~45
-					+ "t2.PumpEff1*100 as PumpEff1,"//46
-					+ "t2.pumpEff2*100 as pumpEff2,"//47
-					+ "t2.pumpEff3*100 as pumpEff3,"//48
-					+ "t2.pumpEff4*100 as pumpEff4,"//49
-					+ "t2.pumpEff*100 as pumpEff,"//50
-					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//51~53
-					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//54~56
-					+ "t2.deltaradius*100 as deltaradius,"//57
-					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//58~59
-					+ "t2.submergence,"//60
-					+ "t2.todayKWattH,"//61
-					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//62~66
-					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//67~71
-					+ "t2.productiondata";//72
+					+ prodCol+""//17~27
+					+ "t2.FMax,t2.FMin,"//28~29
+					+ "t2.Stroke,t2.SPM,"//30~31
+					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//32~34
+					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//35~36
+					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//37~39
+					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//40
+					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//41
+					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//42~44
+					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//45~47
+					+ "t2.PumpEff1*100 as PumpEff1,"//48
+					+ "t2.pumpEff2*100 as pumpEff2,"//49
+					+ "t2.pumpEff3*100 as pumpEff3,"//50
+					+ "t2.pumpEff4*100 as pumpEff4,"//51
+					+ "t2.pumpEff*100 as pumpEff,"//52
+					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//53~55
+					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//56~58
+					+ "t2.deltaradius*100 as deltaradius,"//59
+					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//60~61
+					+ "t2.submergence,"//62
+					+ "t2.todayKWattH,"//63
+					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//64~68
+					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//69~73
+					+ "t2.productiondata";//74
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
@@ -752,7 +754,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String runStatusName=obj[9]+"";
 				String resultCode=obj[13]+"";
 				
-				String productionDataStr=obj[72]+"";
+				String productionDataStr=obj[74]+"";
 				
 				String tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",weightWaterCut="",
 						productionGasOilRatio="",producingfluidLevel="",levelCorrectValue="",
@@ -826,77 +828,79 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\""+prodCol.split(",")[6]+"\":\""+obj[23]+"\",");
 				result_json.append("\""+prodCol.split(",")[7]+"\":\""+obj[24]+"\",");
 				result_json.append("\""+prodCol.split(",")[8]+"\":\""+obj[25]+"\",");
+				result_json.append("\""+prodCol.split(",")[9]+"\":\""+obj[26]+"\",");
+				result_json.append("\""+prodCol.split(",")[10]+"\":\""+obj[27]+"\",");
 				
-				result_json.append("\"FMax\":\""+obj[26]+"\",");
-				result_json.append("\"FMin\":\""+obj[27]+"\",");
+				result_json.append("\"FMax\":\""+obj[28]+"\",");
+				result_json.append("\"FMin\":\""+obj[29]+"\",");
 				
-				result_json.append("\"stroke\":\""+obj[28]+"\",");
-				result_json.append("\"SPM\":\""+obj[29]+"\",");
+				result_json.append("\"stroke\":\""+obj[30]+"\",");
+				result_json.append("\"SPM\":\""+obj[31]+"\",");
 				
-				result_json.append("\"fullnessCoefficient\":\""+obj[30]+"\",");
-				result_json.append("\"plungerStroke\":\""+obj[31]+"\",");
-				result_json.append("\"availablePlungerStroke\":\""+obj[32]+"\",");
+				result_json.append("\"fullnessCoefficient\":\""+obj[32]+"\",");
+				result_json.append("\"plungerStroke\":\""+obj[33]+"\",");
+				result_json.append("\"availablePlungerStroke\":\""+obj[34]+"\",");
 				
-				result_json.append("\"upperLoadLine\":\""+obj[33]+"\",");
-				result_json.append("\"lowerLoadLine\":\""+obj[34]+"\",");
+				result_json.append("\"upperLoadLine\":\""+obj[35]+"\",");
+				result_json.append("\"lowerLoadLine\":\""+obj[36]+"\",");
 				
-				result_json.append("\"averageWatt\":\""+obj[35]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[36]+"\",");
-				result_json.append("\"waterPower\":\""+obj[37]+"\",");
+				result_json.append("\"averageWatt\":\""+obj[37]+"\",");
+				result_json.append("\"polishrodPower\":\""+obj[38]+"\",");
+				result_json.append("\"waterPower\":\""+obj[39]+"\",");
 				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[38]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[39]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[40]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[41]+"\",");
-				result_json.append("\"area\":\""+obj[42]+"\",");
+				result_json.append("\"surfaceSystemEfficiency\":\""+obj[40]+"\",");
+				result_json.append("\"welldownSystemEfficiency\":\""+obj[41]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[42]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[43]+"\",");
+				result_json.append("\"area\":\""+obj[44]+"\",");
 				
-				result_json.append("\"rodFlexLength\":\""+obj[43]+"\",");
-				result_json.append("\"tubingFlexLength\":\""+obj[44]+"\",");
-				result_json.append("\"inertiaLength\":\""+obj[45]+"\",");
+				result_json.append("\"rodFlexLength\":\""+obj[45]+"\",");
+				result_json.append("\"tubingFlexLength\":\""+obj[46]+"\",");
+				result_json.append("\"inertiaLength\":\""+obj[47]+"\",");
 				
-				result_json.append("\"pumpEff1\":\""+obj[46]+"\",");
-				result_json.append("\"pumpEff2\":\""+obj[47]+"\",");
-				result_json.append("\"pumpEff3\":\""+obj[48]+"\",");
-				result_json.append("\"pumpEff4\":\""+obj[49]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[50]+"\",");
+				result_json.append("\"pumpEff1\":\""+obj[48]+"\",");
+				result_json.append("\"pumpEff2\":\""+obj[49]+"\",");
+				result_json.append("\"pumpEff3\":\""+obj[50]+"\",");
+				result_json.append("\"pumpEff4\":\""+obj[51]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[52]+"\",");
 				
-				result_json.append("\"upStrokeIMax\":\""+obj[51]+"\",");
-				result_json.append("\"downStrokeIMax\":\""+obj[52]+"\",");
-				result_json.append("\"iDegreeBalance\":\""+obj[53]+"\",");
+				result_json.append("\"upStrokeIMax\":\""+obj[53]+"\",");
+				result_json.append("\"downStrokeIMax\":\""+obj[54]+"\",");
+				result_json.append("\"iDegreeBalance\":\""+obj[55]+"\",");
 				
-				result_json.append("\"upStrokeWattMax\":\""+obj[54]+"\",");
-				result_json.append("\"downStrokeWattMax\":\""+obj[55]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[56]+"\",");
+				result_json.append("\"upStrokeWattMax\":\""+obj[56]+"\",");
+				result_json.append("\"downStrokeWattMax\":\""+obj[57]+"\",");
+				result_json.append("\"wattDegreeBalance\":\""+obj[58]+"\",");
 				
-				result_json.append("\"deltaradius\":\""+obj[57]+"\",");
+				result_json.append("\"deltaradius\":\""+obj[59]+"\",");
 				
 				result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
 				result_json.append("\"levelCorrectValue\":\""+levelCorrectValue+"\",");
-				result_json.append("\"levelDifferenceValue\":\""+obj[58]+"\",");
-				result_json.append("\"calcProducingfluidLevel\":\""+obj[59]+"\",");
-				result_json.append("\"submergence\":\""+obj[60]+"\",");
+				result_json.append("\"levelDifferenceValue\":\""+obj[60]+"\",");
+				result_json.append("\"calcProducingfluidLevel\":\""+obj[61]+"\",");
+				result_json.append("\"submergence\":\""+obj[62]+"\",");
 				
 				result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
 				result_json.append("\"pumpBoreDiameter\":\""+pumpBoreDiameter+"\",");
 				
-				result_json.append("\"todayKWattH\":\""+obj[61]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[63]+"\",");
 				
 				result_json.append("\"tubingPressure\":\""+tubingPressure+"\",");
 				result_json.append("\"casingPressure\":\""+casingPressure+"\",");
 				result_json.append("\"wellHeadTemperature\":\""+wellHeadTemperature+"\",");
 				result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
 				
-				result_json.append("\"pumpIntakeP\":\""+obj[62]+"\",");
-				result_json.append("\"pumpIntakeT\":\""+obj[63]+"\",");
-				result_json.append("\"pumpIntakeGOL\":\""+obj[64]+"\",");
-				result_json.append("\"pumpIntakeVisl\":\""+obj[65]+"\",");
-				result_json.append("\"pumpIntakeBo\":\""+obj[66]+"\",");
+				result_json.append("\"pumpIntakeP\":\""+obj[64]+"\",");
+				result_json.append("\"pumpIntakeT\":\""+obj[65]+"\",");
+				result_json.append("\"pumpIntakeGOL\":\""+obj[66]+"\",");
+				result_json.append("\"pumpIntakeVisl\":\""+obj[67]+"\",");
+				result_json.append("\"pumpIntakeBo\":\""+obj[68]+"\",");
 				
-				result_json.append("\"pumpOutletP\":\""+obj[67]+"\",");
-				result_json.append("\"pumpOutletT\":\""+obj[68]+"\",");
-				result_json.append("\"pumpOutletGOL\":\""+obj[69]+"\",");
-				result_json.append("\"pumpOutletVisl\":\""+obj[70]+"\",");
-				result_json.append("\"pumpOutletBo\":\""+obj[71]+"\",");
+				result_json.append("\"pumpOutletP\":\""+obj[69]+"\",");
+				result_json.append("\"pumpOutletT\":\""+obj[70]+"\",");
+				result_json.append("\"pumpOutletGOL\":\""+obj[71]+"\",");
+				result_json.append("\"pumpOutletVisl\":\""+obj[72]+"\",");
+				result_json.append("\"pumpOutletBo\":\""+obj[73]+"\",");
 				result_json.append("\"details\":\"\",");
 				
 				alarmInfo.append("[");
@@ -929,7 +933,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[73+j]+"";
+					String rawValue=obj[75+j]+"";
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
@@ -1115,10 +1119,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				tableColumnsList.add(columnList.get(i).toString());
 			}
 			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
+			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
+					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
 					+ "availablePlungerStrokeProd_v,pumpClearanceleakProd_v,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_v,";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
+				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
+						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
 						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
 			}
 			String sql="select t2.id,t.wellname,"//0~1
@@ -1129,30 +1135,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
 					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ "t2.TheoreticalProduction,"//16
-					+ prodCol+""//17~25
-					+ "t2.FMax,t2.FMin,"//26~27
-					+ "t2.Stroke,t2.SPM,"//28~29
-					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//30~32
-					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//33~34
-					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//35~37
-					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//38
-					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//39
-					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//40~42
-					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//43~45
-					+ "t2.PumpEff1*100 as PumpEff1,"//46
-					+ "t2.pumpEff2*100 as pumpEff2,"//47
-					+ "t2.pumpEff3*100 as pumpEff3,"//48
-					+ "t2.pumpEff4*100 as pumpEff4,"//49
-					+ "t2.pumpEff*100 as pumpEff,"//50
-					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//51~53
-					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//54~56
-					+ "t2.deltaradius*100 as deltaradius,"//57
-					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//58~59
-					+ "t2.submergence,"//60
-					+ "t2.todayKWattH,"//61
-					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//62~66
-					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//67~71
-					+ "t2.productiondata";//72
+					+ prodCol+""//17~27
+					+ "t2.FMax,t2.FMin,"//28~29
+					+ "t2.Stroke,t2.SPM,"//30~31
+					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//32~34
+					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//35~36
+					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//37~39
+					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//40
+					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//41
+					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//42~44
+					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//45~47
+					+ "t2.PumpEff1*100 as PumpEff1,"//48
+					+ "t2.pumpEff2*100 as pumpEff2,"//49
+					+ "t2.pumpEff3*100 as pumpEff3,"//50
+					+ "t2.pumpEff4*100 as pumpEff4,"//51
+					+ "t2.pumpEff*100 as pumpEff,"//52
+					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//53~55
+					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//56~58
+					+ "t2.deltaradius*100 as deltaradius,"//59
+					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//60~61
+					+ "t2.submergence,"//62
+					+ "t2.todayKWattH,"//63
+					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//64~68
+					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//69~73
+					+ "t2.productiondata";//74
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
@@ -1183,7 +1189,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
 				obj=(Object[]) list.get(i);
-				String productionDataStr=obj[72]+"";
+				String productionDataStr=obj[74]+"";
 				
 				String tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",weightWaterCut="",
 						productionGasOilRatio="",producingfluidLevel="",levelCorrectValue="",
@@ -1242,80 +1248,82 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\""+prodCol.split(",")[6]+"\":\""+obj[23]+"\",");
 				result_json.append("\""+prodCol.split(",")[7]+"\":\""+obj[24]+"\",");
 				result_json.append("\""+prodCol.split(",")[8]+"\":\""+obj[25]+"\",");
+				result_json.append("\""+prodCol.split(",")[9]+"\":\""+obj[26]+"\",");
+				result_json.append("\""+prodCol.split(",")[10]+"\":\""+obj[27]+"\",");
 				
-				result_json.append("\"FMax\":\""+obj[26]+"\",");
-				result_json.append("\"FMin\":\""+obj[27]+"\",");
+				result_json.append("\"FMax\":\""+obj[28]+"\",");
+				result_json.append("\"FMin\":\""+obj[29]+"\",");
 				
-				result_json.append("\"stroke\":\""+obj[28]+"\",");
-				result_json.append("\"SPM\":\""+obj[29]+"\",");
+				result_json.append("\"stroke\":\""+obj[30]+"\",");
+				result_json.append("\"SPM\":\""+obj[31]+"\",");
 				
-				result_json.append("\"fullnessCoefficient\":\""+obj[30]+"\",");
-				result_json.append("\"plungerStroke\":\""+obj[31]+"\",");
-				result_json.append("\"availablePlungerStroke\":\""+obj[32]+"\",");
+				result_json.append("\"fullnessCoefficient\":\""+obj[32]+"\",");
+				result_json.append("\"plungerStroke\":\""+obj[33]+"\",");
+				result_json.append("\"availablePlungerStroke\":\""+obj[34]+"\",");
 				
-				result_json.append("\"upperLoadLine\":\""+obj[33]+"\",");
-				result_json.append("\"lowerLoadLine\":\""+obj[34]+"\",");
+				result_json.append("\"upperLoadLine\":\""+obj[35]+"\",");
+				result_json.append("\"lowerLoadLine\":\""+obj[36]+"\",");
 				
-				result_json.append("\"averageWatt\":\""+obj[35]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[36]+"\",");
-				result_json.append("\"waterPower\":\""+obj[37]+"\",");
+				result_json.append("\"averageWatt\":\""+obj[37]+"\",");
+				result_json.append("\"polishrodPower\":\""+obj[38]+"\",");
+				result_json.append("\"waterPower\":\""+obj[39]+"\",");
 				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[38]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[39]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[40]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[41]+"\",");
-				result_json.append("\"area\":\""+obj[42]+"\",");
+				result_json.append("\"surfaceSystemEfficiency\":\""+obj[40]+"\",");
+				result_json.append("\"welldownSystemEfficiency\":\""+obj[41]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[42]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[43]+"\",");
+				result_json.append("\"area\":\""+obj[44]+"\",");
 				
-				result_json.append("\"rodFlexLength\":\""+obj[43]+"\",");
-				result_json.append("\"tubingFlexLength\":\""+obj[44]+"\",");
-				result_json.append("\"inertiaLength\":\""+obj[45]+"\",");
+				result_json.append("\"rodFlexLength\":\""+obj[45]+"\",");
+				result_json.append("\"tubingFlexLength\":\""+obj[46]+"\",");
+				result_json.append("\"inertiaLength\":\""+obj[47]+"\",");
 				
-				result_json.append("\"pumpEff1\":\""+obj[46]+"\",");
-				result_json.append("\"pumpEff2\":\""+obj[47]+"\",");
-				result_json.append("\"pumpEff3\":\""+obj[48]+"\",");
-				result_json.append("\"pumpEff4\":\""+obj[49]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[50]+"\",");
+				result_json.append("\"pumpEff1\":\""+obj[48]+"\",");
+				result_json.append("\"pumpEff2\":\""+obj[49]+"\",");
+				result_json.append("\"pumpEff3\":\""+obj[50]+"\",");
+				result_json.append("\"pumpEff4\":\""+obj[51]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[52]+"\",");
 				
-				result_json.append("\"upStrokeIMax\":\""+obj[51]+"\",");
-				result_json.append("\"downStrokeIMax\":\""+obj[52]+"\",");
-				result_json.append("\"iDegreeBalance\":\""+obj[53]+"\",");
+				result_json.append("\"upStrokeIMax\":\""+obj[53]+"\",");
+				result_json.append("\"downStrokeIMax\":\""+obj[54]+"\",");
+				result_json.append("\"iDegreeBalance\":\""+obj[55]+"\",");
 				
-				result_json.append("\"upStrokeWattMax\":\""+obj[54]+"\",");
-				result_json.append("\"downStrokeWattMax\":\""+obj[55]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[56]+"\",");
+				result_json.append("\"upStrokeWattMax\":\""+obj[56]+"\",");
+				result_json.append("\"downStrokeWattMax\":\""+obj[57]+"\",");
+				result_json.append("\"wattDegreeBalance\":\""+obj[58]+"\",");
 				
-				result_json.append("\"deltaradius\":\""+obj[57]+"\",");
+				result_json.append("\"deltaradius\":\""+obj[59]+"\",");
 				
 				result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
 				result_json.append("\"levelCorrectValue\":\""+levelCorrectValue+"\",");
-				result_json.append("\"levelDifferenceValue\":\""+obj[58]+"\",");
-				result_json.append("\"calcProducingfluidLevel\":\""+obj[59]+"\",");
-				result_json.append("\"submergence\":\""+obj[60]+"\",");
+				result_json.append("\"levelDifferenceValue\":\""+obj[60]+"\",");
+				result_json.append("\"calcProducingfluidLevel\":\""+obj[61]+"\",");
+				result_json.append("\"submergence\":\""+obj[62]+"\",");
 				
 				result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
 				result_json.append("\"pumpBoreDiameter\":\""+pumpBoreDiameter+"\",");
 				
-				result_json.append("\"todayKWattH\":\""+obj[61]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[63]+"\",");
 				
 				result_json.append("\"tubingPressure\":\""+tubingPressure+"\",");
 				result_json.append("\"casingPressure\":\""+casingPressure+"\",");
 				result_json.append("\"wellHeadTemperature\":\""+wellHeadTemperature+"\",");
 				result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
 				
-				result_json.append("\"pumpIntakeP\":\""+obj[62]+"\",");
-				result_json.append("\"pumpIntakeT\":\""+obj[63]+"\",");
-				result_json.append("\"pumpIntakeGOL\":\""+obj[64]+"\",");
-				result_json.append("\"pumpIntakeVisl\":\""+obj[65]+"\",");
-				result_json.append("\"pumpIntakeBo\":\""+obj[66]+"\",");
+				result_json.append("\"pumpIntakeP\":\""+obj[64]+"\",");
+				result_json.append("\"pumpIntakeT\":\""+obj[65]+"\",");
+				result_json.append("\"pumpIntakeGOL\":\""+obj[66]+"\",");
+				result_json.append("\"pumpIntakeVisl\":\""+obj[67]+"\",");
+				result_json.append("\"pumpIntakeBo\":\""+obj[68]+"\",");
 				
-				result_json.append("\"pumpOutletP\":\""+obj[67]+"\",");
-				result_json.append("\"pumpOutletT\":\""+obj[68]+"\",");
-				result_json.append("\"pumpOutletGOL\":\""+obj[69]+"\",");
-				result_json.append("\"pumpOutletVisl\":\""+obj[70]+"\",");
-				result_json.append("\"pumpOutletBo\":\""+obj[71]+"\"");
+				result_json.append("\"pumpOutletP\":\""+obj[69]+"\",");
+				result_json.append("\"pumpOutletT\":\""+obj[70]+"\",");
+				result_json.append("\"pumpOutletGOL\":\""+obj[71]+"\",");
+				result_json.append("\"pumpOutletVisl\":\""+obj[72]+"\",");
+				result_json.append("\"pumpOutletBo\":\""+obj[73]+"\"");
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[73+j]+"";
+					String rawValue=obj[75+j]+"";
 					String value=rawValue;
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
@@ -1455,9 +1463,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				tableColumnsList.add(columnList.get(i).toString());
 			}
 			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
+					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
+				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
+						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,";
 			}
 			String sql="select t2.id,t.wellname,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -1537,14 +1547,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[14]+"\",");
 				result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[15]+"\",");
 				result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[16]+"\",");
+				result_json.append("\""+prodCol.split(",")[4]+"\":\""+obj[17]+"\",");
+				result_json.append("\""+prodCol.split(",")[5]+"\":\""+obj[18]+"\",");
 				
-				result_json.append("\"averageWatt\":\""+obj[17]+"\",");
-				result_json.append("\"waterPower\":\""+obj[18]+"\",");
+				result_json.append("\"averageWatt\":\""+obj[19]+"\",");
+				result_json.append("\"waterPower\":\""+obj[20]+"\",");
 				
-				result_json.append("\"systemEfficiency\":\""+obj[19]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[20]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[21]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[22]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[22]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[23]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[24]+"\",");
 				result_json.append("\"details\":\"\",");
 				
 				alarmInfo.append("[");
@@ -1577,7 +1589,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[23+j]+"";
+					String rawValue=obj[25+j]+"";
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
@@ -1756,9 +1768,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				tableColumnsList.add(columnList.get(i).toString());
 			}
 			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
+					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
+				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
+						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,";
 			}
 			String sql="select t2.id,t.wellname,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -1819,17 +1833,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[14]+"\",");
 				result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[15]+"\",");
 				result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[16]+"\",");
+				result_json.append("\""+prodCol.split(",")[4]+"\":\""+obj[17]+"\",");
+				result_json.append("\""+prodCol.split(",")[5]+"\":\""+obj[18]+"\",");
 				
-				result_json.append("\"averageWatt\":\""+obj[17]+"\",");
-				result_json.append("\"waterPower\":\""+obj[18]+"\",");
+				result_json.append("\"averageWatt\":\""+obj[19]+"\",");
+				result_json.append("\"waterPower\":\""+obj[20]+"\",");
 				
-				result_json.append("\"systemEfficiency\":\""+obj[19]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[20]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[21]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[22]+"\"");
+				result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[22]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[23]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[24]+"\"");
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[23+j]+"";
+					String rawValue=obj[25+j]+"";
 					String value=rawValue;
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){

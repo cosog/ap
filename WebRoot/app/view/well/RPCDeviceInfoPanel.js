@@ -728,6 +728,8 @@ var RPCDeviceInfoHandsontableHelper = {
                     				}
                     			}
                     		}
+                    	}else if(prop.toUpperCase() === "allPath".toUpperCase() || prop.toUpperCase() === "productionDataUpdateTime".toUpperCase()){
+                    		cellProperties.readOnly = true;
                     	}
                     }
                     

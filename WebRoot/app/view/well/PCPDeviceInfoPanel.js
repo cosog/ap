@@ -603,6 +603,42 @@ var PCPDeviceInfoHandsontableHelper = {
                     var visualColIndex = this.instance.toVisualColumn(col);
                     if(pcpDeviceInfoHandsontableHelper.dataLength==0){
                     	cellProperties.readOnly = true;
+                    }else if(pcpDeviceInfoHandsontableHelper.hot!=undefined && pcpDeviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+                    	var columns=pcpDeviceInfoHandsontableHelper.columns;
+                    	if(prop.toUpperCase() === "signInId".toUpperCase() || prop.toUpperCase() === "ipPort".toUpperCase()){
+                    		var tcpTypeColIndex=-1;
+                    		for(var i=0;i<columns.length;i++){
+                    			if(columns[i].data.toUpperCase() === "tcpType".toUpperCase()){
+                    				tcpTypeColIndex=i;
+                    				break;
+                            	}
+                    		}
+                    		if(tcpTypeColIndex>=0){
+                    			var tcpType=pcpDeviceInfoHandsontableHelper.hot.getDataAtCell(row,tcpTypeColIndex);
+//                    			var cell = pcpDeviceInfoHandsontableHelper.hot.getCell(row, col);  
+                    			if(tcpType=='' || tcpType==null){
+                    				cellProperties.readOnly = false;
+                    			}else{
+                    				if(prop.toUpperCase() === "signInId".toUpperCase()){
+                    					if(tcpType.toUpperCase() === "TCP Client".toUpperCase() || tcpType.toUpperCase() === "TCPClient".toUpperCase()){
+                    						cellProperties.readOnly = false;
+                    					}else{
+                    						cellProperties.readOnly = true;
+//                    						cell.style.background = "#f5f5f5";
+                    					}
+                    				}else if(prop.toUpperCase() === "ipPort".toUpperCase()){
+                    					if(tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()){
+                    						cellProperties.readOnly = false;
+                    					}else{
+                    						cellProperties.readOnly = true;
+//                    						cell.style.background = "#f5f5f5";
+                    					}
+                    				}
+                    			}
+                    		}
+                    	}else if(prop.toUpperCase() === "allPath".toUpperCase() || prop.toUpperCase() === "productionDataUpdateTime".toUpperCase()){
+                    		cellProperties.readOnly = true;
+                    	}
                     }
                     return cellProperties;
                 },

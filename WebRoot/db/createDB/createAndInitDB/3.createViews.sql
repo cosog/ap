@@ -124,7 +124,7 @@ t.displayinstancecode,t5.name as displayinstancename,
 t.reportinstancecode,t6.name as reportinstancename,
 t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,
-t.sortnum
+t.sortnum,t.productiondataupdatetime
 from tbl_pcpdevice t
 left outer join  viw_org org  on t.orgid=org.org_id
 left outer join tbl_protocolinstance t2 on t.instancecode=t2.code
@@ -145,8 +145,8 @@ create or replace view viw_pcp_calculatemain as
 select t.id as id,
 well.id as wellid,well.wellName,
 t.acqtime,t.resultstatus,
-t.liquidWeightProduction,t.oilWeightProduction,
-t.liquidVolumetricProduction,t.oilVolumetricProduction,
+t.liquidWeightProduction,t.oilWeightProduction,t.waterweightproduction,
+t.liquidVolumetricProduction,t.oilVolumetricProduction,t.watervolumetricproduction,
 t.rpm,
 t.productiondata,
 well.orgid
@@ -261,7 +261,7 @@ t.reportinstancecode,t7.name as reportinstancename,
 t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,t.balanceinfo,t.stroke,
 t.pumpingmodelid,t6.manufacturer,t6.model,t6.crankrotationdirection,t6.offsetangleofcrank,t6.crankgravityradius,t6.singlecrankweight,t6.singlecrankpinweight,t6.structuralunbalance,
-t.sortnum
+t.sortnum,t.productiondataupdatetime
 from tbl_rpcdevice t
 left outer join  viw_org org  on t.orgid=org.org_id
 left outer join tbl_protocolinstance t2 on t.instancecode=t2.code
@@ -283,8 +283,8 @@ create or replace view viw_rpc_calculatemain as
 select t.id as id,
 well.id as wellid,well.wellName,
 t.fesdiagramacqtime,t.resultstatus,t.resultcode,ws.resultName,
-t.liquidWeightProduction,t.oilWeightProduction,
-t.liquidVolumetricProduction,t.oilVolumetricProduction,
+t.liquidWeightProduction,t.oilWeightProduction,t.waterweightproduction,
+t.liquidVolumetricProduction,t.oilVolumetricProduction,t.watervolumetricproduction,
 t.leveldifferencevalue,t.calcproducingfluidlevel,
 t.productiondata,
 well.orgid

@@ -101,6 +101,11 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
+                        	if(Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id=='PCPSingleWellDailyReportTabPanel_id'){
+                            	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setValue("");
+                            	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setRawValue("");
+                        	}
+
                         	CreatePCPSingleWellReportTable();
                         	CreatePCPSingleWellReportCurve();
                         } catch (ex) {
@@ -121,6 +126,10 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
+                        	if(Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id=='PCPSingleWellDailyReportTabPanel_id'){
+                            	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setValue("");
+                            	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setRawValue("");
+                        	}
                         	CreatePCPSingleWellReportTable();
                         	CreatePCPSingleWellReportCurve();
                         } catch (ex) {
@@ -134,6 +143,10 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 iconCls: 'search',
                 hidden:false,
                 handler: function (v, o) {
+                	if(Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id=='PCPSingleWellDailyReportTabPanel_id'){
+                    	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setValue("");
+                    	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setRawValue("");
+                	}
                 	CreatePCPSingleWellReportTable();
                 	CreatePCPSingleWellReportCurve();
                 }
@@ -373,6 +386,10 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                 }],
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	if(Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id=='PCPSingleWellDailyReportTabPanel_id'){
+                        	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setValue("");
+                        	Ext.getCmp("PCPSingleWellDailyReportDate_Id").setRawValue("");
+                    	}
                     	CreatePCPSingleWellReportTable();
                 		CreatePCPSingleWellReportCurve();
                     }
@@ -1800,7 +1817,7 @@ function ExportPCPSingleWellReportData(){
 
 function ExportPCPSingleWellRangeReportData(){
 	var timestamp=new Date().getTime();
-	var key='ExportRPCSingleWellRangeReportData'+timestamp;
+	var key='ExportPCPSingleWellRangeReportData'+timestamp;
 	
 	var leftOrg_Id = obtainParams('leftOrg_Id');
 	var wellName = Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').getValue();

@@ -10,6 +10,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         var me = this;
         var RPCRealTimeMonitoringInfoView = Ext.create('AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView');
         var PCPRealTimeMonitoringInfoView = Ext.create('AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView');
+        
         Ext.apply(me, {
         	items: [{
         		xtype: 'tabpanel',

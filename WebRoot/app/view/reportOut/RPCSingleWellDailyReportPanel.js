@@ -101,6 +101,11 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
+                        	if(Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id=='RPCSingleWellDailyReportTabPanel_id'){
+                            	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setValue("");
+                            	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setRawValue("");
+                        	}
+                        	
                         	CreateRPCSingleWellReportTable();
                         	CreateRPCSingleWellReportCurve();
                         } catch (ex) {
@@ -121,6 +126,10 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
+                        	if(Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id=='RPCSingleWellDailyReportTabPanel_id'){
+                            	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setValue("");
+                            	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setRawValue("");
+                        	}
                         	CreateRPCSingleWellReportTable();
                         	CreateRPCSingleWellReportCurve();
                         } catch (ex) {
@@ -134,6 +143,10 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 iconCls: 'search',
                 hidden:false,
                 handler: function (v, o) {
+                	if(Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id=='RPCSingleWellDailyReportTabPanel_id'){
+                    	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setValue("");
+                    	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setRawValue("");
+                	}
                 	CreateRPCSingleWellReportTable();
                 	CreateRPCSingleWellReportCurve();
                 }
@@ -401,6 +414,10 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                 }],
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	if(Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id=='RPCSingleWellDailyReportTabPanel_id'){
+                        	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setValue("");
+                        	Ext.getCmp("RPCSingleWellDailyReportDate_Id").setRawValue("");
+                    	}
                     	CreateRPCSingleWellReportTable();
                 		CreateRPCSingleWellReportCurve();
                     }

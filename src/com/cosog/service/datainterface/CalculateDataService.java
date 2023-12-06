@@ -16,10 +16,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.engine.jdbc.SerializableBlobProxy;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.ReportTemplate;
@@ -35,7 +37,10 @@ import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.drive.AcquisitionGroupResolutionData;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.service.base.BaseService;
+import com.cosog.service.base.CommonDataService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.thread.calculate.ThreadPool;
+import com.cosog.thread.calculate.TimingTotalCalculateThread;
 import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
@@ -53,6 +58,9 @@ import oracle.sql.CLOB;
 @SuppressWarnings("deprecation")
 @Service("calculateDataService")
 public class CalculateDataService<T> extends BaseService<T> {
+	@Autowired
+	private CommonDataService commonDataService;
+	
 	public void saveAlarmInfo(String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			getBaseDao().saveRPCAlarmInfo(wellName,deviceType,acqTime,acquisitionItemInfoList);
@@ -687,8 +695,48 @@ public class CalculateDataService<T> extends BaseService<T> {
 		}
 		return requestDataList;
 	}
-	
 	public List<String> RPCTimingTotalCalculation(String timeStr){
+		ThreadPool executor = new ThreadPool("RPCTinmingTotalCalculate",
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getCorePoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getMaximumPoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getWattingCount());
+		
+		String sql="select t.id,t.wellname,t3.singleWellDailyReportTemplate,t2.unitid from tbl_rpcdevice t "
+				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
+				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
+				+ " where 1=1"
+				+ " order by t.id";
+		List<?> welllist = findCallSql(sql);
+		for(int i=0;i<welllist.size();i++){
+			try{
+				Object[] wellObj=(Object[]) welllist.get(i);
+				int wellId=StringManagerUtils.stringToInteger(wellObj[0]+"");
+				String wellName=wellObj[1]+"";
+				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
+				String reportUnitId=wellObj[3]+"";
+				TimingTotalCalculateThread thread=new TimingTotalCalculateThread(wellId, wellId, wellName, timeStr, templateCode,
+						reportUnitId, 0, commonDataService);
+				executor.execute(thread);
+			}catch(Exception e){
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		while (!executor.isCompletedByTaskCount()) {
+			try {
+				Thread.sleep(1000*1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    }
+		
+		return null;
+	}
+	
+	public List<String> RPCTimingTotalCalculation2(String timeStr){
 //		timeStr="2023-10-17 08:00:00";
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
@@ -722,7 +770,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " and t.resultstatus=1 ";
 		
 		String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_rpctimingcalculationdata t "
-				+ " where t.caltime=( select max(t2.caltime) from tbl_rpctimingcalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+				+ " where t.id=("
+				+ " select v2.id"
+				+ " ( select v.id,rownum r from "
+				+ " (select t2.id from tbl_rpctimingcalculationdata t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2"
+				+ " where r=1)";
 		
 		sql+=" order by t.id";
 		fesDiagramSql+= " order by t2.id,t.fesdiagramacqtime";
@@ -731,7 +783,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<?> labelInfoQueryList=findCallSql(labelInfoSql);
 		for(int i=0;i<welllist.size();i++){
 			try{
-				int recordCount=0;
 				Object[] wellObj=(Object[]) welllist.get(i);
 				String deviceId=wellObj[0]+"";
 				String wellName=wellObj[1]+"";
@@ -742,9 +793,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
 						+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
-						+ " where t3.wellid="+deviceId+" and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')"
+						+ " and t.id=("
+						+ " select v2.id from"
+						+ " (select v.id,rownum r from "
+						+ " (select t3.id from  tbl_rpcacqdata_hist t3   "
+						+ " where t3.wellid="+deviceId+" and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') order by t3.acqtime desc) v"
+						+ " ) v2 "
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -752,9 +807,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange"
 						+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.runstatus in (0,1) and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from"
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.runstatus in (0,1) and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v"
+						+ " ) v2 "
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -762,9 +822,16 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.totalkwatth,t.todaykwatth"
 						+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.totalkwatth>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from"
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
+						+ " where t3.commstatus=1 "
+						+ " and t3.totalkwatth>0 "
+						+ " and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v"
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -772,9 +839,16 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
 						+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.totalgasvolumetricproduction>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from"
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
+						+ " where t3.commstatus=1 "
+						+ " and t3.totalgasvolumetricproduction>0 "
+						+ " and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v"
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -782,22 +856,29 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
 						+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.totalwatervolumetricproduction>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from"
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
+						+ " where t3.commstatus=1 "
+						+ " and t3.totalwatervolumetricproduction>0 "
+						+ " and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v "
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
-				String updateRealtimeAcqProdSql="update tbl_rpctimingcalculationdata t set "
-						+ " (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
-						+" =( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction"
-						+ " from tbl_rpcacqdata_hist t2 "
-						+ " where t2.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
-						+ " )"
-						+ " and t2.wellid="+deviceId+" )"
-						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+//				String updateRealtimeAcqProdSql="update tbl_rpctimingcalculationdata t set "
+//						+ " (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
+//						+" =( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction"
+//						+ " from tbl_rpcacqdata_hist t2 "
+//						+ " where t2.acqtime=("
+//						+ " select max(t3.acqtime) from  tbl_rpcacqdata_hist t3  "
+//						+ " where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+//						+ " )"
+//						+ " and t2.wellid="+deviceId+" )"
+//						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				
 				String updateRealtimeCalDataSql="update tbl_rpctimingcalculationdata t set "
 						+ " ("
@@ -871,36 +952,42 @@ public class CalculateDataService<T> extends BaseService<T> {
 						break;
 					}
 				}
-				String recordCountSql="select count(1) from tbl_rpctimingcalculationdata t  where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
-				List<?> recordCountList = this.findCallSql(recordCountSql);
-				if(recordCountList.size()>0){
-					recordCount=StringManagerUtils.stringToInteger(recordCountList.get(0)+"");
-				}
-				
-				String insertHistSql="insert into tbl_rpctimingcalculationdata (wellid,caltime,stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
-						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
-						+ " from TBL_RPCDAILYCALCULATIONDATA t2 "
-						+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') "
-						+ " and t2.wellid="+deviceId+""
-						+ " and rownum=1";
-				String insertHistSql2="insert into tbl_rpctimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
+//				String recordCountSql="select count(1) from tbl_rpctimingcalculationdata t  where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+//				List<?> recordCountList = this.findCallSql(recordCountSql);
+//				if(recordCountList.size()>0){
+//					recordCount=StringManagerUtils.stringToInteger(recordCountList.get(0)+"");
+//				}
+//				
+//				String insertHistSql="insert into tbl_rpctimingcalculationdata (wellid,caltime,stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
+//						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
+//						+ " from TBL_RPCDAILYCALCULATIONDATA t2 "
+//						+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') "
+//						+ " and t2.wellid="+deviceId+""
+//						+ " and rownum=1";
+//				String insertHistSql2="insert into tbl_rpctimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
 				String updateSql="update tbl_rpctimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
-				if(recordCount==0){
-					try {
-						int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
-						if(r==0){
-							r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				
+//				if(recordCount==0){
+//					try {
+//						int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
+//						if(r==0){
+//							r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+//						}
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//				
+//				try {
+//					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeAcqProdSql);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
 				try {
-					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeAcqProdSql);
+					this.getBaseDao().initDeviceTimingReportDate(StringManagerUtils.stringToInteger(deviceId), timeStr, date, 0);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
 				
 				//报表继承可编辑数据
 				if(StringManagerUtils.isNotNull(templateCode)){
@@ -917,7 +1004,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 						List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
 						List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 						
-						for(int k=0;k<reportItemQuertList.size();k++){
+						for(int k=0;reportItemQuertList!=null&&k<reportItemQuertList.size();k++){
 							Object[] reportItemObj=(Object[]) reportItemQuertList.get(k);
 							ReportUnitItem reportUnitItem=new ReportUnitItem();
 							reportUnitItem.setItemName(reportItemObj[0]+"");
@@ -945,9 +1032,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 							
 							String updateEditDataSql="update tbl_rpctimingcalculationdata t set ("+updateColBuff+")="
 									+ " (select "+updateColBuff+" from tbl_rpctimingcalculationdata t2 "
-											+ " where t2.wellid=t.wellid "
-											+ " and t2.caltime=(select max(caltime) from tbl_rpctimingcalculationdata t3 where t3.wellid=t2.wellid and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )"
-											+ " and rownum=1"
+											+ " where t2.wellid= "+deviceId
+											+ " and t2.id="
+											+ " (select v2.id from"
+											+ " (select v.id,rownum r from "
+											+ " (select t3.id from tbl_rpctimingcalculationdata t3 "
+											+ " where t3.wellid="+deviceId+" and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+											+ " order by t3.caltime desc) v "
+											+ " ) v2"
+											+ " where r=1)"
 										+ ") "
 									+ " where t.wellid="+deviceId
 									+ " and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
@@ -1385,13 +1478,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					this.saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr);
 					
-					if((totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0)>0){
-						try {
-							int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeCalDataSql);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
+//					if((totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0)>0){
+//						try {
+//							int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeCalDataSql);
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//					}
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -1428,7 +1521,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
 		String commStatusSql="select t2.id, t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange "
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 				+ " where t.wellid=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.wellid=t.wellid and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		
@@ -1706,6 +1799,47 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public List<String> PCPTimingTotalCalculation(String timeStr){
+		ThreadPool executor = new ThreadPool("PCPTinmingTotalCalculate",
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getCorePoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getMaximumPoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getWattingCount());
+		
+		String sql="select t.id,t.wellname,t3.singleWellDailyReportTemplate,t2.unitid from tbl_pcpdevice t "
+				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
+				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
+				+ " where 1=1"
+				+ " order by t.id";
+		List<?> welllist = findCallSql(sql);
+		for(int i=0;i<welllist.size();i++){
+			try{
+				Object[] wellObj=(Object[]) welllist.get(i);
+				int wellId=StringManagerUtils.stringToInteger(wellObj[0]+"");
+				String wellName=wellObj[1]+"";
+				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
+				String reportUnitId=wellObj[3]+"";
+				TimingTotalCalculateThread thread=new TimingTotalCalculateThread(wellId, wellId, wellName, timeStr, templateCode,
+						reportUnitId, 1, commonDataService);
+				executor.execute(thread);
+			}catch(Exception e){
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		while (!executor.isCompletedByTaskCount()) {
+			try {
+				Thread.sleep(1000*1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    }
+		
+		return null;
+	}
+	
+	public List<String> PCPTimingTotalCalculation2(String timeStr){
 		String date=timeStr.split(" ")[0];
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
@@ -1787,9 +1921,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
 						+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
+						+ " and t.id=("
+						+ " select v2.id from "
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_pcpacqdata_hist t3  "
 						+ " where t3.wellid="+deviceId+" and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')"
+						+ " order by t3.acqtime desc) v"
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -1797,9 +1936,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange"
 						+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.runstatus in (0,1) and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from "
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_pcpacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.runstatus in (0,1) and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v"
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -1807,9 +1951,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.totalkwatth,t.todaykwatth"
 						+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.totalkwatth>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from "
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_pcpacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.totalkwatth>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v "
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -1817,9 +1966,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
 						+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.totalgasvolumetricproduction>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from "
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_pcpacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.totalgasvolumetricproduction>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v"
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
@@ -1827,22 +1981,27 @@ public class CalculateDataService<T> extends BaseService<T> {
 						+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
 						+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
 						+ " where t.wellid=t2.id "
-						+ " and t.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.totalwatervolumetricproduction>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+						+ " and t.id=("
+						+ " select v2.id from "
+						+ " (select v.id,rownum r from"
+						+ " (select t3.id from  tbl_pcpacqdata_hist t3  "
+						+ " where t3.commstatus=1 and t3.totalwatervolumetricproduction>0 and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " and t3.wellid="+deviceId+" order by t3.acqtime desc) v "
+						+ " ) v2"
+						+ " where r=1"
 						+ " )"
 						+ " and t.wellid="+deviceId;
 				
-				String updateRealtimeAcqProdSql="update tbl_pcptimingcalculationdata t set "
-						+ " (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
-						+" =( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction"
-						+ " from tbl_pcpacqdata_hist t2 "
-						+ " where t2.acqtime=("
-						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
-						+ " where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
-						+ " )"
-						+ " and t2.wellid="+deviceId+" )"
-						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+//				String updateRealtimeAcqProdSql="update tbl_pcptimingcalculationdata t set "
+//						+ " (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) "
+//						+" =( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction"
+//						+ " from tbl_pcpacqdata_hist t2 "
+//						+ " where t2.acqtime=("
+//						+ " select max(t3.acqtime) from  tbl_pcpacqdata_hist t3  "
+//						+ " where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') and t3.wellid="+deviceId
+//						+ " )"
+//						+ " and t2.wellid="+deviceId+" )"
+//						+" where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				
 				String updateRealtimeCalDataSql="update tbl_pcptimingcalculationdata t set "
 						+ " ("
@@ -1878,33 +2037,39 @@ public class CalculateDataService<T> extends BaseService<T> {
 						break;
 					}
 				}
-				String recordCountSql="select count(1) from tbl_pcptimingcalculationdata t  where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
-				List<?> recordCountList = this.findCallSql(recordCountSql);
-				if(recordCountList.size()>0){
-					recordCount=StringManagerUtils.stringToInteger(recordCountList.get(0)+"");
-				}
-				String insertHistSql="insert into tbl_pcptimingcalculationdata (wellid,caltime,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
-						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
-						+ " from TBL_PCPDAILYCALCULATIONDATA t2 "
-						+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') "
-						+ " and t2.wellid="+deviceId+""
-						+ " and rownum=1";
-				
-				String insertHistSql2="insert into tbl_pcptimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
+//				String recordCountSql="select count(1) from tbl_pcptimingcalculationdata t  where t.wellid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+//				List<?> recordCountList = this.findCallSql(recordCountSql);
+//				if(recordCountList.size()>0){
+//					recordCount=StringManagerUtils.stringToInteger(recordCountList.get(0)+"");
+//				}
+//				String insertHistSql="insert into tbl_pcptimingcalculationdata (wellid,caltime,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)"
+//						+ " select "+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure"
+//						+ " from TBL_PCPDAILYCALCULATIONDATA t2 "
+//						+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') "
+//						+ " and t2.wellid="+deviceId+""
+//						+ " and rownum=1";
+//				
+//				String insertHistSql2="insert into tbl_pcptimingcalculationdata (wellid,caltime)values("+deviceId+",to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'))";
 				String updateSql="update tbl_pcptimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
-				if(recordCount==0){
-					try {
-						int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
-						if(r==0){
-							r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
+//				if(recordCount==0){
+//					try {
+//						int r=this.getBaseDao().updateOrDeleteBySql(insertHistSql);
+//						if(r==0){
+//							r=this.getBaseDao().updateOrDeleteBySql(insertHistSql2);
+//						}
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//				
+//				try {
+//					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeAcqProdSql);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
 				
 				try {
-					int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeAcqProdSql);
+					this.getBaseDao().initDeviceTimingReportDate(StringManagerUtils.stringToInteger(deviceId), timeStr, date, 1);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1952,9 +2117,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 							
 							String updateEditDataSql="update tbl_pcptimingcalculationdata t set ("+updateColBuff+")="
 									+ " (select "+updateColBuff+" from tbl_pcptimingcalculationdata t2 "
-											+ " where t2.wellid=t.wellid "
-											+ " and t2.caltime=(select max(caltime) from tbl_pcptimingcalculationdata t3 where t3.wellid=t2.wellid and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') )"
-											+ " and rownum=1"
+											+ " where t2.wellid= "+deviceId
+											+ " and t2.id="
+											+ " (select v2.id from"
+											+ " (select v.id,rownum r from "
+											+ " (select t3.id from tbl_pcptimingcalculationdata t3 "
+											+ " where t3.wellid="+deviceId+" and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+											+ " order by t3.caltime desc) v "
+											+ " ) v2"
+											+ " where r=1)"
 										+ ") "
 									+ " where t.wellid="+deviceId
 									+ " and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
@@ -2337,13 +2508,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					this.saveRPMTimingTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr);
-					if((totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0)>0){
-						try {
-							int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeCalDataSql);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
+//					if((totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0)>0){
+//						try {
+//							int r=this.getBaseDao().updateOrDeleteBySql(updateRealtimeCalDataSql);
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//					}
 				}
 			}catch(Exception e){
 				e.printStackTrace();

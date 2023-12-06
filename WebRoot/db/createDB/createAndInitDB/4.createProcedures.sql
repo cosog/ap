@@ -2003,7 +2003,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramtimingtotal (
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
 begin
-  select count(*) into p_count from tbl_rpctimingcalculationdata t where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+  select count(1) into p_count from tbl_rpctimingcalculationdata t where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
   if p_count>0 then
     p_msg := '记录存在';
     update tbl_rpctimingcalculationdata t
@@ -2032,8 +2032,48 @@ begin
           t.rpm=v_rpm
       where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
       commit;
+      --更新实时计算数据
+      update tbl_rpctimingcalculationdata t set 
+             (
+             t.resultcode,t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,
+             t.theoreticalproduction,
+             t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,
+             t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,
+             t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,
+             t.wattdegreebalance,t.idegreebalance,t.deltaradius,
+             t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,
+             t.calcProducingfluidLevel,t.levelDifferenceValue,
+             t.submergence,
+             t.rpm
+             ) 
+             =( 
+             select 
+             t2.resultcode,t2.stroke,t2.spm,t2.fmax,t2.fmin,t2.fullnesscoefficient,
+             t2.theoreticalproduction,
+             t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
+             t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,
+             t2.pumpeff,t2.pumpeff1,t2.pumpeff2,t2.pumpeff3,t2.pumpeff4,
+             t2.wattdegreebalance,t2.idegreebalance,t2.deltaradius,
+             t2.surfacesystemefficiency,t2.welldownsystemefficiency,t2.systemefficiency,t2.energyper100mlift,
+             t2.calcProducingfluidLevel,t2.levelDifferenceValue,
+             t2.submergence,
+             t2.rpm
+             from tbl_rpcacqdata_hist t2 
+             where t2.id=(
+                   select v2.id from
+                   (select v.id,rownum r from
+                   (select t3.id from  tbl_rpcacqdata_hist t3  
+                   where t3.commstatus=1 and t3.resultstatus=1 
+                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   and t3.wellid=v_wellId
+                   order by t3.acqtime desc) v
+                   ) v2
+                   where r=1
+             )
+             and t2.wellid=v_wellId )
+             where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+       commit;
     end if;
-
     p_msg := '更新成功';
   elsif p_count=0 then
     p_msg := '记录不存在';
@@ -2123,6 +2163,40 @@ begin
           t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
        where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
        commit;
+       update tbl_pcptimingcalculationdata t set 
+             (
+             t.theoreticalproduction,
+             t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,
+             t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,
+             t.pumpeff,t.pumpeff1,t.pumpeff2,
+             t.systemefficiency,t.energyper100mlift,
+             t.submergence,
+             t.rpm
+             ) 
+             =( 
+             select 
+             t2.theoreticalproduction,
+             t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
+             t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,
+             t2.pumpeff,t2.pumpeff1,t2.pumpeff2,
+             t2.systemefficiency,t2.energyper100mlift,
+             t2.submergence,
+             t2.rpm
+             from tbl_pcpacqdata_hist t2 
+             where t2.id=(
+                   select v2.id from
+                   (select v.id,rownum r from
+                   (select t3.id from  tbl_pcpacqdata_hist t3  
+                   where t3.commstatus=1 and t3.resultstatus=1 
+                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   and t3.wellid=v_wellId
+                   order by t3.acqtime desc) v 
+                   ) v2
+                   where r=1
+             )
+             and t2.wellid=v_wellId )
+             where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+        commit;
     end if;
     p_msg := '更新成功';
   elsif p_count=0 then
@@ -2158,4 +2232,95 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_pcp_rpmtimingtotal;
+/
+
+CREATE OR REPLACE PROCEDURE prd_init_device_timingreportdate(
+       v_deviceId  in NUMBER,
+       v_timeStr  in varchar2,
+       v_dateStr  in varchar2,
+       v_deviceType  in NUMBER
+       ) is
+  recordCount number :=0;
+  p_msg varchar2(3000) := 'error';
+begin
+    if v_deviceType=0 then
+      select count(1) into recordCount from tbl_rpctimingcalculationdata t  where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      if recordCount=0 then
+        insert into tbl_rpctimingcalculationdata (wellid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
+        commit;
+      end if;
+      --更新采集生产数据
+      update tbl_rpctimingcalculationdata t set
+        (stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
+        =(
+          select t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
+          from TBL_RPCDAILYCALCULATIONDATA t2 
+           where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
+           and t2.wellid=v_deviceId
+           and rownum=1
+        )
+        where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+      --更新采集实时产量
+      update tbl_rpctimingcalculationdata t set 
+           (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
+           ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
+           from tbl_rpcacqdata_hist t2 
+           where t2.id=(
+                 select v2.id from
+                 (select v.id,rownum r from
+                 (select t3.id from  tbl_rpcacqdata_hist t3 
+                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
+                 and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
+                 and t3.wellid=v_deviceId
+                 order by t3.acqtime desc) v
+                 ) v2
+                 where r=1
+            )
+            and t2.wellid=v_deviceId )
+            where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+    elsif v_deviceType=1 then
+      select count(1) into recordCount from tbl_pcptimingcalculationdata t  where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      if recordCount=0 then
+        insert into tbl_pcptimingcalculationdata (wellid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
+        commit;
+      end if;
+      --更新采集生产数据
+      update tbl_pcptimingcalculationdata t set
+        (tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
+        =(
+          select t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
+          from TBL_PCPDAILYCALCULATIONDATA t2 
+           where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
+           and t2.wellid=v_deviceId
+           and rownum=1
+        )
+        where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+      --更新采集实时产量
+      update tbl_pcptimingcalculationdata t set 
+           (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
+           ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
+           from tbl_pcpacqdata_hist t2 
+           where t2.id=(
+                 select v2.id from
+                 (select v.id,rownum r from
+                 (select t3.id from  tbl_pcpacqdata_hist t3 
+                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
+                 and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
+                 and t3.wellid=v_deviceId
+                 order by t3.acqtime desc) v
+                 ) v2
+                 where r=1
+            )
+            and t2.wellid=v_deviceId )
+            where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+    end if;
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_init_device_timingreportdate;
 /

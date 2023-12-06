@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.Proxy;
@@ -875,14 +876,14 @@ public class StringManagerUtils {
     }
 
     public static boolean isNum(String str) {
-        return str != null && str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
+        return isNotNull(str) && str != null && str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
     }
     
     /**
      * 判断字符串是否是数字
      */
     public static boolean isNumber(String value) {
-        return isInteger(value) || isDouble(value);
+        return isNotNull(value) && (isInteger(value) || isDouble(value));
     }
 
     /**
@@ -1618,34 +1619,106 @@ public class StringManagerUtils {
         return new String(bytes);
 
     }
+    public static String ClobToString(Clob clob) {
+        String reString = "";
+        Reader is=null;
+        try {
+        	is = clob.getCharacterStream(); // 得到流
+            BufferedReader br = new BufferedReader(is);
+            String s = br.readLine();
+            StringBuffer sb = new StringBuffer();
+            while (s != null) { // 执行循环将字符串全部取出付值给StringBuffer由StringBuffer转成STRING
+                sb.append(s);
+                s = br.readLine();
+            }
+            reString = sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally{
+        	if(is!=null){
+        		try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
+        }
+
+        return reString;
+
+    }
     //CLOB转字符串
     public static String CLOBtoString(oracle.sql.CLOB clob) throws SQLException, IOException {
-        if (clob == null) {
-            return "";
-        }
-        char[] buffer = null;
-        buffer = new char[(int) clob.length()];
-        clob.getCharacterStream().read(buffer);
-        return String.valueOf(buffer).replaceAll("\r\n", "\n").replaceAll("\n", "");
+    	String result="";
+    	if(clob!=null){
+    		Reader inStream=null;
+    		try {
+    			inStream = clob.getCharacterStream();
+    			char[] c = new char[(int) clob.length()];
+        		inStream.read(c);
+        		result = new String(c);  //这里就是最终处理好的Clob字段
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}finally{
+    			if(inStream!=null){
+    				try {
+    					inStream.close();
+    				} catch (IOException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    		}
+    	}
+    	return result.replaceAll("\r\n", "\n").replaceAll("\n", "");
+
+    }
+    
+    //CLOB转字符串
+    public static String CLOBtoString(Clob clob) throws SQLException, IOException {
+    	String result="";
+    	if(clob!=null){
+    		Reader inStream=null;
+    		try {
+    			inStream = clob.getCharacterStream();
+    			char[] c = new char[(int) clob.length()];
+        		inStream.read(c);
+        		result = new String(c);  //这里就是最终处理好的Clob字段
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}finally{
+    			if(inStream!=null){
+    				try {
+    					inStream.close();
+    				} catch (IOException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    		}
+    	}
+    	return result.replaceAll("\r\n", "\n").replaceAll("\n", "");
 
     }
 
     //CLOB转字符串
     public static String CLOBObjectToString(Object obj) {
-        String result="";
-    	if (obj == null) {
-    		result= "";
-        }else{
-        	SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj);
-            CLOB realClob = (CLOB) proxy.getWrappedClob(); 
-            try {
-				result= CLOBtoString(realClob);
-			} catch (SQLException | IOException e) {
-				result= "";
-				e.printStackTrace();
-			}
-        }
-		return result;
+    	String result="";
+    	if (obj != null) {
+    		if(obj instanceof oracle.sql.CLOB) {
+        		try {
+					result=CLOBtoString((oracle.sql.CLOB) obj);
+				} catch (SQLException | IOException e) {
+					e.printStackTrace();
+				}
+        	}else if(obj instanceof java.sql.Clob){
+        		try {
+					result=CLOBtoString2((Clob) obj);
+				} catch (SQLException | IOException e) {
+					e.printStackTrace();
+				}
+        	}
+    	}
+    	
+    	return result;
     }
 
     //Clob转字符串

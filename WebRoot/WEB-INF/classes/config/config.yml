@@ -105,6 +105,11 @@ ap:
          maximumPoolSize: 25
          keepAliveTime: 5
          wattingCount: 0
+      timingTotalCalculate:
+         corePoolSize: 20
+         maximumPoolSize: 25
+         keepAliveTime: 5
+         wattingCount: 0
       outerDatabaseSync:
          corePoolSize: 80
          maximumPoolSize: 100

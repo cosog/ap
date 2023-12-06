@@ -531,6 +531,7 @@ public class ConfigFile {
 		ThreadPoolConfig dataSynchronization;
 		ThreadPoolConfig calculateMaintaining;
 		ThreadPoolConfig totalCalculateMaintaining;
+		ThreadPoolConfig timingTotalCalculate;
 		ThreadPoolConfig outerDatabaseSync;
 		ThreadPoolConfig dataWriteBack;
 		public ThreadPoolConfig getInitIdAndIpPort() {
@@ -568,6 +569,12 @@ public class ConfigFile {
 		}
 		public void setDataWriteBack(ThreadPoolConfig dataWriteBack) {
 			this.dataWriteBack = dataWriteBack;
+		}
+		public ThreadPoolConfig getTimingTotalCalculate() {
+			return timingTotalCalculate;
+		}
+		public void setTimingTotalCalculate(ThreadPoolConfig timingTotalCalculate) {
+			this.timingTotalCalculate = timingTotalCalculate;
 		}
 	}
 	

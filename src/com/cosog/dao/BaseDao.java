@@ -382,13 +382,20 @@ public class BaseDao extends HibernateDaoSupport {
 	 * @return List<?>
 	 */
 	public List<?> findCallSql(final String callSql, final Object... values) {
-		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(callSql);
-		for (int i = 0; i < values.length; i++) {
-			query.setParameter(i, values[i]);
+		try{
+			Session session=getSessionFactory().getCurrentSession();
+			SQLQuery query = session.createSQLQuery(callSql);
+			for (int i = 0; i < values.length; i++) {
+				query.setParameter(i, values[i]);
+			}
+//			StringManagerUtils.printLog(callSql);
+			return query.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql);
+			return new ArrayList<>();
 		}
-//		StringManagerUtils.printLog(callSql);
-		return query.list();
+		
 	}
 
 	public List<Org> findChildOrg(Integer parentId) {
@@ -4632,5 +4639,26 @@ public class BaseDao extends HibernateDaoSupport {
 		productionDataBuff.append("\"ManualIntervention\":"+(calculateRequestData.getManualIntervention()!=null?gson.toJson(calculateRequestData.getManualIntervention()):"{}"));
 		productionDataBuff.append("}");
 		return productionDataBuff.toString();
+	}
+	
+	public Boolean initDeviceTimingReportDate(int deviceId,String timeStr,String dateStr,int deviceType) throws SQLException, ParseException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		try {
+			cs = conn.prepareCall("{call prd_init_device_timingreportdate(?,?,?,?)}");
+			cs.setInt(1,deviceId);
+			cs.setString(2,timeStr);
+			cs.setString(3,dateStr);
+			cs.setInt(4,deviceType);
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
 	}
 }

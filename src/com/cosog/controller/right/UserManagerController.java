@@ -79,6 +79,29 @@ public class UserManagerController extends BaseController {
 	public void initBinderByUser(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("user.");
 	}
+	
+	@RequestMapping("/loadUserComboxList")
+	public String loadUserComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String userId = ParamUtils.getParameter(request, "userId");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		String json = this.userService.loadUserComboxList(pager,orgId,userId, user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 		
 	/**
 	 * <p>根据传入的orgId 显示某个组织下的用户信息</p>

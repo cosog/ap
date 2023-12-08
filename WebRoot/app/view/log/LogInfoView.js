@@ -211,7 +211,7 @@ function exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportSystemLogExcel(orgId,startDate,endDate,fileName,title,columnStr) {
+function exportSystemLogExcel(orgId,startDate,endDate,selectUserId,operationType,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportSystemLogExcelData'+timestamp;
 	
@@ -253,10 +253,13 @@ function exportSystemLogExcel(orgId,startDate,endDate,fileName,title,columnStr) 
     	heads+= "," + unlockedheads;
     }
     
-    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
+    var param = "&fields=" + fields 
+    + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId
     + "&startDate=" + startDate
     + "&endDate=" + endDate
+    + "&selectUserId=" + URLencode(URLencode(selectUserId)) 
+    + "&operationType=" + URLencode(URLencode(operationType)) 
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;

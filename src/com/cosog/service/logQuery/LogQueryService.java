@@ -163,6 +163,13 @@ public class LogQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -170,11 +177,9 @@ public class LogQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getSystemLogData(String orgId,String operationType,Page pager,User user) throws IOException, SQLException{
-		StringBuffer result_json = new StringBuffer();
+	public String getSystemLogData(String orgId,String operationType,Page pager,User user,String selectUserId) throws IOException, SQLException{
 		String ddicName="logQuery_SystemLog";
 		DataDictionary ddic = null;
-		List<String> ddicColumnsList=new ArrayList<String>();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
 		String sql=ddic.getSql()+" from viw_systemlog t where "
@@ -186,7 +191,10 @@ public class LogQueryService<T> extends BaseService<T>  {
 				+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		
 		if(StringManagerUtils.isNotNull(operationType)){
-//			sql+=" and t.action="+operationType;
+			sql+=" and t.action="+operationType;
+		}
+		if(StringManagerUtils.isNotNull(selectUserId)){
+			sql+=" and t.user_id='"+selectUserId+"'";
 		}
 		sql+=" order by t.createtime desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
@@ -221,7 +229,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 	}
 	
 	public boolean exportSystemLogData(HttpServletResponse response,String fileName,String title,String head,String field,
-			String orgId,String operationType,Page pager,User user) throws IOException, SQLException{
+			String orgId,String operationType,Page pager,User user,String selectUserId) throws IOException, SQLException{
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -246,6 +254,12 @@ public class LogQueryService<T> extends BaseService<T>  {
 					+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
 					+ " )"
 					+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
+			if(StringManagerUtils.isNotNull(operationType)){
+				sql+=" and t.action="+operationType;
+			}
+			if(StringManagerUtils.isNotNull(selectUserId)){
+				sql+=" and t.user_id='"+selectUserId+"'";
+			}
 			sql+=" order by t.createtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list=this.findCallSql(finalSql);
@@ -279,13 +293,43 @@ public class LogQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
-			
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
 		return true;
-		
-		
+	}
+	
+	public String loadSystemLogActionComboxList() throws Exception {
+		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where t.itemcode='SYSTEMACTION' order by t.itemvalue";
+		StringBuffer result_json = new StringBuffer();
+		try {
+			int totals=this.getTotalCountRows(sql);
+			List<?> list = this.findCallSql(sql);
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			if (null != list && list.size() > 0) {
+				for (Object o : list) {
+					Object[] obj = (Object[]) o;
+					result_json.append("{boxkey:\"" + obj[0] + "\",");
+					result_json.append("boxval:\"" + obj[1] + "\"},");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+			}
+			result_json.append("]}");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result_json = new StringBuffer();
+			result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"}]}");
+		}
+		return result_json.toString();
 	}
 }

@@ -188,15 +188,14 @@ public class HistoryQueryController extends BaseController  {
 		session.setAttribute(key, 0);
 		
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
 		
-		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -292,9 +291,8 @@ public class HistoryQueryController extends BaseController  {
 		fields=StringUtils.join(ddic.getFields(), ",");
 		
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
@@ -323,10 +321,10 @@ public class HistoryQueryController extends BaseController  {
 		pager.setEnd_date(endDate);
 		
 		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			bool = historyQueryService.exportDeviceHistoryData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
+			bool = historyQueryService.exportDeviceHistoryData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
 			
 		}else{
-			bool = historyQueryService.exportPCPDeviceHistoryData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
+			bool = historyQueryService.exportPCPDeviceHistoryData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
 		}
 		if(!bool){
 			json="{\"success\":true,\"flag\":false}";
@@ -509,6 +507,8 @@ public class HistoryQueryController extends BaseController  {
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
+		
+		User user = (User) session.getAttribute("userLogin");
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
@@ -529,7 +529,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		boolean bool = this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+		boolean bool = this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
@@ -606,9 +606,8 @@ public class HistoryQueryController extends BaseController  {
 		fields=StringUtils.join(ddic.getFields(), ",");
 		
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
@@ -632,7 +631,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		bool = historyQueryService.exportFESDiagramOverlayData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+		bool = historyQueryService.exportFESDiagramOverlayData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}

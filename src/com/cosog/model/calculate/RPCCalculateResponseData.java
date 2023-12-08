@@ -528,7 +528,7 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 
 	    private float BackPressure;
 
-	    private float WellHeadFluidTemperature;
+	    private float WellHeadTemperature;
 
 	    private float ProducingfluidLevel;
 	    
@@ -623,12 +623,6 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 	    }
 	    public float getBackPressure(){
 	        return this.BackPressure;
-	    }
-	    public void setWellHeadFluidTemperature(float WellHeadFluidTemperature){
-	        this.WellHeadFluidTemperature = WellHeadFluidTemperature;
-	    }
-	    public float getWellHeadFluidTemperature(){
-	        return this.WellHeadFluidTemperature;
 	    }
 	    public void setProducingfluidLevel(float ProducingfluidLevel){
 	        this.ProducingfluidLevel = ProducingfluidLevel;
@@ -827,6 +821,12 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 		}
 		public void setLevelDifferenceValue(float LevelDifferenceValue) {
 			this.LevelDifferenceValue = LevelDifferenceValue;
+		}
+		public float getWellHeadTemperature() {
+			return WellHeadTemperature;
+		}
+		public void setWellHeadTemperature(float wellHeadTemperature) {
+			WellHeadTemperature = wellHeadTemperature;
 		}
 	}
 

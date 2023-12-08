@@ -298,6 +298,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			protocolModel.setName(protocolModel.getName().replaceAll(" ", ""));
 			this.protocolModelManagerService.doProtocolAdd(protocolModel);
+			
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加协议:"+protocolModel.getName());
+			}
+			
 			MemoryDataManagerTask.loadProtocolConfig(protocolModel.getName());
 			ThreadPool executor = new ThreadPool("dataSynchronization",
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
@@ -341,6 +348,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加采集组:"+acquisitionGroup.getGroupName());
+			}
 			String sql="select t.id from TBL_ACQ_GROUP_CONF t "
 					+ " where t.group_name='"+acquisitionGroup.getGroupName()+"' and t.protocol='"+acquisitionGroup.getProtocol()+"'"
 					+ " order by t.id desc";
@@ -376,6 +388,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"编辑采集组:"+acquisitionGroup.getGroupName());
+			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			result= "{success:true,msg:true}";
@@ -395,6 +412,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			String ids = ParamUtils.getParameter(request, "paramsId");
 			this.acquisitionUnitManagerService.doAcquisitionGroupBulkDelete(ids);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"删除采集组");
+			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			String result = "{success:true,flag:true}";
 			response.getWriter().print(result);
@@ -411,6 +433,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加采集单元:"+acquisitionUnit.getUnitName());
+			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
@@ -429,6 +456,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result ="{success:true,msg:false}";
 		try {
 			this.acquisitionUnitManagerService.doAcquisitionUnitEdit(acquisitionUnit);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"编辑采集单元:"+acquisitionUnit.getUnitName());
+			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
@@ -450,6 +482,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String ids = ParamUtils.getParameter(request, "paramsId");
 			String deviceType = ParamUtils.getParameter(request, "deviceType");
 			this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(ids,deviceType);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"删除采集单元");
+			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			String result = "{success:true,flag:true}";
 			response.getWriter().print(result);
@@ -555,10 +592,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			log.debug("grantAcquisitionItemsPermission params==" + params);
 			String paramsArr[] = StringManagerUtils.split(params, ",");
 			String groupId="";
-			String groupIdSql="select t.id from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
+			String groupName="";
+			String groupIdSql="select t.id,t.group_name from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
 			List list = this.service.findCallSql(groupIdSql);
 			if(list.size()>0){
-				groupId=list.get(0).toString();
+				Object[] obj=(Object[]) list.get(0);
+				groupId=obj[0]+"";
+				groupName=obj[1]+"";
 			}
 			
 			ModbusProtocolConfig.Protocol protocol=null;
@@ -605,6 +645,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 				}
+//				HttpSession session=request.getSession();
+//				User user = (User) session.getAttribute("userLogin");
+//				if(user!=null){
+//					this.service.saveSystemLog(user,2,"为采控组安排采控项,采集组名称:"+groupName);
+//				}
 			}
 			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
@@ -2058,6 +2103,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		if(modbusDriverSaveData!=null){
 			modbusDriverSaveData.dataFiltering();
 			
@@ -2086,6 +2133,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						modbusProtocolConfig.getProtocol().remove(j);
 						String delSql="delete from TBL_PROTOCOL t where t.name='"+modbusDriverSaveData.getDelidslist().get(i)+"'";
 						acquisitionUnitManagerService.getBaseDao().updateOrDeleteBySql(delSql);
+						
+						if(user!=null){
+							this.service.saveSystemLog(user,2,"删除协议:"+modbusDriverSaveData.getDelidslist().get(i));
+						}
 						break;
 					}
 				}
@@ -2238,6 +2289,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						List<String> clobCont=new ArrayList<String>();
 						clobCont.add(gson.toJson(modbusProtocolConfig.getProtocol().get(i).getItems()));
 						service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
+						
+						if(user!=null){
+							this.service.saveSystemLog(user,2,"修改协议:"+modbusProtocolConfig.getProtocol().get(i).getName());
+						}
 						break;
 					}
 				}
@@ -2281,6 +2336,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		java.lang.reflect.Type type = new TypeToken<AcquisitionUnitHandsontableChangeData>() {}.getType();
 		AcquisitionUnitHandsontableChangeData acquisitionUnitHandsontableChangeData=gson.fromJson(data, type);
 		if(acquisitionUnitHandsontableChangeData!=null){
@@ -2299,6 +2356,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
 					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除采控单元");
+					}
 				}
 			}
 			if(acquisitionUnitHandsontableChangeData.getUpdatelist()!=null){
@@ -2310,6 +2370,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionUnit.setRemark(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					acquisitionUnit.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionUnitEdit(acquisitionUnit);
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑采控单元:"+acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
+					}
 				}
 			}
 			
@@ -2322,6 +2385,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionUnit.setRemark(acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getRemark());
 					acquisitionUnit.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑采控单元:"+acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
+					}
 				}
 			}
 			
@@ -2341,6 +2407,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/saveAcquisitionGroupHandsontableData")
 	public String saveAcquisitionGroupHandsontableData() throws Exception {
 		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String unitId = ParamUtils.getParameter(request, "unitId");
@@ -2365,6 +2432,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 //					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(unitId, "update");
 //					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(unitId,"update");
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除采控组");
+					}
 				}
 			}
 			if(acquisitionGroupHandsontableChangeData.getUpdatelist()!=null){
@@ -2380,6 +2451,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
 //					EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(acquisitionGroup.getId()+"", "update");
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑采控组:"+acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupName());
+					}
 				}
 			}
 			
@@ -2395,6 +2470,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getRemark());
 					acquisitionGroup.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionGroupAdd(acquisitionGroup);
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑采控组:"+acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupName());
+					}
 				}
 			}
 			
@@ -2414,6 +2492,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveDisplayUnitHandsontableData")
 	public String saveDisplayUnitHandsontableData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
@@ -2438,6 +2518,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(displayUnitHandsontableChangeData.getDelidslist().get(i), "delete");
 //					this.displayUnitManagerService.doDisplayUnitBulkDelete(displayUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除显示单元");
+					}
 				}
 			}
 			if(displayUnitHandsontableChangeData.getUpdatelist()!=null){
@@ -2450,6 +2534,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnit.setProtocol(protocol);
 					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitId()));
 					this.displayUnitManagerService.doDisplayUnitEdit(displayUnit);
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑显示单元:"+displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
+					}
 				}
 			}
 			
@@ -2463,6 +2551,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnit.setProtocol(protocol);
 					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitId()));
 					this.displayUnitManagerService.doDisplayUnitAdd(displayUnit);
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑显示单元:"+displayUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
+					}
 				}
 			}
 			
@@ -2486,6 +2578,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolInstance.setPacketSendInterval(100);
 			}
 			this.protocolInstanceManagerService.doModbusProtocolInstanceAdd(protocolInstance);
+			
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加采控实例:"+protocolInstance.getName());
+			}
+			
 			List<String> instanceList=new ArrayList<String>();
 			instanceList.add(protocolInstance.getName());
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -2523,6 +2622,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.alarmUnitManagerService.doAlarmUnitAdd(alarmUnit);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加报警单元:"+alarmUnit.getUnitName());
+			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
@@ -2542,6 +2646,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.displayUnitManagerService.doDisplayUnitAdd(displayUnit);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加显示单元:"+displayUnit.getUnitName());
+			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
@@ -2557,6 +2666,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveModbusProtocolAlarmUnitData")
 	public String saveModbusProtocolAlarmUnitData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -2580,6 +2691,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 //					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i),"delete");
 //					this.acquisitionUnitManagerService.doModbusProtocolAlarmUnitDelete(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除报警单元");
+					}
 				}
 			}
 			
@@ -2592,6 +2707,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				alarmUnit.setRemark(modbusProtocolAlarmUnitSaveData.getRemark());
 				try {
 					this.alarmUnitManagerService.doAlarmUnitEdit(alarmUnit);
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑报警单元:"+modbusProtocolAlarmUnitSaveData.getUnitName());
+					}
 					this.alarmUnitManagerService.deleteCurrentAlarmUnitOwnItems(modbusProtocolAlarmUnitSaveData);
 					if(modbusProtocolAlarmUnitSaveData.getAlarmItems()!=null){
 						for(int i=0;i<modbusProtocolAlarmUnitSaveData.getAlarmItems().size();i++){
@@ -2688,6 +2806,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveProtocolInstanceData")
 	public String saveProtocolInstanceData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -2713,6 +2833,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setInitWellList(deleteInstanceList);
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
+					
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除采控实例");
+					}
 					
 //					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
 //					EquipmentDriverServerTask.initInstanceConfig(deleteInstanceList, "delete");
@@ -2760,6 +2885,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 				
 				try {
 					this.protocolInstanceManagerService.doModbusProtocolInstanceEdit(protocolInstance);
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑采控实例:"+protocolInstance.getName());
+					}
+					
 					//实例名称是否改变
 					if(modbusProtocolInstanceSaveData.getName().equals(modbusProtocolInstanceSaveData.getOldName())){
 						List<String> instanceList=new ArrayList<String>();
@@ -2827,6 +2957,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadDisplayInstanceOwnItemByCode(protocolDisplayInstance.getCode(),"update");
+			
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加显示实例:"+protocolDisplayInstance.getName());
+			}
+			
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -2847,6 +2984,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		try {
 			this.reportUnitManagerService.doModbusProtocolReportUnitAdd(reportUnit);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加报表单元:"+reportUnit.getUnitName());
+			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -2867,6 +3009,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		try {
 			this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceAdd(protocolReportInstance);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加报表实例:"+protocolReportInstance.getName());
+			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -2884,6 +3031,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveProtocolDisplayInstanceData")
 	public String saveProtocolDisplayInstanceData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -2908,6 +3057,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i),"delete");
 //					this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceBulkDelete(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i));
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除显示实例");
+					}
 				}
 			}
 			
@@ -2932,6 +3085,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setMethod("update");
 					executor.execute(dataSynchronizationThread);
 					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑显示实例:"+protocolDisplayInstance.getName());
+					}
+					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(protocolDisplayInstance.getId()+"","update");
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
@@ -2953,6 +3110,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveProtocolReportUnitData")
 	public String saveProtocolReportUnitData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -2963,6 +3122,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(modbusProtocolReportUnitSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolReportUnitSaveData.getDelidslist().size();i++){
 					this.reportUnitManagerService.doModbusProtocolReportUnitBulkDelete(modbusProtocolReportUnitSaveData.getDelidslist().get(i));
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除报表单元");
+					}
 				}
 			}
 			
@@ -2982,6 +3145,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				try {
 					this.reportUnitManagerService.doModbusProtocolReportUnitEdit(reportUnit);
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑报表单元:"+reportUnit.getUnitName());
+					}
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -3000,6 +3166,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveProtocolReportInstanceData")
 	public String saveProtocolReportInstanceData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -3010,6 +3178,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(modbusProtocolReportInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolReportInstanceSaveData.getDelidslist().size();i++){
 					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceBulkDelete(modbusProtocolReportInstanceSaveData.getDelidslist().get(i));
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除报表实例");
+					}
 				}
 			}
 			
@@ -3036,6 +3208,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				try {
 					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceEdit(protocolReportInstance);
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑报表实例:"+protocolReportInstance.getName());
+					}
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -3068,6 +3243,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadAlarmInstanceOwnItemByCode(protocolAlarmInstance.getCode(),"update");
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加报警实例:"+protocolAlarmInstance.getName());
+			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -3085,6 +3265,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveProtocolAlarmInstanceData")
 	public String saveProtocolAlarmInstanceData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -3106,6 +3288,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
 //					this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceBulkDelete(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i));
+					
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"删除报警实例");
+					}
 				}
 			}
 			
@@ -3129,6 +3315,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setMethod("update");
 					executor.execute(dataSynchronizationThread);
 //					MemoryDataManagerTask.loadAlarmInstanceOwnItemById(protocolAlarmInstance.getId()+"","update");
+					if(user!=null){
+						this.service.saveSystemLog(user,2,"编辑报警实例:"+protocolAlarmInstance.getName());
+					}
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -3155,6 +3344,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			List<String> instanceList=new ArrayList<String>();
 			instanceList.add(protocolSMSInstance.getName());
 			EquipmentDriverServerTask.initSMSInstanceConfig(instanceList, "update");
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"添加短信实例:"+protocolSMSInstance.getName());
+			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -3179,6 +3373,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			instanceList.add(protocolSMSInstance.getName());
 			EquipmentDriverServerTask.initSMSInstanceConfig(instanceList, "update");
 			EquipmentDriverServerTask.initSMSDeviceByInstanceId(protocolSMSInstance.getId()+"", "update");
+			
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"编辑短信实例:"+protocolSMSInstance.getName());
+			}
+			
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
@@ -3199,6 +3400,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			String ids = ParamUtils.getParameter(request, "paramsId");
 			this.acquisitionUnitManagerService.doModbusProtocolSMSInstanceDelete(ids);
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"删除短信实例");
+			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			String result = "{success:true,flag:true}";
 			response.getWriter().print(result);
@@ -3270,6 +3476,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(databaseMappingProHandsontableChangedData!=null){
 			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolType);
 			EquipmentDriverServerTask.syncDataMappingTable();
+			
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"修改协议字段映射");
+			}
 		}
 		String json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -3284,6 +3496,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/saveProtocolRunStatusConfig")
 	public String saveProtocolRunStatusConfig() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		String itemName = ParamUtils.getParameter(request, "itemName");
 		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -3294,6 +3507,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,resolutionMode,itemName,itemColumn,deviceType,runValue,stopValue,runCondition,stopCondition);
 		MemoryDataManagerTask.loadProtocolRunStatusConfig();
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		if(user!=null){
+			this.service.saveSystemLog(user,2,"修改协议"+protocolName+"运行状态运算逻辑");
+		}
+		
 		String json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -3544,7 +3764,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
 		try {
-        	response.setContentType("application/vnd.ms-excel;charset=utf-8");
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出协议"+protocolName+"数据");
+			}
+			
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
             InputStream in = new FileInputStream(file);
             int len = 0;
@@ -3814,6 +4040,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			json = acquisitionUnitItemManagerService.importProtocolCheck(data);
 		}else{
 			json = acquisitionUnitItemManagerService.saveImportProtocolData(data);
+		}
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		if(user!=null){
+			this.service.saveSystemLog(user,2,"导入协议");
 		}
 		
 //		json ="{success:true}";

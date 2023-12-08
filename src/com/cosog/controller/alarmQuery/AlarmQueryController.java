@@ -122,10 +122,10 @@ public class AlarmQueryController extends BaseController{
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			tableName="viw_pcpalarminfo_hist";
 		}
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		
 		if(!StringManagerUtils.isNotNull(orgId)){
-			User user=null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId=user.getUserorgids();
 			}
@@ -145,7 +145,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		boolean bool = alarmQueryService.exportAlarmData(response,fileName,title, heads, fields,orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager);
+		boolean bool = alarmQueryService.exportAlarmData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager);
 		return null;
 	}
 	
@@ -195,16 +195,16 @@ public class AlarmQueryController extends BaseController{
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(orgId)){
-			User user=null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId=user.getUserorgids();
 			}
 		}
-		boolean bool = alarmQueryService.exportAlarmOverviewData(response,fileName,title, heads, fields,orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager);
+		boolean bool = alarmQueryService.exportAlarmOverviewData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager);
 		return null;
 	}
 	

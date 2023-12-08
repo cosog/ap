@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.User;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
@@ -122,7 +123,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		return getResult.replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportAlarmData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportAlarmData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager){
 		try{
 			StringBuffer result_json = new StringBuffer();
@@ -210,6 +211,13 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			}
 		
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -324,7 +332,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportAlarmOverviewData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportAlarmOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager){
 		try{
 			StringBuffer result_json = new StringBuffer();
@@ -394,6 +402,13 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

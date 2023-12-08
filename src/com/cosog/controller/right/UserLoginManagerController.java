@@ -216,7 +216,7 @@ public class UserLoginManagerController extends BaseController {
 				session.setAttribute("SESSION_USERNAME", username);
 				SessionLockHelper.putSession(session);
 				out.print("{success:true,flag:'normal'}");
-				this.service.saveSystemLog(user);
+				this.service.saveSystemLog(user,0,"用户登录");
 			}else if(user != null && user.getUserEnable()!=1){
 				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户" + username + "已被禁用 !</font>' }");
 			} else {

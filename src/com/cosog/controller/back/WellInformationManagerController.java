@@ -623,8 +623,8 @@ public class WellInformationManagerController extends BaseController {
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
-		
 		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
@@ -636,7 +636,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		boolean bool = this.wellInformationManagerService.exportPumpingModelData(response,fileName,title, heads, fields,manufacturer,model);
+		boolean bool = this.wellInformationManagerService.exportPumpingModelData(user,response,fileName,title, heads, fields,manufacturer,model);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
@@ -778,9 +778,8 @@ public class WellInformationManagerController extends BaseController {
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
 		}
-		User user=null;
+		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
@@ -799,11 +798,11 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			bool = this.wellInformationManagerService.exportRPCDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
+			bool = this.wellInformationManagerService.exportRPCDeviceInfoData(user,response,fileName,title, heads, fields,map, pager,recordCount);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			bool = this.wellInformationManagerService.exportPCPDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
+			bool = this.wellInformationManagerService.exportPCPDeviceInfoData(user,response,fileName,title, heads, fields,map, pager,recordCount);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
-			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
+			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(user,response,fileName,title, heads, fields,map, pager,recordCount);
 		}
 		if(session!=null){
 			session.setAttribute(key, 1);
@@ -831,9 +830,8 @@ public class WellInformationManagerController extends BaseController {
 			session.setAttribute(key, 0);
 		}
 		orgId=ParamUtils.getParameter(request, "orgId");
-		User user=null;
+		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
@@ -852,9 +850,9 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(response,fileName,title, orgId,applicationScenarios,wellInformationName);
+			bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(user,response,fileName,title, orgId,applicationScenarios,wellInformationName);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			bool = this.wellInformationManagerService.exportPCPDeviceInfoDetailsData(response,fileName,title, orgId,applicationScenarios,wellInformationName);
+			bool = this.wellInformationManagerService.exportPCPDeviceInfoDetailsData(user,response,fileName,title, orgId,applicationScenarios,wellInformationName);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 //			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}
@@ -2219,10 +2217,11 @@ public class WellInformationManagerController extends BaseController {
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
 		String key = ParamUtils.getParameter(request, "key");
-		
+		User user = null;
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
+			user = (User) session.getAttribute("userLogin");
 		}
 		WaterCutRawData waterCutRawData=null;
 		String acqTime="";
@@ -2273,6 +2272,13 @@ public class WellInformationManagerController extends BaseController {
 	    ExcelUtils.export(response,title,sheetName, sheetDataList);
 	    if(session!=null){
 			session.setAttribute(key, 1);
+		}
+	    if(user!=null){
+	    	try {
+				wellInformationManagerService.saveSystemLog(user,4,"导出文件:"+title);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}

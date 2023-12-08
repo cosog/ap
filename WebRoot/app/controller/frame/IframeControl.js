@@ -177,36 +177,6 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 				modules[2]=secondTab_Code;
 			}
 			panel_Id = tab_Code + "_" + secondTab_Code + "_Id";
-			// alert(panel_Id);
-			if (modules[2] == "ProductionStatistics") {
-				var jssj_ = Ext.getCmp("Statistics_date_Id").rawValue;
-						// 检索动态列表头及内容信息
-							Ext.Ajax.request({
-								method : 'POST',
-								url : context+ '/viewOutPutStatisticsController/showRecentlyDay?flag=con',
-								params: {
-						             orgId: leftOrg_Id,
-						             jssj:jssj_
-						           },
-								success : function(response, opts) {
-									// 处理后json
-									var obj = Ext.decode(response.responseText);
-									var getDomHtml = Ext.get("computeStatisticsTablePanel_Id");
-								    getDomHtml.dom.innerHTML = obj.compute;
-								    senfe("compute","#fff","#FAFAFA","#F4F4F4","#DFE8F6");
-									var ProductionStatisticsChartData_Ids=Ext.getCmp("ProductionStatisticsChartData_Ids");
-									if(isNotVal(ProductionStatisticsChartData_Ids)){
-										ProductionStatisticsChartData_Ids.setValue("");
-										ProductionStatisticsChartData_Ids.setValue(response.responseText);
-									}
-									initComputeChartType(obj);
-									// ==end
-								},
-								failure : function(response, opts) {
-									Ext.Msg.alert("信息提示", "后台获取数据失败！");
-								}
-							});
-			}
 		} else {
 			panel_Id = tab_Code + "_Id";
 		}
@@ -491,6 +461,12 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 				Ext.create('AP.store.log.DeviceOperationLogStore');
 			}
 		}else if(activeId=="SystemLogInfoPanel_Id"){
+			Ext.getCmp('systemLogUserListComb_Id').setValue("");
+			Ext.getCmp('systemLogUserListComb_Id').setRawValue("");
+			
+			Ext.getCmp('systemLogActionListComb_Id').setValue("");
+			Ext.getCmp('systemLogActionListComb_Id').setRawValue("");
+			
 			var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
 			if (isNotVal(gridPanel)) {
 				gridPanel.getStore().load();
@@ -697,6 +673,30 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}
 	
+	saveAccessModuleLog(module_Code);
+	
 	return false;
 	
+}
+
+//保存模块访问日志
+function saveAccessModuleLog(module_Code){
+	var tabPanel = Ext.getCmp("frame_center_ids");
+	var activeTab=tabPanel.setActiveTab();
+	if(isNotVal(activeTab)){
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/logQueryController/saveAccessModuleLog',
+			success:function(response) {
+				
+			},
+			failure:function(){
+				
+			},
+			params: {
+				moduleCode: module_Code,
+				moduleName: activeTab.title
+	        }
+		});  
+	}
 }

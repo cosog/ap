@@ -6,6 +6,147 @@ Ext.define('AP.view.log.SystemLogInfoView', {
     border: false,
     //forceFit : true,
     initComponent: function () {
+    	var userCombStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/userManagerController/loadUserComboxList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+                    var userId = Ext.getCmp('systemLogUserListComb_Id').getValue();
+                    var new_params = {
+                        orgId: leftOrg_Id,
+                        userId: userId
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+    	
+    	var userCombo = Ext.create(
+                'Ext.form.field.ComboBox', {
+                    fieldLabel: '用户',
+                    id: "systemLogUserListComb_Id",
+                    labelWidth: 35,
+                    width: 145,
+                    labelAlign: 'left',
+                    queryMode: 'remote',
+                    typeAhead: true,
+                    store: userCombStore,
+                    autoSelect: false,
+                    editable: true,
+                    triggerAction: 'all',
+                    displayField: "boxval",
+                    valueField: "boxkey",
+                    pageSize: comboxPagingStatus,
+                    minChars: 0,
+                    emptyText: cosog.string.all,
+                    blankText: cosog.string.all,
+                    listeners: {
+                        expand: function (sm, selections) {
+                        	userCombo.getStore().loadPage(1); // 加载井下拉框的store
+                        },
+                        select: function (combo, record, index) {
+//                            try {
+//                            	var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
+//                    			if (isNotVal(gridPanel)) {
+//                    				gridPanel.getStore().load();
+//                    			}else{
+//                    				Ext.create('AP.store.log.SystemLogStore');
+//                    			}
+//                            } catch (ex) {
+//                                Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+//                            }
+                        }
+                    }
+                });
+    	var actionCombStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/logQueryController/loadSystemLogActionComboxList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var new_params = {
+                    		
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+    	
+    	var actionCombo = Ext.create(
+                'Ext.form.field.ComboBox', {
+                    fieldLabel: '操作',
+                    id: "systemLogActionListComb_Id",
+                    labelWidth: 35,
+                    width: 145,
+                    labelAlign: 'left',
+                    queryMode: 'remote',
+                    typeAhead: true,
+                    store: actionCombStore,
+                    autoSelect: false,
+                    editable: true,
+                    triggerAction: 'all',
+                    displayField: "boxval",
+                    valueField: "boxkey",
+                    pageSize: comboxPagingStatus,
+                    minChars: 0,
+                    emptyText: cosog.string.all,
+                    blankText: cosog.string.all,
+                    listeners: {
+                        expand: function (sm, selections) {
+                        	actionCombo.getStore().loadPage(1); // 加载井下拉框的store
+                        },
+                        select: function (combo, record, index) {
+//                            try {
+//                            	var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
+//                    			if (isNotVal(gridPanel)) {
+//                    				gridPanel.getStore().load();
+//                    			}else{
+//                    				Ext.create('AP.store.log.SystemLogStore');
+//                    			}
+//                            } catch (ex) {
+//                                Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+//                            }
+                        }
+                    }
+                });
     	Ext.apply(this, {
             tbar: [{
                 id: 'SystemLogColumnStr_Id',
@@ -29,13 +170,18 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 	Ext.getCmp('SystemLogQueryEndTime_Minute_Id').setValue('');
                 	Ext.getCmp('SystemLogQueryEndTime_Second_Id').setValue('');
                 	
-                	
+                	Ext.getCmp('systemLogUserListComb_Id').setValue("");
+        			Ext.getCmp('systemLogUserListComb_Id').setRawValue("");
+        			
+        			Ext.getCmp('systemLogActionListComb_Id').setValue("");
+        			Ext.getCmp('systemLogActionListComb_Id').setRawValue("");
+        			
                 	var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
                 	if (isNotVal(gridPanel)) {
                 		gridPanel.getStore().loadPage(1);
                 	}
                 }
-    		},'-',{
+    		},'-',userCombo,'-',actionCombo,'-',{
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: '区间',
@@ -284,11 +430,14 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var startDate=Ext.getCmp('SystemLogQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('SystemLogQueryEndDate_Id').rawValue;
+                    
+                    var selectUserId=Ext.getCmp('systemLogUserListComb_Id').getValue();
+                	var operationType=Ext.getCmp('systemLogActionListComb_Id').getValue();
                	 	
                	 	var fileName='系统日志';
                	 	var title='系统日志';
                	 	var columnStr=Ext.getCmp("SystemLogColumnStr_Id").getValue();
-               	 	exportSystemLogExcel(orgId,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+               	 	exportSystemLogExcel(orgId,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),selectUserId,operationType,fileName,title,columnStr);
                 }
             }]
         });

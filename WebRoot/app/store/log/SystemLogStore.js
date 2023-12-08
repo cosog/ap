@@ -87,8 +87,13 @@ Ext.define('AP.store.log.SystemLogStore', {
             var endTime_Hour=Ext.getCmp('SystemLogQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('SystemLogQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=Ext.getCmp('SystemLogQueryEndTime_Second_Id').getValue();
+        	
+        	var selectUserId=Ext.getCmp('systemLogUserListComb_Id').getValue();
+        	var operationType=Ext.getCmp('systemLogActionListComb_Id').getValue();
             var new_params = {
                     orgId: orgId,
+                    selectUserId:selectUserId,
+                    operationType:operationType,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
                 };

@@ -462,6 +462,7 @@ function saveProtocolRunStatusConfig(){
 	if(runStatusItemsSelection.length>0){
 		var selectedRunStatusItem=runStatusItemsSelection[0];
 		var protocolCode=selectedRunStatusItem.data.protocolCode;
+		var protocolName=selectedRunStatusItem.data.protocolName;
 		var itemName=selectedRunStatusItem.data.itemName;
 		var itemColumn=selectedRunStatusItem.data.itemColumn;
 		var deviceType=selectedRunStatusItem.data.deviceType;
@@ -563,6 +564,7 @@ function saveProtocolRunStatusConfig(){
 			},
 			params: {
 				protocolCode: protocolCode,
+				protocolName: protocolName,
 				resolutionMode: resolutionMode,
 				itemName: itemName,
 				itemColumn: itemColumn,

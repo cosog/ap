@@ -152,6 +152,8 @@ public class LogQueryController extends BaseController{
 		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		
+		String selectUserId = ParamUtils.getParameter(request, "selectUserId");
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
@@ -177,7 +179,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getSystemLogData(orgId,operationType,pager,user);
+		json = logQueryService.getSystemLogData(orgId,operationType,pager,user,selectUserId);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -191,9 +193,11 @@ public class LogQueryController extends BaseController{
 	public String exportSystemLogExcelData() throws Exception {
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
-		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		
+		String selectUserId = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "selectUserId"),"utf-8");
+		String operationType = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "operationType"),"utf-8");
 		
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
@@ -229,10 +233,49 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		boolean bool = logQueryService.exportSystemLogData(response,fileName,title, heads, fields,orgId,operationType,pager,user);
+		boolean bool = logQueryService.exportSystemLogData(response,fileName,title, heads, fields,orgId,operationType,pager,user,selectUserId);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
+		return null;
+	}
+	
+	@RequestMapping("/saveAccessModuleLog")
+	public String saveAccessModuleLog() throws Exception {
+		HttpSession session=request.getSession();
+		if(session!=null){
+			User user = (User) session.getAttribute("userLogin");
+			String moduleCode = ParamUtils.getParameter(request, "moduleCode");
+			String moduleName = ParamUtils.getParameter(request, "moduleName");
+			if(user!=null && StringManagerUtils.isNotNull(moduleName)){
+				try {
+					logQueryService.saveSystemLog(user, 3, moduleName);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print("{\"success\":true}");
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadSystemLogActionComboxList")
+	public String loadSystemLogActionComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		
+		String json = this.logQueryService.loadSystemLogActionComboxList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 	

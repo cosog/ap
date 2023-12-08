@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.User;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.DataModelMap;
@@ -1183,5 +1184,11 @@ public class BaseService<T> {
 		int port=request.getServerPort();
 		String webApp=request.getContextPath();
 		return networkProtocol+"://"+ip+":"+port+webApp;
+	}
+	
+	public void saveSystemLog(User user,int action,String remark) throws Exception {
+		if(user!=null){
+			this.getBaseDao().saveSystemLog(user,action,remark);
+		}
 	}
 }

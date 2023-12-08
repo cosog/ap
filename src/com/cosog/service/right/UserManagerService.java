@@ -411,10 +411,6 @@ public class UserManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public void saveSystemLog(User user) throws Exception {
-		this.getBaseDao().saveSystemLog(user);
-	}
-	
 	public String getUserOrgChangeUserList(Page pager,String orgIds,String userName,User user) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
@@ -554,5 +550,61 @@ public class UserManagerService<T> extends BaseService<T> {
 			user.setRoleReportEdit(StringManagerUtils.stringToInteger(obj[3]+""));
 			user.setRoleVideoKeyEdit(StringManagerUtils.stringToInteger(obj[4]+""));
 		}
+	}
+	
+	public String loadUserComboxList(Page pager,String orgId,String userId,User user) throws Exception {
+		//String orgIds = this.getUserOrgIds(orgId);
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer sqlCuswhere = new StringBuffer();
+		
+		if(user!=null){
+			String sql = "select t.user_id as boxkey,t.user_id as boxval"
+					+ " from TBL_USER t,tbl_role r "
+					+ " where t.user_type=r.role_id "
+					+ " and t.user_orgid in("+orgId+") "
+					+ " and (r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") "
+					+ " or t.user_no="+user.getUserNo()+")";
+			if (StringManagerUtils.isNotNull(userId)) {
+				sql += " and t.user_id like '%" + userId + "%'";
+			}
+			sql += " order by r.role_level,t.user_id";
+			sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
+			sqlCuswhere.append(""+sql);
+			int maxvalue=pager.getLimit()+pager.getStart();
+			sqlCuswhere.append(" ) a where  rownum <="+maxvalue+") b");
+			sqlCuswhere.append(" where rn >"+pager.getStart());
+			String finalsql=sqlCuswhere.toString();
+			try {
+				int totals=this.getTotalCountRows(sql);
+				List<?> list = this.findCallSql(finalsql);
+				result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+				String get_key = "";
+				String get_val = "";
+				if (null != list && list.size() > 0) {
+					for (Object o : list) {
+						Object[] obj = (Object[]) o;
+						get_key = obj[0] + "";
+						get_val = (String) obj[1];
+						result_json.append("{boxkey:\"" + get_key + "\",");
+						result_json.append("boxval:\"" + get_val + "\"},");
+					}
+					if (result_json.toString().endsWith(",")) {
+						result_json.deleteCharAt(result_json.length() - 1);
+					}
+				}
+				result_json.append("]}");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				result_json = new StringBuffer();
+				result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"}]}");
+			}
+		}else{
+			result_json = new StringBuffer();
+			result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"}]}");
+		}
+		
+		
+		return result_json.toString();
 	}
 }

@@ -2606,17 +2606,17 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public boolean saveSystemLog(User user) throws SQLException{
+	public boolean saveSystemLog(User user,int action,String remark) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
 			cs = conn.prepareCall("{call prd_save_systemLog(?,?,?,?,?)}");
 			String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			cs.setString(1, currentTiem);
-			cs.setInt(2, 0);
+			cs.setInt(2, action);
 			cs.setString(3, user.getUserId());
 			cs.setString(4, user.getLoginIp());
-			cs.setString(5, "用户登录");
+			cs.setString(5, remark);
 			cs.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();

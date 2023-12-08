@@ -2151,7 +2151,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public boolean exportRPCDeviceInfoData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
+	public boolean exportRPCDeviceInfoData(User user,HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -2220,6 +2220,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -2425,7 +2432,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public boolean exportPCPDeviceInfoData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
+	public boolean exportPCPDeviceInfoData(User user,HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -2493,6 +2500,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -2611,7 +2625,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public boolean exportSMSDeviceInfoData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
+	public boolean exportSMSDeviceInfoData(User user,HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -2666,6 +2680,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -2833,7 +2854,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportPumpingModelData(HttpServletResponse response,String fileName,String title,String head,String field,String manufacturer,String model) {
+	public boolean exportPumpingModelData(User user,HttpServletResponse response,String fileName,String title,String head,String field,String manufacturer,String model) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -2888,6 +2909,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -3981,7 +4009,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportRPCDeviceInfoDetailsData(HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String wellInformationName) {
+	public boolean exportRPCDeviceInfoDetailsData(User user,HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String wellInformationName) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			Gson gson = new Gson();
@@ -4239,6 +4267,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -4246,7 +4281,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public boolean exportPCPDeviceInfoDetailsData(HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String wellInformationName) {
+	public boolean exportPCPDeviceInfoDetailsData(User user,HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String wellInformationName) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			Gson gson = new Gson();
@@ -4463,6 +4498,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

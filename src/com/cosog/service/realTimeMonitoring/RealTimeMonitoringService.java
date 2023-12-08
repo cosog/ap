@@ -1051,7 +1051,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportDeviceRealTimeOverviewData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportDeviceRealTimeOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceName,String deviceType,
 			String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager){
 		StringBuffer result_json = new StringBuffer();
@@ -1384,6 +1384,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1752,7 +1759,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportPCPDeviceRealTimeOverviewData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportPCPDeviceRealTimeOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceName,String deviceType,
 			String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager){
 		StringBuffer result_json = new StringBuffer();
@@ -1952,6 +1959,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

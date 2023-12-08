@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.CurveConf;
+import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
@@ -485,7 +486,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportHistoryQueryDeviceListData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportHistoryQueryDeviceListData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,
 			String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		try{
@@ -563,6 +564,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1023,7 +1031,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportDeviceHistoryData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportDeviceHistoryData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,String deviceType,Page pager){
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -1355,6 +1363,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1679,7 +1694,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportPCPDeviceHistoryData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportPCPDeviceHistoryData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -1877,6 +1892,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -3324,7 +3346,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportHistoryQueryFESDiagramDataExcel(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportHistoryQueryFESDiagramDataExcel(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,Page pager){
 		try{
 			StringBuffer result_json = new StringBuffer();
@@ -3412,6 +3434,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -3688,7 +3717,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportFESDiagramOverlayData(HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportFESDiagramOverlayData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,Page pager){
 		try{
 			StringBuffer dataBuff = new StringBuffer();
@@ -3842,6 +3871,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

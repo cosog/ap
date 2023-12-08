@@ -29,6 +29,7 @@ import com.cosog.model.CellEditData;
 import com.cosog.model.CurveConf;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
+import com.cosog.model.User;
 import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.gridmodel.GraphicSetData;
@@ -389,7 +390,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportRPCDailyReportData(HttpServletResponse response,String fileName,String title,
+	public boolean exportRPCDailyReportData(User user,HttpServletResponse response,String fileName,String title,
 			Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
@@ -658,6 +659,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sheetDataList.add(record);
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,3,null);
+			if(user!=null){
+				saveSystemLog(user,4,"导出文件:"+fileName);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1026,7 +1030,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportSingleWellRangeReportData(HttpServletResponse response,
+	public boolean exportSingleWellRangeReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
 			String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		try{
@@ -1230,6 +1234,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+			if(user!=null){
+				saveSystemLog(user,4,"导出文件:"+fileName);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1237,7 +1244,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public boolean batchExportSingleWellRangeReportData(HttpServletResponse response,
+	public boolean batchExportSingleWellRangeReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
 			String wellName,String startDate,String endDate,int userNo)throws Exception {
 		try{
@@ -1459,6 +1466,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
+			if(user!=null){
+				saveSystemLog(user,4,"导出文件:"+fileName);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1684,7 +1694,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportSingleWellDailyReportData(HttpServletResponse response,
+	public boolean exportSingleWellDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
 			String wellId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		try{
@@ -1922,6 +1932,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+			if(user!=null){
+				saveSystemLog(user,4,"导出文件:"+fileName);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -1929,7 +1942,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public boolean batchExportSingleWellDailyReportData(HttpServletResponse response,
+	public boolean batchExportSingleWellDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
 			String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		try{
@@ -2190,6 +2203,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
+			if(user!=null){
+				saveSystemLog(user,4,"导出文件:"+fileName);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -2398,7 +2414,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportProductionDailyReportData(HttpServletResponse response,
+	public boolean exportProductionDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String selectedOrgName,
 			String deviceType,String reportType,
 			String instanceCode,String  unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
@@ -2630,6 +2646,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+			if(user!=null){
+				saveSystemLog(user,4,"导出文件:"+fileName);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -2637,7 +2656,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public boolean batchExportProductionDailyReportData(HttpServletResponse response,
+	public boolean batchExportProductionDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String selectedOrgName,
 			String deviceType,String reportType,
 			String reportDate,int userNo)throws Exception {
@@ -2882,6 +2901,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
+			if(user!=null){
+				saveSystemLog(user,4,"导出文件:"+fileName);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -3755,7 +3777,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportPCPDailyReportData(HttpServletResponse response,String fileName,String title,
+	public boolean exportPCPDailyReportData(User user,HttpServletResponse response,String fileName,String title,
 			Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
@@ -3982,6 +4004,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sheetDataList.add(record);
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,3,null);
+			if(user!=null){
+		    	try {
+					saveSystemLog(user,4,"导出文件:"+title);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

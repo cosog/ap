@@ -396,9 +396,8 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         		if(rpcSingleWellRangeReportHelper!=null && rpcSingleWellRangeReportHelper.hot!=undefined){
-//                        			rpcSingleWellRangeReportHelper.hot.refreshDimensions();
                         			var newWidth=width;
-                            		var newHeight=height;
+                        			var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;

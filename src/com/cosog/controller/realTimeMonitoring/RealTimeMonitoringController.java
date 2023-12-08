@@ -269,10 +269,11 @@ public class RealTimeMonitoringController extends BaseController {
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
 		String key = ParamUtils.getParameter(request, "key");
-		
+		User user = null;
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
+			user = (User) session.getAttribute("userLogin");
 		}
 		
 		DataDictionary ddic = null;
@@ -284,17 +285,16 @@ public class RealTimeMonitoringController extends BaseController {
 		heads=StringUtils.join(ddic.getHeaders(), ",");
 		fields=StringUtils.join(ddic.getFields(), ",");
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
 		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			bool = realTimeMonitoringService.exportDeviceRealTimeOverviewData(response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+			bool = realTimeMonitoringService.exportDeviceRealTimeOverviewData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
 		}else{
-			bool = realTimeMonitoringService.exportPCPDeviceRealTimeOverviewData(response,fileName,title, heads, fields,orgId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+			bool = realTimeMonitoringService.exportPCPDeviceRealTimeOverviewData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
 		}
 		if(session!=null){
 			session.setAttribute(key, 1);

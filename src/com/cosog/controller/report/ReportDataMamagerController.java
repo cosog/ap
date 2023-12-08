@@ -248,10 +248,11 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(user,response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,user.getUserNo());
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
+		
 		return null;
 	}
 	
@@ -304,7 +305,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(user,response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -467,7 +468,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -533,7 +534,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 //		Thread.sleep(1000*10);
-		boolean bool = reportDataManagerService.batchExportSingleWellDailyReportData(response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -646,7 +647,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setEnd_date(endDate);
 		
 		
-		boolean bool = reportDataManagerService.exportProductionDailyReportData(response,pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportProductionDailyReportData(user,response,pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, wellName, startDate,endDate,reportDate,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -694,7 +695,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setEnd_date(endDate);
 		
 		
-		boolean bool = reportDataManagerService.batchExportProductionDailyReportData(response,pager, orgId,selectedOrgName,deviceType,reportType,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.batchExportProductionDailyReportData(user,response,pager, orgId,selectedOrgName,deviceType,reportType,reportDate,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -988,9 +989,10 @@ public class ReportDataMamagerController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String tableName="tbl_rpcdailycalculationdata";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		if (!StringUtils.isNotBlank(orgId)) {
-			HttpSession session=request.getSession();
-			User user = (User) session.getAttribute("userLogin");
+			
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
@@ -1026,7 +1028,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportRPCDailyReportData(response,fileName,title,pager, orgId,wellName,startDate,endDate);
+		boolean bool = reportDataManagerService.exportRPCDailyReportData(user,response,fileName,title,pager, orgId,wellName,startDate,endDate);
 		return null;
 	}
 	
@@ -1416,9 +1418,9 @@ public class ReportDataMamagerController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String tableName="tbl_pcpdailycalculationdata";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		if (!StringUtils.isNotBlank(orgId)) {
-			HttpSession session=request.getSession();
-			User user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
@@ -1458,7 +1460,7 @@ public class ReportDataMamagerController extends BaseController {
         	fileName+="~"+endDate;
         }
 		
-		boolean bool = reportDataManagerService.exportPCPDailyReportData(response,fileName,title,pager, orgId, wellName, startDate,endDate);
+		boolean bool = reportDataManagerService.exportPCPDailyReportData(user,response,fileName,title,pager, orgId, wellName, startDate,endDate);
 		return null;
 	}
 	

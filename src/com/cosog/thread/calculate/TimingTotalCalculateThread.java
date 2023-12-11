@@ -111,7 +111,8 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " where t.wellid=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3   "
-					+ " where t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " where t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
+					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t3.wellid="+wellId
 					+ " )";
 			
@@ -137,7 +138,8 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 and (t3.runstatus =0 or t3.runstatus =1) "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
+					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t3.wellid="+wellId
 					+ " )";
 			
@@ -166,7 +168,8 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 "
 					+ " and t3.totalkwatth>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
+					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t3.wellid="+wellId
 					+ " )";
 			
@@ -195,7 +198,8 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 "
 					+ " and t3.totalgasvolumetricproduction>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
+					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t3.wellid="+wellId
 					+ " )";
 			
@@ -224,7 +228,8 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 "
 					+ " and t3.totalwatervolumetricproduction>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
+					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t3.wellid="+wellId
 					+ " )";
 			

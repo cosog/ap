@@ -57,8 +57,8 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                     triggerAction: 'all',
                     displayField: "boxval",
                     valueField: "boxkey",
-                    pageSize:comboxPagingStatus,
-                    minChars:0,
+                    pageSize: comboxPagingStatus,
+                    minChars: 0,
                     emptyText: cosog.string.all,
                     blankText: cosog.string.all,
                     listeners: {

@@ -292,6 +292,33 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
                             	CreateRPCSingleWellDailyReportTable();
                             	CreateRPCSingleWellDailyReportCurve();
                             }
+                        },'-',{
+                        	xtype : "combobox",
+            				fieldLabel : '间隔',
+            				id : 'RPCSingleWellDailyReportIntervalComb_Id',
+            				labelWidth: 35,
+                            width: 115,
+            				triggerAction : 'all',
+            				selectOnFocus : true,
+            			    forceSelection : true,
+            			    value:2,
+            			    allowBlank: false,
+            				editable : false,
+            				store : new Ext.data.SimpleStore({
+            							fields : ['value', 'text'],
+            							data : [[2, '两小时'],[1, '一小时']]
+            						}),
+            				displayField : 'text',
+            				valueField : 'value',
+            				queryMode : 'local',
+            				emptyText : '请选择时间间隔',
+            				blankText : '请选择时间间隔',
+            				listeners : {
+            					select:function(v,o){
+            						CreateRPCSingleWellDailyReportTable();
+                                	CreateRPCSingleWellDailyReportCurve();
+            					}
+            				}
                         }, '->',{
                             xtype: 'button',
                             text: cosog.string.exportExcel,
@@ -866,6 +893,7 @@ function CreateRPCSingleWellDailyReportTable(){
     var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('RPCSingleWellDailyReportEndDate_Id').rawValue;
     var reportDate = Ext.getCmp('RPCSingleWellDailyReportDate_Id').rawValue;
+    var interval = Ext.getCmp('RPCSingleWellDailyReportIntervalComb_Id').getValue();
     
     var wellName='';
     var wellId=0;
@@ -924,6 +952,7 @@ function CreateRPCSingleWellDailyReportTable(){
 			endDate: endDate,
 			reportDate: reportDate,
 			reportType: 2,
+			interval: interval,
             deviceType:0
         }
 	});
@@ -1532,6 +1561,7 @@ function CreateRPCSingleWellDailyReportCurve(){
     var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('RPCSingleWellDailyReportEndDate_Id').rawValue;
     var reportDate = Ext.getCmp('RPCSingleWellDailyReportDate_Id').rawValue;
+    var interval = Ext.getCmp('RPCSingleWellDailyReportIntervalComb_Id').getValue();
     
     var wellName='';
     var wellId=0;
@@ -1711,6 +1741,7 @@ function CreateRPCSingleWellDailyReportCurve(){
 			endDate: endDate,
 			reportDate: reportDate,
 			reportType: 2,
+			interval: interval,
             deviceType:0
         }
 	});
@@ -1902,6 +1933,7 @@ function ExportRPCSingleWellDailyReportData(){
 	var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
 	var endDate = Ext.getCmp('RPCSingleWellDailyReportEndDate_Id').rawValue;
 	var reportDate = Ext.getCmp('RPCSingleWellDailyReportDate_Id').rawValue;
+	var interval = Ext.getCmp('RPCSingleWellDailyReportIntervalComb_Id').getValue();
 
 	var wellName='';
 	var wellId=0;
@@ -1918,6 +1950,7 @@ function ExportRPCSingleWellDailyReportData(){
 	+'&startDate='+startDate
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
+	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
 	exportDataMask(key,"RPCSingleWellDailyReportPanel_view",cosog.string.loading);
@@ -1932,6 +1965,8 @@ function batchExportRPCSingleWellDailyReportData(){
 	var startDate = Ext.getCmp('RPCSingleWellDailyReportStartDate_Id').rawValue;
 	var endDate = Ext.getCmp('RPCSingleWellDailyReportEndDate_Id').rawValue;
 	var reportDate = Ext.getCmp('RPCSingleWellDailyReportDate_Id').rawValue;
+	
+	var interval = Ext.getCmp('RPCSingleWellDailyReportIntervalComb_Id').getValue();
 
 	var url=context + '/reportDataMamagerController/batchExportSingleWellDailyReportData?deviceType=0'
 	+'&reportType=2'
@@ -1939,6 +1974,7 @@ function batchExportRPCSingleWellDailyReportData(){
 	+'&startDate='+startDate
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
+	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
 	exportDataMask(key,"RPCSingleWellDailyReportPanel_view",cosog.string.loading);

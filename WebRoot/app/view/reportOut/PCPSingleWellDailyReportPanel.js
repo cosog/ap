@@ -265,6 +265,33 @@ Ext.define("AP.view.reportOut.PCPSingleWellDailyReportPanel", {
                             	CreatePCPSingleWellDailyReportTable();
                             	CreatePCPSingleWellDailyReportCurve();
                             }
+                        },'-',{
+                        	xtype : "combobox",
+            				fieldLabel : '间隔',
+            				id : 'PCPSingleWellDailyReportIntervalComb_Id',
+            				labelWidth: 35,
+                            width: 115,
+            				triggerAction : 'all',
+            				selectOnFocus : true,
+            			    forceSelection : true,
+            			    value:2,
+            			    allowBlank: false,
+            				editable : false,
+            				store : new Ext.data.SimpleStore({
+            							fields : ['value', 'text'],
+            							data : [[2, '两小时'],[1, '一小时']]
+            						}),
+            				displayField : 'text',
+            				valueField : 'value',
+            				queryMode : 'local',
+            				emptyText : '请选择时间间隔',
+            				blankText : '请选择时间间隔',
+            				listeners : {
+            					select:function(v,o){
+            						CreatePCPSingleWellDailyReportTable();
+                                	CreatePCPSingleWellDailyReportCurve();
+            					}
+            				}
                         }, '->',{
                             xtype: 'button',
                             text: cosog.string.exportExcel,
@@ -838,6 +865,7 @@ function CreatePCPSingleWellDailyReportTable(){
     var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('PCPSingleWellDailyReportEndDate_Id').rawValue;
     var reportDate = Ext.getCmp('PCPSingleWellDailyReportDate_Id').rawValue;
+    var interval = Ext.getCmp('PCPSingleWellDailyReportIntervalComb_Id').getValue();
     
     var wellName='';
     var wellId=0;
@@ -895,6 +923,7 @@ function CreatePCPSingleWellDailyReportTable(){
 			startDate: startDate,
 			endDate: endDate,
 			reportDate: reportDate,
+			interval: interval,
 			reportType: 2,
             deviceType: 1
         }
@@ -1505,6 +1534,7 @@ function CreatePCPSingleWellDailyReportCurve(){
     var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('PCPSingleWellDailyReportEndDate_Id').rawValue;
     var reportDate = Ext.getCmp('PCPSingleWellDailyReportDate_Id').rawValue;
+    var interval = Ext.getCmp('PCPSingleWellDailyReportIntervalComb_Id').getValue();
     
     var wellName='';
     var wellId=0;
@@ -1683,6 +1713,7 @@ function CreatePCPSingleWellDailyReportCurve(){
 			startDate: startDate,
 			endDate: endDate,
 			reportDate: reportDate,
+			interval: interval,
 			reportType: 2,
             deviceType:1
         }
@@ -1875,6 +1906,7 @@ function ExportPCPSingleWellDailyReportData(){
 	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
 	var endDate = Ext.getCmp('PCPSingleWellDailyReportEndDate_Id').rawValue;
 	var reportDate = Ext.getCmp('PCPSingleWellDailyReportDate_Id').rawValue;
+	var interval = Ext.getCmp('PCPSingleWellDailyReportIntervalComb_Id').getValue();
 
 	var wellName='';
 	var wellId=0;
@@ -1891,6 +1923,7 @@ function ExportPCPSingleWellDailyReportData(){
 	+'&startDate='+startDate
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
+	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
 	exportDataMask(key,"PCPSingleWellDailyReportPanel_view",cosog.string.loading);
@@ -1906,6 +1939,7 @@ function batchExportPCPSingleWellDailyReportData(){
 	var startDate = Ext.getCmp('PCPSingleWellDailyReportStartDate_Id').rawValue;
 	var endDate = Ext.getCmp('PCPSingleWellDailyReportEndDate_Id').rawValue;
 	var reportDate = Ext.getCmp('PCPSingleWellDailyReportDate_Id').rawValue;
+	var interval = Ext.getCmp('PCPSingleWellDailyReportIntervalComb_Id').getValue();
 
 	var url=context + '/reportDataMamagerController/batchExportSingleWellDailyReportData?deviceType=1'
 	+'&reportType=2'
@@ -1913,6 +1947,7 @@ function batchExportPCPSingleWellDailyReportData(){
 	+'&startDate='+startDate
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
+	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
 	exportDataMask(key,"PCPSingleWellDailyReportPanel_view",cosog.string.loading);

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -1479,10 +1480,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,
 			String wellId,String wellName,
 			String startDate,String endDate,String reportDate,
+			String reportInterval,
 			int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
-		int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
+		int interval2=Config.getInstance().configFile.getAp().getReport().getInterval();
 		Gson gson =new Gson();
 		String reportTemplateCode="";
 		String reportUnitId="";
@@ -1498,7 +1500,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		int timeColIndex=-99;
 		int wellNameColIndex=-99;
 		String maxTimeStr="";
-		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,interval);
+		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 		
 		
 		ReportTemplate.Template template=null;
@@ -1612,13 +1614,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 			sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
+			
+			if(StringManagerUtils.stringToInteger(reportInterval)>1){
+				sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+			}
+			
 			sqlBuff.append(" order by t.calTime");
 			
 			List<String> colList=StringManagerUtils.getColumnListFromSql(sqlBuff.toString());
 			
 			List<String> allColList=new ArrayList<String>();
 			
-			List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
+			String sql=sqlBuff.toString().replaceAll("@", ",");
+			List<?> reportDataList = this.findCallSql(sql);
 			totalCount=reportDataList.size();
 			for(int i=0;i<reportDataList.size();i++){
 				Object[] reportDataObj=(Object[]) reportDataList.get(i);
@@ -1696,7 +1704,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public boolean exportSingleWellDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
-			String wellId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+			String wellId,String wellName,String startDate,String endDate,String reportDate,String reportInterval,
+			int userNo)throws Exception {
 		try{
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
@@ -1717,7 +1726,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int timeColIndex=-99;
 			int wellNameColIndex=-99;
 			String maxTimeStr="";
-			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,interval);
+			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
 			ReportTemplate.Template template=null;
 			String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate "
@@ -1842,6 +1851,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 				sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
+				
+				if(StringManagerUtils.stringToInteger(reportInterval)>1){
+					sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+				}
+				
 				sqlBuff.append(" order by t.calTime");
 				
 				List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
@@ -1944,7 +1958,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public boolean batchExportSingleWellDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
-			String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+			String wellName,String startDate,String endDate,String reportDate,String reportInterval,
+			int userNo)throws Exception {
 		try{
 			List<List<List<Object>>> sheetList =new ArrayList<>();
 			List<String> sheetNameList =new ArrayList<>();
@@ -1954,6 +1969,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
+			
+			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+			
 			String fileName="班报表-"+reportDate;
 			
 			String deviceTableName="tbl_rpcdevice";
@@ -1992,7 +2010,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				int timeColIndex=-99;
 				int wellNameColIndex=-99;
 				String maxTimeStr="";
-				List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,interval);
 				
 				ReportTemplate.Template template=null;
 				
@@ -2109,6 +2126,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 					sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 					sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
+					
+					if(StringManagerUtils.stringToInteger(reportInterval)>1){
+						sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+					}
+					
 					sqlBuff.append(" order by t.calTime");
 					
 					List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
@@ -3061,12 +3083,16 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,
+			String startDate,String endDate,String reportDate,String reportInterval,
+			int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		
+		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 		
 		Gson gson =new Gson();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -3191,6 +3217,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
 			cueveSqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
+			
+			if(StringManagerUtils.stringToInteger(reportInterval)>1){
+				cueveSqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+			}
+			
 			cueveSqlBuff.append(" order by t.calTime");
 			
 			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));

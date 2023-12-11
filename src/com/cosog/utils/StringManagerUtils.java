@@ -3417,12 +3417,12 @@ public class StringManagerUtils {
         return sb.toString();
     }
 
-    public static String getWellRuningRangeJson(String rgzsjd) {
+    public static String getWellRuningRangeJson(String rangeStr) {
         String result = "";
         StringBuffer dynSbf = new StringBuffer();
-        if (StringManagerUtils.isNotNull(rgzsjd)) {
+        if (StringManagerUtils.isNotNull(rangeStr)) {
             dynSbf.append("[");
-            String[] wellRunRimeArr = rgzsjd.split(";");
+            String[] wellRunRimeArr = rangeStr.split(";");
             for (int i = 0; i < wellRunRimeArr.length; i++) {
                 if ("00:00-24:00".equals(wellRunRimeArr[i]) || "00:00-00:00".equals(wellRunRimeArr[i])) {
                     dynSbf.append("{\"startTime\":\"00:00\",\"endTime\":\"00:00\"}");

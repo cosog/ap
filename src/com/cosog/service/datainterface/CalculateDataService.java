@@ -739,7 +739,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public List<String> RPCTimingTotalCalculation2(String timeStr){
 //		timeStr="2023-10-17 08:00:00";
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
-		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
+		float interval = Config.getInstance().configFile.getAp().getReport().getInterval();
 		String date=timeStr.split(" ")[0];
 		if(!StringManagerUtils.timeMatchDate(timeStr, date, offsetHour)){
 			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
@@ -1842,7 +1842,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public List<String> PCPTimingTotalCalculation2(String timeStr){
 		String date=timeStr.split(" ")[0];
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
-		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
+		float interval = Config.getInstance().configFile.getAp().getReport().getInterval();
 		if(!StringManagerUtils.timeMatchDate(timeStr, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
 			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 		}

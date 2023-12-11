@@ -322,6 +322,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String reportInterval = ParamUtils.getParameter(request, "interval");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_rpcdailycalculationdata";
@@ -374,7 +375,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellDailyReportData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellDailyReportData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -402,6 +403,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String reportInterval = ParamUtils.getParameter(request, "interval");
 		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -468,7 +470,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -484,6 +486,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String reportInterval = ParamUtils.getParameter(request, "interval");
 		String key = ParamUtils.getParameter(request, "key");
 		User user = (User) session.getAttribute("userLogin");
 		session.removeAttribute(key);
@@ -534,7 +537,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 //		Thread.sleep(1000*10);
-		boolean bool = reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -561,14 +564,17 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
-			
-			sql+= "order by calDate desc) where rownum=1 ";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where t.commstatus=1 ";
+			sql+= " order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				endDate = list.get(0).toString();
 			} else {
-				endDate = StringManagerUtils.getCurrentTime();
+				int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+				endDate=StringManagerUtils.getCurrentTime();
+				if(!StringManagerUtils.timeMatchDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd"), endDate, offsetHour)){
+					endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-1);
+				}
 			}
 		}
 		if(!StringManagerUtils.isNotNull(startDate)){
@@ -625,14 +631,17 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
-			
-			sql+= "order by calDate desc) where rownum=1 ";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where t.commstatus=1";
+			sql+= " order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				endDate = list.get(0).toString();
 			} else {
-				endDate = StringManagerUtils.getCurrentTime();
+				int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+				endDate=StringManagerUtils.getCurrentTime();
+				if(!StringManagerUtils.timeMatchDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd"), endDate, offsetHour)){
+					endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-1);
+				}
 			}
 		}
 		if(!StringManagerUtils.isNotNull(startDate)){
@@ -674,13 +683,17 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where t.commstatus=1";
 			sql+= "order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				endDate = list.get(0).toString();
 			} else {
-				endDate = StringManagerUtils.getCurrentTime();
+				int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+				endDate=StringManagerUtils.getCurrentTime();
+				if(!StringManagerUtils.timeMatchDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd"), endDate, offsetHour)){
+					endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-1);
+				}
 			}
 		}
 		if(!StringManagerUtils.isNotNull(startDate)){
@@ -768,6 +781,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String reportInterval = ParamUtils.getParameter(request, "interval");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_rpcdailycalculationdata";
@@ -820,7 +834,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, wellId, wellName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

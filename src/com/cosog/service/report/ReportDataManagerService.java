@@ -1616,7 +1616,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 			
 			if(StringManagerUtils.stringToInteger(reportInterval)>1){
-				sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+				sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
 			}
 			
 			sqlBuff.append(" order by t.calTime");
@@ -1853,7 +1853,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 				
 				if(StringManagerUtils.stringToInteger(reportInterval)>1){
-					sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+					sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
 				}
 				
 				sqlBuff.append(" order by t.calTime");
@@ -2128,7 +2128,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 					
 					if(StringManagerUtils.stringToInteger(reportInterval)>1){
-						sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+						sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
 					}
 					
 					sqlBuff.append(" order by t.calTime");
@@ -3219,7 +3219,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			cueveSqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 			
 			if(StringManagerUtils.stringToInteger(reportInterval)>1){
-				cueveSqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+				cueveSqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
 			}
 			
 			cueveSqlBuff.append(" order by t.calTime");

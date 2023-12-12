@@ -73,7 +73,7 @@ ap:
       exitButtonIcon: "./images/exit.svg"             #退出按钮图标
       staticResourceTimestamp: 20230933143030  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
       helpDocument: "./readme/ap_cbm/help.html"             #帮助文档
-      helpDocumentTimestamp: 20231115102400  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+      helpDocumentTimestamp: 20231115163300  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
    report:                                   #报表配置
       offsetHour: 8                          #偏移小时 数值范围：0~12
       interval: 1                            #间隔 单位：小时 数值范围：1~12
@@ -101,6 +101,11 @@ ap:
          keepAliveTime: 5
          wattingCount: 0
       totalCalculateMaintaining:
+         corePoolSize: 20
+         maximumPoolSize: 25
+         keepAliveTime: 5
+         wattingCount: 0
+      timingTotalCalculate:
          corePoolSize: 20
          maximumPoolSize: 25
          keepAliveTime: 5
@@ -134,7 +139,7 @@ ap:
       simulateAcqEnable: true         #是否发送模拟数据，用于演示
       sendCycle: 600                  #模拟数据发送周期，单位：秒
       timeDifference: 60              #模拟数据井之间发送间隔，单位：秒
-      otherStaticResourceTimestamp: 20231116085000  #其他静态资源时间戳，修改此项重新加载资源
+      otherStaticResourceTimestamp: 20231120095500  #其他静态资源时间戳，修改此项重新加载资源
 ac:                                                    #AC程序配置
    probe:                                              #状态监测
       app: http://39.98.187.157:18100/api/probe/app                               #运行状态监测

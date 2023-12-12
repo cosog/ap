@@ -2060,15 +2060,11 @@ begin
              t2.rpm
              from tbl_rpcacqdata_hist t2 
              where t2.id=(
-                   select v2.id from
-                   (select v.id,rownum r from
-                   (select t3.id from  tbl_rpcacqdata_hist t3  
+                   select max(t3.id) from  tbl_rpcacqdata_hist t3  
                    where t3.commstatus=1 and t3.resultstatus=1 
-                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   and t3.acqtime >= to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 
+                   and t3.acqtime < to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
                    and t3.wellid=v_wellId
-                   order by t3.acqtime desc) v
-                   ) v2
-                   where r=1
              )
              and t2.wellid=v_wellId )
              where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
@@ -2184,15 +2180,11 @@ begin
              t2.rpm
              from tbl_pcpacqdata_hist t2 
              where t2.id=(
-                   select v2.id from
-                   (select v.id,rownum r from
-                   (select t3.id from  tbl_pcpacqdata_hist t3  
+                   select max(t3.id) from  tbl_pcpacqdata_hist t3  
                    where t3.commstatus=1 and t3.resultstatus=1 
-                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   and t3.acqtime >= to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 
+                   and t3.acqtime < to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
                    and t3.wellid=v_wellId
-                   order by t3.acqtime desc) v 
-                   ) v2
-                   where r=1
              )
              and t2.wellid=v_wellId )
              where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
@@ -2267,15 +2259,11 @@ begin
            ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
            from tbl_rpcacqdata_hist t2 
            where t2.id=(
-                 select v2.id from
-                 (select v.id,rownum r from
-                 (select t3.id from  tbl_rpcacqdata_hist t3 
+                 select max(t3.id) from  tbl_rpcacqdata_hist t3 
                  where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
-                 and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
+                 and t3.acqtime >= to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 
+                 and t3.acqtime < to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
                  and t3.wellid=v_deviceId
-                 order by t3.acqtime desc) v
-                 ) v2
-                 where r=1
             )
             and t2.wellid=v_deviceId )
             where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
@@ -2304,15 +2292,11 @@ begin
            ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
            from tbl_pcpacqdata_hist t2 
            where t2.id=(
-                 select v2.id from
-                 (select v.id,rownum r from
-                 (select t3.id from  tbl_pcpacqdata_hist t3 
+                 select max(t3.id) from  tbl_pcpacqdata_hist t3 
                  where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
-                 and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
+                 and t3.acqtime >= to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 
+                 and t3.acqtime < to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
                  and t3.wellid=v_deviceId
-                 order by t3.acqtime desc) v
-                 ) v2
-                 where r=1
             )
             and t2.wellid=v_deviceId )
             where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');

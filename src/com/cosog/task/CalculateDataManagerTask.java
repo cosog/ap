@@ -181,7 +181,7 @@ public class CalculateDataManagerTask {
 	public static void RPCTimingCalculate() {
 		RPCTimingCalculateexecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
-//        interval=1 * 60 * 1000;
+//        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
 //        initDelay=StringManagerUtils.getTimeMillis("08:00:00") - System.currentTimeMillis();
         while(initDelay<0){
@@ -204,7 +204,7 @@ public class CalculateDataManagerTask {
 	public static void PCPTimingCalculate() {
 		PCPTimingCalculateexecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
-//        interval=1 * 60 * 1000;
+//        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
 //        initDelay=StringManagerUtils.getTimeMillis("10:00:00") - System.currentTimeMillis();
         while(initDelay<0){

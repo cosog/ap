@@ -306,7 +306,7 @@ Ext.define("AP.view.reportOut.RPCSingleWellDailyReportPanel", {
             				editable : false,
             				store : new Ext.data.SimpleStore({
             							fields : ['value', 'text'],
-            							data : [[2, '两小时'],[1, '一小时']]
+            							data : [[2, '2小时'],[1, '1小时']]
             						}),
             				displayField : 'text',
             				valueField : 'value',

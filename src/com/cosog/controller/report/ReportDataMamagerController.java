@@ -352,9 +352,16 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
-			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') from "+timingcalculationTableName+" t "
-					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			String sql = "select * from ("
+					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "
+					+ " from "+timingcalculationTableName+" t "
+					+ " where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')"
+					+ " ";
+			if(StringManagerUtils.stringToInteger(reportInterval)>1){
+				sql+=" and to_char(t.calTime,'hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")";
+			}
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -438,9 +445,16 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
-			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') from "+timingcalculationTableName+" t "
-					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			String sql = "select * from ("
+					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "
+					+ " from "+timingcalculationTableName+" t "
+					+ " where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')"
+					+ " ";
+			if(StringManagerUtils.stringToInteger(reportInterval)>1){
+				sql+=" and to_char(t.calTime,'hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")";
+			}
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	
@@ -475,6 +489,7 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
+	@SuppressWarnings("static-access")
 	@RequestMapping("/batchExportSingleWellDailyReportData")
 	public String batchExportSingleWellDailyReportData() throws Exception {
 		HttpSession session=request.getSession();
@@ -517,9 +532,16 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
-			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') from "+timingcalculationTableName+" t "
-					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			String sql = "select * from ("
+					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "
+					+ " from "+timingcalculationTableName+" t "
+					+ " where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')"
+					+ " ";
+			if(StringManagerUtils.stringToInteger(reportInterval)>1){
+				sql+=" and to_char(t.calTime,'hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")";
+			}
 			sql+= "order by calTime desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
@@ -532,12 +554,10 @@ public class ReportDataMamagerController extends BaseController {
 				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 			}
 		}
-		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-//		Thread.sleep(1000*10);
-		boolean bool = reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+		reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, wellName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -564,7 +584,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where t.commstatus=1 ";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1 ";
 			sql+= " order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
@@ -581,7 +601,18 @@ public class ReportDataMamagerController extends BaseController {
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
-			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			String sql = " select * from "
+					+ " (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t "
+					+ " where t.commstatus=1 "
+					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
+					+ " order by calDate desc) "
+					+ " where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
 		}
 		String json = "";
 		this.pager = new Page("pagerForm", request);
@@ -631,7 +662,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where t.commstatus=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			sql+= " order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
@@ -648,7 +679,18 @@ public class ReportDataMamagerController extends BaseController {
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
-			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			String sql = " select * from "
+					+ " (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t "
+					+ " where t.commstatus=1 "
+					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
+					+ " order by calDate desc) "
+					+ " where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
 		}
 		String json = "";
 		this.pager = new Page("pagerForm", request);
@@ -683,7 +725,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where t.commstatus=1";
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			sql+= "order by calDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
@@ -700,7 +742,18 @@ public class ReportDataMamagerController extends BaseController {
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
-			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			String sql = " select * from "
+					+ " (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t "
+					+ " where t.commstatus=1 "
+					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
+					+ " order by calDate desc) "
+					+ " where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
 		}
 		String json = "";
 		this.pager = new Page("pagerForm", request);

@@ -455,7 +455,7 @@ function CreateRPCProductionDailyReportTable(){
             }
             var reportDate = Ext.getCmp('RPCProductionDailyReportDate_Id');
             if(reportDate.rawValue==''||null==reportDate.rawValue){
-            	reportDate.setValue(result.endDate);
+            	reportDate.setValue(result.reportDate);
             }
 			if(rpcProductionDailyReportHelper!=null){
 				if(rpcProductionDailyReportHelper.hot!=undefined){

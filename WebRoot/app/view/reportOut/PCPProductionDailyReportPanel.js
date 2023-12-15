@@ -456,7 +456,7 @@ function CreatePCPProductionDailyReportTable(){
             }
             var reportDate = Ext.getCmp('PCPProductionDailyReportDate_Id');
             if(reportDate.rawValue==''||null==reportDate.rawValue){
-            	reportDate.setValue(result.endDate);
+            	reportDate.setValue(result.reportDate);
             }
 			if(pcpProductionDailyReportHelper!=null){
 				if(pcpProductionDailyReportHelper.hot!=undefined){

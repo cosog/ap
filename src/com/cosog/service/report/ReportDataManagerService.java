@@ -2432,6 +2432,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append(",\"wellName\":\""+wellName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
 		result_json.append(",\"endDate\":\""+endDate+"\"");
+		result_json.append(",\"reportDate\":\""+reportDate+"\"");
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}

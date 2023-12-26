@@ -2175,13 +2175,15 @@ public class DriverAPIController extends BaseController{
 						
 						rpcCalculateResponseData.getProduction().setSubmergence(acqSubmergence);
 						
-						rpcCalculateResponseData.getProduction().setWaterCut(rpcCalculateRequestData.getProduction().getWaterCut());
-						rpcCalculateResponseData.getProduction().setProductionGasOilRatio(rpcCalculateRequestData.getProduction().getProductionGasOilRatio());
-						rpcCalculateResponseData.getProduction().setTubingPressure(rpcCalculateRequestData.getProduction().getTubingPressure());
-						rpcCalculateResponseData.getProduction().setCasingPressure(rpcCalculateRequestData.getProduction().getCasingPressure());
-						rpcCalculateResponseData.getProduction().setWellHeadTemperature(rpcCalculateRequestData.getProduction().getWellHeadTemperature());
-						rpcCalculateResponseData.getProduction().setPumpSettingDepth(rpcCalculateRequestData.getProduction().getPumpSettingDepth());
-						rpcCalculateResponseData.getProduction().setProducingfluidLevel(rpcCalculateRequestData.getProduction().getProducingfluidLevel());
+						if(rpcCalculateRequestData.getProduction()!=null){
+							rpcCalculateResponseData.getProduction().setWaterCut(rpcCalculateRequestData.getProduction().getWaterCut());
+							rpcCalculateResponseData.getProduction().setProductionGasOilRatio(rpcCalculateRequestData.getProduction().getProductionGasOilRatio());
+							rpcCalculateResponseData.getProduction().setTubingPressure(rpcCalculateRequestData.getProduction().getTubingPressure());
+							rpcCalculateResponseData.getProduction().setCasingPressure(rpcCalculateRequestData.getProduction().getCasingPressure());
+							rpcCalculateResponseData.getProduction().setWellHeadTemperature(rpcCalculateRequestData.getProduction().getWellHeadTemperature());
+							rpcCalculateResponseData.getProduction().setPumpSettingDepth(rpcCalculateRequestData.getProduction().getPumpSettingDepth());
+							rpcCalculateResponseData.getProduction().setProducingfluidLevel(rpcCalculateRequestData.getProduction().getProducingfluidLevel());
+						}
 						if(isAcqRPMData){
 							rpcCalculateResponseData.setRPM(acqRPM);
 						}

@@ -251,6 +251,8 @@ public class EquipmentDriverServerTask {
 			try {
 				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
+//				sendCycle=60;
+//				timeDifference=0;
 				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
 				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
 				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();

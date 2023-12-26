@@ -226,6 +226,17 @@ public class EquipmentDriverServerTask {
 						StringManagerUtils.sendPostMethod(url, data2,"utf-8",0,0);
 					}
 					i++;
+					
+//					if(deviceName.equalsIgnoreCase("rpc01")){
+//						if(i%2==0){
+//							Thread.sleep(1000*60*1);
+//						}else{
+//							Thread.sleep(1000*60*2);
+//						}
+//					}else{
+//						Thread.sleep(1000*cycle);
+//					}
+					
 					Thread.sleep(1000*cycle);
 				}
 			} catch (InterruptedException e) {

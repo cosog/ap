@@ -864,9 +864,16 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
+			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
-			String sql = " select * from (select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') from "+timingcalculationTableName+" t "
-					+ "where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')";
+			String sql = "select * from ("
+					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "
+					+ " from "+timingcalculationTableName+" t "
+					+ " where t.caltime between to_date('"+startRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss')"
+					+ " ";
+			if(StringManagerUtils.stringToInteger(reportInterval)>1){
+				sql+=" and to_char(t.calTime,'hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")";
+			}
 			if(StringManagerUtils.isNotNull(wellId)){
 				sql+= " and t.wellId="+wellId+" ";
 			}	

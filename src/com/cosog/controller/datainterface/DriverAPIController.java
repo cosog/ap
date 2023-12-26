@@ -2010,12 +2010,14 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
-						if(totalKWattH >= rpcDeviceInfo.getTotalKWattH()){
+						if(totalKWattH >= rpcDeviceInfo.getTotalKWattH() || true){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) && rpcDeviceInfo.getTotalKWattH()>0 && rpcDeviceInfo.getTotalKWattH()<=totalKWattH){
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getKWattHAcqTime()) 
+//									&& rpcDeviceInfo.getTotalKWattH()>0
+									){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getKWattHAcqTime()+"\","
 										+ "\"Total\":{"
@@ -2038,12 +2040,14 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了累计气量，如采集则进行日产气量计算
 					if(isAcqTotalGasProd){
-						if(totalGasVolumetricProduction>=rpcDeviceInfo.getTotalGasVolumetricProduction()){
+						if(totalGasVolumetricProduction>=rpcDeviceInfo.getTotalGasVolumetricProduction() || true){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalGasAcqTime()) && rpcDeviceInfo.getTotalGasVolumetricProduction()>0){
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalGasAcqTime()) 
+//									&& rpcDeviceInfo.getTotalGasVolumetricProduction()>0
+									){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalGasAcqTime()+"\","
 										+ "\"Total\":{"
@@ -2066,12 +2070,14 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了累计水量，如采集则进行日产水量计算
 					if(isAcqTotalWaterProd){
-						if(totalWaterVolumetricProduction>=rpcDeviceInfo.getTotalWaterVolumetricProduction()){
+						if(totalWaterVolumetricProduction>=rpcDeviceInfo.getTotalWaterVolumetricProduction() || true){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalWaterAcqTime()) && rpcDeviceInfo.getTotalWaterVolumetricProduction()>0){
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getTotalWaterAcqTime()) 
+//									&& rpcDeviceInfo.getTotalWaterVolumetricProduction()>0
+									){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+rpcDeviceInfo.getTotalWaterAcqTime()+"\","
 										+ "\"Total\":{"
@@ -3567,12 +3573,14 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
-						if(totalKWattH >= pcpDeviceInfo.getTotalKWattH()){
+						if(totalKWattH >= pcpDeviceInfo.getTotalKWattH() || true){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) && pcpDeviceInfo.getTotalKWattH()>0 && pcpDeviceInfo.getTotalKWattH()<=totalKWattH){
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getKWattHAcqTime()) 
+//									&& pcpDeviceInfo.getTotalKWattH()>0 
+									){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getKWattHAcqTime()+"\","
 										+ "\"Total\":{"
@@ -3595,12 +3603,14 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了累计气量，如采集则进行日产气量计算
 					if(isAcqTotalGasProd){
-						if(totalGasVolumetricProduction>=pcpDeviceInfo.getTotalGasVolumetricProduction()){
+						if(totalGasVolumetricProduction>=pcpDeviceInfo.getTotalGasVolumetricProduction() || true){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalGasAcqTime()) && pcpDeviceInfo.getTotalGasVolumetricProduction()>0){
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalGasAcqTime()) 
+//									&& pcpDeviceInfo.getTotalGasVolumetricProduction()>0
+									){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalGasAcqTime()+"\","
 										+ "\"Total\":{"
@@ -3623,12 +3633,14 @@ public class DriverAPIController extends BaseController{
 					
 					//判断是否采集了累计水量，如采集则进行日产水量计算
 					if(isAcqTotalWaterProd){
-						if(totalWaterVolumetricProduction>=pcpDeviceInfo.getTotalWaterVolumetricProduction()){
+						if(totalWaterVolumetricProduction>=pcpDeviceInfo.getTotalWaterVolumetricProduction() || true){
 							String energyRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\","
 									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalWaterAcqTime()) && pcpDeviceInfo.getTotalWaterVolumetricProduction()>0){
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getTotalWaterAcqTime()) 
+//									&& pcpDeviceInfo.getTotalWaterVolumetricProduction()>0
+									){
 								energyRequest+= "\"Last\":{"
 										+ "\"AcqTime\": \""+pcpDeviceInfo.getTotalWaterAcqTime()+"\","
 										+ "\"Total\":{"

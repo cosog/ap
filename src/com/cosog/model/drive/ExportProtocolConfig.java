@@ -559,7 +559,6 @@ public class ExportProtocolConfig {
 		private Integer Id;
 		private String Name;
 		private String Code;
-		private Integer DeviceType;
 		private Integer UnitId;
 		private String AcqProtocolType;
 		private String CtrlProtocolType;
@@ -589,12 +588,6 @@ public class ExportProtocolConfig {
 		}
 		public void setCode(String code) {
 			Code = code;
-		}
-		public Integer getDeviceType() {
-			return DeviceType;
-		}
-		public void setDeviceType(Integer deviceType) {
-			DeviceType = deviceType;
 		}
 		public Integer getUnitId() {
 			return UnitId;
@@ -674,7 +667,6 @@ public class ExportProtocolConfig {
 		private Integer Id;
 		private String Name;
 		private String Code;
-		private Integer DeviceType;
 		private Integer DisplayUnitId;
 		private Integer Sort;
 		public Integer getId() {
@@ -695,12 +687,6 @@ public class ExportProtocolConfig {
 		public void setCode(String code) {
 			Code = code;
 		}
-		public Integer getDeviceType() {
-			return DeviceType;
-		}
-		public void setDeviceType(Integer deviceType) {
-			DeviceType = deviceType;
-		}
 		public Integer getDisplayUnitId() {
 			return DisplayUnitId;
 		}
@@ -719,7 +705,6 @@ public class ExportProtocolConfig {
 		private Integer Id;
 		private String Name;
 		private String Code;
-		private Integer DeviceType;
 		private Integer AlarmUnitId;
 		private Integer Sort;
 		public Integer getId() {
@@ -739,12 +724,6 @@ public class ExportProtocolConfig {
 		}
 		public void setCode(String code) {
 			Code = code;
-		}
-		public Integer getDeviceType() {
-			return DeviceType;
-		}
-		public void setDeviceType(Integer deviceType) {
-			DeviceType = deviceType;
 		}
 		public Integer getAlarmUnitId() {
 			return AlarmUnitId;

@@ -14,8 +14,6 @@ public class ModbusDriverSaveData {
 	
 	private String ProtocolCode;
 	
-	private int DeviceType=0;
-	
 	private int Sort=0;
 	
 	private List<String> delidslist;
@@ -257,11 +255,4 @@ public class ModbusDriverSaveData {
 	public void setSort(int sort) {
 		Sort = sort;
 	}
-	public int getDeviceType() {
-		return DeviceType;
-	}
-	public void setDeviceType(int deviceType) {
-		DeviceType = deviceType;
-	}
-	
 }

@@ -1477,7 +1477,7 @@ public class DriverAPIController extends BaseController{
 								String value="";
 								String columnName=loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle());
 								
-								DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
+								DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (columnName).getBytes()));
 								
 								if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null ){
 									value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
@@ -1575,8 +1575,8 @@ public class DriverAPIController extends BaseController{
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 									
-									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
 										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
 											if(protocolRunStatusConfig.getResolutionMode()==1){
 												int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
@@ -3242,7 +3242,7 @@ public class DriverAPIController extends BaseController{
 								String value="";
 								String columnName=loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle());
 								
-								DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
+								DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (columnName).getBytes()));
 								if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null){
 									value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 								}
@@ -3341,8 +3341,8 @@ public class DriverAPIController extends BaseController{
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 									
-									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
+									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
+										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
 										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue)){
 											if(protocolRunStatusConfig.getResolutionMode()==1){
 												int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);

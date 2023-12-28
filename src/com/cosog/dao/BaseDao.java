@@ -1120,7 +1120,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(102);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(null);
 				dataSynchronizationThread.setUpdateList(null);
 				dataSynchronizationThread.setAddList(null);
@@ -1138,7 +1137,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(103);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(initWellList);
 				dataSynchronizationThread.setUpdateList(updateWellList);
 				dataSynchronizationThread.setAddList(addWellList);
@@ -1590,7 +1588,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(102);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(null);
 				dataSynchronizationThread.setUpdateList(null);
 				dataSynchronizationThread.setAddList(null);
@@ -1608,7 +1605,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(103);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(initWellList);
 				dataSynchronizationThread.setUpdateList(updateWellList);
 				dataSynchronizationThread.setAddList(addWellList);
@@ -1795,7 +1791,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(202);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(null);
 				dataSynchronizationThread.setUpdateList(null);
 				dataSynchronizationThread.setAddList(null);
@@ -1813,7 +1808,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(203);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(initWellList);
 				dataSynchronizationThread.setUpdateList(updateWellList);
 				dataSynchronizationThread.setAddList(addWellList);
@@ -2195,7 +2189,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(202);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(null);
 				dataSynchronizationThread.setUpdateList(null);
 				dataSynchronizationThread.setAddList(null);
@@ -2213,7 +2206,6 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(203);
-				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(initWellList);
 				dataSynchronizationThread.setUpdateList(updateWellList);
 				dataSynchronizationThread.setAddList(addWellList);
@@ -2324,7 +2316,7 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			saveDeviceOperationLog(updateWellList,addWellList,deleteWellList,300,user);
+			saveDeviceOperationLog(updateWellList,addWellList,deleteWellList,user);
 			
 			if(initWellList.size()>0){
 				EquipmentDriverServerTask.initSMSDevice(initWellList,"update");
@@ -2531,7 +2523,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return collisionList;
 	}
 	
-	public boolean saveDeviceOperationLog(List<String> updateWellList,List<String> addWellList,List<String> deleteWellList,int deviceType,User user) throws SQLException{
+	public boolean saveDeviceOperationLog(List<String> updateWellList,List<String> addWellList,List<String> deleteWellList,User user) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
@@ -2540,7 +2532,7 @@ public class BaseDao extends HibernateDaoSupport {
 			for(int i=0;addWellList!=null && i<addWellList.size();i++){
 				cs.setString(1, currentTiem);
 				cs.setString(2, addWellList.get(i));
-				cs.setInt(3, deviceType);
+				cs.setInt(3, 0);
 				cs.setInt(4, 0);
 				cs.setString(5, user.getUserId());
 				cs.setString(6, user.getLoginIp());
@@ -2550,7 +2542,7 @@ public class BaseDao extends HibernateDaoSupport {
 			for(int i=0;updateWellList!=null && i<updateWellList.size();i++){
 				cs.setString(1, currentTiem);
 				cs.setString(2, updateWellList.get(i));
-				cs.setInt(3, deviceType);
+				cs.setInt(3, 0);
 				cs.setInt(4, 1);
 				cs.setString(5, user.getUserId());
 				cs.setString(6, user.getLoginIp());
@@ -2560,7 +2552,7 @@ public class BaseDao extends HibernateDaoSupport {
 			for(int i=0;deleteWellList!=null && i<deleteWellList.size();i++){
 				cs.setString(1, currentTiem);
 				cs.setString(2, deleteWellList.get(i));
-				cs.setInt(3, deviceType);
+				cs.setInt(3, 0);
 				cs.setInt(4, 2);
 				cs.setString(5, user.getUserId());
 				cs.setString(6, user.getLoginIp());

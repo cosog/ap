@@ -1201,9 +1201,8 @@ function SaveReportInstanceData(){
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
-			saveData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
-			saveData.unitName=propertiesData[2][2];
-			saveData.sort=propertiesData[3][2];
+			saveData.unitName=propertiesData[1][2];
+			saveData.sort=propertiesData[2][2];
 			SaveModbusProtocolReportInstanceData(saveData);
 		}
 	}
@@ -1239,15 +1238,13 @@ function SaveModbusProtocolReportInstanceData(saveData){
 
 function CreateProtocolReportInstancePropertiesInfoTable(data){
 	var root=[];
-	var rpcReportUnit=[];
-	var pcpReportUnit=[];
+	var unitList=[];
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportUnitList',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			rpcReportUnit=result.rpcUnit;
-			pcpReportUnit=result.pcpUnit;
+			unitList=result.unitList;
 			
 			if(data.classes==1){
 				var item1={};
@@ -1258,21 +1255,15 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 				
 				var item2={};
 				item2.id=2;
-				item2.title='设备类型';
-				item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
+				item2.title='报表单元';
+				item2.value=data.unitName;
 				root.push(item2);
 				
 				var item3={};
 				item3.id=3;
-				item3.title='报表单元';
-				item3.value=data.unitName;
+				item3.title='排序序号';
+				item3.value=data.sort;
 				root.push(item3);
-				
-				var item4={};
-				item4.id=4;
-				item4.title='排序序号';
-				item4.value=data.sort;
-				root.push(item4);
 			}
 			
 			if(protocolReportInstancePropertiesHandsontableHelper==null || protocolReportInstancePropertiesHandsontableHelper.hot==undefined){
@@ -1282,13 +1273,11 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 				protocolReportInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolReportInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
 				protocolReportInstancePropertiesHandsontableHelper.classes=data.classes;
-				protocolReportInstancePropertiesHandsontableHelper.rpcReportUnit=rpcReportUnit;
-				protocolReportInstancePropertiesHandsontableHelper.pcpReportUnit=pcpReportUnit;
+				protocolReportInstancePropertiesHandsontableHelper.unitList=unitList;
 				protocolReportInstancePropertiesHandsontableHelper.createTable(root);
 			}else{
 				protocolReportInstancePropertiesHandsontableHelper.classes=data.classes;
-				protocolReportInstancePropertiesHandsontableHelper.rpcReportUnit=rpcReportUnit;
-				protocolReportInstancePropertiesHandsontableHelper.pcpReportUnit=pcpReportUnit;
+				protocolReportInstancePropertiesHandsontableHelper.unitList=unitList;
 				protocolReportInstancePropertiesHandsontableHelper.hot.loadData(root);
 			}
 		},
@@ -1311,8 +1300,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	        protocolReportInstancePropertiesHandsontableHelper.colHeaders=[];
 	        protocolReportInstancePropertiesHandsontableHelper.columns=[];
 	        protocolReportInstancePropertiesHandsontableHelper.AllData=[];
-	        protocolReportInstancePropertiesHandsontableHelper.rpcReportUnit=[];
-			protocolReportInstancePropertiesHandsontableHelper.pcpReportUnit=[];
+	        protocolReportInstancePropertiesHandsontableHelper.unitList=[];
 	        
 	        protocolReportInstancePropertiesHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -1356,12 +1344,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
 		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机井','螺杆泵井'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if(visualColIndex === 2 && visualRowIndex===3){
+		                    }else if(visualColIndex === 2 && visualRowIndex===2){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
 		                    	}
@@ -1372,11 +1355,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 		                    	}
 		                    	
 	                    		this.type = 'dropdown';
-	                    		if(deviceType==='抽油机井'){
-	                    			this.source = protocolReportInstancePropertiesHandsontableHelper.rpcReportUnit;
-	                    		}else{
-	                    			this.source = protocolReportInstancePropertiesHandsontableHelper.pcpReportUnit;
-	                    		}
+	                    		this.source = protocolReportInstancePropertiesHandsontableHelper.unitList;
 		                    	
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;

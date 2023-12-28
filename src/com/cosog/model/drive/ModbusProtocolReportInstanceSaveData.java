@@ -8,7 +8,6 @@ public class ModbusProtocolReportInstanceSaveData {
 	String code;
 	String oldName;
 	String name;
-	int deviceType=0;
 	String unitName;
 	String sort;
 	
@@ -36,14 +35,6 @@ public class ModbusProtocolReportInstanceSaveData {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public int getDeviceType() {
-		return deviceType;
-	}
-
-	public void setDeviceType(int deviceType) {
-		this.deviceType = deviceType;
 	}
 
 	public String getSort() {

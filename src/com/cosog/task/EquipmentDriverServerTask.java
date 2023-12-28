@@ -69,86 +69,86 @@ public class EquipmentDriverServerTask {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
 		
-		initWellCommStatus();
-		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
-			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
-		}
-		initWellDaliyData();
+//		initWellCommStatus();
+//		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+//			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
+//		}
+//		initWellDaliyData();
 		MemoryDataManagerTask.loadMemoryData();
 		
-		ThreadPool executor=null;
-		try {
-			executor = adInit();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		ThreadPool executor=null;
+//		try {
+//			executor = adInit();
+//		} catch (MalformedURLException e) {
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		
-		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
-			boolean sendMsg=false;
-			exampleDataManage();
-			do{
-				DriverProbeResponse driverProbeResponse=adInitProbe();
-				String Ver="";
-				if(driverProbeResponse!=null){
-					sendMsg=false;
-					if(!driverProbeResponse.getHttpServerInitStatus()){
-						try {
-							initServerConfig();
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
-						}
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getProtocolInitStatus()){
-						initProtocolConfig("","");
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getInstanceInitStatus()){
-						if(!driverProbeResponse.getProtocolInitStatus()){
-							initProtocolConfig("","");
-							driverProbeResponse=adInitProbe();
-						}
-						initInstanceConfig(null,"");
-						initSMSInstanceConfig(null,"");
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getSMSInitStatus()){
-//						initSMSDevice(null,"");
-					}
-					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-						if(!driverProbeResponse.getInstanceInitStatus()){
-							if(!driverProbeResponse.getProtocolInitStatus()){
-								initProtocolConfig("","");
-								driverProbeResponse=adInitProbe();
-							}
-							initInstanceConfig(null,"");
-							initSMSInstanceConfig(null,"");
-							driverProbeResponse=adInitProbe();
-						}
-						
-						if(executor!=null && executor.isCompletedByTaskCount()){
-							//清空内存
-							AdInitMap.cleanData();
-							initRPCDriverAcquisitionInfoConfig(null,0,"");
-							initPCPDriverAcquisitionInfoConfig(null,0,"");
-						}
-					}
-					Ver=driverProbeResponse.getVer();
-				}else{
-					if(!sendMsg){
-						StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-						sendMsg=true;
-					}
-				}
-				try {
-					Thread.sleep(1000*1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}while(true);
-		}
+//		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+//			boolean sendMsg=false;
+//			exampleDataManage();
+//			do{
+//				DriverProbeResponse driverProbeResponse=adInitProbe();
+//				String Ver="";
+//				if(driverProbeResponse!=null){
+//					sendMsg=false;
+//					if(!driverProbeResponse.getHttpServerInitStatus()){
+//						try {
+//							initServerConfig();
+//						} catch (MalformedURLException e) {
+//							e.printStackTrace();
+//						}
+//						driverProbeResponse=adInitProbe();
+//					}
+//					if(!driverProbeResponse.getProtocolInitStatus()){
+//						initProtocolConfig("","");
+//						driverProbeResponse=adInitProbe();
+//					}
+//					if(!driverProbeResponse.getInstanceInitStatus()){
+//						if(!driverProbeResponse.getProtocolInitStatus()){
+//							initProtocolConfig("","");
+//							driverProbeResponse=adInitProbe();
+//						}
+//						initInstanceConfig(null,"");
+//						initSMSInstanceConfig(null,"");
+//						driverProbeResponse=adInitProbe();
+//					}
+//					if(!driverProbeResponse.getSMSInitStatus()){
+////						initSMSDevice(null,"");
+//					}
+//					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+//						if(!driverProbeResponse.getInstanceInitStatus()){
+//							if(!driverProbeResponse.getProtocolInitStatus()){
+//								initProtocolConfig("","");
+//								driverProbeResponse=adInitProbe();
+//							}
+//							initInstanceConfig(null,"");
+//							initSMSInstanceConfig(null,"");
+//							driverProbeResponse=adInitProbe();
+//						}
+//						
+//						if(executor!=null && executor.isCompletedByTaskCount()){
+//							//清空内存
+//							AdInitMap.cleanData();
+//							initRPCDriverAcquisitionInfoConfig(null,0,"");
+//							initPCPDriverAcquisitionInfoConfig(null,0,"");
+//						}
+//					}
+//					Ver=driverProbeResponse.getVer();
+//				}else{
+//					if(!sendMsg){
+//						StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+//						sendMsg=true;
+//					}
+//				}
+//				try {
+//					Thread.sleep(1000*1);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}while(true);
+//		}
 	}
 	
 	public static ThreadPool adInit() throws MalformedURLException, InterruptedException{
@@ -510,45 +510,23 @@ public class EquipmentDriverServerTask {
 			Map<String,String> pcpDeviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
-					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-						if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
-							String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
-							String itemColumn="";
-							if(!StringManagerUtils.existOrNotByValue(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
-								itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-							}else{
-								for(int index=1;1==1;index++){
-									if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+index),false)){
-										itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
-										break;
-									}
+				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+					if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
+						String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
+						String itemColumn="";
+						if(!StringManagerUtils.existOrNotByValue(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
+							itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+						}else{
+							for(int index=1;1==1;index++){
+								if(!StringManagerUtils.existOrNot(rpcDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+index),false)){
+									itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
+									break;
 								}
 							}
-							rpcDeviceAcquisitionItemColumns.put(itemName, itemColumn);
-						}else{
-							
 						}
-					}
-				}else{
-					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-						if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
-							String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
-							String itemColumn="";
-							if(!StringManagerUtils.existOrNotByValue(pcpDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
-								itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-							}else{
-								for(int index=1;1==1;index++){
-									if(!StringManagerUtils.existOrNot(pcpDeviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+index),false)){
-										itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
-										break;
-									}
-								}
-							}
-							pcpDeviceAcquisitionItemColumns.put(itemName, itemColumn);
-						}else{
-							
-						}
+						rpcDeviceAcquisitionItemColumns.put(itemName, itemColumn);
+					}else{
+						
 					}
 				}
 			}
@@ -575,33 +553,27 @@ public class EquipmentDriverServerTask {
 		Map<String,String> acquisitionItemColumns=new LinkedHashMap<String,String>();
 		
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==deviceType){
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					if(!StringManagerUtils.existOrNot(acquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
-						String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
-						String itemColumn="";
-						String mappingColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-						if((!StringManagerUtils.existOrNotByValue(acquisitionItemColumns,mappingColumn,false))&&(!StringManagerUtils.databaseColumnFiter(mappingColumn))){
-							itemColumn=mappingColumn;
-						}else{
-							for(int index=1;1==1;index++){
-								if((!StringManagerUtils.existOrNot(acquisitionItemColumns,mappingColumn+index,false))&&(!StringManagerUtils.databaseColumnFiter(mappingColumn+index))){
-									itemColumn=mappingColumn+index;
-									break;
-								}
+			for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+				if(!StringManagerUtils.existOrNot(acquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
+					String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
+					String itemColumn="";
+					String mappingColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+					if((!StringManagerUtils.existOrNotByValue(acquisitionItemColumns,mappingColumn,false))&&(!StringManagerUtils.databaseColumnFiter(mappingColumn))){
+						itemColumn=mappingColumn;
+					}else{
+						for(int index=1;1==1;index++){
+							if((!StringManagerUtils.existOrNot(acquisitionItemColumns,mappingColumn+index,false))&&(!StringManagerUtils.databaseColumnFiter(mappingColumn+index))){
+								itemColumn=mappingColumn+index;
+								break;
 							}
 						}
-						acquisitionItemColumns.put(itemName, itemColumn);
-					}else{
-						
 					}
+					acquisitionItemColumns.put(itemName, itemColumn);
+				}else{
+					
 				}
 			}
-			if(deviceType==0){
-				acquisitionItemColumnsMap.put("rpcDeviceAcquisitionItemColumns", acquisitionItemColumns);
-			}else{
-				acquisitionItemColumnsMap.put("pcpDeviceAcquisitionItemColumns", acquisitionItemColumns);
-			}
+			acquisitionItemColumnsMap.put("rpcDeviceAcquisitionItemColumns", acquisitionItemColumns);
 		}
 		return 0;
 	}
@@ -711,19 +683,19 @@ public class EquipmentDriverServerTask {
 		List<String> acquisitionItemsName=new ArrayList<String>();
 		List<String> dataTypeList=new ArrayList<String>();
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==deviceType){
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					String col=dataSaveMode==0?("addr"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()));
-					if((!"w".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType()))//非只写
-						&&(!StringManagerUtils.existOrNot(acquisitionItemColumns, col,false))){
-						String unit=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getUnit();
-						acquisitionItemColumns.add(col);
-						acquisitionItemsName.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+(StringManagerUtils.isNotNull(unit)?("("+unit+")"):""));
-						dataTypeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getIFDataType());
-					}
+
+			for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+				String col=dataSaveMode==0?("addr"+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()));
+				if((!"w".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType()))//非只写
+					&&(!StringManagerUtils.existOrNot(acquisitionItemColumns, col,false))){
+					String unit=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getUnit();
+					acquisitionItemColumns.add(col);
+					acquisitionItemsName.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()+(StringManagerUtils.isNotNull(unit)?("("+unit+")"):""));
+					dataTypeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getIFDataType());
 				}
-//				break;
 			}
+//			break;
+		
 		}
 		List<String> dataDictionaryItems=new ArrayList<String>();
 		List<String> dataDictionaryItemsName=new ArrayList<String>();
@@ -1303,7 +1275,7 @@ public class EquipmentDriverServerTask {
 		return 0;
 	}
 	
-	public static int initDriverAcquisitionInfoConfigByProtocolName(String protocolName,int deviceType,String method){
+	public static int initDriverAcquisitionInfoConfigByProtocolName(String protocolName,String method){
 		List<String> wellList=new ArrayList<String>();
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
@@ -1314,28 +1286,17 @@ public class EquipmentDriverServerTask {
         	return -1;
         }
 		try {
-			if(deviceType==0){
-				sql="select t.id from tbl_rpcdevice t where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
-					wellList.add(rs.getInt(1)+"");
-				}
-				if(wellList.size()>0){
-					initRPCDriverAcquisitionInfoConfig(wellList,0,method);
-				}
-			}else if(deviceType==1){
-				wellList=new ArrayList<String>();
-				sql="select t.id from tbl_pcpdevice t where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
-					wellList.add(rs.getInt(1)+"");
-				}
-				if(wellList.size()>0){
-					initPCPDriverAcquisitionInfoConfig(wellList,0,method);
-				}
+
+			sql="select t.id from tbl_rpcdevice t where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
 			}
+			if(wellList.size()>0){
+				initRPCDriverAcquisitionInfoConfig(wellList,0,method);
+			}
+		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally{

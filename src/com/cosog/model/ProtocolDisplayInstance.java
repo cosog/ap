@@ -22,7 +22,6 @@ public class ProtocolDisplayInstance implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private String code;
-	private Integer deviceType;
 	private Integer displayUnitId;
 	private Integer sort;
 
@@ -33,12 +32,11 @@ public class ProtocolDisplayInstance implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ProtocolDisplayInstance(Integer id, String name, String code, Integer deviceType, Integer displayUnitId,Integer sort) {
+	public ProtocolDisplayInstance(Integer id, String name, String code, Integer displayUnitId,Integer sort) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.code = code;
-		this.deviceType = deviceType;
 		this.displayUnitId = displayUnitId;
 		this.sort = sort;
 	}
@@ -70,15 +68,6 @@ public class ProtocolDisplayInstance implements java.io.Serializable {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	@Column(name = "devicetype", precision = 22, scale = 0)
-	public Integer getDeviceType() {
-		return deviceType;
-	}
-
-	public void setDeviceType(Integer deviceType) {
-		this.deviceType = deviceType;
 	}
 
 	@Column(name = "displayUnitId", precision = 22, scale = 0)

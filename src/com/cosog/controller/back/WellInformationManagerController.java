@@ -1707,7 +1707,6 @@ public class WellInformationManagerController extends BaseController {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(101);
-				dataSynchronizationThread.setDeviceType(0);
 				dataSynchronizationThread.setInitWellList(wells);
 				dataSynchronizationThread.setUpdateList(null);
 				dataSynchronizationThread.setAddList(wells);
@@ -1772,7 +1771,6 @@ public class WellInformationManagerController extends BaseController {
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(201);
-				dataSynchronizationThread.setDeviceType(1);
 				dataSynchronizationThread.setInitWellList(wells);
 				dataSynchronizationThread.setUpdateList(null);
 				dataSynchronizationThread.setAddList(wells);
@@ -1817,7 +1815,7 @@ public class WellInformationManagerController extends BaseController {
 			List<String> addWellList=new ArrayList<String>();
 			addWellList.add(smsDeviceInformation.getWellName());
 			EquipmentDriverServerTask.initSMSDevice(addWellList,"update");
-			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, 300, user);
+			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, user);
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);

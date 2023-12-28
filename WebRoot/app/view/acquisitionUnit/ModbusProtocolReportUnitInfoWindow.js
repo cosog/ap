@@ -26,40 +26,42 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                 id: 'formModbusProtocolReportUnit_Id',
                 anchor: '100%',
                 name: "reportUnit.id"
-            },{
-				xtype : "hidden",
-				id : 'modbusProtocolReportUnitDeviceType_Id',
-				value: 0,
-				name : "reportUnit.deviceType"
-			},{
-            	xtype : "combobox",
-				fieldLabel : '设备类型<font color=red>*</font>',
-				id : 'modbusProtocolReportUnitDeviceTypeComb_Id',
-				anchor : '100%',
-				triggerAction : 'all',
-				selectOnFocus : false,
-			    forceSelection : true,
-			    value:0,
-			    allowBlank: false,
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, '抽油机井'],[1, '螺杆泵井']]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : '请选择设备类型',
-				blankText : '请选择设备类型',
-				listeners : {
-					select:function(v,o){
-						Ext.getCmp("modbusProtocolReportUnitDeviceType_Id").setValue(this.value);
-						Ext.getCmp("modbusProtocolReportUnitTemplateComb_Id").setValue("");
-						Ext.getCmp("modbusProtocolReportUnitTemplateComb_Id").setRawValue("");
-						
-					}
-				}
-            }, {
+            },
+//            {
+//				xtype : "hidden",
+//				id : 'modbusProtocolReportUnitDeviceType_Id',
+//				value: 0,
+//				name : "reportUnit.deviceType"
+//			},{
+//            	xtype : "combobox",
+//				fieldLabel : '设备类型<font color=red>*</font>',
+//				id : 'modbusProtocolReportUnitDeviceTypeComb_Id',
+//				anchor : '100%',
+//				triggerAction : 'all',
+//				selectOnFocus : false,
+//			    forceSelection : true,
+//			    value:0,
+//			    allowBlank: false,
+//				editable : false,
+//				store : new Ext.data.SimpleStore({
+//							fields : ['value', 'text'],
+//							data : [[0, '抽油机井'],[1, '螺杆泵井']]
+//						}),
+//				displayField : 'text',
+//				valueField : 'value',
+//				queryMode : 'local',
+//				emptyText : '请选择设备类型',
+//				blankText : '请选择设备类型',
+//				listeners : {
+//					select:function(v,o){
+//						Ext.getCmp("modbusProtocolReportUnitDeviceType_Id").setValue(this.value);
+//						Ext.getCmp("modbusProtocolReportUnitTemplateComb_Id").setValue("");
+//						Ext.getCmp("modbusProtocolReportUnitTemplateComb_Id").setRawValue("");
+//						
+//					}
+//				}
+//            }, 
+            {
                 id: 'formModbusProtocolReportUnitName_Id',
                 name: "reportUnit.unitName",
                 fieldLabel: '单元名称<font color=red>*</font>',
@@ -70,11 +72,9 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                     blur: function (t, e) {
                         var value_ = t.getValue();
                         if(value_!=''){
-                        	var deviceType=Ext.getCmp("modbusProtocolReportUnitDeviceType_Id").getValue();
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	deviceType:deviceType,
                                 	unitName: t.value
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeReportUnitExistOrNot',

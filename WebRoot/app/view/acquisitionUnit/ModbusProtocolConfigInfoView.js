@@ -451,15 +451,9 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		
 		var item2={};
 		item2.id=2;
-		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
+		item2.title='排序序号';
+		item2.value=data.sort;
 		root.push(item2);
-		
-		var item3={};
-		item3.id=3;
-		item3.title='排序序号';
-		item3.value=data.sort;
-		root.push(item3);
 	}
 	
 	if(protocolConfigAddrMaooingPropertiesHandsontableHelper==null || protocolConfigAddrMaooingPropertiesHandsontableHelper.hot==undefined){
@@ -531,21 +525,18 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
 		                    	}
 		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机井','螺杆泵井'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if(visualColIndex === 2 && visualRowIndex===2){
+//		                    	this.type = 'dropdown';
+//		                    	this.source = ['抽油机井','螺杆泵井'];
+//		                    	this.strict = true;
+//		                    	this.allowInvalid = false;
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
 		                    	}
+		                    }else if(visualColIndex === 2 && visualRowIndex===2){
+//		                    	this.validator=function (val, callback) {
+//		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+//		                    	}
 		                    }
-//	                    	if (visualColIndex === 2 && visualRowIndex===2) {
-//		                    	this.type = 'dropdown';
-//		                    	this.source = ['modbus-tcp','modbus-rtu'];
-//		                    	this.strict = true;
-//		                    	this.allowInvalid = false;
-//		                    }
 	                    }
 	                    return cellProperties;
 	                },
@@ -572,8 +563,8 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 		if(selectedItem.data.classes==1){//选中的是协议
 			protocolConfigData=selectedItem.data;
 			protocolConfigData.text=propertiesData[0][2];
-			protocolConfigData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
-			protocolConfigData.sort=propertiesData[2][2];
+//			protocolConfigData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
+			protocolConfigData.sort=propertiesData[1][2];
 		}else if(selectedItem.data.classes==0 && isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
 			protocolConfigData=selectedItem.data.children[0];
 		}

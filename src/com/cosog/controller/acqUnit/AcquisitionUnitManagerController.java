@@ -481,7 +481,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			String ids = ParamUtils.getParameter(request, "paramsId");
 			String deviceType = ParamUtils.getParameter(request, "deviceType");
-			this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(ids,deviceType);
+			this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(ids);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
 			if(user!=null){
@@ -755,14 +755,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
-				int protocolType=protocol.getDeviceType();
 				String columnsKey="rpcDeviceAcquisitionItemColumns";
-				if(protocolType==1){
-					columnsKey="pcpDeviceAcquisitionItemColumns";
-				}
 				Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 				if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-					EquipmentDriverServerTask.loadAcquisitionItemColumns(protocolType);
+					EquipmentDriverServerTask.loadAcquisitionItemColumns();
 				}
 				Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 				
@@ -850,14 +846,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
-				int protocolType=protocol.getDeviceType();
 				String columnsKey="rpcDeviceAcquisitionItemColumns";
-				if(protocolType==1){
-					columnsKey="pcpDeviceAcquisitionItemColumns";
-				}
 				Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 				if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-					EquipmentDriverServerTask.loadAcquisitionItemColumns(protocolType);
+					EquipmentDriverServerTask.loadAcquisitionItemColumns();
 				}
 				Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
@@ -2070,7 +2062,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getReportUnitCombList")
 	public String getReportUnitCombList() throws IOException {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
-		String json=acquisitionUnitItemManagerService.getReportUnitCombList(deviceType);
+		String json=acquisitionUnitItemManagerService.getReportUnitCombList();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2121,15 +2113,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 						dataSynchronizationThread.setSign(002);
 						dataSynchronizationThread.setParam1(modbusProtocolConfig.getProtocol().get(j).getName());
-						dataSynchronizationThread.setDeviceType(modbusProtocolConfig.getProtocol().get(j).getDeviceType());
 						dataSynchronizationThread.setMethod("delete");
 						dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 						executor.execute(dataSynchronizationThread);
 						
-//						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),modbusProtocolConfig.getProtocol().get(j).getDeviceType(),"delete");
-//						EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
-//						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
-//						this.acquisitionUnitManagerService.doDeleteProtocolAssociation(modbusProtocolConfig.getProtocol().get(j).getDeviceType(),modbusProtocolConfig.getProtocol().get(j).getName());
 						modbusProtocolConfig.getProtocol().remove(j);
 						String delSql="delete from TBL_PROTOCOL t where t.name='"+modbusDriverSaveData.getDelidslist().get(i)+"'";
 						acquisitionUnitManagerService.getBaseDao().updateOrDeleteBySql(delSql);
@@ -2147,7 +2134,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					if(modbusDriverSaveData.getProtocolCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						String oldName=modbusProtocolConfig.getProtocol().get(i).getName();
 						modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
-						modbusProtocolConfig.getProtocol().get(i).setDeviceType(modbusDriverSaveData.getDeviceType());
 						modbusProtocolConfig.getProtocol().get(i).setSort(modbusDriverSaveData.getSort());
 						
 						List<String> delItemList=new ArrayList<String>();
@@ -2281,7 +2267,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 						}
 						Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
 						String updateSql="update TBL_PROTOCOL t set t.name='"+modbusProtocolConfig.getProtocol().get(i).getName()+"',"
-								+ " t.deviceType="+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+","
 								+ " t.sort="+modbusProtocolConfig.getProtocol().get(i).getSort()
 								+" where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
 						service.updateSql(updateSql);
@@ -2352,7 +2337,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setSign(011);
 					dataSynchronizationThread.setParam1(acquisitionUnitHandsontableChangeData.getDelidslist().get(i));
 					dataSynchronizationThread.setMethod("delete");
-					dataSynchronizationThread.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
 					
@@ -2511,7 +2495,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(041);
 					dataSynchronizationThread.setParam1(displayUnitHandsontableChangeData.getDelidslist().get(i));
-					dataSynchronizationThread.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
@@ -2829,7 +2812,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setSign(052);
 					dataSynchronizationThread.setParam1(modbusProtocolInstanceSaveData.getDelidslist().get(i));
 					dataSynchronizationThread.setMethod("delete");
-					dataSynchronizationThread.setDeviceType(modbusProtocolInstanceSaveData.getDeviceType());
 					dataSynchronizationThread.setInitWellList(deleteInstanceList);
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
@@ -2857,7 +2839,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolInstance.setId(modbusProtocolInstanceSaveData.getId());
 				protocolInstance.setCode(modbusProtocolInstanceSaveData.getCode());
 				protocolInstance.setName(modbusProtocolInstanceSaveData.getName());
-				protocolInstance.setDeviceType(modbusProtocolInstanceSaveData.getDeviceType());
 				protocolInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
 				protocolInstance.setAcqProtocolType(modbusProtocolInstanceSaveData.getAcqProtocolType());
 				protocolInstance.setCtrlProtocolType(modbusProtocolInstanceSaveData.getCtrlProtocolType());
@@ -3069,7 +3050,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolDisplayInstance.setId(modbusProtocolDisplayInstanceSaveData.getId());
 				protocolDisplayInstance.setCode(modbusProtocolDisplayInstanceSaveData.getCode());
 				protocolDisplayInstance.setName(modbusProtocolDisplayInstanceSaveData.getName());
-				protocolDisplayInstance.setDeviceType(modbusProtocolDisplayInstanceSaveData.getDeviceType());
 				protocolDisplayInstance.setDisplayUnitId(modbusProtocolDisplayInstanceSaveData.getDisplayUnitId());
 				if(StringManagerUtils.isNum(modbusProtocolDisplayInstanceSaveData.getSort())){
 					protocolDisplayInstance.setSort(StringManagerUtils.stringToInteger(modbusProtocolDisplayInstanceSaveData.getSort()));
@@ -3137,7 +3117,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				reportUnit.setSingleWellRangeReportTemplate(modbusProtocolReportUnitSaveData.getSingleWellRangeReportTemplate());
 				reportUnit.setSingleWellDailyReportTemplate(modbusProtocolReportUnitSaveData.getSingleWellDailyReportTemplate());
 				reportUnit.setProductionReportTemplate(modbusProtocolReportUnitSaveData.getProductionReportTemplate());
-				reportUnit.setDeviceType(modbusProtocolReportUnitSaveData.getDeviceType());
 				if(StringManagerUtils.isNum(modbusProtocolReportUnitSaveData.getSort()) || StringManagerUtils.isNumber(modbusProtocolReportUnitSaveData.getSort())){
 					reportUnit.setSort(StringManagerUtils.stringToInteger(modbusProtocolReportUnitSaveData.getSort()));
 				}else{
@@ -3187,7 +3166,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolReportInstanceSaveData.getName())){
 				String sql="select t.id from tbl_report_unit_conf t where t.unit_name='"+modbusProtocolReportInstanceSaveData.getUnitName()+"' "
-						+ "and t.deviceType="+modbusProtocolReportInstanceSaveData.getDeviceType()+" and rownum=1";
+						+ " and rownum=1";
 				String unitId="";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -3197,7 +3176,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolReportInstance.setId(modbusProtocolReportInstanceSaveData.getId());
 				protocolReportInstance.setCode(modbusProtocolReportInstanceSaveData.getCode());
 				protocolReportInstance.setName(modbusProtocolReportInstanceSaveData.getName());
-				protocolReportInstance.setDeviceType(modbusProtocolReportInstanceSaveData.getDeviceType());
 				protocolReportInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
 				
 				
@@ -3300,7 +3278,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolAlarmInstance.setId(modbusProtocolAlarmInstanceSaveData.getId());
 				protocolAlarmInstance.setCode(modbusProtocolAlarmInstanceSaveData.getCode());
 				protocolAlarmInstance.setName(modbusProtocolAlarmInstanceSaveData.getName());
-				protocolAlarmInstance.setDeviceType(modbusProtocolAlarmInstanceSaveData.getDeviceType());
 				protocolAlarmInstance.setAlarmUnitId(modbusProtocolAlarmInstanceSaveData.getAlarmUnitId());
 				if(StringManagerUtils.isNum(modbusProtocolAlarmInstanceSaveData.getSort())){
 					protocolAlarmInstance.setSort(StringManagerUtils.stringToInteger(modbusProtocolAlarmInstanceSaveData.getSort()));
@@ -3528,7 +3505,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String judgeProtocolExistOrNot() throws IOException {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String protocolName = ParamUtils.getParameter(request, "protocolName").replaceAll(" ", "");
-		boolean flag = this.acquisitionUnitManagerService.judgeProtocolExistOrNot(StringManagerUtils.stringToInteger(deviceType),protocolName);
+		boolean flag = this.acquisitionUnitManagerService.judgeProtocolExistOrNot(protocolName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -3627,9 +3604,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeInstanceExistOrNot")
 	public String judgeInstanceExistOrNot() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeInstanceExistOrNot(StringManagerUtils.stringToInteger(deviceType),instanceName);
+		boolean flag = this.acquisitionUnitManagerService.judgeInstanceExistOrNot(instanceName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -3647,9 +3623,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeAlarmInstanceExistOrNot")
 	public String judgeAlarmInstanceExistOrNot() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeAlarmInstanceExistOrNot(StringManagerUtils.stringToInteger(deviceType),instanceName);
+		boolean flag = this.acquisitionUnitManagerService.judgeAlarmInstanceExistOrNot(instanceName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -3667,9 +3642,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeDisplayInstanceExistOrNot")
 	public String judgeDisplayInstanceExistOrNot() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeDisplayInstanceExistOrNot(StringManagerUtils.stringToInteger(deviceType),instanceName);
+		boolean flag = this.acquisitionUnitManagerService.judgeDisplayInstanceExistOrNot(instanceName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -3687,9 +3661,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeReportUnitExistOrNot")
 	public String judgeReportUnitExistOrNot() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String unitName = ParamUtils.getParameter(request, "unitName");
-		boolean flag = this.acquisitionUnitManagerService.judgeReportUnitExistOrNot(StringManagerUtils.stringToInteger(deviceType),unitName);
+		boolean flag = this.acquisitionUnitManagerService.judgeReportUnitExistOrNot(unitName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -3707,9 +3680,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeReportInstanceExistOrNot")
 	public String judgeReportInstanceExistOrNot() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeReportInstanceExistOrNot(StringManagerUtils.stringToInteger(deviceType),instanceName);
+		boolean flag = this.acquisitionUnitManagerService.judgeReportInstanceExistOrNot(instanceName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -3752,7 +3724,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String displayInstance=ParamUtils.getParameter(request, "displayInstance");
 		String alarmInstance=ParamUtils.getParameter(request, "alarmInstance");
 		
-		String json=acquisitionUnitManagerService.exportProtocolConfigData(deviceType,protocolName,protocolCode,acqUnit,acqGroup,displayUnit,alarmUnit,acqInstance,displayInstance,alarmInstance);
+		String json=acquisitionUnitManagerService.exportProtocolConfigData(protocolName,protocolCode,acqUnit,acqGroup,displayUnit,alarmUnit,acqInstance,displayInstance,alarmInstance);
 		
 		String fileName=protocolName;
 		if(!fileName.endsWith("协议")){
@@ -3942,7 +3914,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acqInstance_json.append("\"heartbeatSuffix\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getHeartbeatSuffix()+"\",");
 					
 					acqInstance_json.append("\"packetSendInterval\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getPacketSendInterval()+"\",");
-					acqInstance_json.append("\"deviceType\":"+exportProtocolConfig.getAcqInstanceList().get(i).getDeviceType()+",");
 					acqInstance_json.append("\"sort\":\""+exportProtocolConfig.getAcqInstanceList().get(i).getSort()+"\",");
 					acqInstance_json.append("\"iconCls\": \"acqUnit\",");
 					acqInstance_json.append("\"checked\": false,");
@@ -3957,7 +3928,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayInstance_json.append("\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(i).getName()+"\",");
 					displayInstance_json.append("\"code\":\""+exportProtocolConfig.getDisplayInstanceList().get(i).getCode()+"\",");
 					displayInstance_json.append("\"displayUnitId\":"+exportProtocolConfig.getDisplayInstanceList().get(i).getDisplayUnitId()+",");
-					displayInstance_json.append("\"deviceType\":"+exportProtocolConfig.getDisplayInstanceList().get(i).getDeviceType()+",");
 					displayInstance_json.append("\"sort\":\""+exportProtocolConfig.getDisplayInstanceList().get(i).getSort()+"\",");
 					displayInstance_json.append("\"iconCls\": \"acqUnit\",");
 					displayInstance_json.append("\"checked\": false,");
@@ -3972,7 +3942,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					alarmInstance_json.append("\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(i).getName()+"\",");
 					alarmInstance_json.append("\"code\":\""+exportProtocolConfig.getAlarmInstanceList().get(i).getCode()+"\",");
 					alarmInstance_json.append("\"alarmUnitId\":"+exportProtocolConfig.getAlarmInstanceList().get(i).getAlarmUnitId()+",");
-					alarmInstance_json.append("\"deviceType\":"+exportProtocolConfig.getAlarmInstanceList().get(i).getDeviceType()+",");
 					alarmInstance_json.append("\"sort\":\""+exportProtocolConfig.getAlarmInstanceList().get(i).getSort()+"\",");
 					alarmInstance_json.append("\"iconCls\": \"acqUnit\",");
 					alarmInstance_json.append("\"checked\": false,");

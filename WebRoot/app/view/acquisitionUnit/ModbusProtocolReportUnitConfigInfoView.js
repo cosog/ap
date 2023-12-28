@@ -1255,16 +1255,9 @@ function CreateProtocolReportUnitPropertiesInfoTable(data){
 		
 		var item2={};
 		item2.id=2;
-		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
+		item2.title='排序序号';
+		item2.value=data.sort;
 		root.push(item2);
-		
-		
-		var item3={};
-		item3.id=3;
-		item3.title='排序序号';
-		item3.value=data.sort;
-		root.push(item3);
 	}
 	
 	if(reportUnitPropertiesHandsontableHelper==null || reportUnitPropertiesHandsontableHelper.hot==undefined){
@@ -1335,14 +1328,19 @@ var ReportUnitPropertiesHandsontableHelper = {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
 		                    	}
 		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机井','螺杆泵井'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if(visualColIndex === 2 && visualRowIndex===3){
+//		                    	this.type = 'dropdown';
+//		                    	this.source = ['抽油机井','螺杆泵井'];
+//		                    	this.strict = true;
+//		                    	this.allowInvalid = false;
+
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
 		                    	}
+		                    
+		                    }else if(visualColIndex === 2 && visualRowIndex===3){
+//		                    	this.validator=function (val, callback) {
+//		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
+//		                    	}
 		                    }
 	                    }
 	                    return cellProperties;
@@ -1816,8 +1814,8 @@ function SaveReportUnitData(){
 				}
 			}
 			
-			reportUnitProperties.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
-			reportUnitProperties.sort=propertiesData[2][2];
+//			reportUnitProperties.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
+			reportUnitProperties.sort=propertiesData[1][2];
 		}
 		if(selectedItem.data.classes==1){//保存单元
 			SaveModbusProtocolReportUnitData(reportUnitProperties);

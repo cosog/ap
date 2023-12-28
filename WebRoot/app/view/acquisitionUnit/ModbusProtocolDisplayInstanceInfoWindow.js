@@ -82,37 +82,39 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                 id: 'formModbusProtocolDisplayInstance_Id',
                 anchor: '100%',
                 name: "protocolDisplayInstance.id"
-            },{
-				xtype : "hidden",
-				id : 'modbusProtocolDisplayInstanceDeviceType_Id',
-				value: 0,
-				name : "protocolDisplayInstance.deviceType"
-			},{
-            	xtype : "combobox",
-				fieldLabel : '设备类型<font color=red>*</font>',
-				id : 'modbusProtocolDisplayInstanceDeviceTypeComb_Id',
-				anchor : '100%',
-				triggerAction : 'all',
-				selectOnFocus : false,
-			    forceSelection : true,
-			    value:0,
-			    allowBlank: false,
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, '抽油机井'],[1, '螺杆泵井']]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : '请选择设备类型',
-				blankText : '请选择设备类型',
-				listeners : {
-					select:function(v,o){
-						Ext.getCmp("modbusProtocolDisplayInstanceDeviceType_Id").setValue(this.value);
-					}
-				}
-            }, {
+            },
+//            {
+//				xtype : "hidden",
+//				id : 'modbusProtocolDisplayInstanceDeviceType_Id',
+//				value: 0,
+//				name : "protocolDisplayInstance.deviceType"
+//			},{
+//            	xtype : "combobox",
+//				fieldLabel : '设备类型<font color=red>*</font>',
+//				id : 'modbusProtocolDisplayInstanceDeviceTypeComb_Id',
+//				anchor : '100%',
+//				triggerAction : 'all',
+//				selectOnFocus : false,
+//			    forceSelection : true,
+//			    value:0,
+//			    allowBlank: false,
+//				editable : false,
+//				store : new Ext.data.SimpleStore({
+//							fields : ['value', 'text'],
+//							data : [[0, '抽油机井'],[1, '螺杆泵井']]
+//						}),
+//				displayField : 'text',
+//				valueField : 'value',
+//				queryMode : 'local',
+//				emptyText : '请选择设备类型',
+//				blankText : '请选择设备类型',
+//				listeners : {
+//					select:function(v,o){
+//						Ext.getCmp("modbusProtocolDisplayInstanceDeviceType_Id").setValue(this.value);
+//					}
+//				}
+//            }, 
+            {
                 id: 'formModbusProtocolDisplayInstanceName_Id',
                 name: "protocolDisplayInstance.name",
                 fieldLabel: '实例名称<font color=red>*</font>',
@@ -123,11 +125,9 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                     blur: function (t, e) {
                         var value_ = t.getValue();
                         if(value_!=''){
-                        	var deviceType=Ext.getCmp("modbusProtocolDisplayInstanceDeviceType_Id").getValue();
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	deviceType:deviceType,
                                 	instanceName: t.value
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeDisplayInstanceExistOrNot',

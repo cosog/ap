@@ -10,7 +10,6 @@ public class ModbusProtocolReportUnitSaveData {
 	String singleWellRangeReportTemplate;
 	String singleWellDailyReportTemplate;
 	String productionReportTemplate;
-	int deviceType=0;
 	String sort;
 	
 	private List<String> delidslist;
@@ -61,14 +60,6 @@ public class ModbusProtocolReportUnitSaveData {
 
 	public void setProductionReportTemplate(String productionReportTemplate) {
 		this.productionReportTemplate = productionReportTemplate;
-	}
-
-	public int getDeviceType() {
-		return deviceType;
-	}
-
-	public void setDeviceType(int deviceType) {
-		this.deviceType = deviceType;
 	}
 
 	public String getSort() {

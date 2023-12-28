@@ -355,21 +355,15 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 		
 		var item2={};
 		item2.id=2;
-		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
+		item2.title='报警单元';
+		item2.value=data.alarmUnitName;
 		root.push(item2);
 		
 		var item3={};
 		item3.id=3;
-		item3.title='报警单元';
-		item3.value=data.alarmUnitName;
+		item3.title='排序序号';
+		item3.value=data.sort;
 		root.push(item3);
-		
-		var item4={};
-		item4.id=4;
-		item4.title='排序序号';
-		item4.value=data.sort;
-		root.push(item4);
 	}
 	
 	if(protocolAlarmInstancePropertiesHandsontableHelper==null || protocolAlarmInstancePropertiesHandsontableHelper.hot==undefined){
@@ -439,12 +433,7 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
 		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机井','螺杆泵井'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if(visualColIndex === 2 && visualRowIndex===3){
+		                    }else if(visualColIndex === 2 && visualRowIndex===2){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
 		                    	}
@@ -1200,9 +1189,8 @@ function SaveModbusProtocolAlarmInstanceConfigTreeData(){
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
-			saveData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
 			saveData.alarmUnitId=selectedItem.data.alarmUnitId;
-			saveData.sort=propertiesData[3][2];
+			saveData.sort=propertiesData[2][2];
 			SaveModbusProtocolAlarmInstanceData(saveData);
 		}
 	}

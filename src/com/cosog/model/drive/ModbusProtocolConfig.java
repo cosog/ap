@@ -183,8 +183,6 @@ public class ModbusProtocolConfig implements Serializable{
 		private String Name;
 
 	    private String Code;
-	    
-	    private int DeviceType;
 
 	    private int Sort;
 
@@ -218,12 +216,6 @@ public class ModbusProtocolConfig implements Serializable{
 	    @Override
 		public int compareTo(Protocol protocol) {     //重写Comparable接口的compareTo方法
 			return this.Sort-protocol.getSort();   // 根据地址升序排列，降序修改相减顺序即可
-		}
-		public int getDeviceType() {
-			return DeviceType;
-		}
-		public void setDeviceType(int deviceType) {
-			DeviceType = deviceType;
 		}
 		public int getId() {
 			return Id;

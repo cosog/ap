@@ -799,8 +799,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				ModbusProtocolConfig.Protocol protocol=null;
 				if(modbusProtocolConfig!=null){
 					for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-						if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-								&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
 							protocol=modbusProtocolConfig.getProtocol().get(j);
 							break;
 						}
@@ -1237,8 +1236,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				ModbusProtocolConfig.Protocol protocol=null;
 				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-					if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-							&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
 						protocol=modbusProtocolConfig.getProtocol().get(j);
 						break;
 					}
@@ -1584,8 +1582,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				ModbusProtocolConfig.Protocol protocol=null;
 				if(modbusProtocolConfig!=null){
 					for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-						if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-								&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
 							protocol=modbusProtocolConfig.getProtocol().get(j);
 							break;
 						}
@@ -1887,8 +1884,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				ModbusProtocolConfig.Protocol protocol=null;
 				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-					if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-							&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
 						protocol=modbusProtocolConfig.getProtocol().get(j);
 						break;
 					}

@@ -213,23 +213,23 @@ function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 		item1.value=data.text;
 		root.push(item1);
 		
+//		var item2={};
+//		item2.id=2;
+//		item2.title='设备类型';
+//		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
+//		root.push(item2);
+		
 		var item2={};
 		item2.id=2;
-		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
+		item2.title='显示单元';
+		item2.value=data.displayUnitName;
 		root.push(item2);
 		
 		var item3={};
 		item3.id=3;
-		item3.title='显示单元';
-		item3.value=data.displayUnitName;
+		item3.title='排序序号';
+		item3.value=data.sort;
 		root.push(item3);
-		
-		var item4={};
-		item4.id=4;
-		item4.title='排序序号';
-		item4.value=data.sort;
-		root.push(item4);
 	}
 	
 	if(protocolDisplayInstancePropertiesHandsontableHelper==null || protocolDisplayInstancePropertiesHandsontableHelper.hot==undefined){
@@ -299,12 +299,7 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);
 		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机井','螺杆泵井'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if(visualColIndex === 2 && visualRowIndex===3){
+		                    }else if(visualColIndex === 2 && visualRowIndex===2){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);
 		                    	}
@@ -335,9 +330,8 @@ function SaveModbusProtocolDisplayInstanceConfigTreeData(){
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
-			saveData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
 			saveData.displayUnitId=selectedItem.data.displayUnitId;
-			saveData.sort=propertiesData[3][2];
+			saveData.sort=propertiesData[2][2];
 			SaveModbusProtocolDisplayInstanceData(saveData);
 		}
 	}

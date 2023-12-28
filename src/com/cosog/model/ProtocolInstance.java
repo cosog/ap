@@ -22,7 +22,6 @@ public class ProtocolInstance implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private String code;
-	private Integer deviceType;
 	private Integer unitId;
 	private String acqProtocolType;
 	private String ctrlProtocolType;
@@ -43,7 +42,7 @@ public class ProtocolInstance implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ProtocolInstance(Integer id, String name, String code, Integer deviceType, Integer unitId,
+	public ProtocolInstance(Integer id, String name, String code, Integer unitId,
 			String acqProtocolType, String ctrlProtocolType, Integer signInPrefixSuffixHex, String signInPrefix,
 			String signInSuffix, Integer signInIDHex, Integer heartbeatPrefixSuffixHex, String heartbeatPrefix,
 			String heartbeatSuffix, Integer packetSendInterval,
@@ -52,7 +51,6 @@ public class ProtocolInstance implements java.io.Serializable {
 		this.id = id;
 		this.name = name;
 		this.code = code;
-		this.deviceType = deviceType;
 		this.unitId = unitId;
 		this.acqProtocolType = acqProtocolType;
 		this.ctrlProtocolType = ctrlProtocolType;
@@ -94,15 +92,6 @@ public class ProtocolInstance implements java.io.Serializable {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	@Column(name = "devicetype", precision = 22, scale = 0)
-	public Integer getDeviceType() {
-		return deviceType;
-	}
-
-	public void setDeviceType(Integer deviceType) {
-		this.deviceType = deviceType;
 	}
 
 	@Column(name = "unitId", precision = 22, scale = 0)

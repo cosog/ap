@@ -164,17 +164,17 @@ public class MemoryDataManagerTask {
 		}
 		try {
 			StringBuffer protocolBuff=null;
-			String sql="select t.id,t.name,t.code,t.devicetype,t.items,t.sort from TBL_PROTOCOL t where 1=1 ";
+			String sql="select t.id,t.name,t.code,t.items,t.sort from TBL_PROTOCOL t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				sql+=" and t.name='"+protocolName+"'";
 			}	
 					
-			sql+= "order by t.devicetype,t.sort,t.id";
+			sql+= "order by t.sort,t.id";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
 				try {
-					String itemsStr=StringManagerUtils.CLOBtoString2(rs.getClob(5));
+					String itemsStr=StringManagerUtils.CLOBtoString2(rs.getClob(4));
 					if(!StringManagerUtils.isNotNull(itemsStr)){
 						itemsStr="[]";
 					}
@@ -182,8 +182,7 @@ public class MemoryDataManagerTask {
 					protocolBuff.append("{");
 					protocolBuff.append("\"Name\":\""+rs.getString(2)+"\",");
 					protocolBuff.append("\"Code\":\""+rs.getString(3)+"\",");
-					protocolBuff.append("\"DeviceType\":"+rs.getInt(4)+",");
-					protocolBuff.append("\"Sort\":"+rs.getInt(6)+",");
+					protocolBuff.append("\"Sort\":"+rs.getInt(5)+",");
 					protocolBuff.append("\"Items\":"+itemsStr+"");
 					protocolBuff.append("}");
 					
@@ -198,7 +197,7 @@ public class MemoryDataManagerTask {
 						}
 						boolean isExist=false;
 						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-							if(protocol.getCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode()) &&  modbusProtocolConfig.getProtocol().get(i).getDeviceType()==protocol.getDeviceType()){
+							if(protocol.getCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 								isExist=true;
 								modbusProtocolConfig.getProtocol().set(i, protocol);
 								break;
@@ -261,7 +260,7 @@ public class MemoryDataManagerTask {
 				dataMapping.setProtocolType(rs.getInt(5));
 				dataMapping.setMappingMode(rs.getInt(6));
 				dataMapping.setRepetitionTimes(rs.getInt(7));
-				String key=dataMapping.getProtocolType()+"_"+dataMapping.getMappingColumn();
+				String key=dataMapping.getMappingColumn();
 				jedis.hset("ProtocolMappingColumn".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMapping));//哈希(Hash)
 			}
 		}catch (Exception e) {
@@ -376,7 +375,7 @@ public class MemoryDataManagerTask {
 					}
 				}
 				
-				String key=protocolRunStatusConfig.getProtocolType()+"_"+protocolRunStatusConfig.getProtocol()+"_"+protocolRunStatusConfig.getItemName();
+				String key=protocolRunStatusConfig.getProtocol()+"_"+protocolRunStatusConfig.getItemName();
 				jedis.hset("ProtocolRunStatusConfig".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(protocolRunStatusConfig));//哈希(Hash)
 			}
 		}catch (Exception e) {

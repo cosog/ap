@@ -3500,12 +3500,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getAcquisitionUnitTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
+		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol from tbl_acq_unit_conf t order by t.protocol,t.id";
@@ -3519,125 +3517,66 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
-					rpcTree_json.append("{\"classes\":1,");
-					rpcTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					rpcTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					rpcTree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
-					rpcTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					rpcTree_json.append("\"iconCls\": \"protocol\",");
-					rpcTree_json.append("\"expanded\": true,");
-					rpcTree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
-							rpcTree_json.append("{\"classes\":2,");
-							rpcTree_json.append("\"id\":"+unitObj[0]+",");
-							rpcTree_json.append("\"code\":\""+unitObj[1]+"\",");
-							rpcTree_json.append("\"text\":\""+unitObj[2]+"\",");
-							rpcTree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							rpcTree_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							rpcTree_json.append("\"iconCls\": \"acqUnit\",");
-							rpcTree_json.append("\"expanded\": true,");
-							rpcTree_json.append("\"children\": [");
-							for(int k=0;k<groupList.size();k++){
-								Object[] groupObj = (Object[]) groupList.get(k);
-								if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
-									rpcTree_json.append("{\"classes\":3,");
-									rpcTree_json.append("\"id\":"+groupObj[0]+",");
-									rpcTree_json.append("\"code\":\""+groupObj[1]+"\",");
-									rpcTree_json.append("\"text\":\""+groupObj[2]+"\",");
-									rpcTree_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
-									rpcTree_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
-									rpcTree_json.append("\"remark\":\""+groupObj[5]+"\",");
-									rpcTree_json.append("\"protocol\":\""+groupObj[6]+"\",");
-									rpcTree_json.append("\"type\":"+groupObj[7]+",");
-									rpcTree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
-									rpcTree_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
-									rpcTree_json.append("\"iconCls\": \"acqGroup\",");
-									rpcTree_json.append("\"leaf\": true");
-									rpcTree_json.append("},");
-								}
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+				tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+				tree_json.append("\"iconCls\": \"protocol\",");
+				tree_json.append("\"expanded\": true,");
+				tree_json.append("\"children\": [");
+				for(int j=0;j<unitList.size();j++){
+					Object[] unitObj = (Object[]) unitList.get(j);
+					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						tree_json.append("{\"classes\":2,");
+						tree_json.append("\"id\":"+unitObj[0]+",");
+						tree_json.append("\"code\":\""+unitObj[1]+"\",");
+						tree_json.append("\"text\":\""+unitObj[2]+"\",");
+						tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+						tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+						tree_json.append("\"iconCls\": \"acqUnit\",");
+						tree_json.append("\"expanded\": true,");
+						tree_json.append("\"children\": [");
+						for(int k=0;k<groupList.size();k++){
+							Object[] groupObj = (Object[]) groupList.get(k);
+							if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
+								tree_json.append("{\"classes\":3,");
+								tree_json.append("\"id\":"+groupObj[0]+",");
+								tree_json.append("\"code\":\""+groupObj[1]+"\",");
+								tree_json.append("\"text\":\""+groupObj[2]+"\",");
+								tree_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
+								tree_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
+								tree_json.append("\"remark\":\""+groupObj[5]+"\",");
+								tree_json.append("\"protocol\":\""+groupObj[6]+"\",");
+								tree_json.append("\"type\":"+groupObj[7]+",");
+								tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
+								tree_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
+								tree_json.append("\"iconCls\": \"acqGroup\",");
+								tree_json.append("\"leaf\": true");
+								tree_json.append("},");
 							}
-							if(rpcTree_json.toString().endsWith(",")){
-								rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
-							}
-							
-							rpcTree_json.append("]},");
 						}
-					}
-					if(rpcTree_json.toString().endsWith(",")){
-						rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
-					}
-					rpcTree_json.append("]},");
-				}else{
-					pcpTree_json.append("{\"classes\":1,");
-					pcpTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					pcpTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					pcpTree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
-					pcpTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					pcpTree_json.append("\"iconCls\": \"protocol\",");
-					pcpTree_json.append("\"expanded\": true,");
-					pcpTree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
-							pcpTree_json.append("{\"classes\":2,");
-							pcpTree_json.append("\"id\":"+unitObj[0]+",");
-							pcpTree_json.append("\"code\":\""+unitObj[1]+"\",");
-							pcpTree_json.append("\"text\":\""+unitObj[2]+"\",");
-							pcpTree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							pcpTree_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							pcpTree_json.append("\"iconCls\": \"acqUnit\",");
-							pcpTree_json.append("\"expanded\": true,");
-							pcpTree_json.append("\"children\": [");
-							for(int k=0;k<groupList.size();k++){
-								Object[] groupObj = (Object[]) groupList.get(k);
-								if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
-									pcpTree_json.append("{\"classes\":3,");
-									pcpTree_json.append("\"id\":"+groupObj[0]+",");
-									pcpTree_json.append("\"code\":\""+groupObj[1]+"\",");
-									pcpTree_json.append("\"text\":\""+groupObj[2]+"\",");
-									pcpTree_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
-									pcpTree_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
-									pcpTree_json.append("\"remark\":\""+groupObj[5]+"\",");
-									pcpTree_json.append("\"protocol\":\""+groupObj[6]+"\",");
-									pcpTree_json.append("\"type\":"+groupObj[7]+",");
-									pcpTree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
-									pcpTree_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
-									pcpTree_json.append("\"iconCls\": \"acqGroup\",");
-									pcpTree_json.append("\"leaf\": true");
-									pcpTree_json.append("},");
-								}
-							}
-							if(pcpTree_json.toString().endsWith(",")){
-								pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-							}
-							
-							pcpTree_json.append("]},");
+						if(tree_json.toString().endsWith(",")){
+							tree_json.deleteCharAt(tree_json.length() - 1);
 						}
+						
+						tree_json.append("]},");
 					}
-					if(pcpTree_json.toString().endsWith(",")){
-						pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-					}
-					pcpTree_json.append("]},");
 				}
+				if(tree_json.toString().endsWith(",")){
+					tree_json.deleteCharAt(tree_json.length() - 1);
+				}
+				tree_json.append("]},");
 			}
 		}
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
+		tree_json.append("]");
 		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -3704,12 +3643,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getDisplayUnitTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
+		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname "
@@ -3721,81 +3658,44 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
-					rpcTree_json.append("{\"classes\":1,");
-					rpcTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					rpcTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					rpcTree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
-					rpcTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					rpcTree_json.append("\"iconCls\": \"protocol\",");
-					rpcTree_json.append("\"expanded\": true,");
-					rpcTree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[4]+"")){
-							rpcTree_json.append("{\"classes\":2,");
-							rpcTree_json.append("\"id\":"+unitObj[0]+",");
-							rpcTree_json.append("\"code\":\""+unitObj[1]+"\",");
-							rpcTree_json.append("\"text\":\""+unitObj[2]+"\",");
-							rpcTree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							rpcTree_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							rpcTree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
-							rpcTree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
-							rpcTree_json.append("\"iconCls\": \"acqUnit\",");
-							rpcTree_json.append("\"leaf\": true");
-							rpcTree_json.append("},");
-						}
+
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+				tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+				tree_json.append("\"iconCls\": \"protocol\",");
+				tree_json.append("\"expanded\": true,");
+				tree_json.append("\"children\": [");
+				for(int j=0;j<unitList.size();j++){
+					Object[] unitObj = (Object[]) unitList.get(j);
+					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[4]+"")){
+						tree_json.append("{\"classes\":2,");
+						tree_json.append("\"id\":"+unitObj[0]+",");
+						tree_json.append("\"code\":\""+unitObj[1]+"\",");
+						tree_json.append("\"text\":\""+unitObj[2]+"\",");
+						tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+						tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+						tree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
+						tree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
+						tree_json.append("\"iconCls\": \"acqUnit\",");
+						tree_json.append("\"leaf\": true");
+						tree_json.append("},");
 					}
-					if(rpcTree_json.toString().endsWith(",")){
-						rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
-					}
-					rpcTree_json.append("]},");
-				}else{
-					pcpTree_json.append("{\"classes\":1,");
-					pcpTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					pcpTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					pcpTree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
-					pcpTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					pcpTree_json.append("\"iconCls\": \"protocol\",");
-					pcpTree_json.append("\"expanded\": true,");
-					pcpTree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[4]+"")){
-							pcpTree_json.append("{\"classes\":2,");
-							pcpTree_json.append("\"id\":"+unitObj[0]+",");
-							pcpTree_json.append("\"code\":\""+unitObj[1]+"\",");
-							pcpTree_json.append("\"text\":\""+unitObj[2]+"\",");
-							pcpTree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							pcpTree_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							pcpTree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
-							pcpTree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
-							pcpTree_json.append("\"iconCls\": \"acqUnit\",");
-							pcpTree_json.append("\"leaf\": true");
-							pcpTree_json.append("},");
-						}
-					}
-					if(pcpTree_json.toString().endsWith(",")){
-						pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-					}
-					pcpTree_json.append("]},");
 				}
+				if(tree_json.toString().endsWith(",")){
+					tree_json.deleteCharAt(tree_json.length() - 1);
+				}
+				tree_json.append("]},");
 			}
 		}
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
-		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
+		tree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -3832,53 +3732,35 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String modbusProtocolAddrMappingTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
+		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			//排序
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
-					rpcTree_json.append("{\"classes\":1,");
-					rpcTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					rpcTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					rpcTree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
-					rpcTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					rpcTree_json.append("\"iconCls\": \"protocol\",");
-					rpcTree_json.append("\"leaf\": true");
-					rpcTree_json.append("},");
-				}else{
-					pcpTree_json.append("{\"classes\":1,");
-					pcpTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					pcpTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					pcpTree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
-					pcpTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					pcpTree_json.append("\"iconCls\": \"protocol\",");
-					pcpTree_json.append("\"leaf\": true");
-					pcpTree_json.append("},");
-				}
+
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+				tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+				tree_json.append("\"iconCls\": \"protocol\",");
+				tree_json.append("\"leaf\": true");
+				tree_json.append("},");
+			
 			}
 		}
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
-		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
+		tree_json.append("]");
 		
 		result_json.append("[");
-		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"协议列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
+		
 		return result_json.toString();
 	}
 	
@@ -3899,35 +3781,35 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if((!StringManagerUtils.isNotNull(deviceTypeStr))||modbusProtocolConfig.getProtocol().get(i).getDeviceType()==deviceType){
-					if((!StringManagerUtils.isNotNull(protocol)) || protocol.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-						result_json.append("{\"classes\":1,");
-						result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-						result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-						result_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-						result_json.append("\"iconCls\": \"protocol\",");
-						result_json.append("\"expanded\": true,");
-						result_json.append("\"disabled\": true,");
-						result_json.append("\"children\": [");
-						for(int j=0;j<unitList.size();j++){
-							Object[] unitObj = (Object[]) unitList.get(j);
-							if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
-								result_json.append("{\"classes\":2,");
-								result_json.append("\"id\":"+unitObj[0]+",");
-								result_json.append("\"code\":\""+unitObj[1]+"\",");
-								result_json.append("\"text\":\""+unitObj[2]+"\",");
-								result_json.append("\"remark\":\""+unitObj[3]+"\",");
-								result_json.append("\"protocol\":\""+unitObj[4]+"\",");
-								result_json.append("\"iconCls\": \"acqUnit\",");
-								result_json.append("\"leaf\": true},");
-							}
+
+				if((!StringManagerUtils.isNotNull(protocol)) || protocol.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+					result_json.append("{\"classes\":1,");
+					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+					result_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+					result_json.append("\"iconCls\": \"protocol\",");
+					result_json.append("\"expanded\": true,");
+					result_json.append("\"disabled\": true,");
+					result_json.append("\"children\": [");
+					for(int j=0;j<unitList.size();j++){
+						Object[] unitObj = (Object[]) unitList.get(j);
+						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+							result_json.append("{\"classes\":2,");
+							result_json.append("\"id\":"+unitObj[0]+",");
+							result_json.append("\"code\":\""+unitObj[1]+"\",");
+							result_json.append("\"text\":\""+unitObj[2]+"\",");
+							result_json.append("\"remark\":\""+unitObj[3]+"\",");
+							result_json.append("\"protocol\":\""+unitObj[4]+"\",");
+							result_json.append("\"iconCls\": \"acqUnit\",");
+							result_json.append("\"leaf\": true},");
 						}
-						if(result_json.toString().endsWith(",")){
-							result_json.deleteCharAt(result_json.length() - 1);
-						}
-						result_json.append("]},");
 					}
+					if(result_json.toString().endsWith(",")){
+						result_json.deleteCharAt(result_json.length() - 1);
+					}
+					result_json.append("]},");
 				}
+			
 			}
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -3954,33 +3836,33 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==deviceType){
-					result_json.append("{\"classes\":1,");
-					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					result_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					result_json.append("\"iconCls\": \"protocol\",");
-					result_json.append("\"expanded\": true,");
-					result_json.append("\"disabled\": true,");
-					result_json.append("\"children\": [");
-					for(int j=0;j<alarmUnitList.size();j++){
-						Object[] unitObj = (Object[]) alarmUnitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
-							result_json.append("{\"classes\":2,");
-							result_json.append("\"id\":"+unitObj[0]+",");
-							result_json.append("\"code\":\""+unitObj[1]+"\",");
-							result_json.append("\"text\":\""+unitObj[2]+"\",");
-							result_json.append("\"remark\":\""+unitObj[3]+"\",");
-							result_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							result_json.append("\"iconCls\": \"acqGroup\",");
-							result_json.append("\"leaf\": true},");
-						}
+
+				result_json.append("{\"classes\":1,");
+				result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+				result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+				result_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+				result_json.append("\"iconCls\": \"protocol\",");
+				result_json.append("\"expanded\": true,");
+				result_json.append("\"disabled\": true,");
+				result_json.append("\"children\": [");
+				for(int j=0;j<alarmUnitList.size();j++){
+					Object[] unitObj = (Object[]) alarmUnitList.get(j);
+					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						result_json.append("{\"classes\":2,");
+						result_json.append("\"id\":"+unitObj[0]+",");
+						result_json.append("\"code\":\""+unitObj[1]+"\",");
+						result_json.append("\"text\":\""+unitObj[2]+"\",");
+						result_json.append("\"remark\":\""+unitObj[3]+"\",");
+						result_json.append("\"protocol\":\""+unitObj[4]+"\",");
+						result_json.append("\"iconCls\": \"acqGroup\",");
+						result_json.append("\"leaf\": true},");
 					}
-					if(result_json.toString().endsWith(",")){
-						result_json.deleteCharAt(result_json.length() - 1);
-					}
-					result_json.append("]},");
 				}
+				if(result_json.toString().endsWith(",")){
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]},");
+			
 			}
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -4008,33 +3890,33 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==deviceType){
-					result_json.append("{\"classes\":1,");
-					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					result_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					result_json.append("\"iconCls\": \"protocol\",");
-					result_json.append("\"expanded\": true,");
-					result_json.append("\"disabled\": true,");
-					result_json.append("\"children\": [");
-					for(int j=0;j<alarmUnitList.size();j++){
-						Object[] unitObj = (Object[]) alarmUnitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
-							result_json.append("{\"classes\":2,");
-							result_json.append("\"id\":"+unitObj[0]+",");
-							result_json.append("\"code\":\""+unitObj[1]+"\",");
-							result_json.append("\"text\":\""+unitObj[2]+"\",");
-							result_json.append("\"remark\":\""+unitObj[3]+"\",");
-							result_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							result_json.append("\"iconCls\": \"acqGroup\",");
-							result_json.append("\"leaf\": true},");
-						}
+
+				result_json.append("{\"classes\":1,");
+				result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+				result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+				result_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+				result_json.append("\"iconCls\": \"protocol\",");
+				result_json.append("\"expanded\": true,");
+				result_json.append("\"disabled\": true,");
+				result_json.append("\"children\": [");
+				for(int j=0;j<alarmUnitList.size();j++){
+					Object[] unitObj = (Object[]) alarmUnitList.get(j);
+					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						result_json.append("{\"classes\":2,");
+						result_json.append("\"id\":"+unitObj[0]+",");
+						result_json.append("\"code\":\""+unitObj[1]+"\",");
+						result_json.append("\"text\":\""+unitObj[2]+"\",");
+						result_json.append("\"remark\":\""+unitObj[3]+"\",");
+						result_json.append("\"protocol\":\""+unitObj[4]+"\",");
+						result_json.append("\"iconCls\": \"acqGroup\",");
+						result_json.append("\"leaf\": true},");
 					}
-					if(result_json.toString().endsWith(",")){
-						result_json.deleteCharAt(result_json.length() - 1);
-					}
-					result_json.append("]},");
 				}
+				if(result_json.toString().endsWith(",")){
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]},");
+			
 			}
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -4046,64 +3928,42 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String repoerUnitTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
 //		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
+		tree_json.append("[");
 		String unitSql="select t.id,t.unit_code,t.unit_name,"
 				+ "t.singleWellRangeReportTemplate,t.singleWellDailyReportTemplate,t.productionreporttemplate,"
-				+ "t.devicetype,t.sort "
+				+ "t.sort "
 				+ " from tbl_report_unit_conf t "
-				+ " order by t.devicetype,t.sort";
+				+ " order by t.sort";
 		List<?> unitList=this.findCallSql(unitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
-			String deviceType=obj[6]+"";
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				rpcTree_json.append("{\"classes\":1,");
-				rpcTree_json.append("\"id\":"+obj[0]+",");
-				rpcTree_json.append("\"code\":\""+obj[1]+"\",");
-				rpcTree_json.append("\"text\":\""+obj[2]+"\",");
-				rpcTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[3]+"\",");
-				rpcTree_json.append("\"singleWellDailyReportTemplate\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"productionReportTemplate\":\""+obj[5]+"\",");
-				rpcTree_json.append("\"deviceType\":"+deviceType+",");
-				rpcTree_json.append("\"sort\":\""+obj[7]+"\",");
-				rpcTree_json.append("\"iconCls\": \"protocol\",");
-				rpcTree_json.append("\"leaf\": true");
-				rpcTree_json.append("},");
-			}else{
-				pcpTree_json.append("{\"classes\":1,");
-				pcpTree_json.append("\"id\":"+obj[0]+",");
-				pcpTree_json.append("\"code\":\""+obj[1]+"\",");
-				pcpTree_json.append("\"text\":\""+obj[2]+"\",");
-				pcpTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[3]+"\",");
-				pcpTree_json.append("\"singleWellDailyReportTemplate\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"productionReportTemplate\":\""+obj[5]+"\",");
-				pcpTree_json.append("\"deviceType\":"+deviceType+",");
-				pcpTree_json.append("\"sort\":\""+obj[7]+"\",");
-				pcpTree_json.append("\"iconCls\": \"protocol\",");
-				pcpTree_json.append("\"leaf\": true");
-				pcpTree_json.append("},");
-			}
+
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":"+obj[0]+",");
+			tree_json.append("\"code\":\""+obj[1]+"\",");
+			tree_json.append("\"text\":\""+obj[2]+"\",");
+			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[3]+"\",");
+			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[4]+"\",");
+			tree_json.append("\"productionReportTemplate\":\""+obj[5]+"\",");
+			tree_json.append("\"sort\":\""+obj[6]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
+		
 		}
 		
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
+		tree_json.append("]");
 		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4174,12 +4034,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String modbusProtocolAlarmUnitTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
+		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol"
@@ -4191,79 +4049,45 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==0){
-					rpcTree_json.append("{\"classes\":1,");
-					rpcTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					rpcTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					rpcTree_json.append("\"deviceType\":"+0+",");
-					rpcTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					rpcTree_json.append("\"iconCls\": \"protocol\",");
-					rpcTree_json.append("\"expanded\": true,");
-					rpcTree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
-							rpcTree_json.append("{\"classes\":3,");
-							rpcTree_json.append("\"id\":"+unitObj[0]+",");
-							rpcTree_json.append("\"deviceType\":"+0+",");
-							rpcTree_json.append("\"code\":\""+unitObj[1]+"\",");
-							rpcTree_json.append("\"text\":\""+unitObj[2]+"\",");
-							rpcTree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							rpcTree_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							rpcTree_json.append("\"iconCls\": \"acqGroup\",");
-							rpcTree_json.append("\"leaf\": true");
-							rpcTree_json.append("},");
-						}
+
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+				tree_json.append("\"deviceType\":"+0+",");
+				tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+				tree_json.append("\"iconCls\": \"protocol\",");
+				tree_json.append("\"expanded\": true,");
+				tree_json.append("\"children\": [");
+				for(int j=0;j<unitList.size();j++){
+					Object[] unitObj = (Object[]) unitList.get(j);
+					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						tree_json.append("{\"classes\":3,");
+						tree_json.append("\"id\":"+unitObj[0]+",");
+						tree_json.append("\"deviceType\":"+0+",");
+						tree_json.append("\"code\":\""+unitObj[1]+"\",");
+						tree_json.append("\"text\":\""+unitObj[2]+"\",");
+						tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+						tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+						tree_json.append("\"iconCls\": \"acqGroup\",");
+						tree_json.append("\"leaf\": true");
+						tree_json.append("},");
 					}
-					if(rpcTree_json.toString().endsWith(",")){
-						rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
-					}
-					rpcTree_json.append("]},");
-				}else{
-					pcpTree_json.append("{\"classes\":1,");
-					pcpTree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					pcpTree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					pcpTree_json.append("\"deviceType\":"+1+",");
-					pcpTree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					pcpTree_json.append("\"iconCls\": \"protocol\",");
-					pcpTree_json.append("\"expanded\": true,");
-					pcpTree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
-							pcpTree_json.append("{\"classes\":3,");
-							pcpTree_json.append("\"id\":"+unitObj[0]+",");
-							pcpTree_json.append("\"deviceType\":"+1+",");
-							pcpTree_json.append("\"code\":\""+unitObj[1]+"\",");
-							pcpTree_json.append("\"text\":\""+unitObj[2]+"\",");
-							pcpTree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							pcpTree_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							pcpTree_json.append("\"iconCls\": \"acqGroup\",");
-							pcpTree_json.append("\"leaf\": true");
-							pcpTree_json.append("},");
-						}
-					}
-					if(pcpTree_json.toString().endsWith(",")){
-						pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-					}
-					pcpTree_json.append("]},");
 				}
+				if(tree_json.toString().endsWith(",")){
+					tree_json.deleteCharAt(tree_json.length() - 1);
+				}
+				tree_json.append("]},");
+			
 			}
 		}
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
-		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
+		tree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\"抽油机井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"deviceType\": 1,\"text\":\"螺杆泵井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4313,11 +4137,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
 				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 					if(modbusProtocolConfig.getProtocol().get(j).getName().equalsIgnoreCase(obj[2]+"")){
-						if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==0){
-							rpcUnit_json.append("\""+obj[1]+"\",");
-						}else{
-							pcpUnit_json.append("\""+obj[1]+"\",");
-						}
+
+						rpcUnit_json.append("\""+obj[1]+"\",");
+					
 						break;
 					}
 				}
@@ -4338,47 +4160,34 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getReportUnitList(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcUnit_json = new StringBuffer();
-		StringBuffer pcpUnit_json = new StringBuffer();
+		StringBuffer unit_json = new StringBuffer();
 
-		rpcUnit_json.append("[");
-		pcpUnit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name,t.devicetype from tbl_report_unit_conf t order by t.devicetype, t.sort";
+		unit_json.append("[");
+		String acqUnitSql="select t.unit_code,t.unit_name from tbl_report_unit_conf t order by  t.sort";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
-			if(StringManagerUtils.stringToInteger(obj[2]+"")==0){
-				rpcUnit_json.append("\""+obj[1]+"\",");
-			}else{
-				pcpUnit_json.append("\""+obj[1]+"\",");
-			}
+			unit_json.append("\""+obj[1]+"\",");
 		}
-		if(rpcUnit_json.toString().endsWith(",")){
-			rpcUnit_json.deleteCharAt(rpcUnit_json.length() - 1);
+		if(unit_json.toString().endsWith(",")){
+			unit_json.deleteCharAt(unit_json.length() - 1);
 		}
-		if(pcpUnit_json.toString().endsWith(",")){
-			pcpUnit_json.deleteCharAt(pcpUnit_json.length() - 1);
-		}
-		rpcUnit_json.append("]");
-		pcpUnit_json.append("]");
-		result_json.append("{\"rpcUnit\":"+rpcUnit_json+",");
-		result_json.append("\"pcpUnit\":"+pcpUnit_json+"}");
+		unit_json.append("]");
+		result_json.append("{\"unitList\":"+unit_json+"}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolInstanceConfigTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
 				+ " t.packetsendinterval,"//12
-				+ " t.devicetype,t.sort,t.unitid,t2.unit_name "//13~16
+				+ " t.sort,t.unitid,t2.unit_name "//13~15
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2 where t.unitid=t2.id"
-				+ " order by t.devicetype,t.sort";
+				+ " order by t.sort";
 		String groupSql="select t.id,t.group_name,t.group_code,t2.unitid "
 				+ " from tbl_acq_group_conf t,tbl_acq_group2unit_conf t2 "
 				+ " where t.id=t2.groupid "
@@ -4389,132 +4198,71 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			if(StringManagerUtils.stringToInteger(obj[13]+"")==0){
-				rpcTree_json.append("{\"classes\":1,");
-				rpcTree_json.append("\"id\":\""+obj[0]+"\",");
-				rpcTree_json.append("\"text\":\""+obj[1]+"\",");
-				rpcTree_json.append("\"code\":\""+obj[2]+"\",");
-				rpcTree_json.append("\"acqProtocolType\":\""+obj[3]+"\",");
-				rpcTree_json.append("\"ctrlProtocolType\":\""+obj[4]+"\",");
-				
-				rpcTree_json.append("\"signInPrefixSuffixHex\":\""+obj[5]+"\",");
-				rpcTree_json.append("\"signInPrefix\":\""+obj[6]+"\",");
-				rpcTree_json.append("\"signInSuffix\":\""+obj[7]+"\",");
-				rpcTree_json.append("\"signInIDHex\":\""+obj[8]+"\",");
-				
-				rpcTree_json.append("\"heartbeatPrefixSuffixHex\":\""+obj[9]+"\",");
-				rpcTree_json.append("\"heartbeatPrefix\":\""+obj[10]+"\",");
-				rpcTree_json.append("\"heartbeatSuffix\":\""+obj[11]+"\",");
-				
-				
-				rpcTree_json.append("\"packetSendInterval\":\""+obj[12]+"\",");
-				
-				
-				rpcTree_json.append("\"deviceType\":"+obj[13]+",");
-				rpcTree_json.append("\"sort\":\""+obj[14]+"\",");
-				rpcTree_json.append("\"unitId\":"+obj[15]+",");
-				rpcTree_json.append("\"unitName\":\""+obj[16]+"\",");
-				rpcTree_json.append("\"iconCls\": \"protocol\",");
 
-				rpcTree_json.append("\"expanded\": true,");
-				rpcTree_json.append("\"children\": [");
-				rpcTree_json.append("{\"classes\":2,");
-				rpcTree_json.append("\"text\":\""+obj[16]+"\",");
-				rpcTree_json.append("\"id\":"+obj[15]+",");
-				rpcTree_json.append("\"iconCls\": \"acqUnit\","); 
-				
-				rpcTree_json.append("\"expanded\": true,");
-				rpcTree_json.append("\"children\": [");
-				for(int j=0;j<groupList.size();j++){
-					Object[] groupObj = (Object[]) groupList.get(j);
-					if((obj[15]+"").equalsIgnoreCase(groupObj[3]+"")){
-						rpcTree_json.append("{\"classes\":3,");
-						rpcTree_json.append("\"id\":"+groupObj[0]+",");
-						rpcTree_json.append("\"text\":\""+groupObj[1]+"\",");
-						rpcTree_json.append("\"code\":\""+groupObj[2]+"\",");
-						rpcTree_json.append("\"iconCls\": \"acqGroup\","); 
-						rpcTree_json.append("\"leaf\": true},");
-					}
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":\""+obj[0]+"\",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"acqProtocolType\":\""+obj[3]+"\",");
+			tree_json.append("\"ctrlProtocolType\":\""+obj[4]+"\",");
+			
+			tree_json.append("\"signInPrefixSuffixHex\":\""+obj[5]+"\",");
+			tree_json.append("\"signInPrefix\":\""+obj[6]+"\",");
+			tree_json.append("\"signInSuffix\":\""+obj[7]+"\",");
+			tree_json.append("\"signInIDHex\":\""+obj[8]+"\",");
+			
+			tree_json.append("\"heartbeatPrefixSuffixHex\":\""+obj[9]+"\",");
+			tree_json.append("\"heartbeatPrefix\":\""+obj[10]+"\",");
+			tree_json.append("\"heartbeatSuffix\":\""+obj[11]+"\",");
+			
+			
+			tree_json.append("\"packetSendInterval\":\""+obj[12]+"\",");
+			
+			tree_json.append("\"sort\":\""+obj[13]+"\",");
+			tree_json.append("\"unitId\":"+obj[14]+",");
+			tree_json.append("\"unitName\":\""+obj[15]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+
+			tree_json.append("\"expanded\": true,");
+			tree_json.append("\"children\": [");
+			tree_json.append("{\"classes\":2,");
+			tree_json.append("\"text\":\""+obj[15]+"\",");
+			tree_json.append("\"id\":"+obj[14]+",");
+			tree_json.append("\"iconCls\": \"acqUnit\","); 
+			
+			tree_json.append("\"expanded\": true,");
+			tree_json.append("\"children\": [");
+			for(int j=0;j<groupList.size();j++){
+				Object[] groupObj = (Object[]) groupList.get(j);
+				if((obj[15]+"").equalsIgnoreCase(groupObj[3]+"")){
+					tree_json.append("{\"classes\":3,");
+					tree_json.append("\"id\":"+groupObj[0]+",");
+					tree_json.append("\"text\":\""+groupObj[1]+"\",");
+					tree_json.append("\"code\":\""+groupObj[2]+"\",");
+					tree_json.append("\"iconCls\": \"acqGroup\","); 
+					tree_json.append("\"leaf\": true},");
 				}
-				if(rpcTree_json.toString().endsWith(",")){
-					rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
-				}
-				
-				rpcTree_json.append("]");
-				
-				rpcTree_json.append("}]");
-				
-				rpcTree_json.append("},");
-			}else{
-				pcpTree_json.append("{\"classes\":1,");
-				pcpTree_json.append("\"id\":\""+obj[0]+"\",");
-				pcpTree_json.append("\"text\":\""+obj[1]+"\",");
-				pcpTree_json.append("\"code\":\""+obj[2]+"\",");
-				pcpTree_json.append("\"acqProtocolType\":\""+obj[3]+"\",");
-				pcpTree_json.append("\"ctrlProtocolType\":\""+obj[4]+"\",");
-				
-				pcpTree_json.append("\"signInPrefixSuffixHex\":\""+obj[5]+"\",");
-				pcpTree_json.append("\"signInPrefix\":\""+obj[6]+"\",");
-				pcpTree_json.append("\"signInSuffix\":\""+obj[7]+"\",");
-				pcpTree_json.append("\"signInIDHex\":\""+obj[8]+"\",");
-				
-				pcpTree_json.append("\"heartbeatPrefixSuffixHex\":\""+obj[9]+"\",");
-				pcpTree_json.append("\"heartbeatPrefix\":\""+obj[10]+"\",");
-				pcpTree_json.append("\"heartbeatSuffix\":\""+obj[11]+"\",");
-				
-				pcpTree_json.append("\"packetSendInterval\":\""+obj[12]+"\",");
-				
-				
-				pcpTree_json.append("\"deviceType\":"+obj[13]+",");
-				pcpTree_json.append("\"sort\":\""+obj[14]+"\",");
-				pcpTree_json.append("\"unitId\":"+obj[15]+",");
-				pcpTree_json.append("\"unitName\":\""+obj[16]+"\",");
-				pcpTree_json.append("\"iconCls\": \"protocol\",");
-				pcpTree_json.append("\"expanded\": true,");
-				
-				pcpTree_json.append("\"children\": [");
-				pcpTree_json.append("{\"classes\":2,");
-				pcpTree_json.append("\"text\":\""+obj[16]+"\",");
-				pcpTree_json.append("\"id\":"+obj[15]+",");
-				pcpTree_json.append("\"iconCls\": \"acqUnit\","); 
-				pcpTree_json.append("\"expanded\": true,");
-				pcpTree_json.append("\"children\": [");
-				for(int j=0;j<groupList.size();j++){
-					Object[] groupObj = (Object[]) groupList.get(j);
-					if((obj[15]+"").equalsIgnoreCase(groupObj[3]+"")){
-						pcpTree_json.append("{\"classes\":3,");
-						pcpTree_json.append("\"id\":"+groupObj[0]+",");
-						pcpTree_json.append("\"text\":\""+groupObj[1]+"\",");
-						pcpTree_json.append("\"code\":\""+groupObj[2]+"\",");
-						pcpTree_json.append("\"iconCls\": \"acqGroup\","); 
-						pcpTree_json.append("\"leaf\": true},");
-					}
-				}
-				if(pcpTree_json.toString().endsWith(",")){
-					pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-				}
-				
-				pcpTree_json.append("]");
-				pcpTree_json.append("}]");
-				
-				pcpTree_json.append("},");
 			}
+			if(tree_json.toString().endsWith(",")){
+				tree_json.deleteCharAt(tree_json.length() - 1);
+			}
+			
+			tree_json.append("]");
+			
+			tree_json.append("}]");
+			
+			tree_json.append("},");
+		
 		}
 		
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
-		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
+		tree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4526,10 +4274,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
 				+ " t.packetsendinterval,"//12
-				+ " t.devicetype,t.sort,t.unitid,t2.unit_name "//13~16
+				+ " t.sort,t.unitid,t2.unit_name "//13~15
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2 "
 				+ " where t.unitid=t2.id and t2.protocol='"+protocolName+"'"
-				+ " order by t.devicetype,t.sort";
+				+ " order by t.sort";
 		
 		List<?> list=this.findCallSql(sql);
 		
@@ -4553,8 +4301,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"heartbeatSuffix\":\""+obj[11]+"\",");
 			
 			result_json.append("\"packetSendInterval\":\""+obj[12]+"\",");
-			result_json.append("\"deviceType\":"+obj[13]+",");
-			result_json.append("\"sort\":\""+obj[14]+"\",");
+			result_json.append("\"sort\":\""+obj[13]+"\",");
 			result_json.append("\"iconCls\": \"protocol\",");
 			result_json.append("\"leaf\": true},");
 		}
@@ -4569,71 +4316,43 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getModbusDisplayProtocolInstanceConfigTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.devicetype,t.sort   "
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
+		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2 where t.displayUnitId=t2.id "
-				+ " order by t.devicetype,t.sort";
+				+ " order by t.sort";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			if(StringManagerUtils.stringToInteger(obj[5]+"")==0){
-				rpcTree_json.append("{\"classes\":1,");
-				rpcTree_json.append("\"id\":\""+obj[0]+"\",");
-				rpcTree_json.append("\"text\":\""+obj[1]+"\",");
-				rpcTree_json.append("\"code\":\""+obj[2]+"\",");
-				rpcTree_json.append("\"displayUnitId\":"+obj[3]+",");
-				rpcTree_json.append("\"displayUnitName\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"deviceType\":"+obj[5]+",");
-				rpcTree_json.append("\"sort\":\""+obj[6]+"\",");
-				rpcTree_json.append("\"iconCls\": \"protocol\",");
-				rpcTree_json.append("\"expanded\": true,");
-				rpcTree_json.append("\"children\": [");
-				rpcTree_json.append("{\"classes\":2,");
-				rpcTree_json.append("\"id\":"+obj[3]+",");
-				rpcTree_json.append("\"text\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"iconCls\": \"acqUnit\","); 
-				rpcTree_json.append("\"leaf\": true}");
-				rpcTree_json.append("]");
-				rpcTree_json.append("},");
-			}else{
-				pcpTree_json.append("{\"classes\":1,");
-				pcpTree_json.append("\"id\":\""+obj[0]+"\",");
-				pcpTree_json.append("\"text\":\""+obj[1]+"\",");
-				pcpTree_json.append("\"code\":\""+obj[2]+"\",");
-				pcpTree_json.append("\"displayUnitId\":"+obj[3]+",");
-				pcpTree_json.append("\"displayUnitName\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"deviceType\":"+obj[5]+",");
-				pcpTree_json.append("\"sort\":\""+obj[6]+"\",");
-				pcpTree_json.append("\"iconCls\": \"protocol\",");
-				pcpTree_json.append("\"expanded\": true,");
-				pcpTree_json.append("\"children\": [");
-				pcpTree_json.append("{\"classes\":2,");
-				pcpTree_json.append("\"id\":"+obj[3]+",");
-				pcpTree_json.append("\"text\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"iconCls\": \"acqUnit\","); 
-				pcpTree_json.append("\"leaf\": true}");
-				pcpTree_json.append("]");
-				pcpTree_json.append("},");
-			}
+
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":\""+obj[0]+"\",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"displayUnitId\":"+obj[3]+",");
+			tree_json.append("\"displayUnitName\":\""+obj[4]+"\",");
+			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"expanded\": true,");
+			tree_json.append("\"children\": [");
+			tree_json.append("{\"classes\":2,");
+			tree_json.append("\"id\":"+obj[3]+",");
+			tree_json.append("\"text\":\""+obj[4]+"\",");
+			tree_json.append("\"iconCls\": \"acqUnit\","); 
+			tree_json.append("\"leaf\": true}");
+			tree_json.append("]");
+			tree_json.append("},");
+		
 		}
 		
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
-		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
+		tree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4641,11 +4360,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String exportProtocolDisplayInstanceTreeData(String deviceType,String protocolName,String protocolCode){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
-		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.devicetype,t.sort   "
+		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2 "
 				+ " where t.displayUnitId=t2.id "
 				+ " and t2.protocol='"+protocolName+"'"
-				+ " order by t.devicetype,t.sort";
+				+ " order by t.sort";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -4655,8 +4374,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"code\":\""+obj[2]+"\",");
 			result_json.append("\"displayUnitId\":"+obj[3]+",");
 			result_json.append("\"displayUnitName\":\""+obj[4]+"\",");
-			result_json.append("\"deviceType\":"+obj[5]+",");
-			result_json.append("\"sort\":\""+obj[6]+"\",");
+			result_json.append("\"sort\":\""+obj[5]+"\",");
 			result_json.append("\"iconCls\": \"protocol\",");
 			result_json.append("\"leaf\": true},");
 		}
@@ -4670,162 +4388,94 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String modbusReportInstanceConfigTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.devicetype,t.sort,"
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
+		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort,"
 				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate "
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id "
-				+ " order by t.devicetype,t.sort,t.id";
+				+ " order by t.sort,t.id";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String deviceType=obj[5]+"";
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				rpcTree_json.append("{\"classes\":1,");
-				rpcTree_json.append("\"id\":"+obj[0]+",");
-				rpcTree_json.append("\"text\":\""+obj[1]+"\",");
-				rpcTree_json.append("\"code\":\""+obj[2]+"\",");
-				rpcTree_json.append("\"unitId\":"+obj[3]+",");
-				rpcTree_json.append("\"unitName\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"deviceType\":"+deviceType+",");
-				rpcTree_json.append("\"sort\":\""+obj[6]+"\",");
-				rpcTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
-				rpcTree_json.append("\"singleWellDailyReportTemplate\":\""+obj[8]+"\",");
-				rpcTree_json.append("\"productionReportTemplate\":\""+obj[9]+"\",");
-				rpcTree_json.append("\"iconCls\": \"protocol\",");
-				rpcTree_json.append("\"expanded\": true,");
-				rpcTree_json.append("\"children\": [");
-				rpcTree_json.append("{\"classes\":2,");
-				rpcTree_json.append("\"unitId\":"+obj[3]+",");
-				rpcTree_json.append("\"text\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
-				rpcTree_json.append("\"singleWellDailyReportTemplate\":\""+obj[8]+"\",");
-				rpcTree_json.append("\"productionReportTemplate\":\""+obj[9]+"\",");
-				rpcTree_json.append("\"deviceType\":"+deviceType+",");
-				rpcTree_json.append("\"iconCls\": \"acqUnit\","); 
-				rpcTree_json.append("\"leaf\": true}");
-				rpcTree_json.append("]");
-				rpcTree_json.append("},");
-			}else{
-				pcpTree_json.append("{\"classes\":1,");
-				pcpTree_json.append("\"id\":"+obj[0]+",");
-				pcpTree_json.append("\"text\":\""+obj[1]+"\",");
-				pcpTree_json.append("\"code\":\""+obj[2]+"\",");
-				pcpTree_json.append("\"unitId\":"+obj[3]+",");
-				pcpTree_json.append("\"unitName\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"deviceType\":"+deviceType+",");
-				pcpTree_json.append("\"sort\":\""+obj[6]+"\",");
-				pcpTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
-				pcpTree_json.append("\"singleWellDailyReportTemplate\":\""+obj[8]+"\",");
-				pcpTree_json.append("\"productionReportTemplate\":\""+obj[9]+"\",");
-				pcpTree_json.append("\"iconCls\": \"protocol\",");
-				pcpTree_json.append("\"expanded\": true,");
-				pcpTree_json.append("\"children\": [");
-				pcpTree_json.append("{\"classes\":2,");
-				pcpTree_json.append("\"unitId\":"+obj[3]+",");
-				pcpTree_json.append("\"text\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"singleWellRangeReportTemplate\":\""+obj[7]+"\",");
-				pcpTree_json.append("\"singleWellDailyReportTemplate\":\""+obj[8]+"\",");
-				pcpTree_json.append("\"productionReportTemplate\":\""+obj[9]+"\",");
-				pcpTree_json.append("\"deviceType\":"+deviceType+",");
-				pcpTree_json.append("\"iconCls\": \"acqUnit\","); 
-				pcpTree_json.append("\"leaf\": true}");
-				pcpTree_json.append("]");
-				pcpTree_json.append("},");
-			}
+
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":"+obj[0]+",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"unitId\":"+obj[3]+",");
+			tree_json.append("\"unitName\":\""+obj[4]+"\",");
+			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
+			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
+			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"expanded\": true,");
+			tree_json.append("\"children\": [");
+			tree_json.append("{\"classes\":2,");
+			tree_json.append("\"unitId\":"+obj[3]+",");
+			tree_json.append("\"text\":\""+obj[4]+"\",");
+			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
+			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
+			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
+			tree_json.append("\"iconCls\": \"acqUnit\","); 
+			tree_json.append("\"leaf\": true}");
+			tree_json.append("]");
+			tree_json.append("},");
+		
 		}
 		
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
-		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
+		tree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"抽油机井\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"text\":\"螺杆泵井\",\"deviceType\":1,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusAlarmProtocolInstanceConfigTreeData(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer rpcTree_json = new StringBuffer();
-		StringBuffer pcpTree_json = new StringBuffer();
-		rpcTree_json.append("[");
-		pcpTree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.devicetype,t.sort   "
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
+		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2 where t.alarmunitid=t2.id "
-				+ " order by t.devicetype,t.sort";
+				+ " order by t.sort";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			if(StringManagerUtils.stringToInteger(obj[5]+"")==0){
-				rpcTree_json.append("{\"classes\":1,");
-				rpcTree_json.append("\"id\":\""+obj[0]+"\",");
-				rpcTree_json.append("\"text\":\""+obj[1]+"\",");
-				rpcTree_json.append("\"code\":\""+obj[2]+"\",");
-				rpcTree_json.append("\"alarmUnitId\":"+obj[3]+",");
-				rpcTree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"deviceType\":"+obj[5]+",");
-				rpcTree_json.append("\"sort\":\""+obj[6]+"\",");
-				rpcTree_json.append("\"iconCls\": \"protocol\",");
-				rpcTree_json.append("\"expanded\": true,");
-				rpcTree_json.append("\"children\": [");
-				rpcTree_json.append("{\"classes\":2,");
-				rpcTree_json.append("\"id\":"+obj[3]+",");
-				rpcTree_json.append("\"deviceType\":"+obj[5]+",");
-				rpcTree_json.append("\"text\":\""+obj[4]+"\",");
-				rpcTree_json.append("\"iconCls\": \"acqGroup\","); 
-				rpcTree_json.append("\"leaf\": true}");
-				rpcTree_json.append("]");
-				rpcTree_json.append("},");
-			}else{
-				pcpTree_json.append("{\"classes\":1,");
-				pcpTree_json.append("\"id\":\""+obj[0]+"\",");
-				pcpTree_json.append("\"text\":\""+obj[1]+"\",");
-				pcpTree_json.append("\"code\":\""+obj[2]+"\",");
-				pcpTree_json.append("\"alarmUnitId\":"+obj[3]+",");
-				pcpTree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"deviceType\":"+obj[5]+",");
-				pcpTree_json.append("\"sort\":\""+obj[6]+"\",");
-				pcpTree_json.append("\"iconCls\": \"protocol\",");
-				pcpTree_json.append("\"expanded\": true,");
-				pcpTree_json.append("\"children\": [");
-				pcpTree_json.append("{\"classes\":2,");
-				pcpTree_json.append("\"deviceType\":"+1+",");
-				pcpTree_json.append("\"id\":"+obj[3]+",");
-				pcpTree_json.append("\"deviceType\":"+obj[5]+",");
-				pcpTree_json.append("\"text\":\""+obj[4]+"\",");
-				pcpTree_json.append("\"iconCls\": \"acqGroup\","); 
-				pcpTree_json.append("\"leaf\": true}");
-				pcpTree_json.append("]");
-				pcpTree_json.append("},");
-			}
+
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":\""+obj[0]+"\",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"alarmUnitId\":"+obj[3]+",");
+			tree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
+			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"expanded\": true,");
+			tree_json.append("\"children\": [");
+			tree_json.append("{\"classes\":2,");
+			tree_json.append("\"id\":"+obj[3]+",");
+			tree_json.append("\"text\":\""+obj[4]+"\",");
+			tree_json.append("\"iconCls\": \"acqGroup\","); 
+			tree_json.append("\"leaf\": true}");
+			tree_json.append("]");
+			tree_json.append("},");
+		
 		}
 		
-		if(rpcTree_json.toString().endsWith(",")){
-			rpcTree_json.deleteCharAt(rpcTree_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
-		rpcTree_json.append("]");
-		
-		if(pcpTree_json.toString().endsWith(",")){
-			pcpTree_json.deleteCharAt(pcpTree_json.length() - 1);
-		}
-		pcpTree_json.append("]");
+		tree_json.append("]");
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\"抽油机井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+rpcTree_json+"},");
-		result_json.append("{\"classes\":0,\"deviceType\":1,\"text\":\"螺杆泵井\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+pcpTree_json+"}");
+		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4833,10 +4483,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String exportProtocolAlarmInstanceTreeData(String deviceType,String protocolName,String protocolCode){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
-		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.devicetype,t.sort   "
+		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2 "
 				+ " where t.alarmunitid=t2.id and t2.protocol='"+protocolName+"'"
-				+ " order by t.devicetype,t.sort";
+				+ " order by t.sort";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -4846,8 +4496,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"code\":\""+obj[2]+"\",");
 			result_json.append("\"alarmUnitId\":"+obj[3]+",");
 			result_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
-			result_json.append("\"deviceType\":"+obj[5]+",");
-			result_json.append("\"sort\":\""+obj[6]+"\",");
+			result_json.append("\"sort\":\""+obj[5]+"\",");
 			result_json.append("\"iconCls\": \"protocol\",");
 			result_json.append("\"leaf\": true},");
 		
@@ -4900,9 +4549,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getReportUnitCombList(String deviceType){
+	public String getReportUnitCombList(){
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.id,t.unit_name from tbl_report_unit_conf t where t.devicetype="+deviceType+" order by t.sort";
+		String sql="select t.id,t.unit_name from tbl_report_unit_conf t order by t.sort";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+list.size()+",\"list\":[");
 		for(int i=0;i<list.size();i++){
@@ -4990,8 +4639,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)
-							&& protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						String columnsKey="rpcDeviceAcquisitionItemColumns";
 						if(StringManagerUtils.stringToInteger(deviceType)==1){
 							columnsKey="pcpDeviceAcquisitionItemColumns";
@@ -5080,8 +4728,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			List<String> protocolMappingColumnList=new ArrayList<String>();
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)
-							&& protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode()) ){
+					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode()) ){
 						
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
 							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
@@ -5132,26 +4779,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Integer> resolutionModeList=new ArrayList<>();
 		if(modbusProtocolConfig!=null){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)){
-					if(StringManagerUtils.stringToInteger(classes)==1){
-						if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-							for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-								String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-								for (int k = 0; k < list.size(); k++) {
-									Object[] obj = (Object[]) list.get(k);
-									if((obj[2]+"").equalsIgnoreCase(columnName)){
-										protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
-										protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
-										resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
-										itemNameList.add(obj[1]+"");
-										itemColumnList.add(obj[2]+"");
-										calColumnList.add(obj[3]+"");
-									}
-								}
-							}
-							break;
-						}
-					}else{
+
+				if(StringManagerUtils.stringToInteger(classes)==1){
+					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
 							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
 							for (int k = 0; k < list.size(); k++) {
@@ -5166,8 +4796,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								}
 							}
 						}
+						break;
+					}
+				}else{
+					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+						String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+						for (int k = 0; k < list.size(); k++) {
+							Object[] obj = (Object[]) list.get(k);
+							if((obj[2]+"").equalsIgnoreCase(columnName)){
+								protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+								protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+								resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
+								itemNameList.add(obj[1]+"");
+								itemColumnList.add(obj[2]+"");
+								calColumnList.add(obj[3]+"");
+							}
+						}
 					}
 				}
+			
 			}
 		}
 		
@@ -5280,8 +4927,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(resolutionMode)==1){//枚举量
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					if(modbusProtocolConfig.getProtocol().get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-							&& protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
 							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
 							if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
@@ -5427,7 +5073,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public boolean judgeProtocolExistOrNot(int deviceType,String protocolName) {
+	public boolean judgeProtocolExistOrNot(String protocolName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(protocolName)) {
 //			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
@@ -5496,10 +5142,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeInstanceExistOrNot(int deviceType,String instanceName) {
+	public boolean judgeInstanceExistOrNot(String instanceName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLINSTANCE t where t.devicetype="+deviceType+" and t.name='"+instanceName+"'";
+			String sql = "select t.id from TBL_PROTOCOLINSTANCE t where t.name='"+instanceName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -5508,10 +5154,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeAlarmInstanceExistOrNot(int deviceType,String instanceName) {
+	public boolean judgeAlarmInstanceExistOrNot(String instanceName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLALARMINSTANCE t where t.devicetype="+deviceType+" and t.name='"+instanceName+"'";
+			String sql = "select t.id from TBL_PROTOCOLALARMINSTANCE t where  t.name='"+instanceName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -5520,10 +5166,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeDisplayInstanceExistOrNot(int deviceType,String instanceName) {
+	public boolean judgeDisplayInstanceExistOrNot(String instanceName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLDISPLAYINSTANCE t where t.devicetype="+deviceType+" and t.name='"+instanceName+"'";
+			String sql = "select t.id from TBL_PROTOCOLDISPLAYINSTANCE t where t.name='"+instanceName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -5532,10 +5178,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeReportUnitExistOrNot(int deviceType,String unitName) {
+	public boolean judgeReportUnitExistOrNot(String unitName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(unitName)) {
-			String sql = "select t.id from tbl_report_unit_conf t where t.devicetype="+deviceType+" and t.unit_name='"+unitName+"'";
+			String sql = "select t.id from tbl_report_unit_conf t where t.unit_name='"+unitName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -5544,10 +5190,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeReportInstanceExistOrNot(int deviceType,String instanceName) {
+	public boolean judgeReportInstanceExistOrNot(String instanceName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLREPORTINSTANCE t where t.devicetype="+deviceType+" and t.name='"+instanceName+"'";
+			String sql = "select t.id from TBL_PROTOCOLREPORTINSTANCE t where t.name='"+instanceName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -5556,7 +5202,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public String exportProtocolConfigData(String deviceType,String protocolName,String protocolCode,
+	public String exportProtocolConfigData(String protocolName,String protocolCode,
 			String acqUnitStr,String acqGroupStr,
 			String displayUnitStr,
 			String alarmUnitStr,
@@ -5567,16 +5213,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(protocolCode)){
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			String sql="select t.id,t.name,t.code,t.devicetype,t.items,t.sort from TBL_PROTOCOL t "
-					+ " where t.devicetype= "+deviceType
-					+ " and t.code='"+protocolCode+"'";
+			String sql="select t.id,t.name,t.code,t.items,t.sort from TBL_PROTOCOL t "
+					+ " where t.code='"+protocolCode+"'";
 			List<?> list = this.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[])list.get(0);
 				ExportProtocolConfig exportProtocolConfig=new ExportProtocolConfig();
 				exportProtocolConfig.init();
 				
-				String itemsStr=StringManagerUtils.CLOBObjectToString(obj[4]);
+				String itemsStr=StringManagerUtils.CLOBObjectToString(obj[3]);
 				if(!StringManagerUtils.isNotNull(itemsStr)){
 					itemsStr="[]";
 				}
@@ -5586,7 +5231,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				protocolBuff.append("\"Name\":\""+obj[1]+"\",");
 				protocolBuff.append("\"Code\":\""+obj[2]+"\",");
 				protocolBuff.append("\"DeviceType\":"+obj[3]+",");
-				protocolBuff.append("\"Sort\":"+obj[5]+",");
+				protocolBuff.append("\"Sort\":"+obj[4]+",");
 				protocolBuff.append("\"Items\":"+itemsStr+"");
 				protocolBuff.append("}");
 
@@ -5609,7 +5254,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String mappingSql="select t.id,t.name,t.mappingcolumn,t.mappingmode,t.calcolumn,t.repetitiontimes,t.protocoltype "
 								+ " from TBL_DATAMAPPING t "
 								+ " where t.name in ("+StringManagerUtils.joinStringArr2(itemNameList, ",")+") "
-								+ " and t.protocoltype="+exportProtocolConfig.getProtocol().getDeviceType()+" "
 								+ " order by t.id";
 						List<?> mappingList = this.findCallSql(mappingSql);
 						for(int i=0;i<itemNameList.size();i++){
@@ -5635,9 +5279,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				//运行状态配置
 				String runStatusConfigSql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.runvalue,t.stopvalue,t.protocoltype "
 						+ " from tbl_runstatusconfig t,tbl_protocol t2 "
-						+ " where t.protocol=t2.code and t.protocoltype=t2.devicetype "
-						+ " and t2.code='"+exportProtocolConfig.getProtocol().getCode()+"' "
-						+ " and t2.devicetype="+exportProtocolConfig.getProtocol().getDeviceType();
+						+ " where t.protocol=t2.code "
+						+ " and t2.code='"+exportProtocolConfig.getProtocol().getCode()+"' ";
 				List<?> runStatusConfigList = this.findCallSql(runStatusConfigSql);
 				if(runStatusConfigList.size()>0){
 					Object[] runStatusConfigObj=(Object[])runStatusConfigList.get(0);
@@ -5820,7 +5463,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							String acqInstanceSql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"
 									+ "t.signinprefixsuffixhex,t.signinprefix,t.signinsuffix,t.signinidhex,"
 									+ "t.heartbeatprefixsuffixhex,t.heartbeatprefix,t.heartbeatsuffix,"
-									+ "t.packetsendinterval,t.devicetype,t.sort,t.unitid "
+									+ "t.packetsendinterval,t.sort,t.unitid "
 									+ " from TBL_PROTOCOLINSTANCE t "
 									+ " where t.id in("+acqInstanceStr+") and t.unitid in ("+acqUnitStr+") "
 									+ " order by t.id";
@@ -5848,16 +5491,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									}else{
 										acqInstance.setPacketSendInterval(-99);
 									}
-									
-									acqInstance.setDeviceType(StringManagerUtils.stringToInteger(acqInstanceObj[13]+""));
 
-									if(StringManagerUtils.isInteger(acqInstanceObj[14]+"")){
-										acqInstance.setSort(StringManagerUtils.stringToInteger(acqInstanceObj[14]+""));
+									if(StringManagerUtils.isInteger(acqInstanceObj[13]+"")){
+										acqInstance.setSort(StringManagerUtils.stringToInteger(acqInstanceObj[13]+""));
 									}else{
 										acqInstance.setSort(-99);
 									}
 									
-									acqInstance.setUnitId(StringManagerUtils.stringToInteger(acqInstanceObj[15]+""));
+									acqInstance.setUnitId(StringManagerUtils.stringToInteger(acqInstanceObj[14]+""));
 									
 									exportProtocolConfig.getAcqInstanceList().add(acqInstance);
 								}
@@ -5865,7 +5506,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(StringManagerUtils.isNotNull(displayInstanceStr) &&  StringManagerUtils.isNotNull(displayUnitStr)){
-							String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t.devicetype,t.sort "
+							String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t.sort "
 									+ " from TBL_PROTOCOLDISPLAYINSTANCE t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3 "
 									+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id "
 									+ " and t.id in("+displayInstanceStr+") and t2.id in("+displayUnitStr+") and t3.id in ("+acqUnitStr+") "
@@ -5880,10 +5521,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									displayInstance.setName(displayInstanceObj[1]+"");
 									displayInstance.setCode(displayInstanceObj[2]+"");
 									displayInstance.setDisplayUnitId(StringManagerUtils.stringToInteger(displayInstanceObj[3]+""));
-									displayInstance.setDeviceType(StringManagerUtils.stringToInteger(displayInstanceObj[4]+""));
 									
-									if(StringManagerUtils.isInteger(displayInstanceObj[5]+"")){
-										displayInstance.setSort(StringManagerUtils.stringToInteger(displayInstanceObj[5]+""));
+									if(StringManagerUtils.isInteger(displayInstanceObj[4]+"")){
+										displayInstance.setSort(StringManagerUtils.stringToInteger(displayInstanceObj[4]+""));
 									}else{
 										displayInstance.setSort(-99);
 									}
@@ -5967,7 +5607,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									alarmInstance.setName(alarmInstanceObj[1]+"");
 									alarmInstance.setCode(alarmInstanceObj[2]+"");
 									alarmInstance.setAlarmUnitId(StringManagerUtils.stringToInteger(alarmInstanceObj[3]+""));
-									alarmInstance.setDeviceType(StringManagerUtils.stringToInteger(alarmInstanceObj[4]+""));
 									
 									if(StringManagerUtils.isInteger(alarmInstanceObj[5]+"")){
 										alarmInstance.setSort(StringManagerUtils.stringToInteger(alarmInstanceObj[5]+""));
@@ -6324,9 +5963,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0 ){
 			String key="rpcCalItemList";
-			if(exportProtocolConfig.getProtocol().getDeviceType()==1){
-				key="pcpCalItemList";
-			}
+//			if(exportProtocolConfig.getProtocol().getDeviceType()==1){
+//				key="pcpCalItemList";
+//			}
 			Jedis jedis=null;
 			
 			try{
@@ -6653,17 +6292,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Jedis jedis=null;
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(exportProtocolConfig.getProtocol().getDeviceType()==0){
-					if(!jedis.exists("rpcCalItemList".getBytes())){
-						MemoryDataManagerTask.loadRPCCalculateItem();
-					}
-					calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
-				}else{
-					if(!jedis.exists("pcpCalItemList".getBytes())){
-						MemoryDataManagerTask.loadPCPCalculateItem();
-					}
-					calItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
+				if(!jedis.exists("rpcCalItemList".getBytes())){
+					MemoryDataManagerTask.loadRPCCalculateItem();
 				}
+				calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
+//				if(exportProtocolConfig.getProtocol().getDeviceType()==0){
+//					if(!jedis.exists("rpcCalItemList".getBytes())){
+//						MemoryDataManagerTask.loadRPCCalculateItem();
+//					}
+//					calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
+//				}else{
+//					if(!jedis.exists("pcpCalItemList".getBytes())){
+//						MemoryDataManagerTask.loadPCPCalculateItem();
+//					}
+//					calItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
+//				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
@@ -7105,18 +6748,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
-			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getDeviceType(),exportProtocolConfig.getProtocol().getName());
+			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getName());
 			if(!protocolExist){//如果协议不存在，则不存在冲突
 				//添加协议
 				ProtocolModel protocolModel=new ProtocolModel();
 				protocolModel.setId(exportProtocolConfig.getProtocol().getId());
 				protocolModel.setCode(exportProtocolConfig.getProtocol().getCode());
 				protocolModel.setName(exportProtocolConfig.getProtocol().getName());
-				protocolModel.setDeviceType(exportProtocolConfig.getProtocol().getDeviceType());
 				protocolModel.setSort(exportProtocolConfig.getProtocol().getSort());
 				this.getBaseDao().addObject(protocolModel);
 				//添加后，查询自动生成的id和code
-				String addProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"' and t.devicetype="+exportProtocolConfig.getProtocol().getDeviceType();
+				String addProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"' ";
 				List<?> addProtocolList=this.findCallSql(addProtocolSql.toString());
 				if(addProtocolList.size()>0){//添加成功，更新地址项
 					Object[] addProtocolObj = (Object[]) addProtocolList.get(0);
@@ -7241,7 +6883,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 													protocolInstance.setHeartbeatPrefix(acqInstance.getHeartbeatPrefix());
 													protocolInstance.setHeartbeatSuffix(acqInstance.getHeartbeatSuffix());
 													protocolInstance.setPacketSendInterval(acqInstance.getPacketSendInterval());
-													protocolInstance.setDeviceType(acqInstance.getDeviceType());
 													protocolInstance.setSort(acqInstance.getSort());
 													protocolInstance.setUnitId(addAcqUnitId);
 													
@@ -7320,7 +6961,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 													protocolDisplayInstance.setId(displayInstance.getId());
 													protocolDisplayInstance.setName(displayInstance.getName());
 													protocolDisplayInstance.setCode(displayInstance.getCode());
-													protocolDisplayInstance.setDeviceType(displayInstance.getDeviceType());
 													protocolDisplayInstance.setSort(displayInstance.getSort());
 													protocolDisplayInstance.setDisplayUnitId(displayUnitIdMapping.get(displayInstance.getDisplayUnitId()));
 													getBaseDao().addObject(protocolDisplayInstance);
@@ -7400,7 +7040,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 													protocolAlarmInstance.setId(alarmInstance.getId());
 													protocolAlarmInstance.setName(alarmInstance.getName());
 													protocolAlarmInstance.setCode(alarmInstance.getCode());
-													protocolAlarmInstance.setDeviceType(alarmInstance.getDeviceType());
 													protocolAlarmInstance.setSort(alarmInstance.getSort());
 													protocolAlarmInstance.setAlarmUnitId(alarmUnitIdMapping.get(alarmInstance.getAlarmUnitId()));
 													getBaseDao().addObject(protocolAlarmInstance);
@@ -7427,7 +7066,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						
 						//更新协议内容
 						String updateSql="update TBL_PROTOCOL t set t.name='"+exportProtocolConfig.getProtocol().getName()+"',"
-								+ " t.deviceType="+exportProtocolConfig.getProtocol().getDeviceType()+","
 								+ " t.sort="+exportProtocolConfig.getProtocol().getSort()
 								+" where t.id="+existProtocolId;
 
@@ -7581,7 +7219,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 														updateProtocolInstance.setId(existAcqInstanceId);
 														updateProtocolInstance.setCode(existAcqInstanceCode);
 														updateProtocolInstance.setName(acqInstance.getName());
-														updateProtocolInstance.setDeviceType(acqInstance.getDeviceType());
 														updateProtocolInstance.setUnitId(existAcqUnitId);
 														updateProtocolInstance.setAcqProtocolType(acqInstance.getAcqProtocolType());
 														updateProtocolInstance.setCtrlProtocolType(acqInstance.getCtrlProtocolType());
@@ -7602,7 +7239,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 														//插入实例
 														ProtocolInstance addProtocolInstance=new ProtocolInstance();
 														addProtocolInstance.setName(acqInstance.getName());
-														addProtocolInstance.setDeviceType(acqInstance.getDeviceType());
 														addProtocolInstance.setUnitId(existAcqUnitId);
 														addProtocolInstance.setAcqProtocolType(acqInstance.getAcqProtocolType());
 														addProtocolInstance.setCtrlProtocolType(acqInstance.getCtrlProtocolType());
@@ -7694,7 +7330,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																		updateDrotocolDisplayInstance.setId(existDisplayInstanceId);
 																		updateDrotocolDisplayInstance.setCode(existDisplayInstanceCode);
 																		updateDrotocolDisplayInstance.setName(exportProtocolConfig.getDisplayInstanceList().get(m).getName());
-																		updateDrotocolDisplayInstance.setDeviceType(exportProtocolConfig.getDisplayInstanceList().get(m).getDeviceType());
 																		updateDrotocolDisplayInstance.setDisplayUnitId(existDisplayUnitId);
 																		updateDrotocolDisplayInstance.setSort(exportProtocolConfig.getDisplayInstanceList().get(m).getSort()>=0?exportProtocolConfig.getDisplayInstanceList().get(m).getSort():null);
 																		getBaseDao().updateObject(updateDrotocolDisplayInstance);
@@ -7702,7 +7337,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																		//插入显示实例
 																		ProtocolDisplayInstance addDrotocolDisplayInstance=new ProtocolDisplayInstance();
 																		addDrotocolDisplayInstance.setName(exportProtocolConfig.getDisplayInstanceList().get(m).getName());
-																		addDrotocolDisplayInstance.setDeviceType(exportProtocolConfig.getDisplayInstanceList().get(m).getDeviceType());
 																		addDrotocolDisplayInstance.setDisplayUnitId(existDisplayUnitId);
 																		addDrotocolDisplayInstance.setSort(exportProtocolConfig.getDisplayInstanceList().get(m).getSort()>=0?exportProtocolConfig.getDisplayInstanceList().get(m).getSort():null);
 																		getBaseDao().updateObject(addDrotocolDisplayInstance);
@@ -7753,7 +7387,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																		//插入显示实例
 																		ProtocolDisplayInstance addDrotocolDisplayInstance=new ProtocolDisplayInstance();
 																		addDrotocolDisplayInstance.setName(exportProtocolConfig.getDisplayInstanceList().get(m).getName());
-																		addDrotocolDisplayInstance.setDeviceType(exportProtocolConfig.getDisplayInstanceList().get(m).getDeviceType());
 																		addDrotocolDisplayInstance.setDisplayUnitId(addDisplayUnitId);
 																		addDrotocolDisplayInstance.setSort(exportProtocolConfig.getDisplayInstanceList().get(m).getSort()>=0?exportProtocolConfig.getDisplayInstanceList().get(m).getSort():null);
 																		getBaseDao().updateObject(addDrotocolDisplayInstance);
@@ -7843,7 +7476,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 														//插入实例
 														ProtocolInstance addProtocolInstance=new ProtocolInstance();
 														addProtocolInstance.setName(acqInstance.getName());
-														addProtocolInstance.setDeviceType(acqInstance.getDeviceType());
 														addProtocolInstance.setUnitId(addAcqUnitId);
 														addProtocolInstance.setAcqProtocolType(acqInstance.getAcqProtocolType());
 														addProtocolInstance.setCtrlProtocolType(acqInstance.getCtrlProtocolType());
@@ -7912,7 +7544,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																		//插入显示实例
 																		ProtocolDisplayInstance addDrotocolDisplayInstance=new ProtocolDisplayInstance();
 																		addDrotocolDisplayInstance.setName(exportProtocolConfig.getDisplayInstanceList().get(m).getName());
-																		addDrotocolDisplayInstance.setDeviceType(exportProtocolConfig.getDisplayInstanceList().get(m).getDeviceType());
 																		addDrotocolDisplayInstance.setDisplayUnitId(addDisplayUnitId);
 																		addDrotocolDisplayInstance.setSort(exportProtocolConfig.getDisplayInstanceList().get(m).getSort()>=0?exportProtocolConfig.getDisplayInstanceList().get(m).getSort():null);
 																		getBaseDao().updateObject(addDrotocolDisplayInstance);
@@ -8004,7 +7635,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 														protocolAlarmInstance.setId(existAlarmInstanceId);
 														protocolAlarmInstance.setCode(existAlarmInstanceCode);
 														protocolAlarmInstance.setName(exportProtocolConfig.getAlarmInstanceList().get(m).getName());
-														protocolAlarmInstance.setDeviceType(exportProtocolConfig.getAlarmInstanceList().get(m).getDeviceType());
 														protocolAlarmInstance.setAlarmUnitId(existAlarmUnitId);
 														protocolAlarmInstance.setSort(exportProtocolConfig.getAlarmInstanceList().get(m).getSort()>=0?exportProtocolConfig.getAlarmInstanceList().get(m).getSort():null);
 														getBaseDao().updateObject(protocolAlarmInstance);
@@ -8012,7 +7642,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 														//添加报警实例
 														ProtocolAlarmInstance protocolAlarmInstance=new ProtocolAlarmInstance();
 														protocolAlarmInstance.setName(exportProtocolConfig.getAlarmInstanceList().get(m).getName());
-														protocolAlarmInstance.setDeviceType(exportProtocolConfig.getAlarmInstanceList().get(m).getDeviceType());
 														protocolAlarmInstance.setAlarmUnitId(existAlarmUnitId);
 														protocolAlarmInstance.setSort(exportProtocolConfig.getAlarmInstanceList().get(m).getSort()>=0?exportProtocolConfig.getAlarmInstanceList().get(m).getSort():null);
 														getBaseDao().addObject(protocolAlarmInstance);
@@ -8071,7 +7700,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 														//添加报警实例
 														ProtocolAlarmInstance protocolAlarmInstance=new ProtocolAlarmInstance();
 														protocolAlarmInstance.setName(exportProtocolConfig.getAlarmInstanceList().get(m).getName());
-														protocolAlarmInstance.setDeviceType(exportProtocolConfig.getAlarmInstanceList().get(m).getDeviceType());
 														protocolAlarmInstance.setAlarmUnitId(addAlarmUnitId);
 														protocolAlarmInstance.setSort(exportProtocolConfig.getAlarmInstanceList().get(m).getSort()>=0?exportProtocolConfig.getAlarmInstanceList().get(m).getSort():null);
 														getBaseDao().addObject(protocolAlarmInstance);
@@ -8095,16 +7723,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				for(int i=0;i<exportProtocolConfig.getDataMappingList().size();i++){
 					String mappingItemSql="select t.id from TBL_DATAMAPPING t "
 							+ " where t.name ='"+exportProtocolConfig.getDataMappingList().get(i).getName()+"' "
-							+ " and t.mappingcolumn='"+exportProtocolConfig.getDataMappingList().get(i).getMappingColumn()+"' "
-							+ " and t.protocoltype=+"+exportProtocolConfig.getProtocol().getDeviceType()+" ";
+							+ " and t.mappingcolumn='"+exportProtocolConfig.getDataMappingList().get(i).getMappingColumn()+"' ";
 					List<?> mappingItemList=this.findCallSql(mappingItemSql);
 					if(mappingItemList.size()==0){
-						String addSql="insert into tbl_datamapping(name,mappingcolumn,calcolumn,protocoltype,mappingmode) "
+						String addSql="insert into tbl_datamapping(name,mappingcolumn,calcolumn,mappingmode) "
 								+ " values("
 								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getName()+"',"
 								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getMappingColumn()+"',"
 								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getCalColumn()+"',"
-								+ ""+exportProtocolConfig.getProtocol().getDeviceType()+","
 								+1+")";
 						this.getBaseDao().updateOrDeleteBySql(addSql);
 					}
@@ -8135,8 +7761,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "values ('"+existProtocolCode+"','"+exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getItemName()+"',"
 								+ "'"+exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getItemMappingColumn()+"',"
 								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getRunValue(), ",")+"',"
-								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getStopValue(), ",")+"',"
-								+ ""+exportProtocolConfig.getProtocol().getDeviceType()+")";
+								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getStopValue(), ",")
+								+")";
 						this.getBaseDao().updateOrDeleteBySql(addRunStatusConfigSql);
 					}
 				}
@@ -8172,7 +7798,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
-			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getDeviceType(),exportProtocolConfig.getProtocol().getName());
+			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getName());
 			if(protocolExist){//如果协议已存在
 				result_json.append("{\"classes\":0,\"typeName\":\"协议\",\"type\":0,\"id\":"+exportProtocolConfig.getProtocol().getId()+",\"text\":\""+exportProtocolConfig.getProtocol().getName()+"\"},");
 				
@@ -8455,12 +8081,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().updateObject(acquisitionUnit);
 	}
 	
-	public void doAcquisitionUnitBulkDelete(final String ids,String deviceType) throws Exception {
+	public void doAcquisitionUnitBulkDelete(final String ids) throws Exception {
 		int delorUpdateCount=0;
-		String tableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="tbl_pcpdevice";
-		}
+		String tableName="tbl_device";
 		//处理显示实例、显示单元数据
 		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3 where t2.displayunitid=t3.id and t3.acqunitid in("+ids+") )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
@@ -8494,12 +8117,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		super.bulkObjectDelete(hql);
 	}
 	
-	public void doDeleteProtocolAssociation(int deviceType,String protocolName) throws Exception {
+	public void doDeleteProtocolAssociation(String protocolName) throws Exception {
 		int delorUpdateCount=0;
-		String tableName="tbl_rpcdevice";
-		if(deviceType==1){
-			tableName="tbl_pcpdevice";
-		}
+		String tableName="tbl_device";
 		//处理显示实例、显示单元数据
 		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_acq_unit_conf t4 where t2.displayunitid=t3.id and t3.acqunitid=t4.id and t4.protocol='"+protocolName+"' )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
@@ -8605,11 +8225,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().updateObject(protocolInstance);
 	}
 	
-	public void doModbusProtocolInstanceBulkDelete(final String ids,int deviceType) throws Exception {
-		String tableName="tbl_rpcdevice";
-		if(deviceType==1){
-			tableName="tbl_pcpdevice";
-		}
+	public void doModbusProtocolInstanceBulkDelete(final String ids) throws Exception {
+		String tableName="tbl_device";
 		String sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( select t2.code from TBL_PROTOCOLINSTANCE t2 where t2.id in ("+ids+") )";
 		this.getBaseDao().updateOrDeleteBySql(sql);
 		
@@ -8629,12 +8246,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return getBaseDao().addObject(displayUnit);
 	}
 	
-	public void doDisplayUnitBulkDelete(final String ids,String deviceType) throws Exception {
+	public void doDisplayUnitBulkDelete(final String ids) throws Exception {
 		int delorUpdateCount=0;
-		String tableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="tbl_pcpdevice";
-		}
+		String tableName="tbl_device";
 		String sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( select t2.code from tbl_protocolinstance t2  where t2.unitid in ("+ids+") )";
 //		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		

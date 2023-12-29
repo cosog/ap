@@ -372,8 +372,8 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -451,8 +451,8 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				RPCDeviceInfo rpcDeviceInfo=null;
-				if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -554,7 +554,7 @@ public class MobileService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
@@ -765,8 +765,8 @@ public class MobileService<T> extends BaseService<T> {
 			java.lang.reflect.Type type=null;
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -839,8 +839,8 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				RPCDeviceInfo rpcDeviceInfo=null;
-				if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -933,7 +933,7 @@ public class MobileService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
@@ -1802,8 +1802,8 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
 				if(!jedis.exists("RPCWorkType".getBytes())){
@@ -1863,8 +1863,8 @@ public class MobileService<T> extends BaseService<T> {
 				
 				
 				RPCDeviceInfo rpcDeviceInfo=null;
-				if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -1957,7 +1957,7 @@ public class MobileService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
@@ -2143,8 +2143,8 @@ public class MobileService<T> extends BaseService<T> {
 			Jedis jedis=null;
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
 				if(!jedis.exists("RPCWorkType".getBytes())){
@@ -2203,8 +2203,8 @@ public class MobileService<T> extends BaseService<T> {
 				
 				
 				RPCDeviceInfo rpcDeviceInfo=null;
-				if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -2294,7 +2294,7 @@ public class MobileService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){

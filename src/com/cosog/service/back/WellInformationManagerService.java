@@ -412,10 +412,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					e.printStackTrace();
 				}
 				if(deviceType>=100&&deviceType<200){
-					if(!jedis.exists("RPCDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					if(!jedis.exists("DeviceInfo".getBytes())){
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
-					List<byte[]> deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+					List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 					for(int i=0;i<deviceInfoByteList.size();i++){
 						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
 						if (obj instanceof RPCDeviceInfo) {
@@ -423,13 +423,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
 								deviceInfo.setOrgId(StringManagerUtils.stringToInteger(selectedOrgId));
 								deviceInfo.setOrgName(selectedOrgName);
-								jedis.hset("RPCDeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+								jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
 							}
 						}
 					}
 				}else if(deviceType>=200&&deviceType<300){
 					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					List<byte[]> deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 					for(int i=0;i<deviceInfoByteList.size();i++){

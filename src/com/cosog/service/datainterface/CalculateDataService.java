@@ -2571,7 +2571,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 					if(StringManagerUtils.isNotNull(templateCode)){
 						for(int j=0;j<reportTemplate.getSingleWellRangeReportTemplate().size();j++){
 							ReportTemplate.Template template=reportTemplate.getSingleWellRangeReportTemplate().get(j);
-							if(template.getDeviceType()==deviceType && templateCode.equalsIgnoreCase(template.getTemplateCode())){
+							if(templateCode.equalsIgnoreCase(template.getTemplateCode())){
 								if(template.getEditable()!=null && template.getEditable().size()>0){
 									String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 											+ " from TBL_REPORT_ITEMS2UNIT_CONF t "

@@ -404,13 +404,13 @@ public class ResourceMonitoringTask {
 				e1.printStackTrace();
 			}
 			if(jedis!=null){
-//				if(!jedis.exists("RPCDeviceInfo".getBytes())){
+//				if(!jedis.exists("DeviceInfo".getBytes())){
 //					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 //				}
 //				if(!jedis.exists("PCPDeviceInfo".getBytes())){
 //					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
 //				}
-				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				List<byte[]> pcpDeviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 				deviceAmount=(rpcDeviceInfoByteList!=null?rpcDeviceInfoByteList.size():0)+(pcpDeviceInfoByteList!=null?pcpDeviceInfoByteList.size():0 );
 			}else{

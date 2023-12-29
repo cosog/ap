@@ -3986,12 +3986,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				//排序
 				Collections.sort(templateList);
 				for(int i=0;i<templateList.size();i++){
-					if(templateList.get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)){
-						totalCount++;
-						result_json.append("{\"templateName\":\""+templateList.get(i).getTemplateName()+"\",");
-						result_json.append("\"templateCode\":\""+templateList.get(i).getTemplateCode()+"\",");
-						result_json.append("\"deviceType\":"+templateList.get(i).getDeviceType()+"},");
-					}
+					totalCount++;
+					result_json.append("{\"templateName\":\""+templateList.get(i).getTemplateName()+"\",");
+					result_json.append("\"templateCode\":\""+templateList.get(i).getTemplateCode()+"\"},");
 				}
 			}
 		}
@@ -4019,7 +4016,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(templateList!=null && templateList.size()>0){
 				for(int i=0;i<templateList.size();i++){
 					if(code.equalsIgnoreCase(templateList.get(i).getTemplateCode()) 
-							&& templateList.get(i).getDeviceType()==StringManagerUtils.stringToInteger(deviceType)
 							){
 						Gson gson=new Gson();
 						result=gson.toJson(templateList.get(i)).replaceAll("wellNameLabel", "label").replaceAll("label", "***");
@@ -4536,10 +4532,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			//排序
 			Collections.sort(reportTemplate.getSingleWellRangeReportTemplate());
 			for(int i=0;i<reportTemplate.getSingleWellRangeReportTemplate().size();i++){
-				if(StringManagerUtils.stringToInteger(deviceType)==reportTemplate.getSingleWellRangeReportTemplate().get(i).getDeviceType()){
-					result_json.append("{boxkey:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode() + "\",");
-					result_json.append("boxval:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName() + "\"},");
-				}
+				result_json.append("{boxkey:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode() + "\",");
+				result_json.append("boxval:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName() + "\"},");
 			}
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -4640,13 +4634,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-						String columnsKey="rpcDeviceAcquisitionItemColumns";
+						String columnsKey="deviceAcquisitionItemColumns";
 						if(StringManagerUtils.stringToInteger(deviceType)==1){
 							columnsKey="pcpDeviceAcquisitionItemColumns";
 						}
 						Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 						if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-							EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+							EquipmentDriverServerTask.loadAcquisitionItemColumns();
 							acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 						}
 						Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
@@ -4711,13 +4705,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
+		String columnsKey="deviceAcquisitionItemColumns";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			columnsKey="pcpDeviceAcquisitionItemColumns";
 		}
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
@@ -4845,13 +4839,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
+		String columnsKey="deviceAcquisitionItemColumns";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			columnsKey="pcpDeviceAcquisitionItemColumns";
 		}
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);

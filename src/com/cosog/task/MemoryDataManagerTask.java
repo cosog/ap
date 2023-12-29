@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,7 @@ import com.cosog.model.calculate.RPCCalculateResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.UserInfo;
+import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
@@ -76,8 +79,7 @@ public class MemoryDataManagerTask {
 		loadAlarmInstanceOwnItemById("","update");
 		loadDisplayInstanceOwnItemById("","update");
 		
-		loadRPCDeviceInfo(null,0,"update");
-		loadPCPDeviceInfo(null,0,"update");
+		loadDeviceInfo(null,0,"update");
 		
 		loadTodayFESDiagram(null,0);
 		loadTodayRPMData(null,0);
@@ -89,9 +91,10 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			jedis.del("modbusProtocolConfig".getBytes());
 			jedis.del("ProtocolMappingColumn".getBytes());
+			jedis.del("ProtocolMappingColumnByTitle".getBytes());
 			jedis.del("CalculateColumnInfo".getBytes());
 			jedis.del("ProtocolRunStatusConfig".getBytes());
-			jedis.del("RPCDeviceInfo".getBytes());
+			jedis.del("DeviceInfo".getBytes());
 			jedis.del("RPCDeviceTodayData".getBytes());
 			jedis.del("PCPDeviceInfo".getBytes());
 			jedis.del("PCPDeviceTodayData".getBytes());
@@ -246,11 +249,13 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			jedis.del("ProtocolMappingColumn".getBytes());
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			Map<String,DataMapping> loadProtocolMappingColumnMap=new HashMap();
+			
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
+			
 			while(rs.next()){
 				DataMapping dataMapping=new DataMapping();
 				dataMapping.setId(rs.getInt(1));
@@ -260,8 +265,69 @@ public class MemoryDataManagerTask {
 				dataMapping.setProtocolType(rs.getInt(5));
 				dataMapping.setMappingMode(rs.getInt(6));
 				dataMapping.setRepetitionTimes(rs.getInt(7));
-				String key=dataMapping.getMappingColumn();
-				jedis.hset("ProtocolMappingColumn".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMapping));//哈希(Hash)
+				loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
+			}
+			dataModelMap.put("ProtocolMappingColumn", loadProtocolMappingColumnMap);
+			
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis!=null){
+				jedis.del("ProtocolMappingColumn".getBytes());
+				
+				for (Map.Entry<String, DataMapping> entry : loadProtocolMappingColumnMap.entrySet()) {
+				    String key = entry.getKey();
+				    DataMapping dataMapping = entry.getValue();
+				    jedis.hset("ProtocolMappingColumn".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMapping));//哈希(Hash)
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void loadProtocolMappingColumnByTitle(){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		Jedis jedis=null;
+		try {
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=new HashMap();
+			
+			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			
+			while(rs.next()){
+				DataMapping dataMapping=new DataMapping();
+				dataMapping.setId(rs.getInt(1));
+				dataMapping.setName(rs.getString(2));
+				dataMapping.setMappingColumn(rs.getString(3));
+				dataMapping.setCalColumn(rs.getString(4));
+				dataMapping.setProtocolType(rs.getInt(5));
+				dataMapping.setMappingMode(rs.getInt(6));
+				dataMapping.setRepetitionTimes(rs.getInt(7));
+				loadProtocolMappingColumnByTitleMap.put(dataMapping.getName(), dataMapping);
+			}
+			dataModelMap.put("ProtocolMappingColumnByTitle", loadProtocolMappingColumnByTitleMap);
+			
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis!=null){
+				jedis.del("ProtocolMappingColumn".getBytes());
+				
+				for (Map.Entry<String, DataMapping> entry : loadProtocolMappingColumnByTitleMap.entrySet()) {
+				    String key = entry.getKey();
+				    DataMapping dataMapping = entry.getValue();
+				    jedis.hset("ProtocolMappingColumnByTitle".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMapping));//哈希(Hash)
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -388,7 +454,7 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadRPCDeviceInfo(List<String> wellList,int condition,String method){//condition 0 -设备ID 1-设备名称
+	public static void loadDeviceInfo(List<String> wellList,int condition,String method){//condition 0 -设备ID 1-设备名称
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -410,17 +476,17 @@ public class MemoryDataManagerTask {
 			if("delete".equalsIgnoreCase(method)){
 				if(condition==0){
 					for(int i=0;i<wellList.size();i++){
-						jedis.hdel("RPCDeviceInfo".getBytes(), wellList.get(i).getBytes());
+						jedis.hdel("DeviceInfo".getBytes(), wellList.get(i).getBytes());
 						jedis.hdel("RPCDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 					}
 				}else if(condition==1){
 					for(int i=0;i<wellList.size();i++){
-						if(jedis.exists("RPCDeviceInfo".getBytes())){
-							List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+						if(jedis.exists("DeviceInfo".getBytes())){
+							List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 							for(int j=0;j<rpcDeviceInfoByteList.size();j++){
 								RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 								if(wellList.get(i).equalsIgnoreCase(rpcDeviceInfo.getWellName())){
-									jedis.hdel("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes());
+									jedis.hdel("DeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes());
 									jedis.hdel("RPCDeviceTodayData".getBytes(), (rpcDeviceInfo.getId()+"").getBytes());
 									break;
 								}
@@ -429,7 +495,7 @@ public class MemoryDataManagerTask {
 					}
 				}
 			}else{
-				String sql="select t.id,t.orgid,t.orgName,t.wellname,t.devicetype,t.devicetypename,t.applicationscenarios,t.applicationScenariosName,"
+				String sql="select t.id,t.orgid,t.orgName,t.devicename,t.devicetype,t.devicetypename,t.applicationscenarios,t.applicationScenariosName,"
 						+ "t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"
 						+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
 						+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
@@ -445,17 +511,17 @@ public class MemoryDataManagerTask {
 						+ "t2.gasvolumetricproduction,t2.totalgasvolumetricproduction,"
 						+ "t2.watervolumetricproduction,t2.totalwatervolumetricproduction,"
 						+ " t2.resultstatus,decode(t2.resultcode,null,0,t2.resultcode) as resultcode"
-						+ " from viw_rpcdevice t"
+						+ " from viw_device t"
 						+ " left outer join tbl_rpcacqdata_latest t2 on t2.wellid=t.id "
 						+ " where 1=1 ";
 				if(StringManagerUtils.isNotNull(wells)){
 					if(condition==0){
 						sql+=" and t.id in("+wells+")";
 					}else{
-						sql+=" and t.wellName in("+wells+")";
+						sql+=" and t.devicename in("+wells+")";
 					}
 				}
-				sql+=" order by t.sortNum,t.wellName";
+				sql+=" order by t.sortNum,t.devicename";
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();
 				while(rs.next()){
@@ -574,7 +640,7 @@ public class MemoryDataManagerTask {
 					rpcDeviceInfo.setResultCode(rs.getInt(55));
 					
 					String key=rpcDeviceInfo.getId()+"";
-					jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));//哈希(Hash)
+					jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));//哈希(Hash)
 				}
 			}
 		}catch (Exception e) {
@@ -587,7 +653,7 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByPumpingId(String pumpingModelId,String method){
+	public static void loadDeviceInfoByPumpingId(String pumpingModelId,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -596,7 +662,7 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String sql="select t.id from tbl_rpcdevice t,tbl_pumpingmodel t2 where t.pumpingmodelid=t2.id and t2.id= "+pumpingModelId;
+		String sql="select t.id from tbl_device t,tbl_pumpingmodel t2 where t.pumpingmodelid=t2.id and t2.id= "+pumpingModelId;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -611,11 +677,11 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,method);
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByInstanceId(String instanceId,String method){
+	public static void loadDeviceInfoByInstanceId(String instanceId,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -624,7 +690,7 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String sql="select t.id from tbl_rpcdevice t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id= "+instanceId;
+		String sql="select t.id from tbl_device t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id= "+instanceId;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -639,11 +705,11 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,method);
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByInstanceCode(String instanceCode,String method){
+	public static void loadDeviceInfoByInstanceCode(String instanceCode,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -652,7 +718,7 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String sql="select t.id from tbl_rpcdevice t where t.instancecode= '"+instanceCode+"'";
+		String sql="select t.id from tbl_device t where t.instancecode= '"+instanceCode+"'";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -667,11 +733,11 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,method);
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByDisplayInstanceId(String instanceId,String method){
+	public static void loadDeviceInfoByDisplayInstanceId(String instanceId,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -680,7 +746,7 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String sql="select t.id from tbl_rpcdevice t,tbl_protocoldisplayinstance t2 where t.displayinstancecode=t2.code and t2.id= "+instanceId;
+		String sql="select t.id from tbl_device t,tbl_protocoldisplayinstance t2 where t.displayinstancecode=t2.code and t2.id= "+instanceId;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -695,11 +761,11 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,method);
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByDisplayInstanceCode(String instanceCode,String method){
+	public static void loadDeviceInfoByDisplayInstanceCode(String instanceCode,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -708,7 +774,7 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String sql="select t.id from tbl_rpcdevice t where t.displayinstancecode= '"+instanceCode+"'";
+		String sql="select t.id from tbl_device t where t.displayinstancecode= '"+instanceCode+"'";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -723,11 +789,11 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,method);
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByAlarmInstanceId(String instanceId,String method){
+	public static void loadDeviceInfoByAlarmInstanceId(String instanceId,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -736,7 +802,7 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String sql="select t.id from tbl_rpcdevice t,tbl_protocolalarminstance t2 where t.alarminstancecode=t2.code and t2.id= "+instanceId;
+		String sql="select t.id from tbl_device t,tbl_protocolalarminstance t2 where t.alarminstancecode=t2.code and t2.id= "+instanceId;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -751,11 +817,11 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,method);
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByAlarmInstanceCode(String instanceCode,String method){
+	public static void loadDeviceInfoByAlarmInstanceCode(String instanceCode,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -764,7 +830,7 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String sql="select t.id from tbl_rpcdevice t where t.alarminstancecode= '"+instanceCode+"'";
+		String sql="select t.id from tbl_device t where t.alarminstancecode= '"+instanceCode+"'";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -779,345 +845,7 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,method);
-		}
-	}
-	
-	public static void loadPCPDeviceInfo(List<String> wellList,int condition,String method){//condition 0 -设备ID 1-设备名称
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		Jedis jedis=null;
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			String wells="";
-			if(condition==0){
-				wells=StringUtils.join(wellList, ",");
-			}else{
-				wells=StringManagerUtils.joinStringArr2(wellList, ",");
-			}
-			
-			if("delete".equalsIgnoreCase(method)&&jedis.exists("PCPDeviceInfo".getBytes())){
-				if(condition==0){
-					for(int i=0;i<wellList.size();i++){
-						if(jedis.hexists("PCPDeviceInfo".getBytes(), wellList.get(i).getBytes())){
-							jedis.hdel("PCPDeviceInfo".getBytes(), wellList.get(i).getBytes());
-							jedis.hdel("PCPDeviceTodayData".getBytes(), wellList.get(i).getBytes());
-						}
-					}
-				}else if(condition==1&&jedis.exists("PCPDeviceInfo".getBytes())){
-					for(int i=0;i<wellList.size();i++){
-						List<byte[]> deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
-						for(int j=0;j<deviceInfoByteList.size();j++){
-							PCPDeviceInfo deviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-							if(wellList.get(i).equalsIgnoreCase(deviceInfo.getWellName()) && jedis.hexists("PCPDeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes())){
-								jedis.hdel("PCPDeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes());
-								jedis.hdel("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
-								break;
-							}
-						}
-					}
-				}
-				return;
-			}
-			
-			String sql="select t.id,t.orgid,t.orgName,t.wellname,t.devicetype,t.devicetypename,t.applicationscenarios,t.applicationScenariosName,"
-					+ "t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"
-					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
-					+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
-					+ "t.status,t.statusName,"
-					+ "t.productiondata,"
-					+ "t.sortnum, "
-					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
-					+ "t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.runstatus,null,2,t2.runstatus),t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ "t2.totalkwatth,t2.todaykwatth,"
-					+ "t2.gasvolumetricproduction,t2.totalgasvolumetricproduction,"
-					+ "t2.watervolumetricproduction,t2.totalwatervolumetricproduction "
-					+ " from viw_pcpdevice t"
-					+ " left outer join tbl_pcpacqdata_latest t2 on t2.wellid=t.id "
-					+ " where 1=1 ";
-			if(StringManagerUtils.isNotNull(wells)){
-				if(condition==0){
-					sql+=" and t.id in("+wells+")";
-				}else{
-					sql+=" and t.wellName in("+wells+")";
-				}
-			}
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				PCPDeviceInfo pcpDeviceInfo=new PCPDeviceInfo();
-				pcpDeviceInfo.setId(rs.getInt(1));
-				pcpDeviceInfo.setOrgId(rs.getInt(2));
-				pcpDeviceInfo.setOrgName(rs.getString(3));
-				pcpDeviceInfo.setWellName(rs.getString(4));
-				pcpDeviceInfo.setDeviceType(rs.getInt(5));
-				pcpDeviceInfo.setDeviceTypeName(rs.getString(6)+"");
-				pcpDeviceInfo.setApplicationScenarios(rs.getInt(7));
-				pcpDeviceInfo.setApplicationScenariosName(rs.getString(8)+"");
-				pcpDeviceInfo.setTcpType(rs.getString(9)+"");
-				pcpDeviceInfo.setSignInId(rs.getString(10)+"");
-				pcpDeviceInfo.setIpPort(rs.getString(11)+"");
-				pcpDeviceInfo.setSlave(rs.getString(12)+"");
-				pcpDeviceInfo.setPeakDelay(rs.getInt(13));
-				
-				pcpDeviceInfo.setVideoUrl1(rs.getString(14)+"");
-				pcpDeviceInfo.setVideoKey1(rs.getInt(15));
-				pcpDeviceInfo.setVideoUrl2(rs.getString(16)+"");
-				pcpDeviceInfo.setVideoKey2(rs.getInt(17));
-				
-				pcpDeviceInfo.setInstanceCode(rs.getString(18)+"");
-				pcpDeviceInfo.setInstanceName(rs.getString(19)+"");
-				pcpDeviceInfo.setAlarmInstanceCode(rs.getString(20)+"");
-				pcpDeviceInfo.setAlarmInstanceName(rs.getString(21)+"");
-				pcpDeviceInfo.setDisplayInstanceCode(rs.getString(22)+"");
-				pcpDeviceInfo.setDisplayInstanceName(rs.getString(23)+"");
-				pcpDeviceInfo.setStatus(rs.getInt(24));
-				pcpDeviceInfo.setStatusName(rs.getString(25)+"");
-				String productionData=rs.getString(26);
-				if(StringManagerUtils.isNotNull(productionData)){
-					type = new TypeToken<PCPDeviceInfo>() {}.getType();
-					PCPDeviceInfo pcpProductionData=gson.fromJson(productionData, type);
-					if(pcpProductionData!=null){
-						pcpDeviceInfo.setFluidPVT(pcpProductionData.getFluidPVT());
-						pcpDeviceInfo.setReservoir(pcpProductionData.getReservoir());
-						pcpDeviceInfo.setTubingString(pcpProductionData.getTubingString());
-						pcpDeviceInfo.setCasingString(pcpProductionData.getCasingString());
-						pcpDeviceInfo.setRodString(pcpProductionData.getRodString());
-						pcpDeviceInfo.setPump(pcpProductionData.getPump());
-						pcpDeviceInfo.setProduction(pcpProductionData.getProduction());
-						pcpDeviceInfo.setManualIntervention(pcpProductionData.getManualIntervention());
-					}
-				}else{
-					pcpDeviceInfo.setFluidPVT(null);
-					pcpDeviceInfo.setReservoir(null);
-					pcpDeviceInfo.setRodString(null);
-					pcpDeviceInfo.setTubingString(null);
-					pcpDeviceInfo.setCasingString(null);
-					pcpDeviceInfo.setPump(null);
-					pcpDeviceInfo.setProduction(null);
-					pcpDeviceInfo.setManualIntervention(null);
-				}
-				pcpDeviceInfo.setSortNum(rs.getInt(27));
-				
-				pcpDeviceInfo.setAcqTime(rs.getString(28));
-				pcpDeviceInfo.setSaveTime("");
-				
-				pcpDeviceInfo.setCommStatus(rs.getInt(29));
-				pcpDeviceInfo.setCommTime(rs.getFloat(30));
-				pcpDeviceInfo.setCommEff(rs.getFloat(31));
-				pcpDeviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(32)));
-				
-				pcpDeviceInfo.setOnLineAcqTime(rs.getString(28));
-				pcpDeviceInfo.setOnLineCommStatus(rs.getInt(29));
-				pcpDeviceInfo.setOnLineCommTime(rs.getFloat(30));
-				pcpDeviceInfo.setOnLineCommEff(rs.getFloat(31));
-				pcpDeviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(32)));
-				
-				pcpDeviceInfo.setRunStatusAcqTime(rs.getString(28));
-				pcpDeviceInfo.setRunStatus(rs.getInt(33));
-				pcpDeviceInfo.setRunTime(rs.getFloat(34));
-				pcpDeviceInfo.setRunEff(rs.getFloat(35));
-				pcpDeviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(36)));
-				
-				pcpDeviceInfo.setKWattHAcqTime(rs.getString(28));
-				pcpDeviceInfo.setTotalKWattH(rs.getFloat(37));
-				pcpDeviceInfo.setTodayKWattH(rs.getFloat(38));
-				
-				pcpDeviceInfo.setTotalGasAcqTime(rs.getString(28));
-				pcpDeviceInfo.setGasVolumetricProduction(rs.getFloat(39));
-				pcpDeviceInfo.setTotalGasVolumetricProduction(rs.getFloat(40));
-				
-				pcpDeviceInfo.setTotalWaterAcqTime(rs.getString(28));
-				pcpDeviceInfo.setWaterVolumetricProduction(rs.getFloat(41));
-				pcpDeviceInfo.setTotalWaterVolumetricProduction(rs.getFloat(42));
-				
-				String key=pcpDeviceInfo.getId()+"";
-				jedis.hset("PCPDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(pcpDeviceInfo));//哈希(Hash)
-			}
-			
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
-		}
-	}
-	
-	public static void loadPCPDeviceInfoByInstanceId(String instanceId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		String sql="select t.id from tbl_pcpdevice t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id= "+instanceId;
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		if(wellList.size()>0){
-			loadPCPDeviceInfo(wellList,0,method);
-		}
-	}
-	
-	public static void loadPCPDeviceInfoByInstanceCode(String instanceCode,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		String sql="select t.id from tbl_pcpdevice t where t.instancecode= '"+instanceCode+"'";
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		if(wellList.size()>0){
-			loadPCPDeviceInfo(wellList,0,method);
-		}
-	}
-	
-	public static void loadPCPDeviceInfoByDisplayInstanceId(String instanceId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		String sql="select t.id from tbl_pcpdevice t,tbl_protocoldisplayinstance t2 where t.displayinstancecode=t2.code and t2.id= "+instanceId;
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		if(wellList.size()>0){
-			loadPCPDeviceInfo(wellList,0,method);
-		}
-	}
-	
-	public static void loadPCPDeviceInfoByDisplayInstanceCode(String instanceCode,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		String sql="select t.id from tbl_pcpdevice t where t.displayinstancecode= '"+instanceCode+"'";
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		if(wellList.size()>0){
-			loadPCPDeviceInfo(wellList,0,method);
-		}
-	}
-	
-	public static void loadPCPDeviceInfoByAlarmInstanceId(String instanceId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		String sql="select t.id from tbl_pcpdevice t,tbl_protocolalarminstance t2 where t.alarminstancecode=t2.code and t2.id= "+instanceId;
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		if(wellList.size()>0){
-			loadPCPDeviceInfo(wellList,0,method);
-		}
-	}
-	
-	public static void loadPCPDeviceInfoByAlarmInstanceCode(String instanceCode,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		String sql="select t.id from tbl_pcpdevice t where t.alarminstancecode= '"+instanceCode+"'";
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		if(wellList.size()>0){
-			loadPCPDeviceInfo(wellList,0,method);
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	
@@ -1133,7 +861,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocolinstance t where 1=1 ";
-			String sql="select t5.code as instanceCode,t5.deviceType,t5.acqprotocoltype,t5.ctrlprotocoltype,"
+			String sql="select t5.code as instanceCode,t5.acqprotocoltype,t5.ctrlprotocoltype,"
 					+ "t4.protocol,t3.unitid,"
 					+ "t2.grouptiminginterval,t2.groupsavinginterval,"
 					+ "t.id as itemid,t.itemname,t.itemcode,t.bitindex,t.groupid "
@@ -1173,24 +901,23 @@ public class MemoryDataManagerTask {
 					}
 					
 					acqInstanceOwnItem.setInstanceCode(rs.getString(1)+"");
-					acqInstanceOwnItem.setDeviceType(rs.getInt(2));
-					acqInstanceOwnItem.setAcqProtocolType(rs.getString(3)+"");
-					acqInstanceOwnItem.setCtrlProtocolType(rs.getString(4)+"");
+					acqInstanceOwnItem.setAcqProtocolType(rs.getString(2)+"");
+					acqInstanceOwnItem.setCtrlProtocolType(rs.getString(3)+"");
 					
-					acqInstanceOwnItem.setProtocol(rs.getString(5)+"");
-					acqInstanceOwnItem.setUnitId(rs.getInt(6));
-					acqInstanceOwnItem.setGroupTimingInterval(rs.getInt(7));
-					acqInstanceOwnItem.setGroupSavingInterval(rs.getInt(8));
+					acqInstanceOwnItem.setProtocol(rs.getString(4)+"");
+					acqInstanceOwnItem.setUnitId(rs.getInt(5));
+					acqInstanceOwnItem.setGroupTimingInterval(rs.getInt(6));
+					acqInstanceOwnItem.setGroupSavingInterval(rs.getInt(7));
 					
 					if(acqInstanceOwnItem.getItemList()==null){
 						acqInstanceOwnItem.setItemList(new ArrayList<AcqItem>());
 					}
 					AcqItem acqItem=new AcqItem();
-					acqItem.setItemId(rs.getInt(9));
-					acqItem.setItemName(rs.getString(10)+"");
-					acqItem.setItemCode(rs.getString(11)+"");
-					acqItem.setBitIndex(rs.getInt(12));
-					acqItem.setGroupId(rs.getInt(13));
+					acqItem.setItemId(rs.getInt(8));
+					acqItem.setItemName(rs.getString(9)+"");
+					acqItem.setItemCode(rs.getString(10)+"");
+					acqItem.setBitIndex(rs.getInt(11));
+					acqItem.setGroupId(rs.getInt(12));
 					
 					int index=-1;
 					for(int i=0;i<acqInstanceOwnItem.getItemList().size();i++){
@@ -1356,7 +1083,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocoldisplayinstance t where 1=1 ";
-			String sql="select t3.code as instanceCode,t3.deviceType,t2.protocol,t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
+			String sql="select t3.code as instanceCode,t2.protocol,t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
 					+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,decode(t.sort,null,9999,t.sort) as sort,"
 					+ "t.realtimecurveconf,t.historycurveconf,"
 					+ "t.type "
@@ -1397,24 +1124,23 @@ public class MemoryDataManagerTask {
     				}
     				
     				displayInstanceOwnItem.setInstanceCode(rs.getString(1));
-    				displayInstanceOwnItem.setDeviceType(rs.getInt(2));
-    				displayInstanceOwnItem.setProtocol(rs.getString(3));
-    				displayInstanceOwnItem.setUnitId(rs.getInt(4));
+    				displayInstanceOwnItem.setProtocol(rs.getString(2));
+    				displayInstanceOwnItem.setUnitId(rs.getInt(3));
     				
     				if(displayInstanceOwnItem.getItemList()==null){
     					displayInstanceOwnItem.setItemList(new ArrayList<DisplayItem>());
     				}
     				DisplayItem displayItem=new DisplayItem();
-    				displayItem.setUnitId(rs.getInt(4));
-    				displayItem.setItemId(rs.getInt(5));
-    				displayItem.setItemName(rs.getString(6)+"");
-    				displayItem.setItemCode(rs.getString(7)+"");
-    				displayItem.setBitIndex(rs.getInt(8));
-    				displayItem.setShowLevel(rs.getInt(9));
-    				displayItem.setSort(rs.getInt(10));
-    				displayItem.setRealtimeCurveConf(rs.getString(11)+"");
-    				displayItem.setHistoryCurveConf(rs.getString(12)+"");
-    				displayItem.setType(rs.getInt(13));
+    				displayItem.setUnitId(rs.getInt(3));
+    				displayItem.setItemId(rs.getInt(4));
+    				displayItem.setItemName(rs.getString(5)+"");
+    				displayItem.setItemCode(rs.getString(6)+"");
+    				displayItem.setBitIndex(rs.getInt(7));
+    				displayItem.setShowLevel(rs.getInt(8));
+    				displayItem.setSort(rs.getInt(9));
+    				displayItem.setRealtimeCurveConf(rs.getString(10)+"");
+    				displayItem.setHistoryCurveConf(rs.getString(11)+"");
+    				displayItem.setType(rs.getInt(12));
     				int index=-1;
     				for(int i=0;i<displayInstanceOwnItem.getItemList().size();i++){
     					if(displayItem.getItemCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemCode()) && displayItem.getType()==displayInstanceOwnItem.getItemList().get(i).getType()){
@@ -1608,7 +1334,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocolalarminstance t where 1=1 ";
-			String sql="select t3.code as instanceCode,t3.deviceType,t.unitid,t2.protocol,"
+			String sql="select t3.code as instanceCode,t.unitid,t2.protocol,"
 					+ " t.id as itemId,t.itemname,t.itemcode,t.itemaddr,t.bitindex,"
 					+ "t.value,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,decode(t.alarmsign,0,0,t.alarmlevel) as alarmlevel,t.alarmsign,t.type,t.issendmessage,t.issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
@@ -1648,34 +1374,33 @@ public class MemoryDataManagerTask {
 					}
 					
 					alarmInstanceOwnItem.setInstanceCode(rs.getString(1));
-					alarmInstanceOwnItem.setDeviceType(rs.getInt(2));
-					alarmInstanceOwnItem.setUnitId(rs.getInt(3));
-					alarmInstanceOwnItem.setProtocol(rs.getString(4));
+					alarmInstanceOwnItem.setUnitId(rs.getInt(2));
+					alarmInstanceOwnItem.setProtocol(rs.getString(3));
 					
 					if(alarmInstanceOwnItem.getItemList()==null){
 						alarmInstanceOwnItem.setItemList(new ArrayList<AlarmItem>());
 					}
 					AlarmItem alarmItem=new AlarmItem();
-					alarmItem.setUnitId(rs.getInt(3));
-					alarmItem.setItemId(rs.getInt(5));
-					alarmItem.setItemName(rs.getString(6));
-					alarmItem.setItemCode(rs.getString(7));
-					alarmItem.setItemAddr(rs.getInt(8));
-					alarmItem.setBitIndex(rs.getInt(9));
+					alarmItem.setUnitId(rs.getInt(2));
+					alarmItem.setItemId(rs.getInt(4));
+					alarmItem.setItemName(rs.getString(5));
+					alarmItem.setItemCode(rs.getString(6));
+					alarmItem.setItemAddr(rs.getInt(7));
+					alarmItem.setBitIndex(rs.getInt(8));
 					
-					alarmItem.setValue(rs.getFloat(10));
-					alarmItem.setUpperLimit(rs.getFloat(11));
-					alarmItem.setLowerLimit(rs.getFloat(12));
-					alarmItem.setHystersis(rs.getFloat(13));
-					alarmItem.setDelay(rs.getInt(14));
+					alarmItem.setValue(rs.getFloat(9));
+					alarmItem.setUpperLimit(rs.getFloat(10));
+					alarmItem.setLowerLimit(rs.getFloat(11));
+					alarmItem.setHystersis(rs.getFloat(12));
+					alarmItem.setDelay(rs.getInt(13));
 					
-					alarmItem.setAlarmLevel(rs.getInt(15));
-					alarmItem.setAlarmSign(rs.getInt(16));
+					alarmItem.setAlarmLevel(rs.getInt(14));
+					alarmItem.setAlarmSign(rs.getInt(15));
 					
-					alarmItem.setType(rs.getInt(17));
+					alarmItem.setType(rs.getInt(16));
 
-					alarmItem.setIsSendMessage(rs.getInt(18));
-					alarmItem.setIsSendMail(rs.getInt(19));
+					alarmItem.setIsSendMessage(rs.getInt(17));
+					alarmItem.setIsSendMail(rs.getInt(18));
 					
 					int index=-1;
 					for(int i=0;i<alarmInstanceOwnItem.getItemList().size();i++){

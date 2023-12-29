@@ -284,7 +284,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				if("update".equalsIgnoreCase(method)){
 					List<String> offlineWellList=new ArrayList<String>();
 					offlineWellList.add(deviceId+"");
-					EquipmentDriverServerTask.sendDeviceOfflineInfo(offlineWellList,0);
+					EquipmentDriverServerTask.sendDeviceOfflineInfo(offlineWellList);
 				}
 			}
 		}
@@ -509,7 +509,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				if("update".equalsIgnoreCase(method)){
 					List<String> offlineWellList=new ArrayList<String>();
 					offlineWellList.add(deviceId+"");
-					EquipmentDriverServerTask.sendDeviceOfflineInfo(offlineWellList,1);
+					EquipmentDriverServerTask.sendDeviceOfflineInfo(offlineWellList);
 				}
 			}
 		}

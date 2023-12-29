@@ -9,7 +9,6 @@ public class DisplayInstanceOwnItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public String instanceCode;
-	public int deviceType;
 	public String protocol;
 	public int unitId;
 	public List<DisplayItem> itemList;
@@ -99,12 +98,6 @@ public class DisplayInstanceOwnItem implements Serializable {
 	}
 	public void setInstanceCode(String instanceCode) {
 		this.instanceCode = instanceCode;
-	}
-	public int getDeviceType() {
-		return deviceType;
-	}
-	public void setDeviceType(int deviceType) {
-		this.deviceType = deviceType;
 	}
 	public String getProtocol() {
 		return protocol;

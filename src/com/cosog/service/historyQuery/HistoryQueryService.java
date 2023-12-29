@@ -80,13 +80,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
 				
 				if(StringManagerUtils.stringToInteger(deviceType) ==0){
-					if(!jedis.exists("RPCDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					if(!jedis.exists("DeviceInfo".getBytes())){
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
-					deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+					deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				}else{
 					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 				}
@@ -308,12 +308,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
 				if(StringManagerUtils.stringToInteger(deviceType)==0){
-					if(!jedis.exists("RPCDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					if(!jedis.exists("DeviceInfo".getBytes())){
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 				}else if(StringManagerUtils.stringToInteger(deviceType)==1){
 					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 				}
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
@@ -381,8 +381,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String alarmInstanceCode="";
 				int commAlarmLevel=0;
 				if(StringManagerUtils.stringToInteger(deviceType)==0){
-					if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+					if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 						alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
 					}
 				}else if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -589,8 +589,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -629,7 +629,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String hisTableName="tbl_rpcacqdata_hist";
 			String deviceTableName="tbl_rpcdevice";
 			String ddicName="historyQuery_RPCHistoryData";
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
+			String columnsKey="deviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -641,13 +641,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
 			RPCDeviceInfo rpcDeviceInfo=null;
-			if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+			if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 			}
 			String protocolName="";
 			AcqInstanceOwnItem acqInstanceOwnItem=null;
@@ -1041,8 +1041,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -1083,7 +1083,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String hisTableName="tbl_rpcacqdata_hist";
 			String deviceTableName="tbl_rpcdevice";
 			String ddicName="historyQuery_RPCHistoryData";
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
+			String columnsKey="deviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -1095,13 +1095,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
 			RPCDeviceInfo rpcDeviceInfo=null;
-			if(jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+			if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 			}
 			String protocolName="";
 			AcqInstanceOwnItem acqInstanceOwnItem=null;
@@ -1390,7 +1390,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -1431,7 +1431,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
@@ -1700,8 +1700,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -1749,7 +1749,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
@@ -1922,8 +1922,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			UserInfo userInfo=null;
 			String tableName="tbl_rpcacqdata_hist";
 			String deviceTableName="tbl_rpcdevice";
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
-			String deviceInfoKey="RPCDeviceInfo";
+			String columnsKey="deviceAcquisitionItemColumns";
+			String deviceInfoKey="DeviceInfo";
 			String calItemsKey="rpcCalItemList";
 			String inputItemsKey="rpcInputItemList";
 			if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -1940,14 +1940,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			PCPDeviceInfo pcpDeviceInfo=null;
 			if(StringManagerUtils.stringToInteger(deviceType)==0){
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
 				displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode();
 				alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
 			}else{
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
 				displayInstanceCode=pcpDeviceInfo.getDisplayInstanceCode();
@@ -2008,7 +2008,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			String columns = "[";
@@ -2572,10 +2572,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String tableName="tbl_rpcacqdata_hist";
 		String deviceTableName="tbl_rpcdevice";
 		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
+		String columnsKey="deviceAcquisitionItemColumns";
 		String calItemsKey="rpcCalItemList";
 		String inputItemsKey="rpcInputItemList";
-		String deviceInfoKey="RPCDeviceInfo";
+		String deviceInfoKey="DeviceInfo";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			tableName="tbl_pcpacqdata_hist";
 			deviceTableName="tbl_pcpdevice";
@@ -2601,7 +2601,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				if(StringManagerUtils.stringToInteger(deviceType)==0){
 					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
 						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
@@ -2609,7 +2609,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 				}else{
 					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
 						PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
@@ -2645,7 +2645,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
@@ -3054,7 +3054,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		List<DisplayItem> itemList=null;
 		String deviceTableName="tbl_rpcdevice";
 		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
+		String columnsKey="deviceAcquisitionItemColumns";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			deviceTableName="tbl_pcpdevice";
 			graphicSetTableName="tbl_pcpdevicegraphicset";
@@ -3062,7 +3062,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			EquipmentDriverServerTask.loadAcquisitionItemColumns();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
@@ -3465,11 +3465,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
-				if(jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+				if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 					alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
 				}
 				

@@ -84,14 +84,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
 				
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
 				if(!jedis.exists("RPCWorkType".getBytes())){
 					MemoryDataManagerTask.loadRPCWorkType();
 				}
-				deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+				deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -201,13 +201,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
 				
 				if(StringManagerUtils.stringToInteger(deviceType) ==0){
-					if(!jedis.exists("RPCDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					if(!jedis.exists("DeviceInfo".getBytes())){
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
-					deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+					deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				}else{
 					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 				}
@@ -337,13 +337,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
 				
 				if(StringManagerUtils.stringToInteger(deviceType) ==0){
-					if(!jedis.exists("RPCDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					if(!jedis.exists("DeviceInfo".getBytes())){
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
-					deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+					deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				}else{
 					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 				}
@@ -597,8 +597,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -636,12 +636,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String tableName="tbl_rpcacqdata_latest";
 			String deviceTableName="tbl_rpcdevice";
 			String ddicName="realTimeMonitoring_RPCOverview";
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
+			String columnsKey="deviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
@@ -778,8 +778,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				RPCDeviceInfo rpcDeviceInfo=null;
-				if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				String protocolName="";
 				AcqInstanceOwnItem acqInstanceOwnItem=null;
@@ -1062,8 +1062,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -1086,12 +1086,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String tableName="tbl_rpcacqdata_latest";
 			String deviceTableName="tbl_rpcdevice";
 			String ddicName="realTimeMonitoring_RPCOverview";
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
+			String columnsKey="deviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
@@ -1224,8 +1224,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				RPCDeviceInfo rpcDeviceInfo=null;
-				if(jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
+				if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				String protocolName="";
 				AcqInstanceOwnItem acqInstanceOwnItem=null;
@@ -1440,7 +1440,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
 					MemoryDataManagerTask.initAlarmStyle();
@@ -1479,7 +1479,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> ddicColumnsList=new ArrayList<String>();
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
@@ -1766,8 +1766,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -1795,7 +1795,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> ddicColumnsList=new ArrayList<String>();
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
@@ -1987,8 +1987,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		UserInfo userInfo=null;
 		String tableName="tbl_rpcacqdata_latest";
 		String deviceTableName="tbl_rpcdevice";
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
-		String deviceInfoKey="RPCDeviceInfo";
+		String columnsKey="deviceAcquisitionItemColumns";
+		String deviceInfoKey="DeviceInfo";
 		String calItemsKey="rpcCalItemList";
 		String inputItemsKey="rpcInputItemList";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -2009,7 +2009,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				jedis = RedisUtil.jedisPool.getResource();
 				if(StringManagerUtils.stringToInteger(deviceType)==0){
 					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
 						rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
@@ -2018,7 +2018,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}else{
 					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
 						pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
@@ -2083,7 +2083,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			String columns = "[";
@@ -2636,8 +2636,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
 		String deviceTableName="tbl_rpcdevice";
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
-		String deviceInfoKey="RPCDeviceInfo";
+		String columnsKey="deviceAcquisitionItemColumns";
+		String deviceInfoKey="DeviceInfo";
 		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_RPCDeviceInfo");
 		
 		List<String> heads=ddic.getHeaders();
@@ -2645,7 +2645,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			EquipmentDriverServerTask.loadAcquisitionItemColumns();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
@@ -2658,7 +2658,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
 				Object obj =SerializeObjectUnils.unserizlize(dviceInfoByte);
@@ -2919,7 +2919,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public String getRPCDeviceInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String deviceInfoKey="RPCDeviceInfo";
+		String deviceInfoKey="DeviceInfo";
 		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_RPCDeviceInfo");
 		
 		List<String> heads=ddic.getHeaders();
@@ -2931,7 +2931,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
 				Object obj =SerializeObjectUnils.unserizlize(dviceInfoByte);
@@ -3100,12 +3100,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
 		String deviceTableName="tbl_rpcdevice";
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
-		String deviceInfoKey="RPCDeviceInfo";
+		String columnsKey="deviceAcquisitionItemColumns";
+		String deviceInfoKey="DeviceInfo";
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			EquipmentDriverServerTask.loadAcquisitionItemColumns();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
@@ -3118,7 +3118,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
 				Object obj =SerializeObjectUnils.unserizlize(dviceInfoByte);
@@ -3260,7 +3260,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		List<String> fields=ddic.getFields();
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			EquipmentDriverServerTask.loadAcquisitionItemColumns();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
@@ -3274,7 +3274,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					
 				}
 				byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
@@ -3514,7 +3514,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					
 				}
 				byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
@@ -3655,7 +3655,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String deviceInfoKey="PCPDeviceInfo";
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			EquipmentDriverServerTask.loadAcquisitionItemColumns();
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
@@ -3669,7 +3669,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
 				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					
 				}
 				byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
@@ -3873,10 +3873,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String displayInstanceCode="";
 		String tableName="tbl_rpcacqdata_hist";
 		String deviceTableName="tbl_rpcdevice";
-		String columnsKey="rpcDeviceAcquisitionItemColumns";
+		String columnsKey="deviceAcquisitionItemColumns";
 		String calItemsKey="rpcCalItemList";
 		String inputItemsKey="rpcInputItemList";
-		String deviceInfoKey="RPCDeviceInfo";
+		String deviceInfoKey="DeviceInfo";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			tableName="tbl_pcpacqdata_hist";
 			deviceTableName="tbl_pcpdevice";
@@ -3900,13 +3900,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.stringToInteger(deviceType)==0){
 					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
 					displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode();
 				}else{
 					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
 					displayInstanceCode=pcpDeviceInfo.getDisplayInstanceCode();
@@ -3940,7 +3940,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			

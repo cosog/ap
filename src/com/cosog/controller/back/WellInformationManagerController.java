@@ -1070,9 +1070,9 @@ public class WellInformationManagerController extends BaseController {
 		
 		
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,0,"update");
+			MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,0,"update");
+			MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

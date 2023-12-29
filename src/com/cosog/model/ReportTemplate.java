@@ -177,8 +177,6 @@ public class ReportTemplate  implements Serializable{
 	public static class Template implements Comparable<Template>,Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		
-		private int deviceType;
 
 	    private String templateCode;
 
@@ -205,12 +203,6 @@ public class ReportTemplate  implements Serializable{
 			return this.sort-template.getSort();   // 根据地址升序排列，降序修改相减顺序即可
 		}
 	    
-	    public void setDeviceType(int deviceType){
-	        this.deviceType = deviceType;
-	    }
-	    public int getDeviceType(){
-	        return this.deviceType;
-	    }
 	    public void setTemplateCode(String templateCode){
 	        this.templateCode = templateCode;
 	    }

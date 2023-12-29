@@ -1786,7 +1786,7 @@ public class BaseDao extends HibernateDaoSupport {
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
-//				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
+//				MemoryDataManagerTask.loadDeviceInfo(deleteWellList,0,"delete");
 				
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -1803,7 +1803,7 @@ public class BaseDao extends HibernateDaoSupport {
 				executor.execute(dataSynchronizationThread);
 			}
 			if(initWellList.size()>0){
-//				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
+//				MemoryDataManagerTask.loadDeviceInfo(initWellList,1,"update");
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,1,"update");
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -2184,7 +2184,7 @@ public class BaseDao extends HibernateDaoSupport {
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
-//				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
+//				MemoryDataManagerTask.loadDeviceInfo(deleteWellList,0,"delete");
 				
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -2201,7 +2201,7 @@ public class BaseDao extends HibernateDaoSupport {
 				executor.execute(dataSynchronizationThread);
 			}
 			if(initWellList.size()>0){
-//				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
+//				MemoryDataManagerTask.loadDeviceInfo(initWellList,1,"update");
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,1,"update");
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -2367,7 +2367,7 @@ public class BaseDao extends HibernateDaoSupport {
 							pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
 							collisionList.add(pumpingModelHandsontableChangedData.getUpdatelist().get(i));
 							if(saveSign==1){
-								MemoryDataManagerTask.loadRPCDeviceInfoByPumpingId(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId(),"update");
+								MemoryDataManagerTask.loadDeviceInfoByPumpingId(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId(),"update");
 							}
 						}
 					}catch(Exception e){

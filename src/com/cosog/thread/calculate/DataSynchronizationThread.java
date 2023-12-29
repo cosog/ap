@@ -96,19 +96,19 @@ public class DataSynchronizationThread implements Runnable{
 				EquipmentDriverServerTask.initInstanceConfig(initWellList,method);
 				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,method);
 				acquisitionUnitManagerService.doModbusProtocolInstanceBulkDelete(param1);
-				MemoryDataManagerTask.loadRPCDeviceInfoByInstanceCode("","update");
-				MemoryDataManagerTask.loadPCPDeviceInfoByInstanceCode("","update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceCode("","update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceCode("","update");
 			}else if(sign==053){//采控实例修改，但名称未改变
 				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,method);
-				MemoryDataManagerTask.loadRPCDeviceInfoByInstanceId(param1,"update");
-				MemoryDataManagerTask.loadPCPDeviceInfoByInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
 				EquipmentDriverServerTask.initInstanceConfig(initWellList,method);
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1,method);
 			}else if(sign==054){//采控实例修改，但名称改变
 				EquipmentDriverServerTask.initInstanceConfig(deleteList, "delete");
 				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,"update");
-				MemoryDataManagerTask.loadRPCDeviceInfoByInstanceId(param1,"update");
-				MemoryDataManagerTask.loadPCPDeviceInfoByInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
 				EquipmentDriverServerTask.initInstanceConfig(initWellList,"update");
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1, "update");
 			}
@@ -118,12 +118,12 @@ public class DataSynchronizationThread implements Runnable{
 			}else if(sign==062){//删除显示实例
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById(param1,method);
 				acquisitionUnitManagerService.doModbusProtocolDisplayInstanceBulkDelete(param1);
-				MemoryDataManagerTask.loadRPCDeviceInfoByDisplayInstanceCode("","update");
-				MemoryDataManagerTask.loadPCPDeviceInfoByDisplayInstanceCode("","update");
+				MemoryDataManagerTask.loadDeviceInfoByDisplayInstanceCode("","update");
+				MemoryDataManagerTask.loadDeviceInfoByDisplayInstanceCode("","update");
 			}else if(sign==063){//修改显示实例
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById(param1,method);
-				MemoryDataManagerTask.loadRPCDeviceInfoByInstanceId(param1,"update");
-				MemoryDataManagerTask.loadPCPDeviceInfoByInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
 			}
 			
 			else if(sign==071){//添加报警实例
@@ -131,41 +131,41 @@ public class DataSynchronizationThread implements Runnable{
 			}else if(sign==072){//删除报警实例
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemById(param1,method);
 				acquisitionUnitManagerService.doModbusProtocolAlarmInstanceBulkDelete(param1);
-				MemoryDataManagerTask.loadRPCDeviceInfoByAlarmInstanceCode("","update");
-				MemoryDataManagerTask.loadPCPDeviceInfoByAlarmInstanceCode("","update");
+				MemoryDataManagerTask.loadDeviceInfoByAlarmInstanceCode("","update");
+				MemoryDataManagerTask.loadDeviceInfoByAlarmInstanceCode("","update");
 			}else if(sign==073){//修改报警实例
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemById(param1,method);
-				MemoryDataManagerTask.loadRPCDeviceInfoByAlarmInstanceId(param1,"update");
-				MemoryDataManagerTask.loadPCPDeviceInfoByAlarmInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByAlarmInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByAlarmInstanceId(param1,"update");
 			}
 			
 			else if(sign==101){//添加抽油机井
-				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,condition,method);
+				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
 				if(rpcDeviceInformation.getStatus()==1){
-					EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,condition,method);
+					EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
 				}
 				rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, user);
 			}else if(sign==102){//删除抽油机井
-				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(deleteList,condition,method);
-				MemoryDataManagerTask.loadRPCDeviceInfo(deleteList,condition,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(deleteList,condition,method);
+				MemoryDataManagerTask.loadDeviceInfo(deleteList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
 			}else if(sign==103){//修改抽油机井
-				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,condition,method);
-				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,condition,method);
+				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
 			}else if(sign==201){//添加螺杆泵井
-				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,condition,method);
+				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
 				if(pcpDeviceInformation.getStatus()==1){
-					EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,condition,method);
+					EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
 				}
 				pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, user);
 			}else if(sign==202){//删除螺杆泵井
-				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteList,condition,method);
-				MemoryDataManagerTask.loadPCPDeviceInfo(deleteList,condition,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(deleteList,condition,method);
+				MemoryDataManagerTask.loadDeviceInfo(deleteList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
 			}else if(sign==203){//修改螺杆泵井
-				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,condition,method);
-				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,condition,method);
+				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
 			}
 		} catch (SQLException e) {

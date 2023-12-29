@@ -154,7 +154,7 @@ public class StringManagerUtils {
     private static final Pattern COLOR_PATTERN = Pattern.compile("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$");
 
     public static String protocolItemNameToCol(String str) {
-        return "c_" + getAllFirstLetter(str);
+    	return "c_" + getAllFirstLetter(str);
     }
 
     /**

@@ -447,7 +447,7 @@ public class RealTimeMonitoringController extends BaseController {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			int dataSaveMode=1;
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
+			String columnsKey="deviceAcquisitionItemColumns";
 			int DeviceType=0;
 			if((StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300) || StringManagerUtils.stringToInteger(deviceType)==1){
 				columnsKey="pcpDeviceAcquisitionItemColumns";
@@ -455,7 +455,7 @@ public class RealTimeMonitoringController extends BaseController {
 			}
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(DeviceType);
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			

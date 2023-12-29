@@ -107,10 +107,10 @@ public class DriverAPIController extends BaseController{
 		PrintWriter pw=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("RPCDeviceInfo".getBytes())){
-				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+			if(!jedis.exists("DeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 			}
-			List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+			List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 			for(int i=0;i<rpcDeviceInfoByteList.size();i++){
 				String realtimeTable="tbl_rpcacqdata_latest";
 				String historyTable="tbl_rpcacqdata_hist";
@@ -190,14 +190,14 @@ public class DriverAPIController extends BaseController{
 								rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							}
 							String key=rpcDeviceInfo.getId()+"";
-							jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
+							jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
 						}
 					}
 				}
 			}
 
 			if(!jedis.exists("PCPDeviceInfo".getBytes())){
-				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 			}
 			List<byte[]> pcpDeviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 			for(int i=0;i<pcpDeviceInfoByteList.size();i++){
@@ -340,13 +340,13 @@ public class DriverAPIController extends BaseController{
 				int orgId=0;
 				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 				
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
-				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				for(int i=0;i<rpcDeviceInfoByteList.size();i++){
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
@@ -513,7 +513,7 @@ public class DriverAPIController extends BaseController{
 								rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							}
-							jedis.hset("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
+							jedis.hset("DeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
 						}
 						
 						webSocketSendData = new StringBuffer();
@@ -728,13 +728,13 @@ public class DriverAPIController extends BaseController{
 				String wellName="";
 				int orgId=0;
 				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
-				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				for(int i=0;i<rpcDeviceInfoByteList.size();i++){
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
@@ -901,7 +901,7 @@ public class DriverAPIController extends BaseController{
 								rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 								rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							}
-							jedis.hset("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
+							jedis.hset("DeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
 						}
 						
 						webSocketSendData = new StringBuffer();
@@ -1109,10 +1109,10 @@ public class DriverAPIController extends BaseController{
 				RPCDeviceInfo rpcDeviceInfo=null;
 				PCPDeviceInfo pcpDeviceInfo=null;
 				
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
-				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				for(int i=0;i<rpcDeviceInfoByteList.size();i++){
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
@@ -1127,7 +1127,7 @@ public class DriverAPIController extends BaseController{
 				
 				if(rpcDeviceInfo==null){
 					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					List<byte[]> pcpDeviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 					for(int i=0;i<pcpDeviceInfoByteList.size();i++){
@@ -1189,10 +1189,10 @@ public class DriverAPIController extends BaseController{
 				RPCDeviceInfo rpcDeviceInfo=null;
 				PCPDeviceInfo pcpDeviceInfo=null;
 				
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
-				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 				for(int i=0;i<rpcDeviceInfoByteList.size();i++){
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
@@ -1207,7 +1207,7 @@ public class DriverAPIController extends BaseController{
 				
 				if(rpcDeviceInfo==null){
 					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					List<byte[]> pcpDeviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
 					for(int i=0;i<pcpDeviceInfoByteList.size();i++){
@@ -1325,7 +1325,7 @@ public class DriverAPIController extends BaseController{
 			String rawDataTable="tbl_rpcacqrawdata";
 			String totalDataTable="tbl_rpcdailycalculationdata";
 			String functionCode="rpcDeviceRealTimeMonitoringData";
-			String columnsKey="rpcDeviceAcquisitionItemColumns";
+			String columnsKey="deviceAcquisitionItemColumns";
 			int DeviceType=0;
 			if(rpcDeviceInfo.getDeviceType()>=100 && rpcDeviceInfo.getDeviceType()<200){
 				DeviceType=0;
@@ -1334,7 +1334,7 @@ public class DriverAPIController extends BaseController{
 			}
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(DeviceType);
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 				acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
@@ -2769,8 +2769,8 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					//放入内存数据库中
-					if(jedis!=null && jedis.hexists("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes())){
-						jedis.hset("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
+					if(jedis!=null && jedis.hexists("DeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes())){
+						jedis.hset("DeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
 					}
 					if(jedis!=null && deviceTodayData!=null){
 						jedis.hset("RPCDeviceTodayData".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
@@ -3116,7 +3116,7 @@ public class DriverAPIController extends BaseController{
 			}
 			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns(DeviceType);
+				EquipmentDriverServerTask.loadAcquisitionItemColumns();
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			if(acqGroup!=null){

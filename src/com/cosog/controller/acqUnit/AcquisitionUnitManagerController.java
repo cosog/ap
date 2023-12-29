@@ -755,7 +755,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
-				String columnsKey="rpcDeviceAcquisitionItemColumns";
+				String columnsKey="deviceAcquisitionItemColumns";
 				Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 				if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
 					EquipmentDriverServerTask.loadAcquisitionItemColumns();
@@ -846,7 +846,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
-				String columnsKey="rpcDeviceAcquisitionItemColumns";
+				String columnsKey="deviceAcquisitionItemColumns";
 				Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 				if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
 					EquipmentDriverServerTask.loadAcquisitionItemColumns();

@@ -6,7 +6,6 @@ import java.util.List;
 public class AcqInstanceOwnItem  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public String instanceCode;
-	public int deviceType;
 	public String acqProtocolType;
 	public String ctrlProtocolType;
 	public String protocol;
@@ -59,12 +58,6 @@ public class AcqInstanceOwnItem  implements Serializable {
 	}
 	public void setInstanceCode(String instanceCode) {
 		this.instanceCode = instanceCode;
-	}
-	public int getDeviceType() {
-		return deviceType;
-	}
-	public void setDeviceType(int deviceType) {
-		this.deviceType = deviceType;
 	}
 	public String getProtocol() {
 		return protocol;

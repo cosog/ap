@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +43,6 @@ import com.cosog.model.calculate.RPCCalculateResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.UserInfo;
-import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
@@ -250,7 +248,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			Map<String,DataMapping> loadProtocolMappingColumnMap=new HashMap();
+			Map<String,DataMapping> loadProtocolMappingColumnMap=new HashMap<String,DataMapping>();
 			
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);
@@ -272,7 +270,6 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			if(jedis!=null){
 				jedis.del("ProtocolMappingColumn".getBytes());
-				
 				for (Map.Entry<String, DataMapping> entry : loadProtocolMappingColumnMap.entrySet()) {
 				    String key = entry.getKey();
 				    DataMapping dataMapping = entry.getValue();
@@ -300,7 +297,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=new HashMap();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=new HashMap<String,DataMapping>();
 			
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);
@@ -322,7 +319,6 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			if(jedis!=null){
 				jedis.del("ProtocolMappingColumn".getBytes());
-				
 				for (Map.Entry<String, DataMapping> entry : loadProtocolMappingColumnByTitleMap.entrySet()) {
 				    String key = entry.getKey();
 				    DataMapping dataMapping = entry.getValue();

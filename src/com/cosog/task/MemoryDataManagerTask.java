@@ -237,14 +237,115 @@ public class MemoryDataManagerTask {
 		StringManagerUtils.printLog("驱动加载结束");
 	}
 	
+	public static List<String> getAcqTableColumn(String tableName){
+		List<String> tableColumnList=new ArrayList<>();
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		String sql="select t.COLUMN_NAME from user_tab_cols t "
+				+ " where t.TABLE_NAME=UPPER('"+tableName+"') "
+				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
+				+ " order by t.COLUMN_ID";
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			if(conn!=null){
+	        	pstmt = conn.prepareStatement(sql);
+				rs=pstmt.executeQuery();
+				while(rs.next()){
+					String columnName=rs.getString(1);
+					tableColumnList.add(columnName);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return tableColumnList;
+	}
+	
+	public static int loadAcqTableColumn(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> tableColumnList=new ArrayList<>();
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		int result=0;
+		String sql="select t.COLUMN_NAME from user_tab_cols t "
+				+ " where t.TABLE_NAME=UPPER('TBL_ACQDATA_LATEST') "
+				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
+				+ " order by t.COLUMN_ID";
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			if(conn==null){
+				result= -1;
+	        }else{
+	        	pstmt = conn.prepareStatement(sql);
+				rs=pstmt.executeQuery();
+				while(rs.next()){
+					String columnName=rs.getString(1);
+					tableColumnList.add(columnName);
+				}
+	        }
+		} catch (SQLException e) {
+			result= -1;
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		dataModelMap.put("acqTableColumnList", tableColumnList);
+		return result;
+	}
+	
+	public static List<String> getAcqTableColumn(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> tableColumnList=new ArrayList<>();
+		if(!dataModelMap.containsKey("acqTableColumnList") || dataModelMap.get("acqTableColumnList")==null){
+			loadAcqTableColumn();
+		}
+		tableColumnList=(List<String>) dataModelMap.get("acqTableColumnList");
+		return tableColumnList;
+	}
+	
+	public static void loadAcquisitionItemNameList(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> acquisitionItemNameList=new ArrayList<>();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		if(modbusProtocolConfig!=null){
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
+				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+					if(!StringManagerUtils.existOrNot(acquisitionItemNameList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
+						acquisitionItemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+					}
+				}
+			}
+		}
+		dataModelMap.put("acquisitionItemNameList", acquisitionItemNameList);
+	}
+	
+	public static List<String> getAcquisitionItemNameList(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> acquisitionItemNameList=new ArrayList<>();
+		if(!dataModelMap.containsKey("acquisitionItemNameList") || dataModelMap.get("acquisitionItemNameList")==null){
+			loadAcquisitionItemNameList();
+		}
+		acquisitionItemNameList=(List<String>) dataModelMap.get("acquisitionItemNameList");
+		return acquisitionItemNameList;
+	}
+	
 	public static void loadProtocolMappingColumn(){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		
+		
+		
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null){
         	return;
         }
+		
 		Jedis jedis=null;
 		try {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();

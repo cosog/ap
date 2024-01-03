@@ -33,6 +33,7 @@ import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AdInitMap;
 import com.cosog.utils.Config;
+import com.cosog.utils.DataModelMap;
 import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.RedisUtil;
@@ -422,106 +423,153 @@ public class EquipmentDriverServerTask {
 
 	public static int loadAcquisitionItemColumns(){
 		loadAcquisitionItemNameColumns();
+		
+		
+		MemoryDataManagerTask.loadAcquisitionItemNameList();
+		
 		syncDataMappingTable();
 		return 0;
 	}
 	
-	public static int loadAcquisitionItemNameColumns(){
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		if(modbusProtocolConfig!=null){
-			Collections.sort(modbusProtocolConfig.getProtocol());
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			Map<String,String> deviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
-			
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
-				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-					if(!StringManagerUtils.existOrNot(deviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
-						String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
-						String itemColumn="";
-						if(!StringManagerUtils.existOrNotByValue(deviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
-							itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-						}else{
-							for(int index=2;1==1;index++){
-								if(!StringManagerUtils.existOrNot(deviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index,false)){
-									itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
-									break;
-								}
-							}
-						}
-						deviceAcquisitionItemColumns.put(itemName, itemColumn);
-					}
-				}
-			}
-			acquisitionItemColumnsMap.put("deviceAcquisitionItemColumns", deviceAcquisitionItemColumns);
-		}
-		return 0;
-	}
+	
+	
+//	public static int loadAcquisitionItemNameColumns(){
+//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//		if(modbusProtocolConfig!=null){
+//			Collections.sort(modbusProtocolConfig.getProtocol());
+//			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+//			Map<String,String> deviceAcquisitionItemColumns=new LinkedHashMap<String,String>();
+//			
+//			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+//				Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
+//				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+//					if(!StringManagerUtils.existOrNot(deviceAcquisitionItemColumns, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle(),false)){
+//						String itemName=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle();
+//						String itemColumn="";
+//						if(!StringManagerUtils.existOrNotByValue(deviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()),false)){
+//							itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+//						}else{
+//							for(int index=2;1==1;index++){
+//								if(!StringManagerUtils.existOrNot(deviceAcquisitionItemColumns,StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index,false)){
+//									itemColumn=StringManagerUtils.protocolItemNameToCol(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())+index;
+//									break;
+//								}
+//							}
+//						}
+//						deviceAcquisitionItemColumns.put(itemName, itemColumn);
+//					}
+//				}
+//			}
+//			acquisitionItemColumnsMap.put("deviceAcquisitionItemColumns", deviceAcquisitionItemColumns);
+//		}
+//		return 0;
+//	}
 	
 	public static int initAcquisitionItemDataBaseColumns(){
 		int result=initAcquisitionItemDataBaseColumns("tbl_acqdata_hist");
 		result=initAcquisitionItemDataBaseColumns("tbl_acqdata_latest");
 		result=initAcquisitionItemDataBaseColumns("tbl_timingcalculationdata");
 		result=initAcquisitionItemDataBaseColumns("tbl_dailycalculationdata");
+		MemoryDataManagerTask.loadAcqTableColumn();
 		return result;
 	}
 	
 	public static int initAcquisitionItemDataBaseColumns(String tableName){
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		if(modbusProtocolConfig==null){
-			return 0;
-		}
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		int result=0;
-		String columnsKey="deviceAcquisitionItemColumns";
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			loadAcquisitionItemColumns();
-		}
-		Map<String,String> acquisitionItemColumns=acquisitionItemColumnsMap.get(columnsKey);
-		List<String> acquisitionItemDataBaseColumns=new ArrayList<String>();
-		String sql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+tableName+"') order by t.COLUMN_ID";
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return -1;
-        }
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				String columnName=rs.getString(1);
-				if((!StringManagerUtils.databaseColumnFiter(columnName)) && columnName.toUpperCase().startsWith("C_")){
-					acquisitionItemDataBaseColumns.add(columnName);
+		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn(tableName);
+		List<String> acquisitionItemNameList=MemoryDataManagerTask.getAcquisitionItemNameList();
+		if(acquisitionItemNameList.size()>tableColumnList.size()){
+			Connection conn = null;   
+			PreparedStatement pstmt = null;   
+			ResultSet rs = null;
+			conn=OracleJdbcUtis.getConnection();
+			if(conn==null){
+	        	return -1;
+	        }
+			try {
+				while(acquisitionItemNameList.size()>tableColumnList.size()){
+					int addColumnCount=acquisitionItemNameList.size()-tableColumnList.size();
+					int currentColumnCount=tableColumnList.size();
+					for(int i=currentColumnCount+1;i<=addColumnCount;i++){
+						try {
+							String addColumnName="C_CLOUMN"+i;
+							String addColumsSql="alter table "+tableName+" add "+addColumnName+" VARCHAR2(4000)";
+							pstmt = conn.prepareStatement(addColumsSql);
+							pstmt.executeUpdate();
+							acquisitionItemNameList.add(addColumnName);
+							StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"添加字段:"+addColumnName);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally{
+				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			}
-			//如驱动配置中不存在，删除字段
-			for(int i=0;i<acquisitionItemDataBaseColumns.size();i++){
-				if(!StringManagerUtils.existOrNotByValue(acquisitionItemColumns,acquisitionItemDataBaseColumns.get(i),false)){
-					String deleteColumsSql="alter table "+tableName+" drop column "+acquisitionItemDataBaseColumns.get(i);
-					pstmt = conn.prepareStatement(deleteColumsSql);
-					pstmt.executeUpdate();
-					result++;
-					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"删除字段:"+acquisitionItemDataBaseColumns.get(i));
-				}
-			}
-			//如数据库中不存在，添加字段
-			for(String key : acquisitionItemColumns.keySet()) {
-				if(!StringManagerUtils.existOrNot(acquisitionItemDataBaseColumns,acquisitionItemColumns.get(key),false)){
-					String addColumsSql="alter table "+tableName+" add "+acquisitionItemColumns.get(key)+" VARCHAR2(4000)";
-					pstmt = conn.prepareStatement(addColumsSql);
-					pstmt.executeUpdate();
-					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"添加字段:"+acquisitionItemColumns.get(key));
-					result++;
-				}
-			}
-			StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-"+tableName+"同步数据库字段");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
+		
+		
+		
+		
+//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//		if(modbusProtocolConfig==null){
+//			return 0;
+//		}
+//		Connection conn = null;   
+//		PreparedStatement pstmt = null;   
+//		ResultSet rs = null;
+//		int result=0;
+//		String columnsKey="deviceAcquisitionItemColumns";
+//		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+//		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
+//			loadAcquisitionItemColumns();
+//		}
+//		Map<String,String> acquisitionItemColumns=acquisitionItemColumnsMap.get(columnsKey);
+//		List<String> acquisitionItemDataBaseColumns=new ArrayList<String>();
+//		String sql="select t.COLUMN_NAME from user_tab_cols t "
+//				+ " where t.TABLE_NAME=UPPER('"+tableName+"') "
+//				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
+//				+ " order by t.COLUMN_ID";
+//		conn=OracleJdbcUtis.getConnection();
+//		if(conn==null){
+//        	return -1;
+//        }
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//			rs=pstmt.executeQuery();
+//			while(rs.next()){
+//				String columnName=rs.getString(1);
+//				if((!StringManagerUtils.databaseColumnFiter(columnName)) && columnName.toUpperCase().startsWith("C_")){
+//					acquisitionItemDataBaseColumns.add(columnName);
+//				}
+//			}
+//			//如驱动配置中不存在，删除字段
+//			for(int i=0;i<acquisitionItemDataBaseColumns.size();i++){
+//				if(!StringManagerUtils.existOrNotByValue(acquisitionItemColumns,acquisitionItemDataBaseColumns.get(i),false)){
+//					String deleteColumsSql="alter table "+tableName+" drop column "+acquisitionItemDataBaseColumns.get(i);
+//					pstmt = conn.prepareStatement(deleteColumsSql);
+//					pstmt.executeUpdate();
+//					result++;
+//					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"删除字段:"+acquisitionItemDataBaseColumns.get(i));
+//				}
+//			}
+//			//如数据库中不存在，添加字段
+//			for(String key : acquisitionItemColumns.keySet()) {
+//				if(!StringManagerUtils.existOrNot(acquisitionItemDataBaseColumns,acquisitionItemColumns.get(key),false)){
+//					String addColumsSql="alter table "+tableName+" add "+acquisitionItemColumns.get(key)+" VARCHAR2(4000)";
+//					pstmt = conn.prepareStatement(addColumsSql);
+//					pstmt.executeUpdate();
+//					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"添加字段:"+acquisitionItemColumns.get(key));
+//					result++;
+//				}
+//			}
+//			StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-"+tableName+"同步数据库字段");
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally{
+//			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+//		}
 		
 		return result;
 	}

@@ -8,10 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,6 @@ import com.cosog.model.AcquisitionGroup;
 import com.cosog.model.AcquisitionGroupItem;
 import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AcquisitionUnitGroup;
-import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AlarmUnit;
 import com.cosog.model.AlarmUnitItem;
 import com.cosog.model.CurveConf;
@@ -35,19 +30,11 @@ import com.cosog.model.ProtocolModel;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
-import com.cosog.model.User;
 import com.cosog.model.ReportTemplate.Template;
-import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.CalculateColumnInfo;
-import com.cosog.model.calculate.DisplayInstanceOwnItem;
-import com.cosog.model.calculate.PCPDeviceInfo;
-import com.cosog.model.calculate.RPCDeviceInfo;
-import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
-import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ImportProtocolContent;
-import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
@@ -58,17 +45,11 @@ import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
-import com.cosog.thread.calculate.DataSynchronizationThread;
-import com.cosog.thread.calculate.ThreadPool;
-import com.cosog.utils.AcquisitionItemColumnsMap;
-import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
-import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
-import com.cosog.utils.TcpServerConfigMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -4627,25 +4608,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getDatabaseColumnMappingTable(String classes,String deviceType,String protocolCode) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer calColumnNameBuff = new StringBuffer();
-		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where t.protocoltype="+deviceType;
+		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1";
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-						String columnsKey="deviceAcquisitionItemColumns";
-						if(StringManagerUtils.stringToInteger(deviceType)==1){
-							columnsKey="pcpDeviceAcquisitionItemColumns";
-						}
-						Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-						if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-							EquipmentDriverServerTask.loadAcquisitionItemColumns();
-							acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-						}
-						Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							String columnName="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+							}
 							protocolMappingColumnList.add(columnName);
 						}
 						if(protocolMappingColumnList.size()>0){
@@ -4704,20 +4680,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolRunStatusItems(String classes,String deviceType,String protocolCode) {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		
-		String columnsKey="deviceAcquisitionItemColumns";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			columnsKey="pcpDeviceAcquisitionItemColumns";
-		}
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns();
-			acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		}
-		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
-		
-		
-		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where t.protocoltype="+deviceType;
+		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1 ";
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
 			if(modbusProtocolConfig!=null){
@@ -4725,7 +4691,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode()) ){
 						
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							String columnName="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+							}
 							protocolMappingColumnList.add(columnName);
 						}
 						if(protocolMappingColumnList.size()>0){
@@ -4738,25 +4707,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 			}
 		}
-				
-				
-//		sql+=" and upper(t.calcolumn)='RUNSTATUS' ";
 		sql+= "order by t.id";
-		
 		String configedRunStatusSql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.protocoltype,t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition "
 				+ " from TBL_RUNSTATUSCONFIG t "
-				+ " where t.protocol='"+protocolCode+"' "
-				+ " and t.protocoltype="+deviceType;
-		
+				+ " where t.protocol='"+protocolCode+"' ";
 		int configedRunStatusIndex=-99;
 		String configedRunStatusol="";
 		
 		String columns="["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-//				+ "{ \"header\":\"协议\",\"dataIndex\":\"protocolName\",\"flex\":3,\"children\":[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
-//				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",\"flex\":2,\"children\":[] },"
-//				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",\"flex\":3,\"children\":[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sql);
 		List<?> configedRunStatusList=this.findCallSql(configedRunStatusSql);
@@ -4777,7 +4737,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.stringToInteger(classes)==1){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							String columnName="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+							}
+							
 							for (int k = 0; k < list.size(); k++) {
 								Object[] obj = (Object[]) list.get(k);
 								if((obj[2]+"").equalsIgnoreCase(columnName)){
@@ -4794,7 +4758,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}else{
 					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-						String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+						String columnName="";
+						if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+							columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+						}
 						for (int k = 0; k < list.size(); k++) {
 							Object[] obj = (Object[]) list.get(k);
 							if((obj[2]+"").equalsIgnoreCase(columnName)){
@@ -4815,7 +4782,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{\"success\":true,\"totalCount\":" + protocolNameList.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
 		for (int i = 0; i < protocolNameList.size(); i++) {
 			result_json.append("{\"id\":\""+(i+1)+"\",");
-			result_json.append("\"deviceType\":"+deviceType+",");
 			result_json.append("\"protocolName\":\""+protocolNameList.get(i)+"\",");
 			result_json.append("\"protocolCode\":\""+protocolCodeList.get(i)+"\",");
 			result_json.append("\"resolutionMode\":"+resolutionModeList.get(i)+",");
@@ -4839,16 +4805,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		String columnsKey="deviceAcquisitionItemColumns";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			columnsKey="pcpDeviceAcquisitionItemColumns";
-		}
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns();
-			acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		}
-		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		
 		List<Integer> runValueIndexList=new ArrayList<Integer>();
 		List<Integer> runConfigValueList=new ArrayList<Integer>();
@@ -4859,7 +4817,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> stopConditionList=new ArrayList<>();
 		String setValueSql="select t.runvalue,t.stopvalue,t.runcondition,t.stopcondition"
 				+ " from tbl_runstatusconfig t "
-				+ " where t.protocol='"+protocolCode+"' and t.itemname='"+itemName+"' and t.itemmappingcolumn='"+itemColumn+"' and t.protocoltype="+deviceType;
+				+ " where t.protocol='"+protocolCode+"' and t.itemname='"+itemName+"' and t.itemmappingcolumn='"+itemColumn+"' ";
 		List<?> list=this.findCallSql(setValueSql);
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
@@ -4923,7 +4881,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-							String columnName=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
+							String columnName="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+							}
 							if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
 								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
 									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
@@ -5036,8 +4997,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumnName());
 				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"'"
 						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName()+"' "
-						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn()+"' "
-						+ " and t.protocoltype="+protocolType;
+						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn()+"' ";
 				getBaseDao().updateOrDeleteBySql(updateSql);
 			}
 		}
@@ -5046,21 +5006,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public int saveProtocolRunStatusConfig(String protocolCode,String resolutionMode,String itemName,String itemColumn,String deviceType,
 			String runValue,String stopValue,String runCondition,String stopCondition) throws Exception {
 		String recordCountSql="select count(1) from tbl_runstatusconfig t "
-				+ " where t.protocol='"+protocolCode+"' "
-				+ " and t.protocoltype="+deviceType;
+				+ " where t.protocol='"+protocolCode+"' ";
 		int recordCount=this.getTotalCountRows(recordCountSql);
 		String insertOrUpdateSql="";
 		if(recordCount==0){
-			insertOrUpdateSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,resolutionMode,runvalue,stopvalue,runCondition,stopCondition,protocoltype) "
-					+ "values ('"+protocolCode+"','"+itemName+"','"+itemColumn+"',"+resolutionMode+",'"+runValue+"','"+stopValue+"','"+runCondition+"','"+stopCondition+"',"+deviceType+")";
+			insertOrUpdateSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,resolutionMode,runvalue,stopvalue,runCondition,stopCondition) "
+					+ "values ('"+protocolCode+"','"+itemName+"','"+itemColumn+"',"+resolutionMode+",'"+runValue+"','"+stopValue+"','"+runCondition+"','"+stopCondition+"')";
 		}else{
 			insertOrUpdateSql="update tbl_runstatusconfig t"
 					+ " set t.resolutionMode="+resolutionMode+","
 					+ " t.itemname='"+itemName+"',t.itemmappingcolumn='"+itemColumn+"', "
 					+ " t.runValue='"+runValue+"',t.stopValue='"+stopValue+"', "
 					+ " t.runCondition='"+runCondition+"',t.stopCondition='"+stopCondition+"' "
-					+ " where t.protocol='"+protocolCode+"' "
-					+ " and t.protocoltype="+deviceType;
+					+ " where t.protocol='"+protocolCode+"' ";
 		}
 		
 		int result=getBaseDao().updateOrDeleteBySql(insertOrUpdateSql);
@@ -5224,7 +5182,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				protocolBuff.append("\"Id\":\""+obj[0]+"\",");
 				protocolBuff.append("\"Name\":\""+obj[1]+"\",");
 				protocolBuff.append("\"Code\":\""+obj[2]+"\",");
-				protocolBuff.append("\"DeviceType\":"+obj[3]+",");
 				protocolBuff.append("\"Sort\":"+obj[4]+",");
 				protocolBuff.append("\"Items\":"+itemsStr+"");
 				protocolBuff.append("}");
@@ -5586,7 +5543,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(StringManagerUtils.isNotNull(alarmInstanceStr)){
-							String alarmInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t.devicetype,t.sort "
+							String alarmInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t.sort "
 									+ " from TBL_PROTOCOLALARMINSTANCE t,tbl_alarm_unit_conf t2 "
 									+ " where t.alarmunitid=t2.id "
 									+ " and t.id in ("+alarmInstanceStr+") and t2.id in ("+alarmUnitStr+") "
@@ -5602,8 +5559,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									alarmInstance.setCode(alarmInstanceObj[2]+"");
 									alarmInstance.setAlarmUnitId(StringManagerUtils.stringToInteger(alarmInstanceObj[3]+""));
 									
-									if(StringManagerUtils.isInteger(alarmInstanceObj[5]+"")){
-										alarmInstance.setSort(StringManagerUtils.stringToInteger(alarmInstanceObj[5]+""));
+									if(StringManagerUtils.isInteger(alarmInstanceObj[4]+"")){
+										alarmInstance.setSort(StringManagerUtils.stringToInteger(alarmInstanceObj[4]+""));
 									}else{
 										alarmInstance.setSort(-99);
 									}
@@ -5957,9 +5914,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0 ){
 			String key="rpcCalItemList";
-//			if(exportProtocolConfig.getProtocol().getDeviceType()==1){
-//				key="pcpCalItemList";
-//			}
 			Jedis jedis=null;
 			
 			try{
@@ -6290,17 +6244,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					MemoryDataManagerTask.loadRPCCalculateItem();
 				}
 				calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
-//				if(exportProtocolConfig.getProtocol().getDeviceType()==0){
-//					if(!jedis.exists("rpcCalItemList".getBytes())){
-//						MemoryDataManagerTask.loadRPCCalculateItem();
-//					}
-//					calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
-//				}else{
-//					if(!jedis.exists("pcpCalItemList".getBytes())){
-//						MemoryDataManagerTask.loadPCPCalculateItem();
-//					}
-//					calItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
-//				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
@@ -7751,11 +7694,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ " where t.id= "+existRunStatusConfigId;
 						this.getBaseDao().updateOrDeleteBySql(updateRunStatusConfigSql);
 					}else{
-						String addRunStatusConfigSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,runvalue,stopvalue,protocoltype) "
+						String addRunStatusConfigSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,runvalue,stopvalue) "
 								+ "values ('"+existProtocolCode+"','"+exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getItemName()+"',"
 								+ "'"+exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getItemMappingColumn()+"',"
-								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getRunValue(), ",")+"',"
-								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getStopValue(), ",")
+								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getRunValue(), "',")+"',"
+								+ "'"+StringUtils.join(exportProtocolConfig.getProtocolRunStatusConfigList().get(0).getStopValue(), "',")
 								+")";
 						this.getBaseDao().updateOrDeleteBySql(addRunStatusConfigSql);
 					}

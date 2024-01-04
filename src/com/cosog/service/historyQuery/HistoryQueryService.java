@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.CurveConf;
+import com.cosog.model.DataMapping;
 import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
@@ -581,7 +582,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getDeviceHistoryData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=1;
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		Gson gson = new Gson();
@@ -626,24 +626,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			
 			String hisTableName="tbl_rpcacqdata_hist";
 			String deviceTableName="tbl_rpcdevice";
 			String ddicName="historyQuery_RPCHistoryData";
-			String columnsKey="deviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
 				hisTableName="tbl_pcpacqdata_hist";
 				deviceTableName="tbl_pcpdevice";
 				ddicName="historyQuery_PCPHistoryData";
-				columnsKey="pcpDeviceAcquisitionItemColumns";
 			}
-			
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns();
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
 			RPCDeviceInfo rpcDeviceInfo=null;
 			if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
@@ -726,14 +722,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
-				if(dataSaveMode==0){
-					if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
-				}else{
-					if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
+				if(StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
+					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}
 			for(int i=0;i<ddicColumnsList.size();i++){
@@ -945,7 +935,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
-							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
+							String col="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+								col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
+							}
 							if(col!=null&&col.equalsIgnoreCase(ddicColumnsList.get(j))){
 								item=protocol.getItems().get(k);
 								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
@@ -1034,7 +1027,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String orgId,String deviceId,String deviceName,String deviceType,Page pager){
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=1;
 		Jedis jedis=null;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1079,25 +1071,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    sheetDataList.add(headRow);
 			
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
 			
 			String hisTableName="tbl_rpcacqdata_hist";
 			String deviceTableName="tbl_rpcdevice";
 			String ddicName="historyQuery_RPCHistoryData";
-			String columnsKey="deviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
 				hisTableName="tbl_pcpacqdata_hist";
 				deviceTableName="tbl_pcpdevice";
 				ddicName="historyQuery_PCPHistoryData";
-				columnsKey="pcpDeviceAcquisitionItemColumns";
 			}
-			
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns();
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
 			RPCDeviceInfo rpcDeviceInfo=null;
 			if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
@@ -1168,14 +1155,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
-				if(dataSaveMode==0){
-					if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
-				}else{
-					if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-						ddicColumnsList.add(ddicColumns[i]);
-					}
+				if(StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
+					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}
 			for(int i=0;i<ddicColumnsList.size();i++){
@@ -1333,7 +1314,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					String value=rawValue;
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
-							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
+							String col="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+								col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
+							}
 							if(col!=null&&col.equalsIgnoreCase(ddicColumnsList.get(j))){
 								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
@@ -1917,19 +1901,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			AlarmShowStyle alarmShowStyle=null;
 			DisplayInstanceOwnItem displayInstanceOwnItem=null;
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+			
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			
 			List<byte[]> calItemSet=null;
 			List<byte[]> inputItemSet=null;
 			UserInfo userInfo=null;
 			String tableName="tbl_rpcacqdata_hist";
 			String deviceTableName="tbl_rpcdevice";
-			String columnsKey="deviceAcquisitionItemColumns";
 			String deviceInfoKey="DeviceInfo";
 			String calItemsKey="rpcCalItemList";
 			String inputItemsKey="rpcInputItemList";
 			if(StringManagerUtils.stringToInteger(deviceType)!=0){
 				tableName="tbl_pcpacqdata_hist";
 				deviceTableName="tbl_pcpdevice";
-				columnsKey="pcpDeviceAcquisitionItemColumns";
 				deviceInfoKey="PCPDeviceInfo";
 				calItemsKey="pcpCalItemList";
 				inputItemsKey="pcpInputItemList";
@@ -1938,23 +1925,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String alarmInstanceCode="";
 			RPCDeviceInfo rpcDeviceInfo=null;
 			PCPDeviceInfo pcpDeviceInfo=null;
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-				displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode();
-				alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
-			}else{
-				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-				displayInstanceCode=pcpDeviceInfo.getDisplayInstanceCode();
-				alarmInstanceCode=pcpDeviceInfo.getAlarmInstanceCode();
+
+			if(!jedis.exists(deviceInfoKey.getBytes())){
+				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 			}
-			
-			
+			rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+			displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode();
+			alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
 			
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
@@ -2006,11 +1983,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(!jedis.exists("RPCWorkType".getBytes())){
 				MemoryDataManagerTask.loadRPCWorkType();
 			}
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns();
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			String columns = "[";
 			for(int i=1;i<=items;i++){
 				columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
@@ -2055,7 +2027,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==0 
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())
-										&& StringManagerUtils.existOrNot(tableColumnsList, dataSaveMode==0?("addr"+protocol.getItems().get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle())), false)
+										&& StringManagerUtils.existOrNot(tableColumnsList,loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle()).getMappingColumn(), false)
 										
 										){
 									protocolItems.add(protocol.getItems().get(j));
@@ -2099,7 +2071,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 					String sql="select t.id,t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
 					for(int j=0;j<protocolItems.size();j++){
-						String col=dataSaveMode==0?("addr"+protocolItems.get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocolItems.get(j).getTitle()));
+						String col=loadProtocolMappingColumnByTitleMap.get(protocolItems.get(j).getTitle()).getMappingColumn();
 						sql+=",t2."+col;
 					}
 
@@ -2298,7 +2270,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							String value=obj[j+6]+"";
 							String rawValue=value;
 							String addr=protocolItems.get(j).getAddr()+"";
-							String column=dataSaveMode==0?("addr"+protocolItems.get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocolItems.get(j).getTitle()));
+							
+							String column=loadProtocolMappingColumnByTitleMap.get(protocolItems.get(j).getTitle()).getMappingColumn();
 							String columnDataType=protocolItems.get(j).getIFDataType();
 							String resolutionMode=protocolItems.get(j).getResolutionMode()+"";
 							String bitIndex="";
@@ -2569,22 +2542,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int dataSaveMode=1;
 		String displayInstanceCode="";
 		String graphicSet="{}";
-		String tableName="tbl_rpcacqdata_hist";
-		String deviceTableName="tbl_rpcdevice";
-		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		String columnsKey="deviceAcquisitionItemColumns";
+		String tableName="tbl_acqdata_hist";
+		String deviceTableName="tbl_device";
+		String graphicSetTableName="tbl_devicegraphicset";
 		String calItemsKey="rpcCalItemList";
 		String inputItemsKey="rpcInputItemList";
 		String deviceInfoKey="DeviceInfo";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="tbl_pcpacqdata_hist";
-			deviceTableName="tbl_pcpdevice";
-			graphicSetTableName="tbl_pcpdevicegraphicset";
-			columnsKey="pcpDeviceAcquisitionItemColumns";
-			calItemsKey="pcpCalItemList";
-			inputItemsKey="pcpInputItemList";
-			deviceInfoKey="PCPDeviceInfo";
-		}
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
@@ -2643,11 +2608,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				e.printStackTrace();
 			}
 			
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns();
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			
 			List<String> itemNameList=new ArrayList<String>();
 			List<String> itemColumnList=new ArrayList<String>();
@@ -2715,7 +2675,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									if("0".equalsIgnoreCase(type)){
 										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
-												String col=dataSaveMode==0?("addr"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()));
+												String col="";
+												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
+													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
+												}
 												itemColumnList.add(col);
 												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
 													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
@@ -2799,7 +2762,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									if("0".equalsIgnoreCase(type)){
 										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
-												String col=dataSaveMode==0?("addr"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()));
+												String col="";
+												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
+													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
+												}
 												itemColumnList.add(col);
 												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
 													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
@@ -3052,19 +3018,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		java.lang.reflect.Type type=null;
 		int dataSaveMode=1;
 		List<DisplayItem> itemList=null;
-		String deviceTableName="tbl_rpcdevice";
-		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		String columnsKey="deviceAcquisitionItemColumns";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			deviceTableName="tbl_pcpdevice";
-			graphicSetTableName="tbl_pcpdevicegraphicset";
-			columnsKey="pcpDeviceAcquisitionItemColumns";
-		}
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			EquipmentDriverServerTask.loadAcquisitionItemColumns();
-		}
-		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+		String deviceTableName="tbl_device";
+		String graphicSetTableName="tbl_devicegraphicset";
 		
 		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 				+ " where t.instancecode=t2.code and t2.unitid=t3.id"

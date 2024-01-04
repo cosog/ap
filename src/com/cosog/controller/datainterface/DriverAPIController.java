@@ -62,6 +62,7 @@ import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
+import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.ProtocolItemResolutionData;
 import com.cosog.utils.Recursion;
@@ -1313,6 +1314,10 @@ public class DriverAPIController extends BaseController{
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
 			}
 			
+			if(!jedis.exists("ProtocolMappingColumnByTitle".getBytes())){
+				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+			}
+			
 			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
@@ -1320,24 +1325,21 @@ public class DriverAPIController extends BaseController{
 			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
 				MemoryDataManagerTask.loadProtocolRunStatusConfig();
 			}
+			
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			
 			String realtimeTable="tbl_rpcacqdata_latest";
 			String historyTable="tbl_rpcacqdata_hist";
 			String rawDataTable="tbl_rpcacqrawdata";
 			String totalDataTable="tbl_rpcdailycalculationdata";
 			String functionCode="rpcDeviceRealTimeMonitoringData";
-			String columnsKey="deviceAcquisitionItemColumns";
 			int DeviceType=0;
 			if(rpcDeviceInfo.getDeviceType()>=100 && rpcDeviceInfo.getDeviceType()<200){
 				DeviceType=0;
 			}else if(rpcDeviceInfo.getDeviceType()>=200 && rpcDeviceInfo.getDeviceType()<300){
 				DeviceType=1;
 			}
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns();
-				acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			if(acqGroup!=null){
 				List<byte[]> rpcCalItemSet=null;
 				if(jedis!=null){
@@ -1475,9 +1477,8 @@ public class DriverAPIController extends BaseController{
 						for(int j=0;j<protocol.getItems().size();j++){
 							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
 								String value="";
-								String columnName=loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle());
-								
-								DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (columnName).getBytes()));
+								DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
+								String columnName=dataMappingColumn.getMappingColumn();
 								
 								if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null ){
 									value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));

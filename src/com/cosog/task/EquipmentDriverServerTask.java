@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.cosog.model.DataMapping;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;
@@ -313,79 +314,156 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings({ "resource" })
 	public static int syncDataMappingTable(){
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn();
+		List<String> acquisitionItemNameList=MemoryDataManagerTask.getAcquisitionItemNameList();
 		int result=0;
-		if(modbusProtocolConfig!=null){
-			Connection conn = null;   
-			PreparedStatement pstmt = null;   
-			ResultSet rs = null;
-			int dataSaveMode=1;
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			Map<String,String> deviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("deviceAcquisitionItemColumns");
-			
-			conn=OracleJdbcUtis.getConnection();
-			if(conn==null){
-	        	return -1;
-	        }
-			
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			//删除重复映射
 			try {
-				String delSql="delete from tbl_datamapping t where t.mappingmode<>"+dataSaveMode;
+				String delSql="delete from TBL_DATAMAPPING t where t.mappingcolumn in ( select v.mappingcolumn from  (select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn) v where v.cn>1 )";
 				pstmt = conn.prepareStatement(delSql);
 				result=pstmt.executeUpdate();
-				if(result>0){//字段映射模式改变，删除历史数据
-					String delRPCHis="truncate table tbl_acqdata_hist";
-					pstmt = conn.prepareStatement(delRPCHis);
-					result=pstmt.executeUpdate();
-				}
-				
-				Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
-				String sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=0 order by t.id";
-				if(deviceAcquisitionItemColumns!=null&&deviceAcquisitionItemColumns.size()>0){
-					//同步抽油机井字段映射表
-					pstmt = conn.prepareStatement(sql);
-					rs=pstmt.executeQuery();
-					while(rs.next()){
-						mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
-					}
-					
-					//如驱动配置中不存在，删除记录
-					for(String key : mappingTableRecordMap.keySet()) {
-						if(!StringManagerUtils.existOrNot(deviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
-							String deleteSql="";
-
-							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=0";
-						
-							System.out.println("同步协议映射表："+deleteSql);
-							pstmt = conn.prepareStatement(deleteSql);
-							pstmt.executeUpdate();
-							result++;
-						}
-					}
-					
-					//如数据库中不存在，添加记录
-					for(String key : deviceAcquisitionItemColumns.keySet()) {
-						if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,deviceAcquisitionItemColumns.get(key),false)){
-							String addSql="";
-
-							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+deviceAcquisitionItemColumns.get(key)+"',0,"+dataSaveMode+")";
-						
-							System.out.println("同步协议映射表："+addSql);
-							pstmt = conn.prepareStatement(addSql);
-							pstmt.executeUpdate();
-							result++;
-						}
-					}
-				}
-				
-				MemoryDataManagerTask.loadProtocolMappingColumn();
-				//同步运行状态配置
-				syncProtocolRunStatusConfig();
 			} catch (SQLException e) {
 				e.printStackTrace();
-			} finally{
-				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			}
+			
+			//删除不存在的字段映射
+			try {
+				String delSql="delete from tbl_datamapping t where t.mappingcolumn not in("+StringManagerUtils.joinStringArr2(tableColumnList, ",")+")";
+				pstmt = conn.prepareStatement(delSql);
+				result=pstmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			//删除不存在的协议项映射
+			try {
+				String delSql="delete from tbl_datamapping t where t.name not in("+StringManagerUtils.joinStringArr2(acquisitionItemNameList, ",")+")";
+				pstmt = conn.prepareStatement(delSql);
+				result=pstmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+			MemoryDataManagerTask.loadProtocolMappingColumn();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			
+			for(int i=0;i<acquisitionItemNameList.size();i++){
+				if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnByTitleMap, acquisitionItemNameList.get(i),false)){
+					String addMappingColumn="";
+					for(int j=0;i<tableColumnList.size();j++){
+						if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, tableColumnList.get(j),false)){
+							addMappingColumn=tableColumnList.get(j);
+							DataMapping dataMapping=new DataMapping();
+							dataMapping.setName(acquisitionItemNameList.get(i));
+							dataMapping.setMappingColumn(addMappingColumn);
+							loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
+							break;
+						}
+					}
+					if(StringManagerUtils.isNotNull(addMappingColumn)){
+						try {
+							String addSql="insert into tbl_datamapping(name,mappingcolumn) values('"+acquisitionItemNameList.get(i)+"','"+addMappingColumn+"')";
+							pstmt = conn.prepareStatement(addSql);
+							result=pstmt.executeUpdate();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+					}
+					
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
+		MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		MemoryDataManagerTask.loadProtocolMappingColumn();
+		
+//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//		int result=0;
+//		if(modbusProtocolConfig!=null){
+//			Connection conn = null;   
+//			PreparedStatement pstmt = null;   
+//			ResultSet rs = null;
+//			int dataSaveMode=1;
+//			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+//			Map<String,String> deviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("deviceAcquisitionItemColumns");
+//			
+//			conn=OracleJdbcUtis.getConnection();
+//			if(conn==null){
+//	        	return -1;
+//	        }
+//			
+//			try {
+//				String delSql="delete from tbl_datamapping t where t.mappingmode<>"+dataSaveMode;
+//				pstmt = conn.prepareStatement(delSql);
+//				result=pstmt.executeUpdate();
+//				if(result>0){//字段映射模式改变，删除历史数据
+//					String delRPCHis="truncate table tbl_acqdata_hist";
+//					pstmt = conn.prepareStatement(delRPCHis);
+//					result=pstmt.executeUpdate();
+//				}
+//				
+//				Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
+//				String sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=0 order by t.id";
+//				if(deviceAcquisitionItemColumns!=null&&deviceAcquisitionItemColumns.size()>0){
+//					//同步抽油机井字段映射表
+//					pstmt = conn.prepareStatement(sql);
+//					rs=pstmt.executeQuery();
+//					while(rs.next()){
+//						mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
+//					}
+//					
+//					//如驱动配置中不存在，删除记录
+//					for(String key : mappingTableRecordMap.keySet()) {
+//						if(!StringManagerUtils.existOrNot(deviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
+//							String deleteSql="";
+//
+//							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=0";
+//						
+//							System.out.println("同步协议映射表："+deleteSql);
+//							pstmt = conn.prepareStatement(deleteSql);
+//							pstmt.executeUpdate();
+//							result++;
+//						}
+//					}
+//					
+//					//如数据库中不存在，添加记录
+//					for(String key : deviceAcquisitionItemColumns.keySet()) {
+//						if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,deviceAcquisitionItemColumns.get(key),false)){
+//							String addSql="";
+//
+//							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+deviceAcquisitionItemColumns.get(key)+"',0,"+dataSaveMode+")";
+//						
+//							System.out.println("同步协议映射表："+addSql);
+//							pstmt = conn.prepareStatement(addSql);
+//							pstmt.executeUpdate();
+//							result++;
+//						}
+//					}
+//				}
+//				
+//				MemoryDataManagerTask.loadProtocolMappingColumn();
+//				//同步运行状态配置
+//				syncProtocolRunStatusConfig();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			} finally{
+//				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+//			}
+//		}
 		return result;
 	}
 	
@@ -422,11 +500,8 @@ public class EquipmentDriverServerTask {
 	
 
 	public static int loadAcquisitionItemColumns(){
-		loadAcquisitionItemNameColumns();
-		
-		
+//		loadAcquisitionItemNameColumns();
 		MemoryDataManagerTask.loadAcquisitionItemNameList();
-		
 		syncDataMappingTable();
 		return 0;
 	}
@@ -477,6 +552,7 @@ public class EquipmentDriverServerTask {
 	public static int initAcquisitionItemDataBaseColumns(String tableName){
 		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn(tableName);
 		List<String> acquisitionItemNameList=MemoryDataManagerTask.getAcquisitionItemNameList();
+		int result=0;
 		if(acquisitionItemNameList.size()>tableColumnList.size()){
 			Connection conn = null;   
 			PreparedStatement pstmt = null;   
@@ -489,13 +565,14 @@ public class EquipmentDriverServerTask {
 				while(acquisitionItemNameList.size()>tableColumnList.size()){
 					int addColumnCount=acquisitionItemNameList.size()-tableColumnList.size();
 					int currentColumnCount=tableColumnList.size();
-					for(int i=currentColumnCount+1;i<=addColumnCount;i++){
+					int startIndex=currentColumnCount+1;
+					for(int i=startIndex;i<addColumnCount+startIndex;i++){
 						try {
 							String addColumnName="C_CLOUMN"+i;
 							String addColumsSql="alter table "+tableName+" add "+addColumnName+" VARCHAR2(4000)";
 							pstmt = conn.prepareStatement(addColumsSql);
 							pstmt.executeUpdate();
-							acquisitionItemNameList.add(addColumnName);
+							tableColumnList.add(addColumnName);
 							StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"添加字段:"+addColumnName);
 						} catch (SQLException e) {
 							e.printStackTrace();
@@ -577,16 +654,12 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings("resource")
 	public static int initDataDictionary(String dataDictionaryId){
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		if(modbusProtocolConfig==null){
 			return 0;
 		}
 		int result=0;
-		String columnsKey="deviceAcquisitionItemColumns";
-		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-			loadAcquisitionItemColumns();
-		}
-		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		
 		Collections.sort(modbusProtocolConfig.getProtocol());
 		List<String> acquisitionItemColumns=new ArrayList<String>();
@@ -595,8 +668,11 @@ public class EquipmentDriverServerTask {
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 
 			for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-				String col=loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle());
-				if((!"w".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType()))//非只写
+				String col="";
+				if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+					col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+				}
+				if(StringManagerUtils.isNotNull(col) && (!"w".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType()))//非只写
 					&&(!StringManagerUtils.existOrNot(acquisitionItemColumns, col,false))){
 					String unit=modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getUnit();
 					acquisitionItemColumns.add(col);
@@ -736,9 +812,10 @@ public class EquipmentDriverServerTask {
 					}
 				}
 			}
-			loadAcquisitionItemColumns();
+			
 			//同步数据库字段
 			initAcquisitionItemDataBaseColumns();
+			loadAcquisitionItemColumns();
 			//同步数据字典
 			initDataDictionary("7f13446d19b4497986980fa16a750f95");//抽油机井实时概览字典
 			initDataDictionary("cd7b24562b924d19b556de31256e22a1");//抽油机井历史查询字典

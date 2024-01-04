@@ -44,6 +44,7 @@ import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmUnit;
 import com.cosog.model.AlarmUnitItem;
+import com.cosog.model.DataMapping;
 import com.cosog.model.DisplayUnit;
 import com.cosog.model.DisplayUnitItem;
 import com.cosog.model.Module;
@@ -739,6 +740,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		DisplayUnitItem displayUnitItem = null;
 		int dataSaveMode=1;
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
@@ -755,12 +758,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
-				String columnsKey="deviceAcquisitionItemColumns";
-				Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-				if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-					EquipmentDriverServerTask.loadAcquisitionItemColumns();
-				}
-				Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 				
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
@@ -786,11 +783,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 								}
 							}
 						}
-						
+						String itemCode="";
+						if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
+							itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
+						}
 						displayUnitItem = new DisplayUnitItem();
 						displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
 						displayUnitItem.setItemName(itemName);
-						displayUnitItem.setItemCode(dataSaveMode==0?("addr"+itemAddr):(loadedAcquisitionItemColumnsMap.get(itemName)));
+						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 						displayUnitItem.setSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
@@ -827,6 +827,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		DisplayUnitItem displayUnitItem = null;
 		int dataSaveMode=1;
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
@@ -846,12 +848,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
-				String columnsKey="deviceAcquisitionItemColumns";
-				Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-				if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-					EquipmentDriverServerTask.loadAcquisitionItemColumns();
-				}
-				Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					List<String> itemsList=new ArrayList<String>();
@@ -877,11 +873,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 								}
 							}
 						}
-						
+						String itemCode="";
+						if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
+							itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
+						}
 						displayUnitItem = new DisplayUnitItem();
 						displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
 						displayUnitItem.setItemName(itemName);
-						displayUnitItem.setItemCode(dataSaveMode==0?("addr"+itemAddr):(loadedAcquisitionItemColumnsMap.get(itemName)));
+						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 						displayUnitItem.setSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.AccessToken;
+import com.cosog.model.DataMapping;
 import com.cosog.model.Org;
 import com.cosog.model.User;
 import com.cosog.model.calculate.ResultStatusData;
@@ -39,6 +40,7 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
+import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
@@ -447,18 +449,12 @@ public class RealTimeMonitoringController extends BaseController {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			int dataSaveMode=1;
-			String columnsKey="deviceAcquisitionItemColumns";
 			int DeviceType=0;
 			if((StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300) || StringManagerUtils.stringToInteger(deviceType)==1){
-				columnsKey="pcpDeviceAcquisitionItemColumns";
 				DeviceType=1;
 			}
-			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
-				EquipmentDriverServerTask.loadAcquisitionItemColumns();
-			}
-			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
-			
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
 			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
@@ -478,7 +474,10 @@ public class RealTimeMonitoringController extends BaseController {
 			String title="";
 			float ratio=0;
 			for(int i=0;i<protocol.getItems().size();i++){
-				String col=dataSaveMode==0?("addr"+protocol.getItems().get(i).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(i).getTitle()));
+				String col="";
+				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
+					col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle()).getMappingColumn();
+				}
 				if(itemCode.equalsIgnoreCase(col)){
 					addr=protocol.getItems().get(i).getAddr();
 					dataType=protocol.getItems().get(i).getIFDataType();

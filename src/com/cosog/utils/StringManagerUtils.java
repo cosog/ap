@@ -92,6 +92,7 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
 
+import com.cosog.model.DataMapping;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
@@ -507,6 +508,25 @@ public class StringManagerUtils {
     }
 
     public static boolean existOrNot(Map < String, String > map, String str, boolean caseSensitive) {
+        boolean flag = false;
+        if(map!=null){
+        	for (String key: map.keySet()) {
+                boolean match = false;
+                if (caseSensitive) {
+                    match = key.equals(str);
+                } else {
+                    match = key.equalsIgnoreCase(str);
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
+    
+    public static boolean dataMappingKeyExistOrNot(Map < String, DataMapping > map, String str, boolean caseSensitive) {
         boolean flag = false;
         if(map!=null){
         	for (String key: map.keySet()) {

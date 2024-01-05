@@ -29,6 +29,7 @@ import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.thread.calculate.DatabaseTableSynColumnThread;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
@@ -326,29 +327,75 @@ public class EquipmentDriverServerTask {
         	return -1;
         }
 		try {
+			boolean isDeleteMapping=false;
+			List<String> deleteMappingList=new ArrayList<>();
 			//删除重复映射
 			try {
-				String delSql="delete from TBL_DATAMAPPING t where t.mappingcolumn in ( select v.mappingcolumn from  (select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn) v where v.cn>1 )";
-				pstmt = conn.prepareStatement(delSql);
-				result=pstmt.executeUpdate();
+				boolean isDelete=false;
+				String queryDelItemSql="select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn";
+				pstmt = conn.prepareStatement(queryDelItemSql);
+				rs=pstmt.executeQuery();
+				while(rs.next()){
+					isDelete=true;
+					String column=rs.getString(1);
+					int colCount=rs.getInt(2);
+					if(colCount>1){
+						deleteMappingList.add(column);
+					}
+				}
+				if(isDelete){
+					String delSql="delete from TBL_DATAMAPPING t where t.mappingcolumn in ( select v.mappingcolumn from  (select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn) v where v.cn>1 )";
+					pstmt = conn.prepareStatement(delSql);
+					result=pstmt.executeUpdate();
+					if(result>0){
+						isDeleteMapping=true;
+					}
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 			
 			//删除不存在的字段映射
 			try {
-				String delSql="delete from tbl_datamapping t where t.mappingcolumn not in("+StringManagerUtils.joinStringArr2(tableColumnList, ",")+")";
-				pstmt = conn.prepareStatement(delSql);
-				result=pstmt.executeUpdate();
+				int colCount=0;
+				String queryDelItemSql="select count(1) from tbl_datamapping t where t.mappingcolumn not in("+StringManagerUtils.joinStringArr2(tableColumnList, ",")+")";
+				pstmt = conn.prepareStatement(queryDelItemSql);
+				rs=pstmt.executeQuery();
+				while(rs.next()){
+					colCount=rs.getInt(1);
+				}
+				if(colCount>0){
+					String delSql="delete from tbl_datamapping t where t.mappingcolumn not in("+StringManagerUtils.joinStringArr2(tableColumnList, ",")+")";
+					pstmt = conn.prepareStatement(delSql);
+					result=pstmt.executeUpdate();
+					if(result>0){
+						isDeleteMapping=true;
+					}
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 			
 			//删除不存在的协议项映射
 			try {
-				String delSql="delete from tbl_datamapping t where t.name not in("+StringManagerUtils.joinStringArr2(acquisitionItemNameList, ",")+")";
-				pstmt = conn.prepareStatement(delSql);
-				result=pstmt.executeUpdate();
+				boolean isDelete=false;
+				String queryDelItemSql="select t.name from tbl_datamapping t where t.name not in("+StringManagerUtils.joinStringArr2(acquisitionItemNameList, ",")+")";
+				pstmt = conn.prepareStatement(queryDelItemSql);
+				rs=pstmt.executeQuery();
+				while(rs.next()){
+					isDelete=true;
+					String column=rs.getString(1);
+					deleteMappingList.add(column);
+				}
+				
+				if(isDelete){
+					String delSql="delete from tbl_datamapping t where t.name not in("+StringManagerUtils.joinStringArr2(acquisitionItemNameList, ",")+")";
+					pstmt = conn.prepareStatement(delSql);
+					result=pstmt.executeUpdate();
+					if(result>0){
+						isDeleteMapping=true;
+					}
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -383,6 +430,13 @@ public class EquipmentDriverServerTask {
 					
 				}
 			}
+			
+			//清理不存在的映射数据
+			if(deleteMappingList.size()>0){
+				DatabaseTableSynColumnThread databaseTableSynColumnThread=new DatabaseTableSynColumnThread(deleteMappingList);
+				databaseTableSynColumnThread.start();
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -391,79 +445,7 @@ public class EquipmentDriverServerTask {
 		MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
 		MemoryDataManagerTask.loadProtocolMappingColumn();
 		
-//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-//		int result=0;
-//		if(modbusProtocolConfig!=null){
-//			Connection conn = null;   
-//			PreparedStatement pstmt = null;   
-//			ResultSet rs = null;
-//			int dataSaveMode=1;
-//			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
-//			Map<String,String> deviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("deviceAcquisitionItemColumns");
-//			
-//			conn=OracleJdbcUtis.getConnection();
-//			if(conn==null){
-//	        	return -1;
-//	        }
-//			
-//			try {
-//				String delSql="delete from tbl_datamapping t where t.mappingmode<>"+dataSaveMode;
-//				pstmt = conn.prepareStatement(delSql);
-//				result=pstmt.executeUpdate();
-//				if(result>0){//字段映射模式改变，删除历史数据
-//					String delRPCHis="truncate table tbl_acqdata_hist";
-//					pstmt = conn.prepareStatement(delRPCHis);
-//					result=pstmt.executeUpdate();
-//				}
-//				
-//				Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
-//				String sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=0 order by t.id";
-//				if(deviceAcquisitionItemColumns!=null&&deviceAcquisitionItemColumns.size()>0){
-//					//同步抽油机井字段映射表
-//					pstmt = conn.prepareStatement(sql);
-//					rs=pstmt.executeQuery();
-//					while(rs.next()){
-//						mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
-//					}
-//					
-//					//如驱动配置中不存在，删除记录
-//					for(String key : mappingTableRecordMap.keySet()) {
-//						if(!StringManagerUtils.existOrNot(deviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
-//							String deleteSql="";
-//
-//							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=0";
-//						
-//							System.out.println("同步协议映射表："+deleteSql);
-//							pstmt = conn.prepareStatement(deleteSql);
-//							pstmt.executeUpdate();
-//							result++;
-//						}
-//					}
-//					
-//					//如数据库中不存在，添加记录
-//					for(String key : deviceAcquisitionItemColumns.keySet()) {
-//						if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,deviceAcquisitionItemColumns.get(key),false)){
-//							String addSql="";
-//
-//							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+deviceAcquisitionItemColumns.get(key)+"',0,"+dataSaveMode+")";
-//						
-//							System.out.println("同步协议映射表："+addSql);
-//							pstmt = conn.prepareStatement(addSql);
-//							pstmt.executeUpdate();
-//							result++;
-//						}
-//					}
-//				}
-//				
-//				MemoryDataManagerTask.loadProtocolMappingColumn();
-//				//同步运行状态配置
-//				syncProtocolRunStatusConfig();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			} finally{
-//				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-//			}
-//		}
+
 		return result;
 	}
 	

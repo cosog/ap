@@ -694,7 +694,7 @@ function websocketOnMessage(evt) {
                 }
             }
         }
-    } else if (data.functionCode.toUpperCase() == "adExitAndDeviceOffline_rpc".toUpperCase()) { //ad退出，所有设备离线
+    } else if (data.functionCode.toUpperCase() == "adExitAndDeviceOffline_rpc".toUpperCase()) {
         if (activeId.toUpperCase() == "UpstreamAndDownstreamInteraction".toUpperCase()) {
             Ext.getCmp('UpstreamAndDownstreamInteractionRPCDeviceListComb_Id').setValue('');
             Ext.getCmp('UpstreamAndDownstreamInteractionRPCDeviceListComb_Id').setRawValue('');
@@ -704,6 +704,19 @@ function websocketOnMessage(evt) {
                 gridPanel.getStore().load();
             }
         }
+    } else if (data.functionCode.toUpperCase() == "DatabaseDataCleaning".toUpperCase()) { //字段同步，数据库清理
+    	if (activeId.toUpperCase() == "DriverManagement".toUpperCase()) {
+    		var tabPanel = Ext.getCmp("ScadaDriverConfigTabPanel_Id");
+            var tabPanelActiveId = tabPanel.getActiveTab().id;
+            if (tabPanelActiveId == "ScadaDriverModbusProtocolConfigTabPanel_Id") {
+            	if(data.updateColCount!=data.count){
+            		Ext.getCmp("ScadaDriverConfigTabPanelLabel_id").show();
+            		Ext.getCmp("ScadaDriverConfigTabPanelLabel_id").setText(data.message);
+            	}else{
+            		Ext.getCmp("ScadaDriverConfigTabPanelLabel_id").hide();
+            	}
+            }
+    	}
     }
 }
 

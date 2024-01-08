@@ -80,6 +80,7 @@ import com.cosog.model.drive.AcquisitionGroupResolutionData;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
+import com.cosog.model.gridmodel.AuxiliaryDeviceHandsontableChangedData;
 import com.cosog.model.gridmodel.CalculateManagerHandsontableChangedData;
 import com.cosog.model.gridmodel.ElecInverCalculateManagerHandsontableChangedData;
 import com.cosog.model.gridmodel.InverOptimizeHandsontableChangedData;
@@ -4652,5 +4653,143 @@ public class BaseDao extends HibernateDaoSupport {
 			conn.close();
 		}
 		return true;
+	}
+	
+	@SuppressWarnings("resource")
+	public List<AuxiliaryDeviceHandsontableChangedData.Updatelist> saveAuxiliaryDeviceHandsontableData(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData) throws SQLException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		PreparedStatement ps=null;
+		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> collisionList=new ArrayList<AuxiliaryDeviceHandsontableChangedData.Updatelist>();
+		try {
+			cs = conn.prepareCall("{call prd_update_auxiliarydevice(?,?,?,?,?,?,?,?)}");
+			if(auxiliaryDeviceHandsontableChangedData.getUpdatelist()!=null){
+				for(int i=0;i<auxiliaryDeviceHandsontableChangedData.getUpdatelist().size();i++){
+					if(StringManagerUtils.isNotNull(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName())){
+						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getId());
+						cs.setString(2, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName());
+						cs.setInt(3, "管辅件".equals(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getType())?1:0);
+						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getModel());
+						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getRemark());
+						cs.setString(6, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort():"9999");
+						cs.registerOutParameter(7, Types.INTEGER);
+						cs.registerOutParameter(8,Types.VARCHAR);
+						cs.executeUpdate();
+						int saveSign=cs.getInt(7);
+						String saveResultStr=cs.getString(8);
+						auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+						auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+						collisionList.add(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i));
+					}
+				}
+			}
+			if(auxiliaryDeviceHandsontableChangedData.getInsertlist()!=null){
+				for(int i=0;i<auxiliaryDeviceHandsontableChangedData.getInsertlist().size();i++){
+					if(StringManagerUtils.isNotNull(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getName())){
+						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getId());
+						cs.setString(2, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getName());
+						cs.setInt(3, "管辅件".equals(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getType())?1:0);
+						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getModel());
+						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getRemark());
+						cs.setString(6, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort():"9999");
+						cs.registerOutParameter(7, Types.INTEGER);
+						cs.registerOutParameter(8,Types.VARCHAR);
+						cs.executeUpdate();
+						int saveSign=cs.getInt(7);
+						String saveResultStr=cs.getString(8);
+						auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+						auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+						collisionList.add(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i));
+					}
+				}
+			}
+			if(auxiliaryDeviceHandsontableChangedData.getDelidslist()!=null){
+				String delSql="delete from tbl_auxiliarydevice t where t.id in ("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
+				ps=conn.prepareStatement(delSql);
+				int result=ps.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			if(ps!=null){
+				ps.close();
+			}
+			if(cs!=null){
+				cs.close();
+			}
+			conn.close();
+		}
+		return collisionList;
+	}
+	
+	@SuppressWarnings("resource")
+	public List<AuxiliaryDeviceHandsontableChangedData.Updatelist> batchAddAuxiliaryDevice(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData,int isCheckout) throws SQLException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		PreparedStatement ps=null;
+		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> collisionList=new ArrayList<AuxiliaryDeviceHandsontableChangedData.Updatelist>();
+		try {
+			cs = conn.prepareCall("{call prd_save_auxiliarydevice(?,?,?,?,?,?,?,?)}");
+			if(auxiliaryDeviceHandsontableChangedData.getUpdatelist()!=null){
+				for(int i=0;i<auxiliaryDeviceHandsontableChangedData.getUpdatelist().size();i++){
+					if(StringManagerUtils.isNotNull(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName())){
+						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName());
+						cs.setInt(2, "管辅件".equals(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getType())?1:0);
+						cs.setString(3, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getModel());
+						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getRemark());
+						cs.setString(5, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort():"");
+						cs.setInt(6, isCheckout);
+						cs.registerOutParameter(7, Types.INTEGER);
+						cs.registerOutParameter(8,Types.VARCHAR);
+						cs.executeUpdate();
+						int saveSign=cs.getInt(7);
+						String saveResultStr=cs.getString(8);
+						if(saveSign!=0&&saveSign!=1){
+							auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+							auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i));
+						}
+					}
+				}
+			}
+			if(auxiliaryDeviceHandsontableChangedData.getInsertlist()!=null){
+				for(int i=0;i<auxiliaryDeviceHandsontableChangedData.getInsertlist().size();i++){
+					if(StringManagerUtils.isNotNull(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getName())){
+						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getName());
+						cs.setInt(2, "管辅件".equals(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getType())?1:0);
+						cs.setString(3, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getModel());
+						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getRemark());
+						cs.setString(5, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort():"");
+						cs.setInt(6, isCheckout);
+						cs.registerOutParameter(7, Types.INTEGER);
+						cs.registerOutParameter(8,Types.VARCHAR);
+						cs.executeUpdate();
+						int saveSign=cs.getInt(7);
+						String saveResultStr=cs.getString(8);
+						if(saveSign!=0&&saveSign!=1){
+							auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+							auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i));
+						}
+					}
+				}
+			}
+			if(auxiliaryDeviceHandsontableChangedData.getDelidslist()!=null){
+				String delSql="delete from tbl_auxiliarydevice t where t.id in ("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
+				ps=conn.prepareStatement(delSql);
+				int result=ps.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			if(ps!=null){
+				ps.close();
+			}
+			if(cs!=null){
+				cs.close();
+			}
+			conn.close();
+		}
+		return collisionList;
 	}
 }

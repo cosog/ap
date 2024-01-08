@@ -32,6 +32,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.AcquisitionUnit;
+import com.cosog.model.AuxiliaryDeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.Org;
@@ -49,6 +50,7 @@ import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.drive.RPCInteractionResponseData;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceConfig;
+import com.cosog.model.gridmodel.AuxiliaryDeviceHandsontableChangedData;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
 import com.cosog.model.gridmodel.VideoKeyHandsontableChangedData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
@@ -101,6 +103,8 @@ public class WellInformationManagerController extends BaseController {
 	@Autowired
 	private WellInformationManagerService<PumpingModelInformation> pumpingModelManagerService;
 	@Autowired
+	private WellInformationManagerService<AuxiliaryDeviceInformation> auxiliaryDeviceManagerService;
+	@Autowired
 	private WellInformationManagerService<VideoKey> videoKeyManagerService;
 	@Autowired
 	private CommonDataService service;
@@ -139,6 +143,11 @@ public class WellInformationManagerController extends BaseController {
 	@InitBinder("videoKey")
 	public void initBinder5(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("videoKey.");
+	}
+	
+	@InitBinder("auxiliaryDeviceInformation")
+	public void initBinder6(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("auxiliaryDeviceInformation.");
 	}
 	
 	/**
@@ -543,6 +552,183 @@ public class WellInformationManagerController extends BaseController {
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 //			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount);
 		}
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/doAuxiliaryDeviceShow")
+	public String doAuxiliaryDeviceShow() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
+		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
+		int offset = (intPage - 1) * pageSize + 1;
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		map.put(PagingConstants.PAGE_NO, intPage);
+		map.put(PagingConstants.PAGE_SIZE, pageSize);
+		map.put(PagingConstants.OFFSET, offset);
+		map.put("deviceType", deviceType);
+		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.doAuxiliaryDeviceShow(map, pager,deviceType,recordCount);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getBatchAddAuxiliaryDeviceTableInfo")
+	public String getBatchAddAuxiliaryDeviceTableInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getBatchAddAuxiliaryDeviceTableInfo(recordCount);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportAuxiliaryDeviceData")
+	public String exportAuxiliaryDeviceData() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
+		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
+		int offset = (intPage - 1) * pageSize + 1;
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
+		String fields = ParamUtils.getParameter(request, "fields");
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
+		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		map.put(PagingConstants.PAGE_NO, intPage);
+		map.put(PagingConstants.PAGE_SIZE, pageSize);
+		map.put(PagingConstants.OFFSET, offset);
+		map.put("deviceType", deviceType);
+		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getAuxiliaryDeviceExportData(map, pager,deviceType,recordCount);
+		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getAuxiliaryDevice")
+	public String getAuxiliaryDevice() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getAuxiliaryDevice(deviceId,deviceType);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/judgeAuxiliaryDeviceExistOrNot")
+	public String judgeAuxiliaryDeviceExistOrNot() throws IOException {
+		orgId=ParamUtils.getParameter(request, "orgId");
+		String name = ParamUtils.getParameter(request, "name");
+		String type = ParamUtils.getParameter(request, "type");
+		String model = ParamUtils.getParameter(request, "model");
+		boolean flag = this.wellInformationManagerService.judgeAuxiliaryDeviceExistOrNot(name,type,model);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json = "";
+		if (flag) {
+			json = "{success:true,msg:'1'}";
+		} else {
+			json = "{success:true,msg:'0'}";
+		}
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/doAuxiliaryDeviceAdd")
+	public String doAuxiliaryDeviceAdd(@ModelAttribute AuxiliaryDeviceInformation auxiliaryDeviceInformation) throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		try {
+			this.auxiliaryDeviceManagerService.doAuxiliaryDeviceAdd(auxiliaryDeviceInformation);
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	@RequestMapping("/saveAuxiliaryDeviceHandsontableData")
+	public String saveAuxiliaryDeviceHandsontableData() throws Exception {
+		HttpSession session=request.getSession();
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();
+		AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData=gson.fromJson(data, type);
+		String json=this.wellInformationManagerService.saveAuxiliaryDeviceHandsontableData(auxiliaryDeviceHandsontableChangedData);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/batchAddAuxiliaryDevice")
+	public String batchAddAuxiliaryDevice() throws Exception {
+		HttpSession session=request.getSession();
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();
+		AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData=gson.fromJson(data, type);
+		String json=this.wellInformationManagerService.batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,isCheckout);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceAdditionalInfo")
+	public String getDeviceAdditionalInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getDeviceAdditionalInfo(deviceId,deviceType);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

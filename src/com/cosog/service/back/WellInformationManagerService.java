@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.cosog.model.AcquisitionGroup;
 import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.AuxiliaryDeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.PCPDeviceAddInfo;
@@ -44,6 +45,7 @@ import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.WaterCutRawData;
+import com.cosog.model.gridmodel.AuxiliaryDeviceHandsontableChangedData;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
 import com.cosog.model.gridmodel.VideoKeyHandsontableChangedData;
 import com.cosog.model.gridmodel.WellGridPanelData;
@@ -4608,5 +4610,255 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			reportInstanceName=reportInstanceList.get(0).toString().replaceAll("null", "");
 		}
 		return acqInstanceName+";"+displayInstanceName+";"+alarmInstanceName+";"+reportInstanceName;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public String doAuxiliaryDeviceShow(Map map,Page pager,String deviceType,int recordCount) {
+		StringBuffer result_json = new StringBuffer();
+		String ddicName="auxiliaryDeviceManager";
+		
+		String columns=service.showTableHeadersColumns(ddicName);
+		String sql = "select t.id,t.name,decode(t.type,1,'管辅件','泵辅件') as type,t.model,t.remark,t.sort from tbl_auxiliarydevice t where 1=1";
+		if(StringManagerUtils.isNotNull(deviceType)){
+			sql+= " and t.type="+deviceType;
+		}
+		sql+= " order by t.sort,t.name";
+		
+		String json = "";
+		
+		List<?> list = this.findCallSql(sql);
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"type\":\""+obj[2]+"\",");
+			result_json.append("\"model\":\""+obj[3]+"\",");
+			result_json.append("\"remark\":\""+obj[4]+"\",");
+			result_json.append("\"sort\":\""+obj[5]+"\"},");
+		}
+//		for(int i=1;i<=recordCount-list.size();i++){
+//			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
+//		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public String getBatchAddAuxiliaryDeviceTableInfo(int recordCount) {
+		StringBuffer result_json = new StringBuffer();
+		String ddicName="auxiliaryDeviceManager";
+		String columns=service.showTableHeadersColumns(ddicName);
+		String json = "";
+		result_json.append("{\"success\":true,\"totalCount\":"+recordCount+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<recordCount;i++){
+			result_json.append("{},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public String getAuxiliaryDeviceExportData(Map map,Page pager,String deviceType,int recordCount) {
+		StringBuffer result_json = new StringBuffer();
+		String sql = "select t.id,t.name,decode(t.type,1,'管辅件','泵辅件') as type,t.model,t.remark,t.sort from tbl_auxiliarydevice t where 1=1";
+		if(StringManagerUtils.isNotNull(deviceType)){
+			sql+= " and t.type="+deviceType;
+		}
+		sql+= " order by t.sort,t.name";
+		
+		String json = "";
+		
+		List<?> list = this.findCallSql(sql);
+		
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"type\":\""+obj[2]+"\",");
+			result_json.append("\"model\":\""+obj[3]+"\",");
+			result_json.append("\"remark\":\""+obj[4]+"\",");
+			result_json.append("\"sort\":\""+obj[5]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
+	public String getAuxiliaryDevice(String deviceId,String deviceType) {
+		StringBuffer result_json = new StringBuffer();
+		List<Integer> auxiliaryIdList=new ArrayList<Integer>();
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
+				+ "]";
+		String deviceTableName="tbl_pumpdevice";
+		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
+			deviceTableName="tbl_pipelinedevice";
+		}
+		
+		String sql = "select t.id,t.name,decode(t.type,1,'管辅件','泵辅件') as type,t.model,t.remark,t.sort from tbl_auxiliarydevice t where 1=1";
+		String auxiliarySql="select t2.auxiliaryid from "+deviceTableName+" t,tbl_auxiliary2master t2 "
+				+ " where t.id=t2.masterid and t.id="+deviceId;
+		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
+			sql+= " and t.type=1";
+		}else{
+			sql+= " and t.type=0";
+		}
+		sql+= " order by t.sort,t.name";
+		
+		String json = "";
+		
+		List<?> list = this.findCallSql(sql);
+		List<?> auxiliaryList = this.findCallSql(auxiliarySql);
+		for(int i=0;i<auxiliaryList.size();i++){
+			auxiliaryIdList.add(StringManagerUtils.stringToInteger(auxiliaryList.get(i)+""));
+		}
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			boolean checked=false;
+			if(StringManagerUtils.existOrNot(auxiliaryIdList, StringManagerUtils.stringToInteger(obj[0]+""))){
+				checked=true;
+			}
+			result_json.append("{\"checked\":"+checked+",");
+			result_json.append("\"id\":\""+(i+1)+"\",");
+			result_json.append("\"realId\":\""+obj[0]+"\",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"model\":\""+obj[3]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
+	public String getDeviceAdditionalInfo(String deviceId,String deviceType) {
+		StringBuffer result_json = new StringBuffer();
+		List<Integer> auxiliaryIdList=new ArrayList<Integer>();
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
+				+ "]";
+		String deviceTableName="tbl_pumpdevice";
+		String infoTableName="tbl_pumpdeviceaddinfo";
+		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
+			deviceTableName="tbl_pipelinedevice";
+			infoTableName="tbl_pipelinedeviceaddinfo";
+		}
+		String sql = "select t2.id,t2.itemname,t2.itemvalue,t2.itemunit "
+				+ " from "+deviceTableName+" t,"+infoTableName+" t2 "
+				+ " where t.id=t2.wellid and t.id="+deviceId
+				+ " order by t2.id";
+		
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"itemName\":\""+obj[1]+"\",");
+			result_json.append("\"itemValue\":\""+obj[2]+"\",");
+			result_json.append("\"itemUnit\":\""+obj[3]+"\"},");
+		}
+		for(int i=list.size();i<20;i++){
+			result_json.append("{},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public boolean judgeAuxiliaryDeviceExistOrNot(String name,String type,String model) {
+		boolean flag = false;
+		if (StringManagerUtils.isNotNull(name)&&StringManagerUtils.isNotNull(type)&&StringManagerUtils.isNotNull(model)) {
+			String sql = "select t.id from tbl_auxiliarydevice t where t.name='"+name+"' and t.type="+type+" and t.model='"+model+"'";
+			List<?> list = this.findCallSql(sql);
+			if (list.size() > 0) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	
+	public void doAuxiliaryDeviceAdd(AuxiliaryDeviceInformation auxiliaryDeviceInformation) throws Exception {
+		getBaseDao().addObject(auxiliaryDeviceInformation);
+	}
+	
+	public String saveAuxiliaryDeviceHandsontableData(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer collisionbuff = new StringBuffer();
+		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> list=getBaseDao().saveAuxiliaryDeviceHandsontableData(auxiliaryDeviceHandsontableChangedData);
+		int successCount=0;
+		int collisionCount=0;
+		collisionbuff.append("[");
+		for(int i=0;i<list.size();i++){
+			if(list.get(i).getSaveSign()==-22||list.get(i).getSaveSign()==-33){
+				collisionCount++;
+				collisionbuff.append("\""+list.get(i).getSaveStr()+"\",");
+			}else if(list.get(i).getSaveSign()==0||list.get(i).getSaveSign()==1){
+				successCount++;
+			}
+		}
+		if(collisionbuff.toString().endsWith(",")){
+			collisionbuff.deleteCharAt(collisionbuff.length() - 1);
+		}
+		collisionbuff.append("]");
+		
+		result_json.append("{\"success\":true,\"successCount\":"+successCount+",\"collisionCount\":"+collisionCount+",\"list\":"+collisionbuff+"}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String batchAddAuxiliaryDevice(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData,String isCheckout) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer overlayBuff = new StringBuffer();
+		int overlayCount=0;
+		String ddicName="auxiliaryDeviceManager";
+		String columns=service.showTableHeadersColumns(ddicName);
+		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> list=getBaseDao().batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(isCheckout));
+		
+		overlayBuff.append("[");
+		if(list!=null){
+			for(int i=0;i<list.size();i++){
+				if(list.get(i).getSaveSign()==-33){//覆盖信息
+					overlayCount+=1;
+					overlayBuff.append("{\"id\":\""+list.get(i).getId()+"\",");
+					overlayBuff.append("\"name\":\""+list.get(i).getName()+"\",");
+					overlayBuff.append("\"type\":\""+list.get(i).getType()+"\",");
+					overlayBuff.append("\"model\":\""+list.get(i).getModel()+"\",");
+					overlayBuff.append("\"remark\":\""+list.get(i).getRemark()+"\",");
+					overlayBuff.append("\"sort\":\""+list.get(i).getSort()+"\",");
+					overlayBuff.append("\"dataInfo\":\""+list.get(i).getSaveStr()+"\"},");
+				}
+			}
+			if (overlayBuff.toString().endsWith(",")) {
+				overlayBuff.deleteCharAt(overlayBuff.length() - 1);
+			}
+		}
+		overlayBuff.append("]");
+		result_json.append("{\"success\":true,\"overlayCount\":"+overlayCount+","+ "\"columns\":"+columns+",\"overlayList\":"+overlayBuff+"}");
+		return result_json.toString().replaceAll("null", "");
 	}
 }

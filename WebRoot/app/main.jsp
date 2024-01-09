@@ -95,6 +95,9 @@
         var loginUserRoleShowLevel = "${userLogin.roleShowLevel}";
         var loginUserRoleReportEdit = "${userLogin.roleReportEdit}";
         var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
+        
+        var tabInfo=${tabInfo};
+        
         if (user_ == null || "" == (user_)) {
             window.location.href = "../login/toLogin";
         }

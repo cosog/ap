@@ -275,7 +275,6 @@ public class OrgManagerService<T> extends BaseService<T> {
 		sqlBuffer.append("SELECT org_id,org_parent,org_name,org_memo,org_seq "
 				+ " FROM tbl_org t "
 				+ " WHERE 1=1");
-//				+ " and t.org_id not in( select o2.org_id from tbl_org o2 where o2.org_name='组织根节点' and o2.org_parent=0 )");
 		if(StringManagerUtils.isNotNull(orgId)){
 			sqlBuffer.append(" and t.org_id in ("+orgId+")");
 		}

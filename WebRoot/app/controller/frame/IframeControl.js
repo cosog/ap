@@ -261,28 +261,28 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}
 	else if(module_Code == "WellInformation"){
-		var tabChange=false;
-		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
-		var tabPanel = Ext.getCmp("DeviceManagerTabPanel");
-		var activeId = tabPanel.getActiveTab().id;
-		if(selectedDeviceType_global==0 && activeId!='RPCDeviceManagerPanel'){
-			tabPanel.setActiveTab("RPCDeviceManagerPanel");
-			tabChange=true;
-		}else if(selectedDeviceType_global==1 && activeId!='PCPDeviceManagerPanel'){
-			tabPanel.setActiveTab("PCPDeviceManagerPanel");
-			tabChange=true;
-		}
-		if(!tabChange){
-			if(activeId=="RPCDeviceManagerPanel"){
-				Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
-		    	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(0);
-				CreateAndLoadRPCDeviceInfoTable(true);
-			}else if(activeId=="PCPDeviceManagerPanel"){
-				Ext.getCmp("PCPDeviceSelectRow_Id").setValue(0);
-		    	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(0);
-				CreateAndLoadPCPDeviceInfoTable(true);
-			}
-		}
+//		var tabChange=false;
+//		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
+//		var tabPanel = Ext.getCmp("DeviceManagerTabPanel");
+//		var activeId = tabPanel.getActiveTab().id;
+//		if(selectedDeviceType_global==0 && activeId!='RPCDeviceManagerPanel'){
+//			tabPanel.setActiveTab("RPCDeviceManagerPanel");
+//			tabChange=true;
+//		}else if(selectedDeviceType_global==1 && activeId!='PCPDeviceManagerPanel'){
+//			tabPanel.setActiveTab("PCPDeviceManagerPanel");
+//			tabChange=true;
+//		}
+//		if(!tabChange){
+//			if(activeId=="RPCDeviceManagerPanel"){
+//				Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
+//		    	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(0);
+//				CreateAndLoadRPCDeviceInfoTable(true);
+//			}else if(activeId=="PCPDeviceManagerPanel"){
+//				Ext.getCmp("PCPDeviceSelectRow_Id").setValue(0);
+//		    	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(0);
+//				CreateAndLoadPCPDeviceInfoTable(true);
+//			}
+//		}
 	}else if(module_Code == "RPCDeviceManager"){
 		Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
     	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(0);

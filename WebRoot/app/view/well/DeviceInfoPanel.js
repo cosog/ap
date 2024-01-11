@@ -35,7 +35,11 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('DeviceListComb_Id').getValue();
+                    var wellName='';
+                    if(isNotVal(Ext.getCmp('deviceListComb_Id'))){
+                    	wellName = Ext.getCmp('deviceListComb_Id').getValue();
+                    }
+                    
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: 101,
@@ -49,7 +53,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
         var deviceListDeviceCombo = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: cosog.string.wellName,
-                id: "DeviceListComb_Id",
+                id: "deviceListComb_Id",
                 labelWidth: 35,
                 width: 145,
                 labelAlign: 'left',
@@ -300,7 +304,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             layout: 'border',
             items: [{
             	region: 'center',
-        		title:'抽油机井列表',
+        		title:'设备列表',
         		header: true,
         		layout: 'fit',
         		id:'DeviceTablePanel_id',
@@ -594,9 +598,9 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             if(result.totalRoot.length==0){
             	Ext.getCmp("DeviceSelectRow_Id").setValue('');
             	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-            	CreateAndLoadPumoingModelInfoTable(0,'');
-            	CreateAndLoadProductionDataTable(0,'');
-            	CreateAndLoadVideoInfoTable(0,'');
+//            	CreateAndLoadPumoingModelInfoTable(0,'');
+//            	CreateAndLoadProductionDataTable(0,'');
+//            	CreateAndLoadVideoInfoTable(0,'');
             }else{
             	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
             	var selectRow=0;
@@ -614,9 +618,9 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             		Ext.getCmp("selectedDeviceId_global").setValue(rowdata[0]);
         		}
 
-            	CreateAndLoadPumoingModelInfoTable(rowdata[0],rowdata[1]);
-            	CreateAndLoadProductionDataTable(rowdata[0],rowdata[1]);
-            	CreateAndLoadVideoInfoTable(rowdata[0],rowdata[1]);
+//            	CreateAndLoadPumoingModelInfoTable(rowdata[0],rowdata[1]);
+//            	CreateAndLoadProductionDataTable(rowdata[0],rowdata[1]);
+//            	CreateAndLoadVideoInfoTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("DeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -738,9 +742,9 @@ var DeviceInfoHandsontableHelper = {
                 	if(row<0 && row2<0){//只选中表头
                 		Ext.getCmp("DeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-                    	CreateAndLoadPumoingModelInfoTable(0,'');
-                    	CreateAndLoadProductionDataTable(0,'');
-                    	CreateAndLoadVideoInfoTable(0,'');
+//                    	CreateAndLoadPumoingModelInfoTable(0,'');
+//                    	CreateAndLoadProductionDataTable(0,'');
+//                    	CreateAndLoadVideoInfoTable(0,'');
                 	}else{
                 		if(row<0){
                     		row=0;
@@ -767,9 +771,9 @@ var DeviceInfoHandsontableHelper = {
                         		deviceName=row1[1];
                         	}
                         	
-                        	CreateAndLoadPumoingModelInfoTable(recordId,deviceName);
-                        	CreateAndLoadProductionDataTable(recordId,deviceName);
-                        	CreateAndLoadVideoInfoTable(recordId,deviceName);
+//                        	CreateAndLoadPumoingModelInfoTable(recordId,deviceName);
+//                        	CreateAndLoadProductionDataTable(recordId,deviceName);
+//                        	CreateAndLoadVideoInfoTable(recordId,deviceName);
                         	
                         	Ext.getCmp("selectedDeviceId_global").setValue(recordId);
                     	}

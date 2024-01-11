@@ -461,12 +461,10 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		String json="";
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			json = this.wellInformationManagerService.getRPCDeviceInfoList(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			json = this.wellInformationManagerService.getPCPDeviceInfoList(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount);
+		}else{
+			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount);
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

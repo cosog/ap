@@ -33,6 +33,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AuxiliaryDeviceInformation;
+import com.cosog.model.DeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.Org;
@@ -95,6 +96,8 @@ public class WellInformationManagerController extends BaseController {
 	@Autowired
 	private WellInformationManagerService<?> wellInformationManagerService;
 	@Autowired
+	private WellInformationManagerService<DeviceInformation> deviceManagerService;
+	@Autowired
 	private WellInformationManagerService<RpcDeviceInformation> rpcDeviceManagerService;
 	@Autowired
 	private WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService;
@@ -148,6 +151,11 @@ public class WellInformationManagerController extends BaseController {
 	@InitBinder("auxiliaryDeviceInformation")
 	public void initBinder6(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("auxiliaryDeviceInformation.");
+	}
+	
+	@InitBinder("deviceInformation")
+	public void initBinder7(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("deviceInformation.");
 	}
 	
 	/**
@@ -1116,7 +1124,7 @@ public class WellInformationManagerController extends BaseController {
 		String videoKeyName2 = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "videoKeyName2"));
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
-		String deviceTableName="tbl_rpcdevice";
+		String deviceTableName="tbl_device";
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		
@@ -1131,7 +1139,7 @@ public class WellInformationManagerController extends BaseController {
 						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
 						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
 						wellHandsontableChangedData.getUpdatelist().get(i).setTcpType("TCP Client");
-						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
+						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 						wellHandsontableChangedData.getUpdatelist().get(i).setSlave("01");
 						if(!"all".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
 							if("cbm".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
@@ -1149,7 +1157,7 @@ public class WellInformationManagerController extends BaseController {
 						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
 						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
 						wellHandsontableChangedData.getInsertlist().get(i).setTcpType("TCP Client");
-						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getWellName());
+						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 						wellHandsontableChangedData.getInsertlist().get(i).setSlave("01");
 						if(!"all".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
 							if("cbm".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
@@ -1163,94 +1171,98 @@ public class WellInformationManagerController extends BaseController {
 			}
 		}
 		
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			deviceTableName="tbl_rpcdevice";
-			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			deviceTableName="tbl_pcpdevice";
-			json=this.wellInformationManagerService.savePCPDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+//		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+//			deviceTableName="tbl_rpcdevice";
+//			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+//		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+//			deviceTableName="tbl_pcpdevice";
+//			json=this.wellInformationManagerService.savePCPDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+//		}else 
+			
+			
+		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+		}else{
+			json=this.wellInformationManagerService.saveDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}
 		
 		List<String> initWellList=new ArrayList<String>();
 		initWellList.add(deviceId+"");
+		
 		//处理生产数据
-		
-		String deviceProductionDataSaveStr=deviceProductionData;
-		
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			type = new TypeToken<RPCProductionData>() {}.getType();
-			RPCProductionData rpcProductionData=gson.fromJson(deviceProductionData, type);
-			if(rpcProductionData!=null){
-				if(rpcProductionData.getProduction()!=null && rpcProductionData.getFluidPVT()!=null){
-					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcProductionData.getProduction().getWaterCut(), rpcProductionData.getFluidPVT().getCrudeOilDensity(), rpcProductionData.getFluidPVT().getWaterDensity());
-					rpcProductionData.getProduction().setWeightWaterCut(weightWaterCut);
-				}
-				if(rpcProductionData.getManualIntervention()!=null){
-					int manualInterventionResultCode=0;
-					Jedis jedis=null;
-					try{
-						jedis = RedisUtil.jedisPool.getResource();
-						if(!jedis.exists("RPCWorkTypeByName".getBytes())){
-							MemoryDataManagerTask.loadRPCWorkType();
-						}
-						if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
-							if(jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
-								WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
-								manualInterventionResultCode=workType.getResultCode();
-							}
-						}
-					}catch(Exception e){
-						String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-						List<?> resultList = this.wellInformationManagerService.findCallSql(resultNameSql);
-						if(resultList.size()>0){
-							manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-						}
-					}finally{
-						if(jedis!=null&&jedis.isConnected()){
-							jedis.close();
-						}
-					}
-					rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
-					
-					
-					if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
-						String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-						List<?> resultList = this.wellInformationManagerService.findCallSql(sql);
-						if(resultList.size()>0){
-							int manualInterventionCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-							rpcProductionData.getManualIntervention().setCode(manualInterventionCode);
-						}
-					}else{
-						rpcProductionData.getManualIntervention().setCode(0);
-					}
-				}
-				deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
-			}
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			type = new TypeToken<PCPProductionData>() {}.getType();
-			PCPProductionData productionData=gson.fromJson(deviceProductionData, type);
-			if(productionData!=null){
-				if(productionData.getProduction()!=null && productionData.getFluidPVT()!=null){
-					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(productionData.getProduction().getWaterCut(), productionData.getFluidPVT().getCrudeOilDensity(), productionData.getFluidPVT().getWaterDensity());
-					productionData.getProduction().setWeightWaterCut(weightWaterCut);
-				}
-				deviceProductionDataSaveStr=gson.toJson(productionData);
-			}
-		}
-		this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr);
-		
-		//处理抽油机数据
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			//处理抽油机型号
-			this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);
-			//处理抽油机详情
-			this.wellInformationManagerService.saveRPCPumpingInfo(deviceId,stroke,balanceInfo);
-		}
-		
-		//处理视频数据
-		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl1,videoKeyName1,videoUrl2,videoKeyName2);
+//		String deviceProductionDataSaveStr=deviceProductionData;
+//		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+//			type = new TypeToken<RPCProductionData>() {}.getType();
+//			RPCProductionData rpcProductionData=gson.fromJson(deviceProductionData, type);
+//			if(rpcProductionData!=null){
+//				if(rpcProductionData.getProduction()!=null && rpcProductionData.getFluidPVT()!=null){
+//					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcProductionData.getProduction().getWaterCut(), rpcProductionData.getFluidPVT().getCrudeOilDensity(), rpcProductionData.getFluidPVT().getWaterDensity());
+//					rpcProductionData.getProduction().setWeightWaterCut(weightWaterCut);
+//				}
+//				if(rpcProductionData.getManualIntervention()!=null){
+//					int manualInterventionResultCode=0;
+//					Jedis jedis=null;
+//					try{
+//						jedis = RedisUtil.jedisPool.getResource();
+//						if(!jedis.exists("RPCWorkTypeByName".getBytes())){
+//							MemoryDataManagerTask.loadRPCWorkType();
+//						}
+//						if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+//							if(jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
+//								WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
+//								manualInterventionResultCode=workType.getResultCode();
+//							}
+//						}
+//					}catch(Exception e){
+//						String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+//						List<?> resultList = this.wellInformationManagerService.findCallSql(resultNameSql);
+//						if(resultList.size()>0){
+//							manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+//						}
+//					}finally{
+//						if(jedis!=null&&jedis.isConnected()){
+//							jedis.close();
+//						}
+//					}
+//					rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
+//					
+//					
+//					if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+//						String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+//						List<?> resultList = this.wellInformationManagerService.findCallSql(sql);
+//						if(resultList.size()>0){
+//							int manualInterventionCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+//							rpcProductionData.getManualIntervention().setCode(manualInterventionCode);
+//						}
+//					}else{
+//						rpcProductionData.getManualIntervention().setCode(0);
+//					}
+//				}
+//				deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
+//			}
+//		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+//			type = new TypeToken<PCPProductionData>() {}.getType();
+//			PCPProductionData productionData=gson.fromJson(deviceProductionData, type);
+//			if(productionData!=null){
+//				if(productionData.getProduction()!=null && productionData.getFluidPVT()!=null){
+//					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(productionData.getProduction().getWaterCut(), productionData.getFluidPVT().getCrudeOilDensity(), productionData.getFluidPVT().getWaterDensity());
+//					productionData.getProduction().setWeightWaterCut(weightWaterCut);
+//				}
+//				deviceProductionDataSaveStr=gson.toJson(productionData);
+//			}
+//		}
+//		this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr);
+//		
+//		//处理抽油机数据
+//		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+//			//处理抽油机型号
+//			this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);
+//			//处理抽油机详情
+//			this.wellInformationManagerService.saveRPCPumpingInfo(deviceId,stroke,balanceInfo);
+//		}
+//		
+//		//处理视频数据
+//		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl1,videoKeyName1,videoUrl2,videoKeyName2);
 		
 		
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
@@ -1294,7 +1306,7 @@ public class WellInformationManagerController extends BaseController {
 						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
 						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
 						wellHandsontableChangedData.getUpdatelist().get(i).setTcpType("TCP Client");
-						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
+						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 						wellHandsontableChangedData.getUpdatelist().get(i).setSlave("01");
 					}
 				}
@@ -1305,7 +1317,7 @@ public class WellInformationManagerController extends BaseController {
 						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
 						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
 						wellHandsontableChangedData.getInsertlist().get(i).setTcpType("TCP Client");
-						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getWellName());
+						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 						wellHandsontableChangedData.getInsertlist().get(i).setSlave("01");
 					}
 				}
@@ -1852,6 +1864,74 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/doDeviceAdd")
+	public String doDeviceAdd(@ModelAttribute DeviceInformation deviceInformation) throws IOException {
+		String result = "";
+		HttpSession session=request.getSession();
+		try {
+			User user = (User) session.getAttribute("userLogin");
+			if(deviceInformation.getOrgId()==null){
+				deviceInformation.setOrgId(user.getUserOrgid());
+			}
+			
+			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
+			int license=0;
+			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+			if(acStatusProbeResonanceData!=null){
+				license=acStatusProbeResonanceData.getLicenseNumber();
+			}
+			if(deviceAmount<license){
+				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
+					String[] instanceCodeArr=this.rpcDeviceManagerService.getDefaultInstanceCode(0).split(";");
+					if(instanceCodeArr.length==4){
+						deviceInformation.setInstanceCode(instanceCodeArr[0].replaceAll(" ", ""));
+						deviceInformation.setDisplayInstanceCode(instanceCodeArr[1].replaceAll(" ", ""));
+						deviceInformation.setAlarmInstanceCode(instanceCodeArr[2].replaceAll(" ", ""));
+						deviceInformation.setReportInstanceCode(instanceCodeArr[3].replaceAll(" ", ""));
+						deviceInformation.setTcpType("TCP Client");
+						deviceInformation.setSignInId(deviceInformation.getDeviceName());
+						deviceInformation.setSlave("01");;
+					}
+				}
+				
+				this.deviceManagerService.doDeviceAdd(deviceInformation);
+				List<String> wells=new ArrayList<String>();
+				wells.add(deviceInformation.getDeviceName());
+				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(101);
+				dataSynchronizationThread.setInitWellList(wells);
+				dataSynchronizationThread.setUpdateList(null);
+				dataSynchronizationThread.setAddList(wells);
+				dataSynchronizationThread.setDeleteList(null);
+				dataSynchronizationThread.setCondition(1);
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.setDeviceInformation(deviceInformation);
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setDeviceManagerService(deviceManagerService);
+				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
+						TimeUnit.SECONDS, 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
+				executor.execute(dataSynchronizationThread);
+				result = "{success:true,msg:true,resultCode:1}";
+			}else{
+				result = "{success:true,msg:true,resultCode:-66}";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/doRPCDeviceAdd")
 	public String doRPCDeviceAdd(@ModelAttribute RpcDeviceInformation rpcDeviceInformation) throws IOException {
 		String result = "";
@@ -1861,9 +1941,6 @@ public class WellInformationManagerController extends BaseController {
 			if(rpcDeviceInformation.getOrgId()==null){
 				rpcDeviceInformation.setOrgId(user.getUserOrgid());
 			}
-//			String videoUrl1 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl1");
-//			String videoUrl2 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl2");
-//			rpcDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
 			
 			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
 			int license=0;

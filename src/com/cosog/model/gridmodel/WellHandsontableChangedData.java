@@ -35,7 +35,7 @@ public class WellHandsontableChangedData {
 
 	    private String orgName="";
 
-	    private String wellName="";
+	    private String deviceName="";
 	    
 	    private String applicationScenariosName="";
 
@@ -197,14 +197,6 @@ public class WellHandsontableChangedData {
 
 		public void setOrgName(String orgName) {
 			this.orgName = orgName;
-		}
-
-		public String getWellName() {
-			return wellName;
-		}
-
-		public void setWellName(String wellName) {
-			this.wellName = wellName;
 		}
 
 		public String getSortNum() {
@@ -789,6 +781,14 @@ public class WellHandsontableChangedData {
 
 		public void setVideoKeyName2(String videoKeyName2) {
 			this.videoKeyName2 = videoKeyName2;
+		}
+
+		public String getDeviceName() {
+			return deviceName;
+		}
+
+		public void setDeviceName(String deviceName) {
+			this.deviceName = deviceName;
 		}
 	    
 	}

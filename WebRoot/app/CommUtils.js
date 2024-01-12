@@ -4656,3 +4656,27 @@ function exportDataMask(key,panelId,info){
 	        },"json");
 	}, 1000);
 }
+
+function getTabPanelActiveId(tabTanelId){
+	var activeId='';
+	var tabPanel = Ext.getCmp(tabTanelId);
+	if(isNotVal(tabPanel)){
+		if(tabPanel.getActiveTab().xtype=='tabpanel'){
+			activeId=tabPanel.getActiveTab().activeTab.id;
+		}else{
+			activeId=tabPanel.getActiveTab().id;
+		}
+	}
+	return activeId;
+}
+
+function getDeviceTypeFromTabId(tabTanelId){
+	var deviceType=0;
+	var activeId=getTabPanelActiveId(tabTanelId);
+	if(isNotVal(activeId)){
+		if(activeId.split('_').length==2){
+			deviceType=activeId.split('_')[1];
+		}
+	}
+	return deviceType;
+}

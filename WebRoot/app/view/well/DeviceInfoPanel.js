@@ -477,6 +477,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 		deviceInfoHandsontableHelper = null;
 	}
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+    var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
     var wellInformationName_Id = Ext.getCmp('deviceListComb_Id').getValue();
     Ext.getCmp("DeviceTablePanel_id").el.mask(cosog.string.loading).show();
     Ext.Ajax.request({
@@ -632,7 +633,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         },
         params: {
             wellInformationName: wellInformationName_Id,
-            deviceType: 101,
+            deviceType: deviceType,
             recordCount: 50,
             orgId: leftOrg_Id,
             page: 1,
@@ -871,6 +872,7 @@ var DeviceInfoHandsontableHelper = {
         	if(deviceInfoHandsontableData.length>0){
         		var leftOrg_Name=Ext.getCmp("leftOrg_Name").getValue();
             	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+            	var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
                 //插入的数据的获取
                 deviceInfoHandsontableHelper.insertExpressCount();
                 //获取设备ID
@@ -1173,7 +1175,7 @@ var DeviceInfoHandsontableHelper = {
                         videoUrl2:videoUrl2,
                         videoKeyName2:videoKeyName2,
                         orgId: leftOrg_Id,
-                        deviceType: 101
+                        deviceType: deviceType
                     }
                 });
         	}else{

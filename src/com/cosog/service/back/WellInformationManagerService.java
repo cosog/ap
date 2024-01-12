@@ -25,6 +25,7 @@ import com.cosog.model.AcquisitionGroup;
 import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AuxiliaryDeviceInformation;
+import com.cosog.model.DeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.PCPDeviceAddInfo;
@@ -454,7 +455,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			protocolType=1;
 		}
 		
-		String sql="select t.code,t.name from tbl_protocolinstance t where t.devicetype="+protocolType+" order by t.sort";
+		String sql="select t.code,t.name from tbl_protocolinstance t  order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
@@ -478,7 +479,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			protocolType=1;
 		}
 		
-		String sql="select t.code,t.name from tbl_protocoldisplayinstance t where t.devicetype="+protocolType+" order by t.sort";
+		String sql="select t.code,t.name from tbl_protocoldisplayinstance t order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
@@ -502,7 +503,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			protocolType=1;
 		}
 		
-		String sql="select t.code,t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
+		String sql="select t.code,t.name from tbl_protocolreportinstance t order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
@@ -526,7 +527,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			protocolType=1;
 		}
 		
-		String sql="select t.code,t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
+		String sql="select t.code,t.name from tbl_protocolalarminstance t  order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
@@ -626,6 +627,30 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 //	public void saveWellEditerGridData(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
 //		getBaseDao().saveWellEditerGridData(wellHandsontableChangedData,orgId,deviceType,user);
 //	}
+	
+	public String saveDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer collisionbuff = new StringBuffer();
+		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().saveDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,user);
+		int successCount=0;
+		int collisionCount=0;
+		collisionbuff.append("[");
+		for(int i=0;i<list.size();i++){
+			if(list.get(i).getSaveSign()==-22||list.get(i).getSaveSign()==-33){
+				collisionCount++;
+				collisionbuff.append("\""+list.get(i).getSaveStr()+"\",");
+			}else if(list.get(i).getSaveSign()==0||list.get(i).getSaveSign()==1){
+				successCount++;
+			}
+		}
+		if(collisionbuff.toString().endsWith(",")){
+			collisionbuff.deleteCharAt(collisionbuff.length() - 1);
+		}
+		collisionbuff.append("]");
+		
+		result_json.append("{\"success\":true,\"successCount\":"+successCount+",\"collisionCount\":"+collisionCount+",\"list\":"+collisionbuff+"}");
+		return result_json.toString().replaceAll("null", "");
+	}
 	
 	public String saveRPCDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
@@ -756,7 +781,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				if(list.get(i).getSaveSign()==-22){//冲突
 					collisionCount+=1;
 					collisionBuff.append("{\"id\":\""+list.get(i).getId()+"\",");
-					collisionBuff.append("\"wellName\":\""+list.get(i).getWellName()+"\",");
+					collisionBuff.append("\"wellName\":\""+list.get(i).getDeviceName()+"\",");
 					collisionBuff.append("\"applicationScenariosName\":\""+list.get(i).getApplicationScenariosName()+"\",");
 					collisionBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					collisionBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
@@ -834,7 +859,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				}else if(list.get(i).getSaveSign()==-33){//覆盖信息
 					overlayCount+=1;
 					overlayBuff.append("{\"id\":\""+list.get(i).getId()+"\",");
-					overlayBuff.append("\"wellName\":\""+list.get(i).getWellName()+"\",");
+					overlayBuff.append("\"wellName\":\""+list.get(i).getDeviceName()+"\",");
 					overlayBuff.append("\"applicationScenariosName\":\""+list.get(i).getApplicationScenariosName()+"\",");
 					overlayBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					overlayBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
@@ -1058,7 +1083,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				if(list.get(i).getSaveSign()==-22){//冲突
 					collisionCount+=1;
 					collisionBuff.append("{\"id\":\""+list.get(i).getId()+"\",");
-					collisionBuff.append("\"wellName\":\""+list.get(i).getWellName()+"\",");
+					collisionBuff.append("\"wellName\":\""+list.get(i).getDeviceName()+"\",");
 					collisionBuff.append("\"applicationScenariosName\":\""+list.get(i).getApplicationScenariosName()+"\",");
 					collisionBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					collisionBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
@@ -1120,7 +1145,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				}else if(list.get(i).getSaveSign()==-33){//覆盖信息
 					overlayCount+=1;
 					overlayBuff.append("{\"id\":\""+list.get(i).getId()+"\",");
-					overlayBuff.append("\"wellName\":\""+list.get(i).getWellName()+"\",");
+					overlayBuff.append("\"wellName\":\""+list.get(i).getDeviceName()+"\",");
 					overlayBuff.append("\"applicationScenariosName\":\""+list.get(i).getApplicationScenariosName()+"\",");
 					overlayBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					overlayBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
@@ -1209,6 +1234,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public void saveSMSDeviceData(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
 		getBaseDao().saveSMSDeviceData(wellHandsontableChangedData,orgId,deviceType,user);
+	}
+	
+	public void doDeviceAdd(DeviceInformation deviceInformation) throws Exception {
+		getBaseDao().addObject(deviceInformation);
 	}
 	
 	public void doRPCDeviceAdd(RpcDeviceInformation rpcDeviceInformation) throws Exception {
@@ -1581,10 +1610,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		sql+= " and t.orgid in ("+orgId+" )";
 		sql+= " and t.devicetype="+deviceType;
 		sql+= " order by t.sortnum,t.wellname ";
-		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
+		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
+		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
+		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
+		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
 		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		
 		
@@ -1719,7 +1748,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where 1=1"
 				+ WellInformation_Str;
 		sql+= " and t.orgid in ("+orgId+" )";
-//		sql+= " and t.devicetype="+deviceType;
+		sql+= " and t.devicetype="+deviceType;
 		sql+= " order by t.sortnum,t.devicename ";
 		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
@@ -2396,10 +2425,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		sql+= " and t.devicetype="+deviceType;
 		sql+= " order by t.sortnum,t.wellname ";
-		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
+		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
+		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
+		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
+		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
 		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		
 		instanceDropdownData.append("[");
@@ -3678,10 +3707,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			protocolType=1;
 		}
 		
-		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String reportInstanceSql="select t.name from tbl_protocolreportinstance t where t.devicetype="+protocolType+" order by t.sort";
-		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype="+protocolType+" order by t.sort";
+		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
+		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
+		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
+		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
 		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
 		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		String columns=service.showTableHeadersColumns(ddicName);
@@ -3792,14 +3821,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public boolean judgeDeviceExistOrNot(String orgId,String deviceName,String deviceTypeStr) {
 		boolean flag = false;
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-		String tableName="tbl_rpcdevice";
-		if(deviceType>=200&&deviceType<300){
-			tableName="tbl_pcpdevice";
-		}else if(deviceType>=300){
+		String tableName="tbl_device";
+		if(deviceType>=300){
 			tableName="tbl_smsdevice";
 		}
 		if (StringManagerUtils.isNotNull(deviceName)&&StringManagerUtils.isNotNull(orgId)) {
-			String sql = "select t.id from "+tableName+" t where t.wellname='"+deviceName+"' and t.orgid="+orgId;
+			String sql = "select t.id from "+tableName+" t where t.deviceName='"+deviceName+"' and t.orgid="+orgId;
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -3812,16 +3839,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		boolean flag = false;
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(signinId)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String rpcSql = "select t.id from tbl_rpcdevice t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
+			String rpcSql = "select t.id from tbl_device t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
 			List<?> rpcList = this.findCallSql(rpcSql);
 			if (rpcList.size() > 0) {
 				flag = true;
-			}else{
-				String pcpSql = "select t.id from tbl_pcpdevice t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
-				List<?> pcpList = this.findCallSql(pcpSql);
-				if (pcpList.size() > 0) {
-					flag = true;
-				}
 			}
 		}
 		return flag;
@@ -3831,16 +3852,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		boolean flag = false;
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(ipPort)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String rpcSql = "select t.id from tbl_rpcdevice t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
+			String rpcSql = "select t.id from tbl_device t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
 			List<?> rpcList = this.findCallSql(rpcSql);
 			if (rpcList.size() > 0) {
 				flag = true;
-			}else{
-				String pcpSql = "select t.id from tbl_pcpdevice t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
-				List<?> pcpList = this.findCallSql(pcpSql);
-				if (pcpList.size() > 0) {
-					flag = true;
-				}
 			}
 		}
 		return flag;

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AcquisitionUnit;
+import com.cosog.model.DeviceInformation;
 import com.cosog.model.PcpDeviceInformation;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.User;
@@ -29,9 +30,11 @@ public class DataSynchronizationThread implements Runnable{
 	
 	public AcquisitionUnitManagerService<AcquisitionUnit> acquisitionUnitManagerService;
 	
+	public DeviceInformation deviceInformation;
 	public RpcDeviceInformation rpcDeviceInformation;
 	public PcpDeviceInformation pcpDeviceInformation;
 	public WellInformationManagerService<?> wellInformationManagerService;
+	public WellInformationManagerService<DeviceInformation> deviceManagerService;
 	public WellInformationManagerService<RpcDeviceInformation> rpcDeviceManagerService;
 	public WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService;
 	public void run(){
@@ -141,10 +144,10 @@ public class DataSynchronizationThread implements Runnable{
 			
 			else if(sign==101){//添加抽油机井
 				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
-				if(rpcDeviceInformation.getStatus()==1){
+				if(deviceInformation.getStatus()==1){
 					EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
 				}
-				rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, user);
+				deviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, user);
 			}else if(sign==102){//删除抽油机井
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(deleteList,condition,method);
 				MemoryDataManagerTask.loadDeviceInfo(deleteList,condition,method);
@@ -272,5 +275,17 @@ public class DataSynchronizationThread implements Runnable{
 	public void setAcquisitionUnitManagerService(
 			AcquisitionUnitManagerService<AcquisitionUnit> acquisitionUnitManagerService) {
 		this.acquisitionUnitManagerService = acquisitionUnitManagerService;
+	}
+	public DeviceInformation getDeviceInformation() {
+		return deviceInformation;
+	}
+	public void setDeviceInformation(DeviceInformation deviceInformation) {
+		this.deviceInformation = deviceInformation;
+	}
+	public WellInformationManagerService<DeviceInformation> getDeviceManagerService() {
+		return deviceManagerService;
+	}
+	public void setDeviceManagerService(WellInformationManagerService<DeviceInformation> deviceManagerService) {
+		this.deviceManagerService = deviceManagerService;
 	}
 }

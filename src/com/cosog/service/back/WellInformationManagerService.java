@@ -3084,7 +3084,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getRPCPumpingModelList(String deviceId,String deviceType) {
+	public String getPumpingModelList(String deviceId,String deviceType) {
 		StringBuffer result_json = new StringBuffer();
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -3092,7 +3092,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
 				+ "]";
 		String sql = "select t.id,t.manufacturer,t.model,t.stroke,t.balanceweight from tbl_pumpingmodel t order by t.id,t.manufacturer,t.model";
-		String devicePumpingModelSql="select t.pumpingmodelid from tbl_rpcdevice t where t.id="+deviceId;
+		String devicePumpingModelSql="select t.pumpingmodelid from tbl_device t where t.id="+deviceId;
 		String json = "";
 		List<?> list = this.findCallSql(sql);
 		List<?> devicePumpingModel = this.findCallSql(devicePumpingModelSql);
@@ -3219,10 +3219,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
 					+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
-			String deviceTableName="tbl_rpcdevice";
-			if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
-				deviceTableName="tbl_pcpdevice";
-			}
+			String deviceTableName="tbl_device";
 			String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 			String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss'),t.applicationscenarios "
 					+ " from "+deviceTableName+" t "
@@ -3569,10 +3566,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"监控路径\",\"dataIndex\":\"videoUrl\",flex:5 ,children:[] },"
 				+ "{ \"header\":\"视频密钥\",\"dataIndex\":\"videoKey\",flex:1 ,children:[] }"
 				+ "]";
-		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
-			deviceTableName="tbl_pcpdevice";
-		}
+		String deviceTableName="tbl_device";
 		String sql = "select t.videourl1,t2.account as videokey1,t.videourl2,t3.account as videokey2"
 				+ " from "+deviceTableName+" t"
 				+ " left outer join TBL_VIDEOKEY t2 on t.videokeyid1=t2.id "
@@ -4853,19 +4847,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
 				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
 				+ "]";
-		String deviceTableName="tbl_pumpdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
-			deviceTableName="tbl_pipelinedevice";
-		}
+		String deviceTableName="tbl_device";
 		
-		String sql = "select t.id,t.name,decode(t.type,1,'管辅件','泵辅件') as type,t.model,t.remark,t.sort from tbl_auxiliarydevice t where 1=1";
+		String sql = "select t.id,t.name,t.type,t.model,t.remark,t.sort from tbl_auxiliarydevice t where 1=1";
 		String auxiliarySql="select t2.auxiliaryid from "+deviceTableName+" t,tbl_auxiliary2master t2 "
 				+ " where t.id=t2.masterid and t.id="+deviceId;
-		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
-			sql+= " and t.type=1";
-		}else{
-			sql+= " and t.type=0";
-		}
+		
 		sql+= " order by t.sort,t.name";
 		
 		String json = "";
@@ -4906,15 +4893,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
 				+ "]";
-		String deviceTableName="tbl_pumpdevice";
-		String infoTableName="tbl_pumpdeviceaddinfo";
-		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
-			deviceTableName="tbl_pipelinedevice";
-			infoTableName="tbl_pipelinedeviceaddinfo";
-		}
+		String deviceTableName="tbl_device";
+		String infoTableName="tbl_deviceaddinfo";
 		String sql = "select t2.id,t2.itemname,t2.itemvalue,t2.itemunit "
 				+ " from "+deviceTableName+" t,"+infoTableName+" t2 "
-				+ " where t.id=t2.wellid and t.id="+deviceId
+				+ " where t.id=t2.deviceid and t.id="+deviceId
 				+ " order by t2.id";
 		
 		List<?> list = this.findCallSql(sql);

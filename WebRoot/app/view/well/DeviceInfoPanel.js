@@ -3,6 +3,9 @@ var pumpingModelHandsontableHelper = null;
 var productionHandsontableHelper = null;
 var pumpingInfoHandsontableHelper = null;
 var videoInfoHandsontableHelper = null;
+
+var deviceAuxiliaryDeviceInfoHandsontableHelper=null;
+var deviceAdditionalInfoHandsontableHelper=null;
 Ext.define('AP.view.well.DeviceInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deviceInfoPanel',
@@ -327,18 +330,94 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 }
             },{
             	region: 'east',
-                width: '50%',
-                layout: 'border',
-                split: true,
-                collapsible: true,
-                header:false,
-                hidden:onlyMonitor,
-                items: [{
-                	region: 'center',
-                	header:false,
-                	layout: 'border',
-                	items: [{
-                    	region: 'center',
+            	width: '50%',
+            	split: true,
+            	collapsible: true,
+            	header:false,
+            	xtype: 'tabpanel',
+            	id:'DeviceAdditionalInformationRabpanel_Id',
+            	activeTab: 0,
+            	items: [{
+            		title:'附加信息',
+            		id:'DeviceAdditionalInfoPanel_Id',
+            		html: '<div class="DeviceAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAdditionalInfoTableDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if (deviceAdditionalInfoHandsontableHelper != null && deviceAdditionalInfoHandsontableHelper.hot != null && deviceAdditionalInfoHandsontableHelper.hot != undefined) {
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		deviceAdditionalInfoHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                            }
+                        }
+                    }
+            	},{
+            		title:'辅件设备',
+            		id:'DeviceAuxiliaryDevicePanel_Id',
+            		html: '<div class="DeviceAuxiliaryDeviceContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAuxiliaryDeviceTableDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if (deviceAuxiliaryDeviceInfoHandsontableHelper != null && deviceAuxiliaryDeviceInfoHandsontableHelper.hot != null && deviceAuxiliaryDeviceInfoHandsontableHelper.hot != undefined) {
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		deviceAuxiliaryDeviceInfoHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                            }
+                        }
+                    }
+            	},{
+            		title:'视频配置',
+            		id:'DeviceVideoInfoPanel_Id',
+                	hidden: !IoTConfig,
+                	tbar:['->',{
+                        xtype: 'button',
+                        text: '编辑视频密钥',
+                        iconCls: 'save',
+                        disabled: loginUserRoleVideoKeyEdit!=1,
+                        handler: function (v, o) {
+                        	var VideoKeyInfoWindow = Ext.create("AP.view.well.VideoKeyInfoWindow");
+                        	VideoKeyInfoWindow.show();
+                        }
+                    }],
+                	html: '<div class="VideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="VideoInfoTableDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if (videoInfoHandsontableHelper != null && videoInfoHandsontableHelper.hot != null && videoInfoHandsontableHelper.hot != undefined) {
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		videoInfoHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                            }
+                        }
+                    }
+            	},{
+            		title:'计算数据配置',
+            		id:'DeviceCalculateDataInfoPanel_Id',
+            		layout: 'border',
+            		split: true,
+            		collapsible: true,
+            		header:false,
+            		hidden:onlyMonitor,
+            		items: [{
+                      	region: 'center',
                 		title:'生产数据',
                     	id:'ProductionDataInfoPanel_Id',
                     	split: true,
@@ -347,7 +426,6 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if (productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined) {
-//                            		productionHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -378,7 +456,6 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if (pumpingModelHandsontableHelper != null && pumpingModelHandsontableHelper.hot != null && pumpingModelHandsontableHelper.hot != undefined) {
-//                                		pumpingModelHandsontableHelper.hot.refreshDimensions();
                                 		var newWidth=width;
                                 		var newHeight=height;
                                 		var header=thisPanel.getHeader();
@@ -405,7 +482,6 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if (pumpingInfoHandsontableHelper != null && pumpingInfoHandsontableHelper.hot != null && pumpingInfoHandsontableHelper.hot != undefined) {
-//                                		pumpingInfoHandsontableHelper.hot.refreshDimensions();
                                 		var newWidth=width;
                                 		var newHeight=height;
                                 		var header=thisPanel.getHeader();
@@ -421,44 +497,165 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                             }
                         }]
                 	}]
-                },{
-                	region: 'south',
-                	height:'23%',
-                	title:'视频配置',
-                	id:'VideoInfoPanel_Id',
-                	hidden: !IoTConfig,
-                	split: true,
-                	collapsible: true,
-                	tbar:['->',{
-                        xtype: 'button',
-                        text: '编辑视频密钥',
-                        iconCls: 'save',
-                        disabled: loginUserRoleVideoKeyEdit!=1,
-                        handler: function (v, o) {
-                        	var VideoKeyInfoWindow = Ext.create("AP.view.well.VideoKeyInfoWindow");
-                        	VideoKeyInfoWindow.show();
-                        }
-                    }],
-                	html: '<div class="VideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="VideoInfoTableDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if (videoInfoHandsontableHelper != null && videoInfoHandsontableHelper.hot != null && videoInfoHandsontableHelper.hot != undefined) {
-//                        		videoInfoHandsontableHelper.hot.refreshDimensions();
-                        		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		videoInfoHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                            }
-                        }
-                    }
-                }]
-            }],
+            	}],
+            	listeners: {
+        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				
+        			},
+        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+        				var deviceId=0;
+        				var deviceName='';
+        				var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+        				if(isNotVal(DeviceSelectRow)){
+        					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+            	        	if(deviceInfoHandsontableData.length>0){
+            	        		var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
+            	        		deviceId=rowdata[0];
+            	        		deviceName=rowdata[1];
+            	        	}
+        				}
+        				CreateDeviceAdditionalInformationTable(deviceId,deviceName);
+        			},
+        			afterrender: function (panel, eOpts) {
+        				
+        			}
+        		}
+            }
+//            {
+//            	region: 'east',
+//                width: '50%',
+//                layout: 'border',
+//                split: true,
+//                collapsible: true,
+//                header:false,
+//                hidden:onlyMonitor,
+//                items: [{
+//                	region: 'center',
+//                	header:false,
+//                	layout: 'border',
+//                	items: [{
+//                    	region: 'center',
+//                		title:'生产数据',
+//                    	id:'ProductionDataInfoPanel_Id',
+//                    	split: true,
+//                    	collapsible: false,
+//                    	html: '<div class="AdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="AdditionalInfoTableDiv_id"></div></div>',
+//                        listeners: {
+//                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                            	if (productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined) {
+////                            		productionHandsontableHelper.hot.refreshDimensions();
+//                            		var newWidth=width;
+//                            		var newHeight=height;
+//                            		var header=thisPanel.getHeader();
+//                            		if(header){
+//                            			newHeight=newHeight-header.lastBox.height-2;
+//                            		}
+//                            		productionHandsontableHelper.hot.updateSettings({
+//                            			width:newWidth,
+//                            			height:newHeight
+//                            		});
+//                                }
+//                            }
+//                        }
+//                	},{
+//                		region: 'east',
+//                        width: '40%',
+//                        layout: 'border',
+//                        split: true,
+//                        collapsible: true,
+//                        header:false,
+//                        items: [{
+//                        	region: 'center',
+//                        	title:'抽油机型号选择',
+//                            id:'PumpingModelListPanel_Id',
+//                            split: true,
+//                            collapsible: true,
+//                            html: '<div class="PumpingModelListContainer" style="width:100%;height:100%;"><div class="con" id="PumpingModelListTableDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	if (pumpingModelHandsontableHelper != null && pumpingModelHandsontableHelper.hot != null && pumpingModelHandsontableHelper.hot != undefined) {
+////                                		pumpingModelHandsontableHelper.hot.refreshDimensions();
+//                                		var newWidth=width;
+//                                		var newHeight=height;
+//                                		var header=thisPanel.getHeader();
+//                                		if(header){
+//                                			newHeight=newHeight-header.lastBox.height-2;
+//                                		}
+//                                		pumpingModelHandsontableHelper.hot.updateSettings({
+//                                			width:newWidth,
+//                                			height:newHeight
+//                                		});
+//                                    }
+//                                }
+//                            }
+//                        },{
+//                        	region: 'south',
+//                        	height:'50%',
+//                        	split: true,
+//                            collapsible: true,
+//                        	title:'抽油机详情',
+//                        	id:'PumpingInfoPanel_Id',
+//                            split: true,
+//                            collapsible: true,
+//                            html: '<div class="PumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="PumpingInfoTableDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	if (pumpingInfoHandsontableHelper != null && pumpingInfoHandsontableHelper.hot != null && pumpingInfoHandsontableHelper.hot != undefined) {
+////                                		pumpingInfoHandsontableHelper.hot.refreshDimensions();
+//                                		var newWidth=width;
+//                                		var newHeight=height;
+//                                		var header=thisPanel.getHeader();
+//                                		if(header){
+//                                			newHeight=newHeight-header.lastBox.height-2;
+//                                		}
+//                                		pumpingInfoHandsontableHelper.hot.updateSettings({
+//                                			width:newWidth,
+//                                			height:newHeight
+//                                		});
+//                                    }
+//                                }
+//                            }
+//                        }]
+//                	}]
+//                },{
+//                	region: 'south',
+//                	height:'23%',
+//                	title:'视频配置',
+//                	id:'VideoInfoPanel_Id',
+//                	hidden: !IoTConfig,
+//                	split: true,
+//                	collapsible: true,
+//                	tbar:['->',{
+//                        xtype: 'button',
+//                        text: '编辑视频密钥',
+//                        iconCls: 'save',
+//                        disabled: loginUserRoleVideoKeyEdit!=1,
+//                        handler: function (v, o) {
+//                        	var VideoKeyInfoWindow = Ext.create("AP.view.well.VideoKeyInfoWindow");
+//                        	VideoKeyInfoWindow.show();
+//                        }
+//                    }],
+//                	html: '<div class="VideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="VideoInfoTableDiv_id"></div></div>',
+//                    listeners: {
+//                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                        	if (videoInfoHandsontableHelper != null && videoInfoHandsontableHelper.hot != null && videoInfoHandsontableHelper.hot != undefined) {
+////                        		videoInfoHandsontableHelper.hot.refreshDimensions();
+//                        		var newWidth=width;
+//                        		var newHeight=height;
+//                        		var header=thisPanel.getHeader();
+//                        		if(header){
+//                        			newHeight=newHeight-header.lastBox.height-2;
+//                        		}
+//                        		videoInfoHandsontableHelper.hot.updateSettings({
+//                        			width:newWidth,
+//                        			height:newHeight
+//                        		});
+//                            }
+//                        }
+//                    }
+//                }]
+//            }
+            ],
             listeners: {
                 beforeclose: function (panel, eOpts) {
                 	
@@ -468,6 +665,21 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
         this.callParent(arguments);
     }
 });
+
+function CreateDeviceAdditionalInformationTable(deviceId,deviceName,isNew){
+	var tabPanel = Ext.getCmp("DeviceAdditionalInformationRabpanel_Id");
+	var activeId=tabPanel.getActiveTab().id
+	if(activeId=='DeviceAdditionalInfoPanel_Id'){
+		CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew);
+	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){
+		CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew);
+	}else if(activeId=='DeviceVideoInfoPanel_Id'){
+		CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew);
+	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
+		CreateAndLoadProductionDataTable(deviceId,deviceName,isNew);
+		CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,isNew);
+	}
+}
 
 function CreateAndLoadDeviceInfoTable(isNew) {
 	if(isNew&&deviceInfoHandsontableHelper!=null){
@@ -602,6 +814,8 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 //            	CreateAndLoadPumoingModelInfoTable(0,'');
 //            	CreateAndLoadProductionDataTable(0,'');
 //            	CreateAndLoadVideoInfoTable(0,'');
+            	
+            	CreateDeviceAdditionalInformationTable(0,'');
             }else{
             	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
             	var selectRow=0;
@@ -622,6 +836,8 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 //            	CreateAndLoadPumoingModelInfoTable(rowdata[0],rowdata[1]);
 //            	CreateAndLoadProductionDataTable(rowdata[0],rowdata[1]);
 //            	CreateAndLoadVideoInfoTable(rowdata[0],rowdata[1]);
+        		
+        		CreateDeviceAdditionalInformationTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("DeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -746,6 +962,8 @@ var DeviceInfoHandsontableHelper = {
 //                    	CreateAndLoadPumoingModelInfoTable(0,'');
 //                    	CreateAndLoadProductionDataTable(0,'');
 //                    	CreateAndLoadVideoInfoTable(0,'');
+                    	
+                    	CreateDeviceAdditionalInformationTable(0,'');
                 	}else{
                 		if(row<0){
                     		row=0;
@@ -775,6 +993,8 @@ var DeviceInfoHandsontableHelper = {
 //                        	CreateAndLoadPumoingModelInfoTable(recordId,deviceName);
 //                        	CreateAndLoadProductionDataTable(recordId,deviceName);
 //                        	CreateAndLoadVideoInfoTable(recordId,deviceName);
+                        	
+                        	CreateDeviceAdditionalInformationTable(recordId,deviceName);
                         	
                         	Ext.getCmp("selectedDeviceId_global").setValue(recordId);
                     	}
@@ -1296,7 +1516,7 @@ function CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,isNew){
 			if(isNotVal(deviceName)){
 				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】抽油机型号选择";
 			}
-			Ext.getCmp("PumpingModelListPanel_Id").setTitle(panelTitle);
+//			Ext.getCmp("PumpingModelListPanel_Id").setTitle(panelTitle);
 			if(pumpingModelHandsontableHelper==null || pumpingModelHandsontableHelper.hot==undefined){
 				pumpingModelHandsontableHelper = PumpingModelHandsontableHelper.createNew("PumpingModelListTableDiv_id");
 				var colHeaders="['','序号','厂家','型号','','','']";
@@ -1439,7 +1659,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
 			if(isNotVal(deviceName)){
 				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】生产数据";
 			}
-			Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
+//			Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
 			if(productionHandsontableHelper==null || productionHandsontableHelper.hot==undefined){
 				productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 				productionHandsontableHelper.resultList = result.resultNameList;
@@ -1796,19 +2016,19 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 		videoInfoHandsontableHelper=null;
 	}
 	videoInfoHandsontableHelper=null;
-	Ext.getCmp("VideoInfoPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("DeviceVideoInfoPanel_Id").el.mask(cosog.string.loading).show();
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',
 		success:function(response) {
-			Ext.getCmp("VideoInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			var panelTitle='视频配置';
 			if(isNotVal(deviceName)){
 				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】视频配置";
 			}
-			Ext.getCmp("VideoInfoPanel_Id").setTitle(panelTitle);
+//			Ext.getCmp("DeviceVideoInfoPanel_Id").setTitle(panelTitle);
 			if(videoInfoHandsontableHelper==null || videoInfoHandsontableHelper.hot==undefined){
 				videoInfoHandsontableHelper = VideoInfoHandsontableHelper.createNew("VideoInfoTableDiv_id");
 				var colHeaders = "[";
@@ -1855,7 +2075,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("VideoInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -1923,3 +2143,241 @@ var VideoInfoHandsontableHelper = {
 	        return videoInfoHandsontableHelper;
 	    }
 	};
+
+
+function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
+	if(isNew&&deviceAdditionalInfoHandsontableHelper!=null){
+		if(deviceAdditionalInfoHandsontableHelper.hot!=undefined){
+			deviceAdditionalInfoHandsontableHelper.hot.destroy();
+		}
+		deviceAdditionalInfoHandsontableHelper=null;
+	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getDeviceAdditionalInfo',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			if(!isNotVal(deviceName)){
+				deviceName='';
+			}
+//			Ext.getCmp("DeviceAdditionalInfoPanel_Id").setTitle(deviceName+"附加信息");
+			if(deviceAdditionalInfoHandsontableHelper==null || deviceAdditionalInfoHandsontableHelper.hot==undefined){
+				deviceAdditionalInfoHandsontableHelper = DeviceAdditionalInfoHandsontableHelper.createNew("DeviceAdditionalInfoTableDiv_id");
+				var colHeaders="['序号','名称','值','单位']";
+				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
+				
+				deviceAdditionalInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				deviceAdditionalInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					deviceAdditionalInfoHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceAdditionalInfoHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					deviceAdditionalInfoHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceAdditionalInfoHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			deviceId:deviceId,
+			deviceType:101
+        }
+	});
+};
+
+var DeviceAdditionalInfoHandsontableHelper = {
+	    createNew: function (divid) {
+	        var deviceAdditionalInfoHandsontableHelper = {};
+	        deviceAdditionalInfoHandsontableHelper.hot = '';
+	        deviceAdditionalInfoHandsontableHelper.divid = divid;
+	        deviceAdditionalInfoHandsontableHelper.colHeaders = [];
+	        deviceAdditionalInfoHandsontableHelper.columns = [];
+	        deviceAdditionalInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(242, 242, 242)';
+	        }
+
+	        deviceAdditionalInfoHandsontableHelper.createTable = function (data) {
+	            $('#' + deviceAdditionalInfoHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + deviceAdditionalInfoHandsontableHelper.divid);
+	            deviceAdditionalInfoHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	            	data: data,
+	                hiddenColumns: {
+	                    columns: [0],
+	                    indicators: false
+	                },
+	                columns: deviceAdditionalInfoHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: true, //显示行头
+	                colHeaders: deviceAdditionalInfoHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                contextMenu: {
+	                    items: {
+	                        "row_above": {
+	                            name: '向上插入一行',
+	                        },
+	                        "row_below": {
+	                            name: '向下插入一行',
+	                        },
+	                        "col_left": {
+	                            name: '向左插入一列',
+	                        },
+	                        "col_right": {
+	                            name: '向右插入一列',
+	                        },
+	                        "remove_row": {
+	                            name: '删除行',
+	                        },
+	                        "remove_col": {
+	                            name: '删除列',
+	                        },
+	                        "merge_cell": {
+	                            name: '合并单元格',
+	                        },
+	                        "copy": {
+	                            name: '复制',
+	                        },
+	                        "cut": {
+	                            name: '剪切',
+	                        },
+	                        "paste": {
+	                            name: '粘贴',
+	                            disabled: function () {
+	                            },
+	                            callback: function () {
+	                            }
+	                        }
+	                    }
+	                }, 
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                }
+	            });
+	        }
+	        return deviceAdditionalInfoHandsontableHelper;
+	    }
+	};
+
+function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
+	if(isNew&&deviceAuxiliaryDeviceInfoHandsontableHelper!=null){
+		if(deviceAuxiliaryDeviceInfoHandsontableHelper.hot!=undefined){
+			deviceAuxiliaryDeviceInfoHandsontableHelper.hot.destroy();
+		}
+		deviceAuxiliaryDeviceInfoHandsontableHelper=null;
+	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getAuxiliaryDevice',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			if(!isNotVal(deviceName)){
+				deviceName='';
+			}
+//			Ext.getCmp("DeviceAuxiliaryDevicePanel_Id").setTitle(deviceName+"辅件设备列表");
+			if(deviceAuxiliaryDeviceInfoHandsontableHelper==null || deviceAuxiliaryDeviceInfoHandsontableHelper.hot==undefined){
+				deviceAuxiliaryDeviceInfoHandsontableHelper = DeviceAuxiliaryDeviceInfoHandsontableHelper.createNew("DeviceAuxiliaryDeviceTableDiv_id");
+				var colHeaders="['','序号','名称','规格型号','']";
+				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'name'},{data:'model'},{data:'realId'}]";
+				
+				deviceAuxiliaryDeviceInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				deviceAuxiliaryDeviceInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					deviceAuxiliaryDeviceInfoHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceAuxiliaryDeviceInfoHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				deviceAuxiliaryDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+			}
+		},
+		failure:function(){
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			deviceId:deviceId,
+			deviceType:101
+        }
+	});
+};
+
+var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
+		createNew: function (divid) {
+	        var deviceAuxiliaryDeviceInfoHandsontableHelper = {};
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.hot1 = '';
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.divid = divid;
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.validresult=true;//数据校验
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.colHeaders=[];
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.columns=[];
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.AllData=[];
+	        
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(184, 184, 184)';
+	        }
+	        
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.createTable = function (data) {
+	        	$('#'+deviceAuxiliaryDeviceInfoHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+deviceAuxiliaryDeviceInfoHandsontableHelper.divid);
+	        	deviceAuxiliaryDeviceInfoHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		hiddenColumns: {
+	                    columns: [4],
+	                    indicators: false
+	                },
+	        		colWidths: [25,50,80,80],
+	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
+	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:deviceAuxiliaryDeviceInfoHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    if (visualColIndex >0) {
+							cellProperties.readOnly = true;
+		                }
+	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                }
+	        	});
+	        }
+	        //保存数据
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.saveData = function () {}
+	        deviceAuxiliaryDeviceInfoHandsontableHelper.clearContainer = function () {
+	        	deviceAuxiliaryDeviceInfoHandsontableHelper.AllData = [];
+	        }
+	        return deviceAuxiliaryDeviceInfoHandsontableHelper;
+	    }
+};

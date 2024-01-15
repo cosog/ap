@@ -140,6 +140,18 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
                             }
                             videoInfoHandsontableHelper = null;
                         }
+        				if (deviceAuxiliaryDeviceInfoHandsontableHelper != null) {
+                            if (deviceAuxiliaryDeviceInfoHandsontableHelper.hot != undefined) {
+                            	deviceAuxiliaryDeviceInfoHandsontableHelper.hot.destroy();
+                            }
+                            deviceAuxiliaryDeviceInfoHandsontableHelper = null;
+                        }
+        				if (deviceAdditionalInfoHandsontableHelper != null) {
+                            if (deviceAdditionalInfoHandsontableHelper.hot != undefined) {
+                            	deviceAdditionalInfoHandsontableHelper.hot.destroy();
+                            }
+                            deviceAdditionalInfoHandsontableHelper = null;
+                        }
         			}
         		}
         });

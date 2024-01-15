@@ -835,13 +835,13 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getRPCPumpingModelList")
-	public String getRPCPumpingModelList() throws IOException {
+	@RequestMapping("/getPumpingModelList")
+	public String getPumpingModelList() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getRPCPumpingModelList(deviceId,deviceType);
+		String json = this.wellInformationManagerService.getPumpingModelList(deviceId,deviceType);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1170,15 +1170,6 @@ public class WellInformationManagerController extends BaseController {
 				}
 			}
 		}
-		
-//		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-//			deviceTableName="tbl_rpcdevice";
-//			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-//		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-//			deviceTableName="tbl_pcpdevice";
-//			json=this.wellInformationManagerService.savePCPDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-//		}else 
-			
 			
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);

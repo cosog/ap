@@ -416,6 +416,29 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             		collapsible: true,
             		header:false,
             		hidden:onlyMonitor,
+            		tbar:[{
+                        xtype: 'radiogroup',
+                        fieldLabel: '指定类型',
+                        labelWidth: 60,
+                        id: 'DeviceCalculateDataType_Id',
+                        cls: 'x-check-group-alt',
+                        name: 'deviceCalculateDataType',
+                        items: [
+                            {boxLabel: '抽油机',width: 70, inputValue: 0, checked: true},
+                            {boxLabel: '螺杆泵',width: 70, inputValue: 1},
+                            {boxLabel: '取消',width: 70, inputValue: 2}
+                        ],
+                        listeners: {
+                        	change: function (radiogroup, newValue, oldValue, eOpts) {
+                        		alert(Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType);
+                        		if(newValue.deviceCalculateDataType==1){
+                          			 
+                          		 }else{
+                          			 
+                          		 }
+                          	 }
+                        }
+                    }],
             		items: [{
                       	region: 'center',
                 		title:'生产数据',
@@ -681,6 +704,22 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,isNew){
 	}
 }
 
+function getDeviceAdditionalInformationType(){
+	var type=-1;
+	var tabPanel = Ext.getCmp("DeviceAdditionalInformationRabpanel_Id");
+	var activeId=tabPanel.getActiveTab().id
+	if(activeId=='DeviceAdditionalInfoPanel_Id'){
+		type=0;
+	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){
+		type=1;
+	}else if(activeId=='DeviceVideoInfoPanel_Id'){
+		type=2;
+	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
+		type=3;
+	}
+	return type;
+}
+
 function CreateAndLoadDeviceInfoTable(isNew) {
 	if(isNew&&deviceInfoHandsontableHelper!=null){
 		if (deviceInfoHandsontableHelper.hot != undefined) {
@@ -811,9 +850,6 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             if(result.totalRoot.length==0){
             	Ext.getCmp("DeviceSelectRow_Id").setValue('');
             	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-//            	CreateAndLoadPumoingModelInfoTable(0,'');
-//            	CreateAndLoadProductionDataTable(0,'');
-//            	CreateAndLoadVideoInfoTable(0,'');
             	
             	CreateDeviceAdditionalInformationTable(0,'');
             }else{
@@ -832,10 +868,6 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         		if(combDeviceName!=''){
             		Ext.getCmp("selectedDeviceId_global").setValue(rowdata[0]);
         		}
-
-//            	CreateAndLoadPumoingModelInfoTable(rowdata[0],rowdata[1]);
-//            	CreateAndLoadProductionDataTable(rowdata[0],rowdata[1]);
-//            	CreateAndLoadVideoInfoTable(rowdata[0],rowdata[1]);
         		
         		CreateDeviceAdditionalInformationTable(rowdata[0],rowdata[1]);
             }
@@ -959,9 +991,6 @@ var DeviceInfoHandsontableHelper = {
                 	if(row<0 && row2<0){//只选中表头
                 		Ext.getCmp("DeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-//                    	CreateAndLoadPumoingModelInfoTable(0,'');
-//                    	CreateAndLoadProductionDataTable(0,'');
-//                    	CreateAndLoadVideoInfoTable(0,'');
                     	
                     	CreateDeviceAdditionalInformationTable(0,'');
                 	}else{
@@ -989,10 +1018,6 @@ var DeviceInfoHandsontableHelper = {
                         	if(isNotVal(row1[1])){
                         		deviceName=row1[1];
                         	}
-                        	
-//                        	CreateAndLoadPumoingModelInfoTable(recordId,deviceName);
-//                        	CreateAndLoadProductionDataTable(recordId,deviceName);
-//                        	CreateAndLoadVideoInfoTable(recordId,deviceName);
                         	
                         	CreateDeviceAdditionalInformationTable(recordId,deviceName);
                         	
@@ -1093,6 +1118,7 @@ var DeviceInfoHandsontableHelper = {
         		var leftOrg_Name=Ext.getCmp("leftOrg_Name").getValue();
             	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
             	var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+            	var additionalInformationType=getDeviceAdditionalInformationType();
                 //插入的数据的获取
                 deviceInfoHandsontableHelper.insertExpressCount();
                 //获取设备ID
@@ -1115,247 +1141,479 @@ var DeviceInfoHandsontableHelper = {
             		}
             	}
             	
-                //生产数据
-                var deviceProductionData={};
-                var manualInterventionResultName='不干预';
-                if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
-            		var productionHandsontableData=productionHandsontableHelper.hot.getData();
-            		deviceProductionData.FluidPVT={};
-            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
-            			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
-            			deviceProductionData.FluidPVT.WaterDensity=parseFloat(productionHandsontableData[1][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
-            			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
-            		}
-            		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[3][2]))){
-            			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
-            		}
-            		
-            		deviceProductionData.Reservoir={};
-            		if(isNumber(parseFloat(productionHandsontableData[4][2]))){
-            			deviceProductionData.Reservoir.Depth=parseFloat(productionHandsontableData[4][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[5][2]))){
-            			deviceProductionData.Reservoir.Temperature=parseFloat(productionHandsontableData[5][2]);
-            		}
-            		
-            		deviceProductionData.Production={};
-            		if(isNumber(parseFloat(productionHandsontableData[6][2]))){
-            			deviceProductionData.Production.TubingPressure=parseFloat(productionHandsontableData[6][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[7][2]))){
-            			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
-            			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
-            		}
-            		
-            		if(applicationScenarios==0){
-            			deviceProductionData.Production.WaterCut=100;
-            		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
-            			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
-            		}
-            		
-            		if(isNumber(parseFloat(productionHandsontableData[10][2]))){
-            			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
-            			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
-            			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
-            		}
-            		
-            		deviceProductionData.Pump={};
-//            		var PumpType=productionHandsontableData[13][2];
-//            		if(productionHandsontableData[13][2]=='杆式泵'){
-//            			PumpType='R';
-//            		}else if(productionHandsontableData[13][2]=='管式泵'){
-//            			PumpType='T';
-//            		}
-//            		if(isNotVal(PumpType)){
-//            			deviceProductionData.Pump.PumpType=PumpType;
-//            		}
-            		deviceProductionData.Pump.PumpType='T';
-            		
-            		var BarrelType=productionHandsontableData[13][2];
-            		if(productionHandsontableData[13][2]=='组合泵'){
-            			BarrelType='L';
-            		}else if(productionHandsontableData[13][2]=='整筒泵'){
-            			BarrelType='H';
-            		}
-            		if(isNotVal(BarrelType)){
-            			deviceProductionData.Pump.BarrelType=BarrelType;
-            		}
-            		if(isNumber(parseInt(productionHandsontableData[14][2]))){
-            			deviceProductionData.Pump.PumpGrade=parseInt(productionHandsontableData[14][2]);
-            		}
-            		if(isNumber(parseInt(productionHandsontableData[15][2]))){
-            			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
-            			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[16][2]);
-            		}
-            		
-            		deviceProductionData.TubingString={};
-            		deviceProductionData.TubingString.EveryTubing=[];
-            		var EveryTubing={};
-            		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-            			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
-            		}
-            		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
-            		
-            		deviceProductionData.CasingString={};
-            		deviceProductionData.CasingString.EveryCasing=[];
-            		var EveryCasing={};
-            		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-            			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
-            		}
-            		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
-            		
-            		deviceProductionData.RodString={};
-            		deviceProductionData.RodString.EveryRod=[];
-            		
-            		if(isNotVal(productionHandsontableData[19][2]) 
-            				&& isNumber(parseInt(productionHandsontableData[20][2])) 
-            				&& (productionHandsontableData[21][2]=='' || isNumber(parseInt(productionHandsontableData[21][2])) )
-            				&& isNumber(parseInt(productionHandsontableData[22][2]))){
-            			var Rod1={};
-                		if(isNotVal(productionHandsontableData[19][2])){
-                			Rod1.Grade=productionHandsontableData[19][2];
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[20][2]))){
-                			Rod1.OutsideDiameter=parseInt(productionHandsontableData[20][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-                			Rod1.InsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-                			Rod1.Length=parseInt(productionHandsontableData[22][2]);
-                		}
-                		deviceProductionData.RodString.EveryRod.push(Rod1);
-            		}
-            		
-            		if(isNotVal(productionHandsontableData[23][2]) 
-            				&& isNumber(parseInt(productionHandsontableData[24][2])) 
-            				&& (productionHandsontableData[25][2]=='' || isNumber(parseInt(productionHandsontableData[25][2])) )
-            				&& isNumber(parseInt(productionHandsontableData[26][2]))){
-            			var Rod2={};
-                		if(isNotVal(productionHandsontableData[23][2])){
-                			Rod2.Grade=productionHandsontableData[23][2];
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[24][2]))){
-                			Rod2.OutsideDiameter=parseInt(productionHandsontableData[24][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[25][2]))){
-                			Rod2.InsideDiameter=parseInt(productionHandsontableData[25][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-                			Rod2.Length=parseInt(productionHandsontableData[26][2]);
-                		}
-                		deviceProductionData.RodString.EveryRod.push(Rod2);
-            		}
-            		
-            		if(isNotVal(productionHandsontableData[27][2]) 
-            				&& isNumber(parseInt(productionHandsontableData[28][2])) 
-            				&& (productionHandsontableData[29][2]=='' || isNumber(parseInt(productionHandsontableData[29][2])) )
-            				&& isNumber(parseInt(productionHandsontableData[30][2]))){
-            			var Rod3={};
-                		if(isNotVal(productionHandsontableData[27][2])){
-                			Rod3.Grade=productionHandsontableData[27][2];
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-                			Rod3.OutsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[29][2]))){
-                			Rod3.InsideDiameter=parseInt(productionHandsontableData[29][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[30][2]))){
-                			Rod3.Length=parseInt(productionHandsontableData[30][2]);
-                		}
-                		deviceProductionData.RodString.EveryRod.push(Rod3);
-            		}
-            		
-            		if(isNotVal(productionHandsontableData[31][2]) 
-            				&& isNumber(parseInt(productionHandsontableData[32][2])) 
-            				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
-            				&& isNumber(parseInt(productionHandsontableData[34][2]))){
-            			var Rod4={};
-                		if(isNotVal(productionHandsontableData[31][2])){
-                			Rod4.Grade=productionHandsontableData[31][2];
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-                			Rod4.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-                			Rod4.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
-                		}
-                		if(isNumber(parseInt(productionHandsontableData[34][2]))){
-                			Rod4.Length=parseInt(productionHandsontableData[34][2]);
-                		}
-                		deviceProductionData.RodString.EveryRod.push(Rod4);
-            		}
-            		
-            		
-            		deviceProductionData.ManualIntervention={};
-            		manualInterventionResultName=productionHandsontableData[35][2];
-            		if(isNumber(parseFloat(productionHandsontableData[36][2]))){
-            			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[36][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
-            			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[37][2]);
-            		}
-            		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
-            			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[38][2]);
-            		}
-            	}
-                
-                //获取抽油机型号配置数据
-                var pumpingModelId='';
-                if(isNotVal(deviceId) && parseInt(deviceId)>0 ){
-                	if(pumpingModelHandsontableHelper!=null && pumpingModelHandsontableHelper.hot!=undefined){
-                		var pumpingModelHandsontableData=pumpingModelHandsontableHelper.hot.getData();
-                    	for(var i=0;i<pumpingModelHandsontableData.length;i++){
-                    		if (pumpingModelHandsontableData[i][0]) {
-                            	pumpingModelId = pumpingModelHandsontableData[i][4];
-                            	break;
+            	var deviceAdditionalInformationData={};
+            	deviceAdditionalInformationData.deviceId=deviceId;
+            	deviceAdditionalInformationData.type=additionalInformationType;
+            	deviceAdditionalInformationData.data="";
+            	if(additionalInformationType==0){
+            		var additionalInfoList=[];
+            		if(deviceAdditionalInfoHandsontableHelper!=null && deviceAdditionalInfoHandsontableHelper.hot!=undefined){
+                		var additionalInfoData=deviceAdditionalInfoHandsontableHelper.hot.getData();
+                    	Ext.Array.each(additionalInfoData, function (name, index, countriesItSelf) {
+                            if (isNotVal(additionalInfoData[index][1])) {
+                            	var additionalInfo={};
+                            	additionalInfo.itemName=additionalInfoData[index][1];
+                            	additionalInfo.itemValue=isNotVal(additionalInfoData[index][2])?additionalInfoData[index][2]:"";
+                            	additionalInfo.itemUnit=isNotVal(additionalInfoData[index][3])?additionalInfoData[index][3]:"";
+                            	additionalInfoList.push(additionalInfo);
                             }
-                    	}
+                        });
                 	}
+            		if(additionalInfoList.length>0){
+            			deviceAdditionalInformationData.data=JSON.stringify(additionalInfoList);
+            		}
+            	}else if(additionalInformationType==1){
+            		auxiliaryDevice=[];
+                	if(deviceAuxiliaryDeviceInfoHandsontableHelper!=null && deviceAuxiliaryDeviceInfoHandsontableHelper.hot!=undefined){
+                		var auxiliaryDeviceData=deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getData();
+                    	Ext.Array.each(auxiliaryDeviceData, function (name, index, countriesItSelf) {
+                            if (auxiliaryDeviceData[index][0]) {
+                            	var auxiliaryDeviceId = auxiliaryDeviceData[index][4];
+                            	auxiliaryDevice.push(auxiliaryDeviceId);
+                            }
+                        });
+                	}
+                	if(auxiliaryDevice.length>0){
+            			deviceAdditionalInformationData.data=JSON.stringify(auxiliaryDevice);
+            		}
+            	}else if(additionalInformationType==2){
+            		//视频信息
+                    var videoUrl1='';
+                    var videoUrl2='';
+                    var videoKeyName1='';
+                    var videoKeyName2='';
+                    
+                    if(videoInfoHandsontableHelper!=null && videoInfoHandsontableHelper.hot!=undefined){
+                    	var videoInfoHandsontableData=videoInfoHandsontableHelper.hot.getData();
+                    	videoUrl1=videoInfoHandsontableData[0][2];
+                    	videoKeyName1=videoInfoHandsontableData[0][3];
+                    	videoUrl2=videoInfoHandsontableData[1][2];
+                    	videoKeyName2=videoInfoHandsontableData[1][3];
+                    }
+                    var videoInfoList=[];
+                    videoInfoList.push(videoUrl1);
+                    videoInfoList.push(videoUrl2);
+                    videoInfoList.push(videoKeyName1);
+                    videoInfoList.push(videoKeyName2);
+                    deviceAdditionalInformationData.data=JSON.stringify(videoInfoList);
+            	}else if(additionalInformationType==3){
+            		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+            		
+            		if(deviceCalculateDataType==0){//指定为抽油机
+            			//生产数据
+                        var deviceProductionData={};
+                        var manualInterventionResultName='不干预';
+                        if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
+                    		var productionHandsontableData=productionHandsontableHelper.hot.getData();
+                    		deviceProductionData.FluidPVT={};
+                    		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
+                    			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
+                    			deviceProductionData.FluidPVT.WaterDensity=parseFloat(productionHandsontableData[1][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
+                    			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
+                    		}
+                    		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[3][2]))){
+                    			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
+                    		}
+                    		
+                    		deviceProductionData.Reservoir={};
+                    		if(isNumber(parseFloat(productionHandsontableData[4][2]))){
+                    			deviceProductionData.Reservoir.Depth=parseFloat(productionHandsontableData[4][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[5][2]))){
+                    			deviceProductionData.Reservoir.Temperature=parseFloat(productionHandsontableData[5][2]);
+                    		}
+                    		
+                    		deviceProductionData.Production={};
+                    		if(isNumber(parseFloat(productionHandsontableData[6][2]))){
+                    			deviceProductionData.Production.TubingPressure=parseFloat(productionHandsontableData[6][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[7][2]))){
+                    			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
+                    			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
+                    		}
+                    		
+                    		if(applicationScenarios==0){
+                    			deviceProductionData.Production.WaterCut=100;
+                    		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+                    			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+                    		}
+                    		
+                    		if(isNumber(parseFloat(productionHandsontableData[10][2]))){
+                    			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
+                    			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
+                    			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
+                    		}
+                    		
+                    		deviceProductionData.Pump={};
+                    		deviceProductionData.Pump.PumpType='T';
+                    		
+                    		var BarrelType=productionHandsontableData[13][2];
+                    		if(productionHandsontableData[13][2]=='组合泵'){
+                    			BarrelType='L';
+                    		}else if(productionHandsontableData[13][2]=='整筒泵'){
+                    			BarrelType='H';
+                    		}
+                    		if(isNotVal(BarrelType)){
+                    			deviceProductionData.Pump.BarrelType=BarrelType;
+                    		}
+                    		if(isNumber(parseInt(productionHandsontableData[14][2]))){
+                    			deviceProductionData.Pump.PumpGrade=parseInt(productionHandsontableData[14][2]);
+                    		}
+                    		if(isNumber(parseInt(productionHandsontableData[15][2]))){
+                    			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
+                    			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[16][2]);
+                    		}
+                    		
+                    		deviceProductionData.TubingString={};
+                    		deviceProductionData.TubingString.EveryTubing=[];
+                    		var EveryTubing={};
+                    		if(isNumber(parseInt(productionHandsontableData[17][2]))){
+                    			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+                    		}
+                    		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
+                    		
+                    		deviceProductionData.CasingString={};
+                    		deviceProductionData.CasingString.EveryCasing=[];
+                    		var EveryCasing={};
+                    		if(isNumber(parseInt(productionHandsontableData[18][2]))){
+                    			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+                    		}
+                    		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
+                    		
+                    		deviceProductionData.RodString={};
+                    		deviceProductionData.RodString.EveryRod=[];
+                    		
+                    		if(isNotVal(productionHandsontableData[19][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[20][2])) 
+                    				&& (productionHandsontableData[21][2]=='' || isNumber(parseInt(productionHandsontableData[21][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[22][2]))){
+                    			var Rod1={};
+                        		if(isNotVal(productionHandsontableData[19][2])){
+                        			Rod1.Grade=productionHandsontableData[19][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[20][2]))){
+                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[20][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[21][2]))){
+                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[22][2]))){
+                        			Rod1.Length=parseInt(productionHandsontableData[22][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod1);
+                    		}
+                    		
+                    		if(isNotVal(productionHandsontableData[23][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[24][2])) 
+                    				&& (productionHandsontableData[25][2]=='' || isNumber(parseInt(productionHandsontableData[25][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[26][2]))){
+                    			var Rod2={};
+                        		if(isNotVal(productionHandsontableData[23][2])){
+                        			Rod2.Grade=productionHandsontableData[23][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[24][2]))){
+                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[24][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[25][2]))){
+                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[25][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[26][2]))){
+                        			Rod2.Length=parseInt(productionHandsontableData[26][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod2);
+                    		}
+                    		
+                    		if(isNotVal(productionHandsontableData[27][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[28][2])) 
+                    				&& (productionHandsontableData[29][2]=='' || isNumber(parseInt(productionHandsontableData[29][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[30][2]))){
+                    			var Rod3={};
+                        		if(isNotVal(productionHandsontableData[27][2])){
+                        			Rod3.Grade=productionHandsontableData[27][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
+                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[29][2]))){
+                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[29][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[30][2]))){
+                        			Rod3.Length=parseInt(productionHandsontableData[30][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod3);
+                    		}
+                    		
+                    		if(isNotVal(productionHandsontableData[31][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[32][2])) 
+                    				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[34][2]))){
+                    			var Rod4={};
+                        		if(isNotVal(productionHandsontableData[31][2])){
+                        			Rod4.Grade=productionHandsontableData[31][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
+                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
+                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[34][2]))){
+                        			Rod4.Length=parseInt(productionHandsontableData[34][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod4);
+                    		}
+                    		
+                    		
+                    		deviceProductionData.ManualIntervention={};
+                    		manualInterventionResultName=productionHandsontableData[35][2];
+                    		if(isNumber(parseFloat(productionHandsontableData[36][2]))){
+                    			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[36][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
+                    			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[37][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
+                    			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[38][2]);
+                    		}
+                    	}
+                        
+                        //获取抽油机型号配置数据
+                        var pumpingModelId='';
+                        if(isNotVal(deviceId) && parseInt(deviceId)>0 ){
+                        	if(pumpingModelHandsontableHelper!=null && pumpingModelHandsontableHelper.hot!=undefined){
+                        		var pumpingModelHandsontableData=pumpingModelHandsontableHelper.hot.getData();
+                            	for(var i=0;i<pumpingModelHandsontableData.length;i++){
+                            		if (pumpingModelHandsontableData[i][0]) {
+                                    	pumpingModelId = pumpingModelHandsontableData[i][4];
+                                    	break;
+                                    }
+                            	}
+                        	}
+                    	}
+                        
+                        //抽油机详情
+                        var balanceInfo={};
+                        var stroke="";
+                        if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
+                        	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
+                        	stroke=pumpingInfoHandsontableData[0][2];
+                        	balanceInfo.EveryBalance=[];
+                        	for(var i=3;i<pumpingInfoHandsontableData.length;i++){
+                        		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
+                            		var EveryBalance={};
+                            		EveryBalance.Position=pumpingInfoHandsontableData[i][1];
+                            		EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
+                            		balanceInfo.EveryBalance.push(EveryBalance);
+                            	}
+                        	}
+                        }
+                        
+                        var productionInfoList=[];
+                		productionInfoList.push(JSON.stringify(deviceProductionData));
+                		productionInfoList.push(pumpingModelId);
+                		productionInfoList.push(stroke);
+                		productionInfoList.push(JSON.stringify(balanceInfo));
+                		productionInfoList.push(manualInterventionResultName);
+                        deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
+            		}else if(deviceCalculateDataType==1){//指定为螺杆泵
+            			var deviceProductionData={};
+                        if(productionHandsontableData!=null && productionHandsontableData.hot!=undefined){
+                    		var productionHandsontableData=productionHandsontableData.hot.getData();
+                    		deviceProductionData.FluidPVT={};
+                    		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
+                    			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
+                    			deviceProductionData.FluidPVT.WaterDensity=parseFloat(productionHandsontableData[1][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
+                    			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
+                    		}
+                    		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[3][2]))){
+                    			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
+                    		}
+                    		
+                    		deviceProductionData.Reservoir={};
+                    		if(isNumber(parseFloat(productionHandsontableData[4][2]))){
+                    			deviceProductionData.Reservoir.Depth=parseFloat(productionHandsontableData[4][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[5][2]))){
+                    			deviceProductionData.Reservoir.Temperature=parseFloat(productionHandsontableData[5][2]);
+                    		}
+                    		
+                    		deviceProductionData.Production={};
+                    		if(isNumber(parseFloat(productionHandsontableData[6][2]))){
+                    			deviceProductionData.Production.TubingPressure=parseFloat(productionHandsontableData[6][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[7][2]))){
+                    			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
+                    			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
+                    		}
+                    		if(applicationScenarios==0){
+                    			deviceProductionData.Production.WaterCut=100;
+                    		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+                    			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+                    		}
+                    		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[10][2]))){
+                    			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
+                    			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
+                    			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
+                    		}
+                    		
+                    		deviceProductionData.Pump={};
+                    		if(isNumber(parseFloat(productionHandsontableData[13][2]))){
+                    			deviceProductionData.Pump.BarrelLength=parseFloat(productionHandsontableData[13][2]);
+                    		}
+                    		if(isNumber(parseInt(productionHandsontableData[14][2]))){
+                    			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
+                    			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
+                    		}
+                    		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
+                    			deviceProductionData.Pump.QPR=parseFloat(productionHandsontableData[16][2])*0.001*0.001;
+                    		}
+                    		
+                    		
+                    		
+                    		deviceProductionData.TubingString={};
+                    		deviceProductionData.TubingString.EveryTubing=[];
+                    		var EveryTubing={};
+                    		if(isNumber(parseInt(productionHandsontableData[17][2]))){
+                    			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+                    		}
+                    		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
+                    		
+                    		deviceProductionData.CasingString={};
+                    		deviceProductionData.CasingString.EveryCasing=[];
+                    		var EveryCasing={};
+                    		if(isNumber(parseInt(productionHandsontableData[18][2]))){
+                    			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+                    		}
+                    		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
+                    		
+                    		deviceProductionData.RodString={};
+                    		deviceProductionData.RodString.EveryRod=[];
+                    		
+                    		if(isNotVal(productionHandsontableData[19][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[20][2])) 
+                    				&& (productionHandsontableData[21][2]=='' || isNumber(parseInt(productionHandsontableData[21][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[22][2]))){
+                    			var Rod1={};
+                        		if(isNotVal(productionHandsontableData[19][2])){
+                        			Rod1.Grade=productionHandsontableData[19][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[20][2]))){
+                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[20][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[21][2]))){
+                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[22][2]))){
+                        			Rod1.Length=parseInt(productionHandsontableData[22][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod1);
+                    		}
+                    		
+                    		if(isNotVal(productionHandsontableData[23][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[24][2])) 
+                    				&& (productionHandsontableData[25][2]=='' || isNumber(parseInt(productionHandsontableData[25][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[26][2]))){
+                    			var Rod2={};
+                        		if(isNotVal(productionHandsontableData[23][2])){
+                        			Rod2.Grade=productionHandsontableData[23][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[24][2]))){
+                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[24][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[25][2]))){
+                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[25][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[26][2]))){
+                        			Rod2.Length=parseInt(productionHandsontableData[26][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod2);
+                    		}
+                    		
+                    		if(isNotVal(productionHandsontableData[27][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[28][2])) 
+                    				&& (productionHandsontableData[29][2]=='' || isNumber(parseInt(productionHandsontableData[29][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[30][2]))){
+                    			var Rod3={};
+                        		if(isNotVal(productionHandsontableData[27][2])){
+                        			Rod3.Grade=productionHandsontableData[27][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
+                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[29][2]))){
+                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[29][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[30][2]))){
+                        			Rod3.Length=parseInt(productionHandsontableData[30][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod3);
+                    		}
+                    		
+                    		if(isNotVal(productionHandsontableData[31][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[32][2])) 
+                    				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[34][2]))){
+                    			var Rod4={};
+                        		if(isNotVal(productionHandsontableData[31][2])){
+                        			Rod4.Grade=productionHandsontableData[31][2];
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
+                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
+                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[34][2]))){
+                        			Rod4.Length=parseInt(productionHandsontableData[34][2]);
+                        		}
+                        		deviceProductionData.RodString.EveryRod.push(Rod4);
+                    		}
+                    		deviceProductionData.ManualIntervention={};
+                    		if(isNumber(parseFloat(productionHandsontableData[35][2]))){
+                    			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[35][2]);
+                    		}
+                    		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[36][2]))))){
+                    			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[36][2]);
+                    		}
+                    	}
+                        var productionInfoList=[];
+                		productionInfoList.push(JSON.stringify(deviceProductionData));
+                        deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
+            		}else{
+            			deviceAdditionalInformationData.data="";
+            		}
+            		
+            		
             	}
+            	
+            	
+            	
                 
-                //抽油机详情
-                var balanceInfo={};
-                var stroke="";
-                if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
-                	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
-                	stroke=pumpingInfoHandsontableData[0][2];
-                	balanceInfo.EveryBalance=[];
-                	for(var i=3;i<pumpingInfoHandsontableData.length;i++){
-                		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
-                    		var EveryBalance={};
-                    		EveryBalance.Position=pumpingInfoHandsontableData[i][1];
-                    		EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
-                    		balanceInfo.EveryBalance.push(EveryBalance);
-                    	}
-                	}
-                }
-                //视频信息
-                var videoUrl1='';
-                var videoUrl2='';
-                var videoKeyName1='';
-                var videoKeyName2='';
                 
-                if(videoInfoHandsontableHelper!=null && videoInfoHandsontableHelper.hot!=undefined){
-                	var videoInfoHandsontableData=videoInfoHandsontableHelper.hot.getData();
-                	videoUrl1=videoInfoHandsontableData[0][2];
-                	videoKeyName1=videoInfoHandsontableData[0][3];
-                	videoUrl2=videoInfoHandsontableData[1][2];
-                	videoKeyName2=videoInfoHandsontableData[1][3];
-                }
             	Ext.Ajax.request({
                     method: 'POST',
                     url: context + '/wellInformationManagerController/saveWellHandsontableData',
@@ -1385,15 +1643,7 @@ var DeviceInfoHandsontableHelper = {
                     params: {
                     	deviceId: deviceId,
                     	data: JSON.stringify(deviceInfoHandsontableHelper.AllData),
-                    	pumpingModelId: pumpingModelId,
-                    	stroke: stroke,
-                    	balanceInfo: JSON.stringify(balanceInfo),
-                        deviceProductionData: JSON.stringify(deviceProductionData),
-                        manualInterventionResultName: manualInterventionResultName,
-                        videoUrl1:videoUrl1,
-                        videoKeyName1:videoKeyName1,
-                        videoUrl2:videoUrl2,
-                        videoKeyName2:videoKeyName2,
+                    	deviceAdditionalInformationData: JSON.stringify(deviceAdditionalInformationData),
                         orgId: leftOrg_Id,
                         deviceType: deviceType
                     }
@@ -1498,7 +1748,7 @@ var DeviceInfoHandsontableHelper = {
 };
 
 function CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,isNew){
-	if(isNew&&pumpingModelHandsontableHelper!=null){
+	if(pumpingModelHandsontableHelper!=null){
 		if(pumpingModelHandsontableHelper.hot!=undefined){
 			pumpingModelHandsontableHelper.hot.destroy();
 		}
@@ -1640,7 +1890,7 @@ var PumpingModelHandsontableHelper = {
 };
 
 function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
-	if(isNew&&productionHandsontableHelper!=null){
+	if(productionHandsontableHelper!=null){
 		if(productionHandsontableHelper.hot!=undefined){
 			productionHandsontableHelper.hot.destroy();
 		}
@@ -2005,12 +2255,6 @@ var PumpingInfoHandsontableHelper = {
 	};
 
 function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
-//	if(isNew&&videoInfoHandsontableHelper!=null){
-//		if(videoInfoHandsontableHelper.hot!=undefined){
-//			videoInfoHandsontableHelper.hot.destroy();
-//		}
-//		videoInfoHandsontableHelper=null;
-//	}
 	if(videoInfoHandsontableHelper!=null && videoInfoHandsontableHelper.hot!=undefined){
 		videoInfoHandsontableHelper.hot.destroy();
 		videoInfoHandsontableHelper=null;
@@ -2146,7 +2390,7 @@ var VideoInfoHandsontableHelper = {
 
 
 function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
-	if(isNew&&deviceAdditionalInfoHandsontableHelper!=null){
+	if(deviceAdditionalInfoHandsontableHelper!=null){
 		if(deviceAdditionalInfoHandsontableHelper.hot!=undefined){
 			deviceAdditionalInfoHandsontableHelper.hot.destroy();
 		}
@@ -2275,7 +2519,7 @@ var DeviceAdditionalInfoHandsontableHelper = {
 	};
 
 function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
-	if(isNew&&deviceAuxiliaryDeviceInfoHandsontableHelper!=null){
+	if(deviceAuxiliaryDeviceInfoHandsontableHelper!=null){
 		if(deviceAuxiliaryDeviceInfoHandsontableHelper.hot!=undefined){
 			deviceAuxiliaryDeviceInfoHandsontableHelper.hot.destroy();
 		}

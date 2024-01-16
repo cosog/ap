@@ -28,9 +28,8 @@ import com.cosog.model.AuxiliaryDeviceInformation;
 import com.cosog.model.DeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
-import com.cosog.model.PCPDeviceAddInfo;
 import com.cosog.model.PcpDeviceInformation;
-import com.cosog.model.RPCDeviceAddInfo;
+import com.cosog.model.DeviceAddInfo;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
@@ -1266,11 +1265,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public void deleteDeviceAdditionalInfo(final int deviceId,int deviceType) throws Exception {
-		String model="RPCDeviceAddInfo";
-		if(deviceType>=200&&deviceType<300){
-			model="PCPDeviceAddInfo";
-		}
-		final String hql = "DELETE "+model+" u where u.wellId ="+deviceId+"";
+		String model="DeviceAddInfo";
+		final String hql = "DELETE "+model+" u where u.deviceId ="+deviceId+"";
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
@@ -1280,9 +1276,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public void saveProductionData(int deviceType,int deviceId,String deviceProductionData) throws Exception {
 		String tableName="tbl_rpcdevice";
-		if(deviceType>=200&&deviceType<300){
-			tableName="tbl_pcpdevice";
-		}
 		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String sql = "update "+tableName+" t set t.productiondata='"+deviceProductionData+"'"
 				+ ",t.productiondataupdatetime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss') "
@@ -1291,10 +1284,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public void saveVideiData(int deviceType,int deviceId,String videoUrl1,String videoKeyName1,String videoUrl2,String videoKeyName2) throws Exception {
-		String tableName="tbl_rpcdevice";
-		if(deviceType>=200&&deviceType<300){
-			tableName="tbl_pcpdevice";
-		}
+		String tableName="tbl_device";
 		String videoKeyId1="null",videoKeyId2="null";
 		if(StringManagerUtils.isNotNull(videoKeyName1)){
 			String sql="select t.id from TBL_VIDEOKEY t where t.account='"+videoKeyName1+"'";
@@ -1318,26 +1308,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public void saveRPCPumpingModel(int deviceId,String pumpingModelId) throws Exception {
-		String sql = "update tbl_rpcdevice t set t.pumpingmodelid="+pumpingModelId+" where t.id="+deviceId;
+		String sql = "update tbl_device t set t.pumpingmodelid="+pumpingModelId+" where t.id="+deviceId;
 		if(!StringManagerUtils.isNotNull(pumpingModelId)){
-			sql = "update tbl_rpcdevice t set t.pumpingmodelid=null where t.id="+deviceId;
+			sql = "update tbl_device t set t.pumpingmodelid=null where t.id="+deviceId;
 		}
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
-	public void saveRPCPumpingInfo(int deviceId,String strokeStr,String balanceInfo) throws Exception {
+	public void savePumpingInfo(int deviceId,String strokeStr,String balanceInfo) throws Exception {
 		if(!StringManagerUtils.isNumber(strokeStr)){
 			strokeStr="null";
 		}
-		String sql = "update tbl_rpcdevice t set t.stroke="+strokeStr+",t.balanceinfo='"+balanceInfo+"' where t.id="+deviceId;
+		String sql = "update tbl_device t set t.stroke="+strokeStr+",t.balanceinfo='"+balanceInfo+"' where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
-	public void saveDeviceAdditionalInfo(RPCDeviceAddInfo r) throws Exception {
-		getBaseDao().saveOrUpdateObject(r);
-	}
-	
-	public void saveDeviceAdditionalInfo(PCPDeviceAddInfo r) throws Exception {
+	public void saveDeviceAdditionalInfo(DeviceAddInfo r) throws Exception {
 		getBaseDao().saveOrUpdateObject(r);
 	}
 	

@@ -7,23 +7,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tbl_rpcdeviceaddinfo")
-public class RPCDeviceAddInfo implements java.io.Serializable{
+@Table(name = "tbl_deviceaddinfo")
+public class DeviceAddInfo implements java.io.Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private Integer wellId;
+	private Integer deviceId;
 	private String itemName;
 	private String itemValue;
 	private String itemUnit;
 	
-	public RPCDeviceAddInfo() {
+	public DeviceAddInfo() {
 		super();
 	}
 
-	public RPCDeviceAddInfo(Integer id, Integer wellId, String itemName, String itemValue, String itemUnit) {
+	public DeviceAddInfo(Integer id, Integer deviceId, String itemName, String itemValue, String itemUnit) {
 		super();
 		this.id = id;
-		this.wellId = wellId;
+		this.deviceId = deviceId;
 		this.itemName = itemName;
 		this.itemValue = itemValue;
 		this.itemUnit = itemUnit;
@@ -39,13 +39,13 @@ public class RPCDeviceAddInfo implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@Column(name = "wellId", nullable = false, precision = 22, scale = 0)
-	public Integer getWellId() {
-		return wellId;
+	@Column(name = "deviceId", nullable = false, precision = 22, scale = 0)
+	public Integer getDeviceId() {
+		return deviceId;
 	}
 
-	public void setWellId(Integer wellId) {
-		this.wellId = wellId;
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
 	}
 
 	@Column(name = "itemName", nullable = false, precision = 22, scale = 0)

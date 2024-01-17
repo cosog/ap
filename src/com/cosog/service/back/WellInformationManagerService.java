@@ -1274,11 +1274,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		getBaseDao().saveOrUpdateObject(r);
 	}
 	
-	public void saveProductionData(int deviceType,int deviceId,String deviceProductionData) throws Exception {
-		String tableName="tbl_rpcdevice";
+	public void saveProductionData(int deviceType,int deviceId,String deviceProductionData,int deviceCalculateDataType) throws Exception {
+		String tableName="tbl_device";
 		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		String sql = "update "+tableName+" t set t.productiondata='"+deviceProductionData+"'"
-				+ ",t.productiondataupdatetime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss') "
+		String sql = "update "+tableName+" t "
+				+ " set t.productiondata='"+deviceProductionData+"',"
+				+ " t.calculatetype="+deviceCalculateDataType+","
+				+ " t.productiondataupdatetime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
@@ -3118,7 +3120,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
 				+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
 				+ "]";
-		String sql = "select t.stroke,t.balanceinfo from tbl_rpcdevice t where t.id="+deviceId;
+		String sql = "select t.stroke,t.balanceinfo from tbl_device t where t.id="+deviceId;
 		String json = "";
 		List<?> list = this.findCallSql(sql);
 		String stroke="",balanceInfo="";
@@ -3184,7 +3186,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDeviceProductionDataInfo(String deviceId,String deviceType) {
+	public String getDeviceProductionDataInfo(String deviceId,String deviceType,String deviceCalculateDataType) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer resultNameBuff = new StringBuffer();
 		Gson gson = new Gson();
@@ -3234,7 +3236,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					reservoirShow="煤层";
 				}
 				
-				if(StringManagerUtils.stringToInteger(deviceType)>=100 && StringManagerUtils.stringToInteger(deviceType)<200){
+				if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
 					resultNameBuff.append("\"不干预\"");
 					List<?> resultList = this.findCallSql(resultSql);
 					for(int i=0;i<resultList.size();i++){
@@ -3397,7 +3399,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":39,\"itemName\":\"反演液面校正值(MPa)\",\"itemValue\":\"\"}");
 					}
 //					result_json.append("{\"id\":40,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
-				}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
+				}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
 					type = new TypeToken<PCPProductionData>() {}.getType();
 					PCPProductionData pcpProductionData=gson.fromJson(productionData, type);
 					if(pcpProductionData!=null){
@@ -4974,5 +4976,21 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		overlayBuff.append("]");
 		result_json.append("{\"success\":true,\"overlayCount\":"+overlayCount+","+ "\"columns\":"+columns+",\"overlayList\":"+overlayBuff+"}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int getDeviceCalculateType(String deviceId){
+		int calculateType=0;
+		try{
+			String deviceTableName="tbl_device";
+			
+			String sql="select t.calculatetype from "+deviceTableName+" t where t.id="+deviceId;
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				calculateType=StringManagerUtils.stringToInteger(list.get(0)+"");
+			}
+		}catch(Exception e){
+			calculateType=0;
+		}
+		return calculateType;
 	}
 }

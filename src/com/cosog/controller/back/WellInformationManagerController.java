@@ -856,8 +856,9 @@ public class WellInformationManagerController extends BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String deviceCalculateDataType=ParamUtils.getParameter(request, "deviceCalculateDataType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getDeviceProductionDataInfo(deviceId,deviceType);
+		String json = this.wellInformationManagerService.getDeviceProductionDataInfo(deviceId,deviceType,deviceCalculateDataType);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1225,108 +1226,99 @@ public class WellInformationManagerController extends BaseController {
 				type = new TypeToken<List<String>>() {}.getType();
 				List<String> droductionDataInfoList=gson.fromJson(additionalInformationSaveData.getData(), type);
 				
-				if(droductionDataInfoList!=null && droductionDataInfoList.size()==5){
-					String deviceProductionData = StringManagerUtils.delSpace(droductionDataInfoList.get(0));
-					String pumpingModelId = droductionDataInfoList.get(1);
-					String stroke = droductionDataInfoList.get(2);
-					String balanceInfo = StringManagerUtils.delSpace(droductionDataInfoList.get(3));
-					String manualInterventionResultName = droductionDataInfoList.get(4);
-					
-					//处理生产数据
-					String deviceProductionDataSaveStr=deviceProductionData;
-					
-
-					type = new TypeToken<RPCProductionData>() {}.getType();
-					RPCProductionData rpcProductionData=gson.fromJson(deviceProductionData, type);
-					if(rpcProductionData!=null){
-						if(rpcProductionData.getProduction()!=null && rpcProductionData.getFluidPVT()!=null){
-							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcProductionData.getProduction().getWaterCut(), rpcProductionData.getFluidPVT().getCrudeOilDensity(), rpcProductionData.getFluidPVT().getWaterDensity());
-							rpcProductionData.getProduction().setWeightWaterCut(weightWaterCut);
-						}
-						if(rpcProductionData.getManualIntervention()!=null){
-							int manualInterventionResultCode=0;
-							Jedis jedis=null;
-							try{
-								jedis = RedisUtil.jedisPool.getResource();
-								if(!jedis.exists("RPCWorkTypeByName".getBytes())){
-									MemoryDataManagerTask.loadRPCWorkType();
-								}
-								if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
-									if(jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
-										WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
-										manualInterventionResultCode=workType.getResultCode();
+				if(droductionDataInfoList!=null && droductionDataInfoList.size()>=1){
+					String deviceCalculateDataType=droductionDataInfoList.get(0);
+					if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
+						String deviceProductionData = StringManagerUtils.delSpace(droductionDataInfoList.get(1));
+						String pumpingModelId = droductionDataInfoList.get(2);
+						String stroke = droductionDataInfoList.get(3);
+						String balanceInfo = StringManagerUtils.delSpace(droductionDataInfoList.get(4));
+						String manualInterventionResultName = droductionDataInfoList.get(5);
+						
+						//处理生产数据
+						String deviceProductionDataSaveStr=deviceProductionData;
+						type = new TypeToken<RPCProductionData>() {}.getType();
+						RPCProductionData rpcProductionData=gson.fromJson(deviceProductionData, type);
+						if(rpcProductionData!=null){
+							if(rpcProductionData.getProduction()!=null && rpcProductionData.getFluidPVT()!=null){
+								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcProductionData.getProduction().getWaterCut(), rpcProductionData.getFluidPVT().getCrudeOilDensity(), rpcProductionData.getFluidPVT().getWaterDensity());
+								rpcProductionData.getProduction().setWeightWaterCut(weightWaterCut);
+							}
+							if(rpcProductionData.getManualIntervention()!=null){
+								int manualInterventionResultCode=0;
+								Jedis jedis=null;
+								try{
+									jedis = RedisUtil.jedisPool.getResource();
+									if(!jedis.exists("RPCWorkTypeByName".getBytes())){
+										MemoryDataManagerTask.loadRPCWorkType();
+									}
+									if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+										if(jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
+											WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
+											manualInterventionResultCode=workType.getResultCode();
+										}
+									}
+								}catch(Exception e){
+									String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+									List<?> resultList = this.wellInformationManagerService.findCallSql(resultNameSql);
+									if(resultList.size()>0){
+										manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+									}
+								}finally{
+									if(jedis!=null&&jedis.isConnected()){
+										jedis.close();
 									}
 								}
-							}catch(Exception e){
-								String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-								List<?> resultList = this.wellInformationManagerService.findCallSql(resultNameSql);
-								if(resultList.size()>0){
-									manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-								}
-							}finally{
-								if(jedis!=null&&jedis.isConnected()){
-									jedis.close();
+								rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
+								
+								
+								if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+									String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+									List<?> resultList = this.wellInformationManagerService.findCallSql(sql);
+									if(resultList.size()>0){
+										int manualInterventionCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+										rpcProductionData.getManualIntervention().setCode(manualInterventionCode);
+									}
+								}else{
+									rpcProductionData.getManualIntervention().setCode(0);
 								}
 							}
-							rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
-							
-							
-							if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
-								String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-								List<?> resultList = this.wellInformationManagerService.findCallSql(sql);
-								if(resultList.size()>0){
-									int manualInterventionCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-									rpcProductionData.getManualIntervention().setCode(manualInterventionCode);
-								}
-							}else{
-								rpcProductionData.getManualIntervention().setCode(0);
-							}
+							deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
 						}
-						deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
-					}
-					this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr);
-					
-					//处理抽油机数据
-					if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType));
+						
+						//处理抽油机数据
 						//处理抽油机型号
 						this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);
 						//处理抽油机详情
 						this.wellInformationManagerService.savePumpingInfo(deviceId,stroke,balanceInfo);
-					}
-				}else if(droductionDataInfoList!=null && droductionDataInfoList.size()==1){
-					String deviceProductionData = StringManagerUtils.delSpace(droductionDataInfoList.get(0));
-					//处理生产数据
-					String deviceProductionDataSaveStr=deviceProductionData;
-					
-					type = new TypeToken<PCPProductionData>() {}.getType();
-					PCPProductionData productionData=gson.fromJson(deviceProductionData, type);
-					if(productionData!=null){
-						if(productionData.getProduction()!=null && productionData.getFluidPVT()!=null){
-							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(productionData.getProduction().getWaterCut(), productionData.getFluidPVT().getCrudeOilDensity(), productionData.getFluidPVT().getWaterDensity());
-							productionData.getProduction().setWeightWaterCut(weightWaterCut);
+					}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
+						String deviceProductionData = StringManagerUtils.delSpace(droductionDataInfoList.get(1));
+						//处理生产数据
+						String deviceProductionDataSaveStr=deviceProductionData;
+						
+						type = new TypeToken<PCPProductionData>() {}.getType();
+						PCPProductionData productionData=gson.fromJson(deviceProductionData, type);
+						if(productionData!=null){
+							if(productionData.getProduction()!=null && productionData.getFluidPVT()!=null){
+								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(productionData.getProduction().getWaterCut(), productionData.getFluidPVT().getCrudeOilDensity(), productionData.getFluidPVT().getWaterDensity());
+								productionData.getProduction().setWeightWaterCut(weightWaterCut);
+							}
+							deviceProductionDataSaveStr=gson.toJson(productionData);
+							this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType));
+							this.wellInformationManagerService.saveRPCPumpingModel(deviceId,"");
+							this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 						}
-						deviceProductionDataSaveStr=gson.toJson(productionData);
-						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr);
+					}else{
+						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,"",StringManagerUtils.stringToInteger(deviceCalculateDataType));
+						this.wellInformationManagerService.saveRPCPumpingModel(deviceId,"");
+						this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 					}
-				
-				}else{
-					this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,"");
-					this.wellInformationManagerService.saveRPCPumpingModel(deviceId,"");
-					//处理抽油机详情
-					this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 				}
 			}
 		}
 		
-		
-
-		
-		
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
-		}
+		MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
 		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -2616,6 +2608,21 @@ public class WellInformationManagerController extends BaseController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceCalculateType")
+	public String getDeviceCalculateType() throws Exception {
+		String json = "";
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		int calculateType=wellInformationManagerService.getDeviceCalculateType(deviceId);
+		json="{\"success\":true,\"calculateType\":"+calculateType+"}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 

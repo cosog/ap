@@ -4680,3 +4680,16 @@ function getDeviceTypeFromTabId(tabTanelId){
 	}
 	return deviceType;
 }
+
+function getTabPanelActiveName(tabTanelId){
+	var activeName='';
+	var tabPanel = Ext.getCmp(tabTanelId);
+	if(isNotVal(tabPanel)){
+		if(tabPanel.getActiveTab().xtype=='tabpanel'){
+			activeName=tabPanel.getActiveTab().activeTab.title;
+		}else{
+			activeName=tabPanel.getActiveTab().title;
+		}
+	}
+	return activeName;
+}

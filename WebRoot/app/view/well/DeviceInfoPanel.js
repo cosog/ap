@@ -45,7 +45,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     
                     var new_params = {
                         orgId: leftOrg_Id,
-                        deviceType: 101,
+                        deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel"),
                         wellName: wellName
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
@@ -119,9 +119,43 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-                	var window = Ext.create("AP.view.well.ExportDeviceInfoWindow");
-                    Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(101);
-                    window.show();
+//                	var window = Ext.create("AP.view.well.ExportDeviceInfoWindow");
+//                    Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(getDeviceTypeFromTabId("DeviceManagerTabPanel"));
+//                    window.show();
+
+                    var fields = "";
+                    var heads = "";
+                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+                    var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+                    var wellInformationName = Ext.getCmp('deviceListComb_Id').getValue();
+                    
+                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
+                    for (var i = 0; i < exportDeviceInfoHandsontableHelper.colHeaders.length; i++) {
+                        fields += exportDeviceInfoHandsontableHelper.columns[i].data + ",";
+                        heads += exportDeviceInfoHandsontableHelper.colHeaders[i] + ","
+                    }
+                    if (isNotVal(fields)) {
+                        fields = fields.substring(0, fields.length - 1);
+                        heads = heads.substring(0, heads.length - 1);
+                    }
+                    
+                    var timestamp=new Date().getTime();
+                	  var key='exportWellInformationDetailsData'+deviceType+'_'+timestamp;
+                	  var maskPanelId='ExportDeviceInfoWindow_Id';
+
+                    var param = "&fields=" + fields 
+                    + "&heads=" + URLencode(URLencode(heads)) 
+                    + "&orgId=" + leftOrg_Id 
+                    + "&deviceType="+deviceType
+//                    + "&applicationScenarios="+applicationScenarios
+                    + "&wellInformationName=" + URLencode(URLencode(wellInformationName)) 
+                    + "&recordCount=10000" 
+                    + "&fileName=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName)) 
+                    + "&title=" + URLencode(URLencode(deviceTypeName+'-'+applicationScenariosName))
+                    + '&key='+key;
+                    exportDataMask(key,maskPanelId,cosog.string.loading);
+                    openExcelWindow(url + '?flag=true' + param);
+                  
                 }
             },'-',{
                 id: 'DeviceTotalCount_Id',
@@ -155,7 +189,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     });
                     window.show();
                     Ext.getCmp("deviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
-                    Ext.getCmp("deviceType_Id").setValue(101);
+                    Ext.getCmp("deviceType_Id").setValue(getDeviceTypeFromTabId("DeviceManagerTabPanel"));
                     Ext.getCmp("deviceOrg_Id").setValue(selectedOrgId);
                     Ext.getCmp("addFormDevice_Id").show();
                     Ext.getCmp("updateFormDevice_Id").hide();
@@ -213,7 +247,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     	    	                    params: {
     	    	                        data: JSON.stringify(saveData),
     	    	                        orgId: leftOrg_Id,
-    	    	                        deviceType: 101
+    	    	                        deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
     	    	                    }
     	    	                });
     			            }
@@ -237,6 +271,10 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 iconCls: 'batchAdd',
                 hidden: false,
                 handler: function (v, o) {
+                	var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+                	var deviceTabName=getTabPanelActiveName("DeviceManagerTabPanel");
+                	
+                	
                 	var selectedOrgName="";
                 	var selectedOrgId="";
                 	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -253,10 +291,11 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.BatchAddDeviceWindow", {
-                        title: '抽油机井批量添加'
+                        title: '设备批量添加'
+//                        title: deviceTabName+'设备批量添加'
                     });
-                    Ext.getCmp("batchAddDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
-                    Ext.getCmp("batchAddDeviceType_Id").setValue(101);
+                    Ext.getCmp("batchAddDeviceWinOrgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
+                    Ext.getCmp("batchAddDeviceType_Id").setValue(deviceType);
                     Ext.getCmp("batchAddDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
                     return false;
@@ -267,6 +306,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     			iconCls: 'upload',
     			hidden:true,
     			handler: function (v, o) {
+    				var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
     				var selectedOrgName="";
                 	var selectedOrgId="";
                 	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -286,7 +326,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         title: '设备导入'
                     });
     				Ext.getCmp("excelImportDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
-                    Ext.getCmp("excelImportDeviceType_Id").setValue(101);
+                    Ext.getCmp("excelImportDeviceType_Id").setValue(deviceType);
                     Ext.getCmp("excelImportDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
     			}
@@ -295,11 +335,12 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     			text:'设备隶属迁移',
     			iconCls: 'move',
     			handler: function (v, o) {
+    				var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
     				var window = Ext.create("AP.view.well.DeviceOrgChangeWindow", {
                         title: '设备隶属迁移'
                     });
                     window.show();
-                    Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(101);
+                    Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(deviceType);
                     Ext.create("AP.store.well.DeviceOrgChangeDeviceListStore");
                     Ext.create("AP.store.well.DeviceOrgChangeOrgListStore");
     			}
@@ -443,6 +484,34 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 				CreateAndLoadProductionDataTable(deviceId,deviceName,true);
                 				CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,true);
                           	}
+                        }
+                    },'->',{
+                        xtype: 'radiogroup',
+                        fieldLabel: '应用场景',
+                        labelWidth: 60,
+                        id: 'DeviceApplicationScenariosType_Id',
+                        cls: 'x-check-group-alt',
+                        items: [
+                            {boxLabel: '油井',name: 'deviceApplicationScenariosType',width: 50, inputValue: 1},
+                            {boxLabel: '煤层气井',name: 'deviceApplicationScenariosType',width: 70, inputValue: 0}
+                        ],
+                        listeners: {
+                        	change: function (radiogroup, newValue, oldValue, eOpts) {
+                        		if(productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined){
+                        			const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
+                                	var hiddenRows=[0,3,9,10];
+                                	if(newValue.deviceApplicationScenariosType==0){
+                                		plugin.hideRows(hiddenRows);
+                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
+                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+                                	}else{
+                                		plugin.showRows(hiddenRows);
+                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
+                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+                                	}
+                                	productionHandsontableHelper.hot.render();
+                        		}
+                        	}
                         }
                     }],
             		items: [{
@@ -598,6 +667,24 @@ function getDeviceCalculateType(deviceId){
         }
 	});
 	return calculateType;
+}
+
+function getApplicationScenariosType(deviceId){
+	var applicationScenarios=0;
+	Ext.Ajax.request({
+		method:'POST',
+		async :  false,
+		url:context + '/wellInformationManagerController/getApplicationScenariosType',
+		success:function(response) {
+			applicationScenarios = Ext.JSON.decode(response.responseText).calculateType;
+		},
+		failure:function(){
+		},
+		params: {
+            deviceId:deviceId
+        }
+	});
+	return applicationScenarios;
 }
 
 function getDeviceAdditionalInformationType(){
@@ -1027,21 +1114,7 @@ var DeviceInfoHandsontableHelper = {
                 var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
                 var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
             	var deviceId=rowdata[0];
-            	var applicationScenariosIndex=-1;
-            	var applicationScenarios=1;
             	
-            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
-            		if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase()=='applicationScenariosName'.toUpperCase()){
-            			applicationScenariosIndex=i;
-            			break;
-            		}
-            	}
-            	if(applicationScenariosIndex>=0){
-            		var applicationScenariosName=rowdata[applicationScenariosIndex];
-            		if(applicationScenariosName==="煤层气井"){
-            			applicationScenarios=0;
-            		}
-            	}
             	
             	var deviceAdditionalInformationData={};
             	deviceAdditionalInformationData.deviceId=deviceId;
@@ -1100,6 +1173,7 @@ var DeviceInfoHandsontableHelper = {
                     deviceAdditionalInformationData.data=JSON.stringify(videoInfoList);
             	}else if(additionalInformationType==3){
             		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+            		var applicationScenarios=Ext.getCmp("DeviceApplicationScenariosType_Id").getValue().deviceApplicationScenariosType;
             		
             		if(deviceCalculateDataType==1){//指定为功图计算
             			//生产数据
@@ -1329,6 +1403,7 @@ var DeviceInfoHandsontableHelper = {
                 		productionInfoList.push(stroke);
                 		productionInfoList.push(JSON.stringify(balanceInfo));
                 		productionInfoList.push(manualInterventionResultName);
+                		productionInfoList.push(applicationScenarios);
                         deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
             		}else if(deviceCalculateDataType==2){//指定为转速计产
             			var deviceProductionData={};
@@ -1506,10 +1581,12 @@ var DeviceInfoHandsontableHelper = {
                         var productionInfoList=[];
                         productionInfoList.push(deviceCalculateDataType);
                 		productionInfoList.push(JSON.stringify(deviceProductionData));
+                		productionInfoList.push(applicationScenarios);
                         deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
             		}else{
             			var productionInfoList=[];
                         productionInfoList.push(deviceCalculateDataType);
+                        productionInfoList.push(applicationScenarios);
                         deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
             		}
             	}
@@ -1576,7 +1653,7 @@ var DeviceInfoHandsontableHelper = {
                     },
                     params: {
                         data: JSON.stringify(deviceInfoHandsontableHelper.editWellNameList),
-                        deviceType:101
+                        deviceType:getDeviceTypeFromTabId("DeviceManagerTabPanel")
                     }
                 });
             } else {
@@ -1712,7 +1789,7 @@ function CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,isNew){
 			},
 			params: {
 				deviceId:deviceId,
-				deviceType:101
+				deviceType:getDeviceTypeFromTabId("DeviceManagerTabPanel")
 	        }
 		});
 	}
@@ -1826,6 +1903,9 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
 				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
 				var result =  Ext.JSON.decode(response.responseText);
 				var applicationScenarios=result.applicationScenarios;
+				
+				Ext.getCmp("DeviceApplicationScenariosType_Id").setValue({deviceApplicationScenariosType:applicationScenarios});
+				
 				var panelTitle='生产数据';
 				if(isNotVal(deviceName)){
 					panelTitle="【<font color='red'>"+deviceName+"</font>】生产数据";
@@ -1871,7 +1951,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
 			params: {
 				deviceId:deviceId,
 				deviceCalculateDataType:deviceCalculateDataType,
-				deviceType:101
+				deviceType:getDeviceTypeFromTabId("DeviceManagerTabPanel")
 	        }
 		});
 	}else{
@@ -2074,7 +2154,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,isNew){
 			},
 			params: {
 				deviceId:deviceId,
-				deviceType:101
+				deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
 	        }
 		});
 	}
@@ -2263,7 +2343,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 		},
 		params: {
 			deviceId:deviceId,
-			deviceType:101,
+			deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel"),
 			orgId: leftOrg_Id
         }
 	});
@@ -2369,7 +2449,7 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 		},
 		params: {
 			deviceId:deviceId,
-			deviceType:101
+			deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
         }
 	});
 };
@@ -2494,7 +2574,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 		},
 		params: {
 			deviceId:deviceId,
-			deviceType:101
+			deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
         }
 	});
 };

@@ -21,11 +21,11 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
     modal: true, // 是否为模态窗口
     initComponent: function () {
         var me = this;
-        Ext.create('AP.store.well.BatchAddDeviceApplicationScenariosListStore');
+//        Ext.create('AP.store.well.BatchAddDeviceApplicationScenariosListStore');
         Ext.apply(me, {
         	tbar: [{
                 xtype: 'label',
-                id: 'batchAddDeviceWinOgLabel_Id',
+                id: 'batchAddDeviceWinOrgLabel_Id',
                 margin: '0 0 0 0',
                 html: ''
             },{
@@ -47,23 +47,24 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
                 }
             }],
             layout: 'border',
-            items: [{
-            	title:'应用场景',
-            	region: 'west',
-            	width:'15%',
-            	hidden: sceneConfig!='all',
-            	layout: 'fit',
-            	header:false,
-        		split: true,
-                collapsible: true,
-        		id:'BatchAddDeviceApplicationScenariosInfoPanel_Id'
-            },{
+            items: [
+//            	{
+//            	title:'应用场景',
+//            	region: 'west',
+//            	width:'15%',
+//            	hidden: sceneConfig!='all',
+//            	layout: 'fit',
+//            	header:false,
+//        		split: true,
+//                collapsible: true,
+//        		id:'BatchAddDeviceApplicationScenariosInfoPanel_Id'
+//            },
+            {
             	region: 'center',
             	html: '<div id="BatchAddDeviceTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                     	if(batchAddDeviceHandsontableHelper!=null&&batchAddDeviceHandsontableHelper.hot!=null&&batchAddDeviceHandsontableHelper.hot!=undefined){
-//                    		batchAddDeviceHandsontableHelper.hot.refreshDimensions();
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
@@ -75,7 +76,7 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
                     			height:newHeight
                     		});
                     	}else{
-//                    		CreateAndLoadBatchAddDeviceTable();
+                    		CreateAndLoadBatchAddDeviceTable();
                     	}
                     }
             	}
@@ -108,17 +109,16 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType = Ext.getCmp('batchAddDeviceType_Id').getValue();
     
-    var applicationScenarios=0;
-    var gridPanel = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id");
-    if (isNotVal(gridPanel)) {
-    	applicationScenarios = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
-    }
+//    var applicationScenarios=0;
+//    var gridPanel = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id");
+//    if (isNotVal(gridPanel)) {
+//    	applicationScenarios = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+//    }
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/getBatchAddDeviceTableInfo',
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
-            applicationScenarios=result.applicationScenarios;
             if (batchAddDeviceHandsontableHelper == null || batchAddDeviceHandsontableHelper.hot == null || batchAddDeviceHandsontableHelper.hot == undefined) {
                 batchAddDeviceHandsontableHelper = BatchAddDeviceHandsontableHelper.createNew("BatchAddDeviceTableDiv_Id");
                 var colHeaders = "[";
@@ -128,17 +128,17 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     var colHeader="'" + result.columns[i].header + "'";
                     var dataIndex=result.columns[i].dataIndex;
                     
-                    if(applicationScenarios==0){
-                    	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
-                    			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
-                    			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
-                    			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
-                    			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
-                    		continue;
-                    	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
-                    		colHeader=colHeader.replace('油层','煤层');
-                    	}
-                    }
+//                    if(applicationScenarios==0){
+//                    	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
+//                    			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
+//                    			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
+//                    			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
+//                    			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
+//                    		continue;
+//                    	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
+//                    		colHeader=colHeader.replace('油层','煤层');
+//                    	}
+//                    }
                     
                 	colHeaders += colHeader;
                     if (dataIndex.toUpperCase() === "orgName".toUpperCase()) {
@@ -241,6 +241,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     } else if (dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
                     	columns += "{data:'" + dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
                     } else if (dataIndex.toUpperCase() != "wellName".toUpperCase() 
+                    		&& dataIndex.toUpperCase() != "deviceName".toUpperCase()
                     		&& dataIndex.toUpperCase() != "signInId".toUpperCase()
                     		&& dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
                     		&& dataIndex.toUpperCase() != "videoKeyName1".toUpperCase()
@@ -277,7 +278,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
         	orgIds: leftOrg_Id,
         	deviceType: deviceType,
             recordCount: 50,
-            applicationScenarios:applicationScenarios,
+//            applicationScenarios:applicationScenarios,
             page: 1,
             limit: 10000
         }
@@ -452,18 +453,18 @@ var BatchAddDeviceHandsontableHelper = {
         batchAddDeviceHandsontableHelper.saveData = function () {
         	var orgId = Ext.getCmp('batchAddDeviceOrg_Id').getValue();
             var deviceType = Ext.getCmp('batchAddDeviceType_Id').getValue();
-            var applicationScenarios=0;
-            var gridPanel = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id");
-            if (isNotVal(gridPanel)) {
-            	applicationScenarios = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
-            }
+//            var applicationScenarios=0;
+//            var gridPanel = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id");
+//            if (isNotVal(gridPanel)) {
+//            	applicationScenarios = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+//            }
             var isCheckout=1;
             var saveDate={};
             saveDate.updatelist=[];
-            var applicationScenariosName='油井';
-            if(applicationScenarios==0){
-            	applicationScenariosName='煤层气井';
-            }
+//            var applicationScenariosName='油井';
+//            if(applicationScenarios==0){
+//            	applicationScenariosName='煤层气井';
+//            }
             var batchAddData=batchAddDeviceHandsontableHelper.hot.getData();
             for(var i=0;i<batchAddData.length;i++){
             	if(isNotVal(batchAddData[i][1])){
@@ -474,7 +475,7 @@ var BatchAddDeviceHandsontableHelper = {
                             data += ",";
                         }
                     }
-                    data += ",applicationScenariosName:'"+applicationScenariosName+"'";
+//                    data += ",applicationScenariosName:'"+applicationScenariosName+"'";
                     data += "}";
                     var record=Ext.JSON.decode(data);
                     record.id=i;
@@ -486,15 +487,11 @@ var BatchAddDeviceHandsontableHelper = {
                 url: context + '/wellInformationManagerController/batchAddDevice',
                 success: function (response) {
                     Ext.getCmp("BatchAddDeviceWindow_Id").close();
-                    if(parseInt(deviceType)==101){
-                		CreateAndLoadRPCDeviceInfoTable();
-                	}else if(parseInt(deviceType)==201){
-                		CreateAndLoadPCPDeviceInfoTable();
-                	}
+                    CreateAndLoadDeviceInfoTable();
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
                     	if(rdata.overCount>0){
-                    		Ext.MessageBox.alert("信息", "<font color=red>"+rdata.overCount+"</font>口井超限，保存失败");
+                    		Ext.MessageBox.alert("信息", "<font color=red>"+rdata.overCount+"</font>设备超限，保存失败");
                     	}else{
                     		Ext.MessageBox.alert("信息", "保存成功");
                     	}
@@ -514,8 +511,6 @@ var BatchAddDeviceHandsontableHelper = {
                         	Ext.getCmp("BatchAddDeviceCollisionDataPanel_Id").setHeight('100%');
                         }
                         window.show();
-                        
-                        Ext.getCmp("batchAddCollisionApplicationScenarios_Id").setValue(applicationScenarios);
                         
                         if(rdata.collisionCount>0){
                         	CreateAndLoadBatchAddDeviceCollisionDataTable(rdata);
@@ -550,7 +545,7 @@ var BatchAddDeviceHandsontableHelper = {
                 params: {
                     data: JSON.stringify(saveDate),
                     orgId: orgId,
-                    applicationScenarios:applicationScenarios,
+//                    applicationScenarios:applicationScenarios,
                     deviceType: deviceType,
                     isCheckout: isCheckout
                 }

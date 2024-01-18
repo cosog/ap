@@ -35,11 +35,6 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                 value: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '设备类型',
-                id: 'batchAddCollisionApplicationScenarios_Id',
-                value: 0
-            },{
-                xtype: "hidden",
                 fieldLabel: '所属组织',
                 id: 'batchAddCollisionDeviceOrg_Id',
                 value: ''
@@ -53,11 +48,6 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                     var isCheckout=0;
                     var saveDate={};
                     saveDate.updatelist=[];
-                    var applicationScenarios=Ext.getCmp("batchAddCollisionApplicationScenarios_Id").getValue();
-                    var applicationScenariosName='油井';
-                    if(applicationScenarios==0){
-                    	applicationScenariosName='煤层气井';
-                    }
                     if(batchAddDeviceCollisionDataHandsontableHelper!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=undefined){
                     	var batchAddData=batchAddDeviceCollisionDataHandsontableHelper.hot.getData();
                         for(var i=0;i<batchAddData.length;i++){
@@ -69,7 +59,6 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                                         data += ",";
                                     }
                                 }
-                                data += ",applicationScenariosName:'"+applicationScenariosName+"'";
                                 data += "}";
                                 var record=Ext.JSON.decode(data);
                                 record.id=i;
@@ -88,7 +77,6 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                                         data += ",";
                                     }
                                 }
-                                data += ",applicationScenariosName:'"+applicationScenariosName+"'";
                                 data += "}";
                                 var record=Ext.JSON.decode(data);
                                 record.id=i;
@@ -101,11 +89,7 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                         method: 'POST',
                         url: context + '/wellInformationManagerController/batchAddDevice',
                         success: function (response) {
-                        	if(parseInt(deviceType)==101){
-                        		CreateAndLoadRPCDeviceInfoTable();
-                        	}else if(parseInt(deviceType)==201){
-                        		CreateAndLoadPCPDeviceInfoTable();
-                        	}
+                        	CreateAndLoadDeviceInfoTable();
                         	rdata = Ext.JSON.decode(response.responseText);
                             if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
                             	Ext.getCmp("BatchAddDeviceCollisionDataWindow_Id").close();
@@ -172,7 +156,6 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                             data: JSON.stringify(saveDate),
                             orgId: orgId,
                             deviceType: deviceType,
-                            applicationScenarios:applicationScenarios,
                             isCheckout: isCheckout
                         }
                     });
@@ -255,25 +238,10 @@ function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
         batchAddDeviceCollisionDataHandsontableHelper = BatchAddDeviceCollisionDataHandsontableHelper.createNew("BatchAddDeviceCollisionDataTableDiv_Id");
         var colHeaders = "[";
         var columns = "[";
-        var applicationScenarios=result.applicationScenarios;
         for (var i = 0; i < result.columns.length; i++) {
         	var colHeader="'" + result.columns[i].header + "'";
             var dataIndex=result.columns[i].dataIndex;
-            
-            if(applicationScenarios==0){
-            	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
-            		continue;
-            	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
-            		colHeader=colHeader.replace('油层','煤层');
-            	}
-            }
-            
         	colHeaders += colHeader;
-            
             
             if (dataIndex.toUpperCase() === "orgName".toUpperCase()) {
                 columns += "{data:'" + dataIndex + "',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,batchAddDeviceCollisionDataHandsontableHelper);}}";
@@ -597,23 +565,9 @@ function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
         batchAddDeviceOverlayDataHandsontableHelper = BatchAddDeviceOverlayDataHandsontableHelper.createNew("BatchAddDeviceOverlayDataTableDiv_Id");
         var colHeaders = "[";
         var columns = "[";
-        var applicationScenarios=result.applicationScenarios;
         for (var i = 0; i < result.columns.length; i++) {
         	var colHeader="'" + result.columns[i].header + "'";
             var dataIndex=result.columns[i].dataIndex;
-            
-            if(applicationScenarios==0){
-            	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
-            			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
-            		continue;
-            	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
-            		colHeader=colHeader.replace('油层','煤层');
-            	}
-            }
-            
         	colHeaders += colHeader;
             if (dataIndex.toUpperCase() === "orgName".toUpperCase()) {
                 columns += "{data:'" + dataIndex + "',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,batchAddDeviceOverlayDataHandsontableHelper);}}";

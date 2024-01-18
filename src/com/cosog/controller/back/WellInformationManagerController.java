@@ -526,7 +526,7 @@ public class WellInformationManagerController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
-		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
+//		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
@@ -535,7 +535,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,applicationScenarios,recordCount);
+		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1136,13 +1136,6 @@ public class WellInformationManagerController extends BaseController {
 						wellHandsontableChangedData.getUpdatelist().get(i).setTcpType("TCP Client");
 						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 						wellHandsontableChangedData.getUpdatelist().get(i).setSlave("01");
-						if(!"all".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
-							if("cbm".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
-								wellHandsontableChangedData.getUpdatelist().get(i).setApplicationScenariosName("煤层气井");
-							}else{
-								wellHandsontableChangedData.getUpdatelist().get(i).setApplicationScenariosName("油井");
-							}
-						}
 					}
 				}
 				if(wellHandsontableChangedData.getInsertlist()!=null){
@@ -1154,13 +1147,6 @@ public class WellInformationManagerController extends BaseController {
 						wellHandsontableChangedData.getInsertlist().get(i).setTcpType("TCP Client");
 						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 						wellHandsontableChangedData.getInsertlist().get(i).setSlave("01");
-						if(!"all".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
-							if("cbm".equalsIgnoreCase(Config.getInstance().configFile.getAp().getOthers().getScene())){
-								wellHandsontableChangedData.getInsertlist().get(i).setApplicationScenariosName("煤层气井");
-							}else{
-								wellHandsontableChangedData.getInsertlist().get(i).setApplicationScenariosName("油井");
-							}
-						}
 					}
 				}
 			}
@@ -1234,6 +1220,7 @@ public class WellInformationManagerController extends BaseController {
 						String stroke = droductionDataInfoList.get(3);
 						String balanceInfo = StringManagerUtils.delSpace(droductionDataInfoList.get(4));
 						String manualInterventionResultName = droductionDataInfoList.get(5);
+						String applicationScenarios=droductionDataInfoList.get(6);
 						
 						//处理生产数据
 						String deviceProductionDataSaveStr=deviceProductionData;
@@ -1285,7 +1272,7 @@ public class WellInformationManagerController extends BaseController {
 							}
 							deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
 						}
-						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType));
+						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
 						
 						//处理抽油机数据
 						//处理抽油机型号
@@ -1294,6 +1281,7 @@ public class WellInformationManagerController extends BaseController {
 						this.wellInformationManagerService.savePumpingInfo(deviceId,stroke,balanceInfo);
 					}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
 						String deviceProductionData = StringManagerUtils.delSpace(droductionDataInfoList.get(1));
+						String applicationScenarios=droductionDataInfoList.get(2);
 						//处理生产数据
 						String deviceProductionDataSaveStr=deviceProductionData;
 						
@@ -1305,12 +1293,13 @@ public class WellInformationManagerController extends BaseController {
 								productionData.getProduction().setWeightWaterCut(weightWaterCut);
 							}
 							deviceProductionDataSaveStr=gson.toJson(productionData);
-							this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType));
+							this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
 							this.wellInformationManagerService.saveRPCPumpingModel(deviceId,"");
 							this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 						}
 					}else{
-						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,"",StringManagerUtils.stringToInteger(deviceCalculateDataType));
+						String applicationScenarios=droductionDataInfoList.get(1);
+						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,"",StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
 						this.wellInformationManagerService.saveRPCPumpingModel(deviceId,"");
 						this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 					}
@@ -1337,7 +1326,6 @@ public class WellInformationManagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String orgId = ParamUtils.getParameter(request, "orgId");
-		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		String json="";
@@ -1372,12 +1360,10 @@ public class WellInformationManagerController extends BaseController {
 				}
 			}
 		}
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			json=this.wellInformationManagerService.batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),applicationScenarios,isCheckout,user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			json=this.wellInformationManagerService.batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),applicationScenarios,isCheckout,user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+		}else{
+			json=this.wellInformationManagerService.batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -2617,6 +2603,21 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		int calculateType=wellInformationManagerService.getDeviceCalculateType(deviceId);
 		json="{\"success\":true,\"calculateType\":"+calculateType+"}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getApplicationScenariosType")
+	public String getApplicationScenariosType() throws Exception {
+		String json = "";
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		int applicationScenarios=wellInformationManagerService.getApplicationScenariosType(deviceId);
+		json="{\"success\":true,\"applicationScenarios\":"+applicationScenarios+"}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

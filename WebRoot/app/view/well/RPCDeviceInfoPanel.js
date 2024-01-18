@@ -249,7 +249,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 	var window = Ext.create("AP.view.well.BatchAddDeviceWindow", {
                         title: '抽油机井批量添加'
                     });
-                    Ext.getCmp("batchAddDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
+                    Ext.getCmp("batchAddDeviceWinOrgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
                     Ext.getCmp("batchAddDeviceType_Id").setValue(101);
                     Ext.getCmp("batchAddDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();

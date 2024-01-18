@@ -314,38 +314,6 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                         }
                     }
                 }
-            }, {
-            	xtype : "combobox",
-				fieldLabel : '应用场景<font color=red>*</font>',
-				id : 'deviceApplicationScenariosComb_Id',
-				anchor : '95%',
-				triggerAction : 'all',
-				selectOnFocus : false,
-			    forceSelection : true,
-			    value:'',
-			    allowBlank: sceneConfig!='all',
-			    hidden: sceneConfig!='all',
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, '煤层气井'],[1, '油井']]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : '请选择应用场景',
-				blankText : '请选择应用场景',
-				listeners : {
-					select:function(v,o){
-						Ext.getCmp("deviceApplicationScenarios_Id").setValue(this.value);
-					}
-				}
-            },{
-                xtype: "hidden",
-                fieldLabel: '应用场景值',
-                id: 'deviceApplicationScenarios_Id',
-                value: sceneConfig=='cbm'?0:1,
-                name: "deviceInformation.applicationScenarios"
             },deviceAcqInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '采控实例编码',

@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CommResponseData;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.DiskProbeResponseData;
 import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.MemoryProbeResponseData;
@@ -122,7 +123,7 @@ public class CalculateUtils {
 		return responseData;
 	}
 	
-	public static String getFESDiagramTotalRequestData(String date,RPCDeviceInfo deviceInfo,RPCDeviceTodayData deviceTodayData){
+	public static String getFESDiagramTotalRequestData(String date,DeviceInfo deviceInfo,RPCDeviceTodayData deviceTodayData){
 		StringBuffer dataSbf= new StringBuffer();
 		
 		List<String> acqTimeList=new ArrayList<String>();

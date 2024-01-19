@@ -2536,17 +2536,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public boolean exportRPCDeviceInfoData(User user,HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
+	public boolean exportDeviceInfoData(User user,HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			String tableName="viw_rpcdevice";
+			String tableName="viw_device";
 			String wellInformationName = (String) map.get("wellInformationName");
 			int deviceType=StringManagerUtils.stringToInteger((String) map.get("deviceType"));
 			String orgId = (String) map.get("orgId");
 			String WellInformation_Str = "";
 			if (StringManagerUtils.isNotNull(wellInformationName)) {
-				WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
+				WellInformation_Str = " and t.devicename like '%" + wellInformationName+ "%'";
 			}
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -2560,14 +2560,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
+			String sql = "select id,orgName,deviceName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
 					+ " tcptype,signInId,slave,t.peakdelay,"
-					+ " sortNum,status,statusName,allpath"
+					+ " sortNum,status,statusName,allpath,"
+					+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime"
 					+ " from "+tableName+" t where 1=1"
 					+ WellInformation_Str;
 			sql+= " and t.orgid in ("+orgId+" )";
 			sql+= " and t.devicetype="+deviceType;
-			sql+= " order by t.sortnum,t.wellname ";
+			sql+= " order by t.sortnum,t.devicename ";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			
 			List<?> list=this.findCallSql(finalSql);
@@ -2580,7 +2581,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				record = new ArrayList<>();
 				result_json.append("{\"id\":\""+(i+1)+"\",");
 				result_json.append("\"orgName\":\""+obj[1]+"\",");
-				result_json.append("\"wellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"applicationScenariosName\":\""+obj[3]+"\",");
 				result_json.append("\"instanceName\":\""+obj[4]+"\",");
 				result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
@@ -2592,7 +2593,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"status\":\""+obj[12]+"\",");
 				result_json.append("\"statusName\":\""+obj[13]+"\",");
 				result_json.append("\"allPath\":\""+obj[14]+"\",");
-				result_json.append("\"sortNum\":\""+obj[11]+"\"}");
+				result_json.append("\"sortNum\":\""+obj[11]+"\",");
+				result_json.append("\"productionDataUpdateTime\":\""+obj[15]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
@@ -4368,15 +4370,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportRPCDeviceInfoDetailsData(User user,HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String wellInformationName) {
+	public boolean exportRPCDeviceInfoDetailsData(User user,HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String deviceType,String wellInformationName) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			String tableName="viw_rpcdevice";
+			String tableName="viw_device";
 			DataDictionary ddic = null;
-			String ddicName="deviceInfo_RPCDeviceBatchAdd";
+			String ddicName="deviceInfo_DeviceBatchAdd";
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			String head=StringUtils.join(ddic.getHeaders(), ",");
 			String field=StringUtils.join(ddic.getFields(), ",");
@@ -4410,24 +4412,26 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql = "select id,orgName,wellName,applicationScenariosName,"//3
+			String sql = "select id,orgName,deviceName,applicationScenariosName,"//3
 					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"//7
 					+ " tcptype,signInId,slave,t.peakdelay,"//11
 					+ " videoUrl1,videoKeyName1,videoUrl2,videoKeyName2,"//15
-					+ "sortNum,statusName,"//17
+					+ " sortNum,statusName,"//17
 					+ " t.productiondata,"//18
 					+ " t.manufacturer,t.model,t.stroke,"//21
 					+ " decode( lower(t.crankrotationdirection),'clockwise','顺时针','anticlockwise','逆时针','' ) as crankrotationdirection,"//22
 					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,"//27
 					+ " t.balanceinfo"//28
 					+ " from "+tableName+" t "
-					+ " where t.applicationScenarios="+applicationScenarios
+					+ " where 1=1"
+//					+ " and t.applicationScenarios="+applicationScenarios
+					+ " and t.deviceType="+deviceType
 					+ " and t.orgid in ("+orgId+" )";
 			if (StringManagerUtils.isNotNull(wellInformationName)) {
-				sql+= " and t.wellname like '%" + wellInformationName+ "%'";
+				sql+= " and t.deviceName like '%" + wellInformationName+ "%'";
 			}
 			
-			sql+= " order by t.sortnum,t.wellname ";
+			sql+= " order by t.sortnum,t.deviceName ";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			
 			List<?> list=this.findCallSql(finalSql);

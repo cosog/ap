@@ -990,12 +990,10 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			bool = this.wellInformationManagerService.exportRPCDeviceInfoData(user,response,fileName,title, heads, fields,map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			bool = this.wellInformationManagerService.exportPCPDeviceInfoData(user,response,fileName,title, heads, fields,map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(user,response,fileName,title, heads, fields,map, pager,recordCount);
+		}else{
+			bool = this.wellInformationManagerService.exportDeviceInfoData(user,response,fileName,title, heads, fields,map, pager,recordCount);
 		}
 		if(session!=null){
 			session.setAttribute(key, 1);
@@ -1014,7 +1012,8 @@ public class WellInformationManagerController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		wellInformationName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellInformationName"),"utf-8");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
+//		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
+		String applicationScenarios=1+"";
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
@@ -1042,13 +1041,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(user,response,fileName,title, orgId,applicationScenarios,wellInformationName);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			bool = this.wellInformationManagerService.exportPCPDeviceInfoDetailsData(user,response,fileName,title, orgId,applicationScenarios,wellInformationName);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
-//			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
-		}
+		bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(user,response,fileName,title, orgId,applicationScenarios,deviceType,wellInformationName);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}

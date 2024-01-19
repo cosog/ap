@@ -15,6 +15,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         		if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
         			panelItem={
         					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
         	        		id: 'DeviceManagerPanel_'+tabInfo.children[i].tabId,
         	        		activeTab: 0,
@@ -43,6 +44,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         			for(var j=0;j<tabInfo.children[i].children.length;j++){
         				var secondTabPanel={
         						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+        						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
         						id: 'DeviceManagerPanel_'+tabInfo.children[i].children[j].tabId,
         						border: false
@@ -56,6 +58,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         		}else{
         			panelItem={
         					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'DeviceManagerPanel_'+tabInfo.children[i].tabId,
     						border: false

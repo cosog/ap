@@ -64,6 +64,7 @@ import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CommResponseData;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
@@ -2886,7 +2887,7 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	
-	public Boolean saveAcqFESDiagramAndCalculateData(RPCDeviceInfo rpcDeviceInfo,RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData,
+	public Boolean saveAcqFESDiagramAndCalculateData(DeviceInfo rpcDeviceInfo,RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData,
 			boolean fesDiagramEnabled) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
@@ -3054,7 +3055,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(2,rpcDeviceInfo.getAcqTime());
 			
 			cs.setString(3,RPCProductionDataToString(calculateRequestData));
-			cs.setString(4,rpcDeviceInfo.getPumpingUnit()!=null&&rpcDeviceInfo.getPumpingUnit().getBalance()!=null?gson.toJson(rpcDeviceInfo.getPumpingUnit().getBalance()):"{}");
+			cs.setString(4,rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null&&rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()!=null?gson.toJson(rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()):"{}");
 			cs.setString(5,rpcDeviceInfo.getPumpingModelId()==0?"":(rpcDeviceInfo.getPumpingModelId()+""));
 			
 			cs.setString(6,calculateRequestData.getFESDiagram().getAcqTime());
@@ -3817,7 +3818,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveFESDiagramTotalCalculateData(RPCDeviceInfo rpcDeviceInfo,
+	public Boolean saveFESDiagramTotalCalculateData(DeviceInfo rpcDeviceInfo,
 			TotalAnalysisResponseData totalAnalysisResponseData,
 			TotalAnalysisRequestData totalAnalysisRequestData,
 			String date,int recordCount) throws SQLException, ParseException {

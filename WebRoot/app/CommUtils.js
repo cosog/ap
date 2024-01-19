@@ -4686,9 +4686,17 @@ function getTabPanelActiveName(tabTanelId){
 	var tabPanel = Ext.getCmp(tabTanelId);
 	if(isNotVal(tabPanel)){
 		if(tabPanel.getActiveTab().xtype=='tabpanel'){
-			activeName=tabPanel.getActiveTab().activeTab.title;
+			if(isNotVal(tabPanel.getActiveTab().activeTab.tpl) && isNotVal(tabPanel.getActiveTab().activeTab.tpl.html) ){
+				activeName=tabPanel.getActiveTab().activeTab.tpl.html;
+			}else{
+				activeName=tabPanel.getActiveTab().activeTab.title;
+			}
 		}else{
-			activeName=tabPanel.getActiveTab().title;
+			if(isNotVal(activeName=tabPanel.getActiveTab().title) && isNotVal(activeName=tabPanel.getActiveTab().title.html) ){
+				activeName=activeName=tabPanel.getActiveTab().tpl.html;
+			}else{
+				activeName=activeName=tabPanel.getActiveTab().title;
+			}
 		}
 	}
 	return activeName;

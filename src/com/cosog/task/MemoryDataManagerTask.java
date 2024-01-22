@@ -2596,15 +2596,16 @@ public class MemoryDataManagerTask {
 					+"  t.calcProducingfluidLevel, "//30
 					+"  t.levelDifferenceValue, "//31
 					+ " t.submergence "//32
-					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
+					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
 					+ " where t.wellid=t2.id  "
+					+ " and t2.calculateType=1"
 					+ " and t.resultstatus=1"
 					+ " and t.fesdiagramacqtime between to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 ";
 			if(StringManagerUtils.isNotNull(wells)){
 				if(condition==0){
 					sql+=" and t2.id in("+wells+")";
 				}else{
-					sql+=" and t2.wellName in("+wells+")";
+					sql+=" and t2.deviceName in("+wells+")";
 				}
 			}
 			sql+= "order by t2.id, t.fesdiagramacqtime";

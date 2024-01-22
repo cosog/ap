@@ -2818,12 +2818,12 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return true;
 	}
-	public Boolean saveRPCAlarmInfo(String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException {
+	public Boolean saveAlarmInfo(String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_rpcalarminfo(?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?)}");
 			for(int i=0;i<acquisitionItemInfoList.size();i++){
 				if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
 					cs.setString(1, wellName);
@@ -2851,41 +2851,6 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return true;
 	}
-	
-	public Boolean savePCPAlarmInfo(String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		
-		try {
-			cs = conn.prepareCall("{call prd_save_pcpalarminfo(?,?,?,?,?,?,?,?,?,?,?,?)}");
-			for(int i=0;i<acquisitionItemInfoList.size();i++){
-				if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
-					cs.setString(1, wellName);
-					cs.setString(2, deviceType);
-					cs.setString(3, acqTime);
-					cs.setString(4, acquisitionItemInfoList.get(i).getTitle());
-					cs.setInt(5, acquisitionItemInfoList.get(i).getAlarmType());
-					cs.setString(6, acquisitionItemInfoList.get(i).getRawValue());
-					cs.setString(7, acquisitionItemInfoList.get(i).getAlarmInfo());
-					cs.setString(8, acquisitionItemInfoList.get(i).getAlarmLimit()+"");
-					cs.setString(9, acquisitionItemInfoList.get(i).getHystersis()+"");
-					cs.setInt(10, acquisitionItemInfoList.get(i).getAlarmLevel());
-					cs.setInt(11, acquisitionItemInfoList.get(i).getIsSendMessage());
-					cs.setInt(12, acquisitionItemInfoList.get(i).getIsSendMail());
-					cs.executeUpdate();
-				}
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null)
-				cs.close();
-			conn.close();
-		}
-		return true;
-	}
-	
 	
 	public Boolean saveAcqFESDiagramAndCalculateData(DeviceInfo rpcDeviceInfo,RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData,
 			boolean fesDiagramEnabled) throws SQLException, ParseException {

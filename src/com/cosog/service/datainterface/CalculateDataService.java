@@ -62,11 +62,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	private CommonDataService commonDataService;
 	
 	public void saveAlarmInfo(String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			getBaseDao().saveRPCAlarmInfo(wellName,deviceType,acqTime,acquisitionItemInfoList);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			getBaseDao().savePCPAlarmInfo(wellName,deviceType,acqTime,acquisitionItemInfoList);
-		}
+		getBaseDao().saveAlarmInfo(wellName,deviceType,acqTime,acquisitionItemInfoList);
 	}
 	
 	public void saveAndSendAlarmInfo(int deviceId,String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
@@ -150,13 +146,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			}
 		}
 		if(saveAcquisitionItemInfoList.size()>0){
-			if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-				getBaseDao().saveRPCAlarmInfo(wellName,deviceType,acqTime,saveAcquisitionItemInfoList);
-			}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-				getBaseDao().savePCPAlarmInfo(wellName,deviceType,acqTime,saveAcquisitionItemInfoList);
-			}
-			
-			
+			getBaseDao().saveAlarmInfo(wellName,deviceType,acqTime,saveAcquisitionItemInfoList);
 		}
 		if(isSendSMS || isSendMail){
 			sendAlarmSMS(wellName,deviceType,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());

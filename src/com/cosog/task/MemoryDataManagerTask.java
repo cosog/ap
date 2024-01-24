@@ -2556,6 +2556,20 @@ public class MemoryDataManagerTask {
 		return modbusProtocolConfig;
 	}
 	
+	public static ModbusProtocolConfig.Protocol getProtocolByName(String protocolName){
+		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
+		ModbusProtocolConfig.Protocol protocol=null;
+		if(StringManagerUtils.isNotNull(protocolName)){
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+					protocol=modbusProtocolConfig.getProtocol().get(i);
+					break;
+				}
+			}
+		}
+		return protocol;
+	}
+	
 	public static void loadTodayFESDiagram(List<String> wellList,int condition){//condition 0 -设备ID 1-设备名称
 		Connection conn = null;
 		PreparedStatement pstmt = null;

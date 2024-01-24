@@ -1002,6 +1002,149 @@ public class DriverAPIController extends BaseController{
 		return runStatus;
 	}
 	
+	public CommResponseData commEffCalaulate(DeviceInfo deviceInfo,String acqTime,int runStatus){
+		CommResponseData commResponseData=null;
+		String commRequest="{"
+				+ "\"AKString\":\"\","
+				+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
+				+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+		if(StringManagerUtils.isNotNull(deviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(deviceInfo.getOnLineCommRange())){
+			commRequest+= "\"Last\":{"
+					+ "\"AcqTime\": \""+deviceInfo.getOnLineAcqTime()+"\","
+					+ "\"CommStatus\": "+(deviceInfo.getOnLineCommStatus()>0?true:false)+","
+					+ "\"CommEfficiency\": {"
+					+ "\"Efficiency\": "+deviceInfo.getOnLineCommEff()+","
+					+ "\"Time\": "+deviceInfo.getOnLineCommTime()+","
+					+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(deviceInfo.getOnLineCommRange())+""
+					+ "}"
+					+ "},";
+		}	
+		commRequest+= "\"Current\": {"
+				+ "\"AcqTime\":\""+acqTime+"\","
+				+ "\"CommStatus\":true"
+				+ "}"
+				+ "}";
+		commResponseData=CalculateUtils.commCalculate(commRequest);
+	
+		return commResponseData;
+	}
+	
+	public TimeEffResponseData tiemEffCalaulate(DeviceInfo deviceInfo,String acqTime,int runStatus){
+		TimeEffResponseData timeEffResponseData=null;
+		String tiemEffRequest="{"
+				+ "\"AKString\":\"\","
+				+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
+				+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+		if(StringManagerUtils.isNotNull(deviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(deviceInfo.getRunRange())){
+			tiemEffRequest+= "\"Last\":{"
+					+ "\"AcqTime\": \""+deviceInfo.getRunStatusAcqTime()+"\","
+					+ "\"RunStatus\": "+(deviceInfo.getRunStatus()==1?true:false)+","
+					+ "\"RunEfficiency\": {"
+					+ "\"Efficiency\": "+deviceInfo.getRunEff()+","
+					+ "\"Time\": "+deviceInfo.getRunTime()+","
+					+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(deviceInfo.getRunRange())+""
+					+ "}"
+					+ "},";
+		}	
+		tiemEffRequest+= "\"Current\": {"
+				+ "\"AcqTime\":\""+acqTime+"\","
+				+ "\"RunStatus\":"+(runStatus==1?true:false)+""
+				+ "}"
+				+ "}";
+		timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
+	
+		return timeEffResponseData;
+	}
+	
+	public EnergyCalculateResponseData energyCalaulate(DeviceInfo deviceInfo,String acqTime,float totalKWattH){
+		EnergyCalculateResponseData energyCalculateResponseData=null;
+
+		String energyRequest="{"
+				+ "\"AKString\":\"\","
+				+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
+				+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+		if(StringManagerUtils.isNotNull(deviceInfo.getKWattHAcqTime()) ){
+			energyRequest+= "\"Last\":{"
+					+ "\"AcqTime\": \""+deviceInfo.getKWattHAcqTime()+"\","
+					+ "\"Total\":{"
+					+ "\"KWattH\":"+deviceInfo.getTotalKWattH()
+					+ "},\"Today\":{"
+					+ "\"KWattH\":"+deviceInfo.getTodayKWattH()
+					+ "}"
+					+ "},";
+		}	
+		energyRequest+= "\"Current\": {"
+				+ "\"AcqTime\":\""+acqTime+"\","
+				+ "\"Total\":{"
+				+ "\"KWattH\":"+totalKWattH
+				+ "}"
+				+ "}"
+				+ "}";
+		energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+	
+		return energyCalculateResponseData;
+	}
+	
+	public EnergyCalculateResponseData totalGasCalaulate(DeviceInfo deviceInfo,String acqTime,float totalGasVolumetricProduction){
+		EnergyCalculateResponseData totalGasCalculateResponseData=null;
+		String energyRequest="{"
+				+ "\"AKString\":\"\","
+				+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
+				+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+		if(StringManagerUtils.isNotNull(deviceInfo.getTotalGasAcqTime()) 
+				){
+			energyRequest+= "\"Last\":{"
+					+ "\"AcqTime\": \""+deviceInfo.getTotalGasAcqTime()+"\","
+					+ "\"Total\":{"
+					+ "\"KWattH\":"+deviceInfo.getTotalGasVolumetricProduction()
+					+ "},\"Today\":{"
+					+ "\"KWattH\":"+deviceInfo.getGasVolumetricProduction()
+					+ "}"
+					+ "},";
+		}	
+		energyRequest+= "\"Current\": {"
+				+ "\"AcqTime\":\""+acqTime+"\","
+				+ "\"Total\":{"
+				+ "\"KWattH\":"+totalGasVolumetricProduction
+				+ "}"
+				+ "}"
+				+ "}";
+		totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+	
+		return totalGasCalculateResponseData;
+	}
+	
+	public EnergyCalculateResponseData totalWaterCalaulate(DeviceInfo deviceInfo,String acqTime,float totalWaterVolumetricProduction){
+		EnergyCalculateResponseData totalWaterCalculateResponseData=null;
+
+		String energyRequest="{"
+				+ "\"AKString\":\"\","
+				+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
+				+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+		if(StringManagerUtils.isNotNull(deviceInfo.getTotalWaterAcqTime()) 
+				){
+			energyRequest+= "\"Last\":{"
+					+ "\"AcqTime\": \""+deviceInfo.getTotalWaterAcqTime()+"\","
+					+ "\"Total\":{"
+					+ "\"KWattH\":"+deviceInfo.getTotalWaterVolumetricProduction()
+					+ "},\"Today\":{"
+					+ "\"KWattH\":"+deviceInfo.getWaterVolumetricProduction()
+					+ "}"
+					+ "},";
+		}	
+		energyRequest+= "\"Current\": {"
+				+ "\"AcqTime\":\""+acqTime+"\","
+				+ "\"Total\":{"
+				+ "\"KWattH\":"+totalWaterVolumetricProduction
+				+ "}"
+				+ "}"
+				+ "}";
+		totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+	
+		return totalWaterCalculateResponseData;
+	}
+	
+	
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;

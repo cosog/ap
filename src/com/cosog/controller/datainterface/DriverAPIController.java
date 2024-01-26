@@ -272,10 +272,6 @@ public class DriverAPIController extends BaseController{
 				
 				
 				if(deviceInfoList.size()>0){
-					if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-						MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-					}
-					
 					String realtimeTable="";
 					String historyTable="";
 					
@@ -297,9 +293,7 @@ public class DriverAPIController extends BaseController{
 						functionCode="deviceRealTimeMonitoringStatusData";
 						
 						String commTime="",commTimeEfficiency="",commRange="";
-						if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes())){
-							alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes()));
-						}
+						alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 						commRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
@@ -495,10 +489,6 @@ public class DriverAPIController extends BaseController{
 				}
 				
 				if(deviceInfoList.size()>0 ){
-					if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-						MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-					}
-					
 					String realtimeTable="";
 					String historyTable="";
 					
@@ -520,9 +510,7 @@ public class DriverAPIController extends BaseController{
 						functionCode="deviceRealTimeMonitoringStatusData";
 						
 						String commTime="",commTimeEfficiency="",commRange="";
-						if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes())){
-							alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes()));
-						}
+						alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 						commRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
@@ -781,11 +769,202 @@ public class DriverAPIController extends BaseController{
 		}
 		
 		return null;
-	};
+	}
+	
+	public List<AcquisitionItemInfo> DataAlarmProcessing(List<ProtocolItemResolutionData> protocolItemResolutionDataList,AlarmInstanceOwnItem alarmInstanceOwnItem,List<AcquisitionItemInfo> acquisitionItemInfoList){
+		for(int i=0;i<protocolItemResolutionDataList.size();i++){
+			int alarmLevel=0;
+			AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+			acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getAddr()));
+			acquisitionItemInfo.setColumn(protocolItemResolutionDataList.get(i).getColumn());
+			acquisitionItemInfo.setTitle(protocolItemResolutionDataList.get(i).getColumnName());
+			acquisitionItemInfo.setRawTitle(protocolItemResolutionDataList.get(i).getRawColumnName());
+			acquisitionItemInfo.setValue(protocolItemResolutionDataList.get(i).getValue());
+			acquisitionItemInfo.setRawValue(protocolItemResolutionDataList.get(i).getRawValue());
+			acquisitionItemInfo.setDataType(protocolItemResolutionDataList.get(i).getColumnDataType());
+			acquisitionItemInfo.setResolutionMode(protocolItemResolutionDataList.get(i).getResolutionMode());
+			acquisitionItemInfo.setBitIndex(protocolItemResolutionDataList.get(i).getBitIndex());
+			acquisitionItemInfo.setAlarmLevel(alarmLevel);
+			acquisitionItemInfo.setUnit(protocolItemResolutionDataList.get(i).getUnit());
+			acquisitionItemInfo.setSort(protocolItemResolutionDataList.get(i).getSort());
+			for(int l=0;alarmInstanceOwnItem!=null&&l<alarmInstanceOwnItem.getItemList().size();l++){
+				if((acquisitionItemInfo.getAddr()+"").equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")){
+					int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
+					if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
+						float hystersis=alarmInstanceOwnItem.getItemList().get(l).getHystersis();
+						if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+hystersis){
+							alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+							acquisitionItemInfo.setAlarmLevel(alarmLevel);
+							acquisitionItemInfo.setHystersis(hystersis);
+							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
+							acquisitionItemInfo.setAlarmInfo("高报");
+							acquisitionItemInfo.setAlarmType(2);
+							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+						}else if((StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()-hystersis)){
+							alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+							acquisitionItemInfo.setAlarmLevel(alarmLevel);
+							acquisitionItemInfo.setHystersis(hystersis);
+							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
+							acquisitionItemInfo.setAlarmInfo("低报");
+							acquisitionItemInfo.setAlarmType(2);
+							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+						}
+						break;
+					}else if(alarmType==0  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//开关量报警
+						if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
+							if(acquisitionItemInfo.getBitIndex().equals(alarmInstanceOwnItem.getItemList().get(l).getBitIndex()+"") && StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
+								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+								acquisitionItemInfo.setAlarmLevel(alarmLevel);
+								acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
+								acquisitionItemInfo.setAlarmType(0);
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+							}
+						}
+					}else if(alarmType==1  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//枚举量报警
+						if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
+							alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+							acquisitionItemInfo.setAlarmLevel(alarmLevel);
+							acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
+							acquisitionItemInfo.setAlarmType(1);
+							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+						}
+					}
+				}
+			}
+			acquisitionItemInfoList.add(acquisitionItemInfo);
+		}
+		return acquisitionItemInfoList;
+	}
+	
+	public List<AcquisitionItemInfo> CalculateDataAlarmProcessing(List<ProtocolItemResolutionData> calItemResolutionDataList,AlarmInstanceOwnItem alarmInstanceOwnItem,List<AcquisitionItemInfo> acquisitionItemInfoList){
+		for(int i=0;i<calItemResolutionDataList.size();i++){
+
+			int alarmLevel=0;
+			AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+			acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getAddr()));
+			acquisitionItemInfo.setColumn(calItemResolutionDataList.get(i).getColumn());
+			acquisitionItemInfo.setTitle(calItemResolutionDataList.get(i).getColumnName());
+			acquisitionItemInfo.setRawTitle(calItemResolutionDataList.get(i).getRawColumnName());
+			acquisitionItemInfo.setValue(calItemResolutionDataList.get(i).getValue());
+			acquisitionItemInfo.setRawValue(calItemResolutionDataList.get(i).getRawValue());
+			acquisitionItemInfo.setDataType(calItemResolutionDataList.get(i).getColumnDataType());
+			acquisitionItemInfo.setResolutionMode(calItemResolutionDataList.get(i).getResolutionMode());
+			acquisitionItemInfo.setBitIndex(calItemResolutionDataList.get(i).getBitIndex());
+			
+			
+//			if("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
+//				WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(calItemResolutionDataList.get(i).getRawValue());
+//				if(workType!=null){
+//					acquisitionItemInfo.setValue(workType.getResultName());
+//				}
+//			}else if("optimizationSuggestion".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
+//				if(workType!=null){
+//					acquisitionItemInfo.setValue(workType.getOptimizationSuggestion());
+//					acquisitionItemInfo.setRawValue(workType.getOptimizationSuggestion());
+//				}
+//			}
+			
+			for(int k=0;alarmInstanceOwnItem!=null&&k<alarmInstanceOwnItem.getItemList().size();k++){
+//				if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+//						&&alarmInstanceOwnItem.getItemList().get(k).getType()==4
+//						&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
+//					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+//					if(alarmLevel>0){
+//						acquisitionItemInfo.setAlarmInfo("工况报警:"+workType.getResultName());
+//						acquisitionItemInfo.setAlarmType(4);
+//						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+//						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+//						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+//					}
+//					break;
+//				}else 
+				if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+						&& alarmInstanceOwnItem.getItemList().get(k).getType()==6
+						&& calItemResolutionDataList.get(i).getValue().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemName()) ){
+					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+					if(alarmLevel>0){
+						acquisitionItemInfo.setAlarmLevel(alarmLevel);
+						acquisitionItemInfo.setAlarmInfo(calItemResolutionDataList.get(i).getValue());
+						acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
+						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+					}
+					break;
+				}else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
+					float hystersis=alarmInstanceOwnItem.getItemList().get(k).getHystersis();
+					if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+hystersis){
+						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+						if(alarmLevel>0){
+							acquisitionItemInfo.setAlarmLevel(alarmLevel);
+							acquisitionItemInfo.setHystersis(hystersis);
+							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit());
+							acquisitionItemInfo.setAlarmInfo("高报");
+							acquisitionItemInfo.setAlarmType(5);
+							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+						}
+					}else if((StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()-hystersis)){
+						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign()>0?alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel():0;
+						if(alarmLevel>0){
+							acquisitionItemInfo.setAlarmLevel(alarmLevel);
+							acquisitionItemInfo.setHystersis(hystersis);
+							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit());
+							acquisitionItemInfo.setAlarmInfo("低报");
+							acquisitionItemInfo.setAlarmType(5);
+							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+						}
+					}
+					break;
+				}
+			}
+			acquisitionItemInfo.setAlarmLevel(alarmLevel);
+			acquisitionItemInfo.setUnit(calItemResolutionDataList.get(i).getUnit());
+			acquisitionItemInfo.setSort(calItemResolutionDataList.get(i).getSort());
+			acquisitionItemInfoList.add(acquisitionItemInfo);
+		}
+		return acquisitionItemInfoList;
+	}
+	
+	public List<AcquisitionItemInfo> InputDataAlarmProcessing(List<ProtocolItemResolutionData> inputItemItemResolutionDataList,AlarmInstanceOwnItem alarmInstanceOwnItem,List<AcquisitionItemInfo> acquisitionItemInfoList){
+		for(int i=0;i<inputItemItemResolutionDataList.size();i++){
+			int alarmLevel=0;
+			AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+			acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(inputItemItemResolutionDataList.get(i).getAddr()));
+			acquisitionItemInfo.setColumn(inputItemItemResolutionDataList.get(i).getColumn());
+			acquisitionItemInfo.setTitle(inputItemItemResolutionDataList.get(i).getColumnName());
+			acquisitionItemInfo.setRawTitle(inputItemItemResolutionDataList.get(i).getRawColumnName());
+			acquisitionItemInfo.setValue(inputItemItemResolutionDataList.get(i).getValue());
+			acquisitionItemInfo.setRawValue(inputItemItemResolutionDataList.get(i).getRawValue());
+			acquisitionItemInfo.setDataType(inputItemItemResolutionDataList.get(i).getColumnDataType());
+			acquisitionItemInfo.setResolutionMode(inputItemItemResolutionDataList.get(i).getResolutionMode());
+			acquisitionItemInfo.setBitIndex(inputItemItemResolutionDataList.get(i).getBitIndex());
+			
+			acquisitionItemInfo.setAlarmLevel(alarmLevel);
+			acquisitionItemInfo.setUnit(inputItemItemResolutionDataList.get(i).getUnit());
+			acquisitionItemInfo.setSort(inputItemItemResolutionDataList.get(i).getSort());
+			acquisitionItemInfoList.add(acquisitionItemInfo);
+		}
+		return acquisitionItemInfoList;
+	}
 	
 	public List<ProtocolItemResolutionData> DataProcessing(AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,AcqInstanceOwnItem acqInstanceOwnItem){
 		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		}
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		
 		if(acqGroup!=null && protocol!=null && acqInstanceOwnItem!=null){
@@ -903,95 +1082,93 @@ public class DriverAPIController extends BaseController{
 		Jedis jedis=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			if(jedis.hget("ProtocolRunStatusConfig".getBytes(), code.getBytes())!=null){
-				ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), code.getBytes()));
-				if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
-					if(protocolRunStatusConfig.getResolutionMode()==1){
-						int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-						if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
-							runStatus=1;
-						}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
-							runStatus=0;
-						}else{
-						}
-					}else if(protocolRunStatusConfig.getResolutionMode()==2){
-						if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
-							float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
-							boolean runConditionMatch=false;
-							boolean stopConditionMatch=false;
-							for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
-								if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
-									if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-										runConditionMatch=true;
-									}else{
-										runConditionMatch=false;
-										break;
-									}
-								}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
-									if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-										runConditionMatch=true;
-									}else{
-										runConditionMatch=false;
-										break;
-									}
-								}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
-									if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-										runConditionMatch=true;
-									}else{
-										runConditionMatch=false;
-										break;
-									}
-								}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
-									if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-										runConditionMatch=true;
-									}else{
-										runConditionMatch=false;
-										break;
-									}
-								}
-							}
-							
-							for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
-								if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
-									if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-										stopConditionMatch=true;
-									}else{
-										stopConditionMatch=false;
-										break;
-									}
-								}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
-									if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-										stopConditionMatch=true;
-									}else{
-										stopConditionMatch=false;
-										break;
-									}
-								}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
-									if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-										stopConditionMatch=true;
-									}else{
-										stopConditionMatch=false;
-										break;
-									}
-								}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
-									if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-										stopConditionMatch=true;
-									}else{
-										stopConditionMatch=false;
-										break;
-									}
-								}
-							}
-							
-							if(runConditionMatch){
+			ProtocolRunStatusConfig protocolRunStatusConfig=MemoryDataManagerTask.getProtocolRunStatusConfig(code);
+					if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
+						if(protocolRunStatusConfig.getResolutionMode()==1){
+							int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+							if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 								runStatus=1;
-							}else if(stopConditionMatch){
+							}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
 								runStatus=0;
+							}else{
+							}
+						}else if(protocolRunStatusConfig.getResolutionMode()==2){
+							if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
+								float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
+								boolean runConditionMatch=false;
+								boolean stopConditionMatch=false;
+								for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
+									if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
+										if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+											runConditionMatch=true;
+										}else{
+											runConditionMatch=false;
+											break;
+										}
+									}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
+										if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+											runConditionMatch=true;
+										}else{
+											runConditionMatch=false;
+											break;
+										}
+									}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
+										if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+											runConditionMatch=true;
+										}else{
+											runConditionMatch=false;
+											break;
+										}
+									}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
+										if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+											runConditionMatch=true;
+										}else{
+											runConditionMatch=false;
+											break;
+										}
+									}
+								}
+								
+								for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
+									if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
+										if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+											stopConditionMatch=true;
+										}else{
+											stopConditionMatch=false;
+											break;
+										}
+									}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
+										if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+											stopConditionMatch=true;
+										}else{
+											stopConditionMatch=false;
+											break;
+										}
+									}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
+										if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+											stopConditionMatch=true;
+										}else{
+											stopConditionMatch=false;
+											break;
+										}
+									}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
+										if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+											stopConditionMatch=true;
+										}else{
+											stopConditionMatch=false;
+											break;
+										}
+									}
+								}
+								
+								if(runConditionMatch){
+									runStatus=1;
+								}else if(stopConditionMatch){
+									runStatus=0;
+								}
 							}
 						}
 					}
-				}
-			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -1002,7 +1179,7 @@ public class DriverAPIController extends BaseController{
 		return runStatus;
 	}
 	
-	public CommResponseData commEffCalaulate(DeviceInfo deviceInfo,String acqTime,int runStatus){
+	public CommResponseData commEffCalaulate(DeviceInfo deviceInfo,String acqTime,int commStatus){
 		CommResponseData commResponseData=null;
 		String commRequest="{"
 				+ "\"AKString\":\"\","
@@ -1021,7 +1198,7 @@ public class DriverAPIController extends BaseController{
 		}	
 		commRequest+= "\"Current\": {"
 				+ "\"AcqTime\":\""+acqTime+"\","
-				+ "\"CommStatus\":true"
+				+ "\"CommStatus\":"+(commStatus==1?true:false)+""
 				+ "}"
 				+ "}";
 		commResponseData=CalculateUtils.commCalculate(commRequest);
@@ -1144,6 +1321,128 @@ public class DriverAPIController extends BaseController{
 		return totalWaterCalculateResponseData;
 	}
 	
+	public String getWebSocketSendData(DeviceInfo deviceInfo,String acqTime,UserInfo userInfo,List<AcquisitionItemInfo> acquisitionItemInfoList,DisplayInstanceOwnItem displayInstanceOwnItem,int items,String functionCode,int commAlarmLevel,int runAlarmLevel,AlarmShowStyle alarmShowStyle){
+		StringBuffer webSocketSendData = new StringBuffer();
+		StringBuffer displayItemInfo_json = new StringBuffer();
+		StringBuffer allItemInfo_json = new StringBuffer();
+		String columns = "[";
+		for(int i=1;i<=items;i++){
+			columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
+					+ "{ \"header\":\"变量\",\"dataIndex\":\"value"+i+"\",children:[] }";
+			if(i<items){
+				columns+=",";
+			}
+		}
+		columns+= "]";
+		
+		webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"wellName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+		webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
+		webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
+		webSocketSendData.append("\"totalRoot\":[");
+		displayItemInfo_json.append("[");
+		allItemInfo_json.append("[");
+		webSocketSendData.append("{\"name1\":\""+deviceInfo.getWellName()+":"+acqTime+" 在线\"},");
+		
+		//筛选
+		List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
+		for(int j=0;j<acquisitionItemInfoList.size();j++){
+			allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\",\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\",\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\",\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\",\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\",\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\",\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
+			if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0)){
+				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+					if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) && displayInstanceOwnItem.getItemList().get(k).getType()!=2){
+						if(displayInstanceOwnItem.getItemList().get(k).getShowLevel()==0||displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
+							acquisitionItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getSort());
+							userAcquisitionItemInfoList.add(acquisitionItemInfoList.get(j));
+						}
+						break;
+					}
+				}
+			}
+		}
+		if(allItemInfo_json.toString().endsWith(",")){
+			allItemInfo_json.deleteCharAt(allItemInfo_json.length() - 1);
+		}
+		allItemInfo_json.append("]");
+		
+		//排序
+		Collections.sort(userAcquisitionItemInfoList);
+		//插入排序间隔的空项
+		List<AcquisitionItemInfo> finalAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
+		for(int j=0;j<userAcquisitionItemInfoList.size();j++){
+			if(j>0&&userAcquisitionItemInfoList.get(j).getSort()<9999
+					&&userAcquisitionItemInfoList.get(j).getSort()-userAcquisitionItemInfoList.get(j-1).getSort()>1
+				){
+					int def=userAcquisitionItemInfoList.get(j).getSort()-userAcquisitionItemInfoList.get(j-1).getSort();
+					for(int k=1;k<def;k++){
+						AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+						finalAcquisitionItemInfoList.add(acquisitionItemInfo);
+					}
+				}
+				finalAcquisitionItemInfoList.add(userAcquisitionItemInfoList.get(j));
+		}
+		
+		int row=1;
+		if(finalAcquisitionItemInfoList.size()%items==0){
+			row=finalAcquisitionItemInfoList.size()/items+1;
+		}else{
+			row=finalAcquisitionItemInfoList.size()/items+2;
+		}
+		
+		for(int j=1;j<row;j++){
+			webSocketSendData.append("{");
+			for(int k=0;k<items;k++){
+				int index=items*(j-1)+k;
+				String columnName="";
+				String value="";
+				String rawValue="";
+				String column="";
+				String columnDataType="";
+				String resolutionMode="";
+				String unit="";
+				int alarmLevel=0;
+				if(index<finalAcquisitionItemInfoList.size() 
+						&& StringManagerUtils.isNotNull(finalAcquisitionItemInfoList.get(index).getTitle())
+//						&&StringManagerUtils.existOrNot(userItems, finalAcquisitionItemInfoList.get(index).getRawTitle(),false)
+						){
+					columnName=finalAcquisitionItemInfoList.get(index).getTitle();
+					value=finalAcquisitionItemInfoList.get(index).getValue();
+					rawValue=finalAcquisitionItemInfoList.get(index).getRawValue();
+					column=finalAcquisitionItemInfoList.get(index).getColumn();
+					columnDataType=finalAcquisitionItemInfoList.get(index).getDataType();
+					resolutionMode=finalAcquisitionItemInfoList.get(index).getResolutionMode()+"";
+					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
+					unit=finalAcquisitionItemInfoList.get(index).getUnit();
+				}
+				
+				if(StringManagerUtils.isNotNull(columnName)&&StringManagerUtils.isNotNull(unit)){
+					webSocketSendData.append("\"name"+(k+1)+"\":\""+(columnName+"("+unit+")")+"\",");
+				}else{
+					webSocketSendData.append("\"name"+(k+1)+"\":\""+columnName+"\",");
+				}
+				webSocketSendData.append("\"value"+(k+1)+"\":\""+value+"\",");
+				displayItemInfo_json.append("{\"row\":"+j+",\"col\":"+k+",\"columnName\":\""+columnName+"\",\"column\":\""+column+"\",\"value\":\""+value+"\",\"rawValue\":\""+rawValue+"\",\"columnDataType\":\""+columnDataType+"\",\"resolutionMode\":\""+resolutionMode+"\",\"alarmLevel\":"+alarmLevel+"},");
+			}
+			if(webSocketSendData.toString().endsWith(",")){
+				webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
+			}
+			webSocketSendData.append("},");
+		}
+		if(webSocketSendData.toString().endsWith(",")){
+			webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
+		}
+		
+		if(displayItemInfo_json.toString().endsWith(",")){
+			displayItemInfo_json.deleteCharAt(displayItemInfo_json.length() - 1);
+		}
+		displayItemInfo_json.append("]");
+		
+		webSocketSendData.append("]");
+		webSocketSendData.append(",\"CellInfo\":"+displayItemInfo_json);
+		webSocketSendData.append(",\"allItemInfo\":"+allItemInfo_json);
+		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
+		return webSocketSendData.toString();
+	
+	}
 	
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
 		Gson gson=new Gson();
@@ -1160,49 +1459,15 @@ public class DriverAPIController extends BaseController{
 		StringBuffer webSocketSendData = new StringBuffer();
 		StringBuffer displayItemInfo_json = new StringBuffer();
 		StringBuffer allItemInfo_json = new StringBuffer();
-
-		StringBuffer wellBoreChartsData = new StringBuffer();
-		StringBuffer surfaceChartsData = new StringBuffer();
 		boolean save=false;
 		boolean alarm=false;
-		Jedis jedis=null;
-		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("AlarmShowStyle".getBytes())){
-				MemoryDataManagerTask.initAlarmStyle();
-			}
-			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-			
-			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null,0,"update");
-			}
-			
-			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAcqInstanceOwnItemById("","update");
-			}
-			
-			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-			}
-			
-			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-			}
-			
-			if(!jedis.exists("ProtocolMappingColumnByTitle".getBytes())){
-				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-			}
-			
-			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
-				MemoryDataManagerTask.loadProtocolMappingColumn();
-			}
-			
-			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
-				MemoryDataManagerTask.loadProtocolRunStatusConfig();
-			}
+			AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+			}
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			
 			String realtimeTable="tbl_acqdata_latest";
@@ -1214,22 +1479,13 @@ public class DriverAPIController extends BaseController{
 			if(acqGroup!=null){
 				String protocolName="";
 				String acqProtocolType="";
-				AcqInstanceOwnItem acqInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes())){
-					acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes()));
+				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				if(acqInstanceOwnItem!=null){
 					protocolName=acqInstanceOwnItem.getProtocol();
 					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 				}
-				DisplayInstanceOwnItem displayInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
-					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
-				}
-				
-				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes()));
-				}
-				
+				DisplayInstanceOwnItem displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(deviceInfo.getDisplayInstanceCode());
+				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
 				if(protocol!=null){
@@ -1256,8 +1512,6 @@ public class DriverAPIController extends BaseController{
 					
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
-					boolean isAcqCalResultData=false;
-					boolean isAcqRPMData=false;
 					int runStatus=2;
 					float totalKWattH=0;
 					float totalGasVolumetricProduction=0;
@@ -1265,31 +1519,9 @@ public class DriverAPIController extends BaseController{
 					
 					
 					//进行通信计算
-					String commRequest="{"
-							+ "\"AKString\":\"\","
-							+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
-							+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-					if(StringManagerUtils.isNotNull(deviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(deviceInfo.getOnLineCommRange())){
-						commRequest+= "\"Last\":{"
-								+ "\"AcqTime\": \""+deviceInfo.getOnLineAcqTime()+"\","
-								+ "\"CommStatus\": "+(deviceInfo.getOnLineCommStatus()>0?true:false)+","
-								+ "\"CommEfficiency\": {"
-								+ "\"Efficiency\": "+deviceInfo.getOnLineCommEff()+","
-								+ "\"Time\": "+deviceInfo.getOnLineCommTime()+","
-								+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(deviceInfo.getOnLineCommRange())+""
-								+ "}"
-								+ "},";
-					}	
-					commRequest+= "\"Current\": {"
-							+ "\"AcqTime\":\""+acqTime+"\","
-							+ "\"CommStatus\":true"
-							+ "}"
-							+ "}";
-					commResponseData=CalculateUtils.commCalculate(commRequest);
+					commResponseData=commEffCalaulate(deviceInfo,acqTime,1);
 					
 					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1";
-					
-					
 					String insertHistColumns="deviceid,acqTime,CommStatus";
 					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),1";
 					String insertHistSql="";
@@ -1300,6 +1532,7 @@ public class DriverAPIController extends BaseController{
 					boolean FESDiagramCalculate=false;
 					List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(acqGroup,protocol,acqInstanceOwnItem);
+					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
 							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getColumnName());
@@ -1344,115 +1577,22 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					if(isAcqRunStatus){
-						String tiemEffRequest="{"
-								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
-								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-						if(StringManagerUtils.isNotNull(deviceInfo.getRunStatusAcqTime())&&StringManagerUtils.isNotNull(deviceInfo.getRunRange())){
-							tiemEffRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+deviceInfo.getRunStatusAcqTime()+"\","
-									+ "\"RunStatus\": "+(deviceInfo.getRunStatus()==1?true:false)+","
-									+ "\"RunEfficiency\": {"
-									+ "\"Efficiency\": "+deviceInfo.getRunEff()+","
-									+ "\"Time\": "+deviceInfo.getRunTime()+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(deviceInfo.getRunRange())+""
-									+ "}"
-									+ "},";
-						}	
-						tiemEffRequest+= "\"Current\": {"
-								+ "\"AcqTime\":\""+acqTime+"\","
-								+ "\"RunStatus\":"+(runStatus==1?true:false)+""
-								+ "}"
-								+ "}";
-						timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
+						timeEffResponseData=tiemEffCalaulate(deviceInfo,acqTime,runStatus);
 					}
 					
 					//判断是否采集了电量，如采集则进行电量计算
 					if(isAcqEnergy){
-						if(totalKWattH >= deviceInfo.getTotalKWattH() || true){
-							String energyRequest="{"
-									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(deviceInfo.getKWattHAcqTime()) ){
-								energyRequest+= "\"Last\":{"
-										+ "\"AcqTime\": \""+deviceInfo.getKWattHAcqTime()+"\","
-										+ "\"Total\":{"
-										+ "\"KWattH\":"+deviceInfo.getTotalKWattH()
-										+ "},\"Today\":{"
-										+ "\"KWattH\":"+deviceInfo.getTodayKWattH()
-										+ "}"
-										+ "},";
-							}	
-							energyRequest+= "\"Current\": {"
-									+ "\"AcqTime\":\""+acqTime+"\","
-									+ "\"Total\":{"
-									+ "\"KWattH\":"+totalKWattH
-									+ "}"
-									+ "}"
-									+ "}";
-							energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-						}
+						energyCalculateResponseData=energyCalaulate(deviceInfo,acqTime,totalKWattH);
 					}
 					
 					//判断是否采集了累计气量，如采集则进行日产气量计算
 					if(isAcqTotalGasProd){
-						if(totalGasVolumetricProduction>=deviceInfo.getTotalGasVolumetricProduction() || true){
-							String energyRequest="{"
-									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(deviceInfo.getTotalGasAcqTime()) 
-//									&& deviceInfo.getTotalGasVolumetricProduction()>0
-									){
-								energyRequest+= "\"Last\":{"
-										+ "\"AcqTime\": \""+deviceInfo.getTotalGasAcqTime()+"\","
-										+ "\"Total\":{"
-										+ "\"KWattH\":"+deviceInfo.getTotalGasVolumetricProduction()
-										+ "},\"Today\":{"
-										+ "\"KWattH\":"+deviceInfo.getGasVolumetricProduction()
-										+ "}"
-										+ "},";
-							}	
-							energyRequest+= "\"Current\": {"
-									+ "\"AcqTime\":\""+acqTime+"\","
-									+ "\"Total\":{"
-									+ "\"KWattH\":"+totalGasVolumetricProduction
-									+ "}"
-									+ "}"
-									+ "}";
-							totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-						}
+						totalGasCalculateResponseData=totalGasCalaulate(deviceInfo,acqTime,totalGasVolumetricProduction);
 					}
 					
 					//判断是否采集了累计水量，如采集则进行日产水量计算
 					if(isAcqTotalWaterProd){
-						if(totalWaterVolumetricProduction>=deviceInfo.getTotalWaterVolumetricProduction() || true){
-							String energyRequest="{"
-									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(deviceInfo.getTotalWaterAcqTime()) 
-//									&& deviceInfo.getTotalWaterVolumetricProduction()>0
-									){
-								energyRequest+= "\"Last\":{"
-										+ "\"AcqTime\": \""+deviceInfo.getTotalWaterAcqTime()+"\","
-										+ "\"Total\":{"
-										+ "\"KWattH\":"+deviceInfo.getTotalWaterVolumetricProduction()
-										+ "},\"Today\":{"
-										+ "\"KWattH\":"+deviceInfo.getWaterVolumetricProduction()
-										+ "}"
-										+ "},";
-							}	
-							energyRequest+= "\"Current\": {"
-									+ "\"AcqTime\":\""+acqTime+"\","
-									+ "\"Total\":{"
-									+ "\"KWattH\":"+totalWaterVolumetricProduction
-									+ "}"
-									+ "}"
-									+ "}";
-							totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-						}
+						totalWaterCalculateResponseData=totalWaterCalaulate(deviceInfo,acqTime,totalWaterVolumetricProduction);
 					}
 					//通信
 					deviceInfo.setAcqTime(acqTime);
@@ -1460,7 +1600,7 @@ public class DriverAPIController extends BaseController{
 					
 					
 					deviceInfo.setOnLineCommStatus(1);
-//					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信状态","通信状态","在线","1","","commStatusName","","","","",1));
+					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信状态","通信状态","在线","1","","commStatusName","","","","",1));
 					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 						deviceInfo.setOnLineAcqTime(acqTime);
 						
@@ -1480,15 +1620,15 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 						deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 						
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时间","通信时间",commResponseData.getCurrent().getCommEfficiency().getTime()+"",commResponseData.getCurrent().getCommEfficiency().getTime()+"","","commTime","","","","",1));
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时率","通信时率",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"","","commtimeEfficiency","","","","",1));
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信区间","通信区间",commResponseData.getCurrent().getCommEfficiency().getRangeString(),commResponseData.getCurrent().getCommEfficiency().getRangeString(),"","commRange","","","","",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时间","通信时间",commResponseData.getCurrent().getCommEfficiency().getTime()+"",commResponseData.getCurrent().getCommEfficiency().getTime()+"","","commTime","","","","",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时率","通信时率",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"","","commtimeEfficiency","","","","",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信区间","通信区间",commResponseData.getCurrent().getCommEfficiency().getRangeString(),commResponseData.getCurrent().getCommEfficiency().getRangeString(),"","commRange","","","","",1));
 					}
 					updateRealtimeData+=",t.runStatus= "+runStatus;
 					insertHistColumns+=",runStatus";
 					insertHistValue+=","+runStatus;
 					updateTotalDataSql+=",t.runStatus= "+runStatus;
-//					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停抽":"无数据"),runStatus+"","","runStatusName","","","","",1));
+					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停抽":"无数据"),runStatus+"","","runStatusName","","","","",1));
 					
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
@@ -1504,9 +1644,9 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setRunEff(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency());
 						deviceInfo.setRunRange(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 						
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时间","运行时间",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"","","runTime","","","","",1));
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时率","运行时率",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+"",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+"","","runtimeEfficiency","","","","",1));
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行区间","运行区间",timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),"","runRange","","","","",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时间","运行时间",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"","","runTime","","","","",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时率","运行时率",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+"",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+"","","runtimeEfficiency","","","","",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行区间","运行区间",timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),"","runRange","","","","",1));
 					}
 					//如果进行了功耗计算
 					if(isAcqEnergy){
@@ -1514,7 +1654,7 @@ public class DriverAPIController extends BaseController{
 						insertHistColumns+=",totalKWattH";
 						insertHistValue+=","+totalKWattH;
 						updateTotalDataSql+=",t.totalKWattH= "+totalKWattH;
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计用电量","累计用电量",totalKWattH+"",totalKWattH+"","","totalKWattH","","","","kW·h",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计用电量","累计用电量",totalKWattH+"",totalKWattH+"","","totalKWattH","","","","kW·h",1));
 					}
 					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
@@ -1524,7 +1664,7 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setKWattHAcqTime(acqTime);
 						deviceInfo.setTotalKWattH(totalKWattH);
 						deviceInfo.setTodayKWattH(energyCalculateResponseData.getCurrent().getToday().getKWattH());
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("日用电量","日用电量",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"","","todayKWattH","","","","kW·h",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("日用电量","日用电量",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"","","todayKWattH","","","","kW·h",1));
 					}
 					
 					//如果进行了日产气量计算
@@ -1533,7 +1673,7 @@ public class DriverAPIController extends BaseController{
 						insertHistColumns+=",totalgasvolumetricproduction";
 						insertHistValue+=","+totalGasVolumetricProduction;
 						updateTotalDataSql+=",t.totalgasvolumetricproduction= "+totalGasVolumetricProduction;
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产气量","累计产气量",totalGasVolumetricProduction+"",totalGasVolumetricProduction+"","","totalGasVolumetricProduction","","","","m^3",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产气量","累计产气量",totalGasVolumetricProduction+"",totalGasVolumetricProduction+"","","totalGasVolumetricProduction","","","","m^3",1));
 					}
 					if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
@@ -1543,7 +1683,7 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setTotalGasAcqTime(acqTime);
 						deviceInfo.setTotalGasVolumetricProduction(totalGasVolumetricProduction);
 						deviceInfo.setGasVolumetricProduction(totalGasCalculateResponseData.getCurrent().getToday().getKWattH());
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产气量","日累计产气量",totalGasCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalGasCalculateResponseData.getCurrent().getToday().getKWattH()+"","","gasVolumetricProduction","","","","m^3/d",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产气量","日累计产气量",totalGasCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalGasCalculateResponseData.getCurrent().getToday().getKWattH()+"","","gasVolumetricProduction","","","","m^3/d",1));
 					}
 					
 					//如果进行了日产水量计算
@@ -1552,7 +1692,7 @@ public class DriverAPIController extends BaseController{
 						insertHistColumns+=",totalWatervolumetricproduction";
 						insertHistValue+=","+totalWaterVolumetricProduction;
 						updateTotalDataSql+=",t.totalWatervolumetricproduction= "+totalWaterVolumetricProduction;
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产水量","累计产水量",totalWaterVolumetricProduction+"",totalWaterVolumetricProduction+"","","totalWaterVolumetricProduction","","","","m^3",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产水量","累计产水量",totalWaterVolumetricProduction+"",totalWaterVolumetricProduction+"","","totalWaterVolumetricProduction","","","","m^3",1));
 					}
 					if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
@@ -1565,7 +1705,7 @@ public class DriverAPIController extends BaseController{
 						if(!FESDiagramCalculate){
 							
 						}
-//						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"","","waterVolumetricProduction","","","","m^3/d",1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"","","waterVolumetricProduction","","","","m^3/d",1));
 					}
 					
 					updateRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
@@ -1585,193 +1725,9 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 					}
-					for(int i=0;i<protocolItemResolutionDataList.size();i++){
-						int alarmLevel=0;
-						AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
-						acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getAddr()));
-						acquisitionItemInfo.setColumn(protocolItemResolutionDataList.get(i).getColumn());
-						acquisitionItemInfo.setTitle(protocolItemResolutionDataList.get(i).getColumnName());
-						acquisitionItemInfo.setRawTitle(protocolItemResolutionDataList.get(i).getRawColumnName());
-						acquisitionItemInfo.setValue(protocolItemResolutionDataList.get(i).getValue());
-						acquisitionItemInfo.setRawValue(protocolItemResolutionDataList.get(i).getRawValue());
-						acquisitionItemInfo.setDataType(protocolItemResolutionDataList.get(i).getColumnDataType());
-						acquisitionItemInfo.setResolutionMode(protocolItemResolutionDataList.get(i).getResolutionMode());
-						acquisitionItemInfo.setBitIndex(protocolItemResolutionDataList.get(i).getBitIndex());
-						acquisitionItemInfo.setAlarmLevel(alarmLevel);
-						acquisitionItemInfo.setUnit(protocolItemResolutionDataList.get(i).getUnit());
-						acquisitionItemInfo.setSort(protocolItemResolutionDataList.get(i).getSort());
-						for(int l=0;alarmInstanceOwnItem!=null&&l<alarmInstanceOwnItem.getItemList().size();l++){
-							if((acquisitionItemInfo.getAddr()+"").equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")){
-								int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-								if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
-									float hystersis=alarmInstanceOwnItem.getItemList().get(l).getHystersis();
-									if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+hystersis){
-										alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-										acquisitionItemInfo.setAlarmLevel(alarmLevel);
-										acquisitionItemInfo.setHystersis(hystersis);
-										acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
-										acquisitionItemInfo.setAlarmInfo("高报");
-										acquisitionItemInfo.setAlarmType(2);
-										acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-										acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-										acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-									}else if((StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()-hystersis)){
-										alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-										acquisitionItemInfo.setAlarmLevel(alarmLevel);
-										acquisitionItemInfo.setHystersis(hystersis);
-										acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
-										acquisitionItemInfo.setAlarmInfo("低报");
-										acquisitionItemInfo.setAlarmType(2);
-										acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-										acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-										acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-									}
-									break;
-								}else if(alarmType==0  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//开关量报警
-									if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
-										if(acquisitionItemInfo.getBitIndex().equals(alarmInstanceOwnItem.getItemList().get(l).getBitIndex()+"") && StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
-											alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-											acquisitionItemInfo.setAlarmLevel(alarmLevel);
-											acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
-											acquisitionItemInfo.setAlarmType(0);
-											acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-											acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-											acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-										}
-									}
-								}else if(alarmType==1  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//枚举量报警
-									if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
-										alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-										acquisitionItemInfo.setAlarmLevel(alarmLevel);
-										acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
-										acquisitionItemInfo.setAlarmType(1);
-										acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-										acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-										acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-									}
-								}
-							}
-						}
-						if(acquisitionItemInfo.getAlarmLevel()>0){
-							alarm=true;
-						}
-						acquisitionItemInfoList.add(acquisitionItemInfo);
-					}
-					//添加计算项
-//					for(int i=0;i<calItemResolutionDataList.size();i++){
-//						int alarmLevel=0;
-//						AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
-//						acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getAddr()));
-//						acquisitionItemInfo.setColumn(calItemResolutionDataList.get(i).getColumn());
-//						acquisitionItemInfo.setTitle(calItemResolutionDataList.get(i).getColumnName());
-//						acquisitionItemInfo.setRawTitle(calItemResolutionDataList.get(i).getRawColumnName());
-//						acquisitionItemInfo.setValue(calItemResolutionDataList.get(i).getValue());
-//						acquisitionItemInfo.setRawValue(calItemResolutionDataList.get(i).getRawValue());
-//						acquisitionItemInfo.setDataType(calItemResolutionDataList.get(i).getColumnDataType());
-//						acquisitionItemInfo.setResolutionMode(calItemResolutionDataList.get(i).getResolutionMode());
-//						acquisitionItemInfo.setBitIndex(calItemResolutionDataList.get(i).getBitIndex());
-//						
-//						if("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
-//							if(workType!=null){
-//								acquisitionItemInfo.setValue(workType.getResultName());
-//							}
-//						}else if("optimizationSuggestion".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
-//							if(workType!=null){
-//								acquisitionItemInfo.setValue(workType.getOptimizationSuggestion());
-//								acquisitionItemInfo.setRawValue(workType.getOptimizationSuggestion());
-//							}
-//						}
-//						
-//						for(int k=0;alarmInstanceOwnItem!=null&&k<alarmInstanceOwnItem.getItemList().size();k++){
-//							if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
-//									&&alarmInstanceOwnItem.getItemList().get(k).getType()==4
-//									&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-//								alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-//								if(alarmLevel>0){
-//									acquisitionItemInfo.setAlarmInfo("工况报警:"+workType.getResultName());
-//									acquisitionItemInfo.setAlarmType(4);
-//									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-//									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-//									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-//								}
-//								break;
-//							}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
-//									&& alarmInstanceOwnItem.getItemList().get(k).getType()==6
-//									&& calItemResolutionDataList.get(i).getValue().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemName()) ){
-//								alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-//								if(alarmLevel>0){
-//									acquisitionItemInfo.setAlarmLevel(alarmLevel);
-//									acquisitionItemInfo.setAlarmInfo(calItemResolutionDataList.get(i).getValue());
-//									acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-//									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-//									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-//									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-//								}
-//								break;
-//							}else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-//								float hystersis=alarmInstanceOwnItem.getItemList().get(k).getHystersis();
-//								if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+hystersis){
-//									alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-//									if(alarmLevel>0){
-//										acquisitionItemInfo.setAlarmLevel(alarmLevel);
-//										acquisitionItemInfo.setHystersis(hystersis);
-//										acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit());
-//										acquisitionItemInfo.setAlarmInfo("高报");
-//										acquisitionItemInfo.setAlarmType(5);
-//										acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-//										acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-//										acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-//									}
-//								}else if((StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()-hystersis)){
-//									alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign()>0?alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel():0;
-//									if(alarmLevel>0){
-//										acquisitionItemInfo.setAlarmLevel(alarmLevel);
-//										acquisitionItemInfo.setHystersis(hystersis);
-//										acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit());
-//										acquisitionItemInfo.setAlarmInfo("低报");
-//										acquisitionItemInfo.setAlarmType(5);
-//										acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-//										acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-//										acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-//									}
-//								}
-//								break;
-//							}
-//						}
-//						acquisitionItemInfo.setAlarmLevel(alarmLevel);
-//						acquisitionItemInfo.setUnit(calItemResolutionDataList.get(i).getUnit());
-//						acquisitionItemInfo.setSort(calItemResolutionDataList.get(i).getSort());
-//
-//						if(acquisitionItemInfo.getAlarmLevel()>0){
-//							alarm=true;
-//						}
-//						acquisitionItemInfoList.add(acquisitionItemInfo);
-//					}
-					
-					
-					//添加录入项
-//					for(int i=0;i<rpcInputItemItemResolutionDataList.size();i++){
-//						int alarmLevel=0;
-//						AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
-//						acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(rpcInputItemItemResolutionDataList.get(i).getAddr()));
-//						acquisitionItemInfo.setColumn(rpcInputItemItemResolutionDataList.get(i).getColumn());
-//						acquisitionItemInfo.setTitle(rpcInputItemItemResolutionDataList.get(i).getColumnName());
-//						acquisitionItemInfo.setRawTitle(rpcInputItemItemResolutionDataList.get(i).getRawColumnName());
-//						acquisitionItemInfo.setValue(rpcInputItemItemResolutionDataList.get(i).getValue());
-//						acquisitionItemInfo.setRawValue(rpcInputItemItemResolutionDataList.get(i).getRawValue());
-//						acquisitionItemInfo.setDataType(rpcInputItemItemResolutionDataList.get(i).getColumnDataType());
-//						acquisitionItemInfo.setResolutionMode(rpcInputItemItemResolutionDataList.get(i).getResolutionMode());
-//						acquisitionItemInfo.setBitIndex(rpcInputItemItemResolutionDataList.get(i).getBitIndex());
-//						
-//						acquisitionItemInfo.setAlarmLevel(alarmLevel);
-//						acquisitionItemInfo.setUnit(rpcInputItemItemResolutionDataList.get(i).getUnit());
-//						acquisitionItemInfo.setSort(rpcInputItemItemResolutionDataList.get(i).getSort());
-//
-//						if(acquisitionItemInfo.getAlarmLevel()>0){
-//							alarm=true;
-//						}
-//						acquisitionItemInfoList.add(acquisitionItemInfo);
-//					}
+					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
+					acquisitionItemInfoList=CalculateDataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
+					acquisitionItemInfoList=InputDataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					
 					//将采集数据放入内存
 //					if(deviceTodayData!=null){
@@ -1824,9 +1780,7 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					//放入内存数据库中
-					if(jedis!=null && jedis.hexists("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes())){
-						jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
-					}
+					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 //					if(jedis!=null && deviceTodayData!=null){
 //						jedis.hset("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 //					}
@@ -1834,253 +1788,13 @@ public class DriverAPIController extends BaseController{
 					
 					//处理websocket推送
 					if(displayInstanceOwnItem!=null){
-						//井筒分析图形数据
-//						StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
-//						String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
-//						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
-//							int curvecount=rpcCalculateResponseData.getFESDiagram().getS().get(0).size();
-//							int pointcount=rpcCalculateResponseData.getFESDiagram().getS().size();
-//							if(pointcount<rpcCalculateResponseData.getFESDiagram().getF().size()){
-//								pointcount=rpcCalculateResponseData.getFESDiagram().getF().size();
-//							}
-//							for(int i=0;i<curvecount;i++){
-//								for(int j=0;j<pointcount;j++){
-//									pumpFSDiagramStrBuff.append(rpcCalculateResponseData.getFESDiagram().getS().get(j).get(i)+",");//位移
-//									pumpFSDiagramStrBuff.append(rpcCalculateResponseData.getFESDiagram().getF().get(j).get(i)+",");//载荷
-//								}
-//								if(pumpFSDiagramStrBuff.toString().endsWith(",")){
-//									pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
-//								}
-//								pumpFSDiagramStrBuff.append("#");
-//							}
-//							if(pumpFSDiagramStrBuff.toString().endsWith("#")){
-//								pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
-//							}
-//						}else{
-//							for(int i=0;i<rpcCalculateRequestData.getFESDiagram().getS().size()&&i<rpcCalculateRequestData.getFESDiagram().getF().size();i++){
-//								pumpFSDiagramStrBuff.append(rpcCalculateRequestData.getFESDiagram().getS().get(i)+",");//位移
-//								pumpFSDiagramStrBuff.append(rpcCalculateRequestData.getFESDiagram().getF().get(i)+",");//载荷
-//							}
-//							if(pumpFSDiagramStrBuff.toString().endsWith(",")){
-//								pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
-//							}
-//						}
-//						
-//						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
-//							for(int i=0;i<rpcCalculateResponseData.getRodString().getEveryRod().size();i++){
-//								if(i==0){
-//					        		rodStressRatio1=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-//					        	}else if(i==1){
-//					        		rodStressRatio2=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-//					        	}if(i==2){
-//					        		rodStressRatio3=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-//					        	}if(i==3){
-//					        		rodStressRatio4=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-//					        	}
-//							}
-//						}
-//						
-//						wellBoreChartsData.append("{\"success\":true,");
-//						wellBoreChartsData.append("\"wellName\":\""+deviceInfo.getWellName()+"\",");
-//						wellBoreChartsData.append("\"acqTime\":\""+rpcCalculateRequestData.getFESDiagram().getAcqTime()+"\",");
-//						wellBoreChartsData.append("\"pointCount\":\""+rpcCalculateRequestData.getFESDiagram().getS().size()+"\",");
-//						wellBoreChartsData.append("\"upperLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
-//						wellBoreChartsData.append("\"lowerLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
-//						
-//						String fmax="",fmin="";
-//						if(rpcCalculateResponseData!=null&&(rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-//							if(rpcCalculateResponseData.getFESDiagram()!=null&&rpcCalculateResponseData.getFESDiagram().getFMax()!=null&&rpcCalculateResponseData.getFESDiagram().getFMax().size()>0){
-//								fmax=rpcCalculateResponseData.getFESDiagram().getFMax().get(0)+"";
-//							}
-//							if(rpcCalculateResponseData.getFESDiagram()!=null&&rpcCalculateResponseData.getFESDiagram().getFMin()!=null&&rpcCalculateResponseData.getFESDiagram().getFMin().size()>0){
-//								fmin=rpcCalculateResponseData.getFESDiagram().getFMin().get(0)+"";
-//							}
-//						}
-//						
-//						wellBoreChartsData.append("\"fmax\":\""+fmax+"\",");
-//						wellBoreChartsData.append("\"fmin\":\""+fmin+"\",");
-//						
-//						wellBoreChartsData.append("\"stroke\":\""+rpcCalculateRequestData.getFESDiagram().getStroke()+"\",");
-//						wellBoreChartsData.append("\"spm\":\""+rpcCalculateRequestData.getFESDiagram().getSPM()+"\",");
-//						
-//						wellBoreChartsData.append("\"liquidProduction\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?(productionUnit.equalsIgnoreCase("ton")?rpcCalculateResponseData.getProduction().getLiquidWeightProduction():rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()):"")+"\",");
-//						wellBoreChartsData.append("\"resultName\":\""+(workType!=null?workType.getResultName():"")+"\",");
-//						wellBoreChartsData.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
-//						wellBoreChartsData.append("\"resultCode\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getCalculationStatus().getResultCode():"")+"\",");
-//						
-//						
-//						wellBoreChartsData.append("\"rodStressRatio1\":\""+rodStressRatio1+"\",");
-//						wellBoreChartsData.append("\"rodStressRatio2\":\""+rodStressRatio2+"\",");
-//						wellBoreChartsData.append("\"rodStressRatio3\":\""+rodStressRatio3+"\",");
-//						wellBoreChartsData.append("\"rodStressRatio4\":\""+rodStressRatio4+"\",");
-//						
-//						wellBoreChartsData.append("\"pumpEff1\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff1():"")+"\",");
-//						wellBoreChartsData.append("\"pumpEff2\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff2():"")+"\",");
-//						wellBoreChartsData.append("\"pumpEff3\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff3():"")+"\",");
-//						wellBoreChartsData.append("\"pumpEff4\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff4():"")+"\",");
-//						wellBoreChartsData.append("\"pumpEff\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff():"")+"\",");
-//						
-//						wellBoreChartsData.append("\"pumpFSDiagramData\":\""+pumpFSDiagramStrBuff.toString()+"\",");
-//						wellBoreChartsData.append("\"positionCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getS(), ",")+"\",");
-//						wellBoreChartsData.append("\"loadCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getF(), ",")+"\"");
-//						
-//						wellBoreChartsData.append("}");
-//						
-//						//地面分析图形数据
-//						surfaceChartsData.append("{\"success\":true,");
-//						surfaceChartsData.append("\"wellName\":\""+deviceInfo.getWellName()+"\",");
-//						surfaceChartsData.append("\"acqTime\":\""+rpcCalculateRequestData.getFESDiagram().getAcqTime()+"\",");
-//						
-//						surfaceChartsData.append("\"upStrokeWattMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
-//						surfaceChartsData.append("\"downStrokeWattMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");
-//						surfaceChartsData.append("\"wattDegreeBalance\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getWattDegreeBalance():"")+"\",");
-//						surfaceChartsData.append("\"upStrokeIMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
-//						surfaceChartsData.append("\"downStrokeIMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
-//						surfaceChartsData.append("\"iDegreeBalance\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
-//						surfaceChartsData.append("\"deltaRadius\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
-//						
-//						surfaceChartsData.append("\"positionCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getS(), ",")+"\",");
-//						surfaceChartsData.append("\"loadCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getF(), ",")+"\",");
-//						surfaceChartsData.append("\"powerCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getWatt(), ",")+"\",");
-//						surfaceChartsData.append("\"currentCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getI(), ",")+"\",");
-//						
-//						surfaceChartsData.append("\"crankAngle\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCrankAngle(), ","):"")+"\",");
-//						surfaceChartsData.append("\"loadRorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getLoadTorque(), ","):"")+"\",");
-//						surfaceChartsData.append("\"crankTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCrankTorque(), ","):"")+"\",");
-//						surfaceChartsData.append("\"currentBalanceTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","):"")+"\",");
-//						surfaceChartsData.append("\"currentNetTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCurrentNetTorque(), ","):"")+"\",");
-//						surfaceChartsData.append("\"expectedBalanceTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","):"")+"\",");
-//						surfaceChartsData.append("\"expectedNetTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
-//						surfaceChartsData.append("\"polishrodV\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
-//						surfaceChartsData.append("\"polishrodA\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
-//						
-//						surfaceChartsData.append("}");
-						
 						for (String websocketClientUser : websocketClientUserList) {
-							if(jedis.hexists("UserInfo".getBytes(), websocketClientUser.getBytes())){
-								UserInfo userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), websocketClientUser.getBytes()));
-								
+							UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
+							if(userInfo!=null){
 								int items=3;
-								String columns = "[";
-								for(int i=1;i<=items;i++){
-									columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
-											+ "{ \"header\":\"变量\",\"dataIndex\":\"value"+i+"\",children:[] }";
-									if(i<items){
-										columns+=",";
-									}
-								}
-								columns+= "]";
-								
-								webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"wellName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
-								webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
-								webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
-								webSocketSendData.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
-								webSocketSendData.append("\"totalRoot\":[");
-								displayItemInfo_json.append("[");
-								allItemInfo_json.append("[");
-								webSocketSendData.append("{\"name1\":\""+deviceInfo.getWellName()+":"+acqTime+" 在线\"},");
-								
-								//筛选
-								List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
-								for(int j=0;j<acquisitionItemInfoList.size();j++){
-									allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\",\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\",\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\",\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\",\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\",\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\",\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
-									if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0)){
-										for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-											if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) && displayInstanceOwnItem.getItemList().get(k).getType()!=2){
-												if(displayInstanceOwnItem.getItemList().get(k).getShowLevel()==0||displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
-													acquisitionItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getSort());
-													userAcquisitionItemInfoList.add(acquisitionItemInfoList.get(j));
-												}
-												break;
-											}
-										}
-									}
-								}
-								if(allItemInfo_json.toString().endsWith(",")){
-									allItemInfo_json.deleteCharAt(allItemInfo_json.length() - 1);
-								}
-								allItemInfo_json.append("]");
-								
-								//排序
-								Collections.sort(userAcquisitionItemInfoList);
-								//插入排序间隔的空项
-								List<AcquisitionItemInfo> finalAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
-								for(int j=0;j<userAcquisitionItemInfoList.size();j++){
-									if(j>0&&userAcquisitionItemInfoList.get(j).getSort()<9999
-											&&userAcquisitionItemInfoList.get(j).getSort()-userAcquisitionItemInfoList.get(j-1).getSort()>1
-										){
-											int def=userAcquisitionItemInfoList.get(j).getSort()-userAcquisitionItemInfoList.get(j-1).getSort();
-											for(int k=1;k<def;k++){
-												AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
-												finalAcquisitionItemInfoList.add(acquisitionItemInfo);
-											}
-										}
-										finalAcquisitionItemInfoList.add(userAcquisitionItemInfoList.get(j));
-								}
-								
-								int row=1;
-								if(finalAcquisitionItemInfoList.size()%items==0){
-									row=finalAcquisitionItemInfoList.size()/items+1;
-								}else{
-									row=finalAcquisitionItemInfoList.size()/items+2;
-								}
-								
-								for(int j=1;j<row;j++){
-									webSocketSendData.append("{");
-									for(int k=0;k<items;k++){
-										int index=items*(j-1)+k;
-										String columnName="";
-										String value="";
-										String rawValue="";
-										String column="";
-										String columnDataType="";
-										String resolutionMode="";
-										String unit="";
-										int alarmLevel=0;
-										if(index<finalAcquisitionItemInfoList.size() 
-												&& StringManagerUtils.isNotNull(finalAcquisitionItemInfoList.get(index).getTitle())
-//												&&StringManagerUtils.existOrNot(userItems, finalAcquisitionItemInfoList.get(index).getRawTitle(),false)
-												){
-											columnName=finalAcquisitionItemInfoList.get(index).getTitle();
-											value=finalAcquisitionItemInfoList.get(index).getValue();
-											rawValue=finalAcquisitionItemInfoList.get(index).getRawValue();
-											column=finalAcquisitionItemInfoList.get(index).getColumn();
-											columnDataType=finalAcquisitionItemInfoList.get(index).getDataType();
-											resolutionMode=finalAcquisitionItemInfoList.get(index).getResolutionMode()+"";
-											alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
-											unit=finalAcquisitionItemInfoList.get(index).getUnit();
-										}
-										
-										if(StringManagerUtils.isNotNull(columnName)&&StringManagerUtils.isNotNull(unit)){
-											webSocketSendData.append("\"name"+(k+1)+"\":\""+(columnName+"("+unit+")")+"\",");
-										}else{
-											webSocketSendData.append("\"name"+(k+1)+"\":\""+columnName+"\",");
-										}
-										webSocketSendData.append("\"value"+(k+1)+"\":\""+value+"\",");
-										displayItemInfo_json.append("{\"row\":"+j+",\"col\":"+k+",\"columnName\":\""+columnName+"\",\"column\":\""+column+"\",\"value\":\""+value+"\",\"rawValue\":\""+rawValue+"\",\"columnDataType\":\""+columnDataType+"\",\"resolutionMode\":\""+resolutionMode+"\",\"alarmLevel\":"+alarmLevel+"},");
-									}
-									if(webSocketSendData.toString().endsWith(",")){
-										webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
-									}
-									webSocketSendData.append("},");
-								}
-								if(webSocketSendData.toString().endsWith(",")){
-									webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
-								}
-								
-								if(displayItemInfo_json.toString().endsWith(",")){
-									displayItemInfo_json.deleteCharAt(displayItemInfo_json.length() - 1);
-								}
-								displayItemInfo_json.append("]");
-								
-								webSocketSendData.append("]");
-								webSocketSendData.append(",\"CellInfo\":"+displayItemInfo_json);
-								webSocketSendData.append(",\"allItemInfo\":"+allItemInfo_json);
-								webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
-								webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
-								webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
-								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
-//								System.out.println(webSocketSendData.toString());
+								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,alarmShowStyle);
+								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
+//								System.out.println(webSocketSendDataStr);
 							}
 						}
 					}
@@ -2089,9 +1803,7 @@ public class DriverAPIController extends BaseController{
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
+			
 		}
 		return null;
 	}
@@ -2121,21 +1833,9 @@ public class DriverAPIController extends BaseController{
 		RPCDeviceTodayData deviceTodayData=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("AlarmShowStyle".getBytes())){
-				MemoryDataManagerTask.initAlarmStyle();
-			}
-			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
+			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
+			deviceTodayData=MemoryDataManagerTask.getRPCDeviceTodayDataById(deviceInfo.getId());
 			
-			if(!jedis.exists("RPCDeviceTodayData".getBytes())){
-				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
-			}
-			if(jedis.hexists("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes())){
-				deviceTodayData=(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes()));
-			}
-			
-			if(!jedis.exists("RPCWorkType".getBytes())){
-				MemoryDataManagerTask.loadRPCWorkType();
-			}
 			
 			if(!jedis.exists("rpcCalItemList".getBytes())){
 				MemoryDataManagerTask.loadRPCCalculateItem();
@@ -2153,23 +1853,14 @@ public class DriverAPIController extends BaseController{
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
 			}
 			
-			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-			}
-			
-			if(!jedis.exists("ProtocolMappingColumnByTitle".getBytes())){
-				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-			}
-			
 			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
 			
-			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
-				MemoryDataManagerTask.loadProtocolRunStatusConfig();
-			}
-			
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+			}
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			
 			String realtimeTable="tbl_rpcacqdata_latest";
@@ -2195,10 +1886,7 @@ public class DriverAPIController extends BaseController{
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
 				}
 				
-				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes()));
-				}
+				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				
 				ModbusProtocolConfig.Protocol protocol=null;
@@ -2728,9 +2416,8 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-						if(jedis.hexists("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes())){
-							workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes()));
-						}
+						workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+						
 						RPCCalculateResponseData responseResultData =new RPCCalculateResponseData(); 
 						responseResultData.init();
 						
@@ -3020,12 +2707,8 @@ public class DriverAPIController extends BaseController{
 					}
 				
 					//放入内存数据库中
-					if(jedis!=null && jedis.hexists("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes())){
-						jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
-					}
-					if(jedis!=null && deviceTodayData!=null){
-						jedis.hset("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
-					}
+					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
+					MemoryDataManagerTask.updateRPCDeviceTodayDataDeviceInfo(deviceTodayData);
 					
 					
 					//处理websocket推送
@@ -3331,10 +3014,6 @@ public class DriverAPIController extends BaseController{
 				deviceTodayData=(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes()));
 			}
 			
-			if(!jedis.exists("RPCWorkType".getBytes())){
-				MemoryDataManagerTask.loadRPCWorkType();
-			}
-			
 			if(!jedis.exists("rpcCalItemList".getBytes())){
 				MemoryDataManagerTask.loadRPCCalculateItem();
 			}
@@ -3351,23 +3030,14 @@ public class DriverAPIController extends BaseController{
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
 			}
 			
-			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-			}
-			
-			if(!jedis.exists("ProtocolMappingColumnByTitle".getBytes())){
-				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-			}
-			
 			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
 			
-			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
-				MemoryDataManagerTask.loadProtocolRunStatusConfig();
-			}
-			
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+			}
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			
 			String realtimeTable="tbl_acqdata_latest";
@@ -3399,10 +3069,7 @@ public class DriverAPIController extends BaseController{
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
 				}
 				
-				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes()));
-				}
+				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				
 				ModbusProtocolConfig.Protocol protocol=null;
@@ -3617,104 +3284,104 @@ public class DriverAPIController extends BaseController{
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 									
-									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
-											if(protocolRunStatusConfig.getResolutionMode()==1){
-												int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+
+									ProtocolRunStatusConfig protocolRunStatusConfig=MemoryDataManagerTask.getProtocolRunStatusConfig(protocol.getCode()+"_"+protocol.getItems().get(j).getTitle());
+									if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
+										if(protocolRunStatusConfig.getResolutionMode()==1){
+											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+												runStatus=1;
+												isAcqRunStatus=true;
+											}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+												runStatus=0;
+												isAcqRunStatus=true;
+											}else{
+												isAcqRunStatus=false;
+											}
+										}else if(protocolRunStatusConfig.getResolutionMode()==2){
+											if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
+												float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
+												boolean runConditionMatch=false;
+												boolean stopConditionMatch=false;
+												for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
+													if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
+														if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
+														if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
+														if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
+														if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}
+												}
+												
+												for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
+													if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
+														if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
+														if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
+														if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
+														if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}
+												}
+												
+												if(runConditionMatch){
 													runStatus=1;
 													isAcqRunStatus=true;
-												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+												}else if(stopConditionMatch){
 													runStatus=0;
 													isAcqRunStatus=true;
 												}else{
 													isAcqRunStatus=false;
 												}
-											}else if(protocolRunStatusConfig.getResolutionMode()==2){
-												if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
-													float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
-													boolean runConditionMatch=false;
-													boolean stopConditionMatch=false;
-													for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
-														if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
-															if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
-															if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
-															if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
-															if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}
-													}
-													
-													for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
-														if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
-															if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
-															if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
-															if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
-															if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}
-													}
-													
-													if(runConditionMatch){
-														runStatus=1;
-														isAcqRunStatus=true;
-													}else if(stopConditionMatch){
-														runStatus=0;
-														isAcqRunStatus=true;
-													}else{
-														isAcqRunStatus=false;
-													}
-												}
 											}
-										}else{
-											isAcqRunStatus=false;
 										}
+									}else{
+										isAcqRunStatus=false;
 									}
+								
 									
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
 										
@@ -4293,9 +3960,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-						if(jedis.hexists("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes())){
-							workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes()));
-						}
+						workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
 						RPCCalculateResponseData responseResultData =new RPCCalculateResponseData(); 
 						responseResultData.init();
 						
@@ -5131,18 +4796,14 @@ public class DriverAPIController extends BaseController{
 			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
 			}
-			
-			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-			}
 			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
-			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
-				MemoryDataManagerTask.loadProtocolRunStatusConfig();
-			}
 			
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+			}
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			
 			String realtimeTable="tbl_pcpacqdata_latest";
@@ -5172,10 +4833,7 @@ public class DriverAPIController extends BaseController{
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), pcpDeviceInfo.getDisplayInstanceCode().getBytes()));
 				}
 				
-				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes()));
-				}
+				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(pcpDeviceInfo.getAlarmInstanceCode());
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				
 				ModbusProtocolConfig.Protocol protocol=null;
@@ -5841,15 +5499,8 @@ public class DriverAPIController extends BaseController{
 			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
 			}
-			
-			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-			}
 			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
 				MemoryDataManagerTask.loadProtocolMappingColumn();
-			}
-			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
-				MemoryDataManagerTask.loadProtocolRunStatusConfig();
 			}
 			
 			String realtimeTable="tbl_pcpacqdata_latest";
@@ -5880,15 +5531,9 @@ public class DriverAPIController extends BaseController{
 					acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), pcpDeviceInfo.getInstanceCode().getBytes()));
 					protocolName=acqInstanceOwnItem.getProtocol();
 				}
-				DisplayInstanceOwnItem displayInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), pcpDeviceInfo.getDisplayInstanceCode().getBytes())){
-					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), pcpDeviceInfo.getDisplayInstanceCode().getBytes()));
-				}
+				DisplayInstanceOwnItem displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(pcpDeviceInfo.getDisplayInstanceCode());
 				
-				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes()));
-				}
+				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(pcpDeviceInfo.getAlarmInstanceCode());
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				
 				ModbusProtocolConfig.Protocol protocol=null;
@@ -6091,129 +5736,107 @@ public class DriverAPIController extends BaseController{
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 									
-									if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-										ProtocolRunStatusConfig protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-										if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue)){
-											if(protocolRunStatusConfig.getResolutionMode()==1){
-												int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+
+									ProtocolRunStatusConfig protocolRunStatusConfig=MemoryDataManagerTask.getProtocolRunStatusConfig(protocol.getCode()+"_"+protocol.getItems().get(j).getTitle());
+									if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue)){
+										if(protocolRunStatusConfig.getResolutionMode()==1){
+											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+											if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+												runStatus=1;
+												isAcqRunStatus=true;
+											}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+												runStatus=0;
+												isAcqRunStatus=true;
+											}else{
+												isAcqRunStatus=false;
+											}
+										}else if(protocolRunStatusConfig.getResolutionMode()==2){
+											if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
+												float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
+												boolean runConditionMatch=false;
+												boolean stopConditionMatch=false;
+												for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
+													if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
+														if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
+														if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
+														if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
+														if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+															runConditionMatch=true;
+														}else{
+															runConditionMatch=false;
+															break;
+														}
+													}
+												}
+												
+												for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
+													if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
+														if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
+														if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
+														if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
+														if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+															stopConditionMatch=true;
+														}else{
+															stopConditionMatch=false;
+															break;
+														}
+													}
+												}
+												
+												if(runConditionMatch){
 													runStatus=1;
 													isAcqRunStatus=true;
-												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+												}else if(stopConditionMatch){
 													runStatus=0;
 													isAcqRunStatus=true;
 												}else{
 													isAcqRunStatus=false;
 												}
-											}else if(protocolRunStatusConfig.getResolutionMode()==2){
-												if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
-													float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
-													boolean runConditionMatch=false;
-													boolean stopConditionMatch=false;
-													for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
-														if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
-															if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
-															if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
-															if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
-															if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-																runConditionMatch=true;
-															}else{
-																runConditionMatch=false;
-																break;
-															}
-														}
-													}
-													
-													for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
-														if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
-															if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
-															if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
-															if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
-															if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-																stopConditionMatch=true;
-															}else{
-																stopConditionMatch=false;
-																break;
-															}
-														}
-													}
-													
-													if(runConditionMatch){
-														runStatus=1;
-														isAcqRunStatus=true;
-													}else if(stopConditionMatch){
-														runStatus=0;
-														isAcqRunStatus=true;
-													}else{
-														isAcqRunStatus=false;
-													}
-												}
 											}
-										}else{
-											isAcqRunStatus=false;
 										}
+									}else{
+										isAcqRunStatus=false;
 									}
+								
 									
 									if("RunStatus".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//运行状态
-//										isAcqRunStatus=true;
-//										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-//											int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-//											ProtocolRunStatusConfig protocolRunStatusConfig=null;
-//											if(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes())!=null){
-//												protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), (protocol.getDeviceType()+"_"+protocol.getCode()+"_"+protocol.getItems().get(j).getTitle()).getBytes()));
-//											}
-//											if(protocolRunStatusConfig!=null&&protocolRunStatusConfig.getRunValue()!=null){
-//												if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
-//													runStatus=1;
-//												}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
-//													runStatus=0;
-//												}
-//											}else{
-//												if(rawRunStatus==1){
-//													runStatus=1;
-//												}else{
-//													runStatus=0;
-//												}
-//											}
-//										}else{
-//											isAcqRunStatus=false;
-//										}
+										
 									}else if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqEnergy=true;

@@ -438,6 +438,27 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static ProtocolRunStatusConfig getProtocolRunStatusConfig(String key){
+		ProtocolRunStatusConfig protocolRunStatusConfig=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("ProtocolRunStatusConfig".getBytes())){
+				MemoryDataManagerTask.loadProtocolRunStatusConfig();
+			}
+			if(jedis.hget("ProtocolRunStatusConfig".getBytes(), key.getBytes())!=null){
+				protocolRunStatusConfig=(ProtocolRunStatusConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolRunStatusConfig".getBytes(), key.getBytes()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return protocolRunStatusConfig;
+	}
+	
 	public static void loadProtocolRunStatusConfig(){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -550,6 +571,29 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void updateDeviceInfo(DeviceInfo deviceInfo){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("DeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+			}
+			if(jedis!=null && jedis.hexists("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes())){
+				jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+			}else if(!jedis.hexists("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes())){
+				List<String> deviceList=new ArrayList<String>();
+				deviceList.add(deviceInfo.getId()+"");
+				loadDeviceInfo(deviceList,0,"update");
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
 		}
 	}
 	
@@ -971,6 +1015,27 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static AcqInstanceOwnItem getAcqInstanceOwnItemByCode(String instanceCode){
+		AcqInstanceOwnItem acqInstanceOwnItem=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadAcqInstanceOwnItemById("","update");
+			}
+			if(jedis.hexists("AcqInstanceOwnItem".getBytes(), instanceCode.getBytes())){
+				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), instanceCode.getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return acqInstanceOwnItem;
+	}
+	
 	public static void loadAcqInstanceOwnItemById(String instanceId,String method){
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
@@ -1192,6 +1257,27 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
+	
+	public static DisplayInstanceOwnItem getDisplayInstanceOwnItemByCode(String instanceCode){
+		DisplayInstanceOwnItem displayInstanceOwnItem=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
+			}
+			if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), instanceCode.getBytes())){
+				displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), instanceCode.getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return displayInstanceOwnItem;
+	} 
 	
 	public static void loadDisplayInstanceOwnItemById(String instanceId,String method){
 		Connection conn = null;   
@@ -1442,6 +1528,27 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
+	}
+	
+	public static AlarmInstanceOwnItem getAlarmInstanceOwnItemByCode(String instanceCode){
+		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
+			}
+			if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), instanceCode.getBytes())){
+				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), instanceCode.getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return alarmInstanceOwnItem;
 	}
 	
 	public static void loadAlarmInstanceOwnItemById(String instanceId,String method){
@@ -2215,6 +2322,27 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static UserInfo getUserInfoByNo(String userNo){
+		UserInfo userInfo=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("UserInfo".getBytes())){
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
+			}
+			if(jedis.hexists("UserInfo".getBytes(), userNo.getBytes())){
+				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), userNo.getBytes()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return userInfo;
+	}
+	
 	public static void loadUserInfo(List<String> userList,int condition,String method){//condition 0 -用户id 1-用户账号
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -2399,7 +2527,26 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	
+	public static WorkType getWorkTypeByCode(String resultCode){
+		WorkType workType=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCWorkType".getBytes())){
+				MemoryDataManagerTask.loadRPCWorkType();
+			}
+			if(jedis.hexists("RPCWorkType".getBytes(), (resultCode).getBytes())){
+				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (resultCode).getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return workType;
+	}
 	
 	public static int getResultCodeByName(String resultName){
 		int resultCode=0;
@@ -2421,6 +2568,25 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return resultCode;
+	}
+	
+	public static AlarmShowStyle getAlarmShowStyle(){
+		AlarmShowStyle alarmShowStyle=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("AlarmShowStyle".getBytes())){
+				MemoryDataManagerTask.initAlarmStyle();
+			}
+			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return alarmShowStyle;
 	}
 	
 	@SuppressWarnings("resource")
@@ -2568,6 +2734,45 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return protocol;
+	}
+	
+	public static RPCDeviceTodayData getRPCDeviceTodayDataById(int deviceId){
+		RPCDeviceTodayData deviceTodayData=null;
+		Jedis jedis=null;
+		String key=deviceId+"";
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCDeviceTodayData".getBytes())){
+				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
+			}
+			if(jedis.hexists("RPCDeviceTodayData".getBytes(), key.getBytes())){
+				deviceTodayData=(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), key.getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return deviceTodayData;
+	}
+	
+	public static void updateRPCDeviceTodayDataDeviceInfo(RPCDeviceTodayData deviceTodayData){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCDeviceTodayData".getBytes())){
+				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
+			}
+			jedis.hset("RPCDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
 	}
 	
 	public static void loadTodayFESDiagram(List<String> wellList,int condition){//condition 0 -设备ID 1-设备名称

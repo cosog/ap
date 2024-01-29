@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.model.DataMapping;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
@@ -1165,23 +1166,23 @@ public class EquipmentDriverServerTask {
 			List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 			for(int i=0;i<deviceInfoByteList.size();i++){
 				boolean matching=false;
-				RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+				DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
 				if(wellList==null){
 					matching=true;
 				}else{
 					if(condition==0){
-						if(StringManagerUtils.existOrNot(wellList, rpcDeviceInfo.getId()+"", false)){
+						if(StringManagerUtils.existOrNot(wellList, deviceInfo.getId()+"", false)){
 							matching=true;
 						}
 					}else if(condition==1){
-						if(StringManagerUtils.existOrNot(wellList, rpcDeviceInfo.getWellName()+"", false)){
+						if(StringManagerUtils.existOrNot(wellList, deviceInfo.getWellName()+"", false)){
 							matching=true;
 						}
 					}
 				}
 				
 				if(matching){
-					executor.execute(new InitIdAndIPPortThread(rpcDeviceInfo, null, 0,initEnable,method));
+					executor.execute(new InitIdAndIPPortThread(deviceInfo, 0,initEnable,method));
 				}
 			}
 		}catch(Exception e){
@@ -1346,14 +1347,14 @@ public class EquipmentDriverServerTask {
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
-		String sql="select t.wellname,t.signinid,t2.name "
+		String sql="select t.devicename,t.signinid,t2.name "
 				+ " from tbl_smsdevice t,tbl_protocolsmsinstance t2 "
 				+ " where t.instancecode=t2.code ";
 		if("update".equalsIgnoreCase(method)){
 			sql+= " and t.signinid is not null";
 		}	
 		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and t.wellname in("+wellName+")";
+			sql+=" and t.devicename in("+wellName+")";
 		}
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   

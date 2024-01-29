@@ -659,9 +659,9 @@ public class MemoryDataManagerTask {
 						+ "t2.watervolumetricproduction,t2.totalwatervolumetricproduction,"
 						+ " decode(t.calculateType,1,t3.resultstatus,2,t4.resultstatus,0),decode(t3.resultcode,null,0,t3.resultcode) as resultcode"
 						+ " from viw_device t"
-						+ " left outer join tbl_acqdata_latest t2 on t2.wellid=t.id "
-						+ " left outer join tbl_rpcacqdata_latest t3 on t3.wellid=t.id "
-						+ " left outer join tbl_pcpacqdata_latest t4 on t4.wellid=t.id "
+						+ " left outer join tbl_acqdata_latest t2 on t2.deviceid=t.id "
+						+ " left outer join tbl_rpcacqdata_latest t3 on t3.deviceid=t.id "
+						+ " left outer join tbl_pcpacqdata_latest t4 on t4.deviceid=t.id "
 						+ " where 1=1 ";
 				if(StringManagerUtils.isNotNull(wells)){
 					if(condition==0){
@@ -2802,7 +2802,7 @@ public class MemoryDataManagerTask {
 				wells=StringManagerUtils.joinStringArr2(wellList, ",");
 			}	
 					
-			String sql=" select t2.id as wellId,t2.wellname,"//2
+			String sql=" select t2.id as wellId,t2.devicename,"//2
 					+ " to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//3
 					+ " t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,t.resultcode,"//9
 					+ " t.theoreticalproduction,"//10
@@ -2816,7 +2816,7 @@ public class MemoryDataManagerTask {
 					+"  t.levelDifferenceValue, "//31
 					+ " t.submergence "//32
 					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
-					+ " where t.wellid=t2.id  "
+					+ " where t.deviceid=t2.id  "
 					+ " and t2.calculateType=1"
 					+ " and t.resultstatus=1"
 					+ " and t.fesdiagramacqtime between to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 ";
@@ -2935,7 +2935,7 @@ public class MemoryDataManagerTask {
 				wells=StringManagerUtils.joinStringArr2(wellList, ",");
 			}	
 					
-			String sql="select t2.id,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String sql="select t2.id,t2.devicename,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ "t.rpm,t.resultcode,"
 					+ "t.theoreticalproduction,"
 					+ "t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -2944,14 +2944,14 @@ public class MemoryDataManagerTask {
 					+ "t.pumpeff1,t.pumpeff2,t.pumpeff,"
 					+ "t.productiondata,"
 					+ "t.submergence "
-					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id and t.resultstatus=1 "
+					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceid=t2.id and t.resultstatus=1 "
 					+ " and t.acqtime between to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1";
 			if(StringManagerUtils.isNotNull(wells)){
 				if(condition==0){
 					sql+=" and t2.id in("+wells+")";
 				}else{
-					sql+=" and t2.wellName in("+wells+")";
+					sql+=" and t2.deviceName in("+wells+")";
 				}
 				
 			}

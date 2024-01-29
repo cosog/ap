@@ -5,8 +5,6 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
     border: false,
     initComponent: function () {
         var me = this;
-//        var RPCDeviceInfoPanel = Ext.create('AP.view.well.RPCDeviceInfoPanel');
-//        var PCPDeviceInfoPanel = Ext.create('AP.view.well.PCPDeviceInfoPanel');
         var DeviceInfoPanel = Ext.create('AP.view.well.DeviceInfoPanel');
         var items=[];
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){

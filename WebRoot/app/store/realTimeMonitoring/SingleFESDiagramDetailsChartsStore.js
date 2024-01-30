@@ -21,15 +21,15 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
         	var powerData=get_rawData.powerCurveData;
         	var currentData=get_rawData.currentCurveData;
         	
-        	var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
+        	var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
             var activeId = tabPanel.getActiveTab().id;
             Ext.getCmp(activeId).getEl().unmask();
-            if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
+            if(activeId=="RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
             	showFSDiagramFromPumpcard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
             	showRodPress(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id");    // 调用画杆柱应力的函数
             	showPumpCard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
             	showPumpEfficiency(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id");    // 调用画泵效组成的函数
-            }else if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
+            }else if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
             	var deltaRadius=parseFloat(get_rawData.deltaRadius);
             	var expectedTorqueChartTitle="扭矩曲线";
             	if(Math.abs(deltaRadius)>0){
@@ -54,14 +54,14 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             }
         },
         beforeload: function (store, options) {
-        	var id  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;// 获取图形数据id
-        	var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var id  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;// 获取图形数据id
+        	var wellName  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
             var type=1;
-            var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
+            var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
             var activeId = tabPanel.getActiveTab().id;
-            if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){//井筒分析
+            if(activeId=="RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){//井筒分析
             	type=1;
-            }else if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){//地面分析
+            }else if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){//地面分析
             	type=2;
             }
             Ext.getCmp(activeId).el.mask(cosog.string.loading).show();

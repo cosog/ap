@@ -32,6 +32,7 @@ import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
@@ -109,7 +110,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String deviceTableName="viw_device";
 				
 				String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) from "+deviceTableName+" t "
-						+ " left outer join "+tableName+" t2 on  t2.wellid=t.id"
+						+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id"
 						+ " left outer join tbl_rpc_worktype t3 on  t2.resultcode=t3.resultcode"
 						+ " where t.orgid in("+orgId+") ";
 				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
@@ -224,7 +225,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String deviceTableName="viw_device";
 				
 				String sql="select t2.commstatus,count(1) from "+deviceTableName+" t "
-						+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
+						+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id "
 						+ " where t.orgid in("+orgId+") ";
 				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 					sql+=" and t.devicetypename='"+deviceTypeStatValue+"'";
@@ -350,7 +351,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String deviceTableName="viw_device";
 				
 				String sql="select decode(t2.commstatus,0,-1,2,-2,decode(t2.runstatus,null,2,t2.runstatus)) as runstatus,count(1) from "+deviceTableName+" t "
-						+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
+						+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id "
 						+ " where t.orgid in("+orgId+") ";
 				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 					sql+=" and t.devicetypename='"+deviceTypeStatValue+"'";
@@ -489,7 +490,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String deviceTableName="viw_device";
 			
 			String sql="select t.devicetypename,t.devicetype,count(1) from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t.id=t2.wellid "
+					+ " left outer join "+tableName+" t2 on t.id=t2.deviceid "
 					+ " where t.orgid in("+orgId+") ";
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -534,17 +535,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public int getDeviceRealTimeOverviewDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit){
 		int dataPage=1;
 		try{
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="tbl_rpcdevice";
+			String tableName="tbl_acqdata_latest";
+			String deviceTableName="tbl_device";
 			
 			String sql="select t.id from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
-					+ " where  t.orgid in ("+orgId+") ";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
-			}
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
@@ -557,7 +556,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.deviceName";
 			dataPage=this.getDataPage(StringManagerUtils.stringToInteger(deviceId), sql, StringManagerUtils.stringToInteger(limit));
 		}catch(Exception e){
 			dataPage=1;
@@ -643,7 +642,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
-					+ "c1.itemname as devicetypename,"//6
+					+ "c1.tabname as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
@@ -685,13 +684,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=",t2."+ddicColumnsList.get(i);
 			}
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 //					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
-					+ " where  t.orgid in ("+orgId+") ";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.deviceName='"+deviceName+"'";
-			}
+					+ " left outer join tbl_tabinfo c1 on c1.id=t.devicetype "
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 //				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
@@ -748,17 +745,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 //					}
 //				}
 				
-				RPCDeviceInfo rpcDeviceInfo=null;
+				DeviceInfo deviceInfo=null;
 				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+					deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				String protocolName="";
-				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(rpcDeviceInfo.getInstanceCode());
+				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				if(acqInstanceOwnItem!=null){
 					protocolName=acqInstanceOwnItem.getProtocol();
 				}
-				DisplayInstanceOwnItem displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(rpcDeviceInfo.getDisplayInstanceCode());
-				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(rpcDeviceInfo.getAlarmInstanceCode());
+				DisplayInstanceOwnItem displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(deviceInfo.getDisplayInstanceCode());
+				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 				
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
@@ -1045,8 +1042,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
 			
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="tbl_rpcdevice";
+			String tableName="tbl_acqdata_latest";
+			String deviceTableName="tbl_device";
 			String ddicName="realTimeMonitoring_Overview";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
@@ -1114,13 +1111,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=",t2."+ddicColumnsList.get(i);
 			}
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
-					+ " where  t.orgid in ("+orgId+") ";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
-			}
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 			}
@@ -1133,7 +1128,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.devicename";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list = this.findCallSql(finalSql);
 			List<Object> record=null;
@@ -1360,12 +1355,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String deviceTableName="tbl_pcpdevice";
 			
 			String sql="select t.id from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
-					+ " where  t.orgid in ("+orgId+") ";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
-			}
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
@@ -1375,7 +1368,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.devicename";
 			dataPage=this.getDataPage(StringManagerUtils.stringToInteger(deviceId), sql, StringManagerUtils.stringToInteger(limit));
 		}catch(Exception e){
 			dataPage=1;
@@ -1481,12 +1474,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=",t2."+ddicColumnsList.get(i);
 			}
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
-					+ " where  t.orgid in ("+orgId+") ";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
-			}
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
@@ -1496,7 +1487,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.devicename";
 			
 			int maxvalue=pager.getLimit()+pager.getStart();
 			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
@@ -1796,12 +1787,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=",t2."+ddicColumnsList.get(i);
 			}
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
-					+ " where  t.orgid in ("+orgId+") ";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
-			}
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
@@ -1811,7 +1800,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.devicename";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list = this.findCallSql(finalSql);
 			List<Object> record=null;
@@ -1938,8 +1927,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		List<byte[]> calItemSet=null;
 		List<byte[]> inputItemSet=null;
 		UserInfo userInfo=null;
-		String tableName="tbl_rpcacqdata_latest";
-		String deviceTableName="tbl_rpcdevice";
+		String tableName="tbl_acqdata_latest";
+		String deviceTableName="tbl_device";
 		String deviceInfoKey="DeviceInfo";
 		String calItemsKey="rpcCalItemList";
 		String inputItemsKey="rpcInputItemList";
@@ -2138,7 +2127,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						sql+=",t2.productiondata";
 					}
 					sql+= " from "+deviceTableName+" t "
-							+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+							+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 							+ " where  t.id="+deviceId;
 					List<?> list = this.findCallSql(sql);
 					if(list.size()>0){
@@ -2585,7 +2574,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getRPCDeviceControlandInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
-		String deviceTableName="tbl_rpcdevice";
+		String deviceTableName="tbl_device";
 		String deviceInfoKey="DeviceInfo";
 		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_DeviceInfo");
 		
@@ -2829,7 +2818,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.stringToInteger(deviceType)>0){
 				tableName="tbl_pcpacqdata_latest";
 			}
-			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.wellid and t.id="+deviceId;
+			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.deviceid and t.id="+deviceId;
 			
 			result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
 			List<?> list = this.findCallSql(sql);
@@ -3324,7 +3313,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			String tableName="tbl_acqdata_latest";
 			String sql="select t2.commStatus ";
-			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.wellid and t.id="+deviceId;
+			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.deviceid and t.id="+deviceId;
 			result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
 			int commStatus=0;
 			List<?> list = this.findCallSql(sql);
@@ -3365,10 +3354,72 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getDeviceAddInfoData(String deviceId,String wellName,String deviceType,int userId)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String deviceTableName="tbl_device";
+		String infoTableName="tbl_deviceaddinfo";
+		
+		
+		
+		String auxiliaryDeviceSql="select t3.id,t3.name,t3.model,t3.remark "
+				+ " from "+deviceTableName+" t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
+				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id "
+				+" and t.id="+deviceId
+				+ " order by t3.sort,t3.name";
+		String deviceAddInfoSql = "select t2.id,t2.itemname,t2.itemvalue||decode(t2.itemunit,null,'','','','('||t2.itemunit||')') as itemvalue "
+				+ " from "+deviceTableName+" t,"+infoTableName+" t2 "
+				+ " where t.id=t2.deviceid and t.id="+deviceId
+				+ " order by t2.id";
+		
+		List<?> auxiliaryDeviceQueryList = this.findCallSql(auxiliaryDeviceSql);
+		List<?> deviceAddInfoList = this.findCallSql(deviceAddInfoSql);
+		
+		
+		
+		StringBuffer deviceInfoDataList=new StringBuffer();
+		StringBuffer auxiliaryDeviceList=new StringBuffer();
+		deviceInfoDataList.append("[");
+		auxiliaryDeviceList.append("[");
+		
+		//辅件设备
+		for(int i=0;i<auxiliaryDeviceQueryList.size();i++){
+			Object[] obj=(Object[]) auxiliaryDeviceQueryList.get(i);
+			auxiliaryDeviceList.append("{\"id\":"+obj[0]+","
+					+ "\"name\":\""+obj[1]+"\","
+					+ "\"model\":\""+obj[2]+"\","
+					+ "\"remark\":\""+obj[3]+"\"},");
+		}
+		
+		if(auxiliaryDeviceList.toString().endsWith(",")){
+			auxiliaryDeviceList.deleteCharAt(auxiliaryDeviceList.length() - 1);
+		}
+		
+		//设备附加信息
+		for(int i=0;i<deviceAddInfoList.size();i++){
+			Object[] obj=(Object[]) deviceAddInfoList.get(i);
+			deviceInfoDataList.append("{\"name\":\""+obj[1]+"\","
+					+ "\"value\":\""+obj[2]+"\"},");
+		}
+		
+		if(deviceInfoDataList.toString().endsWith(",")){
+			deviceInfoDataList.deleteCharAt(deviceInfoDataList.length() - 1);
+		}
+		
+		
+		
+		result_json.append("{ \"success\":true,");
+		deviceInfoDataList.append("]");
+		auxiliaryDeviceList.append("]");
+		result_json.append("\"deviceInfoDataList\":"+deviceInfoDataList+",");
+		result_json.append("\"auxiliaryDeviceList\":"+auxiliaryDeviceList+"");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getRPCDeviceControlData(String deviceId,String wellName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
-		String deviceTableName="tbl_rpcdevice";
+		String deviceTableName="tbl_device";
 		String deviceInfoKey="DeviceInfo";
 		
 		Jedis jedis=null;
@@ -3475,7 +3526,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.stringToInteger(deviceType)>0){
 				tableName="tbl_pcpacqdata_latest";
 			}
-			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.wellid and t.id="+deviceId;
+			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.deviceid and t.id="+deviceId;
 			result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
 			int commStatus=0;
 			List<?> list = this.findCallSql(sql);
@@ -3732,7 +3783,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.stringToInteger(deviceType)>0){
 				tableName="tbl_pcpacqdata_latest";
 			}
-			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.wellid and t.id="+deviceId;
+			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.deviceid and t.id="+deviceId;
 			
 			result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
 			List<?> list = this.findCallSql(sql);
@@ -4026,7 +4077,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.stringToInteger(deviceType)>0){
 				tableName="tbl_pcpacqdata_latest";
 			}
-			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.wellid and t.id="+deviceId;
+			sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.deviceid and t.id="+deviceId;
 			
 			result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
 			int commStatus=0;
@@ -4070,14 +4121,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public String getRealTimeCurveData(String deviceName,String item,String deviceType)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String deviceTableName="tbl_rpcdevice";
+		String deviceTableName="tbl_device";
 		String tableName="tbl_rpcacqdata_hist";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			deviceTableName="tbl_pcpdevice";
 			tableName="tbl_pcpacqdata_hist";
 		}
 		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id"
-				+ " and  t.wellname='"+deviceName+"'";
+				+ " and  t.devicename='"+deviceName+"'";
 		List<?> protocolList = this.findCallSql(protocolSql);
 		String protocolName="";
 		String column="";
@@ -4109,9 +4160,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		if(resolutionMode==2){//只查询数据量的曲线
 			String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'), t."+column+" "
 					+ " from "+tableName +" t,"+deviceTableName+" t2 "
-					+ " where t.wellid=t2.id "
+					+ " where t.deviceid=t2.id "
 					+ " and t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
-					+ " and t2.wellname='"+deviceName+"' "
+					+ " and t2.devicename='"+deviceName+"' "
 					+ " order by t.acqtime";
 			List<?> list = this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -4443,7 +4494,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns
 						+ " from "+tableName +" t,"+deviceTableName+" t2 "
-						+ " where t.wellid=t2.id "
+						+ " where t.deviceid=t2.id "
 						+ " and t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
 						+ " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
@@ -4602,7 +4653,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol=" liquidweightproduction";
 		}
-        String sql="select well.wellName as wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+        String sql="select t2.wellName as wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
@@ -4611,10 +4662,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.position_curve,t.load_curve"
         		+ " from "+tableName+" t"
-        		+ " left outer join tbl_rpcdevice well on t.wellid=well.id"
+        		+ " left outer join tbl_device t2 on t.deviceid=t2.id"
         		+ " left outer join tbl_rpc_worktype status on t.resultcode=status.resultcode"
         		+ " where 1=1 ";
-        sql+=" and t.wellid="+id;
+        sql+=" and t.deviceid="+id;
 		List<?> list=this.findCallSql(sql);
 		String pointCount="";
 		if(list.size()>0){
@@ -4760,9 +4811,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
         		+ " t.expectedbalancetorque,t.expectednettorque,"
         		+ " t.polishrodV,t.polishrodA "
         		+ " from "+tableName+" t"
-        		+ " left outer join tbl_rpcdevice well on t.wellid=well.id"
+        		+ " left outer join tbl_device well on t.deviceid=well.id"
         		+ " where 1=1 ";
-        sql+=" and t.wellid="+id;
+        sql+=" and t.deviceid="+id;
 		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);

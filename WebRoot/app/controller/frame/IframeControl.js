@@ -335,7 +335,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setRawValue('');
 			
 			
-			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),deviceType,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
+			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("RealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
 		
 //			if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
 //				Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);

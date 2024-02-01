@@ -604,28 +604,46 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		tabPosition: 'top',
                 		items: [{
                 			title:'设备信息',
-                			layout: 'border',
-                			hidden: onlyMonitor,
-                			items:[{
-                				region: 'center',
-                				id: 'RealTimeMonitoringRightDeviceInfoPanel',
+                			xtype: 'tabpanel',
+                    		id:"RealTimeMonitoringRightDeviceInfoTabPanel",
+                    		activeTab: 0,
+                    		border: false,
+                    		tabPosition: 'top',
+                    		items:[{
+                    			title:'设备信息',
+                    			layout: 'border',
+                    			items:[{
+                    				region: 'center',
+                    				id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
+                    				title:'附加信息',
+                                    border: false,
+                                    layout: 'fit',
+                                    autoScroll: true,
+                                    scrollable: true
+                    			},{
+                    				region: 'south',
+                    				id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
+                    				title:'辅件设备',
+                    				height: '50%',
+                    				border: false,
+                                    layout: 'fit',
+                                    split: true,
+                                    hidden: false,
+                                    collapsible: true,
+                                    autoScroll: true,
+                                    scrollable: true
+                    			}]
+                    		},{
+                    			title:'生产数据',
+                    			id: 'RealTimeMonitoringRightDeviceInfoPanel',
                                 border: false,
-                                layout: 'fit',
-                                autoScroll: true,
-                                scrollable: true
-                			},{
-                				region: 'south',
-                				id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
-                				title:'辅件设备',
-                				height: '50%',
-                				border: false,
-                                layout: 'fit',
-                                split: true,
-                                hidden:true,
-                                collapsible: true,
-                                autoScroll: true,
-                                scrollable: true
-                			}]
+                                layout: 'fit'
+                    		}],
+                    		listeners: {
+                            	tabchange: function (tabPanel, newCard, oldCard,obj) {
+                            		
+                            	}
+                            }
                 		},{
                 			title:'设备控制',
                 			border: false,

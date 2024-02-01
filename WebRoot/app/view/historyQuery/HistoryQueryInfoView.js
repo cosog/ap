@@ -5,8 +5,69 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
     border: false,
     initComponent: function () {
         var me = this;
-        var RPCHistoryQueryInfoView = Ext.create('AP.view.historyQuery.RPCHistoryQueryInfoView');
-        var PCPHistoryQueryInfoView = Ext.create('AP.view.historyQuery.PCPHistoryQueryInfoView');
+        var HistoryQueryInfoPanel = Ext.create('AP.view.historyQuery.HistoryQueryInfoPanel');
+        
+        var items=[];
+        if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
+        	for(var i=0;i<tabInfo.children.length;i++){
+        		var panelItem={};
+        		if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
+        			panelItem={
+        					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
+        					xtype: 'tabpanel',
+        	        		id: 'HistoryQueryTabPanel_'+tabInfo.children[i].tabId,
+        	        		activeTab: 0,
+        	        		border: false,
+        	        		tabPosition: 'left',
+        	        		items:[],
+        	        		listeners: {
+        	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				oldCard.removeAll();
+        	        			},
+        	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+        	        				var HistoryQueryInfoPanel = Ext.create('AP.view.realTimeMonitoring.HistoryQueryInfoPanel');
+        	        				newCard.add(HistoryQueryInfoPanel);
+        	        				Ext.getCmp("selectedDeviceType_global").setValue(newCard.id.split('_')[1]);
+        	        			},
+        	        			afterrender: function (panel, eOpts) {
+        	        				
+        	        			}
+        	        		}
+        			}
+        			
+        			for(var j=0;j<tabInfo.children[i].children.length;j++){
+        				var secondTabPanel={
+        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+        						tpl:tabInfo.children[i].children[j].text,
+        						layout: 'fit',
+        						id: 'HistoryQueryTabPanel_'+tabInfo.children[i].children[j].tabId,
+        						border: false
+        				};
+            			if(j==0){
+            				secondTabPanel.items=[];
+            				secondTabPanel.items.push(HistoryQueryInfoPanel);
+                		}
+            			panelItem.items.push(secondTabPanel);
+        			}
+        		}else{
+        			panelItem={
+        					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
+        					layout: 'fit',
+    						id: 'HistoryQueryTabPanel_'+tabInfo.children[i].tabId,
+    						border: false
+        			};
+        			if(i==0){
+            			panelItem.items=[];
+            			panelItem.items.push(HistoryQueryInfoPanel);
+            		}
+        		}
+        		items.push(panelItem);
+        	}
+        }
+        
+        
         Ext.apply(me, {
         	items: [{
         		xtype: 'tabpanel',
@@ -14,52 +75,58 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		activeTab: 0,
         		border: false,
         		tabPosition: 'bottom',
-        		items: [{
-        				title: '抽油机井',
-        				id:'RPCHistoryQueryInfoPanel_Id',
-        				items: [RPCHistoryQueryInfoView],
-        				layout: "fit",
-        				border: false
-        			},{
-        				title: '螺杆泵井',
-        				id:'PCPHistoryQueryInfoPanel_Id',
-        				items: [PCPHistoryQueryInfoView],
-        				layout: "fit",
-        				hidden: pcpHidden,
-        				border: false
-        			}],
-        			listeners: {
-        				tabchange: function (tabPanel, newCard,oldCard, obj) {
-        					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
-        					if(newCard.id=="RPCHistoryQueryInfoPanel_Id"){
-        						Ext.getCmp("selectedDeviceType_global").setValue(0); 
-        						var statTabActiveId = Ext.getCmp("RPCHistoryQueryStatTabPanel").getActiveTab().id;
-        						if(statTabActiveId=="RPCHistoryQueryFESdiagramResultStatGraphPanel_Id"){
-            						loadAndInitHistoryQueryFESdiagramResultStat(true);
-            					}else if(statTabActiveId=="RPCHistoryQueryStatGraphPanel_Id"){
-        							loadAndInitHistoryQueryCommStatusStat(true);
-        						}else if(statTabActiveId=="RPCHistoryQueryRunStatusStatGraphPanel_Id"){
-            						loadAndInitHistoryQueryRunStatusStat(true);
-            					}else if(newCard.id=="RPCHistoryQueryDeviceTypeStatGraphPanel_Id"){
-        							loadAndInitHistoryQueryDeviceTypeStat(true);
-        						}
-        						
-        						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),0,Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.RPCHistoryQueryWellListStore');
-        					}else if(newCard.id=="PCPHistoryQueryInfoPanel_Id"){
-        						Ext.getCmp("selectedDeviceType_global").setValue(1); 
-        						var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
-        						if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
-        							loadAndInitHistoryQueryCommStatusStat(true);
-        						}else if(statTabActiveId=="PCPHistoryQueryRunStatusStatGraphPanel_Id"){
-            						loadAndInitHistoryQueryRunStatusStat(true);
-            					}else if(newCard.id=="PCPHistoryQueryDeviceTypeStatGraphPanel_Id"){
-        							loadAndInitHistoryQueryDeviceTypeStat(true);
-        						}
-        						
-        						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),1,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
-        					}
+        		items: items,
+        		listeners: {
+        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				if(oldCard.xtype=='tabpanel'){
+        					oldCard.activeTab.removeAll();
+        				}else{
+        					oldCard.removeAll();
         				}
-        			}
+        			},
+    				tabchange: function (tabPanel, newCard,oldCard, obj) {
+    					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
+    					
+    					var HistoryQueryInfoPanel = Ext.create('AP.view.historyQuery.HistoryQueryInfoPanel');
+        				var tabId=0;
+        				if(newCard.xtype=='tabpanel'){
+        					newCard.activeTab.add(HistoryQueryInfoPanel);
+        					tabId=newCard.activeTab.id.split('_')[1];
+        				}else{
+	        				newCard.add(HistoryQueryInfoPanel);
+	        				tabId=newCard.id.split('_')[1];
+        				}
+        				Ext.getCmp("selectedDeviceType_global").setValue(tabId); 
+    					
+//    					if(newCard.id=="RPCHistoryQueryInfoPanel_Id"){
+//    						Ext.getCmp("selectedDeviceType_global").setValue(0); 
+//    						var statTabActiveId = Ext.getCmp("RPCHistoryQueryStatTabPanel").getActiveTab().id;
+//    						if(statTabActiveId=="RPCHistoryQueryFESdiagramResultStatGraphPanel_Id"){
+//        						loadAndInitHistoryQueryFESdiagramResultStat(true);
+//        					}else if(statTabActiveId=="RPCHistoryQueryStatGraphPanel_Id"){
+//    							loadAndInitHistoryQueryCommStatusStat(true);
+//    						}else if(statTabActiveId=="RPCHistoryQueryRunStatusStatGraphPanel_Id"){
+//        						loadAndInitHistoryQueryRunStatusStat(true);
+//        					}else if(newCard.id=="RPCHistoryQueryDeviceTypeStatGraphPanel_Id"){
+//    							loadAndInitHistoryQueryDeviceTypeStat(true);
+//    						}
+//    						
+//    						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),tabId,Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.RPCHistoryQueryWellListStore');
+//    					}else if(newCard.id=="PCPHistoryQueryInfoPanel_Id"){
+//    						Ext.getCmp("selectedDeviceType_global").setValue(1); 
+//    						var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
+//    						if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
+//    							loadAndInitHistoryQueryCommStatusStat(true);
+//    						}else if(statTabActiveId=="PCPHistoryQueryRunStatusStatGraphPanel_Id"){
+//        						loadAndInitHistoryQueryRunStatusStat(true);
+//        					}else if(newCard.id=="PCPHistoryQueryDeviceTypeStatGraphPanel_Id"){
+//    							loadAndInitHistoryQueryDeviceTypeStat(true);
+//    						}
+//    						
+//    						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),tabId,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
+//    					}
+    				}
+    			}
             	}],
         		listeners: {
         			beforeclose: function ( panel, eOpts) {},

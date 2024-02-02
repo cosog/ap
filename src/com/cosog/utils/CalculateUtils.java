@@ -303,7 +303,7 @@ public class CalculateUtils {
 		return dataSbf.toString();
 	}
 	
-	public static String getRPMTotalRequestData(String date,PCPDeviceInfo deviceInfo,PCPDeviceTodayData deviceTodayData){
+	public static String getRPMTotalRequestData(String date,DeviceInfo deviceInfo,PCPDeviceTodayData deviceTodayData){
 		StringBuffer dataSbf= new StringBuffer();
 		
 		List<String> acqTimeList=new ArrayList<String>();

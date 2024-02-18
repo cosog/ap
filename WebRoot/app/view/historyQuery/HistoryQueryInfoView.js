@@ -13,36 +13,36 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		var panelItem={};
         		if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
         			panelItem={
-        					title: tabInfo.children[i].text,
-        					tpl: tabInfo.children[i].text,
-        					xtype: 'tabpanel',
-        	        		id: 'HistoryQueryTabPanel_'+tabInfo.children[i].tabId,
-        	        		activeTab: 0,
-        	        		border: false,
-        	        		tabPosition: 'left',
-        	        		items:[],
-        	        		listeners: {
-        	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				oldCard.removeAll();
-        	        			},
-        	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
-        	        				var HistoryQueryInfoPanel = Ext.create('AP.view.realTimeMonitoring.HistoryQueryInfoPanel');
-        	        				newCard.add(HistoryQueryInfoPanel);
-        	        				Ext.getCmp("selectedDeviceType_global").setValue(newCard.id.split('_')[1]);
-        	        			},
-        	        			afterrender: function (panel, eOpts) {
-        	        				
-        	        			}
+        				title: tabInfo.children[i].text,
+        				tpl: tabInfo.children[i].text,
+        				xtype: 'tabpanel',
+        	        	id: 'HistoryQueryTabPanel_'+tabInfo.children[i].tabId,
+        	        	activeTab: 0,
+        	        	border: false,
+        	        	tabPosition: 'left',
+        	        	items:[],
+        	        	listeners: {
+        	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        			oldCard.removeAll();
+        	        		},
+        	        		tabchange: function (tabPanel, newCard,oldCard, obj) {
+        	        			var HistoryQueryInfoPanel = Ext.create('AP.view.realTimeMonitoring.HistoryQueryInfoPanel');
+        	        			newCard.add(HistoryQueryInfoPanel);
+        	        			Ext.getCmp("selectedDeviceType_global").setValue(newCard.id.split('_')[1]);
+        	        		},
+        	        		afterrender: function (panel, eOpts) {
+        	        			
         	        		}
+        	        	}
         			}
         			
         			for(var j=0;j<tabInfo.children[i].children.length;j++){
         				var secondTabPanel={
-        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
-        						tpl:tabInfo.children[i].children[j].text,
-        						layout: 'fit',
-        						id: 'HistoryQueryTabPanel_'+tabInfo.children[i].children[j].tabId,
-        						border: false
+        					title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+        					tpl:tabInfo.children[i].children[j].text,
+        					layout: 'fit',
+        					id: 'HistoryQueryTabPanel_'+tabInfo.children[i].children[j].tabId,
+        					border: false
         				};
             			if(j==0){
             				secondTabPanel.items=[];
@@ -52,11 +52,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         			}
         		}else{
         			panelItem={
-        					title: tabInfo.children[i].text,
-        					tpl: tabInfo.children[i].text,
-        					layout: 'fit',
-    						id: 'HistoryQueryTabPanel_'+tabInfo.children[i].tabId,
-    						border: false
+        				title: tabInfo.children[i].text,
+        				tpl: tabInfo.children[i].text,
+        				layout: 'fit',
+    					id: 'HistoryQueryTabPanel_'+tabInfo.children[i].tabId,
+    					border: false
         			};
         			if(i==0){
             			panelItem.items=[];

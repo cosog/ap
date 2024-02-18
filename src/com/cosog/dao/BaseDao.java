@@ -3606,7 +3606,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveAcqRPMAndCalculateData(PCPDeviceInfo deviceInfo,PCPCalculateRequestData calculateRequestData,PCPCalculateResponseData calculateResponseData) throws SQLException, ParseException {
+	public Boolean saveAcqRPMAndCalculateData(DeviceInfo deviceInfo,PCPCalculateRequestData calculateRequestData,PCPCalculateResponseData calculateResponseData) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
@@ -4205,7 +4205,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveRPMTotalCalculateData(PCPDeviceInfo pcpDeviceInfo,
+	public Boolean saveRPMTotalCalculateData(DeviceInfo pcpDeviceInfo,
 			TotalAnalysisResponseData totalAnalysisResponseData,
 			TotalAnalysisRequestData totalAnalysisRequestData,
 			String date,int recordCount) throws SQLException, ParseException {

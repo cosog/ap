@@ -275,7 +275,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
+				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
@@ -289,7 +289,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.devicename";
 			dataPage=this.getDataPage(StringManagerUtils.stringToInteger(deviceId), sql, StringManagerUtils.stringToInteger(limit));
 		}catch(Exception e){
 			dataPage=1;
@@ -332,13 +332,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			String columns = "["
 					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:9,children:[] },"
+					+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\",flex:9,children:[] },"
 					+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] },"
 					+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:11,children:[] },"
 					+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",flex:5,children:[] },"
 					+ "]";
 			
-			String sql="select t.id,t.wellname,t2.commstatus,"
+			String sql="select t.id,t.devicename,t2.commstatus,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
 			sql+= " from "+deviceTableName+" t "
@@ -350,7 +350,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
+				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
@@ -364,7 +364,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.devicename";
 			
 			int maxvalue=pager.getLimit()+pager.getStart();
 			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
@@ -407,7 +407,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				result_json.append("{\"id\":"+obj[0]+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"commStatus\":"+obj[2]+",");
 				result_json.append("\"commStatusName\":\""+obj[3]+"\",");
 				result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
@@ -438,7 +438,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			deviceTableName="tbl_pcpdevice";
 		}
 		
-		String sql="select t.id,t.wellname,t2.commstatus,"
+		String sql="select t.id,t.devicename,t2.commstatus,"
 				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
 		sql+= " from "+deviceTableName+" t "
@@ -450,7 +450,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		sql+= " where  t.orgid in ("+orgId+") ";
 		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and t.wellName='"+deviceName+"'";
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
 		if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 			sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
@@ -464,7 +464,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 			sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 		}
-		sql+=" order by t.sortnum,t.wellname";
+		sql+=" order by t.sortnum,t.devicename";
 		
 		int maxvalue=pager.getLimit()+pager.getStart();
 		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
@@ -474,7 +474,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"commStatus\":"+obj[2]+",");
 			result_json.append("\"commStatusName\":\""+obj[3]+"\",");
 			result_json.append("\"acqTime\":\""+obj[4]+"\",");
@@ -511,7 +511,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql="select t.id,t.wellname,t2.commstatus,"
+			String sql="select t.id,t.devicename,t2.commstatus,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
 			sql+= " from "+deviceTableName+" t "
@@ -523,7 +523,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
+				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
@@ -537,7 +537,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.devicename";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list = this.findCallSql(finalSql);
 			List<Object> record=null;
@@ -548,7 +548,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json = new StringBuffer();
 				record = new ArrayList<>();
 				result_json.append("{\"id\":"+(i+1)+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"commStatus\":"+obj[2]+",");
 				result_json.append("\"commStatusName\":\""+obj[3]+"\",");
 				result_json.append("\"acqTime\":\""+obj[4]+"\",");
@@ -687,7 +687,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
 						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
 			}
-			String sql="select t2.id,t.wellname,"//0~1
+			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
@@ -794,7 +794,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				result_json.append("{\"id\":"+obj[0]+",");
 				result_json.append("\"deviceId\":\""+deviceId+"\",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"acqTime\":\""+obj[2]+"\",");
 				result_json.append("\"commStatus\":"+obj[3]+",");
 				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
@@ -1120,7 +1120,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
 						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
 			}
-			String sql="select t2.id,t.wellname,"//0~1
+			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
@@ -1207,7 +1207,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				record = new ArrayList<>();
 				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceId\":\""+deviceId+"\",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"acqTime\":\""+obj[2]+"\",");
 				result_json.append("\"commStatus\":"+obj[3]+",");
 				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
@@ -1465,7 +1465,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
 						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,";
 			}
-			String sql="select t2.id,t.wellname,"
+			String sql="select t2.id,t.devicename,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
@@ -1525,7 +1525,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				result_json.append("{\"id\":"+obj[0]+",");
 				result_json.append("\"deviceId\":\""+deviceId+"\",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"acqTime\":\""+obj[2]+"\",");
 				result_json.append("\"commStatus\":"+obj[3]+",");
 				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
@@ -1769,7 +1769,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
 						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,";
 			}
-			String sql="select t2.id,t.wellname,"
+			String sql="select t2.id,t.devicename,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
@@ -1812,7 +1812,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				record = new ArrayList<>();
 				result_json.append("{\"id\":"+obj[0]+",");
 				result_json.append("\"deviceId\":\""+deviceId+"\",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"acqTime\":\""+obj[2]+"\",");
 				result_json.append("\"commStatus\":"+obj[3]+",");
 				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
@@ -2069,7 +2069,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 					}
-					String sql="select t.id,t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
+					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
 					for(int j=0;j<protocolItems.size();j++){
 						String col=loadProtocolMappingColumnByTitleMap.get(protocolItems.get(j).getTitle()).getMappingColumn();
 						sql+=",t2."+col;
@@ -3213,7 +3213,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int start = pager.getStart();
 		int maxvalue = limit + start;
 		String allsql="",sql="",totalSql="";
-		allsql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+		allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.stroke,t.spm,"
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
 				+ " t.resultcode,t2.resultname,t2.optimizationSuggestion,"
@@ -3272,7 +3272,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 	        
 			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
-			dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
+			dynSbf.append("\"deviceName\":\"" + obj[1] + "\",");
 			dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
 			dynSbf.append("\"stroke\":\""+obj[3]+"\",");
 			dynSbf.append("\"spm\":\""+obj[4]+"\",");
@@ -3307,7 +3307,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			boolean vacuate=true;
 			fileName += "-" + pager.getStart_date()+"~"+pager.getEnd_date();
 			String[] heads={"井号","日期时间","冲程(m)","冲次(次/分钟)","最小载荷(kN)","最大载荷(kN)","曲线点数","位移","载荷"};
-			String[] columns={"wellName","acqTime","stroke","spm","fmin","fmax","pointCount","positionCurveData","loadCurveData"};
+			String[] columns={"deviceName","acqTime","stroke","spm","fmin","fmax","pointCount","positionCurveData","loadCurveData"};
 			
 			List<Object> headRow = new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
@@ -3316,7 +3316,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy/mm/dd hh24:mi:ss') as acqTime,"
+			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy/mm/dd hh24:mi:ss') as acqTime,"
 					+ " t.stroke,t.spm,"
 					+ " t.fmax,t.fmin,"
 					+ " t.position_curve,t.load_curve"
@@ -3364,7 +3364,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 		        result_json.append("{ \"id\":\"" + obj[0] + "\",");
-		        result_json.append("\"wellName\":\"" + obj[1] + "\",");
+		        result_json.append("\"deviceName\":\"" + obj[1] + "\",");
 		        result_json.append("\"acqTime\":\"" + obj[2] + "\",");
 		        result_json.append("\"stroke\":\""+obj[3]+"\",");
 		        result_json.append("\"spm\":\""+obj[4]+"\",");
@@ -3448,7 +3448,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
+			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
 					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停抽')) as runStatusName,"//8~9
@@ -3497,7 +3497,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String[] ddicColumns=ddic.getSql().split(",");
 			dynSbf.append("{\"success\":true,"
 					+ "\"totalCount\":" + list.size() + ","
-					+ "\"wellName\":\""+deviceName+"\","
+					+ "\"deviceName\":\""+deviceName+"\","
 					+ "\"start_date\":\""+pager.getStart_date()+"\","
 					+ "\"end_date\":\""+pager.getEnd_date()+"\","
 					+ "\"columns\":"+columns+",");
@@ -3538,7 +3538,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[50]);
 						
 						dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
-						dataBuff.append("\"wellName\":\"" + obj[1] + "\",");
+						dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");
 						dataBuff.append("\"acqTime\":\"" + obj[2] + "\",");
 						dataBuff.append("\"commStatus\":"+obj[3]+",");
 						dataBuff.append("\"commStatusName\":\""+commStatusName+"\",");
@@ -3693,7 +3693,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				prodCol="liquidWeightProduction,liquidWeightProduction_L";
 			}
 			
-			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
+			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
 					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停抽')) as runStatusName,"//8~9
@@ -3750,7 +3750,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
 				
 				dataBuff.append("{ \"id\":\"" + (1+i) + "\",");
-				dataBuff.append("\"wellName\":\"" + obj[1] + "\",");
+				dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");
 				dataBuff.append("\"acqTime\":\"" + obj[2] + "\",");
 				dataBuff.append("\"commStatus\":"+obj[3]+",");
 				dataBuff.append("\"commStatusName\":\""+commStatusName+"\",");

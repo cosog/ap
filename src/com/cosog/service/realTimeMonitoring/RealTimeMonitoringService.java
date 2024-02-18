@@ -771,7 +771,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"id\":"+deviceId+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				
 				result_json.append("\"videoUrl1\":\""+obj[2]+"\",");
 				result_json.append("\"videoKeyId1\":\""+obj[3]+"\",");
@@ -1066,7 +1066,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
 			}
 			
-			String sql="select t.id,t.wellname,"//0~1
+			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
 					+ "c1.itemname as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
@@ -1188,7 +1188,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"id\":"+(i+1)+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				
 				result_json.append("\"videoUrl1\":\""+obj[2]+"\",");
 				result_json.append("\"videoKeyId1\":\""+obj[3]+"\",");
@@ -1446,7 +1446,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,";
 			}
 			
-			String sql="select t.id,t.wellname,"
+			String sql="select t.id,t.devicename,"
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
 					+ "c1.itemname as devicetypename,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -1546,7 +1546,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"id\":"+deviceId+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				
 				result_json.append("\"videoUrl1\":\""+obj[2]+"\",");
 				result_json.append("\"videoKeyId1\":\""+obj[3]+"\",");
@@ -1759,7 +1759,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,";
 			}
 			
-			String sql="select t.id,t.wellname,"
+			String sql="select t.id,t.devicename,"
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
 					+ "c1.itemname as devicetypename,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -1833,7 +1833,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"id\":"+(i+1)+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				
 				result_json.append("\"videoUrl1\":\""+obj[2]+"\",");
 				result_json.append("\"videoKeyId1\":\""+obj[3]+"\",");
@@ -2107,7 +2107,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 					
-					String sql="select t.id,t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
+					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
 					for(int j=0;j<protocolItems.size();j++){
 						String col="";
 						if(loadProtocolMappingColumnByTitleMap.containsKey(protocolItems.get(j).getTitle())){
@@ -2571,7 +2571,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	              
-	public String getRPCDeviceControlandInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getRPCDeviceControlandInfoData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
 		String deviceTableName="tbl_device";
@@ -2854,7 +2854,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDeviceInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getDeviceInfoData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String deviceInfoKey="DeviceInfo";
 		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_DeviceInfo");
@@ -3033,7 +3033,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getRPCDeviceInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getRPCDeviceInfoData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String deviceInfoKey="DeviceInfo";
 		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_DeviceInfo");
@@ -3212,7 +3212,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDeviceControlData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getDeviceControlData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
 		String deviceTableName="tbl_device";
@@ -3354,7 +3354,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDeviceAddInfoData(String deviceId,String wellName,String deviceType,int userId)throws Exception {
+	public String getDeviceAddInfoData(String deviceId,String deviceName,String deviceType,int userId)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String deviceTableName="tbl_device";
 		String infoTableName="tbl_deviceaddinfo";
@@ -3416,7 +3416,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getRPCDeviceControlData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getRPCDeviceControlData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
 		String deviceTableName="tbl_device";
@@ -3568,7 +3568,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getPCPDeviceControlandInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getPCPDeviceControlandInfoData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
 		String deviceTableName="tbl_pcpdevice";
@@ -3820,7 +3820,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getPCPDeviceInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getPCPDeviceInfoData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String deviceInfoKey="PCPDeviceInfo";
 		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_PCPDeviceInfo");
@@ -3966,7 +3966,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getPCPDeviceControlData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+	public String getPCPDeviceControlData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int dataSaveMode=1;
 		String deviceTableName="tbl_pcpdevice";
@@ -4616,8 +4616,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public void saveDeviceControlLog(String deviceId,String wellName,String deviceType,String title,String value,User user) throws SQLException{
-		getBaseDao().saveDeviceControlLog(deviceId,wellName,deviceType,title,value,user);
+	public void saveDeviceControlLog(String deviceId,String deviceName,String deviceType,String title,String value,User user) throws SQLException{
+		getBaseDao().saveDeviceControlLog(deviceId,deviceName,deviceType,title,value,user);
 	}
 	
 	public String getResourceProbeHistoryCurveData(String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
@@ -4642,7 +4642,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public String querySingleDetailsWellBoreChartsData(int id,String wellName) throws SQLException, IOException{
+	public String querySingleDetailsWellBoreChartsData(int id,String deviceName) throws SQLException, IOException{
 		byte[] bytes; 
 		ConfigFile configFile=Config.getInstance().configFile;
 		BufferedInputStream bis = null;
@@ -4653,7 +4653,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol=" liquidweightproduction";
 		}
-        String sql="select t2.wellName as wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+        String sql="select t2.deviceName as deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
@@ -4738,7 +4738,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        String pumpFSDiagramData = pumpFSDiagramStrBuff.toString();
 	        
 	        dataSbf.append("{success:true,");
-	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
+	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 井名
 	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("pointCount:\""+pointCount+"\","); 
 	        dataSbf.append("upperLoadLine:\""+obj[3]+"\",");         // 理论上载荷
@@ -4767,7 +4767,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("}");
 		}else{
 			dataSbf.append("{success:true,");
-			dataSbf.append("wellName:\""+wellName+"\",");
+			dataSbf.append("deviceName:\""+deviceName+"\",");
 	        dataSbf.append("acqTime:\"\",");
 	        dataSbf.append("pointCount:\""+pointCount+"\","); 
 	        dataSbf.append("upperLoadLine:\"\",");  
@@ -4796,7 +4796,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return dataSbf.toString().replaceAll("null", "");
 	}
 
-	public String querySingleDetailsSurfaceData(int id,String wellName) throws SQLException, IOException{
+	public String querySingleDetailsSurfaceData(int id,String deviceName) throws SQLException, IOException{
 		byte[] bytes; 
 		ConfigFile configFile=Config.getInstance().configFile;
 		BufferedInputStream bis = null;
@@ -4804,7 +4804,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
         StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
         String tableName="tbl_rpcacqdata_latest";
         
-        String sql="select well.wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+        String sql="select well.deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,t.upstrokeimax,t.downstrokeimax,t.idegreebalance,t.deltaRadius*100,"
         		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
         		+ " t.crankangle,t.loadtorque,t.cranktorque,t.currentbalancetorque,t.currentnettorque,"
@@ -4894,7 +4894,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 	        dataSbf.append("{success:true,");
-	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
+	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 井名
 	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("upStrokeWattMax:\""+obj[2]+"\",");         
 	        dataSbf.append("downStrokeWattMax:\""+obj[3]+"\",");
@@ -4920,7 +4920,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        
 		}else{
 			dataSbf.append("{success:true,");
-	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
+	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 井名
 	        dataSbf.append("acqTime:\"\",");         // 时间
 	        dataSbf.append("upStrokeWattMax:\"\",");         
 	        dataSbf.append("downStrokeWattMax:\"\",");

@@ -346,7 +346,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
 });
 function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 	var root=[];
-	if(data.classes==1){
+	if(data.classes==0){
+		var item1={};
+		item1.id=1;
+		item1.title='实例列表';
+		item1.value='实例列表';
+		root.push(item1);
+	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
 		item1.title='实例名称';
@@ -364,6 +370,12 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 		item3.title='排序序号';
 		item3.value=data.sort;
 		root.push(item3);
+	}else if(data.classes==2){
+		var item1={};
+		item1.id=1;
+		item1.title='报警单元';
+		item1.value=data.text;
+		root.push(item1);
 	}
 	
 	if(protocolAlarmInstancePropertiesHandsontableHelper==null || protocolAlarmInstancePropertiesHandsontableHelper.hot==undefined){
@@ -428,7 +440,10 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolAlarmInstancePropertiesHandsontableHelper.classes===1){
+	                    if(protocolAlarmInstancePropertiesHandsontableHelper.classes===0 || protocolAlarmInstancePropertiesHandsontableHelper.classes===2){
+	                    	cellProperties.readOnly = true;
+							cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
+	                    }else if(protocolAlarmInstancePropertiesHandsontableHelper.classes===1){
 	                    	if(visualColIndex === 2 && visualRowIndex===0){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);

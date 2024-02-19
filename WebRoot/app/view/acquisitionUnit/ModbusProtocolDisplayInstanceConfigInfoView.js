@@ -206,18 +206,18 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
 
 function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 	var root=[];
-	if(data.classes==1){
+	if(data.classes==0){
+		var item1={};
+		item1.id=1;
+		item1.title='实例列表';
+		item1.value='实例列表';
+		root.push(item1);
+	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
 		item1.title='实例名称';
 		item1.value=data.text;
 		root.push(item1);
-		
-//		var item2={};
-//		item2.id=2;
-//		item2.title='设备类型';
-//		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
-//		root.push(item2);
 		
 		var item2={};
 		item2.id=2;
@@ -230,6 +230,12 @@ function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 		item3.title='排序序号';
 		item3.value=data.sort;
 		root.push(item3);
+	}else if(data.classes==2){
+		var item1={};
+		item1.id=1;
+		item1.title='显示单元';
+		item1.value=data.text;
+		root.push(item1);
 	}
 	
 	if(protocolDisplayInstancePropertiesHandsontableHelper==null || protocolDisplayInstancePropertiesHandsontableHelper.hot==undefined){
@@ -294,7 +300,10 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolDisplayInstancePropertiesHandsontableHelper.classes===1){
+	                    if(protocolDisplayInstancePropertiesHandsontableHelper.classes===0 || protocolDisplayInstancePropertiesHandsontableHelper.classes===2){
+	                    	cellProperties.readOnly = true;
+							cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
+	                    }else if(protocolDisplayInstancePropertiesHandsontableHelper.classes===1){
 	                    	if(visualColIndex === 2 && visualRowIndex===0){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);

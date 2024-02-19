@@ -131,7 +131,13 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 			rpcAcqUnit=result.rpcAcqUnit;
 			pcpAcqUnit=result.pcpAcqUnit;
 			
-			if(data.classes==1){
+			if(data.classes==0){
+				var item1={};
+				item1.id=1;
+				item1.title='实例列表';
+				item1.value='实例列表';
+				root.push(item1);
+			}else if(data.classes==1){
 				var item1={};
 				item1.id=1;
 				item1.title='实例名称';
@@ -229,6 +235,12 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				item13.title='排序序号';
 				item13.value=data.sort;
 				root.push(item13);
+			}else if(data.classes==2){
+				var item1={};
+				item1.id=1;
+				item1.title='采控单元';
+				item1.value=data.text;
+				root.push(item1);
 			}
 			
 			if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
@@ -307,7 +319,10 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolConfigInstancePropertiesHandsontableHelper.classes===1){
+	                    if(protocolConfigInstancePropertiesHandsontableHelper.classes===0 || protocolConfigInstancePropertiesHandsontableHelper.classes===2){
+	                    	cellProperties.readOnly = true;
+							cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
+	                    }else if(protocolConfigInstancePropertiesHandsontableHelper.classes===1){
 	                    	if(visualColIndex === 2 && visualRowIndex===0){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);

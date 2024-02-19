@@ -270,7 +270,20 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 
 function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 	var root=[];
-	if(data.classes==2){
+	
+	if(data.classes==0){
+		var item1={};
+		item1.id=1;
+		item1.title='单元列表';
+		item1.value='单元列表';
+		root.push(item1);
+	}else if(data.classes==1){
+		var item1={};
+		item1.id=1;
+		item1.title='协议名称';
+		item1.value=data.text;
+		root.push(item1);
+	}else if(data.classes==2){
 		var item1={};
 		item1.id=1;
 		item1.title='单元名称';
@@ -388,13 +401,9 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolConfigAcqUnitPropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===1){
-	                    	if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机井','螺杆泵井'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
+	                    if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===0 || protocolConfigAcqUnitPropertiesHandsontableHelper.classes===1){
+	                    	cellProperties.readOnly = true;
+							cellProperties.renderer = protocolConfigAcqUnitPropertiesHandsontableHelper.addBoldBg;
 	                    }else if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===2){
 	                    	if (visualColIndex === 2 && visualRowIndex===0) {
 	                    		this.validator=function (val, callback) {

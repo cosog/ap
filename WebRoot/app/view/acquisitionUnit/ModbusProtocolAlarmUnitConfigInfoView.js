@@ -645,7 +645,19 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 
 function CreateProtocolAlarmUnitConfigPropertiesInfoTable(data){
 	var root=[];
-	if(data.classes==3){
+	if(data.classes==0){
+		var item1={};
+		item1.id=1;
+		item1.title='单元列表';
+		item1.value='单元列表';
+		root.push(item1);
+	}if(data.classes==1){
+		var item1={};
+		item1.id=1;
+		item1.title='协议名称';
+		item1.value=data.text;
+		root.push(item1);
+	}else if(data.classes==3){
 		var item1={};
 		item1.id=1;
 		item1.title='单元名称';
@@ -717,14 +729,21 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
+	                    
+	                    if(protocolConfigAlarmUnitPropertiesHandsontableHelper.classes===0 || protocolConfigAlarmUnitPropertiesHandsontableHelper.classes===1){
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addBoldBg;
-		                }else if(visualColIndex === 2 && visualRowIndex===0){
-	                    	this.validator=function (val, callback) {
-	                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAlarmUnitPropertiesHandsontableHelper);
-	                    	}
-	                    }
+		                }else if(protocolConfigAlarmUnitPropertiesHandsontableHelper.classes===3){
+		                	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addBoldBg;
+			                }else if(visualColIndex === 2 && visualRowIndex===0){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAlarmUnitPropertiesHandsontableHelper);
+		                    	}
+		                    }
+		                }
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

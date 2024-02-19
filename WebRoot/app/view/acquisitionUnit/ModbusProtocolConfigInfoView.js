@@ -442,7 +442,13 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 
 function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 	var root=[];
-	if(data.classes==1){
+	if(data.classes==0){
+		var item1={};
+		item1.id=1;
+		item1.title='协议列表';
+		item1.value='协议列表';
+		root.push(item1);
+	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
 		item1.title='协议名称';
@@ -516,7 +522,10 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
+	                    if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===0){
+							cellProperties.readOnly = true;
+							cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
+	                    }else if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
 	                    	if (visualColIndex ==0 || visualColIndex ==1) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;

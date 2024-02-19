@@ -1246,7 +1246,13 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 			var result =  Ext.JSON.decode(response.responseText);
 			unitList=result.unitList;
 			
-			if(data.classes==1){
+			if(data.classes==0){
+				var item1={};
+				item1.id=1;
+				item1.title='实例列表';
+				item1.value='实例列表';
+				root.push(item1);
+			}else if(data.classes==1){
 				var item1={};
 				item1.id=1;
 				item1.title='实例名称';
@@ -1264,6 +1270,12 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 				item3.title='排序序号';
 				item3.value=data.sort;
 				root.push(item3);
+			}else if(data.classes==2){
+				var item1={};
+				item1.id=1;
+				item1.title='报表单元';
+				item1.value=data.text;
+				root.push(item1);
 			}
 			
 			if(protocolReportInstancePropertiesHandsontableHelper==null || protocolReportInstancePropertiesHandsontableHelper.hot==undefined){
@@ -1339,7 +1351,10 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolReportInstancePropertiesHandsontableHelper.classes===1){
+	                    if(protocolReportInstancePropertiesHandsontableHelper.classes===0 || protocolReportInstancePropertiesHandsontableHelper.classes===2){
+	                    	cellProperties.readOnly = true;
+							cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
+	                    }else if(protocolReportInstancePropertiesHandsontableHelper.classes===1){
 	                    	if(visualColIndex === 2 && visualRowIndex===0){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);

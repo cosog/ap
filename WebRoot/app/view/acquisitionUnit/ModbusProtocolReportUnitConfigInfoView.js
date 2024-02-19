@@ -1246,7 +1246,13 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 
 function CreateProtocolReportUnitPropertiesInfoTable(data){
 	var root=[];
-	if(data.classes==1){
+	if(data.classes==0){
+		var item1={};
+		item1.id=1;
+		item1.title='单元列表';
+		item1.value='单元列表';
+		root.push(item1);
+	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
 		item1.title='实例名称';
@@ -1322,7 +1328,10 @@ var ReportUnitPropertiesHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(reportUnitPropertiesHandsontableHelper.classes===1){
+	                    if(reportUnitPropertiesHandsontableHelper.classes===0){
+							cellProperties.readOnly = true;
+							cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
+		                }else if(reportUnitPropertiesHandsontableHelper.classes===1){
 	                    	if(visualColIndex === 2 && visualRowIndex===0){
 		                    	this.validator=function (val, callback) {
 		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, reportUnitPropertiesHandsontableHelper);

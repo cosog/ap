@@ -51,7 +51,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     layout: "border",
                     border: true,
                     header: false,
-//                    collapsible: true,
+                    collapsible: true,
                     split: true,
                     collapseDirection: 'left',
                     hideMode:'offsets',
@@ -134,7 +134,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 			if(data.classes==0){
 				var item1={};
 				item1.id=1;
-				item1.title='实例列表';
+				item1.title='根节点';
 				item1.value='实例列表';
 				root.push(item1);
 			}else if(data.classes==1){

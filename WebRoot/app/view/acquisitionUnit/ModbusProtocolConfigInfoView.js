@@ -83,6 +83,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     layout: "border",
                     border: true,
                     header: false,
+                    collapsible: true,
                     split: true,
                     collapseDirection: 'left',
                     hideMode:'offsets',
@@ -445,7 +446,7 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 	if(data.classes==0){
 		var item1={};
 		item1.id=1;
-		item1.title='协议列表';
+		item1.title='根节点';
 		item1.value='协议列表';
 		root.push(item1);
 	}else if(data.classes==1){

@@ -57,6 +57,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     layout: "border",
                     border: true,
                     header: false,
+                    collapsible: true,
                     split: true,
                     collapseDirection: 'left',
                     hideMode:'offsets',
@@ -274,7 +275,7 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 	if(data.classes==0){
 		var item1={};
 		item1.id=1;
-		item1.title='单元列表';
+		item1.title='根节点';
 		item1.value='单元列表';
 		root.push(item1);
 	}else if(data.classes==1){

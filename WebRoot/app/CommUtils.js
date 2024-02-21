@@ -523,9 +523,9 @@ function showPanel(o) {
 
 iconHistoryQueryDetailsData = function(value, e, o) {
 	var recordId=o.data.id;
-	var wellName=o.data.wellName;
+	var deviceName=o.data.deviceName;
 	var deviceId=o.data.deviceId;
-	var resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" onclick=callBackHistoryData(\""+recordId+"\",\""+deviceId+"\",\""+wellName+"\")>详细...</a>";
+	var resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" onclick=callBackHistoryData(\""+recordId+"\",\""+deviceId+"\",\""+deviceName+"\")>详细...</a>";
 	return resultstring;
 }
 
@@ -548,11 +548,11 @@ var callBackGraphical = function(type,id) {
     GraphicalOnclickWindow.show();
 }
 
-var callBackHistoryData = function(recordId,deviceId,wellName) {
+var callBackHistoryData = function(recordId,deviceId,deviceName) {
 	var HistoryQueryDataDetailsWindow = Ext.create("AP.view.historyQuery.HistoryQueryDataDetailsWindow");
 	Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").setValue(recordId);
 	Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").setValue(deviceId);
-	Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").setValue(wellName);
+	Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").setValue(deviceName);
 	HistoryQueryDataDetailsWindow.show();
 }
 
@@ -2728,7 +2728,7 @@ showFSDiagramFromPumpcard = function(result, divId) {
 }
 
 function initSurfaceCardChart(pointdata, gtdata, divId) {
-	var wellName=gtdata.wellName;         // 井名
+	var deviceName=gtdata.deviceName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	var upperLoadLine=gtdata.upperLoadLine;   // 理论上载荷
 	var lowerLoadLine=gtdata.lowerLoadLine;   // 理论下载荷
@@ -2771,7 +2771,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		        	text: cosog.string.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {
-		        	text: wellName+' ['+acqTime+']'                                                      
+		        	text: deviceName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -2807,7 +2807,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:wellName+'光杆功图-'+acqTime,    
+                    filename:deviceName+'光杆功图-'+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -2889,7 +2889,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 }
 
 showRodPress = function(result, divId) {
-	var wellName=result.wellName;                        // 井名
+	var deviceName=result.deviceName;                        // 井名
 	var acqTime=result.acqTime;                    // 时间
 	var rodStressRatio1=changeTwoDecimal(parseFloat(result.rodStressRatio1)*100);              // 一级应力百分比
 	var rodStressRatio2=changeTwoDecimal(parseFloat(result.rodStressRatio2)*100);              // 二级应力百分比
@@ -2921,11 +2921,11 @@ showRodPress = function(result, divId) {
 	ydata+="]";
 	var xdata2 = Ext.JSON.decode(xdata);
 	var ydata2 = Ext.JSON.decode(ydata);
-	initRodPressChart(xdata2, ydata2, wellName, acqTime, divId);
+	initRodPressChart(xdata2, ydata2, deviceName, acqTime, divId);
 	return false;
 }
 
-function initRodPressChart(xdata, ydata, wellName, acqTime, divId) {
+function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 	var rodStressChart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'column',                      // 柱状图
@@ -2961,7 +2961,7 @@ function initRodPressChart(xdata, ydata, wellName, acqTime, divId) {
 		            }
 		        },                                                                                   
 		        subtitle: {                                                                          
-		            text: wellName+' ['+acqTime+']'
+		            text: deviceName+' ['+acqTime+']'
 		        },
 		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
 		        credits: {
@@ -2990,7 +2990,7 @@ function initRodPressChart(xdata, ydata, wellName, acqTime, divId) {
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:wellName+"杆柱应力-"+acqTime,    
+                    filename:deviceName+"杆柱应力-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3043,7 +3043,7 @@ function SetEveryOnePointColor(chart) {      // 设置每一个数据点的颜�
 
 showPumpCard = function(result,divId) {
 	var color=new Array("#00ff00","#ff0000","#ff8000","#ff06c5","#0000ff"); // 线条颜色
-	var wellName=result.wellName;                        // 井名
+	var deviceName=result.deviceName;                        // 井名
 	var acqTime=result.acqTime;                    // 时间
 	var resultCode=result.resultCode;
 	var pumpFSDiagramData=result.pumpFSDiagramData.split("#");       // 图形数据
@@ -3071,11 +3071,11 @@ showPumpCard = function(result,divId) {
 	series+="]";
 	var pointdata = Ext.JSON.decode(series);
 	title = cosog.string.pumpFSDiagram;  // 泵功图
-	initMultiSurfaceCardChart(pointdata, title, wellName, acqTime, divId);
+	initMultiSurfaceCardChart(pointdata, title, deviceName, acqTime, divId);
 	return false;
 }
 
-function initMultiSurfaceCardChart(series, title, wellName, acqTime, divId,upperLoadLine,lowerLoadLine) {
+function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',
@@ -3087,7 +3087,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acqTime, divId,upper
 		        	text: title
 		        },                                                                                   
 		        subtitle: {                                                                          
-		            text: wellName+' ['+acqTime+']'                                                      
+		            text: deviceName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -3141,7 +3141,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acqTime, divId,upper
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:wellName+"泵功图-"+acqTime,    
+                    filename:deviceName+"泵功图-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3185,7 +3185,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acqTime, divId,upper
 }
 
 showPumpEfficiency = function(bxzcData, divId) {
-	var wellName=bxzcData.wellName;           // 井名
+	var deviceName=bxzcData.deviceName;           // 井名
 	var acqTime=bxzcData.acqTime;       // 时间
 	var pumpEff1=bxzcData.pumpEff1;   // 冲程损失系数
 	var pumpEff2=bxzcData.pumpEff2;       // 充满系数
@@ -3196,11 +3196,11 @@ showPumpEfficiency = function(bxzcData, divId) {
 		ydata="[]";
 	}
 	ydata = Ext.JSON.decode(ydata);
-	initPumpEfficiencyChart(ydata, wellName, acqTime, divId);
+	initPumpEfficiencyChart(ydata, deviceName, acqTime, divId);
 	return false;
 }
 
-function initPumpEfficiencyChart(ydata, wellName, acqTime, divId, title, yname) {
+function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname) {
 	$('#'+divId).highcharts({
 				chart: {                                                                             
 		            type: 'column',      
@@ -3211,7 +3211,7 @@ function initPumpEfficiencyChart(ydata, wellName, acqTime, divId, title, yname) 
 		            text: cosog.string.pumpEff             
 		        },
 		        subtitle: {                                                                                   
-		            text: wellName+' ['+acqTime+']'                                                      
+		            text: deviceName+' ['+acqTime+']'                                                      
 		        },
 		        colors: ['#66ffcc', '#009999', '#ffcc33', '#ff6633', '#00ffff', '#3366cc', '#ffccff', '#cc0000', '#6AF9C4'],
 		        credits: {            
@@ -3238,7 +3238,7 @@ function initPumpEfficiencyChart(ydata, wellName, acqTime, divId, title, yname) 
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:wellName+"泵效组成-"+acqTime,    
+                    filename:deviceName+"泵效组成-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3357,7 +3357,7 @@ showPSDiagram = function(result, divId,title) {
 }
 
 function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color) {
-	var wellName=gtdata.wellName;         // 井名
+	var deviceName=gtdata.deviceName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
@@ -3371,7 +3371,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 		        	text: title          
 		        },                                                                                   
 		        subtitle: {
-		        	text: wellName+' ['+acqTime+']'                                                      
+		        	text: deviceName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -3403,7 +3403,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename: wellName+''+title+'-'+acqTime,
+                    filename: deviceName+''+title+'-'+acqTime,
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3550,7 +3550,7 @@ showASDiagram = function(result, divId,title) {
 }
 
 function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color) {
-	var wellName=gtdata.wellName;         // 井名
+	var deviceName=gtdata.deviceName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
@@ -3564,7 +3564,7 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 		        	text: title          
 		        },                                                                                   
 		        subtitle: {
-		        	text: wellName+' ['+acqTime+']'                                                      
+		        	text: deviceName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -3596,7 +3596,7 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename: wellName+''+title+'-'+acqTime,   
+                    filename: deviceName+''+title+'-'+acqTime,   
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3650,7 +3650,7 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 	});
 }
 
-showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balanceTorque,netTorque,title,wellName,acqTime,divId) {
+showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balanceTorque,netTorque,title,deviceName,acqTime,divId) {
 	var crankAngleArr=crankAngle.split(",");
 	var loadRorqueArr=loadRorque.split(",");
 	var crankTorqueArr=crankTorque.split(",");
@@ -3691,11 +3691,11 @@ showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balan
     
     var cat1 = Ext.JSON.decode(catagories1);
 	var ser1 = Ext.JSON.decode(series1);
-	initBalanceCurveChart(cat1,ser1, divId,title,wellName,acqTime,"扭矩(kN*m)","曲柄转角(°)");
+	initBalanceCurveChart(cat1,ser1, divId,title,deviceName,acqTime,"扭矩(kN*m)","曲柄转角(°)");
 	return false;
 }
 
-function initBalanceCurveChart(catagories,series,divId,title,wellName,acqTime,ytext,xtext) {
+function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,ytext,xtext) {
 	$('#'+divId).highcharts({
 				chart : {
 //					renderTo : divId,
@@ -3706,7 +3706,7 @@ function initBalanceCurveChart(catagories,series,divId,title,wellName,acqTime,yt
 				},
 				exporting:{ 
 		            enabled:true,    
-		            filename: wellName+''+title+'-'+acqTime,   
+		            filename: deviceName+''+title+'-'+acqTime,   
 		            sourceWidth: $("#"+divId)[0].offsetWidth,
 		            sourceHeight: $("#"+divId)[0].offsetHeight
 				},
@@ -3717,7 +3717,7 @@ function initBalanceCurveChart(catagories,series,divId,title,wellName,acqTime,yt
 					text : title
 				},
 				subtitle: {
-					text: wellName+' ['+acqTime+']'                                                  
+					text: deviceName+' ['+acqTime+']'                                                  
 		        },
 				colors : ['#000000',// 黑
 						'#0000FF',// 蓝
@@ -4166,7 +4166,7 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	var title='';
 	var ytext='';
 	var color=new Array("#000000","#00ff00"); // 线条颜色
-	var subtitle=get_rawData.wellName+"["+get_rawData.start_date+"~"+get_rawData.end_date+"]";
+	var subtitle=get_rawData.deviceName+"["+get_rawData.start_date+"~"+get_rawData.end_date+"]";
 	if(diagramType===0){//如果是功图
 		title='光杆功图叠加';
 		ytext='载荷(kN)';
@@ -4267,15 +4267,15 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
     	upperlimit=null;
     }
     if(diagramType===0){//如果是功图
-    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.wellName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax);
+    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax);
 	}else {
-		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.wellName, get_rawData.calculateDate, divId);
+		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId);
 	}
 	
 	return false;
 }
 
-function initFSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax) {
+function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -4364,7 +4364,7 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTi
 	});
 }
 
-function initPSDiagramOverlayChart(series, title,subtitle,ytext, wellName, acqTime, divId) {
+function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -4700,4 +4700,24 @@ function getTabPanelActiveName(tabTanelId){
 		}
 	}
 	return activeName;
+}
+
+function getCalculateTypeDeviceCount(orgId,deviceType,calculateType){
+	var deviceCount=0;
+	Ext.Ajax.request({
+		method:'POST',
+		async :  false,
+		url:context + '/realTimeMonitoringController/getCalculateTypeDeviceCount',
+		success:function(response) {
+			deviceCount = Ext.JSON.decode(response.responseText).deviceCount;
+		},
+		failure:function(){
+		},
+		params: {
+			orgId: orgId,
+			deviceType:deviceType,
+			calculateType:calculateType
+        }
+	});
+	return deviceCount;
 }

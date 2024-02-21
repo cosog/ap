@@ -236,11 +236,7 @@ public class RealTimeMonitoringController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit);
-		}else{
-			dataPage = realTimeMonitoringService.getPCPDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit);
-		}
+		dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit);
 		json="{\"success\":true,\"dataPage\":"+dataPage+"}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -719,15 +715,15 @@ public class RealTimeMonitoringController extends BaseController {
 	@RequestMapping("/querySingleFESDiagramDetailsChartsData")
 	public String querySingleFESDiagramDetailsChartsData()throws Exception{
 		int id = Integer.parseInt(ParamUtils.getParameter(request, "id"));
-		String wellName = ParamUtils.getParameter(request, "wellName");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String type = ParamUtils.getParameter(request, "type");
 		String json = "";
 		if("1".equals(type)){
-			json = this.realTimeMonitoringService.querySingleDetailsWellBoreChartsData(id,wellName);
+			json = this.realTimeMonitoringService.querySingleDetailsWellBoreChartsData(id,deviceName);
 		}else if("2".equals(type)){
-			json = this.realTimeMonitoringService.querySingleDetailsSurfaceData(id,wellName);
+			json = this.realTimeMonitoringService.querySingleDetailsSurfaceData(id,deviceName);
 		}
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -745,6 +741,21 @@ public class RealTimeMonitoringController extends BaseController {
 		String videoKeyId = ParamUtils.getParameter(request, "videoKeyId");
 		String json=this.realTimeMonitoringService.getUIKitAccessToken(videoKeyId);
 		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getCalculateTypeDeviceCount")
+	public String getCalculateTypeDeviceCount()throws Exception{
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String json=this.realTimeMonitoringService.getCalculateTypeDeviceCount(orgId,deviceType,calculateType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

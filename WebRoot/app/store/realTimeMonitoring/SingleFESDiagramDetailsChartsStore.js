@@ -55,7 +55,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;// 获取图形数据id
-        	var wellName  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var deviceName  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
             var type=1;
             var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
             var activeId = tabPanel.getActiveTab().id;
@@ -67,7 +67,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             Ext.getCmp(activeId).el.mask(cosog.string.loading).show();
             var new_params = { // 将图形数据id作为参数传给后台
                 id: id,
-                wellName:wellName,
+                deviceName:deviceName,
                 type:type
             };
             Ext.apply(store.proxy.extraParams, new_params);

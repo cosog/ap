@@ -143,7 +143,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
 						if (obj instanceof DeviceInfo) {
 							DeviceInfo deviceInfo=(DeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId())){
+							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId()) && deviceInfo.getDeviceType()==StringManagerUtils.stringToInteger(deviceType)){
 								int count=1;
 								int resultCode=deviceInfo.getResultCode()==null?0:deviceInfo.getResultCode();
 								if(totalMap.containsKey(resultCode)){
@@ -250,7 +250,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
 						if (obj instanceof DeviceInfo) {
 							DeviceInfo deviceInfo=(DeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId())){
+							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId()) && deviceInfo.getDeviceType()==StringManagerUtils.stringToInteger(deviceType)){
 								commStatus=deviceInfo.getOnLineCommStatus();
 								if(commStatus==1){
 									online+=1;
@@ -365,7 +365,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
 						if (obj instanceof DeviceInfo) {
 							DeviceInfo deviceInfo=(DeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId())){
+							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId())  && deviceInfo.getDeviceType()==StringManagerUtils.stringToInteger(deviceType)){
 								commStatus=deviceInfo.getOnLineCommStatus();
 								runStatus=deviceInfo.getRunStatus();
 								if(commStatus==1){
@@ -608,7 +608,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"//13~14
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange";//15~17
+					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
+					+ "t.calculateType";//18
 //					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//18~20
 //					+ "t2.TheoreticalProduction,"//21
 //					+ prodCol+""//22~32
@@ -754,6 +755,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"runTimeEfficiency\":\""+obj[16]+"\",");
 				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[17])+"\",");
 				result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
+				result_json.append("\"calculateType\":"+obj[18]+",");
 //				result_json.append("\"resultCode\":\""+resultCode+"\",");
 //				result_json.append("\"resultName\":\""+obj[19]+"\",");
 //				result_json.append("\"optimizationSuggestion\":\""+obj[20]+"\",");
@@ -875,7 +877,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[18+j]+"";
+					String rawValue=obj[19+j]+"";
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
@@ -4559,5 +4561,25 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		
 		return dataSbf.toString();
+	}
+	
+	public String getCalculateTypeDeviceCount(String orgId,String deviceType,String calculateType){
+		int deviceCount=0;
+		try{
+			String deviceTableName="tbl_device";
+			
+			String sql="select count(1) from "+deviceTableName+" t "
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType
+					+ " and t.calculateType="+calculateType;
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				deviceCount=StringManagerUtils.stringToInteger(list.get(0)+"");
+			}
+		}catch(Exception e){
+			deviceCount=1;
+		}
+		String json="{\"success\":true,\"deviceCount\":"+deviceCount+"}";
+		return json;
 	}
 }

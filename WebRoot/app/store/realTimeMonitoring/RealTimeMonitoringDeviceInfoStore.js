@@ -52,7 +52,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceInfoStore', {
     			        }
     			    ]
     			});
-    			Ext.getCmp("RealTimeMonitoringRightDeviceInfoPanel").add(deviceInfoGridPanel);
+    			Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").add(deviceInfoGridPanel);
     		}
         },
         beforeload: function (store, options) {

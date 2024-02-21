@@ -122,18 +122,23 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              iconCls: 'note-refresh',
                              hidden:false,
                              handler: function (v, o) {
-                     			var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
-                    			if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-                    				loadAndInitFESdiagramResultStat(true);
-                    			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
-                    				loadAndInitCommStatusStat(true);
-                    			}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
-                    				loadAndInitRunStatusStat(true);
-                    			}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-                    				loadAndInitDeviceTypeStat(true);
-                    			}
-                    			
-                    			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp('RealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
+                            	 var tabPanel=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").hide();
+                            	 
+//                            	 var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+                            	 
+                            	 
+//                     			var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+//                    			if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+//                    				loadAndInitFESdiagramResultStat(true);
+//                    			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
+//                    				loadAndInitCommStatusStat(true);
+//                    			}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
+//                    				loadAndInitRunStatusStat(true);
+//                    			}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+//                    				loadAndInitDeviceTypeStat(true);
+//                    			}
+//                    			
+//                    			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp('RealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
                     		}
                  		},'-',deviceCombo,'-', {
                              xtype: 'button',
@@ -612,6 +617,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     		items:[{
                     			title:'设备信息',
                     			layout: 'border',
+                    			id:'RealTimeMonitoringRightDeviceInfoPanel',
                     			items:[{
                     				region: 'center',
                     				id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
@@ -635,7 +641,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     			}]
                     		},{
                     			title:'生产数据',
-                    			id: 'RealTimeMonitoringRightDeviceInfoPanel',
+                    			id: 'RealTimeMonitoringRightDeviceProductionDataInfoPanel',
                                 border: false,
                                 layout: 'fit'
                     		}],
@@ -751,7 +757,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                             				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceInfoStore');
                             			}
                         			}else{
-                        				Ext.getCmp("RealTimeMonitoringRightDeviceInfoPanel").removeAll();
+                        				Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").removeAll();
                                     	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
                         			}
                         		}

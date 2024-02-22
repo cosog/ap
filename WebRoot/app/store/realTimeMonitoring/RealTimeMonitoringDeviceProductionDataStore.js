@@ -1,6 +1,6 @@
-Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceInfoStore', {
+Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.RPCRealTimeMonitoringDeviceInfoStore',
+    alias: 'widget.RealTimeMonitoringDeviceProductionDataStore',
     autoLoad: true,
     pageSize: 10000,
     proxy: {
@@ -19,10 +19,10 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceInfoStore', {
     listeners: {
         load: function (store, record, f, op, o) {
         	var get_rawData = store.proxy.reader.rawData;
-        	var deviceInfoGridPanel=Ext.getCmp("RPCRealTimeMonitoringDeviceInfoDataGridPanel_Id");
+        	var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
     		if(!isNotVal(deviceInfoGridPanel)){
     			deviceInfoGridPanel=Ext.create('Ext.grid.Panel', {
-    				id:'RPCRealTimeMonitoringDeviceInfoDataGridPanel_Id',
+    				id:'RealTimeMonitoringDeviceProductionDataGridPanel_Id',
     				border: false,
     				columnLines: true,
     				forceFit: false,
@@ -52,16 +52,17 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceInfoStore', {
     			        }
     			    ]
     			});
-    			Ext.getCmp("RPCRealTimeMonitoringRightDeviceInfoPanel").add(deviceInfoGridPanel);
+    			Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").add(deviceInfoGridPanel);
     		}
         },
         beforeload: function (store, options) {
-        	var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        	var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	var wellName  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var deviceId  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
         	var new_params = {
         			deviceId:deviceId,
         			wellName: wellName,
-        			deviceType:0
+        			deviceType:deviceType
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

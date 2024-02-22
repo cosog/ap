@@ -122,7 +122,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              iconCls: 'note-refresh',
                              hidden:false,
                              handler: function (v, o) {
-                            	 var tabPanel=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").hide();
+//                            	 var tabPanel=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").hide();
+                            	 
+                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
                             	 
 //                            	 var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
                             	 
@@ -184,6 +186,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		items: [{
                 			title:'工况诊断',
                 			layout: 'fit',
+                			closable:true,
                         	id:'RealTimeMonitoringFESdiagramResultStatGraphPanel_Id',
                         	hidden: onlyMonitor,
                         	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
@@ -208,6 +211,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		},{
                 			title:'运行状态',
                 			layout: 'fit',
+                			closable:true,
                         	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
                         	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
@@ -231,6 +235,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		},{
                 			title:'通信状态',
                 			layout: 'fit',
+                			closable:true,
                 			hidden: onlyFESDiagramCal,
                         	id:'RealTimeMonitoringStatGraphPanel_Id',
                         	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
@@ -647,7 +652,25 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     		}],
                     		listeners: {
                             	tabchange: function (tabPanel, newCard, oldCard,obj) {
-                            		
+                            		if(newCard.id=='RealTimeMonitoringRightDeviceInfoPanel'){
+                            			Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
+                            		}else if(newCard.id=='RealTimeMonitoringRightDeviceProductionDataInfoPanel'){
+                            			var calculateType=0;
+                            			if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                            				calculateType  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+                            			}
+                            			
+                            			if(calculateType==1 || calculateType==2){
+                        					var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
+                                			if(isNotVal(deviceInfoGridPanel)){
+                                				deviceInfoGridPanel.getStore().load();
+                                			}else{
+                                				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
+                                			}
+                        				}else{
+                        					tabPanel.setActiveTab(0);
+                        				}
+                            		}
                             	}
                             }
                 		},{
@@ -749,16 +772,33 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                         			if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
                         				videoPlayrHelper.rpc.player2.stop();
                         			}
+                        			
+                        			
+                        			var calculateType=0;
+                        			var deviceInfoTabPanelActiveId = Ext.getCmp("RealTimeMonitoringRightDeviceInfoTabPanel").getActiveTab().id;
                         			if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                        				var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceInfoDataGridPanel_Id");
-                            			if(isNotVal(deviceInfoGridPanel)){
-                            				deviceInfoGridPanel.getStore().load();
-                            			}else{
-                            				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceInfoStore');
-                            			}
+                        				calculateType  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+                        				if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceInfoPanel'){
+                                			Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
+                                		}else if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceProductionDataInfoPanel'){
+                                			if(calculateType==1 || calculateType==2){
+                            					var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
+                                    			if(isNotVal(deviceInfoGridPanel)){
+                                    				deviceInfoGridPanel.getStore().load();
+                                    			}else{
+                                    				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
+                                    			}
+                            				}else{
+                            					tabPanel.setActiveTab(0);
+                            				}
+                                		}
                         			}else{
-                        				Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").removeAll();
-                                    	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
+                        				if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceInfoPanel'){
+                        					Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").removeAll();
+                                        	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
+                        				}else if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceProductionDataInfoPanel'){
+                        					Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").removeAll();
+                        				}
                         			}
                         		}
                             }

@@ -99,11 +99,11 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
                     			}else{
                     				if(calculateType==1 || calculateType==2){
-                    					var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceInfoDataGridPanel_Id");
-                            			if(isNotVal(deviceInfoGridPanel)){
-                            				deviceInfoGridPanel.getStore().load();
+                    					var deviceProductionGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
+                            			if(isNotVal(deviceProductionGridPanel)){
+                            				deviceProductionGridPanel.getStore().load();
                             			}else{
-                            				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceInfoStore');
+                            				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
                             			}
                     				}else{
                     					RealTimeMonitoringRightDeviceInfoTabPanel.setActiveTab(0);

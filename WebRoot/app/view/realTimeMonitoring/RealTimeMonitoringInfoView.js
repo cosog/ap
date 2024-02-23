@@ -653,7 +653,7 @@ function loadAndInitFESdiagramResultStat(all){
 	        }
 		});
 	}else{
-		Ext.getCmp("RealTimeMonitoringStatTabPanel").setActiveTab(1);
+		Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
 	}
 }
 

@@ -70,21 +70,33 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		var activeId = tabPanel.getActiveTab().id;
                     		if(activeId=="RealTimeMonitoringCurveTabPanel_Id"){
                     			deviceRealtimeMonitoringCurve(deviceType);
+                    			
+                    			var RealTimeMonitoringFSDiagramAnalysisTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
+                    			var RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
+                    			if(calculateType==1){
+                    				if(RealTimeMonitoringFSDiagramAnalysisTabPanel==undefined){
+                    					tabPanel.insert(0,realtimeCurveAndTableTabPanelItems[0]);
+                    				}
+                    				if(RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel==undefined){
+                    					tabPanel.insert(1,realtimeCurveAndTableTabPanelItems[1]);
+                    				}
+                    			}
+                    			
                     		}else if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
                         		CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType);
                     		}else{
         						if(calculateType==1){
         							Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
         						}else{
-        							tabPanel.setActiveTab(2);
+        							tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
+        							tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
         						}
-                    			
         					}
                     		
                     		
+                    		
+                    		
                     		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
-                    		
-                    		
                     		if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightControlAndVideoPanel'){
                     			createVideo(deviceType,record.data);
                     			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
@@ -95,6 +107,14 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     			}
                     		}else{
                     			var RealTimeMonitoringRightDeviceInfoTabPanel = Ext.getCmp("RealTimeMonitoringRightDeviceInfoTabPanel");
+                    			
+                    			var RealTimeMonitoringRightDeviceProductionDataInfoPanel = RealTimeMonitoringRightDeviceInfoTabPanel.getComponent("RealTimeMonitoringRightDeviceProductionDataInfoPanel");
+                				if((calculateType==1 || calculateType==2) && RealTimeMonitoringRightDeviceProductionDataInfoPanel==undefined){
+                					RealTimeMonitoringRightDeviceInfoTabPanel.insert(1,realTimeMonitoringRightDeviceInfoTabPanelItems[1]);
+                				}else if(calculateType==0 && RealTimeMonitoringRightDeviceProductionDataInfoPanel!=undefined){
+                					RealTimeMonitoringRightDeviceInfoTabPanel.remove(Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel"));
+                				}
+                    			
                     			if(RealTimeMonitoringRightDeviceInfoTabPanel.getActiveTab().id=='RealTimeMonitoringRightDeviceInfoPanel'){
                     				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
                     			}else{
@@ -105,8 +125,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                             			}else{
                             				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
                             			}
-                    				}else{
-                    					RealTimeMonitoringRightDeviceInfoTabPanel.setActiveTab(0);
                     				}
                     			}
                     		}

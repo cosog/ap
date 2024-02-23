@@ -1,4 +1,407 @@
 var deviceRealTimeMonitoringDataHandsontableHelper=null;
+var realtimeStatTabItems=[{
+	title:'工况诊断',
+	layout: 'fit',
+	closable:false,
+	closeAction:'hide',
+	id:'RealTimeMonitoringFESdiagramResultStatGraphPanel_Id',
+	hidden: onlyMonitor,
+	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if(isNotVal($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
+        		if ($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        			highchartsResize("RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id");
+                }else{
+                	var toolTip=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id',
+                    		target: 'RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id',
+                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                        });
+                	}
+                }
+        	}
+        }
+    }
+},{
+	title:'运行状态',
+	layout: 'fit',
+	closable:false,
+	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
+	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if(isNotVal($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
+        		if ($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
+        		}else{
+                	var toolTip=Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
+                    		target: 'RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
+                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                        });
+                	}
+                }
+        	}
+        }
+    }
+},{
+	title:'通信状态',
+	layout: 'fit',
+	closable:false,
+	hidden: onlyFESDiagramCal,
+	id:'RealTimeMonitoringStatGraphPanel_Id',
+	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
+        		if ($("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        			highchartsResize("RealTimeMonitoringStatGraphPanelPieDiv_Id");
+        		}else{
+                	var toolTip=Ext.getCmp("RealTimeMonitoringStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'RealTimeMonitoringStatGraphPanelPieToolTip_Id',
+                    		target: 'RealTimeMonitoringStatGraphPanelPieDiv_Id',
+                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                        });
+                	}
+                }
+        	}
+        }
+    }
+},{
+	title:'设备类型',
+	layout: 'fit',
+	hidden: true,
+	id:'RealTimeMonitoringDeviceTypeStatGraphPanel_Id',
+	html: '<div id="RealTimeMonitoringDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
+        		if ($("#RealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
+        			highchartsResize("RealTimeMonitoringDeviceTypeStatPieDiv_Id");
+        		}else{
+                	var toolTip=Ext.getCmp("RealTimeMonitoringDeviceTypeStatPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'RealTimeMonitoringDeviceTypeStatPieToolTip_Id',
+                    		target: 'RealTimeMonitoringDeviceTypeStatPieDiv_Id',
+                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                        });
+                	}
+                }
+        	}
+        }
+    }
+}];
+
+var realtimeCurveAndTableTabPanelItems=[{
+	title: '井筒分析',
+	margin: '0 0 0 0',
+    padding: 0,
+    autoScroll:false,
+    scrollable: false,
+    id: 'RealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
+    hidden: onlyMonitor,
+    layout: {
+        type: 'vbox',
+        pack: 'start',
+        align: 'stretch'
+    },
+    items: [{
+    		border: false,
+    		margin: '0 0 0 0',
+    		flex: 1,
+    		layout: {
+    	        type: 'hbox',
+    	        pack: 'start',
+    	        align: 'stretch'
+    	    },
+    	    items:[{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '0 0 0 0',
+                flex: 1,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
+                    	}
+                    }
+                }
+    	    },{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '0 0 0 1',
+                flex: 1,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv2_id");
+                    	}
+                    }
+                }
+    	    }]
+    	},{
+    		border: false,
+    		flex: 1,
+    		margin: '1 0 0 0',
+    		layout: {
+    	        type: 'hbox',
+    	        pack: 'start',
+    	        align: 'stretch'
+    	    },
+    	    items:[{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '0 0 0 0',
+                flex: 1,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv3_id");
+                    	}
+                    }
+                }
+    	    },{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '0 0 0 1',
+                flex: 1,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv4_id");
+                    	}
+                    }
+                }
+    	    }]
+    	}]
+},{
+	title: '地面分析',
+	margin: '0 0 0 0',
+    padding: 0,
+    autoScroll:false,
+    scrollable: false,
+    id: 'RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id',
+    hidden: onlyMonitor,
+    layout: {
+        type: 'vbox',
+        pack: 'start',
+        align: 'stretch'
+    },
+    items: [
+    	{
+    		border: false,
+    		margin: '0 0 0 0',
+    		flex: 1,
+    		layout: {
+    	        type: 'hbox',
+    	        pack: 'start',
+    	        align: 'stretch'
+    	    },
+    	    items:[{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '0 0 0 0',
+                flex: 1,
+//                height:300,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
+                    	}
+                    }
+                }
+    	    },{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '0 0 0 1',
+                flex: 1,
+//                height:300,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
+                    	}
+                    }
+                }
+    	    }]
+    	},{
+    		border: false,
+    		flex: 1,
+    		margin: '0 0 0 0',
+    		layout: {
+    	        type: 'hbox',
+    	        pack: 'start',
+    	        align: 'stretch'
+    	    },
+    	    items:[{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '1 0 0 0',
+                flex: 1,
+//                height:300,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
+                    	}
+                    }
+                }
+    	    },{
+    	    	border: true,
+    	    	layout: 'fit',
+    	    	margin: '1 0 0 1',
+                flex: 1,
+//                height:300,
+                align:'stretch',
+                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts()!=undefined){
+                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
+                    	}
+                    }
+                }
+    	    }]
+    	}
+//    	,{
+//    		border: false,
+////    		flex: 1,
+//    		margin: '0 0 0 0',
+//    		layout: {
+//    	        type: 'hbox',
+//    	        pack: 'start',
+//    	        align: 'stretch'
+//    	    },
+//    	    items:[{
+//    	    	border: true,
+//    	    	layout: 'fit',
+//    	    	margin: '1 0 0 0',
+//                flex: 1,
+//                height:300,
+//                align:'stretch',
+//                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
+//                listeners: {
+//                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+//                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").highcharts()!=undefined){
+//                			highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
+//                		}
+//                    }
+//                }
+//    	    }]
+//    	}
+    ]
+},{
+	title:'趋势曲线',
+	id:"RealTimeMonitoringCurveTabPanel_Id",
+	layout: 'border',
+	items: [{
+		region: 'center',
+		layout: 'fit',
+		autoScroll: true,
+		border: false,
+		id:"realTimeMonitoringCurveContent",
+		html: '<div id="realTimeMonitoringCurveContainer" class="hbox" style="width:100%;height:100%;"></div>',
+		listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	var container=$('#realTimeMonitoringCurveContainer');
+    			if(container!=undefined && container.length>0){
+    				var containerChildren=container[0].children;
+    				if(containerChildren!=undefined && containerChildren.length>0){
+    					for(var i=0;i<containerChildren.length;i++){
+    						var chart = $("#"+containerChildren[i].id).highcharts(); 
+    						if(isNotVal(chart)){
+    							highchartsResize(containerChildren[i].id);
+    						}
+    					}
+    				}
+    			}
+            }
+        }
+	}]
+},{
+	title:'动态数据',
+	id:"RealTimeMonitoringTableTabPanel_Id",
+	layout: 'border',
+    border: false,
+    items: [{
+    	region: 'center',
+    	header: false,
+    	id: "RealTimeMonitoringInfoDataPanel_Id",
+    	layout: 'fit',
+    	html:'<div class="RealTimeMonitoringInfoDataTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="RealTimeMonitoringInfoDataTableInfoDiv_id"></div></div>',
+    	listeners: {
+            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+            	if(deviceRealTimeMonitoringDataHandsontableHelper!=null && deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
+//            		deviceRealTimeMonitoringDataHandsontableHelper.hot.refreshDimensions();
+            		var newWidth=width;
+            		var newHeight=height;
+            		var header=thisPanel.getHeader();
+            		if(header){
+            			newHeight=newHeight-header.lastBox.height-2;
+            		}
+            		deviceRealTimeMonitoringDataHandsontableHelper.hot.updateSettings({
+            			width:newWidth,
+            			height:newHeight
+            		});
+            	}
+            }
+        }
+    }]
+}];
+
+var realTimeMonitoringRightDeviceInfoTabPanelItems=[{
+	title:'设备信息',
+	layout: 'border',
+	id:'RealTimeMonitoringRightDeviceInfoPanel',
+	items:[{
+		region: 'center',
+		id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
+		title:'附加信息',
+        border: false,
+        layout: 'fit',
+        autoScroll: true,
+        scrollable: true
+	},{
+		region: 'south',
+		id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
+		title:'辅件设备',
+		height: '50%',
+		border: false,
+        layout: 'fit',
+        split: true,
+        hidden: false,
+        collapsible: true,
+        autoScroll: true,
+        scrollable: true
+	}]
+},{
+	title:'生产数据',
+	id: 'RealTimeMonitoringRightDeviceProductionDataInfoPanel',
+    border: false,
+    layout: 'fit'
+}];
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.realTimeMonitoringInfoPanel',
@@ -6,6 +409,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     border: false,
     initComponent: function () {
         var me = this;
+        
+        
         var deviceCombStore = new Ext.data.JsonStore({
         	pageSize:defaultWellComboxSize,
             fields: [{
@@ -122,9 +527,16 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              iconCls: 'note-refresh',
                              hidden:false,
                              handler: function (v, o) {
-//                            	 var tabPanel=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").hide();
+                            	 var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
                             	 
-                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
+                            	 tabPanel.remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
+                            	 
+//                            	 var getTabId = tabPanel.getComponent("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id");
+//                            	 if(getTabId){
+//                            		 
+//                            	 }else{
+//                            		 Ext.getCmp("RealTimeMonitoringStatTabPanel").insert(0,realtimeStatTabItems[0]);
+//                            	 }
                             	 
 //                            	 var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
                             	 
@@ -148,17 +560,25 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              iconCls: 'export',
                              hidden:false,
                              handler: function (v, o) {
-                            	 var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                            	 var deviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
-                            	 var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
-                             	 var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
-                             	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
-                             	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
-                            	 var deviceType=0;
-                            	 var fileName='抽油机井实时监控数据';
-                            	 var title='抽油机井实时监控数据';
-                            	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
-                            	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
+                            	
+                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").insert(0,realtimeStatTabItems[0]);
+                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").setActiveTab(0);
+                            	 
+                            	 
+                            	 
+//                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").show(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
+                            	 
+//                            	 var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//                            	 var deviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
+//                            	 var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
+//                             	 var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
+//                             	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
+//                             	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
+//                            	 var deviceType=0;
+//                            	 var fileName='抽油机井实时监控数据';
+//                            	 var title='抽油机井实时监控数据';
+//                            	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
+//                            	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                              }
                          }, '->', {
                          	xtype: 'button',
@@ -182,106 +602,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     	id:'RealTimeMonitoringStatTabPanel',
                     	activeTab: onlyMonitor?1:0,
                         header: false,
+                        closable:true,
+            			closeAction:'hide',
                 		tabPosition: 'top',
-                		items: [{
-                			title:'工况诊断',
-                			layout: 'fit',
-                			closable:true,
-                        	id:'RealTimeMonitoringFESdiagramResultStatGraphPanel_Id',
-                        	hidden: onlyMonitor,
-                        	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(isNotVal($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
-                                		if ($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                			highchartsResize("RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id");
-                                        }else{
-                                        	var toolTip=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id");
-                                        	if(!isNotVal(toolTip)){
-                                        		Ext.create('Ext.tip.ToolTip', {
-                                                    id:'RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id',
-                                            		target: 'RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id',
-                                                    html: '点击饼图不同区域或标签，查看相应统计数据'
-                                                });
-                                        	}
-                                        }
-                                	}
-                                }
-                            }
-                		},{
-                			title:'运行状态',
-                			layout: 'fit',
-                			closable:true,
-                        	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
-                        	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(isNotVal($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
-                                		if ($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
-                                		}else{
-                                        	var toolTip=Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
-                                        	if(!isNotVal(toolTip)){
-                                        		Ext.create('Ext.tip.ToolTip', {
-                                                    id:'RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
-                                            		target: 'RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
-                                                    html: '点击饼图不同区域或标签，查看相应统计数据'
-                                                });
-                                        	}
-                                        }
-                                	}
-                                }
-                            }
-                		},{
-                			title:'通信状态',
-                			layout: 'fit',
-                			closable:true,
-                			hidden: onlyFESDiagramCal,
-                        	id:'RealTimeMonitoringStatGraphPanel_Id',
-                        	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
-                                		if ($("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                			highchartsResize("RealTimeMonitoringStatGraphPanelPieDiv_Id");
-                                		}else{
-                                        	var toolTip=Ext.getCmp("RealTimeMonitoringStatGraphPanelPieToolTip_Id");
-                                        	if(!isNotVal(toolTip)){
-                                        		Ext.create('Ext.tip.ToolTip', {
-                                                    id:'RealTimeMonitoringStatGraphPanelPieToolTip_Id',
-                                            		target: 'RealTimeMonitoringStatGraphPanelPieDiv_Id',
-                                                    html: '点击饼图不同区域或标签，查看相应统计数据'
-                                                });
-                                        	}
-                                        }
-                                	}
-                                }
-                            }
-                		},{
-                			title:'设备类型',
-                			layout: 'fit',
-                			hidden: true,
-                        	id:'RealTimeMonitoringDeviceTypeStatGraphPanel_Id',
-                        	html: '<div id="RealTimeMonitoringDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
-                                		if ($("#RealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-                                			highchartsResize("RealTimeMonitoringDeviceTypeStatPieDiv_Id");
-                                		}else{
-                                        	var toolTip=Ext.getCmp("RealTimeMonitoringDeviceTypeStatPieToolTip_Id");
-                                        	if(!isNotVal(toolTip)){
-                                        		Ext.create('Ext.tip.ToolTip', {
-                                                    id:'RealTimeMonitoringDeviceTypeStatPieToolTip_Id',
-                                            		target: 'RealTimeMonitoringDeviceTypeStatPieDiv_Id',
-                                                    html: '点击饼图不同区域或标签，查看相应统计数据'
-                                                });
-                                        	}
-                                        }
-                                	}
-                                }
-                            }
-                		}],
+                		items: realtimeStatTabItems,
                 		listeners: {
             				tabchange: function (tabPanel, newCard,oldCard, obj) {
             					if(newCard.id=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
@@ -315,276 +639,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		activeTab: onlyMonitor?2:0,
                 		border: false,
                 		tabPosition: 'top',
-                		items: [{
-                        	title: '井筒分析',
-                        	margin: '0 0 0 0',
-                            padding: 0,
-                            autoScroll:false,
-                            scrollable: false,
-                            id: 'RealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
-                            hidden: onlyMonitor,
-                            layout: {
-                                type: 'vbox',
-                                pack: 'start',
-                                align: 'stretch'
-                            },
-                            items: [{
-                            		border: false,
-                            		margin: '0 0 0 0',
-                            		flex: 1,
-                            		layout: {
-                            	        type: 'hbox',
-                            	        pack: 'start',
-                            	        align: 'stretch'
-                            	    },
-                            	    items:[{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '0 0 0 0',
-                                        flex: 1,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
-                                            	}
-                                            }
-                                        }
-                            	    },{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '0 0 0 1',
-                                        flex: 1,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv2_id");
-                                            	}
-                                            }
-                                        }
-                            	    }]
-                            	},{
-                            		border: false,
-                            		flex: 1,
-                            		margin: '1 0 0 0',
-                            		layout: {
-                            	        type: 'hbox',
-                            	        pack: 'start',
-                            	        align: 'stretch'
-                            	    },
-                            	    items:[{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '0 0 0 0',
-                                        flex: 1,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv3_id");
-                                            	}
-                                            }
-                                        }
-                            	    },{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '0 0 0 1',
-                                        flex: 1,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv4_id");
-                                            	}
-                                            }
-                                        }
-                            	    }]
-                            	}]
-                        },{
-                        	title: '地面分析',
-                        	margin: '0 0 0 0',
-                            padding: 0,
-                            autoScroll:false,
-                            scrollable: false,
-                            id: 'RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id',
-                            hidden: onlyMonitor,
-                            layout: {
-                                type: 'vbox',
-                                pack: 'start',
-                                align: 'stretch'
-                            },
-                            items: [
-                            	{
-                            		border: false,
-                            		margin: '0 0 0 0',
-                            		flex: 1,
-                            		layout: {
-                            	        type: 'hbox',
-                            	        pack: 'start',
-                            	        align: 'stretch'
-                            	    },
-                            	    items:[{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '0 0 0 0',
-                                        flex: 1,
-//                                        height:300,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
-                                            	}
-                                            }
-                                        }
-                            	    },{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '0 0 0 1',
-                                        flex: 1,
-//                                        height:300,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
-                                            	}
-                                            }
-                                        }
-                            	    }]
-                            	},{
-                            		border: false,
-                            		flex: 1,
-                            		margin: '0 0 0 0',
-                            		layout: {
-                            	        type: 'hbox',
-                            	        pack: 'start',
-                            	        align: 'stretch'
-                            	    },
-                            	    items:[{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '1 0 0 0',
-                                        flex: 1,
-//                                        height:300,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
-                                            	}
-                                            }
-                                        }
-                            	    },{
-                            	    	border: true,
-                            	    	layout: 'fit',
-                            	    	margin: '1 0 0 1',
-                                        flex: 1,
-//                                        height:300,
-                                        align:'stretch',
-                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
-                                        listeners: {
-                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts()!=undefined){
-                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
-                                            	}
-                                            }
-                                        }
-                            	    }]
-                            	}
-//                            	,{
-//                            		border: false,
-////                            		flex: 1,
-//                            		margin: '0 0 0 0',
-//                            		layout: {
-//                            	        type: 'hbox',
-//                            	        pack: 'start',
-//                            	        align: 'stretch'
-//                            	    },
-//                            	    items:[{
-//                            	    	border: true,
-//                            	    	layout: 'fit',
-//                            	    	margin: '1 0 0 0',
-//                                        flex: 1,
-//                                        height:300,
-//                                        align:'stretch',
-//                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
-//                                        listeners: {
-//                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-//                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").highcharts()!=undefined){
-//                                        			highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
-//                                        		}
-//                                            }
-//                                        }
-//                            	    }]
-//                            	}
-                            ]
-                        },{
-                			title:'趋势曲线',
-                			id:"RealTimeMonitoringCurveTabPanel_Id",
-                			layout: 'border',
-                			items: [{
-                				region: 'center',
-                				layout: 'fit',
-                    			autoScroll: true,
-                    			border: false,
-                    			id:"realTimeMonitoringCurveContent",
-                    			html: '<div id="realTimeMonitoringCurveContainer" class="hbox" style="width:100%;height:100%;"></div>',
-                    			listeners: {
-                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                    	var container=$('#realTimeMonitoringCurveContainer');
-            		        			if(container!=undefined && container.length>0){
-            		        				var containerChildren=container[0].children;
-            		        				if(containerChildren!=undefined && containerChildren.length>0){
-            		        					for(var i=0;i<containerChildren.length;i++){
-            		        						var chart = $("#"+containerChildren[i].id).highcharts(); 
-            		        						if(isNotVal(chart)){
-            		        							highchartsResize(containerChildren[i].id);
-            		        						}
-            		        					}
-            		        				}
-            		        			}
-                                    }
-                                }
-                			}]
-                		},{
-                			title:'动态数据',
-                			id:"RealTimeMonitoringTableTabPanel_Id",
-                			layout: 'border',
-                            border: false,
-                            items: [{
-                            	region: 'center',
-                            	header: false,
-                            	id: "RealTimeMonitoringInfoDataPanel_Id",
-                            	layout: 'fit',
-                            	html:'<div class="RealTimeMonitoringInfoDataTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="RealTimeMonitoringInfoDataTableInfoDiv_id"></div></div>',
-                            	listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if(deviceRealTimeMonitoringDataHandsontableHelper!=null && deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
-//                                    		deviceRealTimeMonitoringDataHandsontableHelper.hot.refreshDimensions();
-                                    		var newWidth=width;
-                                    		var newHeight=height;
-                                    		var header=thisPanel.getHeader();
-                                    		if(header){
-                                    			newHeight=newHeight-header.lastBox.height-2;
-                                    		}
-                                    		deviceRealTimeMonitoringDataHandsontableHelper.hot.updateSettings({
-                                    			width:newWidth,
-                                    			height:newHeight
-                                    		});
-                                    	}
-                                    }
-                                }
-                            }]
-                		}],
+                		items: realtimeCurveAndTableTabPanelItems,
                 		listeners: {
             				tabchange: function (tabPanel, newCard,oldCard, obj) {
             					var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
@@ -619,37 +674,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     		activeTab: 0,
                     		border: false,
                     		tabPosition: 'top',
-                    		items:[{
-                    			title:'设备信息',
-                    			layout: 'border',
-                    			id:'RealTimeMonitoringRightDeviceInfoPanel',
-                    			items:[{
-                    				region: 'center',
-                    				id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
-                    				title:'附加信息',
-                                    border: false,
-                                    layout: 'fit',
-                                    autoScroll: true,
-                                    scrollable: true
-                    			},{
-                    				region: 'south',
-                    				id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
-                    				title:'辅件设备',
-                    				height: '50%',
-                    				border: false,
-                                    layout: 'fit',
-                                    split: true,
-                                    hidden: false,
-                                    collapsible: true,
-                                    autoScroll: true,
-                                    scrollable: true
-                    			}]
-                    		},{
-                    			title:'生产数据',
-                    			id: 'RealTimeMonitoringRightDeviceProductionDataInfoPanel',
-                                border: false,
-                                layout: 'fit'
-                    		}],
+                    		items:realTimeMonitoringRightDeviceInfoTabPanelItems,
                     		listeners: {
                             	tabchange: function (tabPanel, newCard, oldCard,obj) {
                             		if(newCard.id=='RealTimeMonitoringRightDeviceInfoPanel'){

@@ -319,9 +319,15 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		
 		
 		if(!tabChange){
-
 			Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-			var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+			
+			var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
+			var getTabId = tabPanel.getComponent("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id");
+       	 	if(getTabId==undefined){
+       	 		Ext.getCmp("RealTimeMonitoringStatTabPanel").insert(0,realtimeStatTabItems[0]);
+       	 	}
+			
+			var statTabActiveId = tabPanel.getActiveTab().id;
 			if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
 				loadAndInitFESdiagramResultStat(true);
 			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){

@@ -301,10 +301,11 @@ public class RealTimeMonitoringController extends BaseController {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
-			json = realTimeMonitoringService.getDeviceRealTimeMonitoringData(deviceId,deviceName,deviceType,user.getUserNo());
+			json = realTimeMonitoringService.getDeviceRealTimeMonitoringData(deviceId,deviceName,deviceType,calculateType,user.getUserNo());
 		}
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -430,9 +431,10 @@ public class RealTimeMonitoringController extends BaseController {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		if(user!=null){
-			json = realTimeMonitoringService.getRealTimeMonitoringCurveData(deviceId,deviceName,deviceType,user.getUserNo());
+			json = realTimeMonitoringService.getRealTimeMonitoringCurveData(deviceId,deviceName,deviceType,calculateType,user.getUserNo());
 		}
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="

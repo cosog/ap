@@ -649,7 +649,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
             							deviceRealtimeMonitoringCurve(0);
                 					}else if(newCard.id=="RealTimeMonitoringTableTabPanel_Id"){
                 						var selectedItem=gridPanel.getStore().getAt(selectRow);
-                            			CreateDeviceRealTimeMonitoringDataTable(selectedItem.data.id,selectedItem.data.wellName,0);
+                            			CreateDeviceRealTimeMonitoringDataTable(selectedItem.data.id,selectedItem.data.wellName,getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"),selectedItem.data.calculateType);
                 					}else{
                 						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
                 					}
@@ -860,7 +860,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     }
 });
 
-function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType){
+function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,calculateType){
 	Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -911,7 +911,8 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType)
 		params: {
 			deviceId:deviceId,
 			deviceName:deviceName,
-			deviceType:deviceType
+			deviceType:deviceType,
+			calculateType:calculateType
         }
 	});
 };

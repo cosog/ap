@@ -617,44 +617,47 @@ function loadAndInitFESdiagramResultStat(all){
 	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
 	
 	var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
-	if(deviceCount>0){
-		var deviceTypeStatValue='';
-		var deviceTypeStatValue='';
-		if(all){
-			Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").setValue('');
-			Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
-			Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
-			Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
-			commStatusStatValue='';
-			deviceTypeStatValue='';
-		}else{
-			deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
-			commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
-		}
-		Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(cosog.string.loading).show();
-		Ext.Ajax.request({
-			method:'POST',
-			url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
-			success:function(response) {
-				Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
-				var result =  Ext.JSON.decode(response.responseText);
-				Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
-				initRealTimeMonitoringFESDiagramResultStatPieOrColChat(result);
-			},
-			failure:function(){
-				Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
-				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-			},
-			params: {
-				orgId:orgId,
-				deviceType:deviceType,
-				commStatusStatValue:commStatusStatValue,
-				deviceTypeStatValue:deviceTypeStatValue
-	        }
-		});
+
+	var deviceTypeStatValue='';
+	var deviceTypeStatValue='';
+	if(all){
+		Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
+		commStatusStatValue='';
+		deviceTypeStatValue='';
 	}else{
-		Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
+		deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
+		commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
 	}
+	Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
+		success:function(response) {
+			Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
+			initRealTimeMonitoringFESDiagramResultStatPieOrColChat(result);
+		},
+		failure:function(){
+			Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			orgId:orgId,
+			deviceType:deviceType,
+			commStatusStatValue:commStatusStatValue,
+			deviceTypeStatValue:deviceTypeStatValue
+        }
+	});
+
+//	if(deviceCount>0){
+//		
+//	}else{
+//		Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
+//	}
 }
 
 function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
@@ -1185,9 +1188,9 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 function deviceRealtimeMonitoringCurve(deviceType){
 	var selectRowId="RealTimeMonitoringInfoDeviceListSelectRow_Id";
 	var gridPanelId="RealTimeMonitoringListGridPanel_Id";
-	var contentId="rpcRealTimeMonitoringCurveContent";
-	var containerId="rpcRealTimeMonitoringCurveContainer";
-	var divPrefix="rpcRealTimeMonitoringCurveDiv";
+	var contentId="realTimeMonitoringCurveContent";
+	var containerId="realTimeMonitoringCurveContainer";
+	var divPrefix="realTimeMonitoringCurveDiv";
 	var eastPanelId="RealTimeMonitoringEastPanel_Id";
 	var panelId="RealTimeMonitoringCurveTabPanel_Id";
 	
@@ -1195,10 +1198,12 @@ function deviceRealtimeMonitoringCurve(deviceType){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
 	var deviceId=0;
+	var calculateType=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
 	if(selectRow>=0){
+		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
-		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.wellName;
+		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1329,7 +1334,8 @@ function deviceRealtimeMonitoringCurve(deviceType){
 		params: {
 			deviceName:deviceName,
 			deviceId:deviceId,
-			deviceType:deviceType
+			deviceType:deviceType,
+			calculateType:calculateType
         }
 	});
 };

@@ -302,7 +302,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
 		
+		var orgId = Ext.getCmp('leftOrg_Id').getValue();
 		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+		var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
 		
 		if(selectedDeviceType_global!=deviceType){
 //			tabPanel.setActiveTab("RPCRealTimeMonitoringInfoPanel_Id");
@@ -321,22 +323,32 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		if(!tabChange){
 			Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
 			
+			var removeFESdiagramResultStatGraphPanel=false;
+			
 			var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
 			var getTabId = tabPanel.getComponent("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id");
-       	 	if(getTabId==undefined){
+       	 	if(deviceCount>0 && getTabId==undefined){
        	 		Ext.getCmp("RealTimeMonitoringStatTabPanel").insert(0,realtimeStatTabItems[0]);
+       	 	}else if(deviceCount==0 && getTabId!=undefined){
+       	 		Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
+       	 		removeFESdiagramResultStatGraphPanel=true;
        	 	}
 			
-			var statTabActiveId = tabPanel.getActiveTab().id;
-			if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-				loadAndInitFESdiagramResultStat(true);
-			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
-				loadAndInitCommStatusStat(true);
-			}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
-				loadAndInitRunStatusStat(true);
-			}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-				loadAndInitDeviceTypeStat(true);
-			}
+       	 	var statTabActiveId = tabPanel.getActiveTab().id;
+       	 	if(!(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id" && removeFESdiagramResultStatGraphPanel)){
+       	 		if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+       	 			loadAndInitFESdiagramResultStat(true);
+       	 		}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
+       	 			loadAndInitCommStatusStat(true);
+       	 		}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
+       	 			loadAndInitRunStatusStat(true);
+       	 		}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+       	 			loadAndInitDeviceTypeStat(true);
+       	 		}
+       	 	}
+       	 	
+			
+			
 			Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setValue('');
 			Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setRawValue('');
 			

@@ -1736,7 +1736,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return true;
 	}
 
-	public String getDeviceRealTimeMonitoringData(String deviceId,String deviceName,String deviceType,int userNo) throws IOException, SQLException{
+	public String getDeviceRealTimeMonitoringData(String deviceId,String deviceName,String deviceType,String calculateType,int userNo) throws IOException, SQLException{
 		int items=3;
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
@@ -1749,6 +1749,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		List<byte[]> inputItemSet=null;
 		UserInfo userInfo=null;
 		String tableName="tbl_acqdata_latest";
+		String calAndInputTableName="";
 		String deviceTableName="tbl_device";
 		String deviceInfoKey="DeviceInfo";
 		String calItemsKey="rpcCalItemList";
@@ -1757,6 +1758,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String alarmInstanceCode="";
 		
 		DeviceInfo deviceInfo=null;
+		
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			calAndInputTableName="tbl_rpcacqdata_latest";
+		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+			calAndInputTableName="tbl_pcpacqdata_latest";
+		}
 		
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
@@ -1921,19 +1928,26 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						sql+=",t2."+col;
 					}
 
-					for(int i=0;i<calItemList.size();i++){
-						String column=calItemList.get(i).getCode();
-						if("resultName".equalsIgnoreCase(calItemList.get(i).getCode())){
-							column="resultCode";
+					if(StringManagerUtils.stringToInteger(calculateType)>0){
+						for(int i=0;i<calItemList.size();i++){
+							String column=calItemList.get(i).getCode();
+							if("resultName".equalsIgnoreCase(calItemList.get(i).getCode())){
+								column="resultCode";
+							}
+							sql+=",t3."+column;
 						}
-						sql+=",t2."+column;
+						if(inputItemList.size()>0){
+							sql+=",t3.productiondata";
+						}
 					}
-					if(inputItemList.size()>0){
-						sql+=",t2.productiondata";
-					}
+					
 					sql+= " from "+deviceTableName+" t "
-							+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
-							+ " where  t.id="+deviceId;
+							+ " left outer join "+tableName+" t2 on t2.deviceid=t.id";
+					if(StringManagerUtils.isNotNull(calAndInputTableName)&&(calItemList.size()>0 || inputItemList.size()>0)){
+						sql+=" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t.id";
+					}
+					
+					sql+= " where  t.id="+deviceId;
 					List<?> list = this.findCallSql(sql);
 					if(list.size()>0){
 						int row=1;
@@ -1942,7 +1956,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
-							if(deviceInfo.getCalculateType()==1){
+							if(StringManagerUtils.stringToInteger(calculateType)==1){
 								type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 								RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 								for(int i=0;i<inputItemList.size();i++){
@@ -2008,7 +2022,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
-							}else if(deviceInfo.getCalculateType()==2){
+							}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 								for(int i=0;i<inputItemList.size();i++){
@@ -3605,7 +3619,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getRealTimeMonitoringCurveData(String deviceId,String deviceName,String deviceType,int userNo)throws Exception {
+	public String getRealTimeMonitoringCurveData(String deviceId,String deviceName,String deviceType,String calculateType,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
@@ -3678,6 +3692,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> itemColumnList=new ArrayList<String>();
 			List<String> curveConfList=new ArrayList<String>();
 			
+			List<String> calItemNameList=new ArrayList<String>();
+			List<String> calItemColumnList=new ArrayList<String>();
+			List<String> calItemCurveConfList=new ArrayList<String>();
+			
 			List<String> inputItemNameList=new ArrayList<String>();
 			List<String> inputItemColumnList=new ArrayList<String>();
 			List<String> inputItemCurveConfList=new ArrayList<String>();
@@ -3748,7 +3766,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 										}
 									}else if("1".equalsIgnoreCase(type)){
-										itemColumnList.add(itemcode);
+										calItemColumnList.add(itemcode);
 										String itemName=itemname;
 										if(calItemSet!=null){
 											for(byte[] calItemByteArr:calItemSet){
@@ -3762,8 +3780,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 										}
 										
-										itemNameList.add(itemName);
-										curveConfList.add(realtimecurveconf.replaceAll("null", ""));
+										calItemNameList.add(itemName);
+										calItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
@@ -3838,7 +3856,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 										}
 									}else if("1".equalsIgnoreCase(type)){
-										itemColumnList.add(itemcode);
+										calItemColumnList.add(itemcode);
 										String itemName=itemname;
 										if(calItemSet!=null){
 											for(byte[] calItemByteArr:calItemSet){
@@ -3853,8 +3871,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 										}
 										
-										itemNameList.add(itemName);
-										curveConfList.add(realtimecurveconf.replaceAll("null", ""));
+										calItemNameList.add(itemName);
+										calItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
@@ -3886,6 +3904,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			for(int i=0;i<itemNameList.size();i++){
 				itemsBuff.append("\""+itemNameList.get(i)+"\",");
 			}
+			for(int i=0;i<calItemNameList.size();i++){
+				itemsBuff.append("\""+calItemNameList.get(i)+"\",");
+			}
 			for(int i=0;i<inputItemNameList.size();i++){
 				itemsBuff.append("\""+inputItemNameList.get(i)+"\",");
 			}
@@ -3898,6 +3919,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			for(int i=0;i<curveConfList.size();i++){
 				curveConfBuff.append(""+curveConfList.get(i)+",");
 			}
+			for(int i=0;i<calItemCurveConfList.size();i++){
+				curveConfBuff.append(""+calItemCurveConfList.get(i)+",");
+			}
 			for(int i=0;i<inputItemCurveConfList.size();i++){
 				curveConfBuff.append(""+inputItemCurveConfList.get(i)+",");
 			}
@@ -3906,23 +3930,41 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			curveConfBuff.append("]");
 			
-			result_json.append("{\"deviceName\":\""+deviceName+"\",\"curveCount\":"+(itemNameList.size()+inputItemNameList.size())+",\"curveItems\":"+itemsBuff+",\"curveConf\":"+curveConfBuff+",\"list\":[");
-			if(itemColumnList.size()>0){
+			result_json.append("{\"deviceName\":\""+deviceName+"\",\"curveCount\":"+(itemNameList.size()+calItemNameList.size()+inputItemNameList.size())+",\"curveItems\":"+itemsBuff+",\"curveConf\":"+curveConfBuff+",\"list\":[");
+			
+			
+			
+			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
 				String columns="";
+				String calAndInputColumn="";
+				String calAndInputDataTable="";
+				if(StringManagerUtils.stringToInteger(calculateType)==1){
+					calAndInputDataTable="tbl_rpcacqdata_hist";
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+					calAndInputDataTable="tbl_pcpacqdata_hist";
+				}
 				for(int i=0;i<itemColumnList.size();i++){
-					columns+=","+itemColumnList.get(i);
+					columns+=",t."+itemColumnList.get(i);
 				}
-				if(inputItemColumnList.size()>0){
-					columns+=",t.productiondata";
+				if(StringManagerUtils.stringToInteger(calculateType)>0){
+					for(int i=0;i<calItemColumnList.size();i++){
+						calAndInputColumn+=",t3."+calItemColumnList.get(i);
+					}
+					if(inputItemColumnList.size()>0){
+						calAndInputColumn+=",t3.productiondata";
+					}
 				}
-				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns
-						+ " from "+tableName +" t,"+deviceTableName+" t2 "
-						+ " where t.deviceid=t2.id "
-						+ " and t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
+				
+				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
+						+ " from "+tableName +" t"
+						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id"
+						+ " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime"
+						+ " where t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
 						+ " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
 				int rarefy=total/vacuateThreshold+1;
 				sql+= " order by t.acqtime";
+				
 				String finalSql=sql;
 				if(rarefy>1){
 					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
@@ -3934,11 +3976,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					for(int j=1;j<=itemColumnList.size();j++){
 						result_json.append(obj[j]+",");
 					}
+					
+					for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
+						result_json.append(obj[j]+",");
+					}
 					if(inputItemColumnList.size()>0){
 						String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 						Gson gson = new Gson();
 						java.lang.reflect.Type type=null;
-						if(deviceInfo.getCalculateType()==1){
+						if(StringManagerUtils.stringToInteger(calculateType)==1){
 							type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 							RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 							for(int j=0;j<inputItemColumnList.size();j++){
@@ -3979,7 +4025,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}
 								result_json.append(inputItemValue+",");
 							}
-						}else if(deviceInfo.getCalculateType()==2){
+						}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 							type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 							PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 							for(int j=0;j<inputItemColumnList.size();j++){

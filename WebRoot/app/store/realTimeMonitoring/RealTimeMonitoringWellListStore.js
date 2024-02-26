@@ -83,7 +83,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     			}
                     			
                     		}else if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
-                        		CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType);
+                        		CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,calculateType);
                     		}else{
         						if(calculateType==1){
         							Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');

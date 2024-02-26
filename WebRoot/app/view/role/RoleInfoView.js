@@ -8,6 +8,7 @@ Ext.define("AP.view.role.RoleInfoView", {
         var me = this;
         var RoleInfoGridPanel = Ext.create('AP.view.role.RoleInfoGridPanel');
         var RightModuleInfoGridPanel = Ext.create('AP.view.role.RightModuleInfoTreeGridView');
+//        var RightTabInfoTreeGridView = Ext.create('AP.view.role.RightTabInfoTreeGridView');
         Ext.apply(me, {
         	items: [{
         		region:'center',
@@ -18,27 +19,56 @@ Ext.define("AP.view.role.RoleInfoView", {
         	},{
         		region:'east',
         		width:'25%',
-        		title:'模块授权',
+        		layout: 'border',
         		header:false,
-        		split: true,
-                collapsible: true,
-        		layout: "fit",
-        		items:RightModuleInfoGridPanel,
-        		tbar: [{
-                    xtype: 'label',
-                    html: '模块授权',
-                    id:'RightModuleTreeInfoLabel_Id',
-                    style: 'margin-left: 4px'
-                },'->', {
-                    xtype: 'button',
-                    itemId: 'addRightModuleLableClassBtnId',
-                    id: 'addRightModuleLableClassBtn_Id',
-                    text: '保存',
-                    iconCls: 'save',
-                    pressed: false,
-                    handler: function () {
-                    	grantRolePermission();
-                    }
+        		items:[{
+        			region:'center',
+        			layout: "fit",
+        			title:'模块授权',
+            		split: true,
+                    collapsible: true,
+            		layout: "fit",
+            		items:RightModuleInfoGridPanel,
+            		tbar: [{
+                        xtype: 'label',
+                        html: '模块授权',
+                        id:'RightModuleTreeInfoLabel_Id',
+                        style: 'margin-left: 4px'
+                    },'->', {
+                        xtype: 'button',
+                        itemId: 'addRightModuleLableClassBtnId',
+                        id: 'addRightModuleLableClassBtn_Id',
+                        text: '保存',
+                        iconCls: 'save',
+                        pressed: false,
+                        handler: function () {
+                        	grantRolePermission();
+                        }
+            		}]
+        		},{
+        			region:'south',
+        			height:'30%',
+        			title:'标签授权',
+        			split: true,
+                    collapsible: true,
+            		layout: "fit",
+            		items:RightTabInfoTreeGridView,
+            		tbar: [{
+                        xtype: 'label',
+                        html: '标签授权',
+                        id:'RightTabTreeInfoLabel_Id',
+                        style: 'margin-left: 4px'
+                    },'->', {
+                        xtype: 'button',
+                        itemId: 'addRightTabLableClassBtnId',
+                        id: 'addRightTabLableClassBtn_Id',
+                        text: '保存',
+                        iconCls: 'save',
+                        pressed: false,
+                        handler: function () {
+//                        	grantRolePermission();
+                        }
+            		}]
         		}]
         	}]
         });

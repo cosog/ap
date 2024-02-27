@@ -227,4 +227,14 @@ private CommonDataService service;
 		}
 		return flag;
 	}
+	
+	public List<T> queryRightTabs(Class<T> clazz, User user) throws Exception {
+		
+		String queryString = "SELECT tab FROM TabInfo tab where tab.id in " 
+				+ "( select distinct rt.rtTabId from User u ,Role role,RoleTab rt "
+				+ "where  role.roleId =rt.rtRoleId   " 
+				+ " and role.roleId = u.userType   and u.userNo="
+				+ user.getUserNo() + ") order by tab.sortNum, tab.id";
+		return find(queryString);
+	}
 }

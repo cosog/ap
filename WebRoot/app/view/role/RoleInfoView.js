@@ -8,7 +8,7 @@ Ext.define("AP.view.role.RoleInfoView", {
         var me = this;
         var RoleInfoGridPanel = Ext.create('AP.view.role.RoleInfoGridPanel');
         var RightModuleInfoGridPanel = Ext.create('AP.view.role.RightModuleInfoTreeGridView');
-//        var RightTabInfoTreeGridView = Ext.create('AP.view.role.RightTabInfoTreeGridView');
+        var RightTabInfoTreeGridView = Ext.create('AP.view.role.RightTabInfoTreeGridView');
         Ext.apply(me, {
         	items: [{
         		region:'center',

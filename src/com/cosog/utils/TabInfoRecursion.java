@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.cosog.model.TabInfo;
+
 
 /**<p>描述：tab树形treePanel递归类</p>
  * 
@@ -44,6 +46,40 @@ public class TabInfoRecursion {
 		data = returnStr.toString().replaceAll("null", "");
 		return data;
 	}
+	
+	public String recursionRightTabTreeFn(List list, TabInfo tabInfo) {
+
+		String data = "";
+		if (hasChild(list, tabInfo)) {
+			returnStr.append("{\"text\":\"" + tabInfo.getTabName() + "\"");
+			returnStr.append(",\"parentId\":\"" + tabInfo.getParentId() + "\"");
+			returnStr.append(",\"sortNum\":\"" + tabInfo.getSortNum() + "\"");
+			returnStr.append(",\"tabId\":\"" + tabInfo.getId() + "\"");
+			returnStr.append(",\"checked\":false");
+			returnStr.append(",\"expanded\":true");
+			returnStr.append(",\"children\":[");
+			List childList = getChildList(list, tabInfo);
+			Iterator it = childList.iterator();
+			while (it.hasNext()) {
+				TabInfo n = (TabInfo) it.next();
+				recursionRightTabTreeFn(list, n);
+			}
+			returnStr.append("]},");
+		} else {
+			returnStr.append("{\"tabId\":\"");
+			returnStr.append(tabInfo.getId());
+			returnStr.append("\",\"text\":\"");
+			returnStr.append(tabInfo.getTabName());
+			returnStr.append("\",\"parentId\":\"");
+			returnStr.append(tabInfo.getParentId());
+			returnStr.append("\",\"sortNum\":\"");
+			returnStr.append(tabInfo.getSortNum());
+			returnStr.append("\",\"checked\":false");
+			returnStr.append(",\"leaf\":true},");
+		}
+		data = returnStr.toString();
+		return data;
+	}
 
 	public boolean hasChild(List list, Object[] node) { // 判断是否有子节点
 		return getChildList(list, node).size() > 0 ? true : false;
@@ -74,6 +110,39 @@ public class TabInfoRecursion {
 		}
 		return li;
 	}
+	
+	public boolean hasChild(List list, TabInfo tabInfo) { // 判断是否有子节点
+		return getChildList(list, tabInfo).size() > 0 ? true : false;
+	}
+	
+	public List getChildList(List list, TabInfo tabInfo) { // 得到子节点列表
+		List li = new ArrayList();
+		Iterator it = list.iterator();
+		while (it.hasNext()) {
+			TabInfo n = (TabInfo) it.next();
+			if (n.getParentId().equals(tabInfo.getId())) {
+				li.add(n);
+			}
+		}
+		return li;
+	}
+	
+	public boolean hasParent(List list, TabInfo tabInfo) { // 判断是否有父节点
+		return getParentList(list, tabInfo).size() > 0 ? true : false;
+	}
+
+	public List getParentList(List list, TabInfo tabInfo) { // 得到子节点列表
+		List li = new ArrayList();
+		Iterator it = list.iterator();
+		while (it.hasNext()) {
+			TabInfo n = (TabInfo) it.next();
+			if (n.getId().equals(tabInfo.getParentId())) {
+				li.add(n);
+			}
+		}
+		return li;
+	}
+	
 	public String modifyStr(String returnStr) {// 修饰一下才能满足Extjs的Json格式
 		return ("[" + returnStr + "]").replaceAll(",]", "]");
 

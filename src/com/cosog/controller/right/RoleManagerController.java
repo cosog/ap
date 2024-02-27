@@ -23,16 +23,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.Module;
 import com.cosog.model.Role;
+import com.cosog.model.TabInfo;
 import com.cosog.model.User;
 import com.cosog.service.right.RoleManagerService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.BackModuleRecursion;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
+import com.cosog.utils.TabInfoRecursion;
 import com.google.gson.Gson;
 
 /** <p>描述：角色维护管理Action</p>
@@ -49,6 +53,8 @@ public class RoleManagerController extends BaseController {
 	private static final long serialVersionUID = -281275682819237996L;
 	@Autowired
 	private RoleManagerService<Role> roleService;
+	@Autowired
+	private RoleManagerService<TabInfo> roleTabInfoService;
 	private List<Role> list;
 	private Role role;
 	private String limit;
@@ -336,6 +342,39 @@ public class RoleManagerController extends BaseController {
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
 		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/constructRightTabTreeGridTree")
+	public String constructRightTabTreeGridTree() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		TabInfoRecursion r = new TabInfoRecursion();
+		List<TabInfo> list = this.roleTabInfoService.queryRightTabs(TabInfo.class,user);
+		boolean flag = false;
+		for (TabInfo tabInfo : list) {
+			if (tabInfo.getParentId() == 0) {
+				flag = true;
+				json = r.recursionRightTabTreeFn(list, tabInfo);
+				break;
+			}
+
+		}
+		if (flag == false && list.size() > 0) {
+			for (TabInfo tabInfo : list) {
+				json = r.recursionRightTabTreeFn(list, tabInfo);
+			}
+
+		}
+		json = r.modifyStr(json);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("constructRightModuleTreeGridTree json==" + json);
 		pw.flush();
 		pw.close();
 		return null;

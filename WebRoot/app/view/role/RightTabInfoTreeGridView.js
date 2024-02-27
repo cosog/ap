@@ -30,16 +30,16 @@ Ext.define('AP.view.role.RightTabInfoTreeGridView', {
             	align: 'left',
             	dataIndex: 'text'
             },{
-            	header: 'mdIdaa',
+            	header: 'tabIdaa',
             	hidden: true,
-            	dataIndex: 'mdId'
+            	dataIndex: 'tabId'
             }]
         });
         this.callParent(arguments);
     },
     listeners: {
         checkchange: function (node, checked) {
-            listenerCheck(node, checked);
+//            listenerCheck(node, checked);
         }
     }
 });

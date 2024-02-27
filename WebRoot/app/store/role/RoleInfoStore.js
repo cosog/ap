@@ -238,6 +238,8 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】模块授权");
                         		clkLoadAjaxFn();
                         		
+                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】标签授权");
+                        		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
                         		if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改自己权限
                                     Ext.getCmp("RightModuleTreeInfoGridPanel_Id").disable();

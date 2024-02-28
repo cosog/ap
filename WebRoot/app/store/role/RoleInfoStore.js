@@ -239,14 +239,21 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		clkLoadAjaxFn();
                         		
                         		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】标签授权");
+                        		clkLoadTabAjaxFn();
                         		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
                         		if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改自己权限
                                     Ext.getCmp("RightModuleTreeInfoGridPanel_Id").disable();
                                     Ext.getCmp("addRightModuleLableClassBtn_Id").disable();
+                                    
+                                    Ext.getCmp("RightTabTreeInfoGridPanel_Id").disable();
+                                    Ext.getCmp("addRightTabLableClassBtn_Id").disable();
                                 }else{
                                 	Ext.getCmp("RightModuleTreeInfoGridPanel_Id").enable();
                                 	Ext.getCmp("addRightModuleLableClassBtn_Id").enable();
+                                	
+                                	Ext.getCmp("RightTabTreeInfoGridPanel_Id").enable();
+                                    Ext.getCmp("addRightTabLableClassBtn_Id").enable();
                                 }
                         	}
                         },

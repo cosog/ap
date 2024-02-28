@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.Module;
 import com.cosog.model.Role;
+import com.cosog.model.RoleModule;
+import com.cosog.model.RoleTab;
 import com.cosog.model.TabInfo;
 import com.cosog.model.User;
 import com.cosog.service.right.RoleManagerService;
@@ -55,6 +57,10 @@ public class RoleManagerController extends BaseController {
 	private RoleManagerService<Role> roleService;
 	@Autowired
 	private RoleManagerService<TabInfo> roleTabInfoService;
+	@Autowired
+	private RoleManagerService<RoleModule> roleModuleService;
+	@Autowired
+	private RoleManagerService<RoleTab> roleTabService;
 	private List<Role> list;
 	private Role role;
 	private String limit;
@@ -78,7 +84,48 @@ public class RoleManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		try {
+			String addModuleIds = ParamUtils.getParameter(request, "addModuleIds");
+			String addTabIds = ParamUtils.getParameter(request, "addTabIds");
 			this.roleService.addRole(role);
+			
+			if(StringManagerUtils.isNotNull(addModuleIds) || StringManagerUtils.isNotNull(addTabIds)){
+				String sql="select t.role_id from TBL_ROLE t where t.role_name='"+role.getRoleName()+"'";
+				List<?> list=this.roleService.findCallSql(sql);
+				if(list.size()>0){
+					int addRoleId=StringManagerUtils.stringToInteger(list.get(0)+"");
+					if(addRoleId>0){
+						if(StringManagerUtils.isNotNull(addModuleIds)){
+							String[] moduleIdArr=addModuleIds.split(",");
+							for(int i=0;i<moduleIdArr.length;i++){
+								int moduleId=StringManagerUtils.stringToInteger(moduleIdArr[i]);
+								if(moduleId>0){
+									RoleModule r=new RoleModule();
+									r.setRmRoleId(addRoleId);
+									r.setRmModuleid(moduleId);
+									r.setRmMatrix("0,0,0");
+									this.roleModuleService.saveOrUpdateRoleModule(r);
+								}
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(addTabIds)){
+							String[] tabIdArr=addTabIds.split(",");
+							for(int i=0;i<tabIdArr.length;i++){
+								int tabId=StringManagerUtils.stringToInteger(tabIdArr[i]);
+								if(tabId>0){
+									RoleTab r=new RoleTab();
+									r.setRtRoleId(addRoleId);
+									r.setRtTabId(tabId);
+									r.setRtMatrix("0,0,0");
+									this.roleTabService.saveOrUpdateRoleTab(r);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -359,7 +406,7 @@ public class RoleManagerController extends BaseController {
 			if (tabInfo.getParentId() == 0) {
 				flag = true;
 				json = r.recursionRightTabTreeFn(list, tabInfo);
-				break;
+//				break;
 			}
 
 		}

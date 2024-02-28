@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.RoleModule;
+import com.cosog.model.RoleTab;
+import com.cosog.model.TabInfo;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.utils.Constants;
 import com.cosog.utils.ParamUtils;
@@ -35,6 +37,7 @@ public class ModuleShowRightManagerController extends BaseController implements 
 	private static final long serialVersionUID = -281275682819237996L;
 	private List<RoleModule> list;
 	private ModuleManagerService<RoleModule> moduleService;
+	private ModuleManagerService<RoleTab> roleTabService;
 	private RoleModule roleModule;
 
 	/**
@@ -68,6 +71,49 @@ public class ModuleShowRightManagerController extends BaseController implements 
 						r.setRmModuleid(StringManagerUtils.stringTransferInteger(module_[0]));
 						r.setRmMatrix(module_[1]);
 						this.moduleService.saveOrUpdateModule(r);
+					}
+				}
+			}
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	/**
+	 * @return NUll
+	 * @throws IOException
+	 *             为当前角色分配权限
+	 */
+	@RequestMapping("/doRoleTabSaveOrUpdate")
+	public String doRoleTabSaveOrUpdate() throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		RoleTab r = null;
+		try {
+			String tabIds = ParamUtils.getParameter(request, "paramsId");
+			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
+			log.debug("doModuleSaveOrUpdate moduleIds==" + tabIds);
+			String roleId = ParamUtils.getParameter(request, "roleId");
+			String tabId[] = StringManagerUtils.split(tabIds, ",");
+			if (roleId != null) {
+				this.moduleService.deleteCurrentTabByRoleCode(roleId);
+				if (tabId.length > 0 && matrixCodes != "" && matrixCodes != null) {
+					String tab_matrix[] = matrixCodes.split("\\|");
+					for (int i = 0; i < tab_matrix.length; i++) {
+						String tab_[] = tab_matrix[i].split("\\:");
+						r = new RoleTab();
+						r.setRtRoleId(Integer.parseInt(roleId));
+						log.debug("roleCode==" + roleId);
+						r.setRtTabId(StringManagerUtils.stringTransferInteger(tab_[0]));
+						r.setRtMatrix(tab_[1]);
+						this.roleTabService.saveOrUpdateRoleTab(r);
 					}
 				}
 			}
@@ -141,6 +187,30 @@ public class ModuleShowRightManagerController extends BaseController implements 
 		pw.close();
 		return null;
 	}
+	
+	/**
+	 * @return Null
+	 * @throws IOException
+	 * @author 显示权限配置里的当前角色拥有的标签信息
+	 * 
+	 */
+	@RequestMapping("/doShowRightCurrentRoleOwnTabs")
+	public String doShowRightCurrentRoleOwnTabs() throws IOException {
+		// Gson g = new Gson();
+		String roleId = ParamUtils.getParameter(request, "roleId");
+		Gson g = new Gson();
+		List<RoleTab> list = roleTabService.queryCurrentRoleTabs(RoleTab.class, roleId);
+		String json = "";
+		json = g.toJson(list);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("doShowRightCurrentUsersOwnRoles ***json==****" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	public List<RoleModule> getList() {
 		return list;
@@ -165,5 +235,14 @@ public class ModuleShowRightManagerController extends BaseController implements 
 
 	public void setRoleModule(RoleModule roleModule) {
 		this.roleModule = roleModule;
+	}
+
+	public ModuleManagerService<RoleTab> getRoleTabService() {
+		return roleTabService;
+	}
+
+	@Resource
+	public void setRoleTabService(ModuleManagerService<RoleTab> roleTabService) {
+		this.roleTabService = roleTabService;
 	}
 }

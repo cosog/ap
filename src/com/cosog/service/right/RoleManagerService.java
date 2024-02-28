@@ -172,6 +172,14 @@ private CommonDataService service;
 		T u = getBaseDao().getObject(clazz, id);
 		getBaseDao().deleteObject(u);
 	}
+	
+	public void saveOrUpdateRoleModule(T roleModule) throws Exception {
+		getBaseDao().saveOrUpdateObject(roleModule);
+	}
+	
+	public void saveOrUpdateRoleTab(T roleTab) throws Exception {
+		getBaseDao().saveOrUpdateObject(roleTab);
+	}
 
 	/**<p>批量删除角色信息</p>
 	 * 

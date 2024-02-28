@@ -5,7 +5,9 @@ Ext.define("AP.view.role.RoleInfoWindow", {
     iframe: true,
     id: 'role_addwin_Id',
     closeAction: 'destroy',
-    width: 330,
+    width: 600,
+    minWidth: 600,
+    height: 600,
     shadow: 'sides',
     resizable: false,
     collapsible: true,
@@ -17,6 +19,10 @@ Ext.define("AP.view.role.RoleInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        
+        var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
+        var tabStore = Ext.create("AP.store.role.RightTabTreeInfoStore");
+        
         var RoleTypeCombox = new Ext.form.ComboBox({
             id: 'roleFlagComboxfield_Id',
             value: 0,
@@ -180,30 +186,115 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 xtype: 'textareafield',
                 value: '',
                 name: "role.remark"
-            }],
-            buttons: [{
+            }]
+        });
+        Ext.apply(me, {
+        	bbar:['->',{
                 id: 'addFormrole_Id',
                 xtype: 'button',
                 iconCls: 'save',
                 text: cosog.string.save,
                 handler: SaveroleDataInfoSubmitBtnForm
-         }, {
-                xtype: 'button',
-                id: 'updateFormrole_Id',
-                text: cosog.string.update,
-                hidden: true,
-                iconCls: 'edit',
-                handler: UpdateroleDataInfoSubmitBtnForm
-         }, {
+            },{
                 text: cosog.string.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("role_addwin_Id").close();
                 }
-         }]
-        });
-        Ext.apply(me, {
-            items: postroleEditForm
+            }],
+        	layout: 'border',
+            items: [{
+            	region: 'center',
+        		title:'角色基础信息',
+        		layout: 'fit',
+        		layout: 'fit',
+        	    iframe: true,
+        	    shadow: 'sides',
+        	    resizable: false,
+        	    collapsible: false,
+        	    constrain: true,
+        	    maximizable: false,
+        	    plain: true,
+        	    bodyStyle: 'padding:5px;background-color:#D9E5F3;',
+        	    modal: true,
+        	    border: true,
+        		items: postroleEditForm
+            },{
+            	region: 'east',
+        		width: '50%',
+        		layout: 'border',
+        		header:false,
+        		border: true,
+        		items:[{
+        			region:'center',
+        			layout: "fit",
+        			title:'模块授权',
+            		split: true,
+                    collapsible: false,
+                    border: false,
+                	xtype:'treepanel',
+                    border: false,
+                    animate: true,
+                    enableDD: false,
+                    useArrows: false,
+                    rootVisible: false,
+                    autoScroll: true,
+                    forceFit: true,
+                    id: "RoleInfoWindowRightModuleTreeInfoGridPanel_Id", // 模块编码加id，定义的命名规则moduleCode是从库里取的值对应
+                    store: moduleStore,
+                    columns: [{
+                    	xtype: 'treecolumn',
+                    	text: '模块列表',
+                    	flex: 8,
+                    	align: 'left',
+                    	dataIndex: 'text'
+                    },{
+                    	header: 'mdIdaa',
+                    	hidden: true,
+                    	dataIndex: 'mdId'
+                    }],
+                    listeners: {
+                        checkchange: function (node, checked) {
+                            listenerCheck(node, checked);
+                        }
+                    }
+        		},{
+        			region:'south',
+        			height:'30%',
+        			title:'标签授权',
+        			split: true,
+                    collapsible: true,
+                    border: false,
+            		layout: "fit",
+                	xtype:'treepanel',
+                    border: false,
+                    animate: true,
+                    enableDD: false,
+                    useArrows: false,
+                    rootVisible: false,
+                    autoScroll: true,
+                    forceFit: true,
+                    id: "RoleInfoWindowRightTabTreeInfoGridPanel_Id", // 模块编码加id，定义的命名规则moduleCode是从库里取的值对应
+                    store: tabStore,
+                    columns: [{
+                    	xtype: 'treecolumn',
+                    	text: '标签列表',
+                    	flex: 8,
+                    	align: 'left',
+                    	dataIndex: 'text'
+                    },{
+                    	header: 'tabIdaa',
+                    	hidden: true,
+                    	dataIndex: 'tabId'
+                    }],
+                    listeners: {
+                        checkchange: function (node, checked) {
+                            listenerCheck(node, checked);
+                        }
+                    }
+        		
+        		}]
+            }]
         });
         me.callParent(arguments);
     }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.TabInfo;
+import com.cosog.model.User;
 import com.cosog.service.right.TabInfoManagerService;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
@@ -53,8 +54,8 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
-		
-		List<?> list = this.tabInfoManagerService.queryTabs(TabInfo.class);
+		User user = (User) session.getAttribute("userLogin");
+		List<?> list = this.tabInfoManagerService.queryTabs(TabInfo.class,user);
 		String tabInfoJson = "";
 		TabInfoRecursion r = new TabInfoRecursion();
 		if (list != null) {

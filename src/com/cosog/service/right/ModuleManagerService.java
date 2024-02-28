@@ -197,6 +197,15 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		queryString+=" order by rm.rmModuleid asc";
 		return getBaseDao().find(queryString);
 	}
+	
+	public List<T> queryCurrentRoleTabs(Class<T> clazz, String roleId) {
+		String queryString = "select rt From Role r,RoleTab rt where  rt.rtRoleId=r.roleId ";
+		if(StringManagerUtils.isNotNull(roleId)){
+			queryString+=" and rt.rtRoleId="+roleId;
+		}
+		queryString+=" order by rt.rtTabId asc";
+		return getBaseDao().find(queryString);
+	}
 
 	public List<T> queryCurrentRoleMatrixModules(Class<T> clazz, String roleId) {
 		String queryString = "select    rm.rmMatrix  From " + "Role r ,RoleModule rm where  rm.rmRoleId=r.roleId and rm.rmRoleId=" + roleId + " order by rm.rmMatrix asc";
@@ -212,9 +221,18 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		final String hql = "DELETE RoleModule u where u.rmRoleId = " + roleId + "";
 		getBaseDao().bulkObjectDelete(hql);
 	}
+	
+	public void deleteCurrentTabByRoleCode(final String roleId) throws Exception {
+		final String hql = "DELETE RoleTab u where u.rtRoleId = " + roleId + "";
+		getBaseDao().bulkObjectDelete(hql);
+	}
 
 	public void saveOrUpdateModule(T roleModule) throws Exception {
 		getBaseDao().saveOrUpdateObject(roleModule);
+	}
+	
+	public void saveOrUpdateRoleTab(T roleTab) throws Exception {
+		getBaseDao().saveOrUpdateObject(roleTab);
 	}
 
 	public List<?> queryModules(Class<T> clazz, String moduleName,User user) {

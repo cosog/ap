@@ -39,7 +39,7 @@ Ext.define('AP.view.role.RightTabInfoTreeGridView', {
     },
     listeners: {
         checkchange: function (node, checked) {
-//            listenerCheck(node, checked);
+            listenerCheck(node, checked);
         }
     }
 });

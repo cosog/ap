@@ -25,6 +25,44 @@ Ext.define('AP.controller.role.RoleInfoControl', {
 // 窗体创建按钮事件
 var SaveroleDataInfoSubmitBtnForm = function () {
     var saveDataAttrInfoWinFormId = Ext.getCmp("role_addwin_Id").down('form');
+    var rightmodule_panel = Ext.getCmp("RoleInfoWindowRightModuleTreeInfoGridPanel_Id");
+    var _record;
+    var roleLevel=Ext.getCmp("roleLevel_Id").getValue();
+    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+    	_record = rightmodule_panel.store.data.items;
+    }else{
+    	_record = rightmodule_panel.getChecked();
+    }
+    
+    var righttab_panel = Ext.getCmp("RoleInfoWindowRightTabTreeInfoGridPanel_Id");
+    var _tabRecord;
+    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+    	_tabRecord = righttab_panel.store.data.items;
+    }else{
+    	_tabRecord = righttab_panel.getChecked();
+    }
+    
+    if(_record.length==0){
+    	Ext.Msg.alert(cosog.string.ts, '至少选中一个模块！');
+        return false;
+    }
+    if(_tabRecord.length==0){
+    	Ext.Msg.alert(cosog.string.ts, '至少选中一个标签！');
+        return false;
+    }
+    
+    var addModule = [];
+    Ext.Array.each(_record, function (name, index, countriesItSelf) {
+        var md_ids = _record[index].get('mdId')
+        addModule.push(md_ids);
+    });
+    
+    var addTab = [];
+    Ext.Array.each(_tabRecord, function (name, index, countriesItSelf) {
+        var tabId = _tabRecord[index].get('tabId')
+        addTab.push(tabId);
+    });
+    
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (saveDataAttrInfoWinFormId.getForm().isValid()) {
         saveDataAttrInfoWinFormId.getForm().submit({
@@ -48,6 +86,10 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             },
             failure: function () {
                 Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+            },
+            params: {
+            	addModuleIds: addModule.join(","),
+            	addTabIds: addTab.join(",")
             }
         });
     } else {
@@ -301,9 +343,88 @@ var grantRolePermission = function () {//授予角色模块权限
             Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
         }
     });
+    return false;
+}
 
-
+var grantRoleTabPermission = function () {//授予角色模块权限
+    var righttab_panel = Ext.getCmp("RightTabTreeInfoGridPanel_Id");
+    var _record;
+    var roleCode="";
+    var roleId="";
+    var roleLevel="";
+    if(Ext.getCmp("RoleInfoGridPanel_Id")!=undefined){
+    	var _record = Ext.getCmp("RoleInfoGridPanel_Id").getSelectionModel().getSelection();
+        if(_record.length>0){
+        	roleCode=_record[0].data.roleCode;
+        	roleId=_record[0].data.roleId;
+        	roleLevel=_record[0].data.roleLevel;
+        }
+    }
+    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+    	_record = righttab_panel.store.data.items;
+    }else{
+    	_record = righttab_panel.getChecked();
+    }
+    var addUrl = context + '/moduleShowRightManagerController/doRoleTabSaveOrUpdate'
+        // 添加条件
+    var addjson = [];
+    var matrixData = "";
+    var matrixDataArr = "";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    var roleCode = Ext.getCmp("RightBottomRoleCodes_Id").getValue();
+    var RightOldModuleIds_Id = Ext.getCmp("RightOldModuleIds_Id").getValue();
+    if (!isNotVal(roleCode)) {
+        Ext.Msg.alert(cosog.string.ts, cosog.string.pleaseChooseRole);
+        return false
+    }
     
+    if (_record.length==0) {
+        Ext.Msg.alert(cosog.string.ts, '至少选中一个标签！');
+        return false
+    }
+
+    Ext.Array.each(_record, function (name, index, countriesItSelf) {
+        var tab_ids = _record[index].get('tabId')
+        addjson.push(tab_ids);
+        var matrix_value = "";
+        matrix_value = '0,0,0,';
+        if (matrix_value != "" || matrix_value != null) {
+            matrix_value = matrix_value.substring(0, matrix_value.length - 1);
+        }
+        matrixData += tab_ids + ":" + matrix_value + "|";
+
+    });
+
+    matrixData = matrixData.substring(0, matrixData.length - 1);
+    var addparamsId = "" + addjson.join(",");
+    var matrixCodes_ = "" + matrixData;
+
+    // AJAX提交方式
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        // 提交参数
+        params: {
+            paramsId: addparamsId,
+            oldModuleIds: RightOldModuleIds_Id,
+            roleId: roleId,
+            matrixCodes: matrixCodes_
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "个标签。");
+            }
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
+            }
+            // 刷新Grid
+            Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
     return false;
 }
 

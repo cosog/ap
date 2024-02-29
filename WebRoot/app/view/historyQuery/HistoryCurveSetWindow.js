@@ -33,7 +33,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 text: cosog.string.save,
                 iconCls: 'save',
                 handler: function (v, o) {
-                	var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
+                	var activeId = Ext.getCmp("HistoryQueryRootTabPanel").getActiveTab().id;
                 	var deviceType=0;
                 	var selectRowId="RPCHistoryQueryInfoDeviceListSelectRow_Id";
                 	var gridPanelId="RPCHistoryQueryDeviceListGridPanel_Id";
@@ -161,7 +161,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
 
 
 function CreateDeviceHistoryCurveSetTable(){
-	var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
+	var activeId = Ext.getCmp("HistoryQueryRootTabPanel").getActiveTab().id;
 	
 	var deviceType=0;
 	var selectRowId="RPCHistoryQueryInfoDeviceListSelectRow_Id";

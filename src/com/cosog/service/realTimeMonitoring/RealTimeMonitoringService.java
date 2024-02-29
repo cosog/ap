@@ -504,7 +504,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
 					+ " where  t.orgid in ("+orgId+") "
 					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){

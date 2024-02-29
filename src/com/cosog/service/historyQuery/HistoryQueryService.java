@@ -260,25 +260,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public int getHistoryQueryDeviceListDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit){
 		int dataPage=1;
 		try{
-			String deviceTableName="tbl_rpcdevice";
-			String tableName="tbl_rpcacqdata_latest";
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				tableName="tbl_pcpacqdata_latest";
-				deviceTableName="tbl_pcpdevice";
-			}
-			String sql="select t.id from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
-			}
+			String deviceTableName="tbl_device";
+			String tableName="tbl_acqdata_latest";
+			String calTableName="tbl_rpcacqdata_latest";
 			
-			sql+= " where  t.orgid in ("+orgId+") ";
+			String sql="select t.id from "+deviceTableName+" t "
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
+					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
+					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
+			
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -308,15 +305,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					MemoryDataManagerTask.initAlarmStyle();
 				}
 				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-				if(StringManagerUtils.stringToInteger(deviceType)==0){
-					if(!jedis.exists("DeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-				}else if(StringManagerUtils.stringToInteger(deviceType)==1){
-					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
+
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
+			
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
 					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
 				}
@@ -324,12 +317,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				e.printStackTrace();
 			}
 			
-			String deviceTableName="tbl_rpcdevice";
-			String tableName="tbl_rpcacqdata_latest";
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				tableName="tbl_pcpacqdata_latest";
-				deviceTableName="tbl_pcpdevice";
-			}
+			String deviceTableName="tbl_device";
+			String tableName="tbl_acqdata_latest";
+			String calTableName="tbl_rpcacqdata_latest";
+			
 			String columns = "["
 					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
 					+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\",flex:9,children:[] },"
@@ -339,21 +330,21 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "]";
 			
 			String sql="select t.id,t.devicename,t2.commstatus,"
-					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
-			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
-			}
+					+ " decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.tabname as devicetypename "
+					+ " from "+deviceTableName+" t "
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
+					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
+					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
+					+ " left outer join tbl_tabinfo c1 on c1.id=t.devicetype "
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t.devicetype="+deviceType;
 			
-			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
-			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";

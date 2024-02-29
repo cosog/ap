@@ -287,7 +287,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                 	region: 'center',
                 	layout: 'border',
                     xtype: 'tabpanel',
-                    id:"RPCHistoryQueryTabPanel",
+                    id:"RPCHistoryQueryCenterTabPanel",
             		activeTab: 0,
             		autoScroll: false,
                     split: true,
@@ -494,7 +494,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         		return;
                         	}
                         	
-                        	var tabPanel = Ext.getCmp("RPCHistoryQueryTabPanel");
+                        	var tabPanel = Ext.getCmp("RPCHistoryQueryCenterTabPanel");
             				var activeId = tabPanel.getActiveTab().id;
             				if(activeId=="RPCHistoryDataTabPanel"){
         						var gridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");

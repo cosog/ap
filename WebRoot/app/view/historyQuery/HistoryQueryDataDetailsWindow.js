@@ -58,7 +58,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
                       var deviceId=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").getValue()
                       var deviceName=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").getValue();
                       var deviceType=0;
-                      var tabPanel = Ext.getCmp("HistoryQueryTabPanel");
+                      var tabPanel = Ext.getCmp("HistoryQueryRootTabPanel");
               			var activeId = tabPanel.getActiveTab().id;
               			if(activeId=="PCPHistoryQueryInfoPanel_Id"){
               				deviceType=1;

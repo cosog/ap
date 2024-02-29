@@ -69,7 +69,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
                     		Ext.getCmp('RPCHistoryQueryEndDate_Id').setValue('');
                     		Ext.getCmp('RPCHistoryQueryEndDate_Id').setRawValue('');
                     		
-                    		var tabPanel = Ext.getCmp("RPCHistoryQueryTabPanel");
+                    		var tabPanel = Ext.getCmp("RPCHistoryQueryCenterTabPanel");
             				var activeId = tabPanel.getActiveTab().id;
             				if(activeId=="RPCHistoryDataTabPanel"){
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").show();
@@ -117,7 +117,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryWellListStore', {
             }else{
             	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
             	
-				var activeId = Ext.getCmp("RPCHistoryQueryTabPanel").getActiveTab().id;
+				var activeId = Ext.getCmp("RPCHistoryQueryCenterTabPanel").getActiveTab().id;
 				if(activeId=="RPCHistoryDataTabPanel"){
 					var RPCHistoryQueryDataGridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");
                     if (isNotVal(RPCHistoryQueryDataGridPanel)) {

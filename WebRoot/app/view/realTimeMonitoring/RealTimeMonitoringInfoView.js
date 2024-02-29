@@ -606,7 +606,7 @@ function gotoDeviceHistory(deviceName,deviceType){
 		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue(deviceName);
 		var historyGridPanel=Ext.getCmp("HistoryQueryListGridPanel_Id");
 		tabPanel.setActiveTab(moduleId);
-		var historyQueryTabPanel = Ext.getCmp("HistoryQueryTabPanel");
+		var HistoryQueryRootTabPanel = Ext.getCmp("HistoryQueryRootTabPanel");
 	}
 }
 
@@ -615,10 +615,7 @@ function gotoDeviceHistory(deviceName,deviceType){
 function loadAndInitFESdiagramResultStat(all){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-	
-	var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
 
-	var deviceTypeStatValue='';
 	var deviceTypeStatValue='';
 	if(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").setValue('');
@@ -647,17 +644,9 @@ function loadAndInitFESdiagramResultStat(all){
 		},
 		params: {
 			orgId:orgId,
-			deviceType:deviceType,
-			commStatusStatValue:commStatusStatValue,
-			deviceTypeStatValue:deviceTypeStatValue
+			deviceType:deviceType
         }
 	});
-
-//	if(deviceCount>0){
-//		
-//	}else{
-//		Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
-//	}
 }
 
 function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
@@ -750,7 +739,6 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 function loadAndInitCommStatusStat(all){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-	var deviceTypeStatValue='';
 	var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 	var panelId='';
 
@@ -760,9 +748,6 @@ function loadAndInitCommStatusStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
-		deviceTypeStatValue='';
-	}else{
-		deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
 	}
 
 	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
@@ -781,8 +766,7 @@ function loadAndInitCommStatusStat(all){
 		},
 		params: {
 			orgId:orgId,
-			deviceType:deviceType,
-			deviceTypeStatValue:deviceTypeStatValue
+			deviceType:deviceType
         }
 	});
 }
@@ -1052,7 +1036,6 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 function loadAndInitDeviceTypeStat(all){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-	var commStatusStatValue='';
 	var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 	
 	if(all){
@@ -1060,9 +1043,6 @@ function loadAndInitDeviceTypeStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
-		commStatusStatValue='';
-	}else{
-		commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
 	}
 	
 
@@ -1079,8 +1059,7 @@ function loadAndInitDeviceTypeStat(all){
 		},
 		params: {
 			orgId:orgId,
-			deviceType:deviceType,
-			commStatusStatValue:commStatusStatValue
+			deviceType:deviceType
         }
 	});
 };

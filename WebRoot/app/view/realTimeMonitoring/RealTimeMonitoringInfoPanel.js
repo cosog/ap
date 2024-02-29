@@ -371,7 +371,7 @@ var realtimeCurveAndTableTabPanelItems=[{
     }]
 }];
 
-var realTimeMonitoringRightDeviceInfoTabPanelItems=[{
+var RealTimeMonitoringRightTabPanelItems=[{
 	title:'设备信息',
 	layout: 'border',
 	id:'RealTimeMonitoringRightDeviceInfoPanel',
@@ -397,11 +397,80 @@ var realTimeMonitoringRightDeviceInfoTabPanelItems=[{
         scrollable: true
 	}]
 },{
-	title:'生产数据',
-	id: 'RealTimeMonitoringRightDeviceProductionDataInfoPanel',
+	title:'设备控制',
+	border: false,
+	hidden: onlyFESDiagramCal,
+    layout: 'border',
+    hideMode:'offsets',
+    id:'RealTimeMonitoringRightControlAndVideoPanel',
+    items: [{
+    	region: 'north',
+    	layout: 'fit',
+    	height: 220,
+    	id:'RealTimeMonitoringRightVideoPanel1',
+    	hidden:true,
+    	collapsible: true, // 是否折叠
+    	header: false,
+        split: true, // 竖折叠条
+        autoRender:true,
+        html: '<div id="RealTimeMonitoringRightVideoDiv1_Id" style="width:100%;height:100%;"></div>',
+        listeners: {
+        	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        		if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+        			if(videoPlayrHelper.rpc.player1!=null){
+                		var isFullScreen = isBrowserFullScreen();
+                		if(!isFullScreen){
+            				var recordData=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
+                			createVideo(0,recordData,1,true);
+            			}
+            		}
+        		}
+        	}
+        }
+    },{
+    	region: 'center',
+    	layout: 'border',
+    	items: [{
+    		region: 'north',
+        	layout: 'fit',
+        	height: 220,
+        	id:'RealTimeMonitoringRightVideoPanel2',
+        	hidden:true,
+        	collapsible: true, // 是否折叠
+        	header: false,
+            split: true, // 竖折叠条
+            autoRender:true,
+            html: '<div id="RealTimeMonitoringRightVideoDiv2_Id" style="width:100%;height:100%;"></div>',
+            listeners: {
+            	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            		if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+            			if(videoPlayrHelper.rpc.player2!=null){
+                    		var isFullScreen = isBrowserFullScreen();
+                    		if(!isFullScreen){
+                				var recordData=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
+                    			createVideo(0,recordData,2,true);
+                			}
+                		}
+            		}
+            	}
+            }
+    	},{
+    		region: 'center',
+            id: 'RealTimeMonitoringRightControlPanel',
+            border: false,
+            layout: 'fit',
+            autoScroll: true,
+            scrollable: true
+    	}]
+    }]
+},{
+	title:'计算数据',
+	id: 'RealTimeMonitoringRightCalculateDataPanel',
     border: false,
     layout: 'fit'
 }];
+
+
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.realTimeMonitoringInfoPanel',
@@ -527,32 +596,17 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              iconCls: 'note-refresh',
                              hidden:false,
                              handler: function (v, o) {
-                            	 var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
-                            	 
-                            	 tabPanel.remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
-                            	 
-//                            	 var getTabId = tabPanel.getComponent("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id");
-//                            	 if(getTabId){
-//                            		 
-//                            	 }else{
-//                            		 Ext.getCmp("RealTimeMonitoringStatTabPanel").insert(0,realtimeStatTabItems[0]);
-//                            	 }
-                            	 
-//                            	 var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
-                            	 
-                            	 
-//                     			var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
-//                    			if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-//                    				loadAndInitFESdiagramResultStat(true);
-//                    			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
-//                    				loadAndInitCommStatusStat(true);
-//                    			}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
-//                    				loadAndInitRunStatusStat(true);
-//                    			}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-//                    				loadAndInitDeviceTypeStat(true);
-//                    			}
-//                    			
-//                    			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp('RealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
+                     			var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+                    			if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+                    				loadAndInitFESdiagramResultStat(true);
+                    			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
+                    				loadAndInitCommStatusStat(true);
+                    			}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
+                    				loadAndInitRunStatusStat(true);
+                    			}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+                    				loadAndInitDeviceTypeStat(true);
+                    			}
+                    			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp('RealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
                     		}
                  		},'-',deviceCombo,'-', {
                              xtype: 'button',
@@ -560,25 +614,17 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              iconCls: 'export',
                              hidden:false,
                              handler: function (v, o) {
-                            	
-                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").insert(0,realtimeStatTabItems[0]);
-                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").setActiveTab(0);
-                            	 
-                            	 
-                            	 
-//                            	 Ext.getCmp("RealTimeMonitoringStatTabPanel").show(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
-                            	 
-//                            	 var orgId = Ext.getCmp('leftOrg_Id').getValue();
-//                            	 var deviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
-//                            	 var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
-//                             	 var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
-//                             	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
-//                             	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
-//                            	 var deviceType=0;
-//                            	 var fileName='抽油机井实时监控数据';
-//                            	 var title='抽油机井实时监控数据';
-//                            	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
-//                            	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
+                            	 var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                            	 var deviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
+                            	 var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
+                             	 var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
+                             	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
+                             	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
+                            	 var deviceType=0;
+                            	 var fileName='抽油机井实时监控数据';
+                            	 var title='抽油机井实时监控数据';
+                            	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
+                            	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                              }
                          }, '->', {
                          	xtype: 'button',
@@ -667,105 +713,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                         collapsible: true,
                         header: false,
                 		tabPosition: 'top',
-                		items: [{
-                			title:'设备信息',
-                			xtype: 'tabpanel',
-                    		id:"RealTimeMonitoringRightDeviceInfoTabPanel",
-                    		activeTab: 0,
-                    		border: false,
-                    		tabPosition: 'top',
-                    		items:realTimeMonitoringRightDeviceInfoTabPanelItems,
-                    		listeners: {
-                            	tabchange: function (tabPanel, newCard, oldCard,obj) {
-                            		if(newCard.id=='RealTimeMonitoringRightDeviceInfoPanel'){
-                            			Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
-                            		}else if(newCard.id=='RealTimeMonitoringRightDeviceProductionDataInfoPanel'){
-                            			var calculateType=0;
-                            			if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                            				calculateType  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
-                            			}
-                            			
-                            			if(calculateType==1 || calculateType==2){
-                        					var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
-                                			if(isNotVal(deviceInfoGridPanel)){
-                                				deviceInfoGridPanel.getStore().load();
-                                			}else{
-                                				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
-                                			}
-                        				}else{
-                        					tabPanel.setActiveTab(0);
-                        				}
-                            		}
-                            	}
-                            }
-                		},{
-                			title:'设备控制',
-                			border: false,
-                			hidden: onlyFESDiagramCal,
-                            layout: 'border',
-                            hideMode:'offsets',
-                            id:'RealTimeMonitoringRightControlAndVideoPanel',
-                            items: [{
-                            	region: 'north',
-                            	layout: 'fit',
-                            	height: 220,
-                            	id:'RealTimeMonitoringRightVideoPanel1',
-                            	hidden:true,
-                            	collapsible: true, // 是否折叠
-                            	header: false,
-                                split: true, // 竖折叠条
-                                autoRender:true,
-                                html: '<div id="RealTimeMonitoringRightVideoDiv1_Id" style="width:100%;height:100%;"></div>',
-                                listeners: {
-                                	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                		if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                			if(videoPlayrHelper.rpc.player1!=null){
-                                        		var isFullScreen = isBrowserFullScreen();
-                                        		if(!isFullScreen){
-                                    				var recordData=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
-                                        			createVideo(0,recordData,1,true);
-                                    			}
-                                    		}
-                                		}
-                                	}
-                                }
-                            },{
-                            	region: 'center',
-                            	layout: 'border',
-                            	items: [{
-                            		region: 'north',
-                                	layout: 'fit',
-                                	height: 220,
-                                	id:'RealTimeMonitoringRightVideoPanel2',
-                                	hidden:true,
-                                	collapsible: true, // 是否折叠
-                                	header: false,
-                                    split: true, // 竖折叠条
-                                    autoRender:true,
-                                    html: '<div id="RealTimeMonitoringRightVideoDiv2_Id" style="width:100%;height:100%;"></div>',
-                                    listeners: {
-                                    	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                    		if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                    			if(videoPlayrHelper.rpc.player2!=null){
-                                            		var isFullScreen = isBrowserFullScreen();
-                                            		if(!isFullScreen){
-                                        				var recordData=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
-                                            			createVideo(0,recordData,2,true);
-                                        			}
-                                        		}
-                                    		}
-                                    	}
-                                    }
-                            	},{
-                            		region: 'center',
-                                    id: 'RealTimeMonitoringRightControlPanel',
-                                    border: false,
-                                    layout: 'fit',
-                                    autoScroll: true,
-                                    scrollable: true
-                            	}]
-                            }]
-                		}],
+                		items: RealTimeMonitoringRightTabPanelItems,
                 		listeners: {
                         	tabchange: function (tabPanel, newCard, oldCard,obj) {
                         		if(newCard.id=="RealTimeMonitoringRightControlAndVideoPanel"){
@@ -798,15 +746,18 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                         				videoPlayrHelper.rpc.player2.stop();
                         			}
                         			
-                        			
-                        			var calculateType=0;
-                        			var deviceInfoTabPanelActiveId = Ext.getCmp("RealTimeMonitoringRightDeviceInfoTabPanel").getActiveTab().id;
-                        			if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                        				calculateType  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
-                        				if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceInfoPanel'){
-                                			Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
-                                		}else if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceProductionDataInfoPanel'){
-                                			if(calculateType==1 || calculateType==2){
+                        			if(newCard.id=="RealTimeMonitoringRightDeviceInfoPanel"){
+                        				if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                        					Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
+                        				}else{
+                        					Ext.getCmp("RealTimeMonitoringRightCalculateDataPanel").removeAll();
+                                        	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
+                        				}
+                        			}else if(newCard.id=="RealTimeMonitoringRightCalculateDataPanel"){
+                        				var calculateType=0;
+                        				if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                        					calculateType  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+                        					if(calculateType==1 || calculateType==2){
                             					var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
                                     			if(isNotVal(deviceInfoGridPanel)){
                                     				deviceInfoGridPanel.getStore().load();
@@ -816,13 +767,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                             				}else{
                             					tabPanel.setActiveTab(0);
                             				}
-                                		}
-                        			}else{
-                        				if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceInfoPanel'){
-                        					Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").removeAll();
-                                        	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
-                        				}else if(deviceInfoTabPanelActiveId=='RealTimeMonitoringRightDeviceProductionDataInfoPanel'){
-                        					Ext.getCmp("RealTimeMonitoringRightDeviceProductionDataInfoPanel").removeAll();
+                        				}else{
+                        					Ext.getCmp("RealTimeMonitoringRightCalculateDataPanel").removeAll();
                         				}
                         			}
                         		}

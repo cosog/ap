@@ -1,3 +1,91 @@
+var historyStatTabItems=[{
+	title:'工况诊断',
+	layout: 'fit',
+	id:'HistoryQueryFESdiagramResultStatGraphPanel_Id',
+	hidden: onlyMonitor,
+	html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if ($("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        		highchartsResize("HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id");
+        	}else{
+            	var toolTip=Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id");
+            	if(!isNotVal(toolTip)){
+            		Ext.create('Ext.tip.ToolTip', {
+                        id:'HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id',
+                		target: 'HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id',
+                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                    });
+            	}
+            }
+        }
+    }
+},{
+	title:'运行状态',
+	layout: 'fit',
+	id:'HistoryQueryRunStatusStatGraphPanel_Id',
+	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if ($("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        		highchartsResize("HistoryQueryRunStatusStatGraphPanelPieDiv_Id");
+        	}else{
+            	var toolTip=Ext.getCmp("HistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
+            	if(!isNotVal(toolTip)){
+            		Ext.create('Ext.tip.ToolTip', {
+                        id:'HistoryQueryRunStatusStatGraphPanelPieToolTip_Id',
+                		target: 'HistoryQueryRunStatusStatGraphPanelPieDiv_Id',
+                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                    });
+            	}
+            }
+        }
+    }
+},{
+	title:'通信状态',
+	layout: 'fit',
+	hidden: onlyFESDiagramCal,
+	id:'HistoryQueryStatGraphPanel_Id',
+	html: '<div id="HistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if ($("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        		highchartsResize("HistoryQueryStatGraphPanelPieDiv_Id");
+        	}else{
+            	var toolTip=Ext.getCmp("HistoryQueryStatGraphPanelPieToolTip_Id");
+            	if(!isNotVal(toolTip)){
+            		Ext.create('Ext.tip.ToolTip', {
+                        id:'HistoryQueryStatGraphPanelPieToolTip_Id',
+                		target: 'HistoryQueryStatGraphPanelPieDiv_Id',
+                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                    });
+            	}
+            }
+        }
+    }
+},{
+	title:'设备类型',
+	layout: 'fit',
+	hidden:true,
+	id:'HistoryQueryDeviceTypeStatGraphPanel_Id',
+	html: '<div id="HistoryQueryDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if ($("#HistoryQueryDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
+        		highchartsResize("HistoryQueryDeviceTypeStatPieDiv_Id");
+        	}else{
+            	var toolTip=Ext.getCmp("HistoryQueryDeviceTypeStatPieToolTip_Id");
+            	if(!isNotVal(toolTip)){
+            		Ext.create('Ext.tip.ToolTip', {
+                        id:'HistoryQueryDeviceTypeStatPieToolTip_Id',
+                		target: 'HistoryQueryDeviceTypeStatPieDiv_Id',
+                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                    });
+            	}
+            }
+        }
+    }
+}];
 Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.historyQueryInfoPanel',
@@ -178,94 +266,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     	activeTab: onlyMonitor?1:0,
                         header: false,
                 		tabPosition: 'top',
-                		items: [{
-                			title:'工况诊断',
-                			layout: 'fit',
-                        	id:'HistoryQueryFESdiagramResultStatGraphPanel_Id',
-                        	hidden: onlyMonitor,
-                        	html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if ($("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                		highchartsResize("HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id");
-                                	}else{
-                                    	var toolTip=Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id");
-                                    	if(!isNotVal(toolTip)){
-                                    		Ext.create('Ext.tip.ToolTip', {
-                                                id:'HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id',
-                                        		target: 'HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id',
-                                                html: '点击饼图不同区域或标签，查看相应统计数据'
-                                            });
-                                    	}
-                                    }
-                                }
-                            }
-                		},{
-                			title:'运行状态',
-                			layout: 'fit',
-                        	id:'HistoryQueryRunStatusStatGraphPanel_Id',
-                        	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if ($("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                		highchartsResize("HistoryQueryRunStatusStatGraphPanelPieDiv_Id");
-                                	}else{
-                                    	var toolTip=Ext.getCmp("HistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
-                                    	if(!isNotVal(toolTip)){
-                                    		Ext.create('Ext.tip.ToolTip', {
-                                                id:'HistoryQueryRunStatusStatGraphPanelPieToolTip_Id',
-                                        		target: 'HistoryQueryRunStatusStatGraphPanelPieDiv_Id',
-                                                html: '点击饼图不同区域或标签，查看相应统计数据'
-                                            });
-                                    	}
-                                    }
-                                }
-                            }
-                		},{
-                			title:'通信状态',
-                			layout: 'fit',
-                			hidden: onlyFESDiagramCal,
-                        	id:'HistoryQueryStatGraphPanel_Id',
-                        	html: '<div id="HistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if ($("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                		highchartsResize("HistoryQueryStatGraphPanelPieDiv_Id");
-                                	}else{
-                                    	var toolTip=Ext.getCmp("HistoryQueryStatGraphPanelPieToolTip_Id");
-                                    	if(!isNotVal(toolTip)){
-                                    		Ext.create('Ext.tip.ToolTip', {
-                                                id:'HistoryQueryStatGraphPanelPieToolTip_Id',
-                                        		target: 'HistoryQueryStatGraphPanelPieDiv_Id',
-                                                html: '点击饼图不同区域或标签，查看相应统计数据'
-                                            });
-                                    	}
-                                    }
-                                }
-                            }
-                		},{
-                			title:'设备类型',
-                			layout: 'fit',
-                			hidden:true,
-                        	id:'HistoryQueryDeviceTypeStatGraphPanel_Id',
-                        	html: '<div id="HistoryQueryDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if ($("#HistoryQueryDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-                                		highchartsResize("HistoryQueryDeviceTypeStatPieDiv_Id");
-                                	}else{
-                                    	var toolTip=Ext.getCmp("HistoryQueryDeviceTypeStatPieToolTip_Id");
-                                    	if(!isNotVal(toolTip)){
-                                    		Ext.create('Ext.tip.ToolTip', {
-                                                id:'HistoryQueryDeviceTypeStatPieToolTip_Id',
-                                        		target: 'HistoryQueryDeviceTypeStatPieDiv_Id',
-                                                html: '点击饼图不同区域或标签，查看相应统计数据'
-                                            });
-                                    	}
-                                    }
-                                }
-                            }
-                		}],
+                		items: historyStatTabItems,
                 		listeners: {
             				tabchange: function (tabPanel, newCard,oldCard, obj) {
             					if(newCard.id=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
@@ -287,7 +288,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                 	region: 'center',
                 	layout: 'border',
                     xtype: 'tabpanel',
-                    id:"HistoryQueryTabPanel",
+                    id:"HistoryQueryCenterTabPanel",
             		activeTab: 0,
             		autoScroll: false,
                     split: true,
@@ -494,7 +495,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		return;
                         	}
                         	
-                        	var tabPanel = Ext.getCmp("HistoryQueryTabPanel");
+                        	var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
             				var activeId = tabPanel.getActiveTab().id;
             				if(activeId=="HistoryDataTabPanel"){
         						var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");

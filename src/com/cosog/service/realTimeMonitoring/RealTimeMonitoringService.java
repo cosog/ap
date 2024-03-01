@@ -143,7 +143,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
 						if (obj instanceof DeviceInfo) {
 							DeviceInfo deviceInfo=(DeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId()) && deviceInfo.getDeviceType()==StringManagerUtils.stringToInteger(deviceType)){
+							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId()) 
+									&& deviceInfo.getDeviceType()==StringManagerUtils.stringToInteger(deviceType)
+									&& deviceInfo.getCalculateType()==1){
 								int count=1;
 								int resultCode=deviceInfo.getResultCode()==null?0:deviceInfo.getResultCode();
 								if(totalMap.containsKey(resultCode)){
@@ -571,7 +573,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
@@ -3929,10 +3930,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			curveConfBuff.append("]");
 			
-			result_json.append("{\"deviceName\":\""+deviceName+"\",\"curveCount\":"+(itemNameList.size()+calItemNameList.size()+inputItemNameList.size())+",\"curveItems\":"+itemsBuff+",\"curveConf\":"+curveConfBuff+",\"list\":[");
-			
-			
-			
+			result_json.append("{\"deviceName\":\""+deviceName+"\","
+					+ "\"curveCount\":"+(itemNameList.size()+calItemNameList.size()+inputItemNameList.size())+","
+					+ "\"curveItems\":"+itemsBuff+","
+					+ "\"curveConf\":"+curveConfBuff+","
+					+ "\"list\":[");
 			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
 				String columns="";
 				String calAndInputColumn="";

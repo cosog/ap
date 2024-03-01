@@ -304,7 +304,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		
 		var orgId = Ext.getCmp('leftOrg_Id').getValue();
 		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-		var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
+		
 		
 		if(selectedDeviceType_global!=deviceType){
 //			tabPanel.setActiveTab("RealTimeMonitoringTabPanel_"+deviceType);
@@ -312,30 +312,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 		if(!tabChange){
 			Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-			var removeFESdiagramResultStatGraphPanel=false;
-			var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
-			var getTabId = tabPanel.getComponent("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id");
-       	 	if(deviceCount>0 && getTabId==undefined){
-       	 		Ext.getCmp("RealTimeMonitoringStatTabPanel").insert(0,realtimeStatTabItems[0]);
-       	 	}else if(deviceCount==0 && getTabId!=undefined){
-       	 		Ext.getCmp("RealTimeMonitoringStatTabPanel").remove(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"));
-       	 		removeFESdiagramResultStatGraphPanel=true;
-       	 	}
-       	 	var statTabActiveId = tabPanel.getActiveTab().id;
-       	 	if(!(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id" && removeFESdiagramResultStatGraphPanel)){
-       	 		if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-       	 			loadAndInitFESdiagramResultStat(true);
-       	 		}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
-       	 			loadAndInitCommStatusStat(true);
-       	 		}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
-       	 			loadAndInitRunStatusStat(true);
-       	 		}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-       	 			loadAndInitDeviceTypeStat(true);
-       	 		}
-       	 	}
-			Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setValue('');
-			Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setRawValue('');
-			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("RealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
+			realTimeDataRefresh();
 		}
 	}else if(module_Code == "DeviceHistoryQuery"){
 		var tabChange=false;
@@ -353,42 +330,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 		
 		if(!tabChange){
-			var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
 			Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-			
-			var removeHistoryFESdiagramResultStatGraphPanel=false;
-			var tabPanel = Ext.getCmp("HistoryQueryStatTabPanel");
-			var statTabActiveId = tabPanel.getActiveTab().id;
-			
-			
-			var getTabId = tabPanel.getComponent("HistoryQueryFESdiagramResultStatGraphPanel_Id");
-       	 	if(deviceCount>0 && getTabId==undefined){
-       	 		Ext.getCmp("HistoryQueryStatTabPanel").insert(0,historyStatTabItems[0]);
-       	 	}else if(deviceCount==0 && getTabId!=undefined){
-       	 		Ext.getCmp("HistoryQueryStatTabPanel").remove(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"));
-       	 		removeHistoryFESdiagramResultStatGraphPanel=true;
-       	 	}
-			
-       	 	if(!(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id" && removeHistoryFESdiagramResultStatGraphPanel)){
-       	 		if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
-       	 			loadAndInitHistoryQueryFESdiagramResultStat(true);
-       	 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
-       	 			loadAndInitHistoryQueryCommStatusStat(true);
-       	 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
-       	 			loadAndInitHistoryQueryRunStatusStat(true);
-       	 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
-       	 			loadAndInitHistoryQueryDeviceTypeStat(true);
-       	 		}
-       	 	}
-			
-			
-			if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
-				Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
-			}else{
-				Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue('');
-				Ext.getCmp('HistoryQueryDeviceListComb_Id').setRawValue('');
-			}
-			refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),deviceType,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
+			historyDataRefresh();
 		}
 	}else if(module_Code == "DailyReport"){
 		var tabChange=false;

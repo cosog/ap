@@ -596,17 +596,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              iconCls: 'note-refresh',
                              hidden:false,
                              handler: function (v, o) {
-                     			var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
-                    			if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-                    				loadAndInitFESdiagramResultStat(true);
-                    			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
-                    				loadAndInitCommStatusStat(true);
-                    			}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
-                    				loadAndInitRunStatusStat(true);
-                    			}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-                    				loadAndInitDeviceTypeStat(true);
-                    			}
-                    			refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp('RealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
+                            	 realTimeDataRefresh();
                     		}
                  		},'-',deviceCombo,'-', {
                              xtype: 'button',

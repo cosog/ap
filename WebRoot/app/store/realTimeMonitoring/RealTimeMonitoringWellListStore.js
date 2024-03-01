@@ -102,7 +102,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		if(calculateType>0 && getTabId==undefined){
                     			rightTabPanel.insert(2,RealTimeMonitoringRightTabPanelItems[2]);
                        	 	}else if(calculateType==0 && getTabId!=undefined){
-                       	 		rightTabPanel.remove(Ext.getCmp("RealTimeMonitoringRightCalculateDataPanel"));
+                       	 		rightTabPanel.remove("RealTimeMonitoringRightCalculateDataPanel");
                        	 		removeRightCalculateDataPanel=true;
                        	 	}
                     		

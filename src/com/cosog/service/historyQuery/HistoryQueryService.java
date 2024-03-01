@@ -25,8 +25,11 @@ import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
+import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPDeviceInfo;
+import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.calculate.UserInfo;
@@ -80,17 +83,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
 				
-				if(StringManagerUtils.stringToInteger(deviceType) ==0){
-					if(!jedis.exists("DeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-				}else{
-					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
+
+				if(!jedis.exists("DeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
+				deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -111,7 +108,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				String sql="select t2.commstatus,count(1) from "+deviceTableName+" t "
-						+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
+						+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id "
 						+ " where t.orgid in("+orgId+") ";
 				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 					sql+=" and t.devicetypename='"+deviceTypeStatValue+"'";
@@ -134,37 +131,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(deviceInfoByteList!=null){
 					for(int i=0;i<deviceInfoByteList.size();i++){
 						int commStatus=0;
-						if(StringManagerUtils.stringToInteger(deviceType) ==0){
-							Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-							if (obj instanceof RPCDeviceInfo) {
-								RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
-								if(StringManagerUtils.stringToArrExistNum(orgId, rpcDeviceInfo.getOrgId())){
-									commStatus=rpcDeviceInfo.getOnLineCommStatus();
-									if(commStatus==1){
-										online+=1;
-									}else if(commStatus==2){
-										goOnline+=1;
-									}else{
-										offline+=1;;
-									}
-								}
-							}
-						}else{
-							Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-							if (obj instanceof PCPDeviceInfo) {
-								PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)obj;
-								if(StringManagerUtils.stringToArrExistNum(orgId, pcpDeviceInfo.getOrgId())){
-									commStatus=pcpDeviceInfo.getOnLineCommStatus();
-									if(commStatus==1){
-										online+=1;
-									}else if(commStatus==2){
-										goOnline+=1;
-									}else{
-										offline+=1;;
-									}
+
+						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+						if (obj instanceof DeviceInfo) {
+							DeviceInfo deviceInfo=(DeviceInfo)obj;
+							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId())){
+								commStatus=deviceInfo.getOnLineCommStatus();
+								if(commStatus==1){
+									online+=1;
+								}else if(commStatus==2){
+									goOnline+=1;
+								}else{
+									offline+=1;;
 								}
 							}
 						}
+					
 					}
 				}
 			}
@@ -220,7 +202,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		
 		String sql="select t.devicetypename,t.devicetype,count(1) from "+deviceTableName+" t "
-				+ " left outer join "+tableName+" t2 on t.id=t2.wellid "
+				+ " left outer join "+tableName+" t2 on t.id=t2.deviceId "
 				+ " where t.orgid in("+orgId+") ";
 		
 		
@@ -331,7 +313,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String sql="select t.id,t.devicename,t2.commstatus,"
 					+ " decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.tabname as devicetypename "
+					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.tabname as devicetypename,"
+					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
@@ -372,17 +355,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String deviceId=obj[0]+"";
 				String alarmInstanceCode="";
 				int commAlarmLevel=0;
-				if(StringManagerUtils.stringToInteger(deviceType)==0){
-					if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
-						alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
-					}
-				}else if(StringManagerUtils.stringToInteger(deviceType)==1){
-					if(jedis!=null&&jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
-						PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
-						alarmInstanceCode=pcpDeviceInfo.getAlarmInstanceCode();
-					}
+
+				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+					alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
 				}
+			
 				
 				if(StringManagerUtils.isNotNull(alarmInstanceCode)){
 					AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -403,7 +381,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"commStatusName\":\""+obj[3]+"\",");
 				result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 				result_json.append("\"acqTime\":\""+obj[4]+"\",");
-				result_json.append("\"deviceTypeName\":\""+obj[5]+"\"},");
+				result_json.append("\"deviceTypeName\":\""+obj[5]+"\",");
+				result_json.append("\"calculateType\":\""+obj[6]+"\"},");
 			}
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -422,18 +401,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	
 	public String getHistoryQueryDeviceListExportData(String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		String deviceTableName="tbl_rpcdevice";
+		String deviceTableName="tbl_device";
 		String tableName="tbl_rpcacqdata_latest";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			tableName="tbl_pcpacqdata_latest";
-			deviceTableName="tbl_pcpdevice";
+			deviceTableName="tbl_device";
 		}
 		
 		String sql="select t.id,t.devicename,t2.commstatus,"
 				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
 		sql+= " from "+deviceTableName+" t "
-				+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+				+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 				+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
 		if(StringManagerUtils.stringToInteger(deviceType)==0){
 			sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
@@ -484,11 +463,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			String tableName="tbl_rpcacqdata_latest";
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
 				tableName="tbl_pcpacqdata_latest";
-				deviceTableName="tbl_pcpdevice";
+				deviceTableName="tbl_device";
 			}
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -506,7 +485,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
 			if(StringManagerUtils.stringToInteger(deviceType)==0){
 				sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
@@ -621,35 +600,31 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
 			
-			String hisTableName="tbl_rpcacqdata_hist";
-			String deviceTableName="tbl_rpcdevice";
-			String ddicName="historyQuery_RPCHistoryData";
+			String hisTableName="tbl_acqdata_hist";
+			String deviceTableName="tbl_device";
+			String calTableName="tbl_rpcacqdata_hist";
+			String ddicName="historyQuery_HistoryData";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				hisTableName="tbl_pcpacqdata_hist";
-				deviceTableName="tbl_pcpdevice";
-				ddicName="historyQuery_PCPHistoryData";
-			}
 			
-			RPCDeviceInfo rpcDeviceInfo=null;
+			DeviceInfo deviceInfo=null;
 			if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+				deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 			}
 			String protocolName="";
 			AcqInstanceOwnItem acqInstanceOwnItem=null;
-			if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes())){
-				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes()));
+			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes())){
+				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes()));
 				protocolName=acqInstanceOwnItem.getProtocol();
 			}
 			DisplayInstanceOwnItem displayInstanceOwnItem=null;
-			if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), rpcDeviceInfo.getDisplayInstanceCode().getBytes())){
-				displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), rpcDeviceInfo.getDisplayInstanceCode().getBytes()));
+			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
+				displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
 			}
 			
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-			if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes())){
-				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
+			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes())){
+				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes()));
 			}
 			ModbusProtocolConfig.Protocol protocol=null;
 			for(int j=0;modbusProtocolConfig!=null && j<modbusProtocolConfig.getProtocol().size();j++){
@@ -670,46 +645,46 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				tableColumnsList.add(columnList.get(i).toString());
 			}
 			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
-					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
-					+ "availablePlungerStrokeProd_v,pumpClearanceleakProd_v,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_v,";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
-						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
-						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
-			}
+//			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
+//					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
+//					+ "availablePlungerStrokeProd_v,pumpClearanceleakProd_v,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_v,";
+//			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+//				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
+//						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
+//						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
+//			}
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"//8~9
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
-					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
-					+ "t2.TheoreticalProduction,"//16
-					+ prodCol+""//17~27
-					+ "t2.FMax,t2.FMin,"//28~29
-					+ "t2.Stroke,t2.SPM,"//30~31
-					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//32~34
-					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//35~36
-					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//37~39
-					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//40
-					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//41
-					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//42~44
-					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//45~47
-					+ "t2.PumpEff1*100 as PumpEff1,"//48
-					+ "t2.pumpEff2*100 as pumpEff2,"//49
-					+ "t2.pumpEff3*100 as pumpEff3,"//50
-					+ "t2.pumpEff4*100 as pumpEff4,"//51
-					+ "t2.pumpEff*100 as pumpEff,"//52
-					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//53~55
-					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//56~58
-					+ "t2.deltaradius*100 as deltaradius,"//59
-					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//60~61
-					+ "t2.submergence,"//62
-					+ "t2.todayKWattH,"//63
-					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//64~68
-					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//69~73
-					+ "t2.productiondata";//74
+					+ "t2.runtime,t2.runtimeefficiency,t2.runrange";//10~12
+//					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
+//					+ "t2.TheoreticalProduction,"//16
+//					+ prodCol+""//17~27
+//					+ "t2.FMax,t2.FMin,"//28~29
+//					+ "t2.Stroke,t2.SPM,"//30~31
+//					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//32~34
+//					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//35~36
+//					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//37~39
+//					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//40
+//					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//41
+//					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//42~44
+//					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//45~47
+//					+ "t2.PumpEff1*100 as PumpEff1,"//48
+//					+ "t2.pumpEff2*100 as pumpEff2,"//49
+//					+ "t2.pumpEff3*100 as pumpEff3,"//50
+//					+ "t2.pumpEff4*100 as pumpEff4,"//51
+//					+ "t2.pumpEff*100 as pumpEff,"//52
+//					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//53~55
+//					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//56~58
+//					+ "t2.deltaradius*100 as deltaradius,"//59
+//					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//60~61
+//					+ "t2.submergence,"//62
+//					+ "t2.todayKWattH,"//63
+//					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//64~68
+//					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//69~73
+//					+ "t2.productiondata";//74
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
@@ -721,8 +696,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=",t2."+ddicColumnsList.get(i);
 			}
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+					+ " left outer join "+hisTableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in ("+orgId+") "
 					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
 					+ "  order by t2.acqtime desc";
@@ -740,45 +714,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				Object[] obj=(Object[]) list.get(i);
 				String commStatusName=obj[4]+"";
 				String runStatusName=obj[9]+"";
-				String resultCode=obj[13]+"";
-				
-				String productionDataStr=obj[74]+"";
-				
-				String tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",weightWaterCut="",
-						productionGasOilRatio="",producingfluidLevel="",levelCorrectValue="",
-						pumpSettingDepth="",pumpBoreDiameter="";
-						
-				if(StringManagerUtils.isNotNull(productionDataStr)){
-					type = new TypeToken<RPCProductionData>() {}.getType();
-					RPCProductionData productionData=gson.fromJson(productionDataStr, type);
-					if(productionData.getProduction()!=null){
-						tubingPressure=productionData.getProduction().getTubingPressure()+"";
-						casingPressure=productionData.getProduction().getCasingPressure()+"";
-						wellHeadTemperature=productionData.getProduction().getWellHeadTemperature()+"";
-						waterCut=productionData.getProduction().getWaterCut()+"";
-						weightWaterCut=productionData.getProduction().getWeightWaterCut()+"";
-						productionGasOilRatio=productionData.getProduction().getProductionGasOilRatio()+"";
-						producingfluidLevel=productionData.getProduction().getProducingfluidLevel()+"";
-						pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
-					}
-					if(productionData.getPump()!=null){
-						pumpBoreDiameter=productionData.getPump().getPumpBoreDiameter()*1000+"";
-					}
-					if(productionData.getManualIntervention()!=null){
-						levelCorrectValue=productionData.getManualIntervention().getLevelCorrectValue()+"";
-					}
-				}
 				
 				StringBuffer alarmInfo = new StringBuffer();
-				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+				int commAlarmLevel=0,runAlarmLevel=0;
 				if(alarmInstanceOwnItem!=null){
 					for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
 						if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
 							commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 						}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
 							runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-						}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultCode)){
-							resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 						}
 					}
 				}
@@ -799,96 +743,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
 				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
 				result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
-				result_json.append("\"resultCode\":\""+obj[13]+"\",");
-				result_json.append("\"resultName\":\""+obj[14]+"\",");
-				result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
-				result_json.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
-				
-				result_json.append("\"theoreticalProduction\":\""+obj[16]+"\",");
-				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[17]+"\",");
-				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[18]+"\",");
-				result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[19]+"\",");
-				result_json.append("\"waterCut\":\""+waterCut+"\",");
-				result_json.append("\"weightWaterCut\":\""+weightWaterCut+"\",");
-				result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[20]+"\",");
-				result_json.append("\""+prodCol.split(",")[4]+"\":\""+obj[21]+"\",");
-				result_json.append("\""+prodCol.split(",")[5]+"\":\""+obj[22]+"\",");
-				result_json.append("\""+prodCol.split(",")[6]+"\":\""+obj[23]+"\",");
-				result_json.append("\""+prodCol.split(",")[7]+"\":\""+obj[24]+"\",");
-				result_json.append("\""+prodCol.split(",")[8]+"\":\""+obj[25]+"\",");
-				result_json.append("\""+prodCol.split(",")[9]+"\":\""+obj[26]+"\",");
-				result_json.append("\""+prodCol.split(",")[10]+"\":\""+obj[27]+"\",");
-				
-				result_json.append("\"FMax\":\""+obj[28]+"\",");
-				result_json.append("\"FMin\":\""+obj[29]+"\",");
-				
-				result_json.append("\"stroke\":\""+obj[30]+"\",");
-				result_json.append("\"SPM\":\""+obj[31]+"\",");
-				
-				result_json.append("\"fullnessCoefficient\":\""+obj[32]+"\",");
-				result_json.append("\"plungerStroke\":\""+obj[33]+"\",");
-				result_json.append("\"availablePlungerStroke\":\""+obj[34]+"\",");
-				
-				result_json.append("\"upperLoadLine\":\""+obj[35]+"\",");
-				result_json.append("\"lowerLoadLine\":\""+obj[36]+"\",");
-				
-				result_json.append("\"averageWatt\":\""+obj[37]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[38]+"\",");
-				result_json.append("\"waterPower\":\""+obj[39]+"\",");
-				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[40]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[41]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[42]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[43]+"\",");
-				result_json.append("\"area\":\""+obj[44]+"\",");
-				
-				result_json.append("\"rodFlexLength\":\""+obj[45]+"\",");
-				result_json.append("\"tubingFlexLength\":\""+obj[46]+"\",");
-				result_json.append("\"inertiaLength\":\""+obj[47]+"\",");
-				
-				result_json.append("\"pumpEff1\":\""+obj[48]+"\",");
-				result_json.append("\"pumpEff2\":\""+obj[49]+"\",");
-				result_json.append("\"pumpEff3\":\""+obj[50]+"\",");
-				result_json.append("\"pumpEff4\":\""+obj[51]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[52]+"\",");
-				
-				result_json.append("\"upStrokeIMax\":\""+obj[53]+"\",");
-				result_json.append("\"downStrokeIMax\":\""+obj[54]+"\",");
-				result_json.append("\"iDegreeBalance\":\""+obj[55]+"\",");
-				
-				result_json.append("\"upStrokeWattMax\":\""+obj[56]+"\",");
-				result_json.append("\"downStrokeWattMax\":\""+obj[57]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[58]+"\",");
-				
-				result_json.append("\"deltaradius\":\""+obj[59]+"\",");
-				
-				result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
-				result_json.append("\"levelCorrectValue\":\""+levelCorrectValue+"\",");
-				result_json.append("\"levelDifferenceValue\":\""+obj[60]+"\",");
-				result_json.append("\"calcProducingfluidLevel\":\""+obj[61]+"\",");
-				result_json.append("\"submergence\":\""+obj[62]+"\",");
-				
-				result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
-				result_json.append("\"pumpBoreDiameter\":\""+pumpBoreDiameter+"\",");
-				
-				result_json.append("\"todayKWattH\":\""+obj[63]+"\",");
-				
-				result_json.append("\"tubingPressure\":\""+tubingPressure+"\",");
-				result_json.append("\"casingPressure\":\""+casingPressure+"\",");
-				result_json.append("\"wellHeadTemperature\":\""+wellHeadTemperature+"\",");
-				result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
-				
-				result_json.append("\"pumpIntakeP\":\""+obj[64]+"\",");
-				result_json.append("\"pumpIntakeT\":\""+obj[65]+"\",");
-				result_json.append("\"pumpIntakeGOL\":\""+obj[66]+"\",");
-				result_json.append("\"pumpIntakeVisl\":\""+obj[67]+"\",");
-				result_json.append("\"pumpIntakeBo\":\""+obj[68]+"\",");
-				
-				result_json.append("\"pumpOutletP\":\""+obj[69]+"\",");
-				result_json.append("\"pumpOutletT\":\""+obj[70]+"\",");
-				result_json.append("\"pumpOutletGOL\":\""+obj[71]+"\",");
-				result_json.append("\"pumpOutletVisl\":\""+obj[72]+"\",");
-				result_json.append("\"pumpOutletBo\":\""+obj[73]+"\",");
 				result_json.append("\"details\":\"\",");
 				
 				alarmInfo.append("[");
@@ -921,7 +775,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[75+j]+"";
+					String rawValue=obj[13+j]+"";
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
@@ -1066,25 +920,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
 			
-			String hisTableName="tbl_rpcacqdata_hist";
-			String deviceTableName="tbl_rpcdevice";
-			String ddicName="historyQuery_RPCHistoryData";
+			String hisTableName="tbl_acqdata_hist";
+			String deviceTableName="tbl_device";
+			String ddicName="historyQuery_HistoryData";
 			DataDictionary ddic = null;
 			List<String> ddicColumnsList=new ArrayList<String>();
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				hisTableName="tbl_pcpacqdata_hist";
-				deviceTableName="tbl_pcpdevice";
-				ddicName="historyQuery_PCPHistoryData";
-			}
 			
-			RPCDeviceInfo rpcDeviceInfo=null;
+			DeviceInfo deviceInfo=null;
 			if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+				deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 			}
 			String protocolName="";
 			AcqInstanceOwnItem acqInstanceOwnItem=null;
-			if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes())){
-				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes()));
+			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes())){
+				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes()));
 				protocolName=acqInstanceOwnItem.getProtocol();
 			}
 			ModbusProtocolConfig.Protocol protocol=null;
@@ -1103,46 +952,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				tableColumnsList.add(columnList.get(i).toString());
 			}
 			
-			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
-					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
-					+ "availablePlungerStrokeProd_v,pumpClearanceleakProd_v,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_v,";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
-						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
-						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
-			}
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"//8~9
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
-					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
-					+ "t2.TheoreticalProduction,"//16
-					+ prodCol+""//17~27
-					+ "t2.FMax,t2.FMin,"//28~29
-					+ "t2.Stroke,t2.SPM,"//30~31
-					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//32~34
-					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//35~36
-					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//37~39
-					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//40
-					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//41
-					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//42~44
-					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//45~47
-					+ "t2.PumpEff1*100 as PumpEff1,"//48
-					+ "t2.pumpEff2*100 as pumpEff2,"//49
-					+ "t2.pumpEff3*100 as pumpEff3,"//50
-					+ "t2.pumpEff4*100 as pumpEff4,"//51
-					+ "t2.pumpEff*100 as pumpEff,"//52
-					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//53~55
-					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//56~58
-					+ "t2.deltaradius*100 as deltaradius,"//59
-					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//60~61
-					+ "t2.submergence,"//62
-					+ "t2.todayKWattH,"//63
-					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//64~68
-					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//69~73
-					+ "t2.productiondata";//74
+					+ "t2.runtime,t2.runtimeefficiency,t2.runrange";//10~12
 			
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
@@ -1155,9 +970,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
-					+ " where  t.orgid in ("+orgId+") "
+					+ " left outer join "+hisTableName+" t2 on t2.deviceId=t.id"
+					+ " where t.orgid in ("+orgId+") "
 					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
 					+ "  order by t2.acqtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
@@ -1167,32 +981,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
 				obj=(Object[]) list.get(i);
-				String productionDataStr=obj[74]+"";
-				
-				String tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",weightWaterCut="",
-						productionGasOilRatio="",producingfluidLevel="",levelCorrectValue="",
-						pumpSettingDepth="",pumpBoreDiameter="";
-						
-				if(StringManagerUtils.isNotNull(productionDataStr)){
-					type = new TypeToken<RPCProductionData>() {}.getType();
-					RPCProductionData productionData=gson.fromJson(productionDataStr, type);
-					if(productionData.getProduction()!=null){
-						tubingPressure=productionData.getProduction().getTubingPressure()+"";
-						casingPressure=productionData.getProduction().getCasingPressure()+"";
-						wellHeadTemperature=productionData.getProduction().getWellHeadTemperature()+"";
-						waterCut=productionData.getProduction().getWaterCut()+"";
-						weightWaterCut=productionData.getProduction().getWeightWaterCut()+"";
-						productionGasOilRatio=productionData.getProduction().getProductionGasOilRatio()+"";
-						producingfluidLevel=productionData.getProduction().getProducingfluidLevel()+"";
-						pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
-					}
-					if(productionData.getPump()!=null){
-						pumpBoreDiameter=productionData.getPump().getPumpBoreDiameter()*1000+"";
-					}
-					if(productionData.getManualIntervention()!=null){
-						levelCorrectValue=productionData.getManualIntervention().getLevelCorrectValue()+"";
-					}
-				}
 				
 				result_json = new StringBuffer();
 				record = new ArrayList<>();
@@ -1209,99 +997,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"runStatusName\":\""+obj[9]+"\",");
 				result_json.append("\"runTime\":\""+obj[10]+"\",");
 				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
-				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
-				result_json.append("\"resultCode\":\""+obj[13]+"\",");
-				result_json.append("\"resultName\":\""+obj[14]+"\",");
-				result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
-				
-				result_json.append("\"theoreticalProduction\":\""+obj[16]+"\",");
-				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[17]+"\",");
-				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[18]+"\",");
-				result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[19]+"\",");
-				result_json.append("\"waterCut\":\""+waterCut+"\",");
-				result_json.append("\"weightWaterCut\":\""+weightWaterCut+"\",");
-				result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[20]+"\",");
-				result_json.append("\""+prodCol.split(",")[4]+"\":\""+obj[21]+"\",");
-				result_json.append("\""+prodCol.split(",")[5]+"\":\""+obj[22]+"\",");
-				result_json.append("\""+prodCol.split(",")[6]+"\":\""+obj[23]+"\",");
-				result_json.append("\""+prodCol.split(",")[7]+"\":\""+obj[24]+"\",");
-				result_json.append("\""+prodCol.split(",")[8]+"\":\""+obj[25]+"\",");
-				result_json.append("\""+prodCol.split(",")[9]+"\":\""+obj[26]+"\",");
-				result_json.append("\""+prodCol.split(",")[10]+"\":\""+obj[27]+"\",");
-				
-				result_json.append("\"FMax\":\""+obj[28]+"\",");
-				result_json.append("\"FMin\":\""+obj[29]+"\",");
-				
-				result_json.append("\"stroke\":\""+obj[30]+"\",");
-				result_json.append("\"SPM\":\""+obj[31]+"\",");
-				
-				result_json.append("\"fullnessCoefficient\":\""+obj[32]+"\",");
-				result_json.append("\"plungerStroke\":\""+obj[33]+"\",");
-				result_json.append("\"availablePlungerStroke\":\""+obj[34]+"\",");
-				
-				result_json.append("\"upperLoadLine\":\""+obj[35]+"\",");
-				result_json.append("\"lowerLoadLine\":\""+obj[36]+"\",");
-				
-				result_json.append("\"averageWatt\":\""+obj[37]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[38]+"\",");
-				result_json.append("\"waterPower\":\""+obj[39]+"\",");
-				
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[40]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[41]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[42]+"\",");
-				result_json.append("\"energyper100mlift\":\""+obj[43]+"\",");
-				result_json.append("\"area\":\""+obj[44]+"\",");
-				
-				result_json.append("\"rodFlexLength\":\""+obj[45]+"\",");
-				result_json.append("\"tubingFlexLength\":\""+obj[46]+"\",");
-				result_json.append("\"inertiaLength\":\""+obj[47]+"\",");
-				
-				result_json.append("\"pumpEff1\":\""+obj[48]+"\",");
-				result_json.append("\"pumpEff2\":\""+obj[49]+"\",");
-				result_json.append("\"pumpEff3\":\""+obj[50]+"\",");
-				result_json.append("\"pumpEff4\":\""+obj[51]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[52]+"\",");
-				
-				result_json.append("\"upStrokeIMax\":\""+obj[53]+"\",");
-				result_json.append("\"downStrokeIMax\":\""+obj[54]+"\",");
-				result_json.append("\"iDegreeBalance\":\""+obj[55]+"\",");
-				
-				result_json.append("\"upStrokeWattMax\":\""+obj[56]+"\",");
-				result_json.append("\"downStrokeWattMax\":\""+obj[57]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[58]+"\",");
-				
-				result_json.append("\"deltaradius\":\""+obj[59]+"\",");
-				
-				result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
-				result_json.append("\"levelCorrectValue\":\""+levelCorrectValue+"\",");
-				result_json.append("\"levelDifferenceValue\":\""+obj[60]+"\",");
-				result_json.append("\"calcProducingfluidLevel\":\""+obj[61]+"\",");
-				result_json.append("\"submergence\":\""+obj[62]+"\",");
-				
-				result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
-				result_json.append("\"pumpBoreDiameter\":\""+pumpBoreDiameter+"\",");
-				
-				result_json.append("\"todayKWattH\":\""+obj[63]+"\",");
-				
-				result_json.append("\"tubingPressure\":\""+tubingPressure+"\",");
-				result_json.append("\"casingPressure\":\""+casingPressure+"\",");
-				result_json.append("\"wellHeadTemperature\":\""+wellHeadTemperature+"\",");
-				result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
-				
-				result_json.append("\"pumpIntakeP\":\""+obj[64]+"\",");
-				result_json.append("\"pumpIntakeT\":\""+obj[65]+"\",");
-				result_json.append("\"pumpIntakeGOL\":\""+obj[66]+"\",");
-				result_json.append("\"pumpIntakeVisl\":\""+obj[67]+"\",");
-				result_json.append("\"pumpIntakeBo\":\""+obj[68]+"\",");
-				
-				result_json.append("\"pumpOutletP\":\""+obj[69]+"\",");
-				result_json.append("\"pumpOutletT\":\""+obj[70]+"\",");
-				result_json.append("\"pumpOutletGOL\":\""+obj[71]+"\",");
-				result_json.append("\"pumpOutletVisl\":\""+obj[72]+"\",");
-				result_json.append("\"pumpOutletBo\":\""+obj[73]+"\"");
-				
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\"");
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[75+j]+"";
+					String rawValue=obj[13+j]+"";
 					String value=rawValue;
 					if(protocol!=null){
 						for(int k=0;k<protocol.getItems().size();k++){
@@ -1398,7 +1096,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
 			String hisTableName="tbl_pcpacqdata_hist";
-			String deviceTableName="tbl_pcpdevice";
+			String deviceTableName="tbl_device";
 			String ddicName="historyQuery_PCPHistoryData";
 			String columnsKey="pcpDeviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
@@ -1484,7 +1182,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+hisTableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in ("+orgId+") "
 					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
 					+ "  order by t2.acqtime desc";
@@ -1716,7 +1414,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
 			String hisTableName="tbl_pcpacqdata_hist";
-			String deviceTableName="tbl_pcpdevice";
+			String deviceTableName="tbl_device";
 			String ddicName="historyQuery_PCPHistoryData";
 			String columnsKey="pcpDeviceAcquisitionItemColumns";
 			DataDictionary ddic = null;
@@ -1788,7 +1486,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+hisTableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in ("+orgId+") "
 					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
 					+ "  order by t2.acqtime desc";
@@ -1901,28 +1599,21 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<byte[]> inputItemSet=null;
 			UserInfo userInfo=null;
 			String tableName="tbl_rpcacqdata_hist";
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			String deviceInfoKey="DeviceInfo";
 			String calItemsKey="rpcCalItemList";
 			String inputItemsKey="rpcInputItemList";
-			if(StringManagerUtils.stringToInteger(deviceType)!=0){
-				tableName="tbl_pcpacqdata_hist";
-				deviceTableName="tbl_pcpdevice";
-				deviceInfoKey="PCPDeviceInfo";
-				calItemsKey="pcpCalItemList";
-				inputItemsKey="pcpInputItemList";
-			}
 			String displayInstanceCode="";
 			String alarmInstanceCode="";
-			RPCDeviceInfo rpcDeviceInfo=null;
+			DeviceInfo deviceInfo=null;
 			PCPDeviceInfo pcpDeviceInfo=null;
 
 			if(!jedis.exists(deviceInfoKey.getBytes())){
 				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 			}
-			rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-			displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode();
-			alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
+			deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+			displayInstanceCode=deviceInfo.getDisplayInstanceCode();
+			alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
 			
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
@@ -2077,7 +1768,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						sql+=",t2.productiondata";
 					}
 					sql+= " from "+deviceTableName+" t "
-							+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+							+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 							+ " where  t2.id="+recordId;
 					List<?> list = this.findCallSql(sql);
 					if(list.size()>0){
@@ -2120,12 +1811,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											value=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
 										}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
 											value=rpcProductionData.getReservoir().getDepth()+"";
-											if(rpcDeviceInfo!=null && rpcDeviceInfo.getApplicationScenarios()==0){
+											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油层", "煤层");
 											}
 										}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
 											value=rpcProductionData.getReservoir().getTemperature()+"";
-											if(rpcDeviceInfo!=null && rpcDeviceInfo.getApplicationScenarios()==0){
+											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油层", "煤层");
 											}
 										}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
@@ -2519,7 +2210,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String startDate,String endDate,int userNo)throws Exception {
+	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String calculateType,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -2560,8 +2251,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 					}
 					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
-						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-						displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode()+"";
+						DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+						displayInstanceCode=deviceInfo.getDisplayInstanceCode()+"";
 					}
 				}else{
 					if(!jedis.exists(deviceInfoKey.getBytes())){
@@ -2604,11 +2295,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<String> itemColumnList=new ArrayList<String>();
 			List<String> curveConfList=new ArrayList<String>();
 			
+			List<String> calItemNameList=new ArrayList<String>();
+			List<String> calItemColumnList=new ArrayList<String>();
+			List<String> calItemCurveConfList=new ArrayList<String>();
+			
 			List<String> inputItemNameList=new ArrayList<String>();
 			List<String> inputItemColumnList=new ArrayList<String>();
 			List<String> inputItemCurveConfList=new ArrayList<String>();
 			
-			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
 			
 			if(displayInstanceOwnItem!=null){
@@ -2681,7 +2376,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}
 										}
 									}else if("1".equalsIgnoreCase(type)){
-										itemColumnList.add(itemcode);
+										calItemColumnList.add(itemcode);
 										String itemName=itemname;
 										if(calItemSet!=null){
 											for(byte[] calItemByteArr:calItemSet){
@@ -2696,8 +2391,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}
 										}
 										
-										itemNameList.add(itemName);
-										curveConfList.add(historycurveconf.replaceAll("null", ""));
+										calItemNameList.add(itemName);
+										calItemCurveConfList.add(historycurveconf.replaceAll("null", ""));
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
@@ -2730,7 +2425,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurveconf,t4.itemcode,t4.type "
 						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
-						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=0 "
+						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=<>2 "
 						+ " and t.id="+deviceId+" and t4.historycurveconf is not null "
 						+ " order by t4.sort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
@@ -2768,7 +2463,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}
 										}
 									}else if("1".equalsIgnoreCase(type)){
-										itemColumnList.add(itemcode);
+										calItemColumnList.add(itemcode);
 										String itemName=itemname;
 										if(calItemSet!=null){
 											for(byte[] calItemByteArr:calItemSet){
@@ -2783,8 +2478,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}
 										}
 										
-										itemNameList.add(itemName);
-										curveConfList.add(historycurveconf.replaceAll("null", ""));
+										calItemNameList.add(itemName);
+										calItemCurveConfList.add(historycurveconf.replaceAll("null", ""));
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
@@ -2822,6 +2517,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			for(int i=0;i<itemNameList.size();i++){
 				itemsBuff.append("\""+itemNameList.get(i)+"\",");
 			}
+			for(int i=0;i<calItemNameList.size();i++){
+				itemsBuff.append("\""+calItemNameList.get(i)+"\",");
+			}
 			for(int i=0;i<inputItemNameList.size();i++){
 				itemsBuff.append("\""+inputItemNameList.get(i)+"\",");
 			}
@@ -2834,6 +2532,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			for(int i=0;i<itemColumnList.size();i++){
 				itemsCodeBuff.append("\""+itemColumnList.get(i)+"\",");
 			}
+			for(int i=0;i<calItemColumnList.size();i++){
+				itemsCodeBuff.append("\""+calItemColumnList.get(i)+"\",");
+			}
 			for(int i=0;i<inputItemColumnList.size();i++){
 				itemsCodeBuff.append("\""+inputItemColumnList.get(i)+"\",");
 			}
@@ -2845,6 +2546,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			curveConfBuff.append("[");
 			for(int i=0;i<curveConfList.size();i++){
 				curveConfBuff.append(""+curveConfList.get(i)+",");
+			}
+			for(int i=0;i<calItemCurveConfList.size();i++){
+				curveConfBuff.append(""+calItemCurveConfList.get(i)+",");
 			}
 			for(int i=0;i<inputItemCurveConfList.size();i++){
 				curveConfBuff.append(""+inputItemCurveConfList.get(i)+",");
@@ -2859,23 +2563,39 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("{\"deviceName\":\""+deviceName+"\","
 					+ "\"startDate\":\""+startDate+"\","
 					+ "\"endDate\":\""+endDate+"\","
+					+ "\"curveCount\":"+(itemNameList.size()+calItemNameList.size()+inputItemNameList.size())+","
 					+ "\"curveItems\":"+itemsBuff+","
 					+ "\"curveItemCodes\":"+itemsCodeBuff+","
 					+ "\"curveConf\":"+curveConfBuff+","
 					+ "\"graphicSet\":"+graphicSet+","
 					+ "\"list\":[");
-			if(itemColumnList.size()>0){
+			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
 				String columns="";
+				String calAndInputColumn="";
+				String calAndInputDataTable="";
+				if(StringManagerUtils.stringToInteger(calculateType)==1){
+					calAndInputDataTable="tbl_rpcacqdata_hist";
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+					calAndInputDataTable="tbl_pcpacqdata_hist";
+				}
 				for(int i=0;i<itemColumnList.size();i++){
-					columns+=","+itemColumnList.get(i);
+					columns+=",t."+itemColumnList.get(i);
 				}
-				if(inputItemColumnList.size()>0){
-					columns+=",t.productiondata";
+				
+				if(StringManagerUtils.stringToInteger(calculateType)>0){
+					for(int i=0;i<calItemColumnList.size();i++){
+						calAndInputColumn+=",t3."+calItemColumnList.get(i);
+					}
+					if(inputItemColumnList.size()>0){
+						calAndInputColumn+=",t3.productiondata";
+					}
 				}
+				
 				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns
-						+ " from "+tableName +" t,"+deviceTableName+" t2 "
-						+ " where t.wellid=t2.id "
-						+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
+						+ " from "+tableName +" t"
+						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id"
+						+ " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime"
+						+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
 						+ " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
 				int rarefy=total/vacuateThreshold+1;
@@ -2892,13 +2612,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					for(int j=1;j<=itemColumnList.size();j++){
 						result_json.append(obj[j]+",");
 					}
+					
+					for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
+						result_json.append(obj[j]+",");
+					}
+					
 					if(inputItemColumnList.size()>0){
 						String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 						Gson gson = new Gson();
 						java.lang.reflect.Type type=null;
-						if(StringManagerUtils.stringToInteger(deviceType)==0){
-							type = new TypeToken<RPCDeviceInfo>() {}.getType();
-							RPCDeviceInfo rpcProductionData=gson.fromJson(productionData, type);
+						if(StringManagerUtils.stringToInteger(calculateType)==1){
+							type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+							RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 							for(int j=0;j<inputItemColumnList.size();j++){
 								String inputItemValue="";
 								String column=inputItemColumnList.get(j);
@@ -2937,9 +2662,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}
 								result_json.append(inputItemValue+",");
 							}
-						}else{
-							type = new TypeToken<PCPDeviceInfo>() {}.getType();
-							PCPDeviceInfo pcpProductionData=gson.fromJson(productionData, type);
+						}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+							type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+							PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 							for(int j=0;j<inputItemColumnList.size();j++){
 								String inputItemValue="";
 								String column=inputItemColumnList.get(j);
@@ -3015,7 +2740,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 				+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 				+ " and  t.id="+deviceId;
-		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 		String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurveconf,t4.itemcode,t4.type "
 				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
@@ -3143,16 +2868,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		java.lang.reflect.Type type=null;
 		
 		if(StringManagerUtils.stringToInteger(deviceId)>0){
-			String deviceTableName="tbl_rpcdevice";
-			String graphicSetTableName="tbl_rpcdevicegraphicset";
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				deviceTableName="tbl_pcpdevice";
-				graphicSetTableName="tbl_pcpdevicegraphicset";
-			}
+			String deviceTableName="tbl_device";
+			String graphicSetTableName="tbl_devicegraphicset";
 			
 			type = new TypeToken<GraphicSetData>() {}.getType();
 			GraphicSetData graphicSetSaveData=gson.fromJson(graphicSetSaveDataStr, type);
-			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
 			GraphicSetData graphicSetData=null;
 			if(graphicSetList.size()>0){
@@ -3182,13 +2903,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				saveStr=gson.toJson(graphicSetData);
 			}
-			String sql="select t.wellid from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			String sql="select t.deviceId from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 			String updateSql="";
 			List<?> list = this.findCallSql(sql);
 			if(list.size()>0){
-				updateSql="update "+graphicSetTableName+" t set t.graphicstyle='"+saveStr+"' where t.wellid="+deviceId;
+				updateSql="update "+graphicSetTableName+" t set t.graphicstyle='"+saveStr+"' where t.deviceId="+deviceId;
 			}else{
-				updateSql="insert into "+graphicSetTableName+" (wellid,graphicstyle) values("+deviceId+",'"+saveStr+"')";
+				updateSql="insert into "+graphicSetTableName+" (deviceId,graphicstyle) values("+deviceId+",'"+saveStr+"')";
 			}
 			result=this.getBaseDao().updateOrDeleteBySql(updateSql);
 		}
@@ -3210,17 +2931,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.resultcode,t2.resultname,t2.optimizationSuggestion,"
 				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
 				+ " from tbl_rpcacqdata_hist t"
-				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.wellid="+deviceId+" ";
+				+ " and t.deviceId="+deviceId+" ";
 		totalSql="select count(1) from tbl_rpcacqdata_hist t"
-				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.wellid="+deviceId+" ";
+				+ " and t.deviceId="+deviceId+" ";
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		
@@ -3312,10 +3033,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.fmax,t.fmin,"
 					+ " t.position_curve,t.load_curve"
 					+ " from tbl_rpcacqdata_hist t"
-					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.wellid="+deviceId+" "
+					+ " and t.deviceId="+deviceId+" "
 					+ " order by t.fesdiagramacqtime";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			int totals = getTotalCountRows(sql);//获取总记录数
@@ -3406,7 +3127,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-		RPCDeviceInfo rpcDeviceInfo=null;
+		DeviceInfo deviceInfo=null;
 		String alarmInstanceCode="";
 		try{
 			try{
@@ -3415,8 +3136,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
-					alarmInstanceCode=rpcDeviceInfo.getAlarmInstanceCode();
+					deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+					alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
 				}
 				
 				if(!jedis.exists("AlarmShowStyle".getBytes())){
@@ -3463,19 +3184,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.todayKWattH,"//46
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//47~50
 					+ " from tbl_rpcacqdata_hist t"
-					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.wellid="+deviceId+" "
+					+ " and t.deviceId="+deviceId+" "
 					+ " order by t.fesdiagramacqtime desc";
 			
 			String countSql="select count(1) from tbl_rpcacqdata_hist t"
-					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.wellid="+deviceId;
+					+ " and t.deviceId="+deviceId;
 			int total=this.getTotalCountRows(countSql);
 			int rarefy=total/vacuateThreshold+1;
 			String finalSql=sql;
@@ -3508,8 +3229,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String productionDataStr=(obj[27]+"").replaceAll("null", "");
 						
 						
-						type = new TypeToken<RPCDeviceInfo>() {}.getType();
-						RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
+						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+						RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 						
 						if(alarmInstanceOwnItem!=null){
 							for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
@@ -3707,11 +3428,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.deltaradius*100 as deltaradius,"//45
 					+ " t.todayKWattH"//46
 					+ " from tbl_rpcacqdata_hist t"
-					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.wellid="+deviceId+" ";
+					+ " and t.deviceId="+deviceId+" ";
 			int total=this.getTotalCountRows(sql);
 			int rarefy=total/vacuateThreshold+1;
 			sql+= " order by t.fesdiagramacqtime desc";
@@ -3737,8 +3458,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String resultCode=(obj[13]+"").replaceAll("null", "");
 				String productionDataStr=(obj[27]+"").replaceAll("null", "");
 				
-				type = new TypeToken<RPCDeviceInfo>() {}.getType();
-				RPCDeviceInfo productionData=gson.fromJson(productionDataStr, type);
+				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 				
 				dataBuff.append("{ \"id\":\"" + (1+i) + "\",");
 				dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");

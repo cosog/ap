@@ -219,15 +219,11 @@ public class HistoryQueryController extends BaseController  {
 			}
 		}
 		
-		String tableName="tbl_rpcacqdata_hist";
-		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="tbl_pcpacqdata_hist";
-			deviceTableName="tbl_pcpdevice";
-		}
+		String tableName="tbl_acqdata_hist";
+		String deviceTableName="tbl_device";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.wellId= "+deviceId+")";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -240,15 +236,9 @@ public class HistoryQueryController extends BaseController  {
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			json = historyQueryService.getDeviceHistoryData(orgId,deviceId,deviceName,deviceType,pager);
-		}else{
-			json = historyQueryService.getPCPDeviceHistoryData(orgId,deviceId,deviceName,deviceType,pager);
-		}
+		json = historyQueryService.getDeviceHistoryData(orgId,deviceId,deviceName,deviceType,pager);
 		
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -282,10 +272,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		
 		DataDictionary ddic = null;
-		String ddicName="historyQuery_RPCHistoryData";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			ddicName="historyQuery_PCPHistoryData";
-		}
+		String ddicName="historyQuery_HistoryData";
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		heads=StringUtils.join(ddic.getHeaders(), ",");
 		fields=StringUtils.join(ddic.getFields(), ",");
@@ -298,15 +285,11 @@ public class HistoryQueryController extends BaseController  {
 			}
 		}
 		
-		String tableName="tbl_rpcacqdata_hist";
-		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="tbl_pcpacqdata_hist";
-			deviceTableName="tbl_pcpdevice";
-		}
+		String tableName="tbl_acqdata_hist";
+		String deviceTableName="tbl_device";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.wellId= "+deviceId+")";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -320,12 +303,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			bool = historyQueryService.exportDeviceHistoryData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
-			
-		}else{
-			bool = historyQueryService.exportPCPDeviceHistoryData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
-		}
+		bool = historyQueryService.exportDeviceHistoryData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
 		if(!bool){
 			json="{\"success\":true,\"flag\":false}";
 		}
@@ -370,6 +348,7 @@ public class HistoryQueryController extends BaseController  {
 		User user = (User) session.getAttribute("userLogin");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -396,7 +375,7 @@ public class HistoryQueryController extends BaseController  {
 			
 			
 			this.pager = new Page("pagerForm", request);
-			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,startDate,endDate,user.getUserNo());
+			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,calculateType,startDate,endDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

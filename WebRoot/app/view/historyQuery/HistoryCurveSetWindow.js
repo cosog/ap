@@ -34,16 +34,10 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var activeId = Ext.getCmp("HistoryQueryRootTabPanel").getActiveTab().id;
-                	var deviceType=0;
-                	var selectRowId="RPCHistoryQueryInfoDeviceListSelectRow_Id";
-                	var gridPanelId="RPCHistoryQueryDeviceListGridPanel_Id";
-                	var divId="rpcHistoryQueryCurveDiv_Id";
-                	if(activeId=="PCPHistoryQueryInfoPanel_Id"){
-                		deviceType=1;
-                		selectRowId="PCPHistoryQueryInfoDeviceListSelectRow_Id";
-                		gridPanelId="PCPHistoryQueryDeviceListGridPanel_Id";
-                		divId="pcpHistoryQueryCurveDiv_Id";
-                	}
+                	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+                	var selectRowId="HistoryQueryInfoDeviceListSelectRow_Id";
+                	var gridPanelId="HistoryQueryDeviceListGridPanel_Id";
+                	var divId="historyQueryCurveDiv_Id";
                 	
                 	var deviceName='';
                 	var deviceId=0;
@@ -164,16 +158,10 @@ function CreateDeviceHistoryCurveSetTable(){
 	var activeId = Ext.getCmp("HistoryQueryRootTabPanel").getActiveTab().id;
 	
 	var deviceType=0;
-	var selectRowId="RPCHistoryQueryInfoDeviceListSelectRow_Id";
-	var gridPanelId="RPCHistoryQueryDeviceListGridPanel_Id";
-	var divId="rpcHistoryQueryCurveDiv_Id";
+	var selectRowId="HistoryQueryInfoDeviceListSelectRow_Id";
+	var gridPanelId="HistoryQueryDeviceListGridPanel_Id";
+	var divId="historyQueryCurveDiv_Id";
 	
-	if(activeId=="PCPHistoryQueryInfoPanel_Id"){
-		deviceType=1;
-		selectRowId="PCPHistoryQueryInfoDeviceListSelectRow_Id";
-		gridPanelId="PCPHistoryQueryDeviceListGridPanel_Id";
-		divId="pcpHistoryQueryCurveDiv_Id";
-	}
 	var deviceName='';
 	var deviceId=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();

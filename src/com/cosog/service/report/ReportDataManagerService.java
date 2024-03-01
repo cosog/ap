@@ -2934,7 +2934,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getSingleWellRangeReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getSingleWellRangeReportCurveData(Page pager, String orgId,String deviceType,String reportType,String deviceId,String wellName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -2947,17 +2947,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		String tableName="VIW_RPCDAILYCALCULATIONDATA";
 		String deviceTableName="tbl_rpcdevice";
-		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="VIW_PCPDAILYCALCULATIONDATA";
-			deviceTableName="tbl_pcpdevice";
-			graphicSetTableName="tbl_pcpdevicegraphicset";
-		}
+		String graphicSetTableName="tbl_devicegraphicset";
 		result_json.append("{\"success\":true,");
 		
 		
 		
-		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+wellId;
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceid="+deviceId;
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		if(graphicSetList.size()>0){
 			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
@@ -2966,7 +2961,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
 				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
-				+ " and t3.id="+wellId
+				+ " and t3.id="+deviceId
 				+ " and t.sort>=0"
 				+ " and t.reportType= "+reportType
 				+ " and t.reportcurveconf is not null "
@@ -3060,7 +3055,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportCurveItemList.size();i++){
 				cueveSqlBuff.append(","+reportCurveItemList.get(i).getItemCode()+"");
 			}
-			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 			cueveSqlBuff.append(" order by t.calDate");
 			
@@ -3084,7 +3079,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,
+	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String deviceId,String wellName,
 			String startDate,String endDate,String reportDate,String reportInterval,
 			int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
@@ -3102,17 +3097,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		String tableName="VIW_RPCTIMINGCALCULATIONDATA";
 		String deviceTableName="tbl_rpcdevice";
-		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="VIW_PCPTIMINGCALCULATIONDATA";
-			deviceTableName="tbl_pcpdevice";
-			graphicSetTableName="tbl_pcpdevicegraphicset";
-		}
+		String graphicSetTableName="tbl_devicegraphicset";
 		result_json.append("{\"success\":true,");
 		
 		
 		
-		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+wellId;
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		if(graphicSetList.size()>0){
 			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
@@ -3121,7 +3111,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
 				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
-				+ " and t3.id="+wellId
+				+ " and t3.id="+deviceId
 				+ " and t.sort>=0"
 				+ " and t.reportType= "+reportType
 				+ " and t.reportcurveconf is not null "
@@ -3216,7 +3206,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportCurveItemList.size();i++){
 				cueveSqlBuff.append(","+reportCurveItemList.get(i).getItemCode()+"");
 			}
-			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+deviceId+" ");
 			cueveSqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 			
 			if(StringManagerUtils.stringToInteger(reportInterval)>1){
@@ -3258,12 +3248,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		String tableName="VIW_RPCDAILYCALCULATIONDATA";
 		String deviceTableName="tbl_rpcdevice";
-		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="VIW_PCPDAILYCALCULATIONDATA";
-			deviceTableName="tbl_pcpdevice";
-			graphicSetTableName="tbl_pcpdevicegraphicset";
-		}
+		String graphicSetTableName="tbl_devicegraphicset";
 		result_json.append("{\"success\":true,");
 		
 		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.curvestattype "
@@ -3424,12 +3409,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String deviceTableName="tbl_rpcdevice";
-		String graphicSetTableName="tbl_rpcdevicegraphicset";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			deviceTableName="tbl_pcpdevice";
-			graphicSetTableName="tbl_pcpdevicegraphicset";
-		}
-		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+		String graphicSetTableName="tbl_devicegraphicset";
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 		String curveItemsSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
 				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
@@ -3542,15 +3523,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		if(StringManagerUtils.stringToInteger(deviceId)>0){
 			String deviceTableName="tbl_rpcdevice";
-			String graphicSetTableName="tbl_rpcdevicegraphicset";
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				deviceTableName="tbl_pcpdevice";
-				graphicSetTableName="tbl_pcpdevicegraphicset";
-			}
+			String graphicSetTableName="tbl_devicegraphicset";
 			
 			type = new TypeToken<GraphicSetData>() {}.getType();
 			GraphicSetData graphicSetSaveData=gson.fromJson(graphicSetSaveDataStr, type);
-			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
 			GraphicSetData graphicSetData=null;
 			if(graphicSetList.size()>0){

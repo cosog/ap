@@ -56,45 +56,75 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
                     	},
                     	select: function(grid, record, index, eOpts) {
-//                    		Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(index);
-//                    		
-//                    		var combDeviceName=Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
-//                    		if(combDeviceName!=''){
-//                        		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
-//                    		}
-//                    		
-//                    		
-//                    		Ext.getCmp('HistoryQueryStartDate_Id').setValue('');
-//                    		Ext.getCmp('HistoryQueryStartDate_Id').setRawValue('');
-//                    		Ext.getCmp('HistoryQueryEndDate_Id').setValue('');
-//                    		Ext.getCmp('HistoryQueryEndDate_Id').setRawValue('');
-//                    		
-//                    		var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
-//            				var activeId = tabPanel.getActiveTab().id;
-//            				if(activeId=="HistoryDataTabPanel"){
-//        						Ext.getCmp("HistoryDataExportBtn_Id").show();
-//        						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
-//        						var HistoryQueryDataGridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
-//                                if (isNotVal(HistoryQueryDataGridPanel)) {
-//                                	HistoryQueryDataGridPanel.getStore().loadPage(1);
-//                                }else{
-//                                	Ext.create("AP.store.historyQuery.HistoryDataStore");
-//                                }
-//        					}else if(activeId=="HistoryDiagramTabPanel"){
-//        						Ext.getCmp("HistoryDataExportBtn_Id").hide();
-//        						Ext.getCmp("SurfaceCardTotalCount_Id").show();
-//        						loadSurfaceCardList(1);
-//        					}else if(activeId=="HistoryDiagramOverlayTabPanel"){
-//        						Ext.getCmp("HistoryDataExportBtn_Id").hide();
-//        						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
-//        						
-//        						var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-//                                if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
-//                                	HistoryQueryFSdiagramOverlayGrid.getStore().load();
-//                                }else{
-//                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
-//                                }
-//        					}
+                    		Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(index);
+                    		
+                    		var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+                    		var deviceName=record.data.deviceName;
+                    		var deviceId=record.data.id;
+                    		var calculateType=record.data.calculateType;
+                    		
+                    		var combDeviceName=Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
+                    		if(combDeviceName!=''){
+                        		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
+                    		}
+                    		
+                    		
+                    		var removeCenterCalDataPanel=false;
+                    		
+                    		Ext.getCmp('HistoryQueryStartDate_Id').setValue('');
+                    		Ext.getCmp('HistoryQueryStartDate_Id').setRawValue('');
+                    		Ext.getCmp('HistoryQueryEndDate_Id').setValue('');
+                    		Ext.getCmp('HistoryQueryEndDate_Id').setRawValue('');
+                    		
+                    		var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
+                    		
+                    		var getTabId1 = tabPanel.getComponent("HistoryDiagramTabPanel");
+                    		var getTabId2 = tabPanel.getComponent("HistoryDiagramOverlayTabPanel");
+                    		
+                    		if(calculateType==1){
+                    			if(getTabId1==undefined){
+                    				tabPanel.insert(1,historyQueryCenterTabPanelItems[1]);
+                    			}
+                    			if(getTabId2==undefined){
+                    				tabPanel.insert(2,historyQueryCenterTabPanelItems[2]);
+                    			}
+                       	 	}else{
+                       	 		if(getTabId1!=undefined){
+                       	 			tabPanel.remove("HistoryDiagramTabPanel");
+                       	 		}
+                       	 		if(getTabId2!=undefined){
+                       	 			tabPanel.remove("HistoryDiagramOverlayTabPanel");
+                       	 		}
+                       	 		removeCenterCalDataPanel=true;
+                       	 	}
+                    		
+                    		if(!removeCenterCalDataPanel){
+                    			var activeId = tabPanel.getActiveTab().id;
+                				if(activeId=="HistoryDataTabPanel"){
+            						Ext.getCmp("HistoryDataExportBtn_Id").show();
+            						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
+            						var HistoryQueryDataGridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
+                                    if (isNotVal(HistoryQueryDataGridPanel)) {
+                                    	HistoryQueryDataGridPanel.getStore().loadPage(1);
+                                    }else{
+                                    	Ext.create("AP.store.historyQuery.HistoryDataStore");
+                                    }
+            					}else if(activeId=="HistoryDiagramTabPanel"){
+            						Ext.getCmp("HistoryDataExportBtn_Id").hide();
+            						Ext.getCmp("SurfaceCardTotalCount_Id").show();
+            						loadSurfaceCardList(1);
+            					}else if(activeId=="HistoryDiagramOverlayTabPanel"){
+            						Ext.getCmp("HistoryDataExportBtn_Id").hide();
+            						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
+            						
+            						var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
+                                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
+                                    	HistoryQueryFSdiagramOverlayGrid.getStore().load();
+                                    }else{
+                                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+                                    }
+            					}
+                    		}
                     	}
                     }
                 });

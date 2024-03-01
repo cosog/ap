@@ -28,7 +28,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         	        		tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        			var HistoryQueryInfoPanel = Ext.create('AP.view.historyQuery.HistoryQueryInfoPanel');
         	        			newCard.add(HistoryQueryInfoPanel);
-        	        			Ext.getCmp("selectedDeviceType_global").setValue(newCard.id.split('_')[1]);
+
+        	        			historyDataRefresh();
         	        		},
         	        		afterrender: function (panel, eOpts) {
         	        			
@@ -88,43 +89,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
     					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
     					
     					var HistoryQueryInfoPanel = Ext.create('AP.view.historyQuery.HistoryQueryInfoPanel');
-        				var tabId=0;
         				if(newCard.xtype=='tabpanel'){
         					newCard.activeTab.add(HistoryQueryInfoPanel);
-        					tabId=newCard.activeTab.id.split('_')[1];
         				}else{
 	        				newCard.add(HistoryQueryInfoPanel);
-	        				tabId=newCard.id.split('_')[1];
         				}
-        				Ext.getCmp("selectedDeviceType_global").setValue(tabId); 
-    					
-//    					if(newCard.id=="HistoryQueryInfoPanel_Id"){
-//    						Ext.getCmp("selectedDeviceType_global").setValue(0); 
-//    						var statTabActiveId = Ext.getCmp("HistoryQueryStatTabPanel").getActiveTab().id;
-//    						if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
-//        						loadAndInitHistoryQueryFESdiagramResultStat(true);
-//        					}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
-//    							loadAndInitHistoryQueryCommStatusStat(true);
-//    						}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
-//        						loadAndInitHistoryQueryRunStatusStat(true);
-//        					}else if(newCard.id=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
-//    							loadAndInitHistoryQueryDeviceTypeStat(true);
-//    						}
-//    						
-//    						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),tabId,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
-//    					}else if(newCard.id=="PCPHistoryQueryInfoPanel_Id"){
-//    						Ext.getCmp("selectedDeviceType_global").setValue(1); 
-//    						var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
-//    						if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
-//    							loadAndInitHistoryQueryCommStatusStat(true);
-//    						}else if(statTabActiveId=="PCPHistoryQueryRunStatusStatGraphPanel_Id"){
-//        						loadAndInitHistoryQueryRunStatusStat(true);
-//        					}else if(newCard.id=="PCPHistoryQueryDeviceTypeStatGraphPanel_Id"){
-//    							loadAndInitHistoryQueryDeviceTypeStat(true);
-//    						}
-//    						
-//    						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue()),tabId,Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.PCPHistoryQueryWellListStore');
-//    					}
+        				
+        				historyDataRefresh();
     				}
     			}
             	}],
@@ -137,6 +108,49 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
     }
 
 });
+
+function historyDataRefresh(){
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+	var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
+	
+	Ext.getCmp("selectedDeviceType_global").setValue(deviceType); 
+	
+	var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
+	var removeHistoryFESdiagramResultStatGraphPanel=false;
+	var tabPanel = Ext.getCmp("HistoryQueryStatTabPanel");
+	var statTabActiveId = tabPanel.getActiveTab().id;
+	
+	
+	var getTabId = tabPanel.getComponent("HistoryQueryFESdiagramResultStatGraphPanel_Id");
+	 	if(deviceCount>0 && getTabId==undefined){
+	 		Ext.getCmp("HistoryQueryStatTabPanel").insert(0,historyStatTabItems[0]);
+	 	}else if(deviceCount==0 && getTabId!=undefined){
+	 		Ext.getCmp("HistoryQueryStatTabPanel").remove(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"));
+	 		removeHistoryFESdiagramResultStatGraphPanel=true;
+	 	}
+	
+	 	if(!(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id" && removeHistoryFESdiagramResultStatGraphPanel)){
+	 		if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryFESdiagramResultStat(true);
+	 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryCommStatusStat(true);
+	 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryRunStatusStat(true);
+	 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryDeviceTypeStat(true);
+	 		}
+	 	}
+	
+	
+	if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
+		Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
+	}else{
+		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue('');
+		Ext.getCmp('HistoryQueryDeviceListComb_Id').setRawValue('');
+	}
+	refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedRPCDeviceId_global").getValue()),deviceType,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
+}
 
 function createHistoryQueryDeviceListColumn(columnInfo) {
     var myArr = columnInfo;
@@ -297,9 +311,6 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startD
 	var key='exportHistoryQueryData_'+deviceType+'_'+timestamp;
 	
 	var maskPanelId='HistoryQueryInfoPanel_Id';
-	if(deviceType==1){
-		maskPanelId='PCPHistoryQueryInfoPanel_Id';
-	}
 	
 	var url = context + '/historyQueryController/exportHistoryQueryDataExcel';
     var fields = "";
@@ -320,7 +331,6 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startD
         		unlockedfields += column.dataIndex + ",";
         		unlockedheads += column.text + ",";
         	}
-            
         }
     });
     if (isNotVal(lockedfields)) {
@@ -439,16 +449,18 @@ function deviceHistoryQueryCurve(deviceType){
 	var endMinuteId="HistoryQueryEndTime_Minute_Id";
 	var endSecondId="HistoryQueryEndTime_Second_Id";
 	
-	var divId="HistoryQueryCurveDiv_Id";
-	var panelId='HistoryQueryCurvePanel_Id';
+	var divId="historyQueryCurveDiv_Id";
+	var panelId='historyQueryCurvePanel_Id';
 	
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
 	var deviceId=0;
+	var calculateType=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
 	if(selectRow>=0){
 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.wellName;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
+		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
 	}
 	var startDate=Ext.getCmp(startDateId).rawValue;
 	var startTime_Hour=Ext.getCmp(startHourId).getValue();
@@ -646,7 +658,8 @@ function deviceHistoryQueryCurve(deviceType){
 			deviceId:deviceId,
 			startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
-			deviceType:deviceType
+			deviceType:deviceType,
+			calculateType:calculateType
         }
 	});
 };

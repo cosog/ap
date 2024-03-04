@@ -1,8 +1,8 @@
-Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
+Ext.define('AP.view.alarmQuery.RunStatusAlarmInfoPanel', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.RPCRunStatusAlarmInfoView',
+    alias: 'widget.runStatusAlarmInfoPanel',
     layout: "fit",
-    id: "RPCRunStatusAlarmInfoView_Id",
+    id: "RunStatusAlarmInfoPanel_Id",
     border: false,
     initComponent: function () {
         var deviceCombStore = new Ext.data.JsonStore({
@@ -30,7 +30,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('RPCRunStatusAlarmDeviceListComb_Id').getValue();
+                    var wellName = Ext.getCmp('RunStatusAlarmDeviceListComb_Id').getValue();
                     var deviceType = 0;
                     var new_params = {
                         orgId: leftOrg_Id,
@@ -45,7 +45,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
         var deviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '井名',
-                    id: "RPCRunStatusAlarmDeviceListComb_Id",
+                    id: "RunStatusAlarmDeviceListComb_Id",
                     labelWidth: 35,
                     width: 145,
                     labelAlign: 'left',
@@ -66,25 +66,25 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-                        	Ext.getCmp("RPCRunStatusAlarmOverviewSelectRow_Id").setValue(0);
-                        	Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+                        	Ext.getCmp("RunStatusAlarmOverviewSelectRow_Id").setValue(0);
+                        	Ext.getCmp("RunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
                         }
                     }
                 });
     	Ext.apply(this, {
     		layout: 'border',
     		tbar: [{
-                id: 'RPCRunStatusAlarmOverviewColumnStr_Id',
+                id: 'RunStatusAlarmOverviewColumnStr_Id',
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'RPCRunStatusAlarmDetailsColumnStr_Id',
+                id: 'RunStatusAlarmDetailsColumnStr_Id',
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'RPCRunStatusAlarmOverviewSelectRow_Id',
+                id: 'RunStatusAlarmOverviewSelectRow_Id',
                 xtype: 'textfield',
                 value: 0,
                 hidden: true
@@ -94,17 +94,17 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {
-                	var gridPanel = Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id");
+                	var gridPanel = Ext.getCmp("RunStatusAlarmOverviewGridPanel_Id");
     				if (isNotVal(gridPanel)) {
     					gridPanel.getStore().loadPage(1);
     				}else{
-    					Ext.create('AP.store.alarmQuery.RPCRunStatusAlarmOverviewStore');
+    					Ext.create('AP.store.alarmQuery.RunStatusAlarmOverviewStore');
     				}
                 }
     		},'-',deviceCombo,'-',{
             	xtype : "combobox",
 				fieldLabel : '报警级别',
-				id : 'RPCRunStatusAlarmLevelComb_Id',
+				id : 'RunStatusAlarmLevelComb_Id',
 				labelWidth: 55,
                 width: 135,
                 labelAlign: 'left',
@@ -125,8 +125,8 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
 				queryMode : 'local',
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("RPCRunStatusAlarmOverviewSelectRow_Id").setValue(0);
-						Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+						Ext.getCmp("RunStatusAlarmOverviewSelectRow_Id").setValue(0);
+						Ext.getCmp("RunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
             },
@@ -134,7 +134,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
             {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
-				id : 'RPCRunStatusAlarmIsSendMessageComb_Id',
+				id : 'RunStatusAlarmIsSendMessageComb_Id',
 				hidden: true,
 				labelWidth: 80,
                 width: 160,
@@ -156,7 +156,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
 				queryMode : 'local',
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+						Ext.getCmp("RunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
             },'-',{
@@ -167,14 +167,14 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 width: 125,
                 format: 'Y-m-d ',
                 value: '',
-                id: 'RPCRunStatusAlarmQueryStartDate_Id',
+                id: 'RunStatusAlarmQueryStartDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
                     }
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'RPCRunStatusAlarmQueryStartTime_Hour_Id',
+            	id: 'RunStatusAlarmQueryStartTime_Hour_Id',
                 fieldLabel: '时',
                 labelWidth: 15,
                 width: 60,
@@ -195,7 +195,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'RPCRunStatusAlarmQueryStartTime_Minute_Id',
+            	id: 'RunStatusAlarmQueryStartTime_Minute_Id',
                 fieldLabel: '分',
                 labelWidth: 15,
                 width: 60,
@@ -216,7 +216,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'RPCRunStatusAlarmQueryStartTime_Second_Id',
+            	id: 'RunStatusAlarmQueryStartTime_Second_Id',
                 fieldLabel: '秒',
                 labelWidth: 15,
                 width: 60,
@@ -243,14 +243,14 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 width: 110,
                 format: 'Y-m-d ',
                 value: '',
-                id: 'RPCRunStatusAlarmQueryEndDate_Id',
+                id: 'RunStatusAlarmQueryEndDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
                     }
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'RPCRunStatusAlarmQueryEndTime_Hour_Id',
+            	id: 'RunStatusAlarmQueryEndTime_Hour_Id',
                 fieldLabel: '时',
                 labelWidth: 15,
                 width: 60,
@@ -271,7 +271,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'RPCRunStatusAlarmQueryEndTime_Minute_Id',
+            	id: 'RunStatusAlarmQueryEndTime_Minute_Id',
                 fieldLabel: '分',
                 labelWidth: 15,
                 width: 60,
@@ -292,7 +292,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'RPCRunStatusAlarmQueryEndTime_Second_Id',
+            	id: 'RunStatusAlarmQueryEndTime_Second_Id',
                 fieldLabel: '秒',
                 labelWidth: 15,
                 width: 60,
@@ -318,44 +318,44 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 handler: function () {
                 	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Hour_Id').getValue();
+                	var startTime_Hour=Ext.getCmp('RunStatusAlarmQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Minute=Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Minute_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('RunStatusAlarmQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Second_Id').getValue();
+                	var startTime_Second=Ext.getCmp('RunStatusAlarmQueryStartTime_Second_Id').getValue();
                 	if(!r2.test(startTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryStartTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	
-                	var endTime_Hour=Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Hour_Id').getValue();
+                	var endTime_Hour=Ext.getCmp('RunStatusAlarmQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Minute=Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Minute_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('RunStatusAlarmQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Second_Id').getValue();
+                	var endTime_Second=Ext.getCmp('RunStatusAlarmQueryEndTime_Second_Id').getValue();
                 	if(!r2.test(endTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryEndTime_Second_Id').focus(true, 100);
                 		return;
                 	}
-                	var gridPanel = Ext.getCmp("RPCRunStatusAlarmGridPanel_Id");
+                	var gridPanel = Ext.getCmp("RunStatusAlarmGridPanel_Id");
                 	if (isNotVal(gridPanel)) {
                 		gridPanel.getStore().loadPage(1);
                 	}
@@ -368,14 +368,14 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 handler: function (v, o) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var deviceType=0;
-                	var deviceName=Ext.getCmp('RPCRunStatusAlarmDeviceListComb_Id').getValue();
-                	var alarmLevel=Ext.getCmp('RPCRunStatusAlarmLevelComb_Id').getValue();
-                	var isSendMessage=Ext.getCmp('RPCRunStatusAlarmIsSendMessageComb_Id').getValue();
+                	var deviceName=Ext.getCmp('RunStatusAlarmDeviceListComb_Id').getValue();
+                	var alarmLevel=Ext.getCmp('RunStatusAlarmLevelComb_Id').getValue();
+                	var isSendMessage=Ext.getCmp('RunStatusAlarmIsSendMessageComb_Id').getValue();
                	 	var alarmType=6;
                	 	
                	 	var fileName='抽油机井运行状态报警设备列表';
                	 	var title='抽油机井运行状态报警设备列表';
-               	 	var columnStr=Ext.getCmp("RPCRunStatusAlarmOverviewColumnStr_Id").getValue();
+               	 	var columnStr=Ext.getCmp("RunStatusAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
             },'-', {
@@ -386,60 +386,60 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 handler: function (v, o) {
                 	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Hour_Id').getValue();
+                	var startTime_Hour=Ext.getCmp('RunStatusAlarmQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Minute=Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Minute_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('RunStatusAlarmQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Second_Id').getValue();
+                	var startTime_Second=Ext.getCmp('RunStatusAlarmQueryStartTime_Second_Id').getValue();
                 	if(!r2.test(startTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryStartTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryStartTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	
-                	var endTime_Hour=Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Hour_Id').getValue();
+                	var endTime_Hour=Ext.getCmp('RunStatusAlarmQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Minute=Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Minute_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('RunStatusAlarmQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Second_Id').getValue();
+                	var endTime_Second=Ext.getCmp('RunStatusAlarmQueryEndTime_Second_Id').getValue();
                 	if(!r2.test(endTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('RPCRunStatusAlarmQueryEndTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('RunStatusAlarmQueryEndTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var deviceType=0;
                 	var deviceName='';
                 	var deviceId=0;
-                	if(Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
-                		deviceName=Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-                    	deviceId=  Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                	if(Ext.getCmp("RunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+                		deviceName=Ext.getCmp("RunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	deviceId=  Ext.getCmp("RunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                 	}
-                	var alarmLevel=Ext.getCmp('RPCRunStatusAlarmLevelComb_Id').getValue();
-                	var isSendMessage=Ext.getCmp('RPCRunStatusAlarmIsSendMessageComb_Id').getValue();
-                	var startDate=Ext.getCmp('RPCRunStatusAlarmQueryStartDate_Id').rawValue;
-                    var endDate=Ext.getCmp('RPCRunStatusAlarmQueryEndDate_Id').rawValue;
+                	var alarmLevel=Ext.getCmp('RunStatusAlarmLevelComb_Id').getValue();
+                	var isSendMessage=Ext.getCmp('RunStatusAlarmIsSendMessageComb_Id').getValue();
+                	var startDate=Ext.getCmp('RunStatusAlarmQueryStartDate_Id').rawValue;
+                    var endDate=Ext.getCmp('RunStatusAlarmQueryEndDate_Id').rawValue;
                	 	var alarmType=6;
                	 	
                	 	var fileName='抽油机井'+deviceName+'运行状态报警数据';
                	 	var title='抽油机井'+deviceName+'运行状态报警数据';
-               	 	var columnStr=Ext.getCmp("RPCRunStatusAlarmDetailsColumnStr_Id").getValue();
+               	 	var columnStr=Ext.getCmp("RunStatusAlarmDetailsColumnStr_Id").getValue();
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
             }],
@@ -447,7 +447,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
     			region: 'west',
             	width: '30%',
     			title: '设备列表',
-    			id: 'RPCRunStatusAlarmOverviewPanel_Id',
+    			id: 'RunStatusAlarmOverviewPanel_Id',
     			autoScroll: false,
                 scrollable: false,
                 split: true,
@@ -456,7 +456,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
     		},{
                 region: 'center',
     			title: '报警数据',
-    			id: 'RPCRunStatusAlarmDetailsPanel_Id',
+    			id: 'RunStatusAlarmDetailsPanel_Id',
                 autoScroll: false,
                 layout: 'fit'
     		}]

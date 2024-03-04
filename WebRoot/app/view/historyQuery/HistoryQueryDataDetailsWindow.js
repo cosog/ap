@@ -36,6 +36,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
                 xtype: 'textfield',
                 value: '0',
                 hidden: true
+            },{
+                id: 'HistoryQueryDataDetailsWindowDeviceCalculateType_Id',
+                xtype: 'textfield',
+                value: '0',
+                hidden: true
             }],
             id:'HistoryQueryDataDetailsPanel_Id',
         	html: '<div id="HistoryQueryDataDetailsDiv_Id" style="width:100%;height:100%;"></div>',
@@ -54,16 +59,12 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
                 			height:newHeight
                 		});
                 	}else{
-                      var recordId=Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").getValue();
-                      var deviceId=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").getValue()
-                      var deviceName=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").getValue();
-                      var deviceType=0;
-                      var tabPanel = Ext.getCmp("HistoryQueryRootTabPanel");
-              			var activeId = tabPanel.getActiveTab().id;
-              			if(activeId=="PCPHistoryQueryInfoPanel_Id"){
-              				deviceType=1;
-              			}
-              			CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType);
+                		var recordId=Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").getValue();
+                		var deviceId=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").getValue()
+                		var deviceName=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").getValue();
+                		var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+                		var calculateType=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceCalculateType_Id").getValue();
+              			CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType,calculateType);
                 	}
                 },
                 beforeclose: function ( panel, eOpts) {
@@ -84,7 +85,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
 });
 
 
-function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType){
+function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType,calculateType){
 	Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -135,7 +136,8 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 			recordId: recordId,
 			deviceType: deviceType,
 			deviceId: deviceId,
-			deviceName: deviceName
+			deviceName: deviceName,
+			calculateType: calculateType
         }
 	});
 };

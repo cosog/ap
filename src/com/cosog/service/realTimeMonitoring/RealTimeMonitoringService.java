@@ -1752,8 +1752,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String calAndInputTableName="";
 		String deviceTableName="tbl_device";
 		String deviceInfoKey="DeviceInfo";
-		String calItemsKey="rpcCalItemList";
-		String inputItemsKey="rpcInputItemList";
+		String rpcCalItemsKey="rpcCalItemList";
+		String rpcInputItemsKey="rpcInputItemList";
+		String pcpCalItemsKey="pcpCalItemList";
+		String pcpInputItemsKey="pcpInputItemList";
 		String displayInstanceCode="";
 		String alarmInstanceCode="";
 		
@@ -1803,17 +1805,28 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes()));
 				}
 				
-				if(!jedis.exists(calItemsKey.getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-					MemoryDataManagerTask.loadPCPCalculateItem();
+				if(StringManagerUtils.stringToInteger(calculateType)==1){
+					if(!jedis.exists(rpcCalItemsKey.getBytes())){
+						MemoryDataManagerTask.loadRPCCalculateItem();
+					}
+					calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
+					
+					if(!jedis.exists(rpcInputItemsKey.getBytes())){
+						MemoryDataManagerTask.loadRPCInputItem();
+					}
+					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
 				}
-				calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
-				
-				if(!jedis.exists(inputItemsKey.getBytes())){
-					MemoryDataManagerTask.loadRPCInputItem();
-					MemoryDataManagerTask.loadPCPInputItem();
+				if(StringManagerUtils.stringToInteger(calculateType)==2){
+					if(!jedis.exists(pcpCalItemsKey.getBytes())){
+						MemoryDataManagerTask.loadPCPCalculateItem();
+					}
+					calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
+					
+					if(!jedis.exists(pcpInputItemsKey.getBytes())){
+						MemoryDataManagerTask.loadPCPInputItem();
+					}
+					inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
 				}
-				inputItemSet= jedis.zrange(inputItemsKey.getBytes(), 0, -1);
 				
 				if(!jedis.exists("UserInfo".getBytes())){
 					MemoryDataManagerTask.loadUserInfo(null,0,"update");
@@ -3634,8 +3647,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String displayInstanceCode="";
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
-		String calItemsKey="rpcCalItemList";
-		String inputItemsKey="rpcInputItemList";
+		String rpcCalItemsKey="rpcCalItemList";
+		String rpcInputItemsKey="rpcInputItemList";
+		String pcpCalItemsKey="pcpCalItemList";
+		String pcpInputItemsKey="pcpInputItemList";
 		String deviceInfoKey="DeviceInfo";
 		
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
@@ -3667,23 +3682,28 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					Collections.sort(displayInstanceOwnItem.getItemList());
 				}
 				
-				if(!jedis.exists(calItemsKey.getBytes())){
-					if(StringManagerUtils.stringToInteger(deviceType)==0){
+				if(StringManagerUtils.stringToInteger(calculateType)==1){
+					if(!jedis.exists(rpcCalItemsKey.getBytes())){
 						MemoryDataManagerTask.loadRPCCalculateItem();
-					}else{
+					}
+					calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
+					
+					if(!jedis.exists(rpcInputItemsKey.getBytes())){
+						MemoryDataManagerTask.loadRPCInputItem();
+					}
+					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
+				}
+				if(StringManagerUtils.stringToInteger(calculateType)==2){
+					if(!jedis.exists(pcpCalItemsKey.getBytes())){
 						MemoryDataManagerTask.loadPCPCalculateItem();
 					}
-				}
-				calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
-				
-				if(!jedis.exists(inputItemsKey.getBytes())){
-					if(StringManagerUtils.stringToInteger(deviceType)==0){
-						MemoryDataManagerTask.loadRPCInputItem();
-					}else{
+					calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
+					
+					if(!jedis.exists(pcpInputItemsKey.getBytes())){
 						MemoryDataManagerTask.loadPCPInputItem();
 					}
+					inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
 				}
-				inputItemSet= jedis.zrange(inputItemsKey.getBytes(), 0, -1);
 			}catch(Exception e){
 				e.printStackTrace();
 			}

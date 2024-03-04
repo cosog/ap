@@ -658,7 +658,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"//8~9
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange";//10~12
+					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
+					+ "t.calculateType";//13
 //					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//13~15
 //					+ "t2.TheoreticalProduction,"//16
 //					+ prodCol+""//17~27
@@ -743,6 +744,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
 				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
 				result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
+				result_json.append("\"calculateType\":"+obj[13]+",");
 				result_json.append("\"details\":\"\",");
 				
 				alarmInfo.append("[");
@@ -775,7 +777,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				for(int j=0;j<ddicColumnsList.size();j++){
-					String rawValue=obj[13+j]+"";
+					String rawValue=obj[14+j]+"";
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
 					if(protocol!=null){
@@ -1579,7 +1581,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,int userNo){
+	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,String calculateType,int userNo){
 		StringBuffer result_json = new StringBuffer();
 		Jedis jedis=null;
 		try{
@@ -1598,15 +1600,23 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<byte[]> calItemSet=null;
 			List<byte[]> inputItemSet=null;
 			UserInfo userInfo=null;
-			String tableName="tbl_rpcacqdata_hist";
+			String tableName="tbl_acqdata_hist";
+			String calAndInputTableName="";
 			String deviceTableName="tbl_device";
 			String deviceInfoKey="DeviceInfo";
-			String calItemsKey="rpcCalItemList";
-			String inputItemsKey="rpcInputItemList";
+			String rpcCalItemsKey="rpcCalItemList";
+			String rpcInputItemsKey="rpcInputItemList";
+			String pcpCalItemsKey="pcpCalItemList";
+			String pcpInputItemsKey="pcpInputItemList";
 			String displayInstanceCode="";
 			String alarmInstanceCode="";
 			DeviceInfo deviceInfo=null;
-			PCPDeviceInfo pcpDeviceInfo=null;
+			
+			if(StringManagerUtils.stringToInteger(calculateType)==1){
+				calAndInputTableName="tbl_rpcacqdata_hist";
+			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+				calAndInputTableName="tbl_pcpacqdata_hist";
+			}
 
 			if(!jedis.exists(deviceInfoKey.getBytes())){
 				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
@@ -1636,23 +1646,28 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes()));
 			}
 			
-			if(!jedis.exists(calItemsKey.getBytes())){
-				if(StringManagerUtils.stringToInteger(deviceType)==0){
+			if(StringManagerUtils.stringToInteger(calculateType)==1){
+				if(!jedis.exists(rpcCalItemsKey.getBytes())){
 					MemoryDataManagerTask.loadRPCCalculateItem();
-				}else{
+				}
+				calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
+				
+				if(!jedis.exists(rpcInputItemsKey.getBytes())){
+					MemoryDataManagerTask.loadRPCInputItem();
+				}
+				inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
+			}
+			if(StringManagerUtils.stringToInteger(calculateType)==2){
+				if(!jedis.exists(pcpCalItemsKey.getBytes())){
 					MemoryDataManagerTask.loadPCPCalculateItem();
 				}
-			}
-			calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
-			
-			if(!jedis.exists(inputItemsKey.getBytes())){
-				if(StringManagerUtils.stringToInteger(deviceType)==0){
-					MemoryDataManagerTask.loadRPCInputItem();
-				}else{
+				calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
+				
+				if(!jedis.exists(pcpInputItemsKey.getBytes())){
 					MemoryDataManagerTask.loadPCPInputItem();
 				}
+				inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
 			}
-			inputItemSet= jedis.zrange(inputItemsKey.getBytes(), 0, -1);
 			
 			if(!jedis.exists("UserInfo".getBytes())){
 				MemoryDataManagerTask.loadUserInfo(null,0,"update");
@@ -1756,20 +1771,26 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String col=loadProtocolMappingColumnByTitleMap.get(protocolItems.get(j).getTitle()).getMappingColumn();
 						sql+=",t2."+col;
 					}
-
-					for(int i=0;i<calItemList.size();i++){
-						String column=calItemList.get(i).getCode();
-						if("resultName".equalsIgnoreCase(calItemList.get(i).getCode())){
-							column="resultCode";
+					
+					if(StringManagerUtils.stringToInteger(calculateType)>0){
+						for(int i=0;i<calItemList.size();i++){
+							String column=calItemList.get(i).getCode();
+							if("resultName".equalsIgnoreCase(calItemList.get(i).getCode())){
+								column="resultCode";
+							}
+							sql+=",t3."+column;
 						}
-						sql+=",t2."+column;
+						if(inputItemList.size()>0){
+							sql+=",t3.productiondata";
+						}
 					}
-					if(inputItemList.size()>0){
-						sql+=",t2.productiondata";
-					}
+
 					sql+= " from "+deviceTableName+" t "
-							+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
-							+ " where  t2.id="+recordId;
+							+ " left outer join "+tableName+" t2 on t2.deviceId=t.id";
+					if(StringManagerUtils.isNotNull(calAndInputTableName) && (calItemList.size()>0 || inputItemList.size()>0)){
+						sql+=" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t.id and t2.acqtime=t3.acqtime";
+					}
+					sql+= " where  t2.id="+recordId;
 					List<?> list = this.findCallSql(sql);
 					if(list.size()>0){
 						int row=1;
@@ -1778,9 +1799,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
-							if(StringManagerUtils.stringToInteger(deviceType)==0){
-								type = new TypeToken<RPCDeviceInfo>() {}.getType();
-								RPCDeviceInfo rpcProductionData=gson.fromJson(productionData, type);
+							if(StringManagerUtils.stringToInteger(calculateType)==1){
+								type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+								RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 								for(int i=0;i<inputItemList.size();i++){
 									String columnName=inputItemList.get(i).getName();
 									String rawColumnName=columnName;
@@ -1844,9 +1865,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
-							}else{
-								type = new TypeToken<PCPDeviceInfo>() {}.getType();
-								PCPDeviceInfo pcpProductionData=gson.fromJson(productionData, type);
+							}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 								for(int i=0;i<inputItemList.size();i++){
 									String columnName=inputItemList.get(i).getName();
 									String rawColumnName=columnName;
@@ -1877,12 +1898,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											value=pcpProductionData.getFluidPVT().getSaturationPressure()+"";
 										}else if("ReservoirDepth".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
 											value=pcpProductionData.getReservoir().getDepth()+"";
-											if(pcpDeviceInfo!=null && pcpDeviceInfo.getApplicationScenarios()==0){
+											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油层", "煤层");
 											}
 										}else if("ReservoirTemperature".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
 											value=pcpProductionData.getReservoir().getTemperature()+"";
-											if(pcpDeviceInfo!=null && pcpDeviceInfo.getApplicationScenarios()==0){
+											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油层", "煤层");
 											}
 										}else if("TubingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
@@ -2227,8 +2248,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		String graphicSetTableName="tbl_devicegraphicset";
-		String calItemsKey="rpcCalItemList";
-		String inputItemsKey="rpcInputItemList";
+		String rpcCalItemsKey="rpcCalItemList";
+		String rpcInputItemsKey="rpcInputItemList";
+		String pcpCalItemsKey="pcpCalItemList";
+		String pcpInputItemsKey="pcpInputItemList";
 		String deviceInfoKey="DeviceInfo";
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
@@ -2244,48 +2267,41 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
 					userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
 				}
-				
-				
-				if(StringManagerUtils.stringToInteger(deviceType)==0){
-					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
-						DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-						displayInstanceCode=deviceInfo.getDisplayInstanceCode()+"";
-					}
-				}else{
-					if(!jedis.exists(deviceInfoKey.getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
-						PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-						displayInstanceCode=pcpDeviceInfo.getDisplayInstanceCode()+"";
-					}
+
+				if(!jedis.exists(deviceInfoKey.getBytes())){
+					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+				}
+				if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
+					DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+					displayInstanceCode=deviceInfo.getDisplayInstanceCode()+"";
 				}
 				
 				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes())){
 					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes()));
 					Collections.sort(displayInstanceOwnItem.getItemList());
 				}
-				
-				if(!jedis.exists(calItemsKey.getBytes())){
-					if(StringManagerUtils.stringToInteger(deviceType)==0){
+				if(StringManagerUtils.stringToInteger(calculateType)==1){
+					if(!jedis.exists(rpcCalItemsKey.getBytes())){
 						MemoryDataManagerTask.loadRPCCalculateItem();
-					}else{
+					}
+					calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
+					
+					if(!jedis.exists(rpcInputItemsKey.getBytes())){
+						MemoryDataManagerTask.loadRPCInputItem();
+					}
+					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
+				}
+				if(StringManagerUtils.stringToInteger(calculateType)==2){
+					if(!jedis.exists(pcpCalItemsKey.getBytes())){
 						MemoryDataManagerTask.loadPCPCalculateItem();
 					}
-				}
-				calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
-				
-				if(!jedis.exists(inputItemsKey.getBytes())){
-					if(StringManagerUtils.stringToInteger(deviceType)==0){
-						MemoryDataManagerTask.loadRPCInputItem();
-					}else{
+					calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
+					
+					if(!jedis.exists(pcpInputItemsKey.getBytes())){
 						MemoryDataManagerTask.loadPCPInputItem();
 					}
+					inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
 				}
-				inputItemSet= jedis.zrange(inputItemsKey.getBytes(), 0, -1);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -2425,7 +2441,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurveconf,t4.itemcode,t4.type "
 						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
-						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=<>2 "
+						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
 						+ " and t.id="+deviceId+" and t4.historycurveconf is not null "
 						+ " order by t4.sort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
@@ -2591,7 +2607,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 				}
 				
-				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns
+				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
 						+ " from "+tableName +" t"
 						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id"
 						+ " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime"

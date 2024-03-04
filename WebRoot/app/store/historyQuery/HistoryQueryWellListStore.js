@@ -70,6 +70,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		
                     		
                     		var removeCenterCalDataPanel=false;
+                    		var centerTabPanelChange=false;
                     		
                     		Ext.getCmp('HistoryQueryStartDate_Id').setValue('');
                     		Ext.getCmp('HistoryQueryStartDate_Id').setRawValue('');
@@ -90,15 +91,22 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     			}
                        	 	}else{
                        	 		if(getTabId1!=undefined){
+                       	 			if(tabPanel.getActiveTab().id=='HistoryDiagramTabPanel'){
+                       	 				centerTabPanelChange=true;
+                       	 			}
                        	 			tabPanel.remove("HistoryDiagramTabPanel");
+                       	 			removeCenterCalDataPanel=true;
                        	 		}
                        	 		if(getTabId2!=undefined){
+                       	 			if(tabPanel.getActiveTab().id=='HistoryDiagramOverlayTabPanel'){
+                       	 				centerTabPanelChange=true;
+                       	 			}
                        	 			tabPanel.remove("HistoryDiagramOverlayTabPanel");
+                       	 			removeCenterCalDataPanel=true;
                        	 		}
-                       	 		removeCenterCalDataPanel=true;
                        	 	}
                     		
-                    		if(!removeCenterCalDataPanel){
+                    		if(!centerTabPanelChange){
                     			var activeId = tabPanel.getActiveTab().id;
                 				if(activeId=="HistoryDataTabPanel"){
             						Ext.getCmp("HistoryDataExportBtn_Id").show();

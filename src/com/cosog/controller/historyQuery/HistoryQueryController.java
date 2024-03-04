@@ -324,10 +324,11 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
-			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,user.getUserNo());
+			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,calculateType,user.getUserNo());
 		}
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();

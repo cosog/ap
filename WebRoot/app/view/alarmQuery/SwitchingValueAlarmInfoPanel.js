@@ -1,8 +1,8 @@
-Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
+Ext.define('AP.view.alarmQuery.SwitchingValueAlarmInfoPanel', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.PCPSwitchingValueAlarmInfoView',
+    alias: 'widget.switchingValueAlarmInfoPanel',
     layout: "fit",
-    id: "PCPSwitchingValueAlarmInfoView_Id",
+    id: "SwitchingValueAlarmInfoPanel_Id",
     border: false,
     //forceFit : true,
     initComponent: function () {
@@ -31,8 +31,8 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('PCPSwitchingValueAlarmDeviceListComb_Id').getValue();
-                    var deviceType = 1;
+                    var wellName = Ext.getCmp('SwitchingValueAlarmDeviceListComb_Id').getValue();
+                    var deviceType = 0;
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: deviceType,
@@ -46,7 +46,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
         var deviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '井名',
-                    id: "PCPSwitchingValueAlarmDeviceListComb_Id",
+                    id: "SwitchingValueAlarmDeviceListComb_Id",
                     labelWidth: 35,
                     width: 145,
                     labelAlign: 'left',
@@ -67,25 +67,25 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-                        	Ext.getCmp("PCPSwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
-                        	Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+                        	Ext.getCmp("SwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
+                        	Ext.getCmp("SwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
                         }
                     }
                 });
     	Ext.apply(this, {
     		layout: 'border',
     		tbar: [{
-                id: 'PCPSwitchingValueAlarmOverviewColumnStr_Id',
+                id: 'SwitchingValueAlarmOverviewColumnStr_Id',
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'PCPSwitchingValueAlarmDetailsColumnStr_Id',
+                id: 'SwitchingValueAlarmDetailsColumnStr_Id',
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'PCPSwitchingValueAlarmOverviewSelectRow_Id',
+                id: 'SwitchingValueAlarmOverviewSelectRow_Id',
                 xtype: 'textfield',
                 value: 0,
                 hidden: true
@@ -95,17 +95,17 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {
-                	var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id");
+                	var gridPanel = Ext.getCmp("SwitchingValueAlarmOverviewGridPanel_Id");
     				if (isNotVal(gridPanel)) {
     					gridPanel.getStore().loadPage(1);
     				}else{
-    					Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore');
+    					Ext.create('AP.store.alarmQuery.SwitchingValueAlarmOverviewStore');
     				}
                 }
     		},'-',deviceCombo,'-',{
             	xtype : "combobox",
 				fieldLabel : '报警级别',
-				id : 'PCPSwitchingValueAlarmLevelComb_Id',
+				id : 'SwitchingValueAlarmLevelComb_Id',
 				labelWidth: 55,
                 width: 135,
                 labelAlign: 'left',
@@ -126,8 +126,8 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
 				queryMode : 'local',
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("PCPSwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
-						Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+						Ext.getCmp("SwitchingValueAlarmOverviewSelectRow_Id").setValue(0);
+						Ext.getCmp("SwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
             },
@@ -135,7 +135,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
             {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
-				id : 'PCPSwitchingValueAlarmIsSendMessageComb_Id',
+				id : 'SwitchingValueAlarmIsSendMessageComb_Id',
 				hidden: true,
 				labelWidth: 80,
                 width: 160,
@@ -157,7 +157,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
 				queryMode : 'local',
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+						Ext.getCmp("SwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
             },'-',{
@@ -168,14 +168,14 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 width: 125,
                 format: 'Y-m-d ',
                 value: '',
-                id: 'PCPSwitchingValueAlarmQueryStartDate_Id',
+                id: 'SwitchingValueAlarmQueryStartDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
                     }
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPSwitchingValueAlarmQueryStartTime_Hour_Id',
+            	id: 'SwitchingValueAlarmQueryStartTime_Hour_Id',
                 fieldLabel: '时',
                 labelWidth: 15,
                 width: 60,
@@ -196,7 +196,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPSwitchingValueAlarmQueryStartTime_Minute_Id',
+            	id: 'SwitchingValueAlarmQueryStartTime_Minute_Id',
                 fieldLabel: '分',
                 labelWidth: 15,
                 width: 60,
@@ -217,7 +217,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPSwitchingValueAlarmQueryStartTime_Second_Id',
+            	id: 'SwitchingValueAlarmQueryStartTime_Second_Id',
                 fieldLabel: '秒',
                 labelWidth: 15,
                 width: 60,
@@ -244,14 +244,14 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 width: 110,
                 format: 'Y-m-d ',
                 value: '',
-                id: 'PCPSwitchingValueAlarmQueryEndDate_Id',
+                id: 'SwitchingValueAlarmQueryEndDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
                     }
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPSwitchingValueAlarmQueryEndTime_Hour_Id',
+            	id: 'SwitchingValueAlarmQueryEndTime_Hour_Id',
                 fieldLabel: '时',
                 labelWidth: 15,
                 width: 60,
@@ -272,7 +272,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPSwitchingValueAlarmQueryEndTime_Minute_Id',
+            	id: 'SwitchingValueAlarmQueryEndTime_Minute_Id',
                 fieldLabel: '分',
                 labelWidth: 15,
                 width: 60,
@@ -293,7 +293,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPSwitchingValueAlarmQueryEndTime_Second_Id',
+            	id: 'SwitchingValueAlarmQueryEndTime_Second_Id',
                 fieldLabel: '秒',
                 labelWidth: 15,
                 width: 60,
@@ -319,44 +319,44 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 handler: function () {
                 	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Hour_Id').getValue();
+                	var startTime_Hour=Ext.getCmp('SwitchingValueAlarmQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Minute=Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Minute_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('SwitchingValueAlarmQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Second_Id').getValue();
+                	var startTime_Second=Ext.getCmp('SwitchingValueAlarmQueryStartTime_Second_Id').getValue();
                 	if(!r2.test(startTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryStartTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	
-                	var endTime_Hour=Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Hour_Id').getValue();
+                	var endTime_Hour=Ext.getCmp('SwitchingValueAlarmQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Minute=Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Minute_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('SwitchingValueAlarmQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Second_Id').getValue();
+                	var endTime_Second=Ext.getCmp('SwitchingValueAlarmQueryEndTime_Second_Id').getValue();
                 	if(!r2.test(endTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryEndTime_Second_Id').focus(true, 100);
                 		return;
                 	}
-                	var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmGridPanel_Id");
+                	var gridPanel = Ext.getCmp("SwitchingValueAlarmGridPanel_Id");
                 	if (isNotVal(gridPanel)) {
                 		gridPanel.getStore().loadPage(1);
                 	}
@@ -368,15 +368,15 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 hidden:false,
                 handler: function (v, o) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                	var deviceType=1;
-                	var deviceName=Ext.getCmp('PCPSwitchingValueAlarmDeviceListComb_Id').getValue();
-                	var alarmLevel=Ext.getCmp('PCPSwitchingValueAlarmLevelComb_Id').getValue();
-                	var isSendMessage=Ext.getCmp('PCPSwitchingValueAlarmIsSendMessageComb_Id').getValue();
+                	var deviceType=0;
+                	var deviceName=Ext.getCmp('SwitchingValueAlarmDeviceListComb_Id').getValue();
+                	var alarmLevel=Ext.getCmp('SwitchingValueAlarmLevelComb_Id').getValue();
+                	var isSendMessage=Ext.getCmp('SwitchingValueAlarmIsSendMessageComb_Id').getValue();
                	 	var alarmType=0;
                	 	
-               	 	var fileName='螺杆泵井开关量报警设备列表';
-               	 	var title='螺杆泵井开关量报警设备列表';
-               	 	var columnStr=Ext.getCmp("PCPSwitchingValueAlarmOverviewColumnStr_Id").getValue();
+               	 	var fileName='抽油机井开关量报警设备列表';
+               	 	var title='抽油机井开关量报警设备列表';
+               	 	var columnStr=Ext.getCmp("SwitchingValueAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
             },'-', {
@@ -387,68 +387,68 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 handler: function (v, o) {
                 	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Hour_Id').getValue();
+                	var startTime_Hour=Ext.getCmp('SwitchingValueAlarmQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Minute=Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Minute_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('SwitchingValueAlarmQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Second_Id').getValue();
+                	var startTime_Second=Ext.getCmp('SwitchingValueAlarmQueryStartTime_Second_Id').getValue();
                 	if(!r2.test(startTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryStartTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryStartTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	
-                	var endTime_Hour=Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Hour_Id').getValue();
+                	var endTime_Hour=Ext.getCmp('SwitchingValueAlarmQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Minute=Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Minute_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('SwitchingValueAlarmQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Second_Id').getValue();
+                	var endTime_Second=Ext.getCmp('SwitchingValueAlarmQueryEndTime_Second_Id').getValue();
                 	if(!r2.test(endTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPSwitchingValueAlarmQueryEndTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('SwitchingValueAlarmQueryEndTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                	var deviceType=1;
+                	var deviceType=0;
                 	var deviceName='';
                 	var deviceId=0;
-                	if(Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
-                		deviceName=Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-                    	deviceId=  Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                	if(Ext.getCmp("SwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+                		deviceName=Ext.getCmp("SwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	deviceId=  Ext.getCmp("SwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                 	}
-                	var alarmLevel=Ext.getCmp('PCPSwitchingValueAlarmLevelComb_Id').getValue();
-                	var isSendMessage=Ext.getCmp('PCPSwitchingValueAlarmIsSendMessageComb_Id').getValue();
-                	var startDate=Ext.getCmp('PCPSwitchingValueAlarmQueryStartDate_Id').rawValue;
-                    var endDate=Ext.getCmp('PCPSwitchingValueAlarmQueryEndDate_Id').rawValue;
+                	var alarmLevel=Ext.getCmp('SwitchingValueAlarmLevelComb_Id').getValue();
+                	var isSendMessage=Ext.getCmp('SwitchingValueAlarmIsSendMessageComb_Id').getValue();
+                	var startDate=Ext.getCmp('SwitchingValueAlarmQueryStartDate_Id').rawValue;
+                    var endDate=Ext.getCmp('SwitchingValueAlarmQueryEndDate_Id').rawValue;
                	 	var alarmType=0;
                	 	
-               	 	var fileName='螺杆泵井'+deviceName+'开关量报警数据';
-               	 	var title='螺杆泵井'+deviceName+'开关量报警数据';
-               	 	var columnStr=Ext.getCmp("PCPSwitchingValueAlarmDetailsColumnStr_Id").getValue();
-               	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,isSendMessage,alarmLevel,fileName,title,columnStr);
+               	 	var fileName='抽油机井'+deviceName+'开关量报警数据';
+               	 	var title='抽油机井'+deviceName+'开关量报警数据';
+               	 	var columnStr=Ext.getCmp("SwitchingValueAlarmDetailsColumnStr_Id").getValue();
+               	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
             }],
     		items: [{
             	region: 'west',
             	width: '30%',
     			title: '设备列表',
-    			id: 'PCPSwitchingValueAlarmOverviewPanel_Id',
+    			id: 'SwitchingValueAlarmOverviewPanel_Id',
     			autoScroll: false,
                 scrollable: false,
                 split: true,
@@ -457,7 +457,7 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
     		},{
     			region: 'center',
     			title: '报警数据',
-    			id: 'PCPSwitchingValueAlarmDetailsPanel_Id',
+    			id: 'SwitchingValueAlarmDetailsPanel_Id',
                 autoScroll: false,
                 layout: 'fit'
     		}]

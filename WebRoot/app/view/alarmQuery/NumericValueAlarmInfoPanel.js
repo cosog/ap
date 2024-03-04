@@ -1,10 +1,9 @@
-Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
+Ext.define('AP.view.alarmQuery.NumericValueAlarmInfoPanel', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.PCPCommunicationAlarmInfoView',
+    alias: 'widget.numericValueAlarmInfoPanel',
     layout: "fit",
-    id: "PCPCommunicationAlarmInfoView_Id",
+    id: "NumericValueAlarmInfoPanel_Id",
     border: false,
-    //forceFit : true,
     initComponent: function () {
         var deviceCombStore = new Ext.data.JsonStore({
         	pageSize:defaultWellComboxSize,
@@ -31,10 +30,11 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('PCPCommunicationAlarmDeviceListComb_Id').getValue();
+                    var wellName = Ext.getCmp('NumericValueAlarmDeviceListComb_Id').getValue();
+                    var deviceType = 0;
                     var new_params = {
                         orgId: leftOrg_Id,
-                        deviceType: 1,
+                        deviceType: deviceType,
                         wellName: wellName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
@@ -45,7 +45,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
         var deviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '井名',
-                    id: "PCPCommunicationAlarmDeviceListComb_Id",
+                    id: "NumericValueAlarmDeviceListComb_Id",
                     labelWidth: 35,
                     width: 145,
                     labelAlign: 'left',
@@ -66,25 +66,25 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-                        	Ext.getCmp("PCPCommunicationAlarmOverviewSelectRow_Id").setValue(0);
-                        	Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+                        	Ext.getCmp("NumericValueAlarmOverviewSelectRow_Id").setValue(0);
+                        	Ext.getCmp("NumericValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
                         }
                     }
                 });
     	Ext.apply(this, {
     		layout: 'border',
     		tbar: [{
-                id: 'PCPCommunicationAlarmOverviewColumnStr_Id',
+                id: 'NumericValueAlarmOverviewColumnStr_Id',
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'PCPCommunicationAlarmDetailsColumnStr_Id',
+                id: 'NumericValueAlarmDetailsColumnStr_Id',
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'PCPCommunicationAlarmOverviewSelectRow_Id',
+                id: 'NumericValueAlarmOverviewSelectRow_Id',
                 xtype: 'textfield',
                 value: 0,
                 hidden: true
@@ -94,23 +94,50 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {
-                	var gridPanel = Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id");
+                	var gridPanel = Ext.getCmp("NumericValueAlarmOverviewGridPanel_Id");
     				if (isNotVal(gridPanel)) {
     					gridPanel.getStore().loadPage(1);
     				}else{
-    					Ext.getCmp("PCPCommunicationAlarmOverviewSelectRow_Id").setValue(0);
-    					Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore');
+    					Ext.create('AP.store.alarmQuery.NumericValueAlarmOverviewStore');
     				}
                 }
-    		},'-',deviceCombo,
+    		},'-',deviceCombo,'-',{
+            	xtype : "combobox",
+				fieldLabel : '报警级别',
+				id : 'NumericValueAlarmLevelComb_Id',
+				labelWidth: 55,
+                width: 135,
+                labelAlign: 'left',
+				triggerAction : 'all',
+				displayField: "boxval",
+                valueField: "boxkey",
+				selectOnFocus : true,
+			    forceSelection : true,
+			    value:'',
+			    allowBlank: false,
+				editable : false,
+				emptyText: cosog.string.all,
+                blankText: cosog.string.all,
+				store : new Ext.data.SimpleStore({
+							fields : ['boxkey', 'boxval'],
+							data : [['', '选择全部'],[100, '一级报警'],[200, '二级报警'],[300, '三级报警']]
+						}),
+				queryMode : 'local',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("NumericValueAlarmOverviewSelectRow_Id").setValue(0);
+						Ext.getCmp("NumericValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+					}
+				}
+            },
 //            '-',
             {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
-				id : 'PCPCommunicationAlarmIsSendMessageComb_Id',
+				id : 'NumericValueAlarmIsSendMessageComb_Id',
 				hidden: true,
 				labelWidth: 80,
-                width: 190,
+                width: 160,
                 labelAlign: 'left',
 				triggerAction : 'all',
 				displayField: "boxval",
@@ -129,8 +156,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
 				queryMode : 'local',
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("PCPCommunicationAlarmOverviewSelectRow_Id").setValue(0);
-						Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+						Ext.getCmp("NumericValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
             },'-',{
@@ -141,14 +167,14 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 width: 125,
                 format: 'Y-m-d ',
                 value: '',
-                id: 'PCPCommunicationAlarmQueryStartDate_Id',
+                id: 'NumericValueAlarmQueryStartDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
                     }
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPCommunicationAlarmQueryStartTime_Hour_Id',
+            	id: 'NumericValueAlarmQueryStartTime_Hour_Id',
                 fieldLabel: '时',
                 labelWidth: 15,
                 width: 60,
@@ -169,7 +195,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPCommunicationAlarmQueryStartTime_Minute_Id',
+            	id: 'NumericValueAlarmQueryStartTime_Minute_Id',
                 fieldLabel: '分',
                 labelWidth: 15,
                 width: 60,
@@ -190,7 +216,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPCommunicationAlarmQueryStartTime_Second_Id',
+            	id: 'NumericValueAlarmQueryStartTime_Second_Id',
                 fieldLabel: '秒',
                 labelWidth: 15,
                 width: 60,
@@ -217,14 +243,14 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 width: 110,
                 format: 'Y-m-d ',
                 value: '',
-                id: 'PCPCommunicationAlarmQueryEndDate_Id',
+                id: 'NumericValueAlarmQueryEndDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
                     }
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPCommunicationAlarmQueryEndTime_Hour_Id',
+            	id: 'NumericValueAlarmQueryEndTime_Hour_Id',
                 fieldLabel: '时',
                 labelWidth: 15,
                 width: 60,
@@ -245,7 +271,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPCommunicationAlarmQueryEndTime_Minute_Id',
+            	id: 'NumericValueAlarmQueryEndTime_Minute_Id',
                 fieldLabel: '分',
                 labelWidth: 15,
                 width: 60,
@@ -266,7 +292,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 }
             },{
             	xtype: 'numberfield',
-            	id: 'PCPCommunicationAlarmQueryEndTime_Second_Id',
+            	id: 'NumericValueAlarmQueryEndTime_Second_Id',
                 fieldLabel: '秒',
                 labelWidth: 15,
                 width: 60,
@@ -292,44 +318,44 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 handler: function () {
                 	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Hour_Id').getValue();
+                	var startTime_Hour=Ext.getCmp('NumericValueAlarmQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Minute=Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Minute_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('NumericValueAlarmQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Second_Id').getValue();
+                	var startTime_Second=Ext.getCmp('NumericValueAlarmQueryStartTime_Second_Id').getValue();
                 	if(!r2.test(startTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryStartTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	
-                	var endTime_Hour=Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Hour_Id').getValue();
+                	var endTime_Hour=Ext.getCmp('NumericValueAlarmQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Minute=Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Minute_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('NumericValueAlarmQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Second_Id').getValue();
+                	var endTime_Second=Ext.getCmp('NumericValueAlarmQueryEndTime_Second_Id').getValue();
                 	if(!r2.test(endTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryEndTime_Second_Id').focus(true, 100);
                 		return;
                 	}
-                	var gridPanel = Ext.getCmp("PCPCommunicationAlarmGridPanel_Id");
+                	var gridPanel = Ext.getCmp("NumericValueAlarmGridPanel_Id");
                 	if (isNotVal(gridPanel)) {
                 		gridPanel.getStore().loadPage(1);
                 	}
@@ -341,15 +367,15 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 hidden:false,
                 handler: function (v, o) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                	var deviceType=1;
-                	var deviceName=Ext.getCmp('PCPCommunicationAlarmDeviceListComb_Id').getValue();
-                	var isSendMessage=Ext.getCmp('PCPCommunicationAlarmIsSendMessageComb_Id').getValue();
-                	var alarmType=3;
-               	 	var alarmLevel='';
+                	var deviceType=0;
+                	var deviceName=Ext.getCmp('NumericValueAlarmDeviceListComb_Id').getValue();
+                	var alarmLevel=Ext.getCmp('NumericValueAlarmLevelComb_Id').getValue();
+                	var isSendMessage=Ext.getCmp('NumericValueAlarmIsSendMessageComb_Id').getValue();
+               	 	var alarmType=2;
                	 	
-               	 	var fileName='螺杆泵井通信报警设备列表';
-               	 	var title='螺杆泵井通信报警设备列表';
-               	 	var columnStr=Ext.getCmp("PCPCommunicationAlarmOverviewColumnStr_Id").getValue();
+               	 	var fileName='抽油机井数值量报警设备列表';
+               	 	var title='抽油机井数值量报警设备列表';
+               	 	var columnStr=Ext.getCmp("NumericValueAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
             },'-', {
@@ -360,60 +386,60 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 handler: function (v, o) {
                 	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Hour_Id').getValue();
+                	var startTime_Hour=Ext.getCmp('NumericValueAlarmQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Minute=Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Minute_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('NumericValueAlarmQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Second_Id').getValue();
+                	var startTime_Second=Ext.getCmp('NumericValueAlarmQueryStartTime_Second_Id').getValue();
                 	if(!r2.test(startTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryStartTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	
-                	var endTime_Hour=Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Hour_Id').getValue();
+                	var endTime_Hour=Ext.getCmp('NumericValueAlarmQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Hour_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Minute=Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Minute_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('NumericValueAlarmQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Minute_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Second_Id').getValue();
+                	var endTime_Second=Ext.getCmp('NumericValueAlarmQueryEndTime_Second_Id').getValue();
                 	if(!r2.test(endTime_Second)){
                 		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Second_Id').focus(true, 100);
+                		Ext.getCmp('NumericValueAlarmQueryEndTime_Second_Id').focus(true, 100);
                 		return;
                 	}
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                	var deviceType=1;
+                	var deviceType=0;
                 	var deviceName='';
                 	var deviceId=0;
-                	if(Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
-                		deviceName=Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-                    	deviceId=  Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                	if(Ext.getCmp("NumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+                		deviceName=Ext.getCmp("NumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	deviceId=  Ext.getCmp("NumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                 	}
-                	var isSendMessage=Ext.getCmp('PCPCommunicationAlarmIsSendMessageComb_Id').getValue();
-                	var startDate=Ext.getCmp('PCPCommunicationAlarmQueryStartDate_Id').rawValue;
-                    var endDate=Ext.getCmp('PCPCommunicationAlarmQueryEndDate_Id').rawValue;
-               	 	var alarmType=3;
-               	 	var alarmLevel='';
+                	var alarmLevel=Ext.getCmp('NumericValueAlarmLevelComb_Id').getValue();
+                	var isSendMessage=Ext.getCmp('NumericValueAlarmIsSendMessageComb_Id').getValue();
+                	var startDate=Ext.getCmp('NumericValueAlarmQueryStartDate_Id').rawValue;
+                    var endDate=Ext.getCmp('NumericValueAlarmQueryEndDate_Id').rawValue;
+               	 	var alarmType=2;
                	 	
-               	 	var fileName='螺杆泵井'+deviceName+'通信报警数据';
-               	 	var title='螺杆泵井'+deviceName+'通信报警数据';
-               	 	var columnStr=Ext.getCmp("PCPCommunicationAlarmDetailsColumnStr_Id").getValue();
+               	 	var fileName='抽油机井'+deviceName+'数值量报警数据';
+               	 	var title='抽油机井'+deviceName+'数值量报警数据';
+               	 	var columnStr=Ext.getCmp("NumericValueAlarmDetailsColumnStr_Id").getValue();
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
             }],
@@ -421,7 +447,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
             	region: 'west',
             	width: '30%',
     			title: '设备列表',
-    			id: 'PCPCommunicationAlarmOverviewPanel_Id',
+    			id: 'NumericValueAlarmOverviewPanel_Id',
     			autoScroll: false,
                 scrollable: false,
                 split: true,
@@ -430,7 +456,7 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
     		},{
     			region: 'center',
     			title: '报警数据',
-    			id: 'PCPCommunicationAlarmDetailsPanel_Id',
+    			id: 'NumericValueAlarmDetailsPanel_Id',
                 autoScroll: false,
                 layout: 'fit'
     		}]

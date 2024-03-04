@@ -458,7 +458,7 @@ function deviceHistoryQueryCurve(deviceType){
 	var calculateType=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
 	if(selectRow>=0){
-		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.wellName;
+		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
 		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
 	}

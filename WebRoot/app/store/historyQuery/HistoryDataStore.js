@@ -90,7 +90,8 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
             	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
             	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
-            deviceHistoryQueryCurve(0);
+            var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+            deviceHistoryQueryCurve(deviceType);
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

@@ -61,10 +61,7 @@ public class AlarmQueryController extends BaseController{
 		endDate = ParamUtils.getParameter(request, "endDate");
 		this.pager = new Page("pagerForm", request);
 		
-		String tableName="viw_rpcalarminfo_hist";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="viw_pcpalarminfo_hist";
-		}
+		String tableName="viw_alarminfo_hist";
 		if(!StringManagerUtils.isNotNull(orgId)){
 			User user=null;
 			HttpSession session=request.getSession();
@@ -75,7 +72,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.alarmType= "+alarmType+" and t2.wellid="+deviceId+") ";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.alarmType= "+alarmType+" and t2.deviceId="+deviceId+") ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -118,10 +115,7 @@ public class AlarmQueryController extends BaseController{
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
 		this.pager = new Page("pagerForm", request);
-		String tableName="viw_rpcalarminfo_hist";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="viw_pcpalarminfo_hist";
-		}
+		String tableName="viw_alarminfo_hist";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		
@@ -132,7 +126,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.alarmType= "+alarmType+" and t2.wellid="+deviceId+") ";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.alarmType= "+alarmType+" and t2.deviceId="+deviceId+") ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

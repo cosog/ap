@@ -1,6 +1,6 @@
-Ext.define('AP.store.alarmQuery.PCPRunStatusAlarmStore', {
+Ext.define('AP.store.alarmQuery.AlarmStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.PCPRunStatusAlarmStore',
+    alias: 'widget.alarmStore',
     fields: ['id','deviceType','deviceTypeName','wellName','createTime','user_id','loginIp','action','actionName','remark'],
     autoLoad: true,
     pageSize: 50,
@@ -23,8 +23,8 @@ Ext.define('AP.store.alarmQuery.PCPRunStatusAlarmStore', {
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
             var column = createAlarmQueryColumn(arrColumns);
-            Ext.getCmp("PCPRunStatusAlarmDetailsColumnStr_Id").setValue(column);
-            var gridPanel = Ext.getCmp("PCPRunStatusAlarmGridPanel_Id");
+            Ext.getCmp("AlarmDetailsColumnStr_Id").setValue(column);
+            var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var newColumns = Ext.JSON.decode(column);
                 var bbar = new Ext.PagingToolbar({
@@ -34,7 +34,7 @@ Ext.define('AP.store.alarmQuery.PCPRunStatusAlarmStore', {
     	        });
                 
                 gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "PCPRunStatusAlarmGridPanel_Id",
+                    id: "AlarmGridPanel_Id",
                     border: false,
                     autoLoad: false,
                     bbar: bbar,
@@ -52,44 +52,46 @@ Ext.define('AP.store.alarmQuery.PCPRunStatusAlarmStore', {
                     	select: function(grid, record, index, eOpts) {}
                     }
                 });
-                var panel = Ext.getCmp("PCPRunStatusAlarmDetailsPanel_Id");
+                var panel = Ext.getCmp(getAlarmDetailsDataPanIdFromTabActive());
                 panel.add(gridPanel);
             }
             
-            var startDate=Ext.getCmp('PCPRunStatusAlarmQueryStartDate_Id');
+            var startDate=Ext.getCmp('AlarmQueryStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
-            	Ext.getCmp('PCPRunStatusAlarmQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('PCPRunStatusAlarmQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('PCPRunStatusAlarmQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+            	Ext.getCmp('AlarmQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
+            	Ext.getCmp('AlarmQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
+            	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
-            var endDate=Ext.getCmp('PCPRunStatusAlarmQueryEndDate_Id');
+            var endDate=Ext.getCmp('AlarmQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
-            	Ext.getCmp('PCPRunStatusAlarmQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('PCPRunStatusAlarmQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('PCPRunStatusAlarmQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+            	Ext.getCmp('AlarmQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
+            	Ext.getCmp('AlarmQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
+            	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var deviceType=1;
+        	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
+        	var alarmType=getAlarmTypeFromTabActive();
         	var deviceName='';
         	var deviceId=0;
-        	if(Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
-        		deviceName=Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-            	deviceId=  Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	if(Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+        		deviceName=Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+            	deviceId=  Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         	}
-        	var alarmLevel=Ext.getCmp('PCPRunStatusAlarmLevelComb_Id').getValue();
-        	var isSendMessage=Ext.getCmp('PCPRunStatusAlarmIsSendMessageComb_Id').getValue();
-        	var startDate=Ext.getCmp('PCPRunStatusAlarmQueryStartDate_Id').rawValue;
-        	var startTime_Hour=Ext.getCmp('PCPRunStatusAlarmQueryStartTime_Hour_Id').getValue();
-        	var startTime_Minute=Ext.getCmp('PCPRunStatusAlarmQueryStartTime_Minute_Id').getValue();
-        	var startTime_Second=Ext.getCmp('PCPRunStatusAlarmQueryStartTime_Second_Id').getValue();
-            var endDate=Ext.getCmp('PCPRunStatusAlarmQueryEndDate_Id').rawValue;
-            var endTime_Hour=Ext.getCmp('PCPRunStatusAlarmQueryEndTime_Hour_Id').getValue();
-        	var endTime_Minute=Ext.getCmp('PCPRunStatusAlarmQueryEndTime_Minute_Id').getValue();
-        	var endTime_Second=Ext.getCmp('PCPRunStatusAlarmQueryEndTime_Second_Id').getValue();
+        	
+        	var alarmLevel=Ext.getCmp('AlarmLevelComb_Id').getValue();
+        	var isSendMessage=Ext.getCmp('AlarmIsSendMessageComb_Id').getValue();
+        	var startDate=Ext.getCmp('AlarmQueryStartDate_Id').rawValue;
+        	var startTime_Hour=Ext.getCmp('AlarmQueryStartTime_Hour_Id').getValue();
+        	var startTime_Minute=Ext.getCmp('AlarmQueryStartTime_Minute_Id').getValue();
+        	var startTime_Second=Ext.getCmp('AlarmQueryStartTime_Second_Id').getValue();
+            var endDate=Ext.getCmp('AlarmQueryEndDate_Id').rawValue;
+            var endTime_Hour=Ext.getCmp('AlarmQueryEndTime_Hour_Id').getValue();
+        	var endTime_Minute=Ext.getCmp('AlarmQueryEndTime_Minute_Id').getValue();
+        	var endTime_Second=Ext.getCmp('AlarmQueryEndTime_Second_Id').getValue();
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
@@ -99,7 +101,7 @@ Ext.define('AP.store.alarmQuery.PCPRunStatusAlarmStore', {
                     isSendMessage:isSendMessage,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
-                    alarmType:6
+                    alarmType:alarmType
                 };
             Ext.apply(store.proxy.extraParams, new_params);
         },

@@ -123,24 +123,24 @@ function historyDataRefresh(){
 	
 	
 	var getTabId = tabPanel.getComponent("HistoryQueryFESdiagramResultStatGraphPanel_Id");
-	 	if(deviceCount>0 && getTabId==undefined){
-	 		Ext.getCmp("HistoryQueryStatTabPanel").insert(0,historyStatTabItems[0]);
-	 	}else if(deviceCount==0 && getTabId!=undefined){
-	 		Ext.getCmp("HistoryQueryStatTabPanel").remove(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"));
-	 		removeHistoryFESdiagramResultStatGraphPanel=true;
-	 	}
-	
-	 	if(!(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id" && removeHistoryFESdiagramResultStatGraphPanel)){
-	 		if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryFESdiagramResultStat(true);
-	 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryCommStatusStat(true);
-	 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryRunStatusStat(true);
-	 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryDeviceTypeStat(true);
-	 		}
-	 	}
+	if(deviceCount>0 && getTabId==undefined){
+ 		Ext.getCmp("HistoryQueryStatTabPanel").insert(0,historyStatTabItems[0]);
+ 	}else if(deviceCount==0 && getTabId!=undefined){
+ 		Ext.getCmp("HistoryQueryStatTabPanel").remove(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"));
+ 		removeHistoryFESdiagramResultStatGraphPanel=true;
+ 	}
+
+ 	if(!(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id" && removeHistoryFESdiagramResultStatGraphPanel)){
+ 		if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
+ 			loadAndInitHistoryQueryFESdiagramResultStat(true);
+ 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
+ 			loadAndInitHistoryQueryCommStatusStat(true);
+ 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
+ 			loadAndInitHistoryQueryRunStatusStat(true);
+ 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
+ 			loadAndInitHistoryQueryDeviceTypeStat(true);
+ 		}
+ 	}
 	
 	
 	if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转

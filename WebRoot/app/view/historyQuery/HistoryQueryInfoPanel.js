@@ -290,11 +290,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
+                    var deviceName = Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        deviceType: 0,
-                        wellName: wellName
+                        deviceType: getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
+                        wellName: deviceName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }

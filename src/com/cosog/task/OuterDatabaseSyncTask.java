@@ -40,10 +40,10 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 		DataSourceConfig dataSourceConfig=MemoryDataManagerTask.getDataSourceConfig();
 		if(dataSourceConfig!=null && dataSourceConfig.isEnable()){
 
-			String sql="select t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,to_char(t2.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqtime "
-					+ " from tbl_rpcdevice t"
+			String sql="select t.debicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,to_char(t2.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqtime "
+					+ " from tbl_device t"
 					+ " left outer join tbl_rpcacqdata_latest t2 on t.id=t2.wellid  "
-					+ " where t.status=1"
+					+ " where t.status=1 and t.calculateType=1"
 					+ " ";
 			Connection conn = null;
 			PreparedStatement pstmt = null;

@@ -172,12 +172,12 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('AlarmDeviceListComb_Id').getValue();
-                    var deviceType = 0;
+                    var deviceName = Ext.getCmp('AlarmDeviceListComb_Id').getValue();
+                    var deviceType = getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: deviceType,
-                        wellName: wellName
+                        deviceName: deviceName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }
@@ -515,14 +515,16 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     hidden:false,
                     handler: function (v, o) {
                     	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    	var deviceType=0;
+                    	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
+                    	var deviceTypeName=getTabPanelActiveName("AlarmQueryRootTabPanel");
                     	var deviceName=Ext.getCmp('AlarmDeviceListComb_Id').getValue();
                     	var alarmLevel=Ext.getCmp('AlarmLevelComb_Id').getValue();
                     	var isSendMessage=Ext.getCmp('AlarmIsSendMessageComb_Id').getValue();
-                    	var alarmType=4;
+                    	var alarmType=getAlarmTypeFromTabActive();
+                    	var alarmTypeName=getAlarmTypeNameFromTabActive();
                    	 	
-                   	 	var fileName='抽油机井工况诊断报警设备列表';
-                   	 	var title='抽油机井工况诊断报警设备列表';
+                   	 	var fileName=deviceTypeName+alarmTypeName+'设备列表';
+                   	 	var title=deviceTypeName+alarmTypeName+'设备列表';
                    	 	var columnStr=Ext.getCmp("AlarmOverviewColumnStr_Id").getValue();
                    	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                     }
@@ -572,21 +574,23 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		return;
                     	}
                     	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    	var deviceType=0;
+                    	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
+                    	var deviceTypeName=getTabPanelActiveName("AlarmQueryRootTabPanel");
                     	var deviceName='';
                     	var deviceId=0;
                     	if(Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
-                    		deviceName=Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    		deviceName=Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                         	deviceId=  Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                     	}
                     	var alarmLevel=Ext.getCmp('AlarmLevelComb_Id').getValue();
                     	var isSendMessage=Ext.getCmp('AlarmIsSendMessageComb_Id').getValue();
                     	var startDate=Ext.getCmp('AlarmQueryStartDate_Id').rawValue;
                         var endDate=Ext.getCmp('AlarmQueryEndDate_Id').rawValue;
-                   	 	var alarmType=4;
+                        var alarmType=getAlarmTypeFromTabActive();
+                    	var alarmTypeName=getAlarmTypeNameFromTabActive();
                    	 	
-                   	 	var fileName='抽油机井'+deviceName+'工况诊断报警数据';
-                   	 	var title='抽油机井'+deviceName+'工况诊断报警数据';
+                   	 	var fileName=deviceTypeName+deviceName+alarmTypeName+'数据';
+                   	 	var title=deviceTypeName+deviceName+alarmTypeName+'数据';
                    	 	var columnStr=Ext.getCmp("AlarmDetailsColumnStr_Id").getValue();
                    	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                     }

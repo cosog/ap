@@ -45,12 +45,12 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
+                    var deviceName = Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
                     var deviceType=0;
                     var new_params = {
                         orgId: leftOrg_Id,
-                        wellName: wellName,
-                        deviceType:0
+                        deviceName: deviceName,
+                        calculateType: 1
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
                 }
@@ -115,15 +115,15 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    var welName=Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
+                    var deviceName=Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
                     var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id').rawValue;
                     var new_params = {
                     		orgId: orgId,
-                    		welName: welName,
+                    		deviceName: deviceName,
                             startDate:startDate,
                             endDate:endDate,
-                            deviceType:0
+                            calculateType:1
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
                 }
@@ -516,7 +516,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 	}
                 	
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName=Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
+                    var deviceName=Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
                     var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id').rawValue;
                     var startTime_Hour=Ext.getCmp('RPCCalculateMaintainingStartTime_Hour_Id').getValue();
                 	var startTime_Minute=Ext.getCmp('RPCCalculateMaintainingStartTime_Minute_Id').getValue();
@@ -527,12 +527,13 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 	var endTime_Second=Ext.getCmp('RPCCalculateMaintainingEndTime_Second_Id').getValue();
                     var calculateSign=Ext.getCmp('RPCCalculateMaintainingCalculateSignComBox_Id').getValue();
                     var deviceType=0;
-                    var showWellName=wellName;
-                	if(wellName == '' || wellName == null){
-                		if(deviceType==0){
-                			showWellName='所选组织下全部抽油机井';
-                		}else if(deviceType==1){
-                			showWellName='所选组织下全部螺杆泵井';
+                    var calculateType=1;
+                    var showWellName=deviceName;
+                	if(deviceName == '' || deviceName == null){
+                		if(calculateType==1){
+                			showWellName='所选组织下全部功图计算井';
+                		}else if(calculateType==2){
+                			showWellName='所选组织下全部转速计产井';
                 		}
                 	}else{
 //                		showWellName+='井';
@@ -561,10 +562,11 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         	            		},
         	            		params: {
         	            			orgId: orgId,
-        	            			wellName: wellName,
+        	            			deviceName: deviceName,
         	                        startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
         	                        endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
         	                        calculateSign:calculateSign,
+        	                        calculateType:calculateType,
         	                        deviceType:deviceType
         	                    }
         	            	}); 
@@ -582,10 +584,10 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 	if(rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getSelected()){
                 		var row=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getSelected()[0][0];
                 		var recordId=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[0];
-                		var wellName=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[1];
+                		var deviceName=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[1];
                 		var acqTime=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[2];
                 		var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
-                		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&wellName='+URLencode(URLencode(wellName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
+                		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
                     	document.location.href = url;
                 	}else{
                 		Ext.MessageBox.alert("信息","未选择记录");

@@ -49,7 +49,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                         flex: 10,
                         sortable: false,
                         locked: false,
-                        dataIndex: 'wellName',
+                        dataIndex: 'deviceName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
@@ -68,7 +68,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
-                    wellName:deviceName
+                    deviceName:deviceName
                 };
             Ext.apply(store.proxy.extraParams, new_params);
         },

@@ -53,7 +53,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 			sql+=" and t.devicetype="+deviceType;
 		}
 		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and t.wellName='"+deviceName+"'";
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
 		if(StringManagerUtils.isNotNull(operationType)){
 			sql+=" and t.action="+operationType;
@@ -82,7 +82,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 			sql+=" and t.devicetype="+deviceType;
 		}
 		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and t.wellName='"+deviceName+"'";
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
 		if(StringManagerUtils.isNotNull(operationType)){
 			sql+=" and t.action="+operationType;
@@ -110,7 +110,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 		    sheetDataList.add(headRow);
 			
 			String sql="select t.id,t.devicetype,t.deviceTypeName,"
-					+ " t.wellname,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
+					+ " t.deviceName,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
 					+ " t.user_id,t.loginip,"
 					+ " t.action,t.actionname,"
 					+ " t.remark,t.orgid "
@@ -125,7 +125,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 				sql+=" and t.devicetype="+deviceType;
 			}
 			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and t.wellName='"+deviceName+"'";
+				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(operationType)){
 				sql+=" and t.action="+operationType;
@@ -143,7 +143,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 				result_json.append("{\"id\":\""+(i+1)+"\",");
 				result_json.append("\"deviceType\":\""+obj[1]+"\",");
 				result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
-				result_json.append("\"wellName\":\""+obj[3]+"\",");
+				result_json.append("\"deviceName\":\""+obj[3]+"\",");
 				result_json.append("\"createTime\":\""+obj[4]+"\",");
 				result_json.append("\"user_id\":\""+obj[5]+"\",");
 				result_json.append("\"loginIp\":\""+obj[6]+"\",");

@@ -76,33 +76,33 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private CalculateDataService calculateDataService;
-	public String getCalculateResultData(String orgId, String wellName,String wellId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)){
-			json=this.getFESDiagramCalculateResultData(orgId, wellName,wellId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getFESDiagramCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}else if("2".equals(calculateType)){
-			json=this.getRPMCalculateResultData(orgId, wellName,wellId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getRPMCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}else if("5".equals(calculateType)){//电参反演地面功图
-			json=this.getElecInverCalculateResultData(orgId, wellName, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getElecInverCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}
 		
 		return json;
 	}
 	
-	public String getWellList(String orgId, String wellName, Page pager,String wellType,String calculateSign,String calculateType)
+	public String getWellList(String orgId, String deviceName, Page pager,String wellType,String calculateSign,String calculateType)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)||"2".equals(calculateType)||"3".equals(calculateType)||"4".equals(calculateType)){
-			json=this.getDiagnoseAndProdCalculateWellListData(orgId, wellName, pager, wellType,calculateSign, calculateType);
+			json=this.getDiagnoseAndProdCalculateWellListData(orgId, deviceName, pager, wellType,calculateSign, calculateType);
 		}else if("5".equals(calculateType)){//电参反演地面功图
-			json=this.getElecInverCalculateWellListData(orgId, wellName, pager, wellType,calculateSign, calculateType);
+			json=this.getElecInverCalculateWellListData(orgId, deviceName, pager, wellType,calculateSign, calculateType);
 		}
 		
 		return json;
 	}
 	
-	public String getFESDiagramCalculateResultData(String orgId, String wellName,String wellId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getFESDiagramCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -134,7 +134,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 			}
 			
-			sql="select t.id,t.wellId,t.wellName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
+			sql="select t.id,t.deviceId,t.deviceName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ "decode(t.resultStatus,-1,'无效功图',1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
 				+ "t.resultName,"
 				+ prodCol
@@ -143,8 +143,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " where t.orgid in("+orgId+") "
 				+ " and t.resultStatus<>-1"
 				+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
 			}
 			if(StringManagerUtils.isNotNull(calculateSign)){
 				if("0".equals(calculateSign)){
@@ -183,8 +183,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
 				
 				result_json.append("{\"id\":\""+obj[0]+"\",");
-				result_json.append("\"wellId\":\""+obj[1]+"\",");
-				result_json.append("\"wellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceId\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"acqTime\":\""+obj[3]+"\",");
 				result_json.append("\"resultStatus\":\""+obj[4]+"\",");
 				result_json.append("\"resultName\":\""+obj[5]+"\",");
@@ -295,7 +295,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getRPMCalculateResultData(String orgId, String wellName,String wellId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getRPMCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -316,15 +316,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 		}
 		
-		sql="select t.id,t.wellId,t.wellName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
+		sql="select t.id,t.deviceId,t.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 			+ "decode(t.resultStatus,1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
 			+ prodCol
 			+ "t.rpm,"
 			+ "t.productiondata"
 			+ " from viw_pcp_calculatemain t where t.orgid in("+orgId+") "
 			+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
 		}
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			if("0".equals(calculateSign)){
@@ -353,8 +353,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			PCPCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"wellId\":\""+obj[1]+"\",");
-			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"deviceId\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"acqTime\":\""+obj[3]+"\",");
 			result_json.append("\"resultStatus\":\""+obj[4]+"\",");
 			
@@ -436,35 +436,34 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDiagnoseAndProdCalculateWellListData(String orgId, String wellName, Page pager,String wellType,String calculateSign,String calculateType)
+	public String getDiagnoseAndProdCalculateWellListData(String orgId, String deviceName, Page pager,String wellType,String calculateSign,String calculateType)
 			throws Exception {
 		String columns= "";
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String tableName="tbl_rpc_diagram_latest";
-		String deviceTableName="tbl_rpcdevice";
+		String tableName="tbl_rpcacqdata_latest";
+		String deviceTableName="tbl_device";
 		StringBuffer result_json = new StringBuffer();
 		if("1".equals(calculateType)){
 			tableName="tbl_rpcacqdata_latest";
-			deviceTableName="tbl_rpcdevice";
 		}else if("2".equals(calculateType)){
 			tableName="tbl_pcpacqdata_latest";
-			deviceTableName="tbl_pcpdevice";
 		}
 		columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:3 ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\",flex:3 ,children:[] },"
 				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\",flex:3 ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
 				+ "]";
-		sql="select well.id,well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus,well.applicationscenarios,c1.itemname as applicationScenariosName "
+		sql="select well.id,well.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus,well.applicationscenarios,c1.itemname as applicationScenariosName "
 				+ " from "+tableName+" t,"+deviceTableName+" well,tbl_code c1 "
-				+ " where t.wellid=well.id "
+				+ " where t.deviceId=well.id "
+				+ " and well.calculateType="+calculateType
 				+ " and c1.itemcode='APPLICATIONSCENARIOS' and well.applicationscenarios=c1.itemvalue  "
 				+ " and well.orgid in("+orgId+") ";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  well.wellName = '" + wellName.trim() + "' ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  well.deviceName = '" + deviceName.trim() + "' ";
 		}
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			if("0".equals(calculateSign)){
@@ -473,7 +472,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				sql+=" and  t.resultstatus = " + calculateSign + " ";
 			}
 		}
-		sql+=" order by well.sortnum,well.wellName";
+		sql+=" order by well.sortnum,well.deviceName";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
@@ -484,7 +483,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"acqTime\":\""+obj[2]+"\",");
 			result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
 			result_json.append("\"applicationScenariosName\":\""+obj[5]+"\"},");
@@ -500,7 +499,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getElecInverCalculateResultData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getElecInverCalculateResultData(String orgId, String deviceName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		
 		String sql="";
@@ -510,7 +509,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		sql="select t.id,t.wellName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
+		sql="select t.id,t.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
 			+ "t.manufacturer,t.model,t.stroke,"
 			+ "t.crankRotationDirection,t.offsetAngleOfCrank,t.crankGravityRadius,"
 			+ "t.singleCrankWeight,t.structuralUnbalance,t.balancePosition,t.balanceWeight,"
@@ -520,8 +519,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
 			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") "
 			+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
 		}
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			if("0".equals(calculateSign)){
@@ -530,7 +529,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				sql+=" and  t.resultstatus = " + calculateSign + " ";
 			}
 		}
-		sql+=" order by t.acqTime desc, t.wellName";
+		sql+=" order by t.acqTime desc, t.deviceName";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
@@ -538,7 +537,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(finalSql);
 		
 		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
 				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
 				
@@ -570,7 +569,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"acqTime\":\""+obj[2]+"\",");
 			result_json.append("\"resultStatus\":\""+obj[3]+"\",");
 			
@@ -607,7 +606,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getElecInverCalculateWellListData(String orgId, String wellName, Page pager,String wellType,String calculateSign,String calculateType)
+	public String getElecInverCalculateWellListData(String orgId, String deviceName, Page pager,String wellType,String calculateSign,String calculateType)
 			throws Exception {
 		
 		String sql="";
@@ -617,7 +616,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		sql="select t.id,t.wellName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
+		sql="select t.id,t.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
 			+ "t.manufacturer,t.model,t.stroke,"
 			+ "t.crankRotationDirection,t.offsetAngleOfCrank,t.crankGravityRadius,"
 			+ "t.singleCrankWeight,t.structuralUnbalance,t.balancePosition,t.balanceWeight,"
@@ -625,8 +624,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.filterTime_Watt,t.filterTime_I,filterTime_RPM,"
 			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
 			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") ";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
 		}
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			if("0".equals(calculateSign)){
@@ -635,14 +634,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				sql+=" and  t.resultstatus = " + calculateSign + " ";
 			}
 		}
-		sql+=" order by t.acqTime desc, t.wellName";
+		sql+=" order by t.acqTime desc, t.deviceName";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
 				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
 				
@@ -673,7 +672,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"acqTime\":\""+obj[2]+"\",");
 			result_json.append("\"resultStatus\":\""+obj[3]+"\",");
 			
@@ -1036,23 +1035,22 @@ public class CalculateManagerService<T> extends BaseService<T> {
 //				inversioneFSdiagramResponseData.getIDegreeBalance(),inversioneFSdiagramResponseData.getWattDegreeBalance(),
 //				inversioneFSdiagramResponseData.getResultStatus());
 //	}
-	public String getCalculateStatusList(String orgId, String wellName, String deviceType,String startDate,String endDate)throws Exception {
+	public String getCalculateStatusList(String orgId, String deviceName, String calculateType,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql="";
 		String tableName="tbl_rpcacqdata_latest";
-		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+		String deviceTableName="tbl_device";
+		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_latest";
-			deviceTableName="tbl_pcpdevice";
 		}
 		sql="select distinct(decode(t.resultstatus,2,0,t.resultstatus)),t2.itemname "
 				+ " from "+tableName+" t,tbl_code t2,"+deviceTableName+" t3 "
-				+ " where t.wellid=t3.id and decode(t.resultstatus,2,0,t.resultstatus)=t2.itemvalue and t2.itemcode='JSBZ'"
+				+ " where t.deviceId=t3.id and decode(t.resultstatus,2,0,t.resultstatus)=t2.itemvalue and t2.itemcode='JSBZ'"
 				+ " and t3.orgid in("+orgId+") "
 				+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
 		
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t3.wellName = '" + wellName.trim() + "' ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t3.deviceName = '" + deviceName.trim() + "' ";
 		}
 		
 		sql+=" order by decode(t.resultstatus,2,0,t.resultstatus)";
@@ -1079,47 +1077,46 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public int recalculateByProductionData(String orgId, String wellName, String deviceType,String startDate,String endDate,String calculateSign)throws Exception {
+	public int recalculateByProductionData(String orgId, String deviceName, String deviceType,String startDate,String endDate,String calculateSign,String calculateType)throws Exception {
 		String tableName="tbl_rpcacqdata_hist";
-		String deviceTableName="tbl_rpcdevice";
+		String deviceTableName="tbl_device";
 		String acqTimeColumn="fesdiagramacqtime";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_hist";
-			deviceTableName="tbl_pcpdevice";
 			acqTimeColumn="acqtime";
 		}
 		
 		String updateSql="update "+tableName+" t "
 				+ " set (productiondata,resultstatus)"
-				+ "=(select t2.productiondata,2 from "+deviceTableName+" t2 where t2.id=t.wellid) "
+				+ "=(select t2.productiondata,2 from "+deviceTableName+" t2 where t2.id=t.deviceId) "
 				+ " where t."+acqTimeColumn+" between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			updateSql+=" and t.resultstatus in ("+calculateSign+")";
 		}
-		updateSql+=" and t.wellid in (select well.id from "+deviceTableName+" well where well.orgid in("+orgId+")";
-		if(StringManagerUtils.isNotNull(wellName)){
-			updateSql+=" and well.wellname='"+wellName+"'";
+		updateSql+=" and t.deviceId in (select well.id from "+deviceTableName+" well where well.orgid in("+orgId+")";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			updateSql+=" and well.deviceName='"+deviceName+"'";
 		}
 		updateSql+=")";
 		return getBaseDao().executeSqlUpdate(updateSql);
 	}
 	
-	public String getCalculateRequestData(String recordId,String wellName,String acqTime,String calculateType) throws SQLException, IOException, ParseException{
+	public String getCalculateRequestData(String recordId,String deviceName,String acqTime,String calculateType) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		if("1".equals(calculateType)){
-			requestData=this.getFSDiagramCalculateRequestData(recordId,wellName,acqTime);
+			requestData=this.getFSDiagramCalculateRequestData(recordId,deviceName,acqTime);
 		}if("2".equals(calculateType)){
-			requestData=this.getRPMCalculateRequestData(recordId,wellName,acqTime);
+			requestData=this.getRPMCalculateRequestData(recordId,deviceName,acqTime);
 		}else if("5".equals(calculateType)){
-			requestData=this.getElecInverCalculateRequestData(wellName,acqTime);
+			requestData=this.getElecInverCalculateRequestData(deviceName,acqTime);
 		}
 		return requestData;
 	}
 	
-	public String getFSDiagramCalculateRequestData(String recordId,String wellName,String acqTime) throws SQLException, IOException, ParseException{
+	public String getFSDiagramCalculateRequestData(String recordId,String deviceName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		String sql=""
-				+ " select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
+				+ " select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 				+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
@@ -1127,7 +1124,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " t3.id as pumpingmodelid,t3.manufacturer,t3.model,t3.crankrotationdirection,t3.offsetangleofcrank,t3.crankgravityradius,t3.singlecrankweight,t3.singlecrankpinweight,t3.structuralunbalance,"
 				+ " t.balanceinfo"
 				+ " from tbl_rpcacqdata_hist t"
-				+ " left outer join tbl_rpcdevice t2 on t.wellid=t2.id"
+				+ " left outer join tbl_device t2 on t.deviceId=t2.id"
 				+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 				+ " where 1=1  "
 				+ " and t.id="+recordId;
@@ -1139,14 +1136,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return requestData;
 	}
 	
-	public String getRPMCalculateRequestData(String recordId,String wellName,String acqTime) throws SQLException, IOException, ParseException{
+	public String getRPMCalculateRequestData(String recordId,String deviceName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		String sql=""
-				+ " select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
+				+ " select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.rpm,t.productiondata"
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2"
-				+ " where t.wellid=t2.id  "
+				+ " where t.deviceId=t2.id  "
 				+ " and t.id="+recordId;
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
@@ -1156,10 +1153,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return requestData;
 	}
 	
-	public String getElecInverCalculateRequestData(String wellName,String acqTime) throws SQLException, IOException, ParseException{
+	public String getElecInverCalculateRequestData(String deviceName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.wellname,t2.id as diagramid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+		String sql="select t.deviceName,t2.id as diagramid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t2.spm,t2.rawpower_curve,t2.rawcurrent_curve,t2.rawrpm_curve, "
 				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
 				+ " t4.offsetangleofcrank,t5.offsetangleofcrankps,t4.crankgravityradius,t4.singlecrankweight,t4.structuralunbalance,"
@@ -1168,8 +1165,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " t5.wattangle,t5.filtertime_watt,t5.filtertime_i,t5.filtertime_rpm,t5.filtertime_fsdiagram,t5.filtertime_fsdiagram_l,t5.filtertime_fsdiagram_r,"
 				+ " t4.prtf "
 				+ " from tbl_wellinformation t,tbl_rpc_diagram_hist t2,tbl_rpcinformation t4,tbl_rpc_inver_opt t5 "
-				+ " where t.id=t2.wellid and t.id=t4.wellid and t.id=t5.wellid "
-				+ " and t.wellname='"+wellName+"' and t2.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+				+ " where t.id=t2.deviceId and t.id=t4.deviceId and t.id=t5.deviceId "
+				+ " and t.deviceName='"+deviceName+"' and t2.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
@@ -1194,7 +1191,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				RPMString=StringManagerUtils.CLOBtoString(realClob);
 			}
 			result_json.append("{\"AKString\":\"\",");
-			result_json.append("\"WellName\":\""+obj[0]+"\",");
+			result_json.append("\"deviceName\":\""+obj[0]+"\",");
 			result_json.append("\"AcqTime\":\""+obj[2]+"\",");
 			result_json.append("\"SPM\":"+obj[3]+",");
 			result_json.append("\"Watt\":["+WattString+"],");
@@ -1287,19 +1284,19 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return requestData;
 	}
 	
-	public String getTotalCalculateResultData(String orgId, String wellName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getTotalCalculateResultData(String orgId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
 			throws Exception {
 		String json="";
 		if("3".equals(calculateType)){
-			json=this.getFESDiagramTotalCalculateResultData(orgId, wellName, pager, deviceType, startDate, endDate,  calculateType);
+			json=this.getFESDiagramTotalCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate,  calculateType);
 		}else if("4".equals(calculateType)){
-			json=this.getRPMTotalCalculateResultData(orgId, wellName, pager, deviceType, startDate, endDate, calculateType);
+			json=this.getRPMTotalCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate, calculateType);
 		}
 		
 		return json;
 	}
 	
-	public String getFESDiagramTotalCalculateResultData(String orgId, String wellName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getFESDiagramTotalCalculateResultData(String orgId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -1320,14 +1317,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 		}
 		
-		sql="select t.id,t.wellId,t.wellName,to_char(t.caldate,'yyyy-mm-dd'),"
+		sql="select t.id,t.deviceId,t.deviceName,to_char(t.caldate,'yyyy-mm-dd'),"
 			+ "t.resultname,t.resultString,"
 			+ prodCol
 			+ " t.pumpeff,t.systemefficiency,t.wattDegreeBalance,t.iDegreeBalance,t.todayKWattH"
 			+ " from viw_rpcdailycalculationdata t where t.org_id in("+orgId+") "
 			+ " and t.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
 		}
 		sql+=" order by t.caldate desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
@@ -1341,8 +1338,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"wellId\":\""+obj[1]+"\",");
-			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"deviceId\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"calDate\":\""+obj[3]+"\",");
 			result_json.append("\"resultName\":\""+obj[4]+"\",");
 			result_json.append("\"resultString\":\""+obj[5]+"\",");
@@ -1371,7 +1368,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getRPMTotalCalculateResultData(String orgId, String wellName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getRPMTotalCalculateResultData(String orgId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -1392,13 +1389,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 		}
 		
-		sql="select t.id,t.wellId,t.wellName,to_char(t.caldate,'yyyy-mm-dd'),"
+		sql="select t.id,t.deviceId,t.deviceName,to_char(t.caldate,'yyyy-mm-dd'),"
 			+ prodCol
 			+ " t.pumpeff,t.systemefficiency,t.todayKWattH"
 			+ " from viw_pcpdailycalculationdata t where t.org_id in("+orgId+") "
 			+ " and t.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
 		}
 		sql+=" order by t.caldate desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
@@ -1412,8 +1409,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"wellId\":\""+obj[1]+"\",");
-			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"deviceId\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"calDate\":\""+obj[3]+"\",");
 			
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
@@ -1463,10 +1460,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			String[] calInfoArr=reCalculateDate.split(";");
 			for(int i=0;i<calInfoArr.length;i++){
 				String recordId=calInfoArr[i].split(",")[0];
-				String wellId=calInfoArr[i].split(",")[1];
-				String wellName=calInfoArr[i].split(",")[2];
+				String deviceId=calInfoArr[i].split(",")[1];
+				String deviceName=calInfoArr[i].split(",")[2];
 				String calDate=calInfoArr[i].split(",")[3];
-				executor.execute(new TotalCalculateThread(StringManagerUtils.stringToInteger(recordId),StringManagerUtils.stringToInteger(wellId),wellName,calDate,deviceType,service));
+				executor.execute(new TotalCalculateThread(StringManagerUtils.stringToInteger(recordId),StringManagerUtils.stringToInteger(deviceId),deviceName,calDate,deviceType,service));
 			}
 			while (!executor.isCompletedByTaskCount()) {
 				Thread.sleep(1000*1);
@@ -1489,10 +1486,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			String[] calInfoArr=reCalculateDate.split(";");
 			for(int i=0;i<calInfoArr.length;i++){
 				String recordId=calInfoArr[i].split(",")[0];
-				String wellId=calInfoArr[i].split(",")[1];
-				String wellName=calInfoArr[i].split(",")[2];
+				String deviceId=calInfoArr[i].split(",")[1];
+				String deviceName=calInfoArr[i].split(",")[2];
 				String calDate=calInfoArr[i].split(",")[3];
-				executor.execute(new TotalCalculateThread(StringManagerUtils.stringToInteger(recordId),StringManagerUtils.stringToInteger(wellId),wellName,calDate,deviceType,service));
+				executor.execute(new TotalCalculateThread(StringManagerUtils.stringToInteger(recordId),StringManagerUtils.stringToInteger(deviceId),deviceName,calDate,deviceType,service));
 			}
 			while (!executor.isCompletedByTaskCount()) {
 				Thread.sleep(1000*1);
@@ -1502,24 +1499,24 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	}
 	
 	
-	public String exportTotalCalculateRequestData(String deviceType,String recordId,String wellId,String wellName,String calDate)throws Exception {
+	public String exportTotalCalculateRequestData(String deviceType,String recordId,String deviceId,String deviceName,String calDate)throws Exception {
 		String json="";
 		if("0".equals(deviceType)){
-			json=this.exportFESDiagramTotalCalculateRequestData(recordId,wellId,wellName,calDate);
+			json=this.exportFESDiagramTotalCalculateRequestData(recordId,deviceId,deviceName,calDate);
 		}else if("1".equals(deviceType)){
-			json=this.exportRPMTotalCalculateRequestData(recordId,wellId,wellName,calDate);
+			json=this.exportRPMTotalCalculateRequestData(recordId,deviceId,deviceName,calDate);
 		}
 		
 		return json;
 	}
 	
-	public String exportFESDiagramTotalCalculateRequestData(String recordId,String wellId,String wellName,String calDate)throws Exception {
+	public String exportFESDiagramTotalCalculateRequestData(String recordId,String deviceId,String deviceName,String calDate)throws Exception {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringBuffer dataSbf= new StringBuffer();
 		String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-				+ " from tbl_rpcdailycalculationdata t,tbl_rpcdevice t2 "
-				+ " where t.wellid=t2.id "
+				+ " from tbl_rpcdailycalculationdata t,tbl_device t2 "
+				+ " where t.deviceId=t2.id "
 				+ " and t.id="+recordId;
 		String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
@@ -1533,7 +1530,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.submergence,"
 				+ "t.rpm "
 				+ " from tbl_rpcacqdata_hist t "
-				+ " where t.wellid="+wellId+" "
+				+ " where t.deviceId="+deviceId+" "
 				+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
 				+ " and t.resultstatus=1 "
 				+ " order by t.fesdiagramacqtime";
@@ -1666,7 +1663,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				rpmList.add(StringManagerUtils.stringToFloat(obj[30]+""));
 			}
 			dataSbf.append("{\"AKString\":\"\",");
-			dataSbf.append("\"WellName\":\""+wellName+"\",");
+			dataSbf.append("\"deviceName\":\""+deviceName+"\",");
 			dataSbf.append("\"Date\":\""+calDate+"\",");
 			dataSbf.append("\"OffsetHour\":0,");
 			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -1719,13 +1716,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return dataSbf.toString();
 	}
 	
-	public String exportRPMTotalCalculateRequestData(String recordId,String wellId,String wellName,String calDate)throws Exception {
+	public String exportRPMTotalCalculateRequestData(String recordId,String deviceId,String deviceName,String calDate)throws Exception {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringBuffer dataSbf= new StringBuffer();
 		String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 				+ " from tbl_pcpdailycalculationdata t,tbl_pcpdevice t2 "
-				+ " where t.wellid=t2.id "
+				+ " where t.deviceId=t2.id "
 				+ " and t.id="+recordId;
 		String fesDiagramSql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -1735,7 +1732,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.systemefficiency,t.energyper100mlift,"
 				+ "t.submergence "
 				+ " from tbl_pcpacqdata_hist t "
-				+ " where t.wellid="+wellId+" "
+				+ " where t.deviceId="+deviceId+" "
 				+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
 				+ " and t.resultstatus=1 "
 				+ " order by t.acqtime";
@@ -1831,7 +1828,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				submergenceList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 			}
 			dataSbf.append("{\"AKString\":\"\",");
-			dataSbf.append("\"WellName\":\""+wellName+"\",");
+			dataSbf.append("\"deviceName\":\""+deviceName+"\",");
 			dataSbf.append("\"Date\":\""+calDate+"\",");
 			dataSbf.append("\"OffsetHour\":0,");
 			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");

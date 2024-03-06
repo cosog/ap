@@ -51,7 +51,7 @@ public class CalculateThread extends Thread{
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		if(deviceType==0){
 			String minAcqTime="";
-			String sql="select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
+			String sql="select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 					+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
 					+ " t.stroke,t.spm,"
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
@@ -60,16 +60,16 @@ public class CalculateThread extends Thread{
 					+ " t.balanceinfo,"
 					+ " t.id"
 					+ " from tbl_rpcacqdata_hist t"
-					+ " left outer join tbl_rpcdevice t2 on t.wellid=t2.id"
+					+ " left outer join tbl_device t2 on t.deviceId=t2.id"
 					+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
-					+ " where 1=1  "
+					+ " where t.calculateType=1  "
 					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.productiondata is not null"
 					+ " and t.fesdiagramacqtime is not null "
-					+ " and t.wellid="+wellNo+""
+					+ " and t.deviceId="+wellNo+""
 					+ " and t.resultstatus =2  "
 					+ " order by t.fesdiagramacqTime ";
-			String fesDiagramSql="select t2.id as wellid, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
+			String fesDiagramSql="select t2.id as deviceId, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 					+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 					+ "t.theoreticalproduction,"
 					+ "t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -84,11 +84,12 @@ public class CalculateThread extends Thread{
 					+ "t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
 					+ "t.runstatus,t.runtime,t.runtimeefficiency,t.runrange,"
 					+ "t.id as recordId"
-					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
+					+ " and t2.calculateType=1"
 					+ " and t.resultstatus=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
-					+ " and t.wellid="+wellNo+""
+					+ " and t.deviceId="+wellNo+""
 					+ " order by t.fesdiagramacqTime ";
 			List<?> list = calculateDataService.findCallSql(sql);
 			count=list.size();
@@ -331,7 +332,7 @@ public class CalculateThread extends Thread{
 									updateSql="update tbl_rpcacqdata_latest t "
 											+ " set t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+","
 											+ " t.liquidweightproduction_l="+totalAnalysisResponseData.getLiquidWeightProduction().getValue()
-											+ " where t.wellid="+wellNo+" and t.fesdiagramAcqtime=to_date('"+fesdiagramAcqtime+"','yyyy-mm-dd hh24:mi:ss')";
+											+ " where t.deviceId="+wellNo+" and t.fesdiagramAcqtime=to_date('"+fesdiagramAcqtime+"','yyyy-mm-dd hh24:mi:ss')";
 									calculateDataService.getBaseDao().updateOrDeleteBySql(updateSql);
 									calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,acqDate);
 								}
@@ -350,19 +351,19 @@ public class CalculateThread extends Thread{
 			}
 		}else{
 			String minAcqTime="";
-			String sql="select t2.wellname,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
+			String sql="select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 					+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t.rpm,t.productiondata,"
 					+ " t.id"
 					+ " from tbl_pcpacqdata_hist t"
-					+ " left outer join tbl_pcpdevice t2 on t.wellid=t2.id"
-					+ " where 1=1  "
+					+ " left outer join tbl_device t2 on t.deviceId=t2.id"
+					+ " where t2.calculateType=2  "
 					+ " and t.acqTime between to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.productiondata is not null and t.rpm is not null "
-					+ " and t.wellid="+wellNo+""
+					+ " and t.deviceId="+wellNo+""
 					+ " and t.resultstatus =2 "
 					+ " order by t.acqTime ";
-			String singleRecordSql="select t2.id as wellId, "
+			String singleRecordSql="select t2.id as deviceId, "
 					+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
 					+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 					+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
@@ -373,11 +374,12 @@ public class CalculateThread extends Thread{
 					+ "t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
 					+ "t.runstatus,t.runtime,t.runtimeefficiency,t.runrange,"
 					+ "t.id as recordId"
-					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
+					+ " and t2.calculateType=2"
 					+ " and t.resultstatus=1 "
 					+ " and t.acqtime between to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
-					+ " and t.wellid="+wellNo+""
+					+ " and t.deviceId="+wellNo+""
 					+ " order by t.acqTime ";
 			List<?> list = calculateDataService.findCallSql(sql);
 			count=list.size();
@@ -570,7 +572,7 @@ public class CalculateThread extends Thread{
 									updateSql="update tbl_pcpacqdata_latest t "
 											+ " set t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+","
 											+ " t.liquidweightproduction_l="+totalAnalysisResponseData.getLiquidWeightProduction().getValue()
-											+ " where t.wellid="+wellNo+" and t.acqtime=to_date('"+acqtime+"','yyyy-mm-dd hh24:mi:ss')";
+											+ " where t.deviceId="+wellNo+" and t.acqtime=to_date('"+acqtime+"','yyyy-mm-dd hh24:mi:ss')";
 									calculateDataService.getBaseDao().updateOrDeleteBySql(updateSql);
 									calculateDataService.saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,acqDate);
 								}

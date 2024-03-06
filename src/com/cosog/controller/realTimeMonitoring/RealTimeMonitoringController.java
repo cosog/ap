@@ -541,10 +541,7 @@ public class RealTimeMonitoringController extends BaseController {
 		String clientIP=StringManagerUtils.getIpAddr(request);
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
 		
-		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			deviceTableName="tbl_pcpdevice";
-		}
+		String deviceTableName="tbl_device";
 		
 		
 		// 用户不存在
@@ -614,10 +611,7 @@ public class RealTimeMonitoringController extends BaseController {
 		String clientIP=StringManagerUtils.getIpAddr(request);
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
 		
-		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			deviceTableName="tbl_pcpdevice";
-		}
+		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			if (StringManagerUtils.isNumber(controlValue)) {

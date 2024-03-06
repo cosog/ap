@@ -15,7 +15,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/wellInformationManagerController/loadDataDictionaryComboxList',
+            	url: context + '/wellInformationManagerController/loadDeviceTypeComboxListFromTab',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -30,7 +30,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
             listeners: {
                 beforeload: function (store, options) {
                     var new_params = {
-                    	itemCode: 'deviceType'
+                    		
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }
@@ -91,12 +91,12 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('DeviceOperationLogDeviceListComb_Id').getValue();
+                    var deviceName = Ext.getCmp('DeviceOperationLogDeviceListComb_Id').getValue();
                     var deviceType = Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: deviceType,
-                        wellName: wellName
+                        deviceName: deviceName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }

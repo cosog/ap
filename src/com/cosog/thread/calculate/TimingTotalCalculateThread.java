@@ -27,8 +27,8 @@ import com.google.gson.reflect.TypeToken;
 
 public class TimingTotalCalculateThread  extends Thread{
 	private int threadId;
-	private int wellId;
-	private String wellName;
+	private int deviceId;
+	private String deviceName;
 	private String timeStr;
 	private String templateCode;
 	private String reportUnitId;
@@ -36,12 +36,12 @@ public class TimingTotalCalculateThread  extends Thread{
 	private CommonDataService commonDataService=null;
 	
 	
-	public TimingTotalCalculateThread(int threadId, int wellId, String wellName, String timeStr, String templateCode,
+	public TimingTotalCalculateThread(int threadId, int deviceId, String deviceName, String timeStr, String templateCode,
 			String reportUnitId, int deviceType, CommonDataService commonDataService) {
 		super();
 		this.threadId = threadId;
-		this.wellId = wellId;
-		this.wellName = wellName;
+		this.deviceId = deviceId;
+		this.deviceName = deviceName;
 		this.timeStr = timeStr;
 		this.templateCode = templateCode;
 		this.reportUnitId = reportUnitId;
@@ -50,7 +50,7 @@ public class TimingTotalCalculateThread  extends Thread{
 	}
 
 	public void run(){
-		if(wellId==1){
+		if(deviceId==1){
 			System.out.println("");
 		}
 		long calculateStartTime=System.nanoTime();
@@ -81,156 +81,74 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " from tbl_rpcacqdata_hist t "
 					+ " where t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.resultstatus=1 "
-					+ " and t.wellid="+wellId
+					+ " and t.deviceId="+deviceId
 					+ " order by t.fesdiagramacqtime";
-			String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_rpctimingcalculationdata t "
+			String labelInfoSql="select t.deviceId, t.headerlabelinfo from tbl_rpctimingcalculationdata t "
 					+ " where t.id=("
 					+ " select v2.id from "
 					+ " ( select v.id,rownum r from "
 					+ " (select t2.id from tbl_rpctimingcalculationdata t2 "
-					+ "  where t2.wellid="+wellId+" and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2"
+					+ "  where t2.deviceId="+deviceId+" and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2"
 					+ " where r=1)";
-			
-//			String historyCommStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-//					+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
-//					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-//					+ " where t.wellid=t2.id "
-//					+ " and t.id=("
-//					+ " select v2.id from"
-//					+ " (select v.id,rownum r from "
-//					+ " (select t3.id from  tbl_rpcacqdata_hist t3   "
-//					+ " where t3.wellid="+wellId+" and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') order by t3.acqtime desc) v"
-//					+ " ) v2 "
-//					+ " where r=1"
-//					+ " )"
-//					+ " and t.wellid="+wellId;
-			
-			String historyCommStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyCommStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
-					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3   "
 					+ " where t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
 					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
-			
-//			String historyRunStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-//					+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange"
-//					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-//					+ " where t.wellid=t2.id "
-//					+ " and t.id=("
-//					+ " select v2.id from"
-//					+ " (select v.id,rownum r from"
-//					+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
-//					+ " where t3.commstatus=1 and t3.runstatus in (0,1) and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-//					+ " and t3.wellid="+wellId+" order by t3.acqtime desc) v"
-//					+ " ) v2 "
-//					+ " where r=1"
-//					+ " )"
-//					+ " and t.wellid="+wellId;
-			
-			String historyRunStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyRunStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange"
-					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 and (t3.runstatus =0 or t3.runstatus =1) "
 					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
 					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-//			String historyEnergyStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-//					+ " t.totalkwatth,t.todaykwatth"
-//					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-//					+ " where t.wellid=t2.id "
-//					+ " and t.id=("
-//					+ " select v2.id from"
-//					+ " (select v.id,rownum r from"
-//					+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
-//					+ " where t3.commstatus=1 "
-//					+ " and t3.totalkwatth>0 "
-//					+ " and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-//					+ " and t3.wellid="+wellId+" order by t3.acqtime desc) v"
-//					+ " ) v2"
-//					+ " where r=1"
-//					+ " )"
-//					+ " and t.wellid="+wellId;
-			
-			String historyEnergyStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyEnergyStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.totalkwatth,t.todaykwatth"
-					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 "
 					+ " and t3.totalkwatth>0 "
 					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
 					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-//			String historyGasStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-//					+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
-//					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-//					+ " where t.wellid=t2.id "
-//					+ " and t.id=("
-//					+ " select v2.id from"
-//					+ " (select v.id,rownum r from"
-//					+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
-//					+ " where t3.commstatus=1 "
-//					+ " and t3.totalgasvolumetricproduction>0 "
-//					+ " and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-//					+ " and t3.wellid="+wellId+" order by t3.acqtime desc) v"
-//					+ " ) v2"
-//					+ " where r=1"
-//					+ " )"
-//					+ " and t.wellid="+wellId;
-			
-			String historyGasStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyGasStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
-					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 "
 					+ " and t3.totalgasvolumetricproduction>0 "
 					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
 					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-//			String historyWaterStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-//					+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-//					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-//					+ " where t.wellid=t2.id "
-//					+ " and t.id=("
-//					+ " select v2.id from"
-//					+ " (select v.id,rownum r from"
-//					+ " (select t3.id from  tbl_rpcacqdata_hist t3  "
-//					+ " where t3.commstatus=1 "
-//					+ " and t3.totalwatervolumetricproduction>0 "
-//					+ " and t3.acqtime<=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-//					+ " and t3.wellid="+wellId+" order by t3.acqtime desc) v "
-//					+ " ) v2"
-//					+ " where r=1"
-//					+ " )"
-//					+ " and t.wellid="+wellId;
-			
-			String historyWaterStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyWaterStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-					+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
 					+ " where t3.commstatus=1 "
 					+ " and t3.totalwatervolumetricproduction>0 "
 					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
 					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
 			TimeEffResponseData timeEffResponseData=null;
@@ -266,7 +184,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> labelInfoQueryList=commonDataService.findCallSql(labelInfoSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",labelInfoSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",labelInfoSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			String labelInfo="";
 			ReportTemplate.Template template=null;
@@ -274,7 +192,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			//继承表头信息
 			for(int j=0;j<labelInfoQueryList.size();j++){
 				Object[] labelInfoObj=(Object[]) labelInfoQueryList.get(j);
-				if(wellId==StringManagerUtils.stringToInteger(labelInfoObj[0].toString())){
+				if(deviceId==StringManagerUtils.stringToInteger(labelInfoObj[0].toString())){
 					labelInfo=labelInfoObj[1]+"";
 					break;
 				}
@@ -284,12 +202,12 @@ public class TimingTotalCalculateThread  extends Thread{
 			
 			time1=System.nanoTime();
 			try {
-				commonDataService.getBaseDao().initDeviceTimingReportDate(wellId, timeStr, date, deviceType);
+				commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, deviceType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",initDeviceTimingReportDate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",initDeviceTimingReportDate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			
 			//报表继承可编辑数据
@@ -308,7 +226,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					time1=System.nanoTime();
 					List<?> reportItemQuertList = commonDataService.findCallSql(reportItemSql);
 					time2=System.nanoTime();
-					StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",reportItemSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+					StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",reportItemSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 					
 					for(int k=0;reportItemQuertList!=null&&k<reportItemQuertList.size();k++){
 						Object[] reportItemObj=(Object[]) reportItemQuertList.get(k);
@@ -338,23 +256,23 @@ public class TimingTotalCalculateThread  extends Thread{
 						
 						String updateEditDataSql="update tbl_rpctimingcalculationdata t set ("+updateColBuff+")="
 								+ " (select "+updateColBuff+" from tbl_rpctimingcalculationdata t2 "
-										+ " where t2.wellid= "+wellId
+										+ " where t2.deviceId= "+deviceId
 										+ " and t2.id="
 										+ " (select v2.id from"
 										+ " (select v.id,rownum r from "
 										+ " (select t3.id from tbl_rpctimingcalculationdata t3 "
-										+ " where t3.wellid="+wellId+" and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+										+ " where t3.deviceId="+deviceId+" and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 										+ " order by t3.caltime desc) v "
 										+ " ) v2"
 										+ " where r=1)"
 									+ ") "
-								+ " where t.wellid="+wellId
+								+ " where t.deviceId="+deviceId
 								+ " and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
 						try {
 							time1=System.nanoTime();
 							int r=commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
 							time2=System.nanoTime();
-							StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",updateEditDataSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+							StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateEditDataSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -365,7 +283,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> historyCommStatusQueryList=commonDataService.findCallSql(historyCommStatusSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",historyCommStatusSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyCommStatusSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			if(historyCommStatusQueryList.size()>0){
 				Object[] historyCommStatusObj=(Object[]) historyCommStatusQueryList.get(0);
 				lastCommTime=historyCommStatusObj[3]+"";
@@ -376,7 +294,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			}
 			String commTotalRequestData="{"
 					+ "\"AKString\":\"\","
-					+ "\"WellName\":\""+wellName+"\","
+					+ "\"WellName\":\""+deviceName+"\","
 					+ "\"OffsetHour\":"+offsetHour+","
 					+ "\"Last\":{"
 					+ "\"AcqTime\": \""+lastCommTime+"\","
@@ -395,7 +313,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",commCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",commCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			updateSql+=",CommStatus="+commStatus;
 			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
@@ -414,7 +332,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> historyRunStatusQueryList=commonDataService.findCallSql(historyRunStatusSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",historyRunStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyRunStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			if(historyRunStatusQueryList.size()>0){
 				Object[] historyRunStatuObj=(Object[]) historyRunStatusQueryList.get(0);
 				lastRunTime=historyRunStatuObj[3]+"";
@@ -425,7 +343,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			}
 			String runTotalRequestData="{"
 					+ "\"AKString\":\"\","
-					+ "\"WellName\":\""+wellName+"\","
+					+ "\"WellName\":\""+deviceName+"\","
 					+ "\"OffsetHour\":"+offsetHour+","
 					+ "\"Last\":{"
 					+ "\"AcqTime\": \""+lastRunTime+"\","
@@ -444,7 +362,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",runCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",runCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			updateSql+=",runStatus="+runStatus;
 			if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
@@ -463,7 +381,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> historyEnergyStatusQueryList=commonDataService.findCallSql(historyEnergyStatusSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",historyEnergyStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyEnergyStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			if(historyEnergyStatusQueryList.size()>0){
 				Object[] historyEnergyStatuObj=(Object[]) historyEnergyStatusQueryList.get(0);
 				lastEnergyTime=historyEnergyStatuObj[3]+"";
@@ -477,7 +395,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			if(isAcqEnergy){
 				String energyRequest="{"
 						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+wellName+"\","
+						+ "\"WellName\":\""+deviceName+"\","
 						+ "\"OffsetHour\":"+offsetHour+",";
 				energyRequest+= "\"Last\":{"
 						+ "\"AcqTime\": \""+lastEnergyTime+"\","
@@ -497,7 +415,7 @@ public class TimingTotalCalculateThread  extends Thread{
 				time1=System.nanoTime();
 				energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",energyCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",energyCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 				
 				updateSql+=",totalKWattH="+totalkwatth;
 				if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
@@ -512,7 +430,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> historyGasStatusQueryList=commonDataService.findCallSql(historyGasStatusSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",historyGasStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyGasStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			if(historyGasStatusQueryList.size()>0){
 				Object[] historyGasStatuObj=(Object[]) historyGasStatusQueryList.get(0);
 				lastGasTime=historyGasStatuObj[3]+"";
@@ -526,7 +444,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			if(isAcqTotalGasProd){
 				String energyRequest="{"
 						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+wellName+"\","
+						+ "\"WellName\":\""+deviceName+"\","
 						+ "\"OffsetHour\":"+offsetHour+",";
 				energyRequest+= "\"Last\":{"
 						+ "\"AcqTime\": \""+lastGasTime+"\","
@@ -547,7 +465,7 @@ public class TimingTotalCalculateThread  extends Thread{
 				time1=System.nanoTime();
 				totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",totalGasCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",totalGasCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 				
 				if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
 					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalGasCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalGasCalculateResponseData.getDaily().getDate()) ){
@@ -561,7 +479,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> historyWaterStatusQueryList=commonDataService.findCallSql(historyWaterStatusSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",historyWaterStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyWaterStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			if(historyWaterStatusQueryList.size()>0){
 				Object[] historyWaterStatuObj=(Object[]) historyWaterStatusQueryList.get(0);
 				lastWaterTime=historyWaterStatuObj[3]+"";
@@ -575,7 +493,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			if(isAcqTotalWaterProd){
 				String energyRequest="{"
 						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+wellName+"\","
+						+ "\"WellName\":\""+deviceName+"\","
 						+ "\"OffsetHour\":"+offsetHour+",";
 				energyRequest+= "\"Last\":{"
 						+ "\"AcqTime\": \""+lastWaterTime+"\","
@@ -596,7 +514,7 @@ public class TimingTotalCalculateThread  extends Thread{
 				time1=System.nanoTime();
 				totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
 				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",totalWaterCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",totalWaterCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 				
 				if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
 					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalWaterCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalWaterCalculateResponseData.getDaily().getDate()) ){
@@ -662,7 +580,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> singleresultlist = commonDataService.findCallSql(fesDiagramSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",fesDiagramSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",fesDiagramSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			for(int j=0;j<singleresultlist.size();j++){
 				Object[] resuleObj=(Object[]) singleresultlist.get(j);
 				String productionData=resuleObj[15].toString();
@@ -737,7 +655,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			
 			StringBuffer dataSbf = new StringBuffer();
 			dataSbf.append("{\"AKString\":\"\",");
-			dataSbf.append("\"WellName\":\""+wellId+"\",");
+			dataSbf.append("\"WellName\":\""+deviceId+"\",");
 			dataSbf.append("\"CurrentCommStatus\":"+(commStatus>=1?1:0)+",");
 			dataSbf.append("\"CurrentRunStatus\":"+(runStatus>=1?1:0)+",");
 			dataSbf.append("\"Date\":\""+date+"\",");
@@ -792,14 +710,14 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",totalCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+			StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",totalCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
-			updateSql+=" where t.wellid="+wellId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+			updateSql+=" where t.deviceId="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 			try {
 				time1=System.nanoTime();
 				int r=commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
 				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",updateSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+				StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -812,12 +730,12 @@ public class TimingTotalCalculateThread  extends Thread{
 					updateHisRangeClobSql+=", t.runrange=?";
 					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 				}
-				updateHisRangeClobSql+=" where t.wellid="+wellId +" and t.caltime="+"to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+				updateHisRangeClobSql+=" where t.deviceId="+deviceId +" and t.caltime="+"to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				try {
 					time1=System.nanoTime();
 					int r=commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 					time2=System.nanoTime();
-					StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",updateHisRangeClobSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+					StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateHisRangeClobSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -830,7 +748,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					time1=System.nanoTime();
 					commonDataService.getBaseDao().saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr,recordCount);
 					time2=System.nanoTime();
-					StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",saveFSDiagramTimingTotalCalculationData执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+					StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",saveFSDiagramTimingTotalCalculationData执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 				} catch (SQLException | ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -848,69 +766,69 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " from tbl_pcpacqdata_hist t "
 					+ " where t.acqtime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.resultstatus=1 "
-					+ " and t.wellid="+wellId
+					+ " and t.deviceId="+deviceId
 					+ " order by t.acqtime";
-			String labelInfoSql="select t.wellid, t.headerlabelinfo from tbl_pcptimingcalculationdata t "
+			String labelInfoSql="select t.deviceId, t.headerlabelinfo from tbl_pcptimingcalculationdata t "
 					+ " where t.id=("
 					+ " select v2.id from "
 					+ " ( select v.id,rownum r from "
 					+ " (select t2.id from tbl_pcptimingcalculationdata t2 "
-					+ "  where t2.wellid="+wellId+" and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2"
+					+ "  where t2.deviceId="+deviceId+" and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2"
 					+ " where r=1)";
-			String historyCommStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyCommStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
-					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
 					+ " where t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')"
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-			String historyRunStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyRunStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange"
-					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
 					+ " where t3.commstatus=1 and t3.runstatus in (0,1) "
 					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-			String historyEnergyStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyEnergyStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.totalkwatth,t.todaykwatth"
-					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
 					+ " where t3.commstatus=1 and t3.totalkwatth>0 "
 					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-			String historyGasStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyGasStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
-					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
 					+ " where t3.commstatus=1 and t3.totalgasvolumetricproduction>0 "
 					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-			String historyWaterStatusSql="select t.id,t.wellid,t2.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+			String historyWaterStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-					+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id=("
 					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
 					+ " where t3.commstatus=1 and t3.totalwatervolumetricproduction>0 "
 					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.wellid="+wellId
+					+ " and t3.deviceId="+deviceId
 					+ " )"
-					+ " and t.wellid="+wellId;
+					+ " and t.deviceId="+deviceId;
 			
 			TimeEffResponseData timeEffResponseData=null;
 			CommResponseData commResponseData=null;
@@ -948,7 +866,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			//继承表头信息
 			for(int j=0;j<labelInfoQueryList.size();j++){
 				Object[] labelInfoObj=(Object[]) labelInfoQueryList.get(j);
-				if(StringManagerUtils.stringToInteger(labelInfoObj[0].toString())==wellId){
+				if(StringManagerUtils.stringToInteger(labelInfoObj[0].toString())==deviceId){
 					labelInfo=labelInfoObj[1]+"";
 					break;
 				}
@@ -957,7 +875,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			String updateSql="update tbl_pcptimingcalculationdata t set t.headerlabelinfo='"+labelInfo+"'"; 
 			
 			try {
-				commonDataService.getBaseDao().initDeviceTimingReportDate(wellId, timeStr, date, 1);
+				commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, 1);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1005,17 +923,17 @@ public class TimingTotalCalculateThread  extends Thread{
 						
 						String updateEditDataSql="update tbl_pcptimingcalculationdata t set ("+updateColBuff+")="
 								+ " (select "+updateColBuff+" from tbl_pcptimingcalculationdata t2 "
-										+ " where t2.wellid= "+wellId
+										+ " where t2.deviceId= "+deviceId
 										+ " and t2.id="
 										+ " (select v2.id from"
 										+ " (select v.id,rownum r from "
 										+ " (select t3.id from tbl_pcptimingcalculationdata t3 "
-										+ " where t3.wellid="+wellId+" and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+										+ " where t3.deviceId="+deviceId+" and t3.caltime<to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 										+ " order by t3.caltime desc) v "
 										+ " ) v2"
 										+ " where r=1)"
 									+ ") "
-								+ " where t.wellid="+wellId
+								+ " where t.deviceId="+deviceId
 								+ " and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
 						try {
 							int r=commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
@@ -1042,7 +960,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			}
 			String commTotalRequestData="{"
 					+ "\"AKString\":\"\","
-					+ "\"WellName\":\""+wellName+"\","
+					+ "\"WellName\":\""+deviceName+"\","
 					+ "\"OffsetHour\":"+offsetHour+","
 					+ "\"Last\":{"
 					+ "\"AcqTime\": \""+lastCommTime+"\","
@@ -1085,7 +1003,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			}
 			String runTotalRequestData="{"
 					+ "\"AKString\":\"\","
-					+ "\"WellName\":\""+wellName+"\","
+					+ "\"WellName\":\""+deviceName+"\","
 					+ "\"OffsetHour\":"+offsetHour+","
 					+ "\"Last\":{"
 					+ "\"AcqTime\": \""+lastRunTime+"\","
@@ -1130,7 +1048,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			if(isAcqEnergy){
 				String energyRequest="{"
 						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+wellName+"\","
+						+ "\"WellName\":\""+deviceName+"\","
 						+ "\"OffsetHour\":"+offsetHour+",";
 				energyRequest+= "\"Last\":{"
 						+ "\"AcqTime\": \""+lastEnergyTime+"\","
@@ -1172,7 +1090,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			if(isAcqTotalGasProd){
 				String energyRequest="{"
 						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+wellName+"\","
+						+ "\"WellName\":\""+deviceName+"\","
 						+ "\"OffsetHour\":"+offsetHour+",";
 				energyRequest+= "\"Last\":{"
 						+ "\"AcqTime\": \""+lastGasTime+"\","
@@ -1214,7 +1132,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			if(isAcqTotalWaterProd){
 				String energyRequest="{"
 						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+wellName+"\","
+						+ "\"WellName\":\""+deviceName+"\","
 						+ "\"OffsetHour\":"+offsetHour+",";
 				energyRequest+= "\"Last\":{"
 						+ "\"AcqTime\": \""+lastWaterTime+"\","
@@ -1328,7 +1246,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			
 			StringBuffer dataSbf = new StringBuffer();
 			dataSbf.append("{\"AKString\":\"\",");
-			dataSbf.append("\"WellName\":\""+wellId+"\",");
+			dataSbf.append("\"WellName\":\""+deviceId+"\",");
 			dataSbf.append("\"CurrentCommStatus\":"+(commStatus>=1?1:0)+",");
 			dataSbf.append("\"CurrentRunStatus\":"+(runStatus>=1?1:0)+",");
 			dataSbf.append("\"Date\":\""+date+"\",");
@@ -1367,7 +1285,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), new TypeToken<TotalAnalysisRequestData>() {}.getType());
 			TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
 			
-			updateSql+=" where t.wellid="+wellId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+			updateSql+=" where t.deviceId="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 			try {
 				int r=commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
 			} catch (Exception e) {
@@ -1382,7 +1300,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					updateHisRangeClobSql+=", t.runrange=?";
 					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 				}
-				updateHisRangeClobSql+=" where t.wellid="+wellId +" and t.caltime="+"to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+				updateHisRangeClobSql+=" where t.deviceId="+deviceId +" and t.caltime="+"to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 				try {
 					int r=commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 				} catch (Exception e) {
@@ -1400,7 +1318,7 @@ public class TimingTotalCalculateThread  extends Thread{
 		}
 		
 		long calculateEndTime=System.nanoTime();
-		StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+wellName+",timeStr="+timeStr+",threadId="+threadId+",总耗时:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
+		StringManagerUtils.printLog("定时汇总计算："+(deviceType==0?"抽油机井":"螺杆泵井")+deviceName+",timeStr="+timeStr+",threadId="+threadId+",总耗时:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
 	}
 
 	public int getThreadId() {
@@ -1413,23 +1331,23 @@ public class TimingTotalCalculateThread  extends Thread{
 	}
 
 
-	public int getWellId() {
-		return wellId;
+	public int getDeviceId() {
+		return deviceId;
 	}
 
 
-	public void setWellId(int wellId) {
-		this.wellId = wellId;
+	public void setDeviceId(int deviceId) {
+		this.deviceId = deviceId;
 	}
 
 
-	public String getWellName() {
-		return wellName;
+	public String getDeviceName() {
+		return deviceName;
 	}
 
 
-	public void setWellName(String wellName) {
-		this.wellName = wellName;
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 

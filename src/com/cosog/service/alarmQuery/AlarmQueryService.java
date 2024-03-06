@@ -230,7 +230,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtype,v.alarmtime from "
 				+ " (select t.orgid,t.deviceid,t.devicename,t.devicetypename,t.alarmtype,max(t.alarmtime) as alarmtime "
 				+ " from "+tableName+" t "
-				+ " where 1=1";
+				+ " where t.deviceType="+deviceType;
 		if(StringManagerUtils.isNotNull(alarmLevel)){
 			sql+=" and t.alarmLevel="+alarmLevel+"";
 		}
@@ -280,7 +280,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtype,v.alarmtime from "
 				+ " (select t.orgid,t.deviceid,t.devicename,t.devicetypename,t.alarmtype,max(t.alarmtime) as alarmtime "
 				+ " from "+tableName+" t "
-				+ " where a=1";
+				+ " where t.deviceType="+deviceType;
 		if(StringManagerUtils.isNotNull(alarmLevel)){
 			sql+=" and t.alarmLevel="+alarmLevel+"";
 		}
@@ -338,7 +338,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtype,v.alarmtime from "
 					+ " (select t.orgid,t.deviceid,t.devicename,t.devicetypename,t.alarmtype,max(t.alarmtime) as alarmtime "
 					+ " from "+tableName+" t"
-					+ " where 1=1";
+					+ " where t.deviceType="+deviceType;
 			if(StringManagerUtils.isNotNull(alarmLevel)){
 				sql+=" and t.alarmLevel="+alarmLevel+"";
 			}

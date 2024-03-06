@@ -175,11 +175,11 @@ public class MobileService<T> extends BaseService<T> {
 			String deviceTableName="viw_rpcdevice";
 			String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
 					+ " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on  t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on  t2.resultcode=t3.resultcode"
 					+ " where t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent) ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			sql+=" group by t3.resultname,t2.resultcode "
 					+ " order by t2.resultcode";
@@ -214,10 +214,10 @@ public class MobileService<T> extends BaseService<T> {
 				deviceTableName="viw_pcpdevice";
 			}
 			String sql="select t2.commstatus,count(1) from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
+					+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id "
 					+ " where t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent) ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			sql+=" group by t2.commstatus";
 			List<?> list = this.findCallSql(sql);
@@ -261,10 +261,10 @@ public class MobileService<T> extends BaseService<T> {
 				deviceTableName="viw_pcpdevice";
 			}
 			String sql="select decode(t2.commstatus,0,-1,2,-2,decode(t2.runstatus,null,2,t2.runstatus)) as runstatus,count(1) from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
+					+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id "
 					+ " where 1=1 ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			sql+=" group by t2.commstatus,t2.runstatus";
 			List<?> list = this.findCallSql(sql);
@@ -390,11 +390,11 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="tbl_rpcdevice";
+			String tableName="tbl_acqdata_latest";
+			String deviceTableName="tbl_device";
 			
 			
-			String sql="select t.id,t.wellname,"
+			String sql="select t.id,t.deviceName,"
 					+ "c1.itemname as devicetypename,"
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
@@ -414,12 +414,12 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.todayKWattH,"
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+statValue+"'";
@@ -428,7 +428,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.deviceName";
 			
 			
 			int totals=this.getTotalCountRows(sql);
@@ -474,7 +474,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"Id\":"+deviceId+",");
-				result_json.append("\"WellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"DeviceTypeName\":\""+obj[2]+"\",");
 				result_json.append("\"AcqTime\":\""+obj[3]+"\",");
 				result_json.append("\"CommStatus\":"+obj[4]+",");
@@ -565,9 +565,9 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			String tableName="tbl_pcpacqdata_latest";
-			String deviceTableName="tbl_pcpdevice";
+			String deviceTableName="tbl_device";
 			
-			String sql="select t.id,t.wellname,"
+			String sql="select t.id,t.deviceName,"
 					+ "c1.itemname as devicetypename,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
@@ -580,18 +580,18 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.todayKWattH,"
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.deviceName";
 			
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
@@ -634,7 +634,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"Id\":"+deviceId+",");
-				result_json.append("\"WellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				
 				result_json.append("\"DeviceTypeName\":\""+obj[2]+"\",");
 				result_json.append("\"AcqTime\":\""+obj[3]+"\",");
@@ -687,7 +687,7 @@ public class MobileService<T> extends BaseService<T> {
 		int liftingType=1;
 		int statType=1;
 		String statValue="";
-		String wellName="";
+		String deviceName="";
 		String startDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String endDate=startDate;
 		String user="";
@@ -726,7 +726,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					wellName=jsonObject.getString("WellName");
+					deviceName=jsonObject.getString("deviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -747,14 +747,14 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		if(liftingType==1){
-			json=this.getDeviceHistoryData(user,password,wellName, statType, statValue, startDate, endDate);
+			json=this.getDeviceHistoryData(user,password,deviceName, statType, statValue, startDate, endDate);
 		}else{
-			json=this.getPCPDeviceHistoryData(user,password,wellName, statType, statValue, startDate, endDate);
+			json=this.getPCPDeviceHistoryData(user,password,deviceName, statType, statValue, startDate, endDate);
 		}
 		return json;
 	}
 	
-	public String getDeviceHistoryData(String user,String password,String wellName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
+	public String getDeviceHistoryData(String user,String password,String deviceName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
@@ -780,8 +780,8 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			String hisTableName="tbl_rpcacqdata_hist";
-			String deviceTableName="tbl_rpcdevice";
-			String sql="select t2.id,t.id as wellId,t.wellname,"
+			String deviceTableName="tbl_device";
+			String sql="select t2.id,t.id as deviceId,t.deviceName,"
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
@@ -800,7 +800,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.todayKWattH,"
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+hisTableName+" t2 on t2.deviceId=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.fesdiagramAcqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
@@ -813,8 +813,8 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+= "and t.wellname='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= "and t.deviceName='"+deviceName+"'";
 			}	
 			sql+= "  order by t2.fesdiagramAcqTime desc";
 			
@@ -863,7 +863,7 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("{\"Id\":"+obj[0]+",");
 				result_json.append("\"DeviceId\":\""+deviceId+"\",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"AcqTime\":\""+obj[3]+"\",");
 				result_json.append("\"CommStatus\":"+obj[4]+",");
 				result_json.append("\"CommStatusName\":\""+commStatusName+"\",");
@@ -921,7 +921,7 @@ public class MobileService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getPCPDeviceHistoryData(String user,String password,String wellName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
+	public String getPCPDeviceHistoryData(String user,String password,String deviceName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
@@ -944,9 +944,9 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			String hisTableName="tbl_pcpacqdata_hist";
-			String deviceTableName="tbl_pcpdevice";
+			String deviceTableName="tbl_device";
 			
-			String sql="select t2.id,t.id as wellId,t.wellname,"
+			String sql="select t2.id,t.id as deviceId,t.deviceName,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
@@ -958,11 +958,11 @@ public class MobileService<T> extends BaseService<T> {
 					+ "todayKWattH,"
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+hisTableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+= "and t.wellname='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= "and t.deviceName='"+deviceName+"'";
 			}	
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
@@ -1013,7 +1013,7 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("{\"Id\":"+obj[0]+",");
 				result_json.append("\"DeviceId\":\""+deviceId+"\",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"AcqTime\":\""+obj[3]+"\",");
 				result_json.append("\"CommStatus\":"+obj[4]+",");
 				result_json.append("\"CommStatusName\":\""+commStatusName+"\",");
@@ -1089,7 +1089,7 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		String user="";
 		String password="";
-		String wellName="";
+		String deviceName="";
 		String acqTime="";
 		if(StringManagerUtils.isNotNull(data)){
 			try{
@@ -1107,7 +1107,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					wellName=jsonObject.getString("WellName");
+					deviceName=jsonObject.getString("deviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -1127,16 +1127,16 @@ public class MobileService<T> extends BaseService<T> {
 		if(userCheckSign==1){
 			String sql="";
 			String hisTableName="tbl_rpcacqdata_hist";
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			
-			sql="select t.id, t2.wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
+			sql="select t.id, t2.deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", "
 					+ " t3.resultName,t3.optimizationSuggestion "
 					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
-					+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
+					+ " where t.deviceId=t2.id and t.resultcode=t3.resultcode"
 					+ " and t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
-					+ " and t2.wellName='" + wellName + "' "
+					+ " and t2.deviceName='" + deviceName + "' "
 					+ " and t.fesdiagramAcqTime = to_date('"+ acqTime +"','yyyy-MM-dd hh24:mi:ss')";
 			List<?> list=this.findCallSql(sql);
 			
@@ -1175,7 +1175,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 		        
 				result_json.append("{ \"Id\":\"" + obj[0] + "\",");
-				result_json.append("\"WellName\":\"" + obj[1] + "\",");
+				result_json.append("\"deviceName\":\"" + obj[1] + "\",");
 				result_json.append("\"AcqTime\":\"" + obj[2] + "\",");
 				result_json.append("\"PointCount\":\""+pointCount+"\","); 
 				result_json.append("\"UpperLoadLine\":\"" + obj[7] + "\",");
@@ -1209,7 +1209,7 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		String user="";
 		String password="";
-		String wellName="";
+		String deviceName="";
 		String startDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String endDate=startDate;
 		if(StringManagerUtils.isNotNull(data)){
@@ -1228,7 +1228,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					wellName=jsonObject.getString("WellName");
+					deviceName=jsonObject.getString("deviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -1255,17 +1255,17 @@ public class MobileService<T> extends BaseService<T> {
 		if(userCheckSign==1){
 			String sql="";
 			String hisTableName="tbl_rpcacqdata_hist";
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			
-			sql="select t.id, t2.wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
+			sql="select t.id, t2.deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", "
 					+ " t3.resultName,t3.optimizationSuggestion "
 					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
-					+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
+					+ " where t.deviceId=t2.id and t.resultcode=t3.resultcode"
 					+ " and t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+= " and t2.wellName='" + wellName + "' ";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= " and t2.deviceName='" + deviceName + "' ";
 			}
 			sql+= " and t.fesdiagramAcqTime between to_date('"+ startDate +"','yyyy-MM-dd hh24:mi:ss') and to_date('"+ endDate +"','yyyy-MM-dd hh24:mi:ss')";
 			sql+=" order by t.fesdiagramAcqTime desc";
@@ -1305,7 +1305,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 		        
 				result_json.append("{ \"Id\":\"" + obj[0] + "\",");
-				result_json.append("\"WellName\":\"" + obj[1] + "\",");
+				result_json.append("\"deviceName\":\"" + obj[1] + "\",");
 				result_json.append("\"AcqTime\":\"" + obj[2] + "\",");
 				result_json.append("\"PointCount\":\""+pointCount+"\","); 
 				result_json.append("\"UpperLoadLine\":\"" + obj[7] + "\",");
@@ -1333,7 +1333,7 @@ public class MobileService<T> extends BaseService<T> {
 	public String getPumpunitRealtimeWellAnalysisData(String data) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String wellName="";
+		String deviceName="";
 		String acqTime="";
 		String user="";
 		String password="";
@@ -1356,7 +1356,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					wellName=jsonObject.getString("WellName");
+					deviceName=jsonObject.getString("deviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -1373,7 +1373,7 @@ public class MobileService<T> extends BaseService<T> {
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
 		
 		if(userCheckSign==1){
-			if(StringManagerUtils.isNotNull(wellName) && StringManagerUtils.isNotNull(acqTime)){
+			if(StringManagerUtils.isNotNull(deviceName) && StringManagerUtils.isNotNull(acqTime)){
 				String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,"
 						+ " t.availablePlungerstrokeProd_W,t.pumpClearanceLeakProd_W,t.tvleakWeightProduction,t.svleakWeightProduction,t.gasInfluenceProd_W,";
 				if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("stere")){
@@ -1381,7 +1381,7 @@ public class MobileService<T> extends BaseService<T> {
 							+ " t.availablePlungerstrokeProd_V,t.pumpClearanceLeakProd_V,t.tvleakVolumetricProduction,t.svleakVolumetricProduction,t.gasInfluenceProd_V,";;
 				}
 				String hisTableName="tbl_rpcacqdata_hist";
-				String deviceTableName="tbl_rpcdevice";
+				String deviceTableName="tbl_device";
 				String sql="select t3.resultName,t3.optimizationSuggestion,"//0~1
 						+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//2~4
 						+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//5~7
@@ -1402,9 +1402,9 @@ public class MobileService<T> extends BaseService<T> {
 						+ " t.pumpoutletp,t.pumpoutlett,t.pumpOutletGol,t.pumpoutletvisl,t.pumpoutletbo,"//53~57
 						+ " t.productiondata"//58
 						+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
-						+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
+						+ " where t.deviceId=t2.id and t.resultcode=t3.resultcode"
 						+ " and  t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
-						+ " and  t2.wellname='"+wellName+"' and t.fesdiagramAcqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')"; 
+						+ " and  t2.deviceName='"+deviceName+"' and t.fesdiagramAcqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')"; 
 				List<?> list = this.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -1593,13 +1593,13 @@ public class MobileService<T> extends BaseService<T> {
 				wellList=wells.split(",");
 			}
 			String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
-					+ " from tbl_rpcdevice t "
-					+ " left outer join tbl_rpcdailycalculationdata t2 on t2.wellid=t.id "
+					+ " from tbl_device t "
+					+ " left outer join tbl_rpcdailycalculationdata t2 on t2.deviceId=t.id "
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ "and t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			sql+= "group by t3.resultname,t2.resultcode order by t2.resultcode";
 			
@@ -1628,19 +1628,19 @@ public class MobileService<T> extends BaseService<T> {
 				wellList=wells.split(",");
 			}
 			String tableName="tbl_rpcdailycalculationdata";
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			if(deviceType!=1){
 				tableName="tbl_pcpdailycalculationdata";
-				deviceTableName="tbl_pcpdevice";
+				deviceTableName="tbl_device";
 			}
 			
 			String sql="select t2.commstatus,count(1) "
 					+ " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			sql+=" group by t2.commstatus";
 			
@@ -1681,19 +1681,19 @@ public class MobileService<T> extends BaseService<T> {
 				wellList=wells.split(",");
 			}
 			String tableName="tbl_rpcdailycalculationdata";
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			if(deviceType!=1){
 				tableName="tbl_pcpdailycalculationdata";
-				deviceTableName="tbl_pcpdevice";
+				deviceTableName="tbl_device";
 			}
 			
 			String sql="select decode(t2.commstatus,0,-1,2,-2,decode(t2.runstatus,null,2,t2.runstatus)) as runstatus,count(1) "
 					+ " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			sql+=" group by t2.commstatus,t2.runstatus";
 			
@@ -1818,9 +1818,9 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			String tableName="tbl_rpcdailycalculationdata";
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			
-			String sql="select t2.id,t.id as wellId,t.wellName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
+			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
@@ -1836,12 +1836,12 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.energyper100mlift,t2.todayKWattH,"
 					+ "t2.pumpEff*100 as pumpEff";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate= to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+statValue+"'";
@@ -1850,7 +1850,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.deviceName";
 			
 			List<?> list = this.findCallSql(sql);
 			
@@ -1886,7 +1886,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"Id\":"+obj[0]+",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"Caldate\":\""+obj[3]+"\",");
 				result_json.append("\"ExtendedDays\":\""+obj[4]+"\",");
 				
@@ -1968,9 +1968,9 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			String tableName="tbl_pcpdailycalculationdata";
-			String deviceTableName="tbl_pcpdevice";
+			String deviceTableName="tbl_device";
 			
-			String sql="select t2.id,t.id as wellId,t.wellname,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
+			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
@@ -1982,18 +1982,18 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.todayKWattH,"
 					+ "t2.pumpEff*100 as pumpEff";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate= to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
-			sql+=" order by t.sortnum,t.wellname";
+			sql+=" order by t.sortnum,t.deviceName";
 			List<?> list = this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[]) list.get(i);
@@ -2023,7 +2023,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"Id\":"+obj[0]+",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"Caldate\":\""+obj[3]+"\",");
 				result_json.append("\"ExtendedDays\":\""+obj[4]+"\",");
 				
@@ -2074,7 +2074,7 @@ public class MobileService<T> extends BaseService<T> {
 		int liftingType=1;
 		String startDate=StringManagerUtils.getCurrentTime();
 		String endDate=StringManagerUtils.getCurrentTime();
-		String wellName="";
+		String deviceName="";
 		int statType=1;
 		String statValue="";
 		String user="";
@@ -2109,7 +2109,7 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			try{
-				wellName=jsonObject.getString("WellName");
+				deviceName=jsonObject.getString("deviceName");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -2127,14 +2127,14 @@ public class MobileService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		if(liftingType==1){
-			result=this.getDeviceTotalHistory(user,password,wellName.toString(), statType, statValue, startDate,endDate);
+			result=this.getDeviceTotalHistory(user,password,deviceName.toString(), statType, statValue, startDate,endDate);
 		}else{
-			result=this.getPCPDeviceTotalHistory(user,password,wellName.toString(), statType, statValue, startDate,endDate);
+			result=this.getPCPDeviceTotalHistory(user,password,deviceName.toString(), statType, statValue, startDate,endDate);
 		}
 		return result;
 	}
 	
-	public String getDeviceTotalHistory(String user,String password,String wellName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
+	public String getDeviceTotalHistory(String user,String password,String deviceName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
@@ -2159,9 +2159,9 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			String tableName="tbl_rpcdailycalculationdata";
-			String deviceTableName="tbl_rpcdevice";
+			String deviceTableName="tbl_device";
 			
-			String sql="select t2.id,t.id as wellId,t.wellName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
+			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
@@ -2177,12 +2177,12 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.energyper100mlift,t2.todayKWattH,"
 					+ "t2.pumpEff*100 as pumpEff";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+= "and t.wellname='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= "and t.deviceName='"+deviceName+"'";
 			}
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+statValue+"'";
@@ -2191,7 +2191,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
-			sql+=" order by t2.caldate,t.sortnum,t.wellname";
+			sql+=" order by t2.caldate,t.sortnum,t.deviceName";
 			
 			List<?> list = this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -2226,7 +2226,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"Id\":"+obj[0]+",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"Caldate\":\""+obj[3]+"\",");
 				result_json.append("\"ExtendedDays\":\""+obj[4]+"\",");
 				
@@ -2284,7 +2284,7 @@ public class MobileService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getPCPDeviceTotalHistory(String user,String password,String wellName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
+	public String getPCPDeviceTotalHistory(String user,String password,String deviceName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
@@ -2305,9 +2305,9 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			
 			String tableName="tbl_pcpdailycalculationdata";
-			String deviceTableName="tbl_pcpdevice";
+			String deviceTableName="tbl_device";
 			
-			String sql="select t2.id,t.id as wellId,t.wellname,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
+			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
@@ -2319,18 +2319,18 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.todayKWattH,"
 					+ "t2.pumpEff*100 as pumpEff";
 			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+= "and t.wellname='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= "and t.deviceName='"+deviceName+"'";
 			}
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
 			}
-			sql+=" order by t2.caldate,t.sortnum,t.wellname";
+			sql+=" order by t2.caldate,t.sortnum,t.deviceName";
 			
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
@@ -2363,7 +2363,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				result_json.append("{\"Id\":"+obj[0]+",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"Caldate\":\""+obj[3]+"\",");
 				result_json.append("\"ExtendedDays\":\""+obj[4]+"\",");
 				
@@ -2472,7 +2472,7 @@ public class MobileService<T> extends BaseService<T> {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			String tableName="viw_rpcdevice";
-			String sql = "select t.id,t.orgName,t.wellName,t.applicationScenariosName,"//3
+			String sql = "select t.id,t.orgName,t.deviceName,t.applicationScenariosName,"//3
 					+ " t.instanceName,t.displayInstanceName,t.alarmInstanceName,t.reportinstancename,"//4~7
 					+ " t.tcptype,t.signInId,t.slave,t.peakdelay,"//8~11
 					+ " t.videoUrl1,decode(t4.role_videokeyedit,1,t2.appkey,'') as appkey1,decode(t4.role_videokeyedit,1,t2.secret,'') as secret1,"//12~14
@@ -2489,9 +2489,9 @@ public class MobileService<T> extends BaseService<T> {
 					+ " left outer join tbl_role t4 on t4.role_id=(select u.user_type from tbl_user u where u.user_id='"+user+"')"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
-			sql+= " order by t.sortnum,t.wellname ";
+			sql+= " order by t.sortnum,t.deviceName ";
 			
 			List<?> list=this.findCallSql(sql);
 			Object[] obj=null;
@@ -2597,7 +2597,7 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("{\"Id\":\""+(i+1)+"\",");
 				result_json.append("\"OrgName\":\""+obj[1]+"\",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"ApplicationScenariosName\":\""+obj[3]+"\",");
 				result_json.append("\"InstanceName\":\""+obj[4]+"\",");
 				result_json.append("\"DisplayInstanceName\":\""+obj[5]+"\",");
@@ -2695,7 +2695,7 @@ public class MobileService<T> extends BaseService<T> {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			String tableName="viw_rpcdevice";
-			String sql = "select t.id,t.orgName,t.wellName,t.applicationScenariosName,"//0~3
+			String sql = "select t.id,t.orgName,t.deviceName,t.applicationScenariosName,"//0~3
 					+ " t.instanceName,t.displayInstanceName,t.alarmInstanceName,t.reportinstancename,"//4~7
 					+ " t.tcptype,t.signInId,t.slave,t.peakdelay,"//8~11
 					+ " t.videoUrl1,decode(t4.role_videokeyedit,1,t2.appkey,'') as appkey1,decode(t4.role_videokeyedit,1,t2.secret,'') as secret1,"//12~14
@@ -2708,9 +2708,9 @@ public class MobileService<T> extends BaseService<T> {
 					+ " left outer join tbl_role t4 on t4.role_id=(select u.user_type from tbl_user u where u.user_id='"+user+"')"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
-				sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 			}
-			sql+= " order by t.sortnum,t.wellname ";
+			sql+= " order by t.sortnum,t.deviceName ";
 			
 			List<?> list=this.findCallSql(sql);
 			Object[] obj=null;
@@ -2796,7 +2796,7 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("{\"Id\":\""+(i+1)+"\",");
 				result_json.append("\"OrgName\":\""+obj[1]+"\",");
-				result_json.append("\"WellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"ApplicationScenariosName\":\""+obj[3]+"\",");
 				result_json.append("\"InstanceName\":\""+obj[4]+"\",");
 				result_json.append("\"DisplayInstanceName\":\""+obj[5]+"\",");

@@ -505,11 +505,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
+                    var deviceName = Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        deviceType: 0,
-                        wellName: wellName
+                        deviceType: getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"),
+                        deviceName: deviceName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }

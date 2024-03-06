@@ -78,7 +78,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String loadWellComboxList(Page pager,String orgId,String wellName,String deviceTypeStr) throws Exception {
+	public String loadWellComboxList(Page pager,String orgId,String deviceName,String deviceTypeStr,String calculateTypeStr) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
@@ -87,71 +87,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(deviceType>=300){
 			tableName="tbl_smsdevice";
 		}
-		String sql = " select  t.deviceName as deviceName,t.deviceName as dm from  "+tableName+" t  ,tbl_org  g where 1=1 and  t.orgId=g.org_id  and g.org_id in ("
-				+ orgId + ")";
-		if (StringManagerUtils.isNotNull(wellName)) {
-			sql += " and t.deviceName like '%" + wellName + "%'";
+		String sql = " select  t.deviceName as deviceName,t.deviceName as dm "
+				+ " from  "+tableName+" t  ,tbl_org  g "
+				+ " where t.orgId=g.org_id  "
+				+ " and g.org_id in ("+ orgId + ")";
+		if (StringManagerUtils.isNotNull(deviceTypeStr)) {
+			sql += " and t.deviceType="+deviceTypeStr;
+		}
+		if (StringManagerUtils.isNotNull(calculateTypeStr)) {
+			sql += " and t.calculateType="+calculateTypeStr;
+		}
+		if (StringManagerUtils.isNotNull(deviceName)) {
+			sql += " and t.deviceName like '%" + deviceName + "%'";
 		}
 		sql += " order by t.sortNum, t.deviceName";
-		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
-		sqlCuswhere.append(""+sql);
-		int maxvalue=pager.getLimit()+pager.getStart();
-		sqlCuswhere.append(" ) a where  rownum <="+maxvalue+") b");
-		sqlCuswhere.append(" where rn >"+pager.getStart());
-		String finalsql=sqlCuswhere.toString();
-		try {
-			int totals=this.getTotalCountRows(sql);
-			List<?> list = this.findCallSql(finalsql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]}");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
-	
-	public String loadRPCDeviceComboxList(Page pager,String orgId,String wellName,String deviceTypeStr) throws Exception {
-		//String orgIds = this.getUserOrgIds(orgId);
-		StringBuffer result_json = new StringBuffer();
-		StringBuffer sqlCuswhere = new StringBuffer();
-		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-		String tableName="tbl_rpcdevice";
-		if(deviceType>=200&&deviceType<300){
-			tableName="tbl_pcpdevice";
-		}else if(deviceType>=300){
-			tableName="tbl_smsdevice";
-		}
-		if(deviceType==1){
-			tableName="tbl_pcpdevice";
-		}else if(deviceType==2){
-			tableName="tbl_smsdevice";
-		}
-		String sql = " select  t.wellName as wellName,t.wellName as dm from  "+tableName+" t  ,tbl_org  g,tbl_protocolinstance t2 "
-				+ " where t.orgId=g.org_id and t.instancecode=t2.code  "
-				+ " and g.org_id in ("+ orgId + ")"
-				+ " and ( t2.acqprotocoltype ='private-rpc' or t2.ctrlprotocoltype ='private-rpc')";
-		if(StringManagerUtils.isNotNull(deviceTypeStr) && deviceType>=100 && StringManagerUtils.isNotNull(deviceTypeStr) && deviceType<300){
-			sql += " and t.deviceType ="+deviceType;
-		}
-		if (StringManagerUtils.isNotNull(wellName)) {
-			sql += " and t.wellName like '%" + wellName + "%'";
-		}
-		sql += " order by t.sortNum, t.wellName";
 		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
 		sqlCuswhere.append(""+sql);
 		int maxvalue=pager.getLimit()+pager.getStart();
@@ -323,25 +272,23 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDeviceOrgChangeDeviceList(Page pager,String orgId,String wellName,String deviceTypeStr) throws Exception {
+	public String getDeviceOrgChangeDeviceList(Page pager,String orgId,String deviceName,String deviceTypeStr) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-		String tableName="tbl_rpcdevice";
-		if(deviceType>=200&&deviceType<300){
-			tableName="tbl_pcpdevice";
-		}else if(deviceType>=300){
+		String tableName="tbl_device";
+		if(deviceType>=300){
 			tableName="tbl_smsdevice";
 		}
-		String sql = " select  t.id,t.wellName from  "+tableName+" t where t.orgid in ("+ orgId + ")"
+		String sql = " select  t.id,t.deviceName from  "+tableName+" t where t.orgid in ("+ orgId + ")"
 				+ " and t.deviceType ="+deviceType;
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and t.wellname like '%"+wellName+"%'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and t.deviceName like '%"+deviceName+"%'";
 		}	
-		sql+= " order by t.sortNum, t.wellName";
+		sql+= " order by t.sortNum, t.deviceName";
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"wellName\",width:120 ,children:[] }"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"deviceName\",width:120 ,children:[] }"
 				+ "]";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
@@ -349,7 +296,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
 			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\"},");
+			result_json.append("\"deviceName\":\""+obj[1]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -387,10 +334,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		if(StringManagerUtils.stringToInteger(selectedOrgId)>0 && StringManagerUtils.isNotNull(selectedDeviceId)){
 			int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-			String tableName="tbl_rpcdevice";
-			if(deviceType>=200&&deviceType<300){
-				tableName="tbl_pcpdevice";
-			}else if(deviceType>=300){
+			String tableName="tbl_device";
+			if(deviceType>=300){
 				tableName="tbl_smsdevice";
 			}
 			String sql = "update "+tableName+" t set t.orgid="+selectedOrgId+" where t.id in ("+selectedDeviceId+")";
@@ -565,6 +510,41 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer sqlCuswhere = new StringBuffer();
 		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where upper(t.itemcode)=upper('deviceType') order by t.itemvalue ";
 		
+		try {
+			int totals=this.getTotalCountRows(sql);
+			List<?> list = this.findCallSql(sql);
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			String get_key = "";
+			String get_val = "";
+			if (null != list && list.size() > 0) {
+				for (Object o : list) {
+					Object[] obj = (Object[]) o;
+					get_key = obj[0] + "";
+					get_val = (String) obj[1];
+					result_json.append("{boxkey:\"" + get_key + "\",");
+					result_json.append("boxval:\"" + get_val + "\"},");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+			}
+			result_json.append("]}");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result_json.toString();
+	}
+	
+	public String loadDeviceTypeComboxListFromTab() throws Exception {
+		//String orgIds = this.getUserOrgIds(orgId);
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer sqlCuswhere = new StringBuffer();
+		String sql = "SELECT t.id,t.tabname "
+				+ " FROM TBL_TABINFO t "
+				+ " START WITH t.parentid = 0 "
+				+ " CONNECT BY t.parentid = PRIOR t.id "
+				+ " ORDER SIBLINGS BY t.id ";
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
@@ -4101,12 +4081,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public String getUpstreamAndDownstreamInteractionDeviceList(String orgId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		String deviceTableName="tbl_rpcdevice";
-		String tableName="tbl_rpcacqdata_latest";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="tbl_pcpacqdata_latest";
-			deviceTableName="tbl_pcpdevice";
-		}
+		String deviceTableName="tbl_device";
+		String tableName="tbl_acqdata_latest";
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
@@ -4115,17 +4091,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"设备从地址\",\"dataIndex\":\"slave\",flex:1,children:[] }"
 				+ "]";
 		
-		String sql="select t.id,t.wellname,"
+		String sql="select t.id,t.devicename,"
 				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.signinid,t.slave "
 				+ " from "+deviceTableName+" t "
-				+ " left outer join "+tableName+" t2 on t2.wellid=t.id";
+				+ " left outer join "+tableName+" t2 on t2.deviceid=t.id";
 		sql+= " where  t.orgid in ("+orgId+") "
 				+ " and t.instancecode in ( select t3.code from tbl_protocolinstance t3 where t3.acqprotocoltype ='private-rpc' or t3.ctrlprotocoltype ='private-rpc' )";
 		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and t.wellName='"+deviceName+"'";
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
-		sql+=" order by t.sortnum,t.wellname";
+		sql+=" order by t.sortnum,t.deviceName";
 		
 		int maxvalue=pager.getLimit()+pager.getStart();
 		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
@@ -4162,7 +4138,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.pumpingmodelid,"
 				+ " t2.manufacturer,t2.model,t2.crankrotationdirection,t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,t2.singlecrankpinweight,t2.structuralunbalance,"
 				+ " t2.prtf"
-				+ " from tbl_rpcdevice t "
+				+ " from tbl_device t "
 				+ " left outer join tbl_pumpingmodel t2 on t.pumpingmodelid=t2.id"
 				+ " where t.id= "+deviceId;
 		List<?> list = this.findCallSql(sql);

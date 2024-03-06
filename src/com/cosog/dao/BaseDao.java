@@ -1089,11 +1089,11 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				queryDeleteWellSql="select id,t.wellname from tbl_rpcdevice t "
+				queryDeleteWellSql="select id,t.devicename from tbl_device t "
 						+ " where t.devicetype="+deviceType+" "
 						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
 						+ " and t.orgid in("+orgId+")";
-				delSql="delete from tbl_rpcdevice t "
+				delSql="delete from tbl_device t "
 						+ " where t.devicetype="+deviceType+" "
 						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+") "
 						+ " and t.orgid in("+orgId+")";
@@ -1751,11 +1751,11 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				queryDeleteWellSql="select id,t.wellname from tbl_rpcdevice t "
+				queryDeleteWellSql="select id,t.devicename from tbl_device t "
 						+ " where t.devicetype="+deviceType+" "
 						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
 						+ " and t.orgid in("+orgId+")";
-				delSql="delete from tbl_rpcdevice t "
+				delSql="delete from tbl_device t "
 						+ " where t.devicetype="+deviceType+" "
 						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+") "
 						+ " and t.orgid in("+orgId+")";

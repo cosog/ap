@@ -416,18 +416,11 @@ public class ResourceMonitoringTask {
 			}else{
 				conn=OracleJdbcUtis.getConnection();
 		        if(conn!=null){
-		        	String sql="select count(1) from tbl_rpcdevice t";
+		        	String sql="select count(1) from tbl_device t";
 		        	pstmt = conn.prepareStatement(sql); 
 		            rs=pstmt.executeQuery();
 		    		while(rs.next()){
 		    			deviceAmount=rs.getInt(1);
-		    		}
-		    		
-		    		sql="select count(1) from tbl_pcpdevice t";
-		        	pstmt = conn.prepareStatement(sql); 
-		            rs=pstmt.executeQuery();
-		    		while(rs.next()){
-		    			deviceAmount+=rs.getInt(1);
 		    		}
 		        }
 		        

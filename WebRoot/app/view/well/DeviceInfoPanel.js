@@ -38,15 +38,15 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName='';
+                    var deviceName='';
                     if(isNotVal(Ext.getCmp('deviceListComb_Id'))){
-                    	wellName = Ext.getCmp('deviceListComb_Id').getValue();
+                    	deviceName = Ext.getCmp('deviceListComb_Id').getValue();
                     }
                     
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel"),
-                        wellName: wellName
+                        deviceName: deviceName
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
                 }

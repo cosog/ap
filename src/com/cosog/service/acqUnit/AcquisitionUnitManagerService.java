@@ -8260,10 +8260,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public void doModbusProtocolReportUnitBulkDelete(final String ids) throws Exception {
 		int delorUpdateCount=0;
-		String sql = "update tbl_rpcdevice t set t.reportinstancecode='' where t.reportinstancecode in ( select t2.code from tbl_protocolreportinstance t2  where t2.unitid in ("+ids+") )";
-		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
-		
-		sql = "update tbl_pcpdevice t set t.reportinstancecode='' where t.reportinstancecode in ( select t2.code from tbl_protocolreportinstance t2  where t2.unitid in ("+ids+") )";
+		String sql = "update tbl_device t set t.reportinstancecode='' where t.reportinstancecode in ( select t2.code from tbl_protocolreportinstance t2  where t2.unitid in ("+ids+") )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_report_items2unit_conf t where t.unitid in("+ids+")";
@@ -8279,10 +8276,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public void doModbusProtocolReportInstanceBulkDelete(final String ids) throws Exception {
 		int delorUpdateCount=0;
-		String sql = "update tbl_rpcdevice t set t.reportinstancecode='' where t.reportinstancecode in (select t2.code from tbl_protocolreportinstance t2 where t2.id in("+ids+"))";
-		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
-		
-		sql = "update tbl_pcpdevice t set t.reportinstancecode='' where t.reportinstancecode in (select t2.code from tbl_protocolreportinstance t2 where t2.id in("+ids+") )";
+		String sql = "update tbl_device t set t.reportinstancecode='' where t.reportinstancecode in (select t2.code from tbl_protocolreportinstance t2 where t2.id in("+ids+"))";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		final String hql = "DELETE ProtocolReportInstance u where u.id in (" + ids + ")";

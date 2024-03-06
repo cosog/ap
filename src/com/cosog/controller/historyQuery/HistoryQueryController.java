@@ -353,12 +353,8 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
-		String deviceTableName="tbl_rpcdevice";
-		String tableName="tbl_rpcacqdata_hist";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			deviceTableName="tbl_pcpdevice";
-			tableName="tbl_pcpacqdata_hist";
-		}
+		String deviceTableName="tbl_device";
+		String tableName="tbl_acqdata_hist";
 		if(user!=null){
 			if(!StringManagerUtils.isNotNull(endDate)){
 				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "

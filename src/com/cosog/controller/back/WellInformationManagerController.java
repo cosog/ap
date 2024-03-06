@@ -169,8 +169,9 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/loadWellComboxList")
 	public String loadWellComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
-		String wellName = ParamUtils.getParameter(request, "wellName");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String calculateType= ParamUtils.getParameter(request, "calculateType");
 		orgId=ParamUtils.getParameter(request, "orgId");
 		User user = null;
 		HttpSession session=request.getSession();
@@ -180,31 +181,7 @@ public class WellInformationManagerController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String json = this.wellInformationManagerService.loadWellComboxList(pager,orgId, wellName,deviceType);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/loadRPCDeviceComboxList")
-	public String loadRPCDeviceComboxList() throws Exception {
-		this.pager=new Page("pageForm",request);
-		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String wellName = ParamUtils.getParameter(request, "wellName");
-		orgId=ParamUtils.getParameter(request, "orgId");
-		User user = null;
-		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		String json = this.wellInformationManagerService.loadRPCDeviceComboxList(pager,orgId, wellName,deviceType);
+		String json = this.wellInformationManagerService.loadWellComboxList(pager,orgId, deviceName,deviceType,calculateType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -286,7 +263,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getDeviceOrgChangeDeviceList")
 	public String getDeviceOrgChangeDeviceList() throws Exception {
 		this.pager=new Page("pageForm",request);
-		String wellName = ParamUtils.getParameter(request, "wellName");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
 		User user = null;
@@ -297,7 +274,7 @@ public class WellInformationManagerController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String json = this.wellInformationManagerService.getDeviceOrgChangeDeviceList(pager,orgId, wellName,deviceType);
+		String json = this.wellInformationManagerService.getDeviceOrgChangeDeviceList(pager,orgId, deviceName,deviceType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -414,6 +391,19 @@ public class WellInformationManagerController extends BaseController {
 	public String loadDeviceTypeComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
 		String json = this.wellInformationManagerService.loadDeviceTypeComboxList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadDeviceTypeComboxListFromTab")
+	public String loadDeviceTypeComboxListFromTab() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String json = this.wellInformationManagerService.loadDeviceTypeComboxListFromTab();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

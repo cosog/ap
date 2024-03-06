@@ -28,6 +28,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         	        		tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        			var AlarmQueryInfoPanel = Ext.create('AP.view.alarmQuery.AlarmQueryInfoPanel');
         	        			newCard.add(AlarmQueryInfoPanel);
+        	        			alarmQueryDataRefresh();
         	        		},
         	        		afterrender: function (panel, eOpts) {
         	        			
@@ -92,7 +93,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
 	        				newCard.add(AlarmQueryInfoPanel);
         				}
     					
-    					
+        				alarmQueryDataRefresh();
     					
 //    					if(newCard.id=="RPCAlarmQueryPanel_Id"){
 //    						Ext.getCmp("selectedDeviceType_global").setValue(0); 
@@ -503,6 +504,26 @@ function getAlarmTypeFromTabActive(){
 		alarmType=0;
 	}
 	return alarmType;
+}
+
+function getAlarmTypeNameFromTabActive(){
+	var tabPanel = Ext.getCmp("AlarmQuerySecondTabPanel");
+	var alarmTypeTabActiveId = tabPanel.getActiveTab().id;
+	var alarmTypeName='';
+	if(alarmTypeTabActiveId=="FESDiagramResultAlarmInfoTabPanel_Id"){
+		alarmTypeName='工况诊断报警';
+	}else if(alarmTypeTabActiveId=="RunStatusAlarmInfoTabPanel_Id"){
+		alarmTypeName='运行状态报警';
+	}else if(alarmTypeTabActiveId=="CommunicationAlarmInfoTabPanel_Id"){
+		alarmTypeName='通信状态报警';
+	}else if(alarmTypeTabActiveId=="NumericValueAlarmInfoTabPanel_Id"){
+		alarmTypeName='数据量报警';
+	}else if(alarmTypeTabActiveId=="EnumValueAlarmInfoTabPanel_Id"){
+		alarmTypeName='枚举量报警';
+	}else if(alarmTypeTabActiveId=="SwitchingValueAlarmInfoTabPanel_Id"){
+		alarmTypeName='开关量报警';
+	}
+	return alarmTypeName;
 }
 
 function getAlarmOverViewPanIdFromTabActive(){

@@ -23,17 +23,17 @@ public class TotalCalculateThread extends Thread{
 
 	private int recordId;
 	private int wellId;
-	private String wellName;
+	private String deviceName;
 	private String calDate;
 	private int deviceType;
 	private CommonDataService commonDataService=null;
 
-	public TotalCalculateThread(int recordId, int wellId, String wellName, String calDate, int deviceType,
+	public TotalCalculateThread(int recordId, int wellId, String deviceName, String calDate, int deviceType,
 			CommonDataService commonDataService) {
 		super();
 		this.recordId = recordId;
 		this.wellId = wellId;
-		this.wellName = wellName;
+		this.deviceName = deviceName;
 		this.calDate = calDate;
 		this.deviceType = deviceType;
 		this.commonDataService = commonDataService;
@@ -46,7 +46,7 @@ public class TotalCalculateThread extends Thread{
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		if(deviceType==0){
 			String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-					+ " from tbl_rpcdailycalculationdata t,tbl_rpcdevice t2 "
+					+ " from tbl_rpcdailycalculationdata t,tbl_device t2 "
 					+ " where t.wellid=t2.id "
 					+ " and t.id="+recordId;
 			String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
@@ -195,7 +195,7 @@ public class TotalCalculateThread extends Thread{
 					rpmList.add(StringManagerUtils.stringToFloat(obj[30]+""));
 				}
 				dataSbf.append("{\"AKString\":\"\",");
-				dataSbf.append("\"WellName\":\""+wellName+"\",");
+				dataSbf.append("\"DeviceName\":\""+deviceName+"\",");
 				dataSbf.append("\"Date\":\""+calDate+"\",");
 				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -364,7 +364,7 @@ public class TotalCalculateThread extends Thread{
 					submergenceList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 				}
 				dataSbf.append("{\"AKString\":\"\",");
-				dataSbf.append("\"WellName\":\""+wellName+"\",");
+				dataSbf.append("\"DeviceName\":\""+deviceName+"\",");
 				dataSbf.append("\"Date\":\""+calDate+"\",");
 				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -410,7 +410,7 @@ public class TotalCalculateThread extends Thread{
 			}
 		}
 		long endTime=new Date().getTime();
-		System.out.println((deviceType==0?"抽油机井":"螺杆泵井")+ wellName+"，日期："+calDate+"，数据汇总完成,共用时:"+(endTime-startTime)+"ms");
+		System.out.println((deviceType==0?"抽油机井":"螺杆泵井")+ deviceName+"，日期："+calDate+"，数据汇总完成,共用时:"+(endTime-startTime)+"ms");
 	}
 
 	
@@ -431,12 +431,12 @@ public class TotalCalculateThread extends Thread{
 		this.wellId = wellId;
 	}
 
-	public String getWellName() {
-		return wellName;
+	public String getDeviceName() {
+		return deviceName;
 	}
 
-	public void setWellName(String wellName) {
-		this.wellName = wellName;
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 	public String getCalDate() {

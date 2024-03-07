@@ -6,8 +6,7 @@ Ext.define("AP.view.module.ModuleInfoView", {
     border: false,
     initComponent: function () {
         var me = this;
-        var ModuleInfoTreeGridView = Ext
-            .create('AP.view.module.ModuleInfoTreeGridView');
+        var ModuleInfoTreeGridView = Ext.create('AP.view.module.ModuleInfoTreeGridView');
         Ext.apply(me, {
             items: [ModuleInfoTreeGridView]
         });

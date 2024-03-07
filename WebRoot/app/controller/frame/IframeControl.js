@@ -166,7 +166,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "DeviceRealTimeMonitoring"
 		&& module_Code != "DeviceHistoryQuery"
 		&& module_Code != "DailyReport"
-		&& module_Code != "LogQuery"
+		&& module_Code != "DeviceOperationLogQuery"
+		&& module_Code != "SystemLogQuery"
 		&& module_Code != "AlarmQuery"
 		&& module_Code != "AlarmSet"
 		&& module_Code != "UpstreamAndDownstreamInteraction"
@@ -390,29 +391,25 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 				}
 			}
 		}
-	}else if(module_Code == "LogQuery"){
-		var tabPanel = Ext.getCmp("LogQueryTabPanel");
-		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="DeviceOperationLogInfoPanel_Id"){
-			var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
-			}else{
-				Ext.create('AP.store.log.DeviceOperationLogStore');
-			}
-		}else if(activeId=="SystemLogInfoPanel_Id"){
-			Ext.getCmp('systemLogUserListComb_Id').setValue("");
-			Ext.getCmp('systemLogUserListComb_Id').setRawValue("");
-			
-			Ext.getCmp('systemLogActionListComb_Id').setValue("");
-			Ext.getCmp('systemLogActionListComb_Id').setRawValue("");
-			
-			var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
-			}else{
-				Ext.create('AP.store.log.SystemLogStore');
-			}
+	}else if(module_Code == 'SystemLogQuery'){
+		Ext.getCmp('systemLogUserListComb_Id').setValue("");
+		Ext.getCmp('systemLogUserListComb_Id').setRawValue("");
+		
+		Ext.getCmp('systemLogActionListComb_Id').setValue("");
+		Ext.getCmp('systemLogActionListComb_Id').setRawValue("");
+		
+		var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.log.SystemLogStore');
+		}
+	}else if(module_Code == "DeviceOperationLogQuery"){
+		var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.log.DeviceOperationLogStore');
 		}
 	}else if(module_Code == "AlarmQuery"){
 		var tabChange=false;

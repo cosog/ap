@@ -4,137 +4,112 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
     layout: 'fit',
     border: false,
     initComponent: function () {
-        var me = this;
-        var RPCCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.RPCCalculateMaintainingInfoView');
-        var PCPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.PCPCalculateMaintainingInfoView');
-        Ext.apply(me, {
-        	items: [{
+    	var CalculateMaintainingInfoPanel = Ext.create('AP.view.dataMaintaining.CalculateMaintainingInfoPanel');
+        
+        var items=[];
+        if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
+        	for(var i=0;i<tabInfo.children.length;i++){
+        		var panelItem={};
+        		if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
+        			panelItem={
+        					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
+        					xtype: 'tabpanel',
+        	        		id: 'CalculateMaintainingRootTabPanel_'+tabInfo.children[i].tabId,
+        	        		activeTab: 0,
+        	        		border: false,
+        	        		tabPosition: 'left',
+        	        		items:[],
+        	        		listeners: {
+        	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				oldCard.removeAll();
+        	        			},
+        	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+        	        				var CalculateMaintainingInfoPanel = Ext.create('AP.view.dataMaintaining.CalculateMaintainingInfoPanel');
+        	        				newCard.add(CalculateMaintainingInfoPanel);
+        	        				
+        	        				var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
+        	        				var activeId = tabPanel.getActiveTab().id;
+        	        				if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
+        	        					refreshRPCCalculateMaintainingData();
+        	        				}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
+        	        					refreshPCPCalculateMaintainingData();
+        	        				}
+        	        			},
+        	        			afterrender: function (panel, eOpts) {
+        	        				
+        	        			}
+        	        		}
+        			}
+        			
+        			for(var j=0;j<tabInfo.children[i].children.length;j++){
+        				var secondTabPanel={
+        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+        						tpl:tabInfo.children[i].children[j].text,
+        						layout: 'fit',
+        						id: 'CalculateMaintainingRootTabPanel_'+tabInfo.children[i].children[j].tabId,
+        						border: false
+        				};
+            			if(j==0){
+            				secondTabPanel.items=[];
+            				secondTabPanel.items.push(CalculateMaintainingInfoPanel);
+                		}
+            			panelItem.items.push(secondTabPanel);
+        			}
+        		}else{
+        			panelItem={
+        					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
+        					layout: 'fit',
+    						id: 'CalculateMaintainingRootTabPanel_'+tabInfo.children[i].tabId,
+    						border: false
+        			};
+        			if(i==0){
+            			panelItem.items=[];
+            			panelItem.items.push(CalculateMaintainingInfoPanel);
+            		}
+        		}
+        		items.push(panelItem);
+        	}
+        }
+        
+    	Ext.apply(this, {
+    		items: [{
         		xtype: 'tabpanel',
-        		id:"CalculateMaintainingTabPanel",
+        		id:"CalculateMaintainingRootTabPanel",
         		activeTab: 0,
         		border: false,
         		tabPosition: 'bottom',
-        		items: [{
-        				title: '抽油机井',
-        				id:'RPCCalculateMaintainingInfoPanel_Id',
-        				items: [RPCCalculateMaintainingInfoView],
-        				layout: "fit",
-        				border: false
-        			},{
-        				title: '螺杆泵井',
-        				id:'PCPCalculateMaintainingInfoPanel_Id',
-        				items: [PCPCalculateMaintainingInfoView],
-        				layout: "fit",
-        				hidden: pcpHidden,
-        				border: false
-        			}],
-        			listeners: {
-        				tabchange: function (tabPanel, newCard,oldCard, obj) {
-        					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
-        					if(newCard.id=="RPCCalculateMaintainingInfoPanel_Id"){
-        						Ext.getCmp("selectedDeviceType_global").setValue(0); 
-        						refreshRPCCalculateMaintainingData();
-        					}else if(newCard.id=="PCPCalculateMaintainingInfoPanel_Id"){
-        						Ext.getCmp("selectedDeviceType_global").setValue(1); 
-        						refreshPCPCalculateMaintainingData();
-        					}
+        		items: items,
+        		listeners: {
+    				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				if(oldCard.xtype=='tabpanel'){
+        					oldCard.activeTab.removeAll();
+        				}else{
+        					oldCard.removeAll();
         				}
-        			}
-            	}]
+        			},
+        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+    					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
+    					
+    					var CalculateMaintainingInfoPanel = Ext.create('AP.view.dataMaintaining.CalculateMaintainingInfoPanel');
+        				if(newCard.xtype=='tabpanel'){
+        					newCard.activeTab.add(CalculateMaintainingInfoPanel);
+        				}else{
+	        				newCard.add(CalculateMaintainingInfoPanel);
+        				}
+        				
+        				var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
+        				var activeId = tabPanel.getActiveTab().id;
+        				if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
+        					refreshRPCCalculateMaintainingData();
+        				}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
+        					refreshPCPCalculateMaintainingData();
+        				}
+    				}
+    			}
+            }]
         });
-        me.callParent(arguments);
+        this.callParent(arguments);
     }
 });
-
-function createCalculateManagerWellListColumn(columnInfo) {
-    var myArr = columnInfo;
-
-    var myColumns = "[";
-    for (var i = 0; i < myArr.length; i++) {
-        var attr = myArr[i];
-        var width_ = "";
-        var flex_ = "";
-        var lock_ = "";
-        var hidden_ = "";
-        if (attr.hidden == true) {
-            hidden_ = ",hidden:true";
-        }
-        if (isNotVal(attr.lock)) {
-            //lock_ = ",locked:" + attr.lock;
-        }
-        if (isNotVal(attr.width)) {
-            width_ = ",width:" + attr.width;
-        }
-        if (isNotVal(attr.flex)) {
-        	flex_ = ",flex:" + attr.flex;
-        }
-        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
-        if (attr.dataIndex == 'id') {
-            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
-        }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
-        }else if (attr.dataIndex.toUpperCase()=='slave'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-        } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
-        } else {
-            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
-        }
-        myColumns += "}";
-        if (i < myArr.length - 1) {
-            myColumns += ",";
-        }
-    }
-    myColumns += "]";
-    return myColumns;
-};
-
-function createTotalCalculateMaintainingDataColumn(columnInfo) {
-    var myArr = columnInfo;
-
-    var myColumns = "[";
-    for (var i = 0; i < myArr.length; i++) {
-        var attr = myArr[i];
-        var width_ = "";
-        var lock_ = "";
-        var hidden_ = "";
-        var flex_="";
-        if (attr.hidden == true) {
-            hidden_ = ",hidden:true";
-        }
-        if (isNotVal(attr.lock)) {
-            //lock_ = ",locked:" + attr.lock;
-        }
-        if (isNotVal(attr.width)) {
-            width_ = ",width:" + attr.width;
-        }
-        if (isNotVal(attr.flex_)) {
-        	flex_ = ",flex:" + attr.flex_;
-        }else{
-        	if (!isNotVal(attr.width)) {
-        		flex_ = ",flex:1";
-            }
-        }
-        
-        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
-        if (attr.dataIndex == 'id') {
-            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
-        }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
-        }else if (attr.dataIndex.toUpperCase()=='slave'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-        } else if (attr.dataIndex.toUpperCase() == 'calDate'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
-        } else {
-            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
-        }
-        myColumns += "}";
-        if (i < myArr.length - 1) {
-            myColumns += ",";
-        }
-    }
-    myColumns += "]";
-    return myColumns;
-};

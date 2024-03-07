@@ -51,7 +51,7 @@ Ext.define('AP.store.log.SystemLogStore', {
                     	select: function(grid, record, index, eOpts) {}
                     }
                 });
-                var panel = Ext.getCmp("SystemLogView_Id");
+                var panel = Ext.getCmp("SystemLogPanel_Id");
                 panel.add(gridPanel);
             }
             

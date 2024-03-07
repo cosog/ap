@@ -89,23 +89,23 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var wellName='';
-        	var wellId=0;
+        	var deviceName='';
+        	var deviceId=0;
         	var selectRow= Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").getValue();
         	if(selectRow>=0){
-        		wellName = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        		wellId=Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		deviceName = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+        		deviceId=Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         	}
         	
         	var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id').rawValue;
             var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id').rawValue;
         	
-        	var deviceType=0;
+            var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
             var calculateType=3;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
             		orgId: orgId,
-            		wellName: wellName,
-            		wellId:wellId,
+            		deviceName: deviceName,
+            		deviceId:deviceId,
                     startDate:startDate,
                     endDate:endDate,
                     deviceType:deviceType,

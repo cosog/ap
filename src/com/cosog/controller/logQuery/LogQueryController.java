@@ -68,7 +68,16 @@ public class LogQueryController extends BaseController{
 		}
 		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t ";
+			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
+			if(StringManagerUtils.isNotNull(deviceType)){
+				sql+=" and t.devicetype="+deviceType;
+			}
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and t.deviceName='"+deviceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(operationType)){
+				sql+=" and t.action="+operationType;
+			}
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -124,7 +133,16 @@ public class LogQueryController extends BaseController{
 		
 		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t ";
+			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
+			if(StringManagerUtils.isNotNull(deviceType)){
+				sql+=" and t.devicetype="+deviceType;
+			}
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and t.deviceName='"+deviceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(operationType)){
+				sql+=" and t.action="+operationType;
+			}
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

@@ -21,7 +21,8 @@ public final class LicenseMap {
 		moduleList0.add(1998);//实时监控
 		moduleList0.add(2018);//历史查询
 		moduleList0.add(2158);//生产报表
-		moduleList0.add(2038);//日志
+		moduleList0.add(2038);//设备日志
+		moduleList0.add(2238);//系统日志
 		moduleList0.add(2058);//故障查询
 		moduleList0.add(27);//权限管理
 		moduleList0.add(24);//单位管理

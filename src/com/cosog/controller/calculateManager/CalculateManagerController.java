@@ -334,8 +334,8 @@ public class CalculateManagerController extends BaseController {
 	@RequestMapping("/getTotalCalculateResultData")
 	public String getTotalCalculateResultData() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
-		wellName = ParamUtils.getParameter(request, "wellName");
-		String wellId = ParamUtils.getParameter(request, "wellId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
@@ -351,12 +351,14 @@ public class CalculateManagerController extends BaseController {
 			}
 		}
 		String tableName="tbl_rpcdailycalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+		if("1".equals(calculateType) || "3".equals(calculateType)){
+			tableName="tbl_rpcdailycalculationdata";
+		}else if("2".equals(calculateType) || "4".equals(calculateType)){
 			tableName="tbl_pcpdailycalculationdata";
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(max(t.caldate),'yyyy-mm-dd') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.wellId= "+wellId+")";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -373,7 +375,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getTotalCalculateResultData(orgId, wellName, pager,deviceType,startDate,endDate,calculateType);
+		String json = calculateManagerService.getTotalCalculateResultData(orgId, deviceName, pager,deviceType,startDate,endDate,calculateType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

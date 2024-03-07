@@ -1132,26 +1132,4 @@ function refreshRPCCalculateMaintainingData(){
 	}else{
 		Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
 	}
-//	var secondTabPanel = Ext.getCmp("RPCCalculateMaintainingTabPanel");
-//	var secondActiveId = secondTabPanel.getActiveTab().id;
-//	if(secondActiveId=="RPCCalculateMaintainingPanel"){
-//		var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
-//		if (isNotVal(bbar)) {
-//			if(bbar.getStore().isEmptyStore){
-//				var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-//				bbar.setStore(RPCCalculateMaintainingDataStore);
-//			}else{
-//				bbar.getStore().loadPage(1);
-//			}
-//		}else{
-//			Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-//		}
-//	}else if(secondActiveId=="RPCTotalCalculateMaintainingPanel"){
-//		var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
-//        if (isNotVal(gridPanel)) {
-//        	gridPanel.getStore().loadPage(1);
-//        }else{
-//        	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
-//        }
-//	}
 }

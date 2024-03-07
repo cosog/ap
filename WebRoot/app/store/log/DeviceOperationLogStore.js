@@ -52,7 +52,7 @@ Ext.define('AP.store.log.DeviceOperationLogStore', {
                     	select: function(grid, record, index, eOpts) {}
                     }
                 });
-                var panel = Ext.getCmp("DeviceOperationLogView_Id");
+                var panel = Ext.getCmp("DeviceOperationLogPanel_Id");
                 panel.add(gridPanel);
             }
             
@@ -73,7 +73,7 @@ Ext.define('AP.store.log.DeviceOperationLogStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var deviceType=Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').getValue();
+        	var deviceType=getDeviceTypeFromTabId("DeviceOperationLogRootTabPanel");
         	var deviceName=Ext.getCmp('DeviceOperationLogDeviceListComb_Id').getValue();
         	var operationType=Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').getValue();
         	var startDate=Ext.getCmp('DeviceOperationLogQueryStartDate_Id').rawValue;

@@ -2,490 +2,219 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deviceOperationLogInfoView',
     layout: "fit",
-    id: "DeviceOperationLogView_Id",
+    id: "DeviceOperationLogInfoView",
     border: false,
     initComponent: function () {
-    	var deviceTypeCombStore = new Ext.data.JsonStore({
-        	pageSize:defaultWellComboxSize,
-            fields: [{
-                name: "boxkey",
-                type: "string"
-            }, {
-                name: "boxval",
-                type: "string"
-            }],
-            proxy: {
-            	url: context + '/wellInformationManagerController/loadDeviceTypeComboxListFromTab',
-                type: "ajax",
-                actionMethods: {
-                    read: 'POST'
-                },
-                reader: {
-                    type: 'json',
-                    rootProperty: 'list',
-                    totalProperty: 'totals'
-                }
-            },
-            autoLoad: true,
-            listeners: {
-                beforeload: function (store, options) {
-                    var new_params = {
-                    		
-                    };
-                    Ext.apply(store.proxy.extraParams,new_params);
-                }
-            }
-        });
-    	
-        var deviceTypeCombo = Ext.create(
-                'Ext.form.field.ComboBox', {
-                    fieldLabel: '设备类型',
-                    id: "DeviceOperationLogDeviceTypeListComb_Id",
-                    labelWidth: 60,
-                    width: 170,
-                    labelAlign: 'left',
-                    queryMode: 'remote',
-                    typeAhead: true,
-                    store: deviceTypeCombStore,
-                    autoSelect: false,
-                    editable: true,
-                    triggerAction: 'all',
-                    displayField: "boxval",
-                    valueField: "boxkey",
-                    pageSize:comboxPagingStatus,
-                    minChars:0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
-                    listeners: {
-                        expand: function (sm, selections) {
-                            deviceTypeCombo.getStore().loadPage(1); // 加载井下拉框的store
-                        },
-                        select: function (combo, record, index) {
-                        	Ext.getCmp("DeviceOperationLogDeviceListComb_Id").setValue('');
-                        }
-                    }
-                });
+    	var DeviceOperationLogInfoPanel = Ext.create('AP.view.log.DeviceOperationLogInfoPanel');
         
-        var deviceCombStore = new Ext.data.JsonStore({
-        	pageSize:defaultWellComboxSize,
-            fields: [{
-                name: "boxkey",
-                type: "string"
-            }, {
-                name: "boxval",
-                type: "string"
-            }],
-            proxy: {
-            	url: context + '/wellInformationManagerController/loadWellComboxList',
-                type: "ajax",
-                actionMethods: {
-                    read: 'POST'
-                },
-                reader: {
-                    type: 'json',
-                    rootProperty: 'list',
-                    totalProperty: 'totals'
-                }
-            },
-            autoLoad: true,
-            listeners: {
-                beforeload: function (store, options) {
-                	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceName = Ext.getCmp('DeviceOperationLogDeviceListComb_Id').getValue();
-                    var deviceType = Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').getValue();
-                    var new_params = {
-                        orgId: leftOrg_Id,
-                        deviceType: deviceType,
-                        deviceName: deviceName
-                    };
-                    Ext.apply(store.proxy.extraParams,new_params);
-                }
-            }
-        });
-        
-        var deviceCombo = Ext.create(
-                'Ext.form.field.ComboBox', {
-                    fieldLabel: '井名',
-                    id: "DeviceOperationLogDeviceListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
-                    labelAlign: 'left',
-                    queryMode: 'remote',
-                    typeAhead: true,
-                    store: deviceCombStore,
-                    autoSelect: false,
-                    editable: true,
-                    triggerAction: 'all',
-                    displayField: "boxval",
-                    valueField: "boxkey",
-                    pageSize:comboxPagingStatus,
-                    minChars:0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
-                    listeners: {
-                        expand: function (sm, selections) {
-                            deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
-                        },
-                        select: function (combo, record, index) {
-                        }
-                    }
-                });
-        
-        var operationTypeCombStore = new Ext.data.JsonStore({
-        	pageSize:defaultWellComboxSize,
-            fields: [{
-                name: "boxkey",
-                type: "string"
-            }, {
-                name: "boxval",
-                type: "string"
-            }],
-            proxy: {
-            	url: context + '/wellInformationManagerController/loadDataDictionaryComboxList',
-                type: "ajax",
-                actionMethods: {
-                    read: 'POST'
-                },
-                reader: {
-                    type: 'json',
-                    rootProperty: 'list',
-                    totalProperty: 'totals'
-                }
-            },
-            autoLoad: true,
-            listeners: {
-                beforeload: function (store, options) {
-                    var new_params = {
-                    	itemCode: 'action'
-                    };
-                    Ext.apply(store.proxy.extraParams,new_params);
-                }
-            }
-        });
-    	
-        var operationTypeCombo = Ext.create(
-                'Ext.form.field.ComboBox', {
-                    fieldLabel: '操作',
-                    id: "DeviceOperationLogOperationTypeListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
-                    labelAlign: 'left',
-                    queryMode: 'remote',
-                    typeAhead: true,
-                    store: operationTypeCombStore,
-                    autoSelect: false,
-                    editable: true,
-                    triggerAction: 'all',
-                    displayField: "boxval",
-                    valueField: "boxkey",
-                    pageSize:comboxPagingStatus,
-                    minChars:0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
-                    listeners: {
-                        expand: function (sm, selections) {
-                        	operationTypeCombo.getStore().loadPage(1); // 加载井下拉框的store
-                        },
-                        select: function (combo, record, index) {
-                        }
-                    }
-                });
+        var items=[];
+        if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
+        	for(var i=0;i<tabInfo.children.length;i++){
+        		var panelItem={};
+        		if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
+        			panelItem={
+        					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
+        					xtype: 'tabpanel',
+        	        		id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].tabId,
+        	        		activeTab: 0,
+        	        		border: false,
+        	        		tabPosition: 'left',
+        	        		items:[],
+        	        		listeners: {
+        	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				oldCard.removeAll();
+        	        			},
+        	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+        	        				var DeviceOperationLogInfoPanel = Ext.create('AP.view.log.DeviceOperationLogInfoPanel');
+        	        				newCard.add(DeviceOperationLogInfoPanel);
+        	        				
+        	        				var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
+        	        				if (isNotVal(gridPanel)) {
+        	        					gridPanel.getStore().load();
+        	        				}else{
+        	        					Ext.create('AP.store.log.DeviceOperationLogStore');
+        	        				}
+        	        			},
+        	        			afterrender: function (panel, eOpts) {
+        	        				
+        	        			}
+        	        		}
+        			}
+        			
+        			for(var j=0;j<tabInfo.children[i].children.length;j++){
+        				var secondTabPanel={
+        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+        						tpl:tabInfo.children[i].children[j].text,
+        						layout: 'fit',
+        						id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].children[j].tabId,
+        						border: false
+        				};
+            			if(j==0){
+            				secondTabPanel.items=[];
+            				secondTabPanel.items.push(DeviceOperationLogInfoPanel);
+                		}
+            			panelItem.items.push(secondTabPanel);
+        			}
+        		}else{
+        			panelItem={
+        					title: tabInfo.children[i].text,
+        					tpl: tabInfo.children[i].text,
+        					layout: 'fit',
+    						id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].tabId,
+    						border: false
+        			};
+        			if(i==0){
+            			panelItem.items=[];
+            			panelItem.items.push(DeviceOperationLogInfoPanel);
+            		}
+        		}
+        		items.push(panelItem);
+        	}
+        }
         
     	Ext.apply(this, {
-            tbar: [{
-                id: 'DeviceOperationLogColumnStr_Id',
-                xtype: 'textfield',
-                value: '',
-                hidden: true
-            },{
-                xtype: 'button',
-                text: cosog.string.refresh,
-                iconCls: 'note-refresh',
-                hidden:false,
-                handler: function (v, o) {
-                	Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').setRawValue('');
-                	Ext.getCmp('DeviceOperationLogDeviceListComb_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogDeviceListComb_Id').setRawValue('');
-                	Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').setRawValue('');
-                	
-                	Ext.getCmp('DeviceOperationLogQueryStartDate_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogQueryStartDate_Id').setRawValue('');
-                	Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').setValue('');
-                    Ext.getCmp('DeviceOperationLogQueryEndDate_Id').setValue('');
-                    Ext.getCmp('DeviceOperationLogQueryEndDate_Id').setRawValue('');
-                    Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').setValue('');
-                	Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').setValue('');
-                	
-                	var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
-                	if (isNotVal(gridPanel)) {
-                		gridPanel.getStore().loadPage(1);
-                	}
-                }
-    		},'-',deviceTypeCombo,'-',deviceCombo,'-',operationTypeCombo,'-',{
-                xtype: 'datefield',
-                anchor: '100%',
-                fieldLabel: '区间',
-                labelWidth: 30,
-                width: 130,
-                format: 'Y-m-d ',
-                value: '',
-                id: 'DeviceOperationLogQueryStartDate_Id',
-                listeners: {
-                	select: function (combo, record, index) {
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'DeviceOperationLogQueryStartTime_Hour_Id',
-                fieldLabel: '时',
-                labelWidth: 15,
-                width: 60,
-                minValue: 0,
-                maxValue: 23,
-                value:'',
-                msgTarget: 'none',
-                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'DeviceOperationLogQueryStartTime_Minute_Id',
-                fieldLabel: '分',
-                labelWidth: 15,
-                width: 60,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'DeviceOperationLogQueryStartTime_Second_Id',
-                fieldLabel: '秒',
-                labelWidth: 15,
-                width: 60,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-                xtype: 'datefield',
-                anchor: '100%',
-                fieldLabel: '至',
-                labelWidth: 15,
-                width: 115,
-                format: 'Y-m-d ',
-                value: '',
-                id: 'DeviceOperationLogQueryEndDate_Id',
-                listeners: {
-                	select: function (combo, record, index) {
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'DeviceOperationLogQueryEndTime_Hour_Id',
-                fieldLabel: '时',
-                labelWidth: 15,
-                width: 60,
-                minValue: 0,
-                maxValue: 23,
-                value:'',
-                msgTarget: 'none',
-                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'DeviceOperationLogQueryEndTime_Minute_Id',
-                fieldLabel: '分',
-                labelWidth: 15,
-                width: 60,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'DeviceOperationLogQueryEndTime_Second_Id',
-                fieldLabel: '秒',
-                labelWidth: 15,
-                width: 60,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },'-',{
-                xtype: 'button',
-                text: cosog.string.search,
-                iconCls: 'search',
-                handler: function () {
-                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').getValue();
-                	if(!r.test(startTime_Hour)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').focus(true, 100);
-                		return;
-                	}
-                	var startTime_Minute=Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').getValue();
-                	if(!r2.test(startTime_Minute)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').focus(true, 100);
-                		return;
-                	}
-                	var startTime_Second=Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').getValue();
-                	if(!r2.test(startTime_Second)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').focus(true, 100);
-                		return;
-                	}
-                	
-                	var endTime_Hour=Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').getValue();
-                	if(!r.test(endTime_Hour)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').focus(true, 100);
-                		return;
-                	}
-                	var endTime_Minute=Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').getValue();
-                	if(!r2.test(endTime_Minute)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').focus(true, 100);
-                		return;
-                	}
-                	var endTime_Second=Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').getValue();
-                	if(!r2.test(endTime_Second)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').focus(true, 100);
-                		return;
-                	}
-                	var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
-                	if (isNotVal(gridPanel)) {
-                		gridPanel.getStore().loadPage(1);
-                	}
-                }
-            },'-', {
-                xtype: 'button',
-                text: cosog.string.exportExcel,
-                iconCls: 'export',
-                hidden:false,
-                handler: function (v, o) {
-                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').getValue();
-                	if(!r.test(startTime_Hour)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').focus(true, 100);
-                		return;
-                	}
-                	var startTime_Minute=Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').getValue();
-                	if(!r2.test(startTime_Minute)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').focus(true, 100);
-                		return;
-                	}
-                	var startTime_Second=Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').getValue();
-                	if(!r2.test(startTime_Second)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').focus(true, 100);
-                		return;
-                	}
-                	
-                	var endTime_Hour=Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').getValue();
-                	if(!r.test(endTime_Hour)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').focus(true, 100);
-                		return;
-                	}
-                	var endTime_Minute=Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').getValue();
-                	if(!r2.test(endTime_Minute)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').focus(true, 100);
-                		return;
-                	}
-                	var endTime_Second=Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').getValue();
-                	if(!r2.test(endTime_Second)){
-                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
-                		Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').focus(true, 100);
-                		return;
-                	}
-                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                	var deviceType=Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').getValue();
-                	var deviceName=Ext.getCmp('DeviceOperationLogDeviceListComb_Id').getValue();
-                	var operationType=Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').getValue();
-                	var startDate=Ext.getCmp('DeviceOperationLogQueryStartDate_Id').rawValue;
-                    var endDate=Ext.getCmp('DeviceOperationLogQueryEndDate_Id').rawValue;
-               	 	
-               	 	var fileName='设备操作日志';
-               	 	var title='设备操作日志';
-               	 	var columnStr=Ext.getCmp("DeviceOperationLogColumnStr_Id").getValue();
-               	 	exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
-                }
+    		items: [{
+        		xtype: 'tabpanel',
+        		id:"DeviceOperationLogRootTabPanel",
+        		activeTab: 0,
+        		border: false,
+        		tabPosition: 'bottom',
+        		items: items,
+        		listeners: {
+    				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				if(oldCard.xtype=='tabpanel'){
+        					oldCard.activeTab.removeAll();
+        				}else{
+        					oldCard.removeAll();
+        				}
+        			},
+        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+    					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
+    					
+    					var DeviceOperationLogInfoPanel = Ext.create('AP.view.log.DeviceOperationLogInfoPanel');
+        				if(newCard.xtype=='tabpanel'){
+        					newCard.activeTab.add(DeviceOperationLogInfoPanel);
+        				}else{
+	        				newCard.add(DeviceOperationLogInfoPanel);
+        				}
+        				
+        				var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
+        				if (isNotVal(gridPanel)) {
+        					gridPanel.getStore().load();
+        				}else{
+        					Ext.create('AP.store.log.DeviceOperationLogStore');
+        				}
+    				}
+    			}
             }]
         });
         this.callParent(arguments);
     }
 });
+
+function createDeviceOperationLogColumn(columnInfo) {
+    var myArr = columnInfo;
+
+    var myColumns = "[";
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var width_ = "";
+        var flex_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        if (attr.hidden == true) {
+            hidden_ = ",hidden:true";
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            width_ = ",width:" + attr.width;
+        }
+        if (isNotVal(attr.flex)) {
+        	flex_ = ",flex:" + attr.flex;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
+        if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
+        }
+        else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
+        }
+        else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+        }
+        else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
+        }
+        else if (attr.dataIndex.toUpperCase() == 'createTime'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+        } 
+        else {
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
+            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
+        }
+        myColumns += "}";
+        if (i < myArr.length - 1) {
+            myColumns += ",";
+        }
+    }
+    myColumns += "]";
+    return myColumns;
+};
+
+function exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType,startDate,endDate,fileName,title,columnStr) {
+	var timestamp=new Date().getTime();
+	var key='exportDeviceOperationLogExcelData'+timestamp;
+	var maskPanelId='DeviceOperationLogPanel_Id';
+	
+	var url = context + '/logQueryController/exportDeviceOperationLogExcelData';
+    var fields = "";
+    var heads = "";
+    var lockedheads = "";
+    var unlockedheads = "";
+    var lockedfields = "";
+    var unlockedfields = "";
+    var columns_ = Ext.JSON.decode(columnStr);
+    
+    fields = "id";
+    heads = "序号";
+    Ext.Array.each(columns_, function (name, index, countriesItSelf) {
+        var column = columns_[index];
+        if (index > 0 && !column.hidden) {
+        	if(column.locked){
+        		lockedfields += column.dataIndex + ",";
+        		lockedheads += column.text + ",";
+        	}else{
+        		unlockedfields += column.dataIndex + ",";
+        		unlockedheads += column.text + ",";
+        	}
+        }
+    });
+    if (isNotVal(lockedfields)) {
+    	lockedfields = lockedfields.substring(0, lockedfields.length - 1);
+    	lockedheads = lockedheads.substring(0, lockedheads.length - 1);
+    	fields+=","+lockedfields;
+    	heads+= "," + lockedheads;
+    }
+    if (isNotVal(unlockedfields)) {
+    	unlockedfields = unlockedfields.substring(0, unlockedfields.length - 1);
+    	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
+    	fields+=","+unlockedfields;
+    	heads+= "," + unlockedheads;
+    }
+    
+    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
+    + "&orgId=" + orgId 
+    + "&deviceType=" + deviceType 
+    + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&operationType=" + operationType
+    + "&startDate=" + startDate
+    + "&endDate=" + endDate
+    + "&fileName=" + URLencode(URLencode(fileName)) 
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,cosog.string.loading);
+    openExcelWindow(url + '?flag=true' + param);
+};

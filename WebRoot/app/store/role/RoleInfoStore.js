@@ -127,7 +127,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	listeners: {
                     	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
                     	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                    	    	if(parseInt(record.data.roleId)==parseInt(currentId)){
+                    	    	var currentUserRoleFlag=Ext.getCmp("currentUserRoleFlag_Id").getValue();
+                    	    	if(currentUserRoleFlag==0){
+                    	    		return false;
+                    	    	}else if(parseInt(record.data.roleId)==parseInt(currentId)){
                     	    		return false;
                     	    	}else{
                                     return true;
@@ -150,7 +153,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	listeners: {
                     	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
                     	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                    	    	if(parseInt(record.data.roleId)==parseInt(currentId)){
+                    	    	var currentUserRoleReportEdit=Ext.getCmp("currentUserRoleReportEdit_Id").getValue();
+                    	    	if(currentUserRoleReportEdit==0){
+                    	    		return false;
+                    	    	}else if(parseInt(record.data.roleId)==parseInt(currentId)){
                     	    		return false;
                     	    	}else{
                                     return true;
@@ -173,7 +179,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	listeners: {
                     	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
                     	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                    	    	if(parseInt(record.data.roleId)==parseInt(currentId)){
+                    	    	var currentUserRoleVideoKeyEdit=Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue();
+                    	    	if(currentUserRoleVideoKeyEdit==0){
+                    	    		return false;
+                    	    	}else if(parseInt(record.data.roleId)==parseInt(currentId)){
                     	    		return false;
                     	    	}else{
                                     return true;

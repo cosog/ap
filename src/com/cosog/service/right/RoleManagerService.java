@@ -94,6 +94,7 @@ private CommonDataService service;
 	public String getRoleList(Map map,Page pager,User user) {
 		String roleName = (String) map.get("roleName");
 		StringBuffer result_json = new StringBuffer();
+		String currentTabs=user.getTabIds();
 		String currentId="";
 		String currentLevel="";
 		String currentShowLevel="";
@@ -107,8 +108,10 @@ private CommonDataService service;
 				+ " role_reportedit as roleReportEdit,decode(t.role_reportedit,1,'是','否') as roleReportEditName,"
 				+ " role_videokeyedit as roleVideoKeyEdit,decode(t.role_videokeyedit,1,'是','否') as roleVideoKeyEditName,"
 				+ " showLevel,remark"
-				+ " from  tbl_role t"
-				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " from  viw_role t"
+				+ " where 1=1 "
+				+ " and t.role_id not in( select distinct(t5.rt_roleid) from TBL_TAB2ROLE t5 where t5.rt_tabid not in("+currentTabs+") )"
+				+ " and t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")";
 		if (StringManagerUtils.isNotNull(roleName)) {
 			sql+=" and t.role_Name like '%" + roleName + "%' ";
@@ -119,6 +122,7 @@ private CommonDataService service;
 		List<?> currentUserLevelList = this.findCallSql(currentRoleLevel);
 		if(currentUserLevelList.size()>0){
 			Object[] obj = (Object[]) currentUserLevelList.get(0);
+			
 			currentId=obj[0]+"";
 			currentLevel=obj[1]+"";
 			currentShowLevel=obj[2]+"";
@@ -137,6 +141,7 @@ private CommonDataService service;
 		
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
+
 			result_json.append("{\"roleId\":"+obj[0]+",");
 			result_json.append("\"roleName\":\""+obj[1]+"\",");
 			result_json.append("\"roleLevel\":\""+obj[2]+"\",");
@@ -148,6 +153,7 @@ private CommonDataService service;
 			result_json.append("\"roleVideoKeyEditName\":"+(StringManagerUtils.stringToInteger(obj[7]+"")==1)+",");
 			result_json.append("\"showLevel\":\""+obj[9]+"\",");
 			result_json.append("\"remark\":\""+obj[10]+"\"},");
+		
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);

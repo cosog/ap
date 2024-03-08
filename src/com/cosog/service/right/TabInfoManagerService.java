@@ -39,6 +39,33 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 		return this.findCallSql(queryString);
 	}
 	
+	public String queryTabs(User user) {
+		StringBuffer tabIdString = new StringBuffer();
+		String queryString = "select t.id from tbl_tabinfo t where 1=1 ";
+		if(user!=null){
+			queryString+= " and t.id in "
+					+ " ("
+					+ " select distinct(rt.rt_tabid) "
+					+ " from tbl_user u,"
+					+ " tbl_role r,"
+					+ " tbl_tab2role rt "
+					+ " where r.role_id= rt.rt_roleid and r.role_id=u.user_type "
+					+ " and u.user_no="+user.getUserNo()
+					+" ) ";
+		}
+		queryString+= " order by t.sortnum";
+		
+		List<?> list=getBaseDao().findCallSql(queryString);
+		for(int i=0;i<list.size();i++){
+			tabIdString.append(list.get(i)+",");
+		}
+		if(tabIdString.toString().endsWith(",")){
+			tabIdString.deleteCharAt(tabIdString.length() - 1);
+		}
+		
+		return tabIdString.toString();
+	}
+	
 	public String getArrayTojsonPage(String data) {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("{success:true");

@@ -182,8 +182,10 @@ public class LogQueryService<T> extends BaseService<T>  {
 		DataDictionary ddic = null;
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
+		String currentTabs=user.getTabIds();
 		String sql=ddic.getSql()+" from viw_systemlog t where "
 				+ "t.orgid in ("+orgId+") "
+				+ " and t.role_id not in( select distinct(t5.rt_roleid) from TBL_TAB2ROLE t5 where t5.rt_tabid not in("+currentTabs+") )"
 				+ " and ("
 				+ " t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
@@ -209,10 +211,12 @@ public class LogQueryService<T> extends BaseService<T>  {
 		String ddicName="logQuery_SystemLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
+		String currentTabs=user.getTabIds();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
 		String sql=ddic.getSql()+" from viw_systemlog t where "
 				+ " t.orgid in ("+orgId+") "
+				+ " and t.role_id not in( select distinct(t5.rt_roleid) from TBL_TAB2ROLE t5 where t5.rt_tabid not in("+currentTabs+") )"
 				+ " and ("
 				+ " t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
@@ -236,7 +240,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
 			String columns[]=field.split(",");
-			
+			String currentTabs=user.getTabIds();
 			List<Object> headRow = new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
 				headRow.add(heads[i]);
@@ -249,6 +253,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 					+ " t.remark,t.orgid "
 					+ " from viw_systemlog t where "
 					+ " t.orgid in ("+orgId+") "
+					+ " and t.role_id not in( select distinct(t5.rt_roleid) from TBL_TAB2ROLE t5 where t5.rt_tabid not in("+currentTabs+") )"
 					+ " and ("
 					+ " t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 					+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"

@@ -30,6 +30,7 @@ import com.cosog.model.User;
 import com.cosog.service.data.SystemdataInfoService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
+import com.cosog.service.right.TabInfoManagerService;
 import com.cosog.service.right.UserManagerService;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
@@ -63,6 +64,8 @@ public class UserLoginManagerController extends BaseController {
 	private OrgManagerService<Org> orgService;
 	@Autowired
 	private ModuleManagerService<Module> modService;
+	@Autowired
+	private TabInfoManagerService<?> tabInfoManagerService;
 
 	/**
 	 * 登录用户所属组织编码
@@ -210,6 +213,7 @@ public class UserLoginManagerController extends BaseController {
 				user.setUserOrgNames(orgService.findChildNames(user.getUserOrgid()));
 				user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 				user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
+				user.setTabIds(tabInfoManagerService.queryTabs(user));
 				user.setLoginIp(clientIp);
 				user.setLoginTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 				session.setAttribute("userLogin", user);

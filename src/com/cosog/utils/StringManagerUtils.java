@@ -4104,4 +4104,25 @@ public class StringManagerUtils {
     	}
     	return durationTime+timeUnit;
     }
+    
+    public static boolean arrStrMatch(String s1,String s2){
+    	boolean m=true;
+    	if(StringManagerUtils.isNotNull(s1)){
+    		String[] arr1=s1.split(",");
+    		if(StringManagerUtils.isNotNull(s2)){
+    			String[] arr2=s1.split(",");
+    			for(int i=0;i<arr2.length;i++){
+    				if(!StringManagerUtils.existOrNot(arr1, arr2[i])){
+    					m=false;
+    					break;
+    				}
+    			}
+    		}else{
+    			m=true;
+    		}
+    	}else {
+    		m=false;
+    	}
+    	return m;
+    }
 }

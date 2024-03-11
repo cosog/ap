@@ -80,6 +80,33 @@ public class TabInfoRecursion {
 		data = returnStr.toString();
 		return data;
 	}
+	
+	public String recursionProtocolConfigTabTreeFn(List list, TabInfo tabInfo) {
+		String data = "";
+		if (hasChild(list, tabInfo)) {
+			returnStr.append("{\"text\":\"" + tabInfo.getTabName() + "\",");
+			returnStr.append("\"parentId\":\"" + tabInfo.getParentId() + "\",");
+			returnStr.append("\"sortNum\":\"" + tabInfo.getSortNum() + "\",");
+			returnStr.append("\"tabId\":\"" + tabInfo.getId() + "\",");
+			returnStr.append("\"expanded\":true,");
+			returnStr.append("\"children\":[");
+			List childList = getChildList(list, tabInfo);
+			Iterator it = childList.iterator();
+			while (it.hasNext()) {
+				TabInfo n = (TabInfo) it.next();
+				recursionProtocolConfigTabTreeFn(list, n);
+			}
+			returnStr.append("]},");
+		} else {
+			returnStr.append("{\"tabId\":\""+tabInfo.getId()+"\",");
+			returnStr.append("\"text\":\""+tabInfo.getTabName()+"\",");
+			returnStr.append("\"parentId\":\""+tabInfo.getParentId()+"\",");
+			returnStr.append("\"sortNum\":\""+tabInfo.getSortNum()+"\",");
+			returnStr.append("\"leaf\":true},");
+		}
+		data = returnStr.toString();
+		return data;
+	}
 
 	public boolean hasChild(List list, Object[] node) { // 判断是否有子节点
 		return getChildList(list, node).size() > 0 ? true : false;

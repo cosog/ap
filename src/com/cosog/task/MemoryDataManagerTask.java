@@ -167,7 +167,7 @@ public class MemoryDataManagerTask {
 		}
 		try {
 			StringBuffer protocolBuff=null;
-			String sql="select t.id,t.name,t.code,t.items,t.sort from TBL_PROTOCOL t where 1=1 ";
+			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype from TBL_PROTOCOL t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				sql+=" and t.name='"+protocolName+"'";
 			}	
@@ -186,6 +186,7 @@ public class MemoryDataManagerTask {
 					protocolBuff.append("\"Name\":\""+rs.getString(2)+"\",");
 					protocolBuff.append("\"Code\":\""+rs.getString(3)+"\",");
 					protocolBuff.append("\"Sort\":"+rs.getInt(5)+",");
+					protocolBuff.append("\"DeviceType\":"+rs.getInt(6)+",");
 					protocolBuff.append("\"Items\":"+itemsStr+"");
 					protocolBuff.append("}");
 					

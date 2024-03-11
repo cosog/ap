@@ -9,7 +9,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
     border: false,
     initComponent: function () {
     	var me = this;
-    	Ext.create('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore');
+//    	Ext.create('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore');
     	Ext.apply(me, {
     		items: [{
             	tbar: [{
@@ -79,7 +79,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 items: [{
                 	border: true,
                 	region: 'west',
-                	width:'15%',
+                	width:'17%',
                     layout: "border",
                     border: true,
                     header: false,

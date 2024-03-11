@@ -22,7 +22,7 @@ public class ProtocolModel implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private String code;
-	
+	private Integer deviceType;
 	private Integer sort;
 
 	// Constructors
@@ -32,11 +32,12 @@ public class ProtocolModel implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ProtocolModel(Integer id, String name, String code,Integer sort) {
+	public ProtocolModel(Integer id, String name, String code,Integer deviceType,Integer sort) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.code = code;
+		this.deviceType = deviceType;
 		this.sort = sort;
 	}
 
@@ -76,5 +77,14 @@ public class ProtocolModel implements java.io.Serializable {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	@Column(name = "deviceType", precision = 22, scale = 0)
+	public Integer getDeviceType() {
+		return deviceType;
+	}
+
+	public void setDeviceType(Integer deviceType) {
+		this.deviceType = deviceType;
 	}
 }

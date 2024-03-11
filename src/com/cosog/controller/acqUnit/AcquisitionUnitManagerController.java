@@ -1739,7 +1739,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/acquisitionUnitTreeData")
 	public String acquisitionUnitTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData();
+		String tabIds = ParamUtils.getParameter(request, "tabIds");
+		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData(tabIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1766,7 +1767,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/displayUnitTreeData")
 	public String displayUnitTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData();
+		String tabIds = ParamUtils.getParameter(request, "tabIds");
+		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData(tabIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1793,7 +1795,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAddrMappingTreeData")
 	public String modbusProtocolAddrMappingTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData();
+		String tabIds = ParamUtils.getParameter(request, "tabIds");
+		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData(tabIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1871,7 +1874,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAlarmUnitTreeData")
 	public String modbusProtocolAlarmUnitTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData();
+		String tabIds=ParamUtils.getParameter(request, "tabIds");
+		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(tabIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1899,7 +1903,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusInstanceConfigTreeData")
 	public String modbusInstanceConfigTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData();
+		String tabIds = ParamUtils.getParameter(request, "tabIds");
+		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(tabIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1950,7 +1955,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusDisplayInstanceConfigTreeData")
 	public String modbusDisplayInstanceConfigTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData();
+		String tabIds = ParamUtils.getParameter(request, "tabIds");
+		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData(tabIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1989,7 +1995,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusAlarmInstanceConfigTreeData")
 	public String modbusAlarmInstanceConfigTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.getModbusAlarmProtocolInstanceConfigTreeData();
+		String tabIds = ParamUtils.getParameter(request, "tabIds");
+		String json = acquisitionUnitItemManagerService.getModbusAlarmProtocolInstanceConfigTreeData(tabIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

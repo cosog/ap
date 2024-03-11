@@ -9,8 +9,43 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     	var ModbusProtocolConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView');
     	var ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
         var ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
+        
+        Ext.create('AP.store.acquisitionUnit.ProtocolConfigTabTreeInfoStore');
     	Ext.apply(me, {
+    		layout: "border",
     		items: [{
+            	border: true,
+            	region: 'west',
+            	width:'15%',
+                layout: "border",
+                border: true,
+                header: false,
+                collapsible: true,
+                split: true,
+                collapseDirection: 'left',
+                hideMode:'offsets',
+                items: [{
+                	region: 'center',
+                	title:'标签列表',
+                	layout: 'fit',
+                	id:"ProtocolConfigTabTreePanel_Id"
+                },{
+                	region: 'south',
+                	height:'42%',
+                	title:'标签属性',
+                	collapsible: true,
+                    split: true,
+                	layout: 'fit',
+                    html:'<div class="ProtocolConfigTabPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolConfigTabPropertiesTableInfoDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	
+                        }
+                    }
+                }]
+            },{
+            	region: 'center',
+            	header: false,
     			xtype: 'tabpanel',
                 id:"ScadaDriverConfigTabPanel_Id",
                 activeTab: 0,
@@ -133,6 +168,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                     	}
                     }
                 }
+    		
     		}],
     		listeners: {
     			beforeclose: function ( panel, eOpts) {
@@ -442,3 +478,35 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
         this.callParent(arguments);
     }
 });
+
+function foreachAndSearchTabChildId(rec) {
+	var rtnArr=[];
+	const recursionTabChildId=function(chlidArray) {
+		var ch_length;
+		var ch_node = chlidArray.childNodes;
+		if (isNotVal(ch_node)) {
+			ch_length = ch_node.length;
+		} else {
+			ch_length = chlidArray.length;
+		}
+		if (ch_length > 0) {
+			if (!Ext.isEmpty(chlidArray)) {
+				Ext.Array.each(chlidArray, function(childArrNode, index, fog) {
+							var x_node_seId = fog[index].data.tabId;
+							rtnArr.push(x_node_seId);
+							// 递归
+							if (childArrNode.childNodes != null) {
+								recursionTabChildId(childArrNode.childNodes);
+							}
+						});
+			}
+		} else {
+			if (isNotVal(chlidArray)) {
+				var x_node_seId = chlidArray.data.tabId;
+				rtnArr.push(x_node_seId);
+			}
+		}
+	};
+	recursionTabChildId(rec);
+	return rtnArr.join(",");
+};

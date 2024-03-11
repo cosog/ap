@@ -427,6 +427,39 @@ public class RoleManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/constructProtocolConfigTabTreeGridTree")
+	public String constructProtocolConfigTabTreeGridTree() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		TabInfoRecursion r = new TabInfoRecursion();
+		List<TabInfo> list = this.roleTabInfoService.queryRightTabs(TabInfo.class,user);
+		boolean flag = false;
+		for (TabInfo tabInfo : list) {
+			if (tabInfo.getParentId() == 0) {
+				flag = true;
+				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
+//				break;
+			}
+
+		}
+		if (flag == false && list.size() > 0) {
+			for (TabInfo tabInfo : list) {
+				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
+			}
+
+		}
+		json = r.modifyStr(json);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("constructProtocolConfigTabTreeGridTree json==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String getRoleName() {
 		return roleName;
 	}

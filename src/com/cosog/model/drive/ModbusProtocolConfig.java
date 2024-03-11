@@ -185,6 +185,8 @@ public class ModbusProtocolConfig implements Serializable{
 	    private String Code;
 
 	    private int Sort;
+	    
+	    private int DeviceType;
 
 	    private List<Items> Items;
 
@@ -222,6 +224,12 @@ public class ModbusProtocolConfig implements Serializable{
 		}
 		public void setId(int id) {
 			Id = id;
+		}
+		public int getDeviceType() {
+			return DeviceType;
+		}
+		public void setDeviceType(int deviceType) {
+			DeviceType = deviceType;
 		}
 	}
 }

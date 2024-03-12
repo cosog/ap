@@ -31,16 +31,16 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
             },
             listeners: {
             	beforeload: function (store, options) {
-            		var deviceTypeObj=Ext.getCmp('modbusProtocolDisplayInstanceDeviceTypeComb_Id');
-            		var deviceType=0;
-            		if(isNotVal(deviceTypeObj)){
-            			deviceType=deviceTypeObj.getValue();
-            		}
-            		var new_params = {
-            				deviceType:deviceType
-    					};
-    					Ext.apply(store.proxy.extraParams,new_params);
-            	}
+					var tabIds='';
+		        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+		        	if(tabTreeGridPanelSelection.length>0){
+		        		tabIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+		        	}
+					var new_params = {
+							tabIds: tabIds
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
             }
         });
         

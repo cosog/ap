@@ -40,7 +40,13 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
 			autoLoad : true,
 			listeners : {
 				beforeload : function(store, options) {
+					var tabIds='';
+		        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+		        	if(tabTreeGridPanelSelection.length>0){
+		        		tabIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+		        	}
 					var new_params = {
+							tabIds: tabIds
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}

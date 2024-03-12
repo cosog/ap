@@ -21,18 +21,22 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
+            	xtype: 'label',
+            	id: 'protocolWinTabLabel_Id',
+            	hidden:true,
+            	html: ''
+            },{
                 xtype: "hidden",
                 fieldLabel: '序号',
                 id: 'formModbusProtocol_Id',
                 anchor: '100%',
                 name: "protocolModel.id"
-            },
-//            {
-//				xtype : "hidden",
-//				id : 'modbusProtocolDeviceType_Id',
-//				value:'0',
-//				name : "protocolModel.deviceType"
-//			},
+            },{
+				xtype : "hidden",
+				id : 'modbusProtocolDeviceType_Id',
+				value:'0',
+				name : "protocolModel.deviceType"
+			},
 //			{
 //            	xtype : "combobox",
 //				fieldLabel : '设备类型<font color=red>*</font>',

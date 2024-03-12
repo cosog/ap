@@ -40,7 +40,13 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 			autoLoad : true,
 			listeners : {
 				beforeload : function(store, options) {
+					var tabIds='';
+		        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+		        	if(tabTreeGridPanelSelection.length>0){
+		        		tabIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+		        	}
 					var new_params = {
+							tabIds: tabIds
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -92,8 +98,14 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 			listeners : {
 				beforeload : function(store, options) {
 					var protocol=Ext.getCmp('formDisplayUnitProtocolComb_Id').getValue();
+					var tabIds='';
+		        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+		        	if(tabTreeGridPanelSelection.length>0){
+		        		tabIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+		        	}
 					var new_params = {
-						protocol:protocol
+						protocol:protocol,
+						tabIds:tabIds
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}

@@ -12,12 +12,48 @@ Ext.define('AP.controller.acquisitionUnit.AcquisitionUnitInfoControl', {
 });
 
 function addModbusProtocolAddrMappingConfigData() {
-    var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
-        title: '创建协议'
-    });
-    window.show();
-    Ext.getCmp("addFormModbusProtocol_Id").show();
-    Ext.getCmp("updateFormaModbusProtocol_Id").hide();
+	var selectedTabName="";
+	var selectedTabId="";
+	var tabTreeStore = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getStore();
+	var count=tabTreeStore.getCount();
+	var tabTreeSelection = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+	var rec=null;
+	if (tabTreeSelection.length > 0) {
+		rec=tabTreeSelection[0];
+		selectedTabName=foreachAndSearchTabAbsolutePath(tabTreeStore.data.items,tabTreeSelection[0].data.tabId);
+		selectedTabId=tabTreeSelection[0].data.tabId;
+	} else {
+		if(count>0){
+			rec=orgTreeStore.getAt(0);
+			selectedTabName=orgTreeStore.getAt(0).data.text;
+			selectedTabId=orgTreeStore.getAt(0).data.tabId;
+		}
+	}
+	
+	if(selectedTabId!=""){
+		if (rec.isLeaf()) {
+			var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
+		        title: '创建协议'
+		    });
+		    window.show();
+		    
+		    Ext.getCmp("protocolWinTabLabel_Id").setHtml("协议将添加到【<font color=red>"+selectedTabName+"</font>】标签下,请确认<br/>&nbsp;");
+		    Ext.getCmp("protocolWinTabLabel_Id").show();
+		    
+		    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedTabId);
+		    
+		    Ext.getCmp("addFormModbusProtocol_Id").show();
+		    Ext.getCmp("updateFormaModbusProtocol_Id").hide();
+		}else{
+			Ext.MessageBox.alert("信息","协议只能添加到标签叶子节点下。");
+		}
+	}else{
+		Ext.MessageBox.alert("信息","请先选择标签。");
+	}
+	
+	
+	
+	
     return false;
 };
 

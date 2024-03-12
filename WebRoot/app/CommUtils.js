@@ -2520,6 +2520,36 @@ function isExist(arr,data){
 	}
 	return r;
 };
+
+function foreachAndSearchTabAbsolutePath(tabStoreData, tabId) {
+	var rtnArr=[];
+	var rtnStr="";
+	const foreachAndSearchTabAbsolutePathname=function(storeData, id) {
+		if(storeData){
+			for(let record of storeData){
+				if(record.data.tabId===id){
+					if(record.parentNode){
+						foreachAndSearchTabAbsolutePathname(storeData,record.parentNode.data.tabId);
+					}
+					rtnArr.push(record.data.text);
+				}else{
+//					if(record.childNodes){
+//						foreachAndSearchOrgAbsolutePathname(record.childNodes,tabId);
+//					}
+				}
+			}
+		}
+	};
+	foreachAndSearchTabAbsolutePathname(tabStoreData, tabId);
+	for(var i=0;i<rtnArr.length;i++){
+		rtnStr+=rtnArr[i];
+		if(i<rtnArr.length-1){
+			rtnStr+="/";
+		}
+	}
+	return rtnStr;
+}
+
 function foreachAndSearchOrgAbsolutePath(orgStoreData, orgId) {
 	var rtnArr=[];
 	var rtnStr="";

@@ -12,35 +12,35 @@ Ext.define('AP.controller.acquisitionUnit.AcquisitionUnitInfoControl', {
 });
 
 function addModbusProtocolAddrMappingConfigData() {
-	var selectedTabName="";
-	var selectedTabId="";
+	var selectedDeviceTypeName="";
+	var selectedDeviceTypeId="";
 	var tabTreeStore = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getStore();
 	var count=tabTreeStore.getCount();
 	var tabTreeSelection = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
 	var rec=null;
 	if (tabTreeSelection.length > 0) {
 		rec=tabTreeSelection[0];
-		selectedTabName=foreachAndSearchTabAbsolutePath(tabTreeStore.data.items,tabTreeSelection[0].data.tabId);
-		selectedTabId=tabTreeSelection[0].data.tabId;
+		selectedDeviceTypeName=foreachAndSearchTabAbsolutePath(tabTreeStore.data.items,tabTreeSelection[0].data.deviceTypeId);
+		selectedDeviceTypeId=tabTreeSelection[0].data.deviceTypeId;
 	} else {
 		if(count>0){
 			rec=orgTreeStore.getAt(0);
-			selectedTabName=orgTreeStore.getAt(0).data.text;
-			selectedTabId=orgTreeStore.getAt(0).data.tabId;
+			selectedDeviceTypeName=orgTreeStore.getAt(0).data.text;
+			selectedDeviceTypeId=orgTreeStore.getAt(0).data.deviceTypeId;
 		}
 	}
 	
-	if(selectedTabId!=""){
+	if(selectedDeviceTypeId!=""){
 		if (rec.isLeaf()) {
 			var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
 		        title: '创建协议'
 		    });
 		    window.show();
 		    
-		    Ext.getCmp("protocolWinTabLabel_Id").setHtml("协议将添加到【<font color=red>"+selectedTabName+"</font>】标签下,请确认<br/>&nbsp;");
+		    Ext.getCmp("protocolWinTabLabel_Id").setHtml("协议将添加到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
 		    Ext.getCmp("protocolWinTabLabel_Id").show();
 		    
-		    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedTabId);
+		    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedDeviceTypeId);
 		    
 		    Ext.getCmp("addFormModbusProtocol_Id").show();
 		    Ext.getCmp("updateFormaModbusProtocol_Id").hide();

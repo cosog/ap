@@ -313,13 +313,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String sql="select t.id,t.devicename,t2.commstatus,"
 					+ " decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.tabname as devicetypename,"
+					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.name as devicetypename,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
-					+ " left outer join tbl_tabinfo c1 on c1.id=t.devicetype "
+					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
 					+ " where  t.orgid in ("+orgId+") "
 					+ " and t.devicetype="+deviceType;
 			

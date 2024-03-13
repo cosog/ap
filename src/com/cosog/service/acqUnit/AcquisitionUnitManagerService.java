@@ -30,6 +30,7 @@ import com.cosog.model.ProtocolModel;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
+import com.cosog.model.User;
 import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
@@ -3479,19 +3480,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getAcquisitionUnitTreeData(String tabIds){
+	public String getAcquisitionUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
 					+ " from tbl_acq_unit_conf t,tbl_protocol t2"
 					+ " where t.protocol=t2.name";
-			if(StringManagerUtils.isNotNull(tabIds)){
-				unitSql+=" and t2.devicetype in ("+tabIds+")";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				unitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
 			}else{
 				unitSql+=" and 1=2 ";
 			}
@@ -3506,7 +3507,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					tree_json.append("{\"classes\":1,");
 					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -3632,19 +3633,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDisplayUnitTreeData(String tabIds){
+	public String getDisplayUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname "
 					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
-			if(StringManagerUtils.isNotNull(tabIds)){
-				unitSql+=" and t3.devicetype in ("+tabIds+")";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				unitSql+=" and t3.devicetype in ("+deviceTypeIds+")";
 			}else{
 				unitSql+=" and 1=2 ";
 			}
@@ -3654,7 +3655,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					tree_json.append("{\"classes\":1,");
 					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -3727,19 +3728,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String modbusProtocolAddrMappingTreeData(String tabIds){
+	public String modbusProtocolAddrMappingTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
 		tree_json.append("[");
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		if(modbusProtocolConfig!=null){
 			//排序
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				
-				if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					tree_json.append("{\"classes\":1,");
 					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -3762,10 +3763,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String modbusProtocolAndAcqUnitTreeData(String tabIds){
+	public String modbusProtocolAndAcqUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		result_json.append("[");
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol from tbl_acq_unit_conf t order by t.protocol,t.id";
@@ -3773,7 +3774,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			//排序
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					result_json.append("{\"classes\":1,");
 					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -3809,17 +3810,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String modbusProtocolAndDisplayUnitTreeData(String tabIds){
+	public String modbusProtocolAndDisplayUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		result_json.append("[");
 		if(modbusProtocolConfig!=null){
 			String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol "
 					+ " from tbl_display_unit_conf t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
 					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
-			if(StringManagerUtils.isNotNull(tabIds)){
-				alarmUnitSql+=" and t3.devicetype in ("+tabIds+")";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				alarmUnitSql+=" and t3.devicetype in ("+deviceTypeIds+")";
 			}else{
 				alarmUnitSql+=" and 1=2 ";
 			}
@@ -3829,7 +3830,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					result_json.append("{\"classes\":1,");
 					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -3866,17 +3867,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	
-	public String modbusProtocolAndAlarmUnitTreeData(String tabIds){
+	public String modbusProtocolAndAlarmUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		result_json.append("[");
 		if(modbusProtocolConfig!=null){
 			String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol "
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
 					+ " where t.protocol=t2.name ";
-			if(StringManagerUtils.isNotNull(tabIds)){
-				alarmUnitSql+=" and t2.devicetype in ("+tabIds+")";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				alarmUnitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
 			}else{
 				alarmUnitSql+=" and 1=2 ";
 			}
@@ -3886,7 +3887,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					result_json.append("{\"classes\":1,");
 					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -4024,19 +4025,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String modbusProtocolAlarmUnitTreeData(String tabIds){
+	public String modbusProtocolAlarmUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol"
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
 					+ " where t.protocol=t2.name ";
-			if(StringManagerUtils.isNotNull(tabIds)){
-				unitSql+=" and t2.devicetype in ("+tabIds+")";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				unitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
 			}else{
 				unitSql+=" and 1=2 ";
 			}
@@ -4046,7 +4047,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					tree_json.append("{\"classes\":1,");
 					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -4174,11 +4175,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolInstanceConfigTreeData(String tabIds){
+	public String getModbusProtocolInstanceConfigTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		tree_json.append("[");
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
@@ -4186,8 +4187,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.sort,t.unitid,t2.unit_name "//13~15
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.name";
-		if(StringManagerUtils.isNotNull(tabIds)){
-			sql+=" and t3.devicetype in ("+tabIds+")";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
 		}else{
 			sql+=" and 1=2 ";
 		}	
@@ -4318,16 +4319,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusDisplayProtocolInstanceConfigTreeData(String tabIds){
+	public String getModbusDisplayProtocolInstanceConfigTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		tree_json.append("[");
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
-		if(StringManagerUtils.isNotNull(tabIds)){
-			sql+=" and t4.devicetype in ("+tabIds+")";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+=" and t4.devicetype in ("+deviceTypeIds+")";
 		}else{
 			sql+=" and 1=2 ";
 		}
@@ -4448,16 +4449,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusAlarmProtocolInstanceConfigTreeData(String tabIds){
+	public String getModbusAlarmProtocolInstanceConfigTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name";
-		if(StringManagerUtils.isNotNull(tabIds)){
-			sql+=" and t3.devicetype in ("+tabIds+")";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
 		}else{
 			sql+=" and 1=2 ";
 		}
@@ -4528,16 +4529,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtoclCombList(String tabIds){
+	public String getModbusProtoclCombList(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		//排序
 		Collections.sort(modbusProtocolConfig.getProtocol());
 		
 		result_json.append("{\"totals\":"+modbusProtocolConfig.getProtocol().size()+",\"list\":[");
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(StringManagerUtils.existOrNot(tabIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+			if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 				result_json.append("{boxkey:\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\",");
 				result_json.append("boxval:\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\"},");
 			}
@@ -4628,14 +4629,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	
 	
-	public String getAcquisitionUnitCombList(String protocol,String tabIds){
+	public String getAcquisitionUnitCombList(String protocol,String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
-		String[] tabIdArr=tabIds.split(",");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.unit_name "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2 "
 				+ " where t.protocol=t2.name";
-		if(StringManagerUtils.isNotNull(tabIds)){
-			sql+=" and t2.devicetype in ("+tabIds+")";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+=" and t2.devicetype in ("+deviceTypeIds+")";
 		}else{
 			sql+=" and 1=2 ";
 		}
@@ -8333,6 +8334,69 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		final String hql = "DELETE ProtocolReportInstance u where u.id in (" + ids + ")";
 		super.bulkObjectDelete(hql);
+	}
+	
+	public String getProtocolDeviceTypeChangeProtocolList(String deviceTypeIds) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",width:120 ,children:[] }"
+				+ "]";
+		
+		String sql="select t.id,t.name,t.devicetype,t2.allpath "
+				+ " from tbl_protocol t, viw_devicetypeinfo t2 "
+				+ " where t.devicetype=t2.id ";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+= " and t.devicetype in("+deviceTypeIds+") ";
+		}else{
+			sql+=" 1=2";
+		}
+		sql+= " order by t.sort";
+		List<?> list=this.findCallSql(sql);
+		
+		
+		result_json.append("{\"success\":true,\"columns\":"+columns+",\"totalCount\":"+list.size()+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"deviceType\":\""+obj[2]+"\",");
+			result_json.append("\"deviceTypeName\":\""+obj[3]+"\"},");
+		}
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
+	public void changeProtocolDeviceType(String selectedProtocolId,String selectedDeviceTypeId) throws Exception {
+		if(StringManagerUtils.stringToInteger(selectedDeviceTypeId)>0 && StringManagerUtils.isNotNull(selectedProtocolId)){
+			String sql = "update tbl_protocol t set t.devicetype="+selectedDeviceTypeId+" where t.id in ("+selectedProtocolId+")";
+			this.getBaseDao().updateOrDeleteBySql(sql);
+			
+			Jedis jedis=null;
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+				String [] protocolArr=selectedProtocolId.split(",");
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(StringManagerUtils.existOrNot(protocolArr, modbusProtocolConfig.getProtocol().get(i).getId()+"")){
+						modbusProtocolConfig.getProtocol().get(i).setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
+					}
+				}
+				jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				if(jedis!=null){
+					jedis.close();
+				}
+			}
+		}
 	}
 	
 	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {

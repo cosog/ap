@@ -25,14 +25,14 @@ Ext.define('AP.view.role.RightTabInfoTreeGridView', {
             store: tabStore,
             columns: [{
             	xtype: 'treecolumn',
-            	text: '标签列表',
+            	text: '设备类型',
             	flex: 8,
             	align: 'left',
             	dataIndex: 'text'
             },{
-            	header: 'tabIdaa',
+            	header: 'deviceTypeIdaa',
             	hidden: true,
-            	dataIndex: 'tabId'
+            	dataIndex: 'deviceTypeId'
             }]
         });
         this.callParent(arguments);

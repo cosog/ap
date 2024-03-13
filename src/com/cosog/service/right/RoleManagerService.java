@@ -94,7 +94,7 @@ private CommonDataService service;
 	public String getRoleList(Map map,Page pager,User user) {
 		String roleName = (String) map.get("roleName");
 		StringBuffer result_json = new StringBuffer();
-		String currentTabs=user.getTabIds();
+		String currentTabs=user.getDeviceTypeIds();
 		String currentId="";
 		String currentLevel="";
 		String currentShowLevel="";
@@ -110,7 +110,7 @@ private CommonDataService service;
 				+ " showLevel,remark"
 				+ " from  viw_role t"
 				+ " where 1=1 "
-				+ " and t.role_id not in( select distinct(t5.rt_roleid) from TBL_TAB2ROLE t5 where t5.rt_tabid not in("+currentTabs+") )"
+				+ " and t.role_id not in( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
 				+ " and t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")";
 		if (StringManagerUtils.isNotNull(roleName)) {
@@ -183,7 +183,7 @@ private CommonDataService service;
 		getBaseDao().saveOrUpdateObject(roleModule);
 	}
 	
-	public void saveOrUpdateRoleTab(T roleTab) throws Exception {
+	public void saveOrUpdateRoleDeviceType(T roleTab) throws Exception {
 		getBaseDao().saveOrUpdateObject(roleTab);
 	}
 
@@ -244,9 +244,9 @@ private CommonDataService service;
 	
 	public List<T> queryRightTabs(Class<T> clazz, User user) throws Exception {
 		
-		String queryString = "SELECT tab FROM TabInfo tab where tab.id in " 
-				+ "( select distinct rt.rtTabId from User u ,Role role,RoleTab rt "
-				+ "where  role.roleId =rt.rtRoleId   " 
+		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.id in " 
+				+ "( select distinct rt.rdDeviceTypeId from User u ,Role role,RoleDeviceType rt "
+				+ "where  role.roleId =rt.rdRoleId   " 
 				+ " and role.roleId = u.userType   and u.userNo="
 				+ user.getUserNo() + ") order by tab.sortNum, tab.id";
 		return find(queryString);

@@ -2521,26 +2521,26 @@ function isExist(arr,data){
 	return r;
 };
 
-function foreachAndSearchTabAbsolutePath(tabStoreData, tabId) {
+function foreachAndSearchTabAbsolutePath(tabStoreData, deviceTypeId) {
 	var rtnArr=[];
 	var rtnStr="";
 	const foreachAndSearchTabAbsolutePathname=function(storeData, id) {
 		if(storeData){
 			for(let record of storeData){
-				if(record.data.tabId===id){
+				if(record.data.deviceTypeId===id){
 					if(record.parentNode){
-						foreachAndSearchTabAbsolutePathname(storeData,record.parentNode.data.tabId);
+						foreachAndSearchTabAbsolutePathname(storeData,record.parentNode.data.deviceTypeId);
 					}
 					rtnArr.push(record.data.text);
 				}else{
 //					if(record.childNodes){
-//						foreachAndSearchOrgAbsolutePathname(record.childNodes,tabId);
+//						foreachAndSearchOrgAbsolutePathname(record.childNodes,deviceTypeId);
 //					}
 				}
 			}
 		}
 	};
-	foreachAndSearchTabAbsolutePathname(tabStoreData, tabId);
+	foreachAndSearchTabAbsolutePathname(tabStoreData, deviceTypeId);
 	for(var i=0;i<rtnArr.length;i++){
 		rtnStr+=rtnArr[i];
 		if(i<rtnArr.length-1){

@@ -61,7 +61,7 @@ public class User implements java.io.Serializable {
 	private Integer roleReportEdit;
 	private Integer roleVideoKeyEdit;
 	
-	private String tabIds;
+	private String deviceTypeIds;
 
 	/**
 	 * 组织节点orgCode集合
@@ -393,11 +393,11 @@ public class User implements java.io.Serializable {
 	}
 
 	@Transient
-	public String getTabIds() {
-		return tabIds;
+	public String getDeviceTypeIds() {
+		return deviceTypeIds;
 	}
 
-	public void setTabIds(String tabIds) {
-		this.tabIds = tabIds;
+	public void setDeviceTypeIds(String deviceTypeIds) {
+		this.deviceTypeIds = deviceTypeIds;
 	}
 }

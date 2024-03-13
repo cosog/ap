@@ -247,7 +247,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】模块授权");
                         		clkLoadAjaxFn();
                         		
-                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】标签授权");
+                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】设备类型授权");
                         		clkLoadTabAjaxFn();
                         		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();

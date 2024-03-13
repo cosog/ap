@@ -183,6 +183,7 @@ public class MemoryDataManagerTask {
 					}
 					protocolBuff=new StringBuffer();
 					protocolBuff.append("{");
+					protocolBuff.append("\"Id\":\""+rs.getInt(1)+"\",");
 					protocolBuff.append("\"Name\":\""+rs.getString(2)+"\",");
 					protocolBuff.append("\"Code\":\""+rs.getString(3)+"\",");
 					protocolBuff.append("\"Sort\":"+rs.getInt(5)+",");

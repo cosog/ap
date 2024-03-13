@@ -26,8 +26,8 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.Module;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
-import com.cosog.model.RoleTab;
-import com.cosog.model.TabInfo;
+import com.cosog.model.RoleDeviceType;
+import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.User;
 import com.cosog.service.right.RoleManagerService;
 import com.cosog.task.MemoryDataManagerTask;
@@ -38,7 +38,7 @@ import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
-import com.cosog.utils.TabInfoRecursion;
+import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.google.gson.Gson;
 
 /** <p>描述：角色维护管理Action</p>
@@ -56,11 +56,11 @@ public class RoleManagerController extends BaseController {
 	@Autowired
 	private RoleManagerService<Role> roleService;
 	@Autowired
-	private RoleManagerService<TabInfo> roleTabInfoService;
+	private RoleManagerService<DeviceTypeInfo> roleTabInfoService;
 	@Autowired
 	private RoleManagerService<RoleModule> roleModuleService;
 	@Autowired
-	private RoleManagerService<RoleTab> roleTabService;
+	private RoleManagerService<RoleDeviceType> roleTabService;
 	private List<Role> list;
 	private Role role;
 	private String limit;
@@ -85,10 +85,10 @@ public class RoleManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			String addModuleIds = ParamUtils.getParameter(request, "addModuleIds");
-			String addTabIds = ParamUtils.getParameter(request, "addTabIds");
+			String addDeviceTypeIds = ParamUtils.getParameter(request, "addDeviceTypeIds");
 			this.roleService.addRole(role);
 			
-			if(StringManagerUtils.isNotNull(addModuleIds) || StringManagerUtils.isNotNull(addTabIds)){
+			if(StringManagerUtils.isNotNull(addModuleIds) || StringManagerUtils.isNotNull(addDeviceTypeIds)){
 				String sql="select t.role_id from TBL_ROLE t where t.role_name='"+role.getRoleName()+"'";
 				List<?> list=this.roleService.findCallSql(sql);
 				if(list.size()>0){
@@ -108,16 +108,16 @@ public class RoleManagerController extends BaseController {
 							}
 						}
 						
-						if(StringManagerUtils.isNotNull(addTabIds)){
-							String[] tabIdArr=addTabIds.split(",");
-							for(int i=0;i<tabIdArr.length;i++){
-								int tabId=StringManagerUtils.stringToInteger(tabIdArr[i]);
-								if(tabId>0){
-									RoleTab r=new RoleTab();
-									r.setRtRoleId(addRoleId);
-									r.setRtTabId(tabId);
-									r.setRtMatrix("0,0,0");
-									this.roleTabService.saveOrUpdateRoleTab(r);
+						if(StringManagerUtils.isNotNull(addDeviceTypeIds)){
+							String[] deviceTypeIdArr=addDeviceTypeIds.split(",");
+							for(int i=0;i<deviceTypeIdArr.length;i++){
+								int deviceTypeId=StringManagerUtils.stringToInteger(deviceTypeIdArr[i]);
+								if(deviceTypeId>0){
+									RoleDeviceType r=new RoleDeviceType();
+									r.setRdRoleId(addRoleId);
+									r.setRdDeviceTypeId(deviceTypeId);
+									r.setRdMatrix("0,0,0");
+									this.roleTabService.saveOrUpdateRoleDeviceType(r);
 								}
 							}
 						}
@@ -399,10 +399,10 @@ public class RoleManagerController extends BaseController {
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		TabInfoRecursion r = new TabInfoRecursion();
-		List<TabInfo> list = this.roleTabInfoService.queryRightTabs(TabInfo.class,user);
+		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
+		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabs(DeviceTypeInfo.class,user);
 		boolean flag = false;
-		for (TabInfo tabInfo : list) {
+		for (DeviceTypeInfo tabInfo : list) {
 			if (tabInfo.getParentId() == 0) {
 				flag = true;
 				json = r.recursionRightTabTreeFn(list, tabInfo);
@@ -411,7 +411,7 @@ public class RoleManagerController extends BaseController {
 
 		}
 		if (flag == false && list.size() > 0) {
-			for (TabInfo tabInfo : list) {
+			for (DeviceTypeInfo tabInfo : list) {
 				json = r.recursionRightTabTreeFn(list, tabInfo);
 			}
 
@@ -432,10 +432,10 @@ public class RoleManagerController extends BaseController {
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		TabInfoRecursion r = new TabInfoRecursion();
-		List<TabInfo> list = this.roleTabInfoService.queryRightTabs(TabInfo.class,user);
+		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
+		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabs(DeviceTypeInfo.class,user);
 		boolean flag = false;
-		for (TabInfo tabInfo : list) {
+		for (DeviceTypeInfo tabInfo : list) {
 			if (tabInfo.getParentId() == 0) {
 				flag = true;
 				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
@@ -444,7 +444,7 @@ public class RoleManagerController extends BaseController {
 
 		}
 		if (flag == false && list.size() > 0) {
-			for (TabInfo tabInfo : list) {
+			for (DeviceTypeInfo tabInfo : list) {
 				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
 			}
 

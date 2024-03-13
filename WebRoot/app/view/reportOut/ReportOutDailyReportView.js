@@ -16,7 +16,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
-        	        		id: 'DailyReportPanel_'+tabInfo.children[i].tabId,
+        	        		id: 'DailyReportPanel_'+tabInfo.children[i].deviceTypeId,
         	        		activeTab: 0,
         	        		border: false,
         	        		tabPosition: 'left',
@@ -45,7 +45,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
-        						id: 'DailyReportPanel_'+tabInfo.children[i].children[j].tabId,
+        						id: 'DailyReportPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
             			if(j==0){
@@ -59,7 +59,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
-    						id: 'DailyReportPanel_'+tabInfo.children[i].tabId,
+    						id: 'DailyReportPanel_'+tabInfo.children[i].deviceTypeId,
     						border: false
         			};
         			if(i==0){

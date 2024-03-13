@@ -10,13 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
-import com.cosog.model.TabInfo;
+import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.User;
 import com.cosog.service.right.TabInfoManagerService;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.OrgRecursion;
-import com.cosog.utils.TabInfoRecursion;
+import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.google.gson.Gson;
 
 @Controller
@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 public class PageTurnController extends BaseController {
 	private static final long serialVersionUID = 1L;
 	@Autowired
-	private TabInfoManagerService<TabInfo> tabInfoManagerService;
+	private TabInfoManagerService<DeviceTypeInfo> tabInfoManagerService;
 	@RequestMapping("/toLogin")
 	public String toLogin() throws Exception {
 		Gson gson=new Gson();
@@ -55,9 +55,9 @@ public class PageTurnController extends BaseController {
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		List<?> list = this.tabInfoManagerService.queryTabs(TabInfo.class,user);
+		List<?> list = this.tabInfoManagerService.queryTabs(DeviceTypeInfo.class,user);
 		String tabInfoJson = "";
-		TabInfoRecursion r = new TabInfoRecursion();
+		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
 		if (list != null) {
 			for (Object tabinfo : list) {
 				Object[] obj = (Object[]) tabinfo;

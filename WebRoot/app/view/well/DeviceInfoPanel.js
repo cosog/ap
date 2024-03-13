@@ -123,7 +123,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 //                    Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(getDeviceTypeFromTabId("DeviceManagerTabPanel"));
 //                    window.show();
 
-                	var deviceTabName=getTabPanelActiveName("DeviceManagerTabPanel");
+                	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
                 	
                     var fields = "";
                     var heads = "";
@@ -152,8 +152,8 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 //                    + "&applicationScenarios="+applicationScenarios
                     + "&wellInformationName=" + URLencode(URLencode(wellInformationName)) 
                     + "&recordCount=10000" 
-                    + "&fileName=" + URLencode(URLencode(deviceTabName+"设备列表")) 
-                    + "&title=" + URLencode(URLencode(deviceTabName))
+                    + "&fileName=" + URLencode(URLencode(deviceTypeName+"设备列表")) 
+                    + "&title=" + URLencode(URLencode(deviceTypeName))
                     + '&key='+key;
                     exportDataMask(key,maskPanelId,cosog.string.loading);
                     openExcelWindow(url + '?flag=true' + param);
@@ -170,7 +170,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 text: '添加设备',
                 iconCls: 'add',
                 handler: function (v, o) {
-                	var deviceTabName=getTabPanelActiveName("DeviceManagerTabPanel");
+                	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
                 	var selectedOrgName="";
                 	var selectedOrgId="";
                 	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -188,7 +188,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.DeviceInfoWindow", {
-                        title: '添加'+deviceTabName+'设备'
+                        title: '添加'+deviceTypeName+'设备'
                     });
                     window.show();
                     Ext.getCmp("deviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
@@ -275,7 +275,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 hidden: false,
                 handler: function (v, o) {
                 	var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
-                	var deviceTabName=getTabPanelActiveName("DeviceManagerTabPanel");
+                	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
                 	
                 	
                 	var selectedOrgName="";
@@ -295,7 +295,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	
                 	var window = Ext.create("AP.view.well.BatchAddDeviceWindow", {
 //                        title: '设备批量添加'
-                        title: deviceTabName+'设备批量添加'
+                        title: deviceTypeName+'设备批量添加'
                     });
                     Ext.getCmp("batchAddDeviceWinOrgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
                     Ext.getCmp("batchAddDeviceType_Id").setValue(deviceType);

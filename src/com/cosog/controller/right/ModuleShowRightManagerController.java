@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.RoleModule;
-import com.cosog.model.RoleTab;
-import com.cosog.model.TabInfo;
+import com.cosog.model.RoleDeviceType;
+import com.cosog.model.DeviceTypeInfo;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.utils.Constants;
 import com.cosog.utils.ParamUtils;
@@ -37,7 +37,7 @@ public class ModuleShowRightManagerController extends BaseController implements 
 	private static final long serialVersionUID = -281275682819237996L;
 	private List<RoleModule> list;
 	private ModuleManagerService<RoleModule> moduleService;
-	private ModuleManagerService<RoleTab> roleTabService;
+	private ModuleManagerService<RoleDeviceType> roleTabService;
 	private RoleModule roleModule;
 
 	/**
@@ -91,29 +91,29 @@ public class ModuleShowRightManagerController extends BaseController implements 
 	 * @throws IOException
 	 *             为当前角色分配权限
 	 */
-	@RequestMapping("/doRoleTabSaveOrUpdate")
-	public String doRoleTabSaveOrUpdate() throws IOException {
+	@RequestMapping("/doRoleDeviceTypeSaveOrUpdate")
+	public String doRoleDeviceTypeSaveOrUpdate() throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
-		RoleTab r = null;
+		RoleDeviceType r = null;
 		try {
-			String tabIds = ParamUtils.getParameter(request, "paramsId");
+			String deviceTypeIds = ParamUtils.getParameter(request, "paramsId");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
-			log.debug("doModuleSaveOrUpdate moduleIds==" + tabIds);
+			log.debug("doModuleSaveOrUpdate moduleIds==" + deviceTypeIds);
 			String roleId = ParamUtils.getParameter(request, "roleId");
-			String tabId[] = StringManagerUtils.split(tabIds, ",");
+			String deviceTypeId[] = StringManagerUtils.split(deviceTypeIds, ",");
 			if (roleId != null) {
 				this.moduleService.deleteCurrentTabByRoleCode(roleId);
-				if (tabId.length > 0 && matrixCodes != "" && matrixCodes != null) {
+				if (deviceTypeId.length > 0 && matrixCodes != "" && matrixCodes != null) {
 					String tab_matrix[] = matrixCodes.split("\\|");
 					for (int i = 0; i < tab_matrix.length; i++) {
-						String tab_[] = tab_matrix[i].split("\\:");
-						r = new RoleTab();
-						r.setRtRoleId(Integer.parseInt(roleId));
+						String deviceType_[] = tab_matrix[i].split("\\:");
+						r = new RoleDeviceType();
+						r.setRdRoleId(Integer.parseInt(roleId));
 						log.debug("roleCode==" + roleId);
-						r.setRtTabId(StringManagerUtils.stringTransferInteger(tab_[0]));
-						r.setRtMatrix(tab_[1]);
-						this.roleTabService.saveOrUpdateRoleTab(r);
+						r.setRdDeviceTypeId(StringManagerUtils.stringTransferInteger(deviceType_[0]));
+						r.setRdMatrix(deviceType_[1]);
+						this.roleTabService.saveOrUpdateRoleDeviceType(r);
 					}
 				}
 			}
@@ -199,7 +199,7 @@ public class ModuleShowRightManagerController extends BaseController implements 
 		// Gson g = new Gson();
 		String roleId = ParamUtils.getParameter(request, "roleId");
 		Gson g = new Gson();
-		List<RoleTab> list = roleTabService.queryCurrentRoleTabs(RoleTab.class, roleId);
+		List<RoleDeviceType> list = roleTabService.queryCurrentRoleDeviceTypes(RoleDeviceType.class, roleId);
 		String json = "";
 		json = g.toJson(list);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -237,12 +237,12 @@ public class ModuleShowRightManagerController extends BaseController implements 
 		this.roleModule = roleModule;
 	}
 
-	public ModuleManagerService<RoleTab> getRoleTabService() {
+	public ModuleManagerService<RoleDeviceType> getRoleDeviceTypeService() {
 		return roleTabService;
 	}
 
 	@Resource
-	public void setRoleTabService(ModuleManagerService<RoleTab> roleTabService) {
+	public void setRoleDeviceTypeService(ModuleManagerService<RoleDeviceType> roleTabService) {
 		this.roleTabService = roleTabService;
 	}
 }

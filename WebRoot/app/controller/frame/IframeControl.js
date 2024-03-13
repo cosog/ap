@@ -267,14 +267,14 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var tabPanel = Ext.getCmp("DeviceManagerTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
 		
-		var tabId=0;
+		var deviceTypeId=0;
 		if(tabPanel.getActiveTab().xtype=='tabpanel'){
-			tabId=tabPanel.getActiveTab().activeTab.id.split('_')[1];
+			deviceTypeId=tabPanel.getActiveTab().activeTab.id.split('_')[1];
 		}else{
-			tabId=tabPanel.getActiveTab().id.split('_')[1];
+			deviceTypeId=tabPanel.getActiveTab().id.split('_')[1];
 		}
 		
-		if(selectedDeviceType_global!=tabId){
+		if(selectedDeviceType_global!=deviceTypeId){
 //			tabPanel.setActiveTab("RPCDeviceManagerPanel");
 //			tabChange=true;
 		}

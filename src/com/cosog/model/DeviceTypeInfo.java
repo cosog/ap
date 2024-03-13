@@ -7,27 +7,27 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- *  <p>描述：tab信息 实体类  TBL_TABINFO</p>
+ *  <p>描述：tab信息 实体类  TBL_DEVICETYPEINFO</p>
  *  
  * @author zhao  2024-01-09
  *
  */
 @Entity
-@Table(name = "TBL_TABINFO")
-public class TabInfo {
+@Table(name = "TBL_DEVICETYPEINFO")
+public class DeviceTypeInfo {
 	private Integer id;
-	private String tabName;
+	private String name;
 	private Integer parentId;
 	private Integer sortNum;
-	public TabInfo() {
+	public DeviceTypeInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TabInfo(Integer id, String tabName, Integer parentId, Integer sortNum) {
+	public DeviceTypeInfo(Integer id, String name, Integer parentId, Integer sortNum) {
 		super();
 		this.id = id;
-		this.tabName = tabName;
+		this.name = name;
 		this.parentId = parentId;
 		this.sortNum = sortNum;
 	}
@@ -43,13 +43,13 @@ public class TabInfo {
 		this.id = id;
 	}
 
-	@Column(name = "tabName")
-	public String getTabName() {
-		return tabName;
+	@Column(name = "name")
+	public String getName() {
+		return name;
 	}
 
-	public void setTabName(String tabName) {
-		this.tabName = tabName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Column(name = "parentId", nullable = false)

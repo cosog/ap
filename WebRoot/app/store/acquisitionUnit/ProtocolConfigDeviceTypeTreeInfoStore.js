@@ -1,6 +1,6 @@
-Ext.define('AP.store.acquisitionUnit.ProtocolConfigTabTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.ProtocolConfigTabTreeInfoStore',
+    alias: 'widget.ProtocolConfigDeviceTypeTreeInfoStore',
     model: 'AP.model.role.RightTabTreeInfoModel',
     autoLoad: true,
     folderSort: false,
@@ -41,14 +41,14 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigTabTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '标签列表',
+                    	text: '设备类型',
                     	flex: 8,
                     	align: 'left',
                     	dataIndex: 'text'
                     },{
-                    	header: 'tabIdaa',
+                    	header: 'deviceTypeIdaa',
                     	hidden: true,
-                    	dataIndex: 'tabId'
+                    	dataIndex: 'deviceTypeId'
                     }],
                     listeners: {
                         selectionchange: function (sm, selected) {

@@ -1739,8 +1739,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/acquisitionUnitTreeData")
 	public String acquisitionUnitTreeData() throws IOException {
-		String tabIds = ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData(tabIds);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1767,8 +1767,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/displayUnitTreeData")
 	public String displayUnitTreeData() throws IOException {
-		String tabIds = ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData(tabIds);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1795,8 +1795,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAddrMappingTreeData")
 	public String modbusProtocolAddrMappingTreeData() throws IOException {
-		String tabIds = ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData(tabIds);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1808,8 +1808,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAndAcqUnitTreeData")
 	public String modbusProtocolAndAcqUnitTreeData() throws IOException {
-		String tabIds=ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(tabIds);
+		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1821,8 +1821,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAndDisplayUnitTreeData")
 	public String modbusProtocolAndDisplayUnitTreeData() throws IOException {
-		String tabIds=ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndDisplayUnitTreeData(tabIds);
+		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndDisplayUnitTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1860,8 +1860,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAndAlarmUnitTreeData")
 	public String modbusProtocolAndAlarmUnitTreeData() throws IOException {
-		String tabIds=ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndAlarmUnitTreeData(tabIds);
+		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndAlarmUnitTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1873,8 +1873,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAlarmUnitTreeData")
 	public String modbusProtocolAlarmUnitTreeData() throws IOException {
-		String tabIds=ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(tabIds);
+		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1902,8 +1902,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusInstanceConfigTreeData")
 	public String modbusInstanceConfigTreeData() throws IOException {
-		String tabIds = ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(tabIds);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1954,8 +1954,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusDisplayInstanceConfigTreeData")
 	public String modbusDisplayInstanceConfigTreeData() throws IOException {
-		String tabIds = ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData(tabIds);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1994,8 +1994,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusAlarmInstanceConfigTreeData")
 	public String modbusAlarmInstanceConfigTreeData() throws IOException {
-		String tabIds = ParamUtils.getParameter(request, "tabIds");
-		String json = acquisitionUnitItemManagerService.getModbusAlarmProtocolInstanceConfigTreeData(tabIds);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.getModbusAlarmProtocolInstanceConfigTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2041,8 +2041,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getModbusProtoclCombList")
 	public String getModbusProtoclCombList() throws IOException {
-		String tabIds=ParamUtils.getParameter(request, "tabIds");
-		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList(tabIds);
+		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2081,8 +2081,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getAcquisitionUnitCombList")
 	public String getAcquisitionUnitCombList() throws IOException {
 		String protocol = ParamUtils.getParameter(request, "protocol");
-		String tabIds = ParamUtils.getParameter(request, "tabIds");
-		String json=acquisitionUnitItemManagerService.getAcquisitionUnitCombList(protocol,tabIds);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json=acquisitionUnitItemManagerService.getAcquisitionUnitCombList(protocol,deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4050,7 +4050,46 @@ public class AcquisitionUnitManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/getProtocolDeviceTypeChangeProtocolList")
+	public String getProtocolDeviceTypeChangeProtocolList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		deviceTypeIds="";
+		if (!StringManagerUtils.isNotNull(deviceTypeIds)) {
+			User user = null;
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				deviceTypeIds = "" + user.getDeviceTypeIds();
+			}
+		}
+		String json = this.acquisitionUnitItemManagerService.getProtocolDeviceTypeChangeProtocolList(deviceTypeIds);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
+	@RequestMapping("/changeProtocolDeviceType")
+	public String changeProtocolDeviceType() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String selectedProtocolId = ParamUtils.getParameter(request, "selectedProtocolId");
+		String selectedDeviceTypeId=ParamUtils.getParameter(request, "selectedDeviceTypeId");
+		this.acquisitionUnitItemManagerService.changeProtocolDeviceType(selectedProtocolId,selectedDeviceTypeId);
+		String json = "{\"success\":true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String getLimit() {
 		return limit;
 	}

@@ -23,15 +23,15 @@ import redis.clients.jedis.Jedis;
 @Service("tabInfoManagerService")
 public class TabInfoManagerService<T> extends BaseService<T> {
 	public List<?> queryTabs(Class<T> clazz, User user) {
-		String queryString = "select t.id,t.parentid,t.tabname,t.sortnum from tbl_tabinfo t where 1=1 ";
+		String queryString = "select t.id,t.parentid,t.name,t.sortnum from tbl_devicetypeinfo t where 1=1 ";
 		if(user!=null){
 			queryString+= " and t.id in "
 					+ " ("
-					+ " select distinct(rt.rt_tabid) "
+					+ " select distinct(rd.rd_devicetypeid) "
 					+ " from tbl_user u,"
 					+ " tbl_role r,"
-					+ " tbl_tab2role rt "
-					+ " where r.role_id= rt.rt_roleid and r.role_id=u.user_type "
+					+ " tbl_devicetype2role rd "
+					+ " where r.role_id= rd.rd_roleid and r.role_id=u.user_type "
 					+ " and u.user_no="+user.getUserNo()
 					+" ) ";
 		}
@@ -40,16 +40,16 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 	}
 	
 	public String queryTabs(User user) {
-		StringBuffer tabIdString = new StringBuffer();
-		String queryString = "select t.id from tbl_tabinfo t where 1=1 ";
+		StringBuffer deviceIdString = new StringBuffer();
+		String queryString = "select t.id from tbl_devicetypeinfo t where 1=1 ";
 		if(user!=null){
 			queryString+= " and t.id in "
 					+ " ("
-					+ " select distinct(rt.rt_tabid) "
+					+ " select distinct(rd.rd_devicetypeid) "
 					+ " from tbl_user u,"
 					+ " tbl_role r,"
-					+ " tbl_tab2role rt "
-					+ " where r.role_id= rt.rt_roleid and r.role_id=u.user_type "
+					+ " tbl_devicetype2role rd "
+					+ " where r.role_id= rd.rd_roleid and r.role_id=u.user_type "
 					+ " and u.user_no="+user.getUserNo()
 					+" ) ";
 		}
@@ -57,13 +57,13 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 		
 		List<?> list=getBaseDao().findCallSql(queryString);
 		for(int i=0;i<list.size();i++){
-			tabIdString.append(list.get(i)+",");
+			deviceIdString.append(list.get(i)+",");
 		}
-		if(tabIdString.toString().endsWith(",")){
-			tabIdString.deleteCharAt(tabIdString.length() - 1);
+		if(deviceIdString.toString().endsWith(",")){
+			deviceIdString.deleteCharAt(deviceIdString.length() - 1);
 		}
 		
-		return tabIdString.toString();
+		return deviceIdString.toString();
 	}
 	
 	public String getArrayTojsonPage(String data) {

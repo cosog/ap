@@ -18,13 +18,13 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var tabIds='';
+        	var deviceTypeIds='';
         	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
         	if(tabTreeGridPanelSelection.length>0){
-        		tabIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
         	}
         	var new_params = {
-        			tabIds: tabIds
+        			deviceTypeIds: deviceTypeIds
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

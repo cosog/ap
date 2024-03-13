@@ -10,7 +10,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     	var ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
         var ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
         
-        Ext.create('AP.store.acquisitionUnit.ProtocolConfigTabTreeInfoStore');
+        Ext.create('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore');
     	Ext.apply(me, {
     		layout: "border",
     		items: [{
@@ -26,7 +26,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 hideMode:'offsets',
                 items: [{
                 	region: 'center',
-                	title:'标签列表',
+                	title:'设备类型',
                 	layout: 'fit',
                 	id:"ProtocolConfigTabTreePanel_Id"
                 },{
@@ -492,7 +492,7 @@ function foreachAndSearchTabChildId(rec) {
 		if (ch_length > 0) {
 			if (!Ext.isEmpty(chlidArray)) {
 				Ext.Array.each(chlidArray, function(childArrNode, index, fog) {
-							var x_node_seId = fog[index].data.tabId;
+							var x_node_seId = fog[index].data.deviceTypeId;
 							rtnArr.push(x_node_seId);
 							// 递归
 							if (childArrNode.childNodes != null) {
@@ -502,7 +502,7 @@ function foreachAndSearchTabChildId(rec) {
 			}
 		} else {
 			if (isNotVal(chlidArray)) {
-				var x_node_seId = chlidArray.data.tabId;
+				var x_node_seId = chlidArray.data.deviceTypeId;
 				rtnArr.push(x_node_seId);
 			}
 		}

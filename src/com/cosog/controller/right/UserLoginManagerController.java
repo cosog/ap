@@ -213,7 +213,7 @@ public class UserLoginManagerController extends BaseController {
 				user.setUserOrgNames(orgService.findChildNames(user.getUserOrgid()));
 				user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 				user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
-				user.setTabIds(tabInfoManagerService.queryTabs(user));
+				user.setDeviceTypeIds(tabInfoManagerService.queryTabs(user));
 				user.setLoginIp(clientIp);
 				user.setLoginTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 				session.setAttribute("userLogin", user);

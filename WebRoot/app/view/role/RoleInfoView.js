@@ -48,14 +48,14 @@ Ext.define("AP.view.role.RoleInfoView", {
         		},{
         			region:'south',
         			height:'30%',
-        			title:'标签授权',
+        			title:'设备类型授权',
         			split: true,
                     collapsible: true,
             		layout: "fit",
             		items:RightTabInfoTreeGridView,
             		tbar: [{
                         xtype: 'label',
-                        html: '标签授权',
+                        html: '设备类型授权',
                         id:'RightTabTreeInfoLabel_Id',
                         style: 'margin-left: 4px'
                     },'->', {
@@ -204,11 +204,11 @@ function selectEachTabCombox(node, root) {
         var chlidArray = node;
         if (!Ext.isEmpty(chlidArray)) {
             Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
-                var x_node_seId = chlidArray[index].data.tabId;
+                var x_node_seId = chlidArray[index].data.deviceTypeId;
 
                 Ext.Array.each(root, function (name, index,
                     countriesItSelf) {
-                    var menuselectid = root[index].rtTabId;
+                    var menuselectid = root[index].rdDeviceTypeId;
                     // 处理已选择的节点
                     if (x_node_seId == menuselectid) {
                         childArrNode.set('checked', true);
@@ -239,11 +239,11 @@ clkLoadTabAjaxFn = function () {
         url: context + '/moduleShowRightManagerController/doShowRightCurrentRoleOwnTabs?roleId=' + RightBottomRoleId,
         success: function (response, opts) {
             // 处理后
-            var tabIds = Ext.decode(response.responseText);
+            var deviceTypeIds = Ext.decode(response.responseText);
             var store_=Ext.getCmp("RightTabTreeInfoGridPanel_Id").getStore();
-            if (null != tabIds && tabIds != "") {
+            if (null != deviceTypeIds && deviceTypeIds != "") {
                 var getNode = store_.root.childNodes;
-                selectEachTabCombox(getNode, tabIds);
+                selectEachTabCombox(getNode, deviceTypeIds);
             }
         },
         failure: function (response, opts) {

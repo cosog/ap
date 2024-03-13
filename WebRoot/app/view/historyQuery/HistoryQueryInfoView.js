@@ -16,7 +16,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         				title: tabInfo.children[i].text,
         				tpl: tabInfo.children[i].text,
         				xtype: 'tabpanel',
-        	        	id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].tabId,
+        	        	id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].deviceTypeId,
         	        	activeTab: 0,
         	        	border: false,
         	        	tabPosition: 'left',
@@ -42,7 +42,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         					title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
         					tpl:tabInfo.children[i].children[j].text,
         					layout: 'fit',
-        					id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].children[j].tabId,
+        					id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         					border: false
         				};
             			if(j==0){
@@ -56,7 +56,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         				title: tabInfo.children[i].text,
         				tpl: tabInfo.children[i].text,
         				layout: 'fit',
-    					id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].tabId,
+    					id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].deviceTypeId,
     					border: false
         			};
         			if(i==0){

@@ -57,10 +57,10 @@ var SaveroleDataInfoSubmitBtnForm = function () {
         addModule.push(md_ids);
     });
     
-    var addTab = [];
+    var addDeviceType = [];
     Ext.Array.each(_tabRecord, function (name, index, countriesItSelf) {
-        var tabId = _tabRecord[index].get('tabId')
-        addTab.push(tabId);
+        var deviceTypeId = _tabRecord[index].get('deviceTypeId')
+        addDeviceType.push(deviceTypeId);
     });
     
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
@@ -89,7 +89,7 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             },
             params: {
             	addModuleIds: addModule.join(","),
-            	addTabIds: addTab.join(",")
+            	addDeviceTypeIds: addDeviceType.join(",")
             }
         });
     } else {
@@ -365,7 +365,7 @@ var grantRoleTabPermission = function () {//授予角色模块权限
     }else{
     	_record = righttab_panel.getChecked();
     }
-    var addUrl = context + '/moduleShowRightManagerController/doRoleTabSaveOrUpdate'
+    var addUrl = context + '/moduleShowRightManagerController/doRoleDeviceTypeSaveOrUpdate'
         // 添加条件
     var addjson = [];
     var matrixData = "";
@@ -384,7 +384,7 @@ var grantRoleTabPermission = function () {//授予角色模块权限
     }
 
     Ext.Array.each(_record, function (name, index, countriesItSelf) {
-        var tab_ids = _record[index].get('tabId')
+        var tab_ids = _record[index].get('deviceTypeId')
         addjson.push(tab_ids);
         var matrix_value = "";
         matrix_value = '0,0,0,';

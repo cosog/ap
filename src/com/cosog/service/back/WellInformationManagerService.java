@@ -540,8 +540,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
-		String sql = "SELECT t.id,t.tabname "
-				+ " FROM TBL_TABINFO t "
+		String sql = "SELECT t.id,t.name "
+				+ " FROM TBL_DEVICETYPEINFO t "
 				+ " START WITH t.parentid = 0 "
 				+ " CONNECT BY t.parentid = PRIOR t.id "
 				+ " ORDER SIBLINGS BY t.id ";

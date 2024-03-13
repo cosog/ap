@@ -198,12 +198,12 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		return getBaseDao().find(queryString);
 	}
 	
-	public List<T> queryCurrentRoleTabs(Class<T> clazz, String roleId) {
-		String queryString = "select rt From Role r,RoleTab rt where  rt.rtRoleId=r.roleId ";
+	public List<T> queryCurrentRoleDeviceTypes(Class<T> clazz, String roleId) {
+		String queryString = "select rt From Role r,RoleDeviceType rt where  rt.rdRoleId=r.roleId ";
 		if(StringManagerUtils.isNotNull(roleId)){
-			queryString+=" and rt.rtRoleId="+roleId;
+			queryString+=" and rt.rdRoleId="+roleId;
 		}
-		queryString+=" order by rt.rtTabId asc";
+		queryString+=" order by rt.rdDeviceTypeId asc";
 		return getBaseDao().find(queryString);
 	}
 
@@ -223,7 +223,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	}
 	
 	public void deleteCurrentTabByRoleCode(final String roleId) throws Exception {
-		final String hql = "DELETE RoleTab u where u.rtRoleId = " + roleId + "";
+		final String hql = "DELETE RoleDeviceType u where u.rdRoleId = " + roleId + "";
 		getBaseDao().bulkObjectDelete(hql);
 	}
 
@@ -231,7 +231,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		getBaseDao().saveOrUpdateObject(roleModule);
 	}
 	
-	public void saveOrUpdateRoleTab(T roleTab) throws Exception {
+	public void saveOrUpdateRoleDeviceType(T roleTab) throws Exception {
 		getBaseDao().saveOrUpdateObject(roleTab);
 	}
 

@@ -606,7 +606,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
-					+ "c1.tabname as devicetypename,"//6
+					+ "c1.name as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
@@ -652,7 +652,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
-					+ " left outer join tbl_tabinfo c1 on c1.id=t.devicetype "
+					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
 					+ " where  t.orgid in ("+orgId+") "
 					+ " and t.devicetype="+deviceType;
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){

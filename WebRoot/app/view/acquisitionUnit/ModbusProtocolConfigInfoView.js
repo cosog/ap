@@ -74,7 +74,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         				var window = Ext.create("AP.view.acquisitionUnit.ProtocolImportWindow");
                         window.show();
         			}
-                }],
+                },'-', {
+        			xtype: 'button',
+        			text:'协议隶属迁移',
+        			iconCls: 'move',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
+                            title: '协议隶属迁移'
+                        });
+                        window.show();
+                        Ext.create("AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore");
+                        Ext.create("AP.store.acquisitionUnit.ProtocolDeviceTypeChangeDeviceTypeListStore");
+        			}
+        		}],
                 layout: "border",
                 items: [{
                 	border: true,

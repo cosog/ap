@@ -15,7 +15,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
-        	        		id: 'DeviceManagerPanel_'+tabInfo.children[i].tabId,
+        	        		id: 'DeviceManagerPanel_'+tabInfo.children[i].deviceTypeId,
         	        		activeTab: 0,
         	        		border: false,
         	        		tabPosition: 'left',
@@ -44,7 +44,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
-        						id: 'DeviceManagerPanel_'+tabInfo.children[i].children[j].tabId,
+        						id: 'DeviceManagerPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
             			if(j==0){
@@ -58,7 +58,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
-    						id: 'DeviceManagerPanel_'+tabInfo.children[i].tabId,
+    						id: 'DeviceManagerPanel_'+tabInfo.children[i].deviceTypeId,
     						border: false
         			};
         			if(i==0){
@@ -90,15 +90,15 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         				var DeviceInfoPanel = Ext.create('AP.view.well.DeviceInfoPanel');
-        				var tabId=0;
+        				var deviceTypeId=0;
         				if(newCard.xtype=='tabpanel'){
         					newCard.activeTab.add(DeviceInfoPanel);
-        					tabId=newCard.activeTab.id.split('_')[1];
+        					deviceTypeId=newCard.activeTab.id.split('_')[1];
         				}else{
 	        				newCard.add(DeviceInfoPanel);
-	        				tabId=newCard.id.split('_')[1];
+	        				deviceTypeId=newCard.id.split('_')[1];
         				}
-        				Ext.getCmp("selectedDeviceType_global").setValue(tabId); 
+        				Ext.getCmp("selectedDeviceType_global").setValue(deviceTypeId); 
         				
         				Ext.getCmp("DeviceSelectRow_Id").setValue(0);
         		    	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);

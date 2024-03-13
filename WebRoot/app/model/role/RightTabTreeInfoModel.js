@@ -1,7 +1,7 @@
 Ext.define('AP.model.role.RightTabTreeInfoModel', {
     extend: 'Ext.data.Model',
     fields: [{
-        name: 'tabId',
+        name: 'deviceTypeId',
         type: 'int'
     }, {
         name: 'text',
@@ -13,5 +13,5 @@ Ext.define('AP.model.role.RightTabTreeInfoModel', {
         name: 'parentId',
         type: 'string'
     }],
-    idProperty: 'tabId'
+    idProperty: 'deviceTypeId'
 });

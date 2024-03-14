@@ -1,6 +1,6 @@
-Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeDeviceTypeListStore', {
+Ext.define('AP.store.well.DeviceTypeChangeDeviceTypeListStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.ProtocolDeviceTypeChangeDeviceTypeListStore',
+    alias: 'widget.DeviceTypeChangeDeviceTypeListStore',
     model: 'AP.model.role.RightTabTreeInfoModel',
     autoLoad: true,
     folderSort: false,
@@ -21,10 +21,10 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeDeviceTypeListStore
         },
         load: function (store, options, eOpts) {
         	var get_rawData = store.proxy.reader.rawData;
-            var treeGridPanel = Ext.getCmp("ProtocolDeviceTypeChangeDeviceTypeTreeGridView_Id");
+            var treeGridPanel = Ext.getCmp("DeviceTypeChangeDeviceTypeTreeGridView_Id");
             if (!isNotVal(treeGridPanel)) {
                 var treeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ProtocolDeviceTypeChangeDeviceTypeTreeGridView_Id",
+                    id: "DeviceTypeChangeDeviceTypeTreeGridView_Id",
                     border: false,
                     layout: "fit",
                     loadMask: true,
@@ -66,7 +66,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeDeviceTypeListStore
                     }
 
                 });
-                var panel = Ext.getCmp("ProtocolDeviceTypeChangeWinDeviceTypeListPanel_Id");
+                var panel = Ext.getCmp("DeviceTypeChangeWinTypeListPanel_Id");
                 panel.add(treeGridPanel);
             }
         }

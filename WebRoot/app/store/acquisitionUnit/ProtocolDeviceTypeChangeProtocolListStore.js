@@ -57,7 +57,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore',
                          	}
                         }
                     }, {
-                        text: '设备类型',
+                        text: '隶属设备类型',
                         lockable: true,
                         align: 'center',
                         flex: 10,

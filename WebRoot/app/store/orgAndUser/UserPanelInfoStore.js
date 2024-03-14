@@ -198,7 +198,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	    }
                     	}
                     }, {
-                        header: '隶属单位',
+                        header: '隶属组织',
                         lockable: true,
                         align: 'center',
                         sortable: true,

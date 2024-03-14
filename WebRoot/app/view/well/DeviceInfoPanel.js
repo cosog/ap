@@ -346,6 +346,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(deviceType);
                     Ext.create("AP.store.well.DeviceOrgChangeDeviceListStore");
                     Ext.create("AP.store.well.DeviceOrgChangeOrgListStore");
+                    Ext.create("AP.store.well.DeviceTypeChangeDeviceTypeListStore");
     			}
     		}],
             layout: 'border',

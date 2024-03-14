@@ -12,8 +12,8 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 600,
-    minWidth: 600,
+    width: 750,
+    minWidth: 750,
     height: 600,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -76,7 +76,7 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
         		id:'UserOrgChangeWinUserListPanel_Id'
             },{
             	region: 'east',
-        		width: '40%',
+        		width: '25%',
         		title:'目标组织',
         		layout: 'fit',
         		id:'UserOrgChangeWinOrgListPanel_Id'

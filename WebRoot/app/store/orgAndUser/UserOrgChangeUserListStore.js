@@ -46,7 +46,7 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                         text: '用户名称',
                         lockable: true,
                         align: 'center',
-                        flex: 10,
+                        flex: 5,
                         sortable: false,
                         locked: false,
                         dataIndex: 'userName',
@@ -63,10 +63,23 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                         text: '用户账号',
                         lockable: true,
                         align: 'center',
-                        flex: 10,
+                        flex: 5,
                         sortable: false,
                         locked: false,
                         dataIndex: 'userID',
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                            	return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                         	}
+                        }
+                    }, {
+                        text: '隶属组织',
+                        lockable: true,
+                        align: 'center',
+                        flex: 10,
+                        sortable: false,
+                        locked: false,
+                        dataIndex: 'orgName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
                             	return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";

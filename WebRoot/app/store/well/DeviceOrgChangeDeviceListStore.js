@@ -1,7 +1,7 @@
 Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.deviceOrgChangeDeviceListStore',
-    fields: ['id','wellName'],
+    fields: ['id','wellName','orgName','deviceTypeName'],
     autoLoad: true,
     pageSize: 50,
     proxy: {
@@ -46,10 +46,36 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                         text: '名称',
                         lockable: true,
                         align: 'center',
-                        flex: 10,
+                        flex: 5,
                         sortable: false,
                         locked: false,
                         dataIndex: 'deviceName',
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+			        		}
+                        }
+                    }, {
+                        text: '隶属组织',
+                        lockable: true,
+                        align: 'center',
+                        flex: 10,
+                        sortable: false,
+                        locked: false,
+                        dataIndex: 'orgName',
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+			        		}
+                        }
+                    }, {
+                        text: '隶属设备类型',
+                        lockable: true,
+                        align: 'center',
+                        flex: 10,
+                        sortable: false,
+                        locked: false,
+                        dataIndex: 'deviceTypeName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";

@@ -415,8 +415,10 @@ public class UserManagerService<T> extends BaseService<T> {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		
-		String sql = "select t.user_no,t.user_name,t.user_id from tbl_user t,tbl_role r"
-				+ " where t.user_type=r.role_id and t.user_orgid in (" + orgIds + ")"
+		String sql = "select t.user_no,t.user_name,t.user_id,o.allpath "
+				+ " from tbl_user t,tbl_role r,viw_org o"
+				+ " where t.user_type=r.role_id and t.user_orgid=o.org_id"
+				+ " and t.user_orgid in (" + orgIds + ")"
 				+ " and ("
 				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
@@ -428,7 +430,8 @@ public class UserManagerService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"用户名称\",\"dataIndex\":\"userName\",width:120 ,children:[] },"
-				+ "{ \"header\":\"用户账号\",\"dataIndex\":\"userID\",width:120 ,children:[] }"
+				+ "{ \"header\":\"用户账号\",\"dataIndex\":\"userID\",width:120 ,children:[] },"
+				+ "{ \"header\":\"隶属组织\",\"dataIndex\":\"orgName\",width:120 ,children:[] }"
 				+ "]";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
@@ -437,7 +440,8 @@ public class UserManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) o;
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"userName\":\""+obj[1]+"\",");
-			result_json.append("\"userID\":\""+obj[2]+"\"},");
+			result_json.append("\"userID\":\""+obj[2]+"\",");
+			result_json.append("\"orgName\":\""+obj[3]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);

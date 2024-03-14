@@ -33,6 +33,60 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             	header: 'mdIdaa',
             	hidden: true,
             	dataIndex: 'mdId'
+            }, {
+                header: '查看',
+                xtype: 'checkcolumn',
+                lockable: true,
+                align: 'center',
+                sortable: true,
+                flex: 1,
+                dataIndex: 'selectFlagName',
+                editor: {
+                	xtype: 'checkbox',
+                    cls: 'x-grid-checkheader-editor',
+                	allowBlank: false
+                },
+            	listeners: {
+            	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+            	    	
+            	    }
+            	}
+            }, {
+                header: '编辑',
+                xtype: 'checkcolumn',
+                lockable: true,
+                align: 'center',
+                sortable: true,
+                flex: 1,
+                dataIndex: 'updateFlagName',
+                editor: {
+                	xtype: 'checkbox',
+                    cls: 'x-grid-checkheader-editor',
+                	allowBlank: false
+                },
+            	listeners: {
+            	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+            	    	
+            	    }
+            	}
+            }, {
+                header: '控制',
+                xtype: 'checkcolumn',
+                lockable: true,
+                align: 'center',
+                sortable: true,
+                flex: 1,
+                dataIndex: 'controlFlagName',
+                editor: {
+                	xtype: 'checkbox',
+                    cls: 'x-grid-checkheader-editor',
+                	allowBlank: false
+                },
+            	listeners: {
+            	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+            	    	
+            	    }
+            	}
             }]
         });
         this.callParent(arguments);

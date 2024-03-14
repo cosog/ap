@@ -36,6 +36,7 @@ import com.cosog.model.User;
 import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.PumpingPRTFData;
@@ -276,11 +277,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-		String tableName="tbl_device";
+		String tableName="VIW_DEVICE";
 		if(deviceType>=300){
 			tableName="tbl_smsdevice";
 		}
-		String sql = " select  t.id,t.deviceName from  "+tableName+" t where t.orgid in ("+ orgId + ")"
+		String sql = " select  t.id,t.deviceName,t.allpath,deviceTypeAllPath "
+				+ " from  "+tableName+" t "
+						+ " where t.orgid in ("+ orgId + ")"
 				+ " and t.deviceType ="+deviceType;
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName like '%"+deviceName+"%'";
@@ -296,7 +299,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
 			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"deviceName\":\""+obj[1]+"\"},");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
+			result_json.append("\"orgName\":\""+obj[2]+"\",");
+			result_json.append("\"deviceTypeName\":\""+obj[3]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -348,35 +353,67 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				}catch(Exception e){
 					e.printStackTrace();
 				}
-				if(deviceType>=100&&deviceType<200){
+				if(deviceType<300){
 					if(!jedis.exists("DeviceInfo".getBytes())){
 						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-					for(int i=0;i<deviceInfoByteList.size();i++){
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof RPCDeviceInfo) {
-							RPCDeviceInfo deviceInfo=(RPCDeviceInfo)obj;
-							if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
-								deviceInfo.setOrgId(StringManagerUtils.stringToInteger(selectedOrgId));
-								deviceInfo.setOrgName(selectedOrgName);
-								jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+					}else{
+						List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+						for(int i=0;i<deviceInfoByteList.size();i++){
+							Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+							if (obj instanceof DeviceInfo) {
+								DeviceInfo deviceInfo=(DeviceInfo)obj;
+								if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
+									deviceInfo.setOrgId(StringManagerUtils.stringToInteger(selectedOrgId));
+									deviceInfo.setOrgName(selectedOrgName);
+									jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+								}
 							}
 						}
 					}
-				}else if(deviceType>=200&&deviceType<300){
-					if(!jedis.exists("PCPDeviceInfo".getBytes())){
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				if(jedis!=null){
+					jedis.close();
+				}
+			}
+		}
+	}
+	
+	public void changeDeviceType(String selectedDeviceId,String selectedDeviceTypeId,String selectedDeviceTypeName,String deviceTypeStr) throws Exception {
+		//String orgIds = this.getUserOrgIds(orgId);
+		StringBuffer result_json = new StringBuffer();
+		if(StringManagerUtils.stringToInteger(selectedDeviceTypeId)>0 && StringManagerUtils.isNotNull(selectedDeviceId)){
+			int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
+			String tableName="tbl_device";
+			if(deviceType>=300){
+				tableName="tbl_smsdevice";
+			}
+			String sql = "update "+tableName+" t set t.devicetype="+selectedDeviceTypeId+" where t.id in ("+selectedDeviceId+")";
+			this.getBaseDao().updateOrDeleteBySql(sql);
+			
+			Jedis jedis=null;
+			try{
+				try{
+					jedis = RedisUtil.jedisPool.getResource();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				if(deviceType<300){
+					if(!jedis.exists("DeviceInfo".getBytes())){
 						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					List<byte[]> deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
-					for(int i=0;i<deviceInfoByteList.size();i++){
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof PCPDeviceInfo) {
-							PCPDeviceInfo deviceInfo=(PCPDeviceInfo)obj;
-							if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
-								deviceInfo.setOrgId(StringManagerUtils.stringToInteger(selectedOrgId));
-								deviceInfo.setOrgName(selectedOrgName);
-								jedis.hset("PCPDeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+					}else{
+						List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+						for(int i=0;i<deviceInfoByteList.size();i++){
+							Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+							if (obj instanceof DeviceInfo) {
+								DeviceInfo deviceInfo=(DeviceInfo)obj;
+								if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
+									deviceInfo.setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
+									deviceInfo.setDeviceTypeName(selectedDeviceTypeName);
+									jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+								}
 							}
 						}
 					}

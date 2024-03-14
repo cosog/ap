@@ -323,6 +323,32 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/changeDeviceType")
+	public String changeDeviceType() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String selectedDeviceId = ParamUtils.getParameter(request, "selectedDeviceId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String selectedDeviceTypeId=ParamUtils.getParameter(request, "selectedDeviceTypeId");
+		String selectedDeviceTypeName=ParamUtils.getParameter(request, "selectedDeviceTypeName");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		this.wellInformationManagerService.changeDeviceType(selectedDeviceId,selectedDeviceTypeId,selectedDeviceTypeName,deviceType);
+		String json = "{\"success\":true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getAcqInstanceCombList")
 	public String getAcqInstanceCombList() throws IOException {
 		deviceType= ParamUtils.getParameter(request, "deviceType");

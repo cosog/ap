@@ -131,13 +131,21 @@ function selectEachCombox(node, root) {
         if (!Ext.isEmpty(chlidArray)) {
             Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
                 var x_node_seId = chlidArray[index].data.mdId;
-
-                Ext.Array.each(root, function (name, index,
-                    countriesItSelf) {
+                Ext.Array.each(root, function (name, index,countriesItSelf) {
                     var menuselectid = root[index].rmModuleid;
+                   
                     // 处理已选择的节点
                     if (x_node_seId == menuselectid) {
-                        childArrNode.set('checked', true);
+//                        childArrNode.set('checked', true);
+                        var rmMatrix=root[index].rmMatrix;
+                        if(isNotVal(rmMatrix)){
+                        	var rmMatrixArr=rmMatrix.split(",");
+                        	if(rmMatrixArr.length==3){
+                        		childArrNode.set('viewFlagName', parseInt(rmMatrixArr[0])==1?true:false);
+                        		childArrNode.set('editFlagName', parseInt(rmMatrixArr[1])==1?true:false);
+                        		childArrNode.set('controlFlagName', parseInt(rmMatrixArr[2])==1?true:false);
+                        	}
+                        }
                         childArrNode.expand('true');
                     }
                 });
@@ -154,7 +162,10 @@ function selectEachCombox(node, root) {
 function clearRoleRightModuleTreeSelect(node){
 	var chlidArray = node;
 	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
-		childArrNode.set('checked', false);
+//		childArrNode.set('checked', false);
+		childArrNode.set('viewFlagName', false);
+		childArrNode.set('editFlagName', false);
+		childArrNode.set('controlFlagName', false);
 		if (childArrNode.childNodes != null) {
 			clearRoleRightModuleTreeSelect(childArrNode.childNodes);
         }

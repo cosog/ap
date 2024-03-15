@@ -282,11 +282,15 @@ var grantRolePermission = function () {//授予角色模块权限
         	roleLevel=_record[0].data.roleLevel;
         }
     }
-    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
-    	_record = rightmodule_panel.store.data.items;
-    }else{
-    	_record = rightmodule_panel.getChecked();
-    }
+    
+//    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+//    	_record = rightmodule_panel.store.data.items;
+//    }else{
+//    	_record = rightmodule_panel.getChecked();
+//    }
+    
+    _record = rightmodule_panel.store.data.items;
+    
     var addUrl = context + '/moduleShowRightManagerController/doModuleSaveOrUpdate'
         // 添加条件
     var addjson = [];
@@ -302,15 +306,17 @@ var grantRolePermission = function () {//授予角色模块权限
     
 
     Ext.Array.each(_record, function (name, index, countriesItSelf) {
-        var md_ids = _record[index].get('mdId')
-        addjson.push(md_ids);
-        var matrix_value = "";
-        matrix_value = '0,0,0,';
-        if (matrix_value != "" || matrix_value != null) {
-            matrix_value = matrix_value.substring(0, matrix_value.length - 1);
+        var checked=_record[index].get('viewFlagName');
+        if(checked){
+        	var md_ids = _record[index].get('mdId');
+            var viewFlagName=_record[index].get('viewFlagName')?1:0;
+            var editFlagName=_record[index].get('editFlagName')?1:0;
+            var controlFlagName=_record[index].get('controlFlagName')?1:0;
+            
+            addjson.push(md_ids);
+            var matrix_value = viewFlagName+","+editFlagName+","+controlFlagName;
+            matrixData += md_ids + ":" + matrix_value + "|";
         }
-        matrixData += md_ids + ":" + matrix_value + "|";
-
     });
 
     matrixData = matrixData.substring(0, matrixData.length - 1);
@@ -331,12 +337,13 @@ var grantRolePermission = function () {//授予角色模块权限
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "" + cosog.string.jgModule + "。");
+                Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + addjson.length + "" + cosog.string.jgModule + "。");
             }
             if (result.msg == false) {
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
             }
             // 刷新Grid
+//            Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
             Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
         },
         failure: function () {

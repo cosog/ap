@@ -139,20 +139,23 @@ public class BackModuleRecursion {
 
 		String data = "";
 		if (hasChild(list, module)) {
-			returnStr.append("{\"text\":\"" + module.getMdName() + "\"");
-			returnStr.append(",\"mdShowname\":\"" + module.getMdShowname() + "\"");
-			returnStr.append(",\"mdUrl\":\"" + module.getMdUrl() + "\"");
-			returnStr.append(",\"mdParentid\":\"" + module.getMdParentid() + "\"");
-			returnStr.append(",\"mdControl\":\"" + module.getMdControl() + "\"");
-			returnStr.append(",\"mdIcon\":\"" + module.getMdIcon() + "\"");
-			returnStr.append(",\"iconCls\":\"" + module.getMdIcon() + "\"");
-			returnStr.append(",\"mdCode\":\"" + module.getMdCode() + "\"");
-			returnStr.append(",\"mdType\":\"" + module.getMdType() + "\"");
-			returnStr.append(",\"mdSeq\":\"" + module.getMdSeq() + "\"");
-			returnStr.append(",\"mdId\":\"" + module.getMdId() + "\"");
-			returnStr.append(",\"checked\":false");
-			returnStr.append(",\"expanded\":true");
-			returnStr.append(",\"children\":[");
+			returnStr.append("{\"text\":\"" + module.getMdName() + "\",");
+			returnStr.append("\"mdShowname\":\"" + module.getMdShowname() + "\",");
+			returnStr.append("\"mdUrl\":\"" + module.getMdUrl() + "\",");
+			returnStr.append("\"mdParentid\":\"" + module.getMdParentid() + "\",");
+			returnStr.append("\"mdControl\":\"" + module.getMdControl() + "\",");
+			returnStr.append("\"mdIcon\":\"" + module.getMdIcon() + "\",");
+			returnStr.append("\"iconCls\":\"" + module.getMdIcon() + "\",");
+			returnStr.append("\"mdCode\":\"" + module.getMdCode() + "\",");
+			returnStr.append("\"mdType\":\"" + module.getMdType() + "\",");
+			returnStr.append("\"mdSeq\":\"" + module.getMdSeq() + "\",");
+			returnStr.append("\"mdId\":\"" + module.getMdId() + "\",");
+//			returnStr.append("\"checked\":false,");
+			returnStr.append("\"viewFlagName\":false,");
+			returnStr.append("\"editFlagName\":false,");
+			returnStr.append("\"controlFlagName\":false,");
+			returnStr.append("\"expanded\":true,");
+			returnStr.append("\"children\":[");
 			List childList = getChildList(list, module);
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
@@ -161,30 +164,22 @@ public class BackModuleRecursion {
 			}
 			returnStr.append("]},");
 		} else {
-			returnStr.append("{\"mdId\":\"");
-			returnStr.append(module.getMdId());
-			returnStr.append("\",\"text\":\"");
-			returnStr.append(module.getMdName());
-			returnStr.append("\",\"mdShowname\":\"");
-			returnStr.append(module.getMdShowname());
-			returnStr.append("\",\"mdParentid\":\"");
-			returnStr.append(module.getMdParentid());
-			returnStr.append("\",\"mdIcon\":\"");
-			returnStr.append(module.getMdIcon());
-			returnStr.append("\",\"iconCls\":\"");
-			returnStr.append(module.getMdIcon());
-			returnStr.append("\",\"mdUrl\":\"");
-			returnStr.append(module.getMdUrl());
-			returnStr.append("\",\"mdControl\":\"");
-			returnStr.append(module.getMdControl());
-			returnStr.append("\",\"mdCode\":\"");
-			returnStr.append(module.getMdCode());
-			returnStr.append("\",\"mdType\":\"");
-			returnStr.append(module.getMdType());
-			returnStr.append("\",\"mdSeq\":\"");
-			returnStr.append(module.getMdSeq());
-			returnStr.append("\",\"checked\":false");
-			returnStr.append(",\"leaf\":true},");
+			returnStr.append("{\"mdId\":\""+module.getMdId()+"\",");
+			returnStr.append("\"text\":\""+module.getMdName()+"\",");
+			returnStr.append("\"mdShowname\":\""+module.getMdShowname()+"\",");
+			returnStr.append("\"mdParentid\":\""+module.getMdParentid()+"\",");
+			returnStr.append("\"mdIcon\":\""+module.getMdIcon()+"\",");
+			returnStr.append("\"iconCls\":\""+module.getMdIcon()+"\",");
+			returnStr.append("\"mdUrl\":\""+module.getMdUrl()+"\",");
+			returnStr.append("\"mdControl\":\""+module.getMdControl()+"\",");
+			returnStr.append("\"mdCode\":\""+module.getMdCode()+"\",");
+			returnStr.append("\"mdType\":\""+module.getMdType()+"\",");
+			returnStr.append("\"mdSeq\":\""+module.getMdSeq()+"\",");
+//			returnStr.append("\"checked\":false,");
+			returnStr.append("\"viewFlagName\":false,");
+			returnStr.append("\"editFlagName\":false,");
+			returnStr.append("\"controlFlagName\":false,");
+			returnStr.append("\"leaf\":true},");
 		}
 		data = returnStr.toString();
 		return data;

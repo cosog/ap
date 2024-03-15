@@ -23,6 +23,9 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         Ext.apply(moduleTree, {
             store: moduleStore,
+            viewConfig: {　　
+            	markDirty: false//编辑不显示红色三角标志
+            },
             columns: [{
             	xtype: 'treecolumn',
             	text: '模块列表',
@@ -34,13 +37,13 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             	hidden: true,
             	dataIndex: 'mdId'
             }, {
-                header: '查看',
+                header: '浏览',
                 xtype: 'checkcolumn',
                 lockable: true,
                 align: 'center',
                 sortable: true,
                 flex: 1,
-                dataIndex: 'selectFlagName',
+                dataIndex: 'viewFlagName',
                 editor: {
                 	xtype: 'checkbox',
                     cls: 'x-grid-checkheader-editor',
@@ -48,7 +51,9 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
             	listeners: {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-            	    	
+            	    	if(!record.isLeaf()){
+            	    		return false;
+            	    	}
             	    }
             	}
             }, {
@@ -58,7 +63,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 align: 'center',
                 sortable: true,
                 flex: 1,
-                dataIndex: 'updateFlagName',
+                dataIndex: 'editFlagName',
                 editor: {
                 	xtype: 'checkbox',
                     cls: 'x-grid-checkheader-editor',
@@ -66,7 +71,15 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
             	listeners: {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-            	    	
+            	    	if(!record.isLeaf()){
+            	    		return false;
+            	    	}
+            	    },
+            	    afterrender: function( cell, eOpts){
+//            	    	cell.setDisabled(true);
+            	    },
+            	    add: function(cell, container, index, eOpts){
+            	    	alert(index);
             	    }
             	}
             }, {
@@ -84,7 +97,9 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
             	listeners: {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-            	    	
+            	    	if(!record.isLeaf()){
+            	    		return false;
+            	    	}
             	    }
             	}
             }]

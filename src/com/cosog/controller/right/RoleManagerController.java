@@ -85,6 +85,7 @@ public class RoleManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			String addModuleIds = ParamUtils.getParameter(request, "addModuleIds");
+			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String addDeviceTypeIds = ParamUtils.getParameter(request, "addDeviceTypeIds");
 			this.roleService.addRole(role);
 			
@@ -96,24 +97,30 @@ public class RoleManagerController extends BaseController {
 					if(addRoleId>0){
 						if(StringManagerUtils.isNotNull(addModuleIds)){
 							String[] moduleIdArr=addModuleIds.split(",");
-							for(int i=0;i<moduleIdArr.length;i++){
-								int moduleId=StringManagerUtils.stringToInteger(moduleIdArr[i]);
-								if(moduleId>0){
-									RoleModule r=new RoleModule();
-									r.setRmRoleId(addRoleId);
-									r.setRmModuleid(moduleId);
-									r.setRmMatrix("0,0,0");
-									this.roleModuleService.saveOrUpdateRoleModule(r);
+							if (moduleIdArr.length > 0){
+								String module_matrix[] = matrixCodes.split("\\|");
+								RoleModule r = null;
+								for (int i = 0; i < module_matrix.length; i++) {
+									String module_[] = module_matrix[i].split("\\:");
+									if(module_.length==2){
+										r=new RoleModule();
+										r = new RoleModule();
+										r.setRmRoleId(addRoleId);
+										r.setRmModuleid(StringManagerUtils.stringTransferInteger(module_[0]));
+										r.setRmMatrix(module_[1]);
+										this.roleModuleService.saveOrUpdateRoleModule(r);
+									}
 								}
 							}
 						}
 						
 						if(StringManagerUtils.isNotNull(addDeviceTypeIds)){
+							RoleDeviceType r=null;
 							String[] deviceTypeIdArr=addDeviceTypeIds.split(",");
 							for(int i=0;i<deviceTypeIdArr.length;i++){
 								int deviceTypeId=StringManagerUtils.stringToInteger(deviceTypeIdArr[i]);
 								if(deviceTypeId>0){
-									RoleDeviceType r=new RoleDeviceType();
+									r=new RoleDeviceType();
 									r.setRdRoleId(addRoleId);
 									r.setRdDeviceTypeId(deviceTypeId);
 									r.setRdMatrix("0,0,0");
@@ -165,8 +172,8 @@ public class RoleManagerController extends BaseController {
 	public String doRoleEdit(@ModelAttribute Role role) {
 		String result ="{success:true,msg:false}";
 		try {
-			if(role.getRoleFlag()==null||role.getShowLevel()==null||role.getRoleLevel()==null){
-				String sql="select t.role_level,t.showlevel,t.role_flag from tbl_role t where t.role_id="+role.getRoleId();
+			if(role.getShowLevel()==null||role.getRoleLevel()==null){
+				String sql="select t.role_level,t.showlevel from tbl_role t where t.role_id="+role.getRoleId();
 				List<?> list=this.roleService.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[])list.get(0);
@@ -175,9 +182,6 @@ public class RoleManagerController extends BaseController {
 					}
 					if(role.getShowLevel()==null&&list.size()>0){
 						role.setShowLevel(StringManagerUtils.stringToInteger(obj[1]+""));
-					}
-					if(role.getRoleFlag()==null&&list.size()>0){
-						role.setRoleFlag(StringManagerUtils.stringToInteger(obj[2]+""));
 					}
 				}
 			}
@@ -207,8 +211,6 @@ public class RoleManagerController extends BaseController {
 			String roleId = ParamUtils.getParameter(request, "roleId");
 			String roleName = ParamUtils.getParameter(request, "roleName");
 			String roleLevel = ParamUtils.getParameter(request, "roleLevel");
-			String roleFlagName = ParamUtils.getParameter(request, "roleFlagName");
-			String roleReportEditName = ParamUtils.getParameter(request, "roleReportEditName");
 			String roleVideoKeyEditName = ParamUtils.getParameter(request, "roleVideoKeyEditName");
 			String showLevel = ParamUtils.getParameter(request, "showLevel");
 			String remark = ParamUtils.getParameter(request, "remark");
@@ -217,8 +219,6 @@ public class RoleManagerController extends BaseController {
 			role.setRoleId(StringManagerUtils.stringToInteger(roleId));
 			role.setRoleName(roleName);
 			role.setRoleLevel(StringManagerUtils.stringToInteger(roleLevel));
-			role.setRoleFlag("true".equalsIgnoreCase(roleFlagName)?1:0);
-			role.setRoleReportEdit("true".equalsIgnoreCase(roleReportEditName)?1:0);
 			role.setRoleVideoKeyEdit("true".equalsIgnoreCase(roleVideoKeyEditName)?1:0);;
 			role.setShowLevel(StringManagerUtils.stringToInteger(showLevel));
 			role.setRemark(remark);

@@ -2390,7 +2390,8 @@ public class MemoryDataManagerTask {
 			String sql="select t.user_no,t.user_id,t.user_name,t.user_pwd,t.user_orgid,"
 					+ " t.user_in_email,t.user_phone,"
 					+ " t.user_quicklogin,t.user_enable,t.user_receivesms,t.user_receivemail,"
-					+ " t.user_type,t2.role_name,t2.role_level,t2.role_flag,t2.showlevel "
+					+ " t.user_type,"
+					+ " t2.role_name,t2.role_level,t2.showlevel "
 					+ " from tbl_user t,tbl_role t2 "
 					+ " where t.user_type=t2.role_id";
 			if(StringManagerUtils.isNotNull(users)){
@@ -2422,8 +2423,7 @@ public class MemoryDataManagerTask {
 				userInfo.setUserType(rs.getInt(12));
 				userInfo.setRoleName(rs.getString(13));
 				userInfo.setRoleLevel(rs.getInt(14));
-				userInfo.setRoleFlag(rs.getInt(15));
-				userInfo.setRoleShowLevel(rs.getInt(16));
+				userInfo.setRoleShowLevel(rs.getInt(15));
 				
 				String key=userInfo.getUserNo()+"";
 				jedis.hset("UserInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(userInfo));//哈希(Hash)

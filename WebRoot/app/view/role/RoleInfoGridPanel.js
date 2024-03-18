@@ -21,14 +21,6 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 value: 0
             },{
                 xtype: "hidden",
-                id: 'currentUserRoleFlag_Id',
-                value: 0
-            },{
-                xtype: "hidden",
-                id: 'currentUserRoleReportEdit_Id',
-                value: 0
-            },{
-                xtype: "hidden",
                 id: 'currentUserRoleVideoKeyEdit_Id',
                 value: 0
             },{

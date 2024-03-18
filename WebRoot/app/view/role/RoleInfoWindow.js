@@ -23,59 +23,59 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         var tabStore = Ext.create("AP.store.role.RightTabTreeInfoStore");
         
-        var RoleTypeCombox = new Ext.form.ComboBox({
-            id: 'roleFlagComboxfield_Id',
-            value: 0,
-            fieldLabel: '设备控制权限<font color=red>*</font>',
-            labelWidth: 110,
-            typeAhead : true,
-            allowBlank: false,
-            autoSelect:true,
-            editable:false,
-            anchor: '100%',
-            emptyText: '--请选择--',
-            triggerAction: 'all',
-            store: new Ext.data.SimpleStore({
-            	autoLoad : false,
-                fields: ['roleFlag', 'roleFlagName'],
-                data: [['0', '否'], ['1', '是']]
-            }),
-            displayField: 'roleFlagName',
-            valueField: 'roleFlag',
-            queryMode : 'local',
-            listeners: {
-            	select: function (v,o) {
-					Ext.getCmp("roleFlag_Id").setValue(this.value);
-                }
-            }
-        });
+//        var RoleTypeCombox = new Ext.form.ComboBox({
+//            id: 'roleFlagComboxfield_Id',
+//            value: 0,
+//            fieldLabel: '设备控制权限<font color=red>*</font>',
+//            labelWidth: 110,
+//            typeAhead : true,
+//            allowBlank: false,
+//            autoSelect:true,
+//            editable:false,
+//            anchor: '100%',
+//            emptyText: '--请选择--',
+//            triggerAction: 'all',
+//            store: new Ext.data.SimpleStore({
+//            	autoLoad : false,
+//                fields: ['roleFlag', 'roleFlagName'],
+//                data: [['0', '否'], ['1', '是']]
+//            }),
+//            displayField: 'roleFlagName',
+//            valueField: 'roleFlag',
+//            queryMode : 'local',
+//            listeners: {
+//            	select: function (v,o) {
+//					Ext.getCmp("roleFlag_Id").setValue(this.value);
+//                }
+//            }
+//        });
         
-        var RoleReportEditCombox = new Ext.form.ComboBox({
-            id: 'roleReportEditComboxfield_Id',
-            value: 0,
-            fieldLabel: '报表编辑权限<font color=red>*</font>',
-            labelWidth: 110,
-            typeAhead : true,
-            allowBlank: false,
-            autoSelect:true,
-            editable:false,
-            anchor: '100%',
-            emptyText: '--请选择--',
-            triggerAction: 'all',
-            store: new Ext.data.SimpleStore({
-            	autoLoad : false,
-                fields: ['roleReportEdit', 'roleReportEditName'],
-                data: [['0', '否'], ['1', '是']]
-            }),
-            displayField: 'roleReportEditName',
-            valueField: 'roleReportEdit',
-            queryMode : 'local',
-            listeners: {
-            	select: function (v,o) {
-					Ext.getCmp("roleReportEdit_Id").setValue(this.value);
-                }
-            }
-        });
+//        var RoleReportEditCombox = new Ext.form.ComboBox({
+//            id: 'roleReportEditComboxfield_Id',
+//            value: 0,
+//            fieldLabel: '报表编辑权限<font color=red>*</font>',
+//            labelWidth: 110,
+//            typeAhead : true,
+//            allowBlank: false,
+//            autoSelect:true,
+//            editable:false,
+//            anchor: '100%',
+//            emptyText: '--请选择--',
+//            triggerAction: 'all',
+//            store: new Ext.data.SimpleStore({
+//            	autoLoad : false,
+//                fields: ['roleReportEdit', 'roleReportEditName'],
+//                data: [['0', '否'], ['1', '是']]
+//            }),
+//            displayField: 'roleReportEditName',
+//            valueField: 'roleReportEdit',
+//            queryMode : 'local',
+//            listeners: {
+//            	select: function (v,o) {
+//					Ext.getCmp("roleReportEdit_Id").setValue(this.value);
+//                }
+//            }
+//        });
         
         var RoleVideoKeyEditCombox = new Ext.form.ComboBox({
             id: 'roleVideoKeyEditComboxfield_Id',
@@ -113,17 +113,20 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 id: 'role_Id',
                 anchor: '100%',
                 name: "role.roleId"
-            }, {
-                xtype: "hidden",
-                name: 'role.roleFlag',
-                id: 'roleFlag_Id',
-                value: 0
-            }, {
-                xtype: "hidden",
-                name: 'role.roleReportEdit',
-                id: 'roleReportEdit_Id',
-                value: 0
-            }, {
+            }
+//            , {
+//                xtype: "hidden",
+//                name: 'role.roleFlag',
+//                id: 'roleFlag_Id',
+//                value: 0
+//            }, 
+//            {
+//                xtype: "hidden",
+//                name: 'role.roleReportEdit',
+//                id: 'roleReportEdit_Id',
+//                value: 0
+//            }
+            , {
                 xtype: "hidden",
                 name: 'role.roleVideoKeyEdit',
                 id: 'roleVideoKeyEdit_Id',
@@ -178,7 +181,9 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'
-            },RoleTypeCombox,RoleReportEditCombox,RoleVideoKeyEditCombox, {
+            },
+//            RoleTypeCombox,RoleReportEditCombox,
+            RoleVideoKeyEditCombox, {
                 fieldLabel: '角色描述',
                 labelWidth: 110,
                 id: 'roleRemark_Id',
@@ -252,6 +257,72 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                     	header: 'mdIdaa',
                     	hidden: true,
                     	dataIndex: 'mdId'
+                    }, {
+                        header: '浏览',
+                        xtype: 'checkcolumn',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 1,
+                        dataIndex: 'viewFlagName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	if(!record.isLeaf()){
+                    	    		return false;
+                    	    	}
+                    	    }
+                    	}
+                    }, {
+                        header: '编辑',
+                        xtype: 'checkcolumn',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 1,
+                        dataIndex: 'editFlagName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	if(!record.isLeaf()){
+                    	    		return false;
+                    	    	}
+                    	    },
+                    	    afterrender: function( cell, eOpts){
+//                    	    	cell.setDisabled(true);
+                    	    },
+                    	    add: function(cell, container, index, eOpts){
+                    	    	alert(index);
+                    	    }
+                    	}
+                    }, {
+                        header: '控制',
+                        xtype: 'checkcolumn',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 1,
+                        dataIndex: 'controlFlagName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	if(!record.isLeaf()){
+                    	    		return false;
+                    	    	}
+                    	    }
+                    	}
                     }],
                     listeners: {
                         checkchange: function (node, checked) {

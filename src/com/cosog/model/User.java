@@ -1,6 +1,7 @@
 package com.cosog.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,9 +57,7 @@ public class User implements java.io.Serializable {
 	private String loginTime;
 	
 	private Integer roleLevel;
-	private Integer roleFlag;
 	private Integer roleShowLevel;
-	private Integer roleReportEdit;
 	private Integer roleVideoKeyEdit;
 	
 	private String deviceTypeIds;
@@ -71,6 +70,8 @@ public class User implements java.io.Serializable {
 	 * 组织节点ID集合
 	 */
 	private String userorgids;
+	
+	private String moduleList;
 
 	public User() {
 		super();
@@ -356,31 +357,12 @@ public class User implements java.io.Serializable {
 	}
 
 	@Transient
-	public Integer getRoleFlag() {
-		return roleFlag;
-	}
-
-	@Transient
-	public void setRoleFlag(Integer roleFlag) {
-		this.roleFlag = roleFlag;
-	}
-
-	@Transient
 	public Integer getRoleShowLevel() {
 		return roleShowLevel;
 	}
 
 	public void setRoleShowLevel(Integer roleShowLevel) {
 		this.roleShowLevel = roleShowLevel;
-	}
-
-	@Transient
-	public Integer getRoleReportEdit() {
-		return roleReportEdit;
-	}
-
-	public void setRoleReportEdit(Integer roleReportEdit) {
-		this.roleReportEdit = roleReportEdit;
 	}
 
 	@Transient
@@ -399,5 +381,14 @@ public class User implements java.io.Serializable {
 
 	public void setDeviceTypeIds(String deviceTypeIds) {
 		this.deviceTypeIds = deviceTypeIds;
+	}
+
+	@Transient
+	public String getModuleList() {
+		return moduleList;
+	}
+
+	public void setModuleList(String moduleList) {
+		this.moduleList = moduleList;
 	}
 }

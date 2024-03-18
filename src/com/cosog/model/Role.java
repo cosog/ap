@@ -22,8 +22,6 @@ public class Role implements java.io.Serializable {
 	private Integer roleId;
 	private String roleName;
 	private Integer roleLevel;
-	private Integer roleFlag;
-	private Integer roleReportEdit;
 	private Integer roleVideoKeyEdit;
 	private Integer showLevel;
 	private String remark;
@@ -35,15 +33,13 @@ public class Role implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Role(Integer roleId,String roleName, Integer roleLevel, Integer roleFlag,
-			Integer roleReportEdit,Integer roleVideoKeyEdit,
+	public Role(Integer roleId,String roleName, Integer roleLevel,
+			Integer roleVideoKeyEdit,
 			Integer showLevel, String remark) {
 		super();
 		this.roleId = roleId;
 		this.roleName = roleName;
 		this.roleLevel = roleLevel;
-		this.roleFlag = roleFlag;
-		this.roleReportEdit = roleReportEdit;
 		this.roleVideoKeyEdit = roleVideoKeyEdit;
 		this.showLevel = showLevel;
 		this.remark = remark;
@@ -77,15 +73,6 @@ public class Role implements java.io.Serializable {
 	public void setRoleLevel(Integer roleLevel) {
 		this.roleLevel = roleLevel;
 	}
-
-	@Column(name = "ROLE_FLAG", nullable = false, length = 10)
-	public Integer getRoleFlag() {
-		return this.roleFlag;
-	}
-
-	public void setRoleFlag(Integer roleFlag) {
-		this.roleFlag = roleFlag;
-	}
 	
 	@Column(name = "REMARK", nullable = false, length = 10)
 	public String getRemark() {
@@ -103,15 +90,6 @@ public class Role implements java.io.Serializable {
 
 	public void setShowLevel(Integer showLevel) {
 		this.showLevel = showLevel;
-	}
-
-	@Column(name = "ROLE_REPORTEDIT", nullable = false, length = 10)
-	public Integer getRoleReportEdit() {
-		return roleReportEdit;
-	}
-
-	public void setRoleReportEdit(Integer roleReportEdit) {
-		this.roleReportEdit = roleReportEdit;
 	}
 
 	@Column(name = "ROLE_VIDEOKEYEDIT", nullable = false, length = 10)

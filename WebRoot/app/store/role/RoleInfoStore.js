@@ -34,8 +34,6 @@ Ext.define('AP.store.role.RoleInfoStore', {
             Ext.getCmp("currentUserRoleId_Id").setValue(currentId);
             Ext.getCmp("currentUserRoleLevel_Id").setValue(currentLevel);
             Ext.getCmp("currentUserRoleShowLevel_Id").setValue(currentShowLevel);
-            Ext.getCmp("currentUserRoleFlag_Id").setValue(currentFlag);
-            Ext.getCmp("currentUserRoleReportEdit_Id").setValue(currentReportEdit);
             Ext.getCmp("currentUserRoleVideoKeyEdit_Id").setValue(currentVideoKeyEdit);
             var gridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
             if (!isNotVal(gridPanel)) {
@@ -112,58 +110,6 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             minValue: currentShowLevel+1
                         }
                     }, {
-                        header: '设备控制权限',
-                        xtype: 'checkcolumn',
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        width: 85,
-                        dataIndex: 'roleFlagName',
-                        editor: {
-                        	xtype: 'checkbox',
-                            cls: 'x-grid-checkheader-editor',
-                        	allowBlank: false
-                        },
-                    	listeners: {
-                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                    	    	var currentUserRoleFlag=Ext.getCmp("currentUserRoleFlag_Id").getValue();
-                    	    	if(currentUserRoleFlag==0){
-                    	    		return false;
-                    	    	}else if(parseInt(record.data.roleId)==parseInt(currentId)){
-                    	    		return false;
-                    	    	}else{
-                                    return true;
-                                }
-                    	    }
-                    	}
-                    }, {
-                        header: '报表编辑权限',
-                        xtype: 'checkcolumn',
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        width: 85,
-                        dataIndex: 'roleReportEditName',
-                        editor: {
-                        	xtype: 'checkbox',
-                            cls: 'x-grid-checkheader-editor',
-                        	allowBlank: false
-                        },
-                    	listeners: {
-                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                    	    	var currentUserRoleReportEdit=Ext.getCmp("currentUserRoleReportEdit_Id").getValue();
-                    	    	if(currentUserRoleReportEdit==0){
-                    	    		return false;
-                    	    	}else if(parseInt(record.data.roleId)==parseInt(currentId)){
-                    	    		return false;
-                    	    	}else{
-                                    return true;
-                                }
-                    	    }
-                    	}
-                    }, {
                         header: '视频密钥编辑权限',
                         xtype: 'checkcolumn',
                         lockable: true,
@@ -180,9 +126,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
                     	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
                     	    	var currentUserRoleVideoKeyEdit=Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue();
-                    	    	if(currentUserRoleVideoKeyEdit==0){
-                    	    		return false;
-                    	    	}else if(parseInt(record.data.roleId)==parseInt(currentId)){
+                    	    	if(parseInt(record.data.roleId)==parseInt(currentId) || currentUserRoleVideoKeyEdit==0){
                     	    		return false;
                     	    	}else{
                                     return true;
@@ -268,25 +212,17 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         },
                         celldblclick: function ( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                            var currentLevel=Ext.getCmp("currentUserRoleLevel_Id").getValue();
-                            var currentShowLevel=Ext.getCmp("currentUserRoleShowLevel_Id").getValue();
-                            var currentFlag=Ext.getCmp("currentUserRoleFlag_Id").getValue();
-                            var currentUserRoleReportEdit=Ext.getCmp("currentUserRoleReportEdit_Id");
-                        	
                         	
                         	var record = grid.getStore().getAt(rowIndex);
                             var dataIndex=grid.getHeaderAtIndex(cellIndex).dataIndex;
                             if (parseInt(record.data.roleId)==parseInt(currentId) 
                             		&& ( dataIndex.toUpperCase()=='roleLevel'.toUpperCase() 
                             				|| dataIndex.toUpperCase()=='showLevel'.toUpperCase() 
-                            				|| dataIndex.toUpperCase()=='roleFlagName'.toUpperCase()  
-                            				|| dataIndex.toUpperCase()=='roleReportEditName'.toUpperCase()  
+                            				|| dataIndex.toUpperCase()=='roleVideoKeyEditName'.toUpperCase()
                             			)
                             	) {
                                 return false;
-                            }else if(parseInt(currentFlag)==0 && dataIndex.toUpperCase()=='roleFlagName'.toUpperCase()){
-                            	return false;
-                            } else {
+                            }else {
                                 return true;
                             }
                         }

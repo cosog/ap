@@ -91,10 +91,10 @@
         var userAccount = "${userLogin.userId}";
 
         var loginUserRoleLevel = "${userLogin.roleLevel}";
-        var loginUserRoleFlag = "${userLogin.roleFlag}";
         var loginUserRoleShowLevel = "${userLogin.roleShowLevel}";
-        var loginUserRoleReportEdit = "${userLogin.roleReportEdit}";
+        var loginUserRoleReportEdit = true;
         var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
+        var loginUserRoleModules=${userLogin.moduleList};
         
         var tabInfo=${tabInfo};
         

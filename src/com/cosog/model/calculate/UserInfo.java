@@ -24,14 +24,13 @@ public class UserInfo implements Serializable {
 	private Integer userType;
 	private String roleName;
 	private Integer roleLevel;
-	private Integer roleFlag;
 	private Integer roleShowLevel;
 	public UserInfo() {
 		super();
 	}
 	public UserInfo(Integer userNo, Integer userOrgid, String userId, String userName, String userPwd,
 			String userInEmail, String userPhone, Integer userQuickLogin, Integer userEnable, Integer receiveSMS,
-			Integer receiveMail, Integer userType, String roleName, Integer roleLevel, Integer roleFlag,
+			Integer receiveMail, Integer userType, String roleName, Integer roleLevel,
 			Integer roleShowLevel) {
 		super();
 		this.userNo = userNo;
@@ -48,7 +47,6 @@ public class UserInfo implements Serializable {
 		this.userType = userType;
 		this.roleName = roleName;
 		this.roleLevel = roleLevel;
-		this.roleFlag = roleFlag;
 		this.roleShowLevel = roleShowLevel;
 	}
 	public Integer getUserNo() {
@@ -134,12 +132,6 @@ public class UserInfo implements Serializable {
 	}
 	public void setRoleLevel(Integer roleLevel) {
 		this.roleLevel = roleLevel;
-	}
-	public Integer getRoleFlag() {
-		return roleFlag;
-	}
-	public void setRoleFlag(Integer roleFlag) {
-		this.roleFlag = roleFlag;
 	}
 	public Integer getRoleShowLevel() {
 		return roleShowLevel;

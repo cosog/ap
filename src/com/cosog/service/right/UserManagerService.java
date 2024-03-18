@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.Code;
 import com.cosog.model.Org;
+import com.cosog.model.RoleModule;
 import com.cosog.model.User;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
@@ -541,19 +542,69 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public void setUserRoleRight(User user){
-		String sql="select t.role_level,t.role_flag,t.showlevel,t.role_reportedit,t.role_videokeyedit "
+		Gson gson=new Gson();
+		String sql="select t.role_level,t.showlevel,t.role_videokeyedit "
 				+ " from tbl_role t,tbl_user t2 "
 				+ " where t2.user_type=t.role_id "
 				+ " and t2.user_no="+user.getUserNo();
+		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name,m.md_code,r.role_name "
+				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "
+				+ " where u.user_type=r.role_id and r.role_id=rm.rm_roleid and rm.rm_moduleid=m.md_id "
+				+ " and u.user_no= "+user.getUserNo()
+				+ " order by m.md_seq";
 		List<?> list=getBaseDao().findCallSql(sql);
+		List<?> userModuleList=getBaseDao().findCallSql(userModuleSql);
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
 			user.setRoleLevel(StringManagerUtils.stringToInteger(obj[0]+""));
-			user.setRoleFlag(StringManagerUtils.stringToInteger(obj[1]+""));
-			user.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[2]+""));
-			user.setRoleReportEdit(StringManagerUtils.stringToInteger(obj[3]+""));
-			user.setRoleVideoKeyEdit(StringManagerUtils.stringToInteger(obj[4]+""));
+			user.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[1]+""));
+			user.setRoleVideoKeyEdit(StringManagerUtils.stringToInteger(obj[2]+""));
 		}
+		List<RoleModule> roleModuleList= new ArrayList<>();
+		if(userModuleList.size()>0){
+			for(int i=0;i<userModuleList.size();i++){
+				Object[] obj=(Object[]) userModuleList.get(i);
+				RoleModule roleModule=new RoleModule();
+				roleModule.setRmId(StringManagerUtils.stringToInteger(obj[0]+""));
+				roleModule.setRmModuleid(StringManagerUtils.stringToInteger(obj[1]+""));
+				roleModule.setRmRoleId(StringManagerUtils.stringToInteger(obj[2]+""));
+				roleModule.setRmMatrix(obj[3]+"");
+				roleModule.setMdName(obj[4]+"");
+				roleModule.setMdCode(obj[5]+"");
+				roleModule.setRoleName(obj[6]+"");
+				if(StringManagerUtils.isNotNull(roleModule.getRmMatrix()) && roleModule.getRmMatrix().split(",").length==3 ){
+					String[] matrixArr=roleModule.getRmMatrix().split(",");
+					roleModule.setViewFlag(StringManagerUtils.stringToInteger(matrixArr[0]));
+					roleModule.setEditFlag(StringManagerUtils.stringToInteger(matrixArr[1]));
+					roleModule.setControlFlag(StringManagerUtils.stringToInteger(matrixArr[2]));
+				}else{
+					roleModule.setViewFlag(0);
+					roleModule.setEditFlag(0);
+					roleModule.setControlFlag(0);
+				}
+				roleModuleList.add(roleModule);
+			}
+		}
+		
+		StringBuffer roleModuleStringBuff = new StringBuffer();
+		roleModuleStringBuff.append("[");
+		for(int i=0;i<roleModuleList.size();i++){
+			roleModuleStringBuff.append("{\"rmId\":"+roleModuleList.get(i).getRmId()+",");
+			roleModuleStringBuff.append("\"rmModuleid\":"+roleModuleList.get(i).getRmModuleid()+",");
+			roleModuleStringBuff.append("\"rmRoleId\":"+roleModuleList.get(i).getRmRoleId()+",");
+			roleModuleStringBuff.append("\"rmMatrix\":\""+roleModuleList.get(i).getRmMatrix()+"\",");
+			roleModuleStringBuff.append("\"mdName\":\""+roleModuleList.get(i).getMdName()+"\",");
+			roleModuleStringBuff.append("\"mdCode\":\""+roleModuleList.get(i).getMdCode()+"\",");
+			roleModuleStringBuff.append("\"roleName\":\""+roleModuleList.get(i).getRoleName()+"\",");
+			roleModuleStringBuff.append("\"viewFlag\":"+roleModuleList.get(i).getViewFlag()+",");
+			roleModuleStringBuff.append("\"editFlag\":"+roleModuleList.get(i).getEditFlag()+",");
+			roleModuleStringBuff.append("\"controlFlag\":"+roleModuleList.get(i).getControlFlag()+"},");
+		}
+		if(roleModuleStringBuff.toString().endsWith(",")){
+			roleModuleStringBuff.deleteCharAt(roleModuleStringBuff.length() - 1);
+		}
+		roleModuleStringBuff.append("]");
+		user.setModuleList(roleModuleStringBuff.toString());
 	}
 	
 	public String loadUserComboxList(Page pager,String orgId,String userId,User user) throws Exception {

@@ -28,11 +28,12 @@ var SaveroleDataInfoSubmitBtnForm = function () {
     var rightmodule_panel = Ext.getCmp("RoleInfoWindowRightModuleTreeInfoGridPanel_Id");
     var _record;
     var roleLevel=Ext.getCmp("roleLevel_Id").getValue();
-    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
-    	_record = rightmodule_panel.store.data.items;
-    }else{
-    	_record = rightmodule_panel.getChecked();
-    }
+//    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+//    	_record = rightmodule_panel.store.data.items;
+//    }else{
+//    	_record = rightmodule_panel.getChecked();
+//    }
+    _record = rightmodule_panel.store.data.items;
     
     var righttab_panel = Ext.getCmp("RoleInfoWindowRightTabTreeInfoGridPanel_Id");
     var _tabRecord;
@@ -42,26 +43,40 @@ var SaveroleDataInfoSubmitBtnForm = function () {
     	_tabRecord = righttab_panel.getChecked();
     }
     
-    if(_record.length==0){
-    	Ext.Msg.alert(cosog.string.ts, '至少选中一个模块！');
-        return false;
-    }
-    if(_tabRecord.length==0){
-    	Ext.Msg.alert(cosog.string.ts, '至少选中一个标签！');
-        return false;
-    }
-    
     var addModule = [];
+    var matrixData = "";
     Ext.Array.each(_record, function (name, index, countriesItSelf) {
-        var md_ids = _record[index].get('mdId')
-        addModule.push(md_ids);
+        var checked=_record[index].get('viewFlagName');
+        if(checked){
+        	var md_ids = _record[index].get('mdId');
+            var viewFlagName=_record[index].get('viewFlagName')?1:0;
+            var editFlagName=_record[index].get('editFlagName')?1:0;
+            var controlFlagName=_record[index].get('controlFlagName')?1:0;
+            
+            addModule.push(md_ids);
+            var matrix_value = viewFlagName+","+editFlagName+","+controlFlagName;
+            matrixData += md_ids + ":" + matrix_value + "|";
+        }
     });
+    if(addModule.length>0){
+    	matrixData = matrixData.substring(0, matrixData.length - 1);
+    }
+    var matrixCodes_ = "" + matrixData;
     
     var addDeviceType = [];
     Ext.Array.each(_tabRecord, function (name, index, countriesItSelf) {
         var deviceTypeId = _tabRecord[index].get('deviceTypeId')
         addDeviceType.push(deviceTypeId);
     });
+    
+    if(addModule.length==0){
+    	Ext.Msg.alert(cosog.string.ts, '至少选中一个模块！');
+        return false;
+    }
+    if(addDeviceType.length==0){
+    	Ext.Msg.alert(cosog.string.ts, '至少选中一个标签！');
+        return false;
+    }
     
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (saveDataAttrInfoWinFormId.getForm().isValid()) {
@@ -89,6 +104,7 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             },
             params: {
             	addModuleIds: addModule.join(","),
+            	matrixCodes: matrixCodes_,
             	addDeviceTypeIds: addDeviceType.join(",")
             }
         });
@@ -139,38 +155,26 @@ SelectRoleDataAttrInfoGridPanel = function () {
     var roleId = dataattr_row[0].data.roleId;
     var roleName = dataattr_row[0].data.roleName;
     var roleLevel=dataattr_row[0].data.roleLevel;
-    var roleFlag = dataattr_row[0].data.roleFlag;
-    var roleFlagName = dataattr_row[0].data.roleFlagName;
     var showLevel=dataattr_row[0].data.showLevel;
     var remark=dataattr_row[0].data.remark;
     
     var currentUserRoleLevel=parseInt(Ext.getCmp("currentUserRoleLevel_Id").getValue());
     var currentUserRoleShowLevel=parseInt(Ext.getCmp("currentUserRoleShowLevel_Id").getValue());
-    var currentUserRoleFlag=parseInt(Ext.getCmp("currentUserRoleFlag_Id").getValue());
     
     Ext.getCmp('role_Id').setValue(roleId);
     Ext.getCmp('role_Name_Id').setValue(roleName);
     Ext.getCmp('roleLevel_Id').setValue(roleLevel);
-    Ext.getCmp('roleFlag_Id').setValue(roleFlag);
-    Ext.getCmp('roleFlagComboxfield_Id').setValue(roleFlag);
-    Ext.getCmp('roleFlagComboxfield_Id').setRawValue(roleFlagName);
     Ext.getCmp('roleShowLevel_Id').setValue(showLevel);
     Ext.getCmp('roleRemark_Id').setValue(remark);
     
-    if(currentUserRoleFlag==0){
-//    	Ext.getCmp('roleFlagComboxfield_Id').setReadOnly(true);
-    	Ext.getCmp('roleFlagComboxfield_Id').disable();
-    }
     
     if(currentUserRoleShowLevel>=showLevel){
-//    	Ext.getCmp('roleShowLevel_Id').setReadOnly(true);
     	Ext.getCmp('roleShowLevel_Id').disable();
     }else{
     	Ext.getCmp("roleShowLevel_Id").setMinValue(currentUserRoleShowLevel+1);
     }
     
     if(currentUserRoleLevel>=roleLevel){
-//    	Ext.getCmp('roleLevel_Id').setReadOnly(true);
     	Ext.getCmp('roleLevel_Id').disable();
     }else{
         Ext.getCmp("roleLevel_Id").setMinValue(currentUserRoleLevel+1);
@@ -185,8 +189,6 @@ function addroleInfo() {
     
     var currentUserRoleLevel=parseInt(Ext.getCmp("currentUserRoleLevel_Id").getValue());
     var currentUserRoleShowLevel=parseInt(Ext.getCmp("currentUserRoleShowLevel_Id").getValue());
-    var currentUserRoleFlag=parseInt(Ext.getCmp("currentUserRoleFlag_Id").getValue());
-    var currentUserRoleReportEdit=parseInt(Ext.getCmp("currentUserRoleReportEdit_Id").getValue());
     var currentUserRoleVideoKeyEdit=parseInt(Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue());
     
     Ext.getCmp("roleLevel_Id").setMinValue(currentUserRoleLevel+1);
@@ -195,19 +197,6 @@ function addroleInfo() {
     Ext.getCmp("roleShowLevel_Id").setMinValue(currentUserRoleShowLevel+1);
     Ext.getCmp("roleShowLevel_Id").setValue(currentUserRoleShowLevel+1);
     
-    if(currentUserRoleFlag==0){
-    	Ext.getCmp("roleFlag_Id").setValue(0);
-    	Ext.getCmp("roleFlagComboxfield_Id").setValue(0);
-    	Ext.getCmp("roleFlagComboxfield_Id").setRawValue('否');
-    	Ext.getCmp("roleFlagComboxfield_Id").disable();
-    }
-    
-    if(currentUserRoleReportEdit==0){
-    	Ext.getCmp("roleReportEdit_Id").setValue(0);
-    	Ext.getCmp("roleReportEditComboxfield_Id").setValue(0);
-    	Ext.getCmp("roleReportEditComboxfield_Id").setRawValue('否');
-    	Ext.getCmp("roleReportEditComboxfield_Id").disable();
-    }
     
     if(currentUserRoleVideoKeyEdit==0){
     	Ext.getCmp("roleVideoKeyEdit_Id").setValue(0);
@@ -318,8 +307,9 @@ var grantRolePermission = function () {//授予角色模块权限
             matrixData += md_ids + ":" + matrix_value + "|";
         }
     });
-
-    matrixData = matrixData.substring(0, matrixData.length - 1);
+    if(addjson.length>0){
+    	matrixData = matrixData.substring(0, matrixData.length - 1);
+    }
     var addparamsId = "" + addjson.join(",");
     var matrixCodes_ = "" + matrixData;
 
@@ -477,8 +467,8 @@ function updateRoleInfoByGridBtn(record) {
     var roleId=record.get("roleId");
     var roleName=record.get("roleName");
     var roleLevel=record.get("roleLevel");
-    var roleFlagName=record.get("roleFlagName");
-    var roleReportEditName=record.get("roleReportEditName");
+//    var roleFlagName=record.get("roleFlagName");
+//    var roleReportEditName=record.get("roleReportEditName");
     var roleVideoKeyEditName=record.get("roleVideoKeyEditName");
     var showLevel=record.get("showLevel");
     var remark=record.get("remark");
@@ -489,8 +479,8 @@ function updateRoleInfoByGridBtn(record) {
 			roleId : roleId,
 			roleName : roleName,
 			roleLevel : roleLevel,
-			roleFlagName : roleFlagName,
-			roleReportEditName : roleReportEditName,
+//			roleFlagName : roleFlagName,
+//			roleReportEditName : roleReportEditName,
 			roleVideoKeyEditName : roleVideoKeyEditName,
 			showLevel : showLevel,
 			remark : remark

@@ -52,13 +52,10 @@ public class ModuleShowRightManagerController extends BaseController implements 
 		RoleModule r = null;
 		try {
 			String moduleIds = ParamUtils.getParameter(request, "paramsId");
-		//	String oldModuleIds = ParamUtils.getParameter(request,
-					//"oldModuleIds");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			log.debug("doModuleSaveOrUpdate moduleIds==" + moduleIds);
 			String roleId = ParamUtils.getParameter(request, "roleId");
 			String moduleId[] = StringManagerUtils.split(moduleIds, ",");
-			//String oldModuleId[] = StringManagerUtils.split(oldModuleIds, ",");
 			if (roleId != null) {
 				this.moduleService.deleteCurrentModuleByRoleCode(roleId);
 				if (moduleId.length > 0 && matrixCodes != "" && matrixCodes != null) {

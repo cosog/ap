@@ -53,6 +53,17 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
             	    	if(!record.isLeaf()){
             	    		return false;
+            	    	}else{
+            	    		var rn=true
+            	    		for(var i=0;i<loginUserRoleModules.length;i++){
+            	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
+            	    				if(loginUserRoleModules[i].viewFlag!=1){
+            	    					rn= false;
+            	    				}
+            	    				break;
+            	    			}
+            	    		}
+            	    		return rn;
             	    	}
             	    }
             	}
@@ -73,6 +84,17 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
             	    	if(!record.isLeaf()){
             	    		return false;
+            	    	}else{
+            	    		var rn=true
+            	    		for(var i=0;i<loginUserRoleModules.length;i++){
+            	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
+            	    				if(loginUserRoleModules[i].editFlag!=1){
+            	    					rn= false;
+            	    				}
+            	    				break;
+            	    			}
+            	    		}
+            	    		return rn;
             	    	}
             	    },
             	    afterrender: function( cell, eOpts){
@@ -99,6 +121,19 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
             	    	if(!record.isLeaf()){
             	    		return false;
+            	    	}else if(record.data.mdCode.toUpperCase()!='DeviceRealTimeMonitoring'.toUpperCase()){
+            	    		return false;
+            	    	}else{
+            	    		var rn=true
+            	    		for(var i=0;i<loginUserRoleModules.length;i++){
+            	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
+            	    				if(loginUserRoleModules[i].controlFlag!=1){
+            	    					rn= false;
+            	    				}
+            	    				break;
+            	    			}
+            	    		}
+            	    		return rn;
             	    	}
             	    }
             	}

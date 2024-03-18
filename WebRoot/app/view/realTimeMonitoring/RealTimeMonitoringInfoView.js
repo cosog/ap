@@ -54,6 +54,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 		}
             			panelItem.items.push(secondTabPanel);
         			}
+        			if(panelItem.items.length>0){//添加全部标签
+        				
+        			}
         		}else{
         			panelItem={
         					title: tabInfo.children[i].text,

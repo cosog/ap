@@ -4125,4 +4125,12 @@ public class StringManagerUtils {
     	}
     	return m;
     }
+    
+    public static int getModuleRightFlagFromMatrix(String matrix,int type){
+		int flag=0;
+		if(StringManagerUtils.isNotNull(matrix) && matrix.split(",").length==3 && type<3){
+			flag=StringManagerUtils.stringToInteger(matrix.split(",")[type]);
+		}
+		return flag;
+	}
 }

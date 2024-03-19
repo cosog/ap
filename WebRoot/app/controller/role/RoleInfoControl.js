@@ -206,7 +206,6 @@ function addroleInfo() {
     }
     
     Ext.getCmp("addFormrole_Id").show();
-    Ext.getCmp("updateFormrole_Id").hide();
     return false;
     // Ext.Msg.alert("title", "add role Info!");
 };

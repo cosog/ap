@@ -93,7 +93,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where t.orgId=g.org_id  "
 				+ " and g.org_id in ("+ orgId + ")";
 		if (StringManagerUtils.isNotNull(deviceTypeStr)) {
-			sql += " and t.deviceType="+deviceTypeStr;
+			if(StringManagerUtils.isNum(deviceTypeStr)){
+				sql+= " and t.devicetype="+deviceTypeStr;
+			}else{
+				sql+= " and t.devicetype in ("+deviceTypeStr+")";
+			}
 		}
 		if (StringManagerUtils.isNotNull(calculateTypeStr)) {
 			sql += " and t.calculateType="+calculateTypeStr;

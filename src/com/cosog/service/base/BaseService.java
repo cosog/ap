@@ -1191,4 +1191,18 @@ public class BaseService<T> {
 			this.getBaseDao().saveSystemLog(user,action,remark);
 		}
 	}
+	
+	public String getUserRoleModuleMatrix(int userNo,String mdCode){
+		String matrix="0,0,0";
+		String sql="select rm.rm_matrix "
+				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "
+				+ " where u.user_type=r.role_id and r.role_id=rm.rm_roleid and rm.rm_moduleid=m.md_id "
+				+ " and u.user_no=  "+userNo
+				+ " and upper(m.md_code)=upper('"+mdCode+"')";
+		List<?> orgList = this.findCallSql(sql);
+		if(orgList.size()>0 && StringManagerUtils.isNotNull(orgList.get(0)+"")){
+			matrix=orgList.get(0)+"";
+		}
+		return matrix;
+	}
 }

@@ -312,6 +312,61 @@ public class UserManagerService<T> extends BaseService<T> {
 		}
 		return result_json.toString();
 	}
+	
+	public String getUserRoleModules(User user){
+		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name,m.md_code,r.role_name "
+				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "
+				+ " where u.user_type=r.role_id and r.role_id=rm.rm_roleid and rm.rm_moduleid=m.md_id "
+				+ " and u.user_no= "+user.getUserNo()
+				+ " order by m.md_seq";
+		List<?> userModuleList=getBaseDao().findCallSql(userModuleSql);
+		List<RoleModule> roleModuleList= new ArrayList<>();
+		if(userModuleList.size()>0){
+			for(int i=0;i<userModuleList.size();i++){
+				Object[] obj=(Object[]) userModuleList.get(i);
+				RoleModule roleModule=new RoleModule();
+				roleModule.setRmId(StringManagerUtils.stringToInteger(obj[0]+""));
+				roleModule.setRmModuleid(StringManagerUtils.stringToInteger(obj[1]+""));
+				roleModule.setRmRoleId(StringManagerUtils.stringToInteger(obj[2]+""));
+				roleModule.setRmMatrix(obj[3]+"");
+				roleModule.setMdName(obj[4]+"");
+				roleModule.setMdCode(obj[5]+"");
+				roleModule.setRoleName(obj[6]+"");
+				if(StringManagerUtils.isNotNull(roleModule.getRmMatrix()) && roleModule.getRmMatrix().split(",").length==3 ){
+					String[] matrixArr=roleModule.getRmMatrix().split(",");
+					roleModule.setViewFlag(StringManagerUtils.stringToInteger(matrixArr[0]));
+					roleModule.setEditFlag(StringManagerUtils.stringToInteger(matrixArr[1]));
+					roleModule.setControlFlag(StringManagerUtils.stringToInteger(matrixArr[2]));
+				}else{
+					roleModule.setViewFlag(0);
+					roleModule.setEditFlag(0);
+					roleModule.setControlFlag(0);
+				}
+				roleModuleList.add(roleModule);
+			}
+		}
+		
+		StringBuffer roleModuleStringBuff = new StringBuffer();
+		roleModuleStringBuff.append("[");
+		for(int i=0;i<roleModuleList.size();i++){
+			roleModuleStringBuff.append("{\"rmId\":"+roleModuleList.get(i).getRmId()+",");
+			roleModuleStringBuff.append("\"rmModuleid\":"+roleModuleList.get(i).getRmModuleid()+",");
+			roleModuleStringBuff.append("\"rmRoleId\":"+roleModuleList.get(i).getRmRoleId()+",");
+			roleModuleStringBuff.append("\"rmMatrix\":\""+roleModuleList.get(i).getRmMatrix()+"\",");
+			roleModuleStringBuff.append("\"mdName\":\""+roleModuleList.get(i).getMdName()+"\",");
+			roleModuleStringBuff.append("\"mdCode\":\""+roleModuleList.get(i).getMdCode()+"\",");
+			roleModuleStringBuff.append("\"roleName\":\""+roleModuleList.get(i).getRoleName()+"\",");
+			roleModuleStringBuff.append("\"viewFlag\":"+roleModuleList.get(i).getViewFlag()+",");
+			roleModuleStringBuff.append("\"editFlag\":"+roleModuleList.get(i).getEditFlag()+",");
+			roleModuleStringBuff.append("\"controlFlag\":"+roleModuleList.get(i).getControlFlag()+"},");
+		}
+		if(roleModuleStringBuff.toString().endsWith(",")){
+			roleModuleStringBuff.deleteCharAt(roleModuleStringBuff.length() - 1);
+		}
+		roleModuleStringBuff.append("]");
+		return roleModuleStringBuff.toString();
+	}
+	
 	public boolean judgeUserExistsOrNot(String userId,String userNo) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(userId)) {

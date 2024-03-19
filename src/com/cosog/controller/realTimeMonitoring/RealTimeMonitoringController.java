@@ -316,26 +316,6 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getDeviceControlandInfoData")
-	public String getDeviceControlandInfoData() throws Exception {
-		String json = "";
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String deviceId=ParamUtils.getParameter(request, "deviceId");
-		String wellName = ParamUtils.getParameter(request, "wellName");
-		deviceType = ParamUtils.getParameter(request, "deviceType");
-		this.pager = new Page("pagerForm", request);
-		json = realTimeMonitoringService.getDeviceControlandInfoData(deviceId,wellName,deviceType,user);
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getDeviceInfoData")
 	public String getDeviceInfoData() throws Exception {
 		String json = "";

@@ -36,6 +36,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         	        	}
         			}
         			
+        			var allSecondIds='';
         			for(var j=0;j<tabInfo.children[i].children.length;j++){
         				var secondTabPanel={
         					title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
@@ -47,8 +48,21 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
             			if(j==0){
             				secondTabPanel.items=[];
             				secondTabPanel.items.push(AlarmQueryInfoPanel);
+            				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
+                		}else{
+                			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
                 		}
             			panelItem.items.push(secondTabPanel);
+        			}
+        			if(panelItem.items.length>0){//添加全部标签
+        				var secondTabPanel_all={
+        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
+        						tpl:'全部',
+        						layout: 'fit',
+        						id: 'AlarmQueryRootTabPanel_'+allSecondIds,
+        						border: false
+        				};
+        				panelItem.items.push(secondTabPanel_all);
         			}
         		}else{
         			panelItem={

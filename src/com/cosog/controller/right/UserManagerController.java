@@ -388,12 +388,12 @@ public class UserManagerController extends BaseController {
 			
 //			this.userService.modifyUser(user);
 			HttpSession session=request.getSession();
-			User prttentuser = (User) session.getAttribute("userLogin");
+			User loginUser = (User) session.getAttribute("userLogin");
 			//如果是当前登录用户
-			if(user.getUserNo()==prttentuser.getUserNo()){
+			if(user.getUserNo()==loginUser.getUserNo()){
 				isLoginedUser=true;
-				user.setUserType(prttentuser.getUserType());
-				user.setUserEnable(prttentuser.getUserEnable());
+				user.setUserType(loginUser.getUserType());
+				user.setUserEnable(loginUser.getUserEnable());
 			}
 			boolean userIdChange=false;
 			if(!isLoginedUser){
@@ -532,6 +532,27 @@ public class UserManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/getUserRoleModules")
+	public String getUserRoleModules() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String json="";
+		if(user!=null){
+			json = this.userService.getUserRoleModules(user);
+//			json = user.getModuleList();
+		}
+		
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	} 
 	
 	/**<P>构建闭环报警里的专业班组的下拉菜单树数据信息</p>	 
 	 * @author  gao 2014-5-08

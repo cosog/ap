@@ -38,6 +38,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         		},'->',{
         			xtype: 'button',
                     text: '添加协议',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
                     	addModbusProtocolAddrMappingConfigData();
@@ -45,6 +46,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         		},"-",{
                 	xtype: 'button',
         			text: cosog.string.save,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
         				SaveModbusProtocolAddrMappingConfigTreeData();
@@ -52,6 +54,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 },"-",{
                 	xtype: 'button',
         			text: '存储字段表',
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                             title: '存储字段表'
@@ -69,6 +72,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 },"-",{
                 	xtype: 'button',
         			text: '导入',
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'import',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ProtocolImportWindow");
@@ -77,6 +81,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 },'-', {
         			xtype: 'button',
         			text:'协议隶属迁移',
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'move',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
@@ -363,23 +368,31 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0) {
-							cellProperties.readOnly = true;
-		                }else if(visualColIndex==8){
-		                	var IFDataType='';
-		                	if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-		                		IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
-		                	}else{
-		                		if(protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType!=undefined   ){
-		                			IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType;
-		                		}
-		                	}
-		                	if(IFDataType==null || IFDataType.toUpperCase().indexOf('FLOAT')<0){
-		                		cellProperties.readOnly = true;
-		                	}else{
-		                		cellProperties.readOnly = false;
-		                	}
-		                }
+	                    
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if (visualColIndex ==0) {
+								cellProperties.readOnly = true;
+			                }else if(visualColIndex==8){
+			                	var IFDataType='';
+			                	if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
+			                		IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
+			                	}else{
+			                		if(protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType!=undefined   ){
+			                			IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType;
+			                		}
+			                	}
+			                	if(IFDataType==null || IFDataType.toUpperCase().indexOf('FLOAT')<0){
+			                		cellProperties.readOnly = true;
+			                	}else{
+			                		cellProperties.readOnly = false;
+			                	}
+			                }
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    }
+	                    
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
@@ -535,31 +548,35 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===0){
-							cellProperties.readOnly = true;
-							cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
-	                    }else if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
-	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+	                    
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===0){
 								cellProperties.readOnly = true;
 								cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
-			                }else if(visualColIndex === 2 && visualRowIndex===0){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
-		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-//		                    	this.type = 'dropdown';
-//		                    	this.source = ['抽油机井','螺杆泵井'];
-//		                    	this.strict = true;
-//		                    	this.allowInvalid = false;
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
-		                    	}
-		                    }else if(visualColIndex === 2 && visualRowIndex===2){
-//		                    	this.validator=function (val, callback) {
-//		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
-//		                    	}
+		                    }else if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
+		                    	if (visualColIndex ==0 || visualColIndex ==1) {
+									cellProperties.readOnly = true;
+									cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
+				                }else if(visualColIndex === 2 && visualRowIndex===0){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+			                    	}
+			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+			                    	}
+			                    }else if(visualColIndex === 2 && visualRowIndex===2){
+//			                    	this.validator=function (val, callback) {
+//			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+//			                    	}
+			                    }
 		                    }
+	                    }else{
+	                    	cellProperties.readOnly = true;
 	                    }
+	                    
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
@@ -801,10 +818,10 @@ var ProtocolAddrMappingItemsMeaningConfigHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-//	                    if (visualColIndex ==1 || visualColIndex ==2) {
-//							cellProperties.readOnly = true;
-//							cellProperties.renderer = protocolAddrMappingItemsMeaningConfigHandsontableHelper.addBoldBg;
-//		                }
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag!=1){
+	                    	cellProperties.readOnly = true;
+	                    }
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

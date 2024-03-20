@@ -43,6 +43,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 	tbar: ['->',{
                     	xtype: 'button',
             			text: cosog.string.save,
+            			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
             			iconCls: 'save',
             			handler: function (v, o) {
             				databaseColumnMappingHandsontableHelper.saveData();
@@ -79,6 +80,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 	tbar: ['->',{
                     	xtype: 'button',
             			text: cosog.string.save,
+            			disabled: loginUserProtocolConfigModuleRight.editFlag!=1,
             			iconCls: 'save',
             			handler: function (v, o) {
             				saveProtocolRunStatusConfig();
@@ -237,6 +239,10 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    	this.source = databaseColumnMappingHandsontableHelper.calColumnDropdown;
 	                    	this.strict = true;
 	                    	this.allowInvalid = false;
+	                    	var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+		                    if(protocolConfigModuleEditFlag!=1){
+		                    	cellProperties.readOnly = true;
+		                    }
 	                    }
 	                    return cellProperties;
 	                },

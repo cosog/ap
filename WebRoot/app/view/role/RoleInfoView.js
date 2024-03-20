@@ -1,3 +1,4 @@
+var loginUserRoleManagerModuleRight=getRoleModuleRight('RoleManagement');
 Ext.define("AP.view.role.RoleInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.roleInfoView',
@@ -10,6 +11,22 @@ Ext.define("AP.view.role.RoleInfoView", {
         var RightModuleInfoGridPanel = Ext.create('AP.view.role.RightModuleInfoTreeGridView');
         var RightTabInfoTreeGridView = Ext.create('AP.view.role.RightTabInfoTreeGridView');
         Ext.apply(me, {
+        	tbar:[{
+            	id: 'RoleManagerModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserRoleManagerModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'RoleManagerModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserRoleManagerModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'RoleManagerModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserRoleManagerModuleRight.controlFlag,
+                hidden: true
+            }],
         	items: [{
         		region:'center',
         		layout: "fit",
@@ -41,6 +58,7 @@ Ext.define("AP.view.role.RoleInfoView", {
                         text: '保存',
                         iconCls: 'save',
                         pressed: false,
+                        disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                         handler: function () {
                         	grantRolePermission();
                         }
@@ -64,6 +82,7 @@ Ext.define("AP.view.role.RoleInfoView", {
                         id: 'addRightTabLableClassBtn_Id',
                         text: '保存',
                         iconCls: 'save',
+                        disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                         pressed: false,
                         handler: function () {
                         	grantRoleTabPermission();

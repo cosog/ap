@@ -31,6 +31,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
         		},'->',{
         			xtype: 'button',
                     text: '添加实例',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
         				addModbusProtocolInstanceConfigData();
@@ -38,6 +39,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
         		}, "-",{
                 	xtype: 'button',
         			text: cosog.string.save,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
         				SaveModbusProtocolInstanceConfigTreeData();
@@ -315,62 +317,70 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
+	                    
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
+			                }
+		                    if(protocolConfigInstancePropertiesHandsontableHelper.classes===0 || protocolConfigInstancePropertiesHandsontableHelper.classes===2){
+		                    	cellProperties.readOnly = true;
+								cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
+		                    }else if(protocolConfigInstancePropertiesHandsontableHelper.classes===1){
+		                    	if(visualColIndex === 2 && visualRowIndex===0){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }else if (visualColIndex === 2 && visualRowIndex===1) {}else if (visualColIndex === 2 && visualRowIndex===2) {
+			                    	this.type = 'dropdown';
+			                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt','private-kd93','private-lq1000'];
+			                    	this.strict = true;
+			                    	this.allowInvalid = false;
+			                    }else if (visualColIndex === 2 && visualRowIndex===3) {
+			                    	this.type = 'dropdown';
+			                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt'];
+			                    	this.strict = true;
+			                    	this.allowInvalid = false;
+			                    }else if (visualColIndex === 2 && (visualRowIndex===4 ||visualRowIndex===7 || visualRowIndex===8) ) {
+			                    	this.type = 'checkbox';
+			                    }else if(visualColIndex === 2 && (visualRowIndex===11) || visualRowIndex===12){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }else if (visualColIndex === 2 && (visualRowIndex===5 || visualRowIndex===6) ) {
+			                    	if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined && protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+			                    		var signInPrefixSuffixHex=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(5,2);
+			                    		if(signInPrefixSuffixHex){
+			                    			this.validator=function (val, callback) {
+					                    	    return handsontableDataCheck_HexStr_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+					                    	}
+			                    		}else{
+			                    			this.validator=function (val, callback) {
+			                    				return callback(true);
+			                    			}
+			                    		}
+			                    	}
+			                    }else if (visualColIndex === 2 && (visualRowIndex===10 || visualRowIndex===10) ) {
+			                    	if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined && protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+			                    		var heartbeatPrefixSuffixHex=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(9,2);
+			                    		if(heartbeatPrefixSuffixHex){
+			                    			this.validator=function (val, callback) {
+					                    	    return handsontableDataCheck_HexStr_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+					                    	}
+			                    		}else{
+			                    			this.validator=function (val, callback) {
+			                    				return callback(true);
+			                    			}
+			                    		}
+			                    	}
+			                    }
+		                    }
+	                    }else{
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolConfigInstancePropertiesHandsontableHelper.classes===0 || protocolConfigInstancePropertiesHandsontableHelper.classes===2){
-	                    	cellProperties.readOnly = true;
-							cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
-	                    }else if(protocolConfigInstancePropertiesHandsontableHelper.classes===1){
-	                    	if(visualColIndex === 2 && visualRowIndex===0){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===1) {}else if (visualColIndex === 2 && visualRowIndex===2) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt','private-kd93','private-lq1000'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if (visualColIndex === 2 && visualRowIndex===3) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if (visualColIndex === 2 && (visualRowIndex===4 ||visualRowIndex===7 || visualRowIndex===8) ) {
-		                    	this.type = 'checkbox';
-		                    }else if(visualColIndex === 2 && (visualRowIndex===11) || visualRowIndex===12){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }else if (visualColIndex === 2 && (visualRowIndex===5 || visualRowIndex===6) ) {
-		                    	if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined && protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
-		                    		var signInPrefixSuffixHex=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(5,2);
-		                    		if(signInPrefixSuffixHex){
-		                    			this.validator=function (val, callback) {
-				                    	    return handsontableDataCheck_HexStr_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
-				                    	}
-		                    		}else{
-		                    			this.validator=function (val, callback) {
-		                    				return callback(true);
-		                    			}
-		                    		}
-		                    	}
-		                    }else if (visualColIndex === 2 && (visualRowIndex===10 || visualRowIndex===10) ) {
-		                    	if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined && protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
-		                    		var heartbeatPrefixSuffixHex=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(9,2);
-		                    		if(heartbeatPrefixSuffixHex){
-		                    			this.validator=function (val, callback) {
-				                    	    return handsontableDataCheck_HexStr_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
-				                    	}
-		                    		}else{
-		                    			this.validator=function (val, callback) {
-		                    				return callback(true);
-		                    			}
-		                    		}
-		                    	}
-		                    }
-	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

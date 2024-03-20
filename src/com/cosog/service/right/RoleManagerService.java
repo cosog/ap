@@ -235,4 +235,21 @@ private CommonDataService service;
 				+ user.getUserNo() + ") order by tab.sortNum, tab.id";
 		return find(queryString);
 	}
+	
+	public String getRoleModuleRight(User user,String moduleCode){
+		StringBuffer result_json = new StringBuffer();
+		int viewFlag=0,editFlag=0,controlFlag=0; 
+		
+		String matrix=getUserRoleModuleMatrix(user!=null?user.getUserNo():0,moduleCode);
+		
+		viewFlag=StringManagerUtils.getModuleRightFlagFromMatrix(matrix,0);
+		editFlag=StringManagerUtils.getModuleRightFlagFromMatrix(matrix,1);
+		controlFlag=StringManagerUtils.getModuleRightFlagFromMatrix(matrix,2);
+		
+		result_json.append("{\"moduleCode\":\""+moduleCode+"\",");
+		result_json.append("\"viewFlag\":"+viewFlag+",");
+		result_json.append("\"editFlag\":"+editFlag+",");
+		result_json.append("\"controlFlag\":"+controlFlag+"}");
+		return result_json.toString();
+	}
 }

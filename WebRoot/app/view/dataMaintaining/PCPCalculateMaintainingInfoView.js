@@ -457,6 +457,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     		},'->',{
                 xtype: 'button',
                 text: '修改历史数据计算',
+                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 id:'PCPCalculateMaintainingUpdateDataBtn',
                 pressed: false,
                 iconCls: 'edit',
@@ -466,6 +467,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '关联生产数据计算',
+                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 pressed: false,
                 iconCls: 'save',
                 id:'PCPCalculateMaintainingLinkedDataBtn',
@@ -591,6 +593,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             },{
                 xtype: 'button',
                 text: '重新汇总',
+                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 id:'PCPCalculateMaintainingReTotalBtn',
                 pressed: false,
                 hidden:true,
@@ -861,10 +864,17 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex >= 1 && visualColIndex <= 7) {
+	                    var CalculateMaintainingModuleEditFlag=parseInt(Ext.getCmp("CalculateMaintainingModuleEditFlag").getValue());
+	                    if(CalculateMaintainingModuleEditFlag==1){
+	                    	if (visualColIndex >= 1 && visualColIndex <= 7) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addBoldBg;
+			                }
+	                    }else{
 							cellProperties.readOnly = true;
 							cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addBoldBg;
 		                }
+	                    
 	                    return cellProperties;
 	                },
 	                afterDestroy: function() {

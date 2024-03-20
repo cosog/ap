@@ -34,6 +34,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
         		},'->',{
         			xtype: 'button',
                     text: '添加实例',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
         				addModbusProtocolDisplayInstanceConfigData();
@@ -41,6 +42,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
         		}, "-",{
                 	xtype: 'button',
         			text: cosog.string.save,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
         				SaveModbusProtocolDisplayInstanceConfigTreeData();
@@ -297,24 +299,31 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
+			                }
+		                    if(protocolDisplayInstancePropertiesHandsontableHelper.classes===0 || protocolDisplayInstancePropertiesHandsontableHelper.classes===2){
+		                    	cellProperties.readOnly = true;
+								cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
+		                    }else if(protocolDisplayInstancePropertiesHandsontableHelper.classes===1){
+		                    	if(visualColIndex === 2 && visualRowIndex===0){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }else if(visualColIndex === 2 && visualRowIndex===2){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }
+		                    }
+	                    }else{
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolDisplayInstancePropertiesHandsontableHelper.classes===0 || protocolDisplayInstancePropertiesHandsontableHelper.classes===2){
-	                    	cellProperties.readOnly = true;
-							cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
-	                    }else if(protocolDisplayInstancePropertiesHandsontableHelper.classes===1){
-	                    	if(visualColIndex === 2 && visualRowIndex===0){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }else if(visualColIndex === 2 && visualRowIndex===2){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }
-	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

@@ -250,8 +250,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
-					+ " where  t.orgid in ("+orgId+") "
-					+ " and t.devicetype="+deviceType;
+					+ " where  t.orgid in ("+orgId+") ";
+			if(StringManagerUtils.isNum(deviceType)){
+				sql+= " and t.devicetype="+deviceType;
+			}else{
+				sql+= " and t.devicetype in ("+deviceType+")";
+			}
 			
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";
@@ -320,8 +324,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
 					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
-					+ " where  t.orgid in ("+orgId+") "
-					+ " and t.devicetype="+deviceType;
+					+ " where  t.orgid in ("+orgId+") ";
+			if(StringManagerUtils.isNum(deviceType)){
+				sql+= " and t.devicetype="+deviceType;
+			}else{
+				sql+= " and t.devicetype in ("+deviceType+")";
+			}
 			
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";
@@ -2609,9 +2617,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
 						+ " from "+tableName +" t"
-						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id"
-						+ " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime"
-						+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
+						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id";
+				if(StringManagerUtils.stringToInteger(calculateType)>0){
+					sql+= " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime";
+				}	
+				sql+= " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
 						+ " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
 				int rarefy=total/vacuateThreshold+1;

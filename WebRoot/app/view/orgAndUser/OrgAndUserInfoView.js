@@ -1,3 +1,4 @@
+var loginUserOrgAndUserModuleRight=getRoleModuleRight('OrganizationAndUserManagement');
 Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.orgAndUserInfoView',
@@ -7,6 +8,22 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
+        	tbar:[{
+            	id: 'OrgAndUserModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserOrgAndUserModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'OrgAndUserModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserOrgAndUserModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'OrgAndUserModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserOrgAndUserModuleRight.controlFlag,
+                hidden: true
+            }],
         	items: [{
         		region:'west',
         		width:'25%',
@@ -35,6 +52,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     id: 'addOrgLableClassBtn_Id',
                     text: cosog.string.add,
                     iconCls: 'add',
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     handler: function () {
                     	addOrgInfo();
                     }
@@ -43,7 +61,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     itemId: 'editOrgLableClassBtnId',
                     id: 'editOrgLableClassBtn_Id',
                     text: cosog.string.update,
-                    disabled: false,
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     handler: function () {
                     	modifyOrgInfo();
@@ -52,7 +70,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     xtype: 'button',
                     itemId: 'delOrgLableClassBtnId',
                     id: 'delOrgLableClassBtn_Id',
-                    disabled: false,
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     action: 'delOrgAction',
                     text: cosog.string.del,
                     iconCls: 'delete',
@@ -63,6 +81,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         			xtype: 'button',
         			text:'组织隶属迁移',
         			iconCls: 'move',
+        			disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.orgAndUser.OrgParentChangeWindow");
                         window.show();
@@ -100,6 +119,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     id: 'addUserLableClassBtn_Id',
                     text: cosog.string.add,
                     iconCls: 'add',
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     handler: function () {
                     	addUserInfo();
                     }
@@ -107,7 +127,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     xtype: 'button',
                     id: 'editUserLableClassBtn_Id',
                     text: '修改密码',
-                    disabled: false,
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     handler: function () {
                     	modifyUserInfo();
@@ -116,6 +136,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         			xtype: 'button',
         			text:'用户隶属迁移',
         			iconCls: 'move',
+        			disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.orgAndUser.UserOrgChangeWindow", {
                             title: '用户隶属迁移'

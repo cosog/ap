@@ -478,8 +478,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     border: false,
     initComponent: function () {
         var me = this;
-        
-        
         var deviceCombStore = new Ext.data.JsonStore({
         	pageSize:defaultWellComboxSize,
             fields: [{

@@ -1,3 +1,4 @@
+var loginUserProtocolConfigModuleRight=getRoleModuleRight('DriverManagement');
 Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.protocolConfigInfoView',
@@ -10,9 +11,27 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     	var ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
         var ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
         
+        
+        
         Ext.create('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore');
     	Ext.apply(me, {
     		layout: "border",
+    		tbar:[{
+            	id: 'ProtocolConfigModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserProtocolConfigModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'ProtocolConfigModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserProtocolConfigModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'ProtocolConfigModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserProtocolConfigModuleRight.controlFlag,
+                hidden: true
+            }],
     		items: [{
             	border: true,
             	region: 'west',
@@ -33,6 +52,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 	region: 'south',
                 	height:'42%',
                 	title:'标签属性',
+                	hidden:true,
                 	collapsible: true,
                     split: true,
                 	layout: 'fit',

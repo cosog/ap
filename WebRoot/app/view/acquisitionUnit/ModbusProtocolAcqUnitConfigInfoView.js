@@ -31,6 +31,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
         		},'->',{
         			xtype: 'button',
                     text: '添加采控单元',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
                     	addAcquisitionUnitInfo();
@@ -38,6 +39,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
         		},"-",{
         			xtype: 'button',
                     text: '添加采控组',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
                     	addAcquisitionGroupInfo();
@@ -45,6 +47,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
         		},"-",{
                 	xtype: 'button',
         			text: cosog.string.save,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
         				SaveModbusProtocolAcqUnitConfigTreeData();
@@ -216,19 +219,27 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue();
-	                	if(ScadaDriverModbusConfigSelectRow!=''){
-	                		var selectedItem=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
-	                		if(selectedItem.data.classes!=3){
-	                			cellProperties.readOnly = true;
-	                		}else{
-	                			if (visualColIndex >=1 && visualColIndex<=6) {
-	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==10||visualColIndex==12){
-	    		                	cellProperties.renderer = protocolAcqUnitConfigItemsHandsontableHelper.addCurveBg;
-	    		                }
-	                		}
-	                	}
+	                    
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue();
+		                	if(ScadaDriverModbusConfigSelectRow!=''){
+		                		var selectedItem=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
+		                		if(selectedItem.data.classes!=3){
+		                			cellProperties.readOnly = true;
+		                		}else{
+		                			if (visualColIndex >=1 && visualColIndex<=6) {
+		    							cellProperties.readOnly = true;
+		    		                }else if(visualColIndex==10||visualColIndex==12){
+		    		                	cellProperties.renderer = protocolAcqUnitConfigItemsHandsontableHelper.addCurveBg;
+		    		                }
+		                		}
+		                	}
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    }
+	                    
+	                    
 	                    return cellProperties;
 	                },
 	                afterBeginEditing:function(row,column){
@@ -398,35 +409,41 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = protocolConfigAcqUnitPropertiesHandsontableHelper.addBoldBg;
-		                }
-	                    if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===0 || protocolConfigAcqUnitPropertiesHandsontableHelper.classes===1){
+	                    
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = protocolConfigAcqUnitPropertiesHandsontableHelper.addBoldBg;
+			                }
+		                    if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===0 || protocolConfigAcqUnitPropertiesHandsontableHelper.classes===1){
+		                    	cellProperties.readOnly = true;
+								cellProperties.renderer = protocolConfigAcqUnitPropertiesHandsontableHelper.addBoldBg;
+		                    }else if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===2){
+		                    	if (visualColIndex === 2 && visualRowIndex===0) {
+		                    		this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
+			                    	}
+			                    }
+		                    }else if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===3){
+		                    	if (visualColIndex === 2 && visualRowIndex===0) {
+		                    		this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
+			                    	}
+			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+			                    	this.type = 'dropdown';
+			                    	this.source = ['采集组','控制组'];
+			                    	this.strict = true;
+			                    	this.allowInvalid = false;
+			                    }else if(visualColIndex === 2 && (visualRowIndex===2||visualRowIndex===3) && protocolConfigAcqUnitPropertiesHandsontableHelper.type==0){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
+			                    	}
+			                    }
+		                    }
+	                    }else{
 	                    	cellProperties.readOnly = true;
 							cellProperties.renderer = protocolConfigAcqUnitPropertiesHandsontableHelper.addBoldBg;
-	                    }else if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===2){
-	                    	if (visualColIndex === 2 && visualRowIndex===0) {
-	                    		this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
-		                    	}
-		                    }
-	                    }else if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===3){
-	                    	if (visualColIndex === 2 && visualRowIndex===0) {
-	                    		this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
-		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['采集组','控制组'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }else if(visualColIndex === 2 && (visualRowIndex===2||visualRowIndex===3) && protocolConfigAcqUnitPropertiesHandsontableHelper.type==0){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
-		                    	}
-		                    }
-	                    	
 	                    }
 	                    return cellProperties;
 	                },

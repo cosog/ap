@@ -57,9 +57,12 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                         	}
                         },
                         itemdblclick: function (grid, record, item, index, e, eOpts) {
-                        	if(!( (record.data.text=='组织根节点'&&parseInt(record.data.orgParent)==0) || parseInt(record.data.orgId)==parseInt(userOrg_Id)   )){
-                        		modifyOrgInfo();
-                    		}
+                        	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+    	                    if(OrgAndUserModuleEditFlag==1){
+    	                    	if(!( (record.data.text=='组织根节点'&&parseInt(record.data.orgParent)==0) || parseInt(record.data.orgId)==parseInt(userOrg_Id)   )){
+                            		modifyOrgInfo();
+                        		}
+    	                    }
                         },
                         itemclick: function (view,record,item,ndex,e,eOpts) {
                         	var gridPanel = Ext.getCmp("UserInfoGridPanel_Id");

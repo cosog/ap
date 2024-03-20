@@ -29,6 +29,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView', {
         		},'->',{
         			xtype: 'button',
                     text: '创建',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
         				addModbusProtocolSMSInstanceConfigData();
@@ -36,6 +37,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView', {
         		},"-",{
         			xtype: 'button',
                     text: '修改',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     handler: function (v, o) {
                     	modifyModbusProtocolSMSInstanceConfigData();
@@ -44,7 +46,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView', {
                     xtype: 'button',
                     itemId: 'delModbusProtocolSMSInstanceBtnId',
                     id: 'delModbusProtocolSMSInstanceBtn_Id',
-                    disabled: false,
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     text: cosog.string.del,
                     iconCls: 'delete',
                     handler: function (v, o) {

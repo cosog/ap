@@ -230,7 +230,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             iconCls: 'submit',
                             tooltip: '保存',
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-                            	updateUserInfoByGridBtn(record);
+                            	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+        	                    if(OrgAndUserModuleEditFlag==1){
+        	                    	updateUserInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     },{
@@ -244,7 +247,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             iconCls: 'delete',
                             tooltip: '删除用户',
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-                            	delUserInfoByGridBtn(record);
+                            	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+        	                    if(OrgAndUserModuleEditFlag==1){
+        	                    	delUserInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     }],

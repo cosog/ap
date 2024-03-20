@@ -54,7 +54,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
                 		}
             			panelItem.items.push(secondTabPanel);
         			}
-        			if(panelItem.items.length>0){//添加全部标签
+        			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
         						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
         						tpl:'全部',

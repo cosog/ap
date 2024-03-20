@@ -18,6 +18,15 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
+        	var deviceTypeIds='';
+        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+        	if(tabTreeGridPanelSelection.length>0){
+        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+        	}
+        	var new_params = {
+        			deviceTypeIds: deviceTypeIds
+                };
+           Ext.apply(store.proxy.extraParams, new_params);
         },
         load: function (store, options, eOpts) {
         	var treeGridPanel = Ext.getCmp("DatabaseColumnProtocolTreeGridPanel_Id");

@@ -459,10 +459,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		sql="select well.id,well.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus,well.applicationscenarios,c1.itemname as applicationScenariosName "
 				+ " from "+tableName+" t,"+deviceTableName+" well,tbl_code c1 "
 				+ " where t.deviceId=well.id "
-				+ " and well.deviceType="+deviceType
 				+ " and c1.itemcode='APPLICATIONSCENARIOS' and well.applicationscenarios=c1.itemvalue  "
 				+ " and well.orgid in("+orgId+") ";
-		
+		if(StringManagerUtils.isNum(deviceType)){
+			sql+= " and well.devicetype="+deviceType;
+		}else{
+			sql+= " and well.devicetype in ("+deviceType+")";
+		}
 		if("1".equals(calculateType) || "3".equals(calculateType)){
 			sql+= " and well.calculateType in (1,3)";
 		}else if("2".equals(calculateType) || "4".equals(calculateType)){

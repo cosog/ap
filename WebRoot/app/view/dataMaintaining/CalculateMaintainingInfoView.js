@@ -1,3 +1,4 @@
+var loginUserCalculateMaintainingModuleRight=getRoleModuleRight('CalculateMaintaining');
 Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.CalculateMaintainingInfoView',
@@ -59,7 +60,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
                 		}
             			panelItem.items.push(secondTabPanel);
         			}
-        			if(panelItem.items.length>0){//添加全部标签
+        			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
         						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
         						tpl:'全部',
@@ -87,6 +88,22 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         }
         
     	Ext.apply(this, {
+    		tbar:[{
+            	id: 'CalculateMaintainingModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserCalculateMaintainingModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'CalculateMaintainingModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserCalculateMaintainingModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'CalculateMaintainingModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserCalculateMaintainingModuleRight.controlFlag,
+                hidden: true
+            }],
     		items: [{
         		xtype: 'tabpanel',
         		id:"CalculateMaintainingRootTabPanel",

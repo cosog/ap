@@ -462,6 +462,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
     		},'->',{
                 xtype: 'button',
                 text: '修改历史数据计算',
+                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 id:'RPCCalculateMaintainingUpdateDataBtn',
                 pressed: false,
                 iconCls: 'edit',
@@ -471,6 +472,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '关联生产数据计算',
+                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 pressed: false,
                 iconCls: 'save',
                 id:'RPCCalculateMaintainingLinkedDataBtn',
@@ -596,6 +598,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             },{
                 xtype: 'button',
                 text: '重新汇总',
+                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 id:'RPCCalculateMaintainingReTotalBtn',
                 pressed: false,
                 hidden:true,
@@ -871,31 +874,39 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex >= 1 && visualColIndex <= 7) {
-							cellProperties.readOnly = true;
+	                    
+	                    var CalculateMaintainingModuleEditFlag=parseInt(Ext.getCmp("CalculateMaintainingModuleEditFlag").getValue());
+	                    if(CalculateMaintainingModuleEditFlag==1){
+	                    	if (visualColIndex >= 1 && visualColIndex <= 7) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = rpcFESDiagramCalculateMaintainingHandsontableHelper.addBoldBg;
+			                }else if(rpcFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='pumpGrade'.toUpperCase()
+			                		&& rpcFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined 
+			                		&& rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
+			                	var columns=rpcFESDiagramCalculateMaintainingHandsontableHelper.columns;
+			                	var barrelTypeColIndex=-1;
+			                	for(var i=0;i<columns.length;i++){
+		                        	if(columns[i].data.toUpperCase() === "barrelTypeName".toUpperCase()){
+		                        		barrelTypeColIndex=i;
+		                        		break;
+		                        	}
+		                        }
+			                	if(barrelTypeColIndex>0){
+		                        	var barrelType=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell(row,barrelTypeColIndex);
+		                        	if(barrelType=='整筒泵'){
+		                        		this.source = ['1','2','3','4','5'];
+		                        	}else if(barrelType=='组合泵'){
+		                        		this.source = ['1','2','3'];
+		                        	}else if(barrelType==''){
+		                        		this.source = ['1','2','3','4','5'];
+		                        	}
+		                        }
+			                }
+	                    }else{
+	                    	cellProperties.readOnly = true;
 							cellProperties.renderer = rpcFESDiagramCalculateMaintainingHandsontableHelper.addBoldBg;
-		                }else if(rpcFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='pumpGrade'.toUpperCase()
-		                		&& rpcFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined 
-		                		&& rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
-		                	var columns=rpcFESDiagramCalculateMaintainingHandsontableHelper.columns;
-		                	var barrelTypeColIndex=-1;
-		                	for(var i=0;i<columns.length;i++){
-	                        	if(columns[i].data.toUpperCase() === "barrelTypeName".toUpperCase()){
-	                        		barrelTypeColIndex=i;
-	                        		break;
-	                        	}
-	                        }
-		                	if(barrelTypeColIndex>0){
-	                        	var barrelType=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell(row,barrelTypeColIndex);
-	                        	if(barrelType=='整筒泵'){
-	                        		this.source = ['1','2','3','4','5'];
-	                        	}else if(barrelType=='组合泵'){
-	                        		this.source = ['1','2','3'];
-	                        	}else if(barrelType==''){
-	                        		this.source = ['1','2','3','4','5'];
-	                        	}
-	                        }
-		                }
+	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterDestroy: function() {

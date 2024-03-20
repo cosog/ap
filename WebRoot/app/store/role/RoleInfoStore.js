@@ -78,10 +78,16 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         flex: 1,
                         dataIndex: 'roleName',
                         editor: {
-                            allowBlank: false
+                            allowBlank: false,
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1
                         },
                         renderer: function (value, o, p, e) {
                             return adviceCurrentRoleName(value, o, p, e);
+                        },
+                        listeners: {
+                        	beforechange: function( cell, rowIndex, checked, record, e, eOpts){
+                        		alert(rowIndex);
+                        	}
                         }
                     }, {
                         header: '角色等级',
@@ -94,6 +100,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             allowBlank: false,
                             xtype: 'numberfield',
                             editable: false,
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             minValue: currentLevel+1
                         }
                     }, {
@@ -107,6 +114,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             allowBlank: false,
                             xtype: 'numberfield',
                             editable: false,
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             minValue: currentShowLevel+1
                         }
                     }, {
@@ -115,6 +123,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         lockable: true,
                         align: 'center',
                         sortable: true,
+                        disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                         width: 115,
                         dataIndex: 'roleVideoKeyEditName',
                         editor: {
@@ -124,13 +133,18 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         },
                     	listeners: {
                     	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                    	    	var currentUserRoleVideoKeyEdit=Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue();
-                    	    	if(parseInt(record.data.roleId)==parseInt(currentId) || currentUserRoleVideoKeyEdit==0){
-                    	    		return false;
-                    	    	}else{
-                                    return true;
-                                }
+                    	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+        	                    if(RoleManagerModuleEditFlag==1){
+        	                    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                        	    	var currentUserRoleVideoKeyEdit=Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue();
+                        	    	if(parseInt(record.data.roleId)==parseInt(currentId) || currentUserRoleVideoKeyEdit==0){
+                        	    		return false;
+                        	    	}else{
+                                        return true;
+                                    }
+        	                    }else{
+        	                    	return false;
+        	                    }
                     	    }
                     	}
                     },{
@@ -141,7 +155,8 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         flex: 3,
                         dataIndex: 'remark',
                         editor: {
-                        	allowBlank: true
+                        	allowBlank: true,
+                        	disabled:loginUserRoleManagerModuleRight.editFlag!=1
                         },
                         renderer: function (value) {
                             if (isNotVal(value)) {
@@ -159,7 +174,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             iconCls: 'submit',
                             tooltip: '保存',
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-                            	updateRoleInfoByGridBtn(record);
+                            	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+        	                    if(RoleManagerModuleEditFlag==1){
+        	                    	updateRoleInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     },{
@@ -173,7 +191,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             iconCls: 'delete',
                             tooltip: '删除角色',
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-                            	delRoleInfoByGridBtn(record);
+                            	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+        	                    if(RoleManagerModuleEditFlag==1){
+        	                    	delRoleInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     }],

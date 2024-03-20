@@ -39,6 +39,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
         		},'->',{
         			xtype: 'button',
                     text: '添加实例',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
         				addModbusProtocolReportInstanceConfigData();
@@ -46,6 +47,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
         		}, "-",{
                 	xtype: 'button',
         			text: cosog.string.save,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
         				SaveReportInstanceData();
@@ -1348,35 +1350,41 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
+			                }
+		                    if(protocolReportInstancePropertiesHandsontableHelper.classes===0 || protocolReportInstancePropertiesHandsontableHelper.classes===2){
+		                    	cellProperties.readOnly = true;
+								cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
+		                    }else if(protocolReportInstancePropertiesHandsontableHelper.classes===1){
+		                    	if(visualColIndex === 2 && visualRowIndex===0){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }else if(visualColIndex === 2 && visualRowIndex===2){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
+			                    	var deviceType='';
+			                    	if(isNotVal(protocolReportInstancePropertiesHandsontableHelper.hot)){
+			                    		deviceType=protocolReportInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
+			                    	}
+			                    	
+		                    		this.type = 'dropdown';
+		                    		this.source = protocolReportInstancePropertiesHandsontableHelper.unitList;
+			                    	
+			                    	this.strict = true;
+			                    	this.allowInvalid = false;
+			                    }
+		                    }
+	                    }else{
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolReportInstancePropertiesHandsontableHelper.classes===0 || protocolReportInstancePropertiesHandsontableHelper.classes===2){
-	                    	cellProperties.readOnly = true;
-							cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
-	                    }else if(protocolReportInstancePropertiesHandsontableHelper.classes===1){
-	                    	if(visualColIndex === 2 && visualRowIndex===0){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }else if(visualColIndex === 2 && visualRowIndex===2){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===2) {
-		                    	var deviceType='';
-		                    	if(isNotVal(protocolReportInstancePropertiesHandsontableHelper.hot)){
-		                    		deviceType=protocolReportInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
-		                    	}
-		                    	
-	                    		this.type = 'dropdown';
-	                    		this.source = protocolReportInstancePropertiesHandsontableHelper.unitList;
-		                    	
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
-	                    }
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

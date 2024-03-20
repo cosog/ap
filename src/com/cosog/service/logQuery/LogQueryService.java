@@ -50,7 +50,11 @@ public class LogQueryService<T> extends BaseService<T>  {
 				+ " )"
 				+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(deviceType)){
-			sql+=" and t.devicetype="+deviceType;
+			if(StringManagerUtils.isNum(deviceType)){
+				sql+= " and t.devicetype="+deviceType;
+			}else{
+				sql+= " and t.devicetype in ("+deviceType+")";
+			}
 		}
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName='"+deviceName+"'";
@@ -79,7 +83,11 @@ public class LogQueryService<T> extends BaseService<T>  {
 				+ " )"
 				+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(deviceType)){
-			sql+=" and t.devicetype="+deviceType;
+			if(StringManagerUtils.isNum(deviceType)){
+				sql+= " and t.devicetype="+deviceType;
+			}else{
+				sql+= " and t.devicetype in ("+deviceType+")";
+			}
 		}
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName='"+deviceName+"'";
@@ -122,7 +130,11 @@ public class LogQueryService<T> extends BaseService<T>  {
 					+ " )"
 					+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 			if(StringManagerUtils.isNotNull(deviceType)){
-				sql+=" and t.devicetype="+deviceType;
+				if(StringManagerUtils.isNum(deviceType)){
+					sql+= " and t.devicetype="+deviceType;
+				}else{
+					sql+= " and t.devicetype in ("+deviceType+")";
+				}
 			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";

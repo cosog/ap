@@ -4754,3 +4754,21 @@ function getCalculateTypeDeviceCount(orgId,deviceType,calculateType){
 	});
 	return deviceCount;
 }
+
+function getRoleModuleRight(moduleCode){
+	var moduleRight=null;
+	Ext.Ajax.request({
+		method:'POST',
+		async :  false,
+		url:context + '/roleManagerController/getRoleModuleRight',
+		success:function(response) {
+			moduleRight = Ext.JSON.decode(response.responseText);
+		},
+		failure:function(){
+		},
+		params: {
+			moduleCode: moduleCode
+        }
+	});
+	return moduleRight;
+}

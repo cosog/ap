@@ -70,7 +70,11 @@ public class LogQueryController extends BaseController{
 		if(!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
 			if(StringManagerUtils.isNotNull(deviceType)){
-				sql+=" and t.devicetype="+deviceType;
+				if(StringManagerUtils.isNum(deviceType)){
+					sql+= " and t.devicetype="+deviceType;
+				}else{
+					sql+= " and t.devicetype in ("+deviceType+")";
+				}
 			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";
@@ -135,7 +139,11 @@ public class LogQueryController extends BaseController{
 		if(!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
 			if(StringManagerUtils.isNotNull(deviceType)){
-				sql+=" and t.devicetype="+deviceType;
+				if(StringManagerUtils.isNum(deviceType)){
+					sql+= " and t.devicetype="+deviceType;
+				}else{
+					sql+= " and t.devicetype in ("+deviceType+")";
+				}
 			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";

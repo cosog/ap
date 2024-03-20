@@ -39,6 +39,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
         		},'->',{
         			xtype: 'button',
                     text: '添加实例',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
         				addModbusProtocolAlarmInstanceConfigData();
@@ -46,6 +47,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
         		}, "-",{
                 	xtype: 'button',
         			text: cosog.string.save,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
         				SaveModbusProtocolAlarmInstanceConfigTreeData();
@@ -437,24 +439,31 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
+			                }
+		                    if(protocolAlarmInstancePropertiesHandsontableHelper.classes===0 || protocolAlarmInstancePropertiesHandsontableHelper.classes===2){
+		                    	cellProperties.readOnly = true;
+								cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
+		                    }else if(protocolAlarmInstancePropertiesHandsontableHelper.classes===1){
+		                    	if(visualColIndex === 2 && visualRowIndex===0){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }else if(visualColIndex === 2 && visualRowIndex===2){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
+			                    	}
+			                    }
+		                    }
+	                    }else{
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
-	                    if(protocolAlarmInstancePropertiesHandsontableHelper.classes===0 || protocolAlarmInstancePropertiesHandsontableHelper.classes===2){
-	                    	cellProperties.readOnly = true;
-							cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
-	                    }else if(protocolAlarmInstancePropertiesHandsontableHelper.classes===1){
-	                    	if(visualColIndex === 2 && visualRowIndex===0){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }else if(visualColIndex === 2 && visualRowIndex===2){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
-		                    	}
-		                    }
-	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

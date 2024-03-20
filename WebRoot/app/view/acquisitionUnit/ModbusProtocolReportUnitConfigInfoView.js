@@ -39,6 +39,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
         		},'->',{
         			xtype: 'button',
                     text: '添加报表单元',
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
                     	addReportUnitInfo();
@@ -46,6 +47,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
         		},"-",{
                 	xtype: 'button',
         			text: cosog.string.save,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
         				SaveReportUnitData();
@@ -911,19 +913,25 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
-	                	if(reportUnitTreeSelectedRow!=''){
-	                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
-	                		if(selectedItem.data.classes==0){
-	                			cellProperties.readOnly = true;
-	                		}else{
-	                			if (visualColIndex >=1 && visualColIndex<=3) {
-	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==7){
-	    		                	cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
-	    		                }
-	                		}
-	                	}
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+		                	if(reportUnitTreeSelectedRow!=''){
+		                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+		                		if(selectedItem.data.classes==0){
+		                			cellProperties.readOnly = true;
+		                		}else{
+		                			if (visualColIndex >=1 && visualColIndex<=3) {
+		    							cellProperties.readOnly = true;
+		    		                }else if(visualColIndex==7){
+		    		                	cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
+		    		                }
+		                		}
+		                	}
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterBeginEditing:function(row,column){
@@ -1129,19 +1137,25 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
-	                	if(reportUnitTreeSelectedRow!=''){
-	                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
-	                		if(selectedItem.data.classes==0){
-	                			cellProperties.readOnly = true;
-	                		}else{
-	                			if (visualColIndex >=1 && visualColIndex<=3) {
-	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==7){
-	    		                	cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg;
-	    		                }
-	                		}
-	                	}
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+		                	if(reportUnitTreeSelectedRow!=''){
+		                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+		                		if(selectedItem.data.classes==0){
+		                			cellProperties.readOnly = true;
+		                		}else{
+		                			if (visualColIndex >=1 && visualColIndex<=3) {
+		    							cellProperties.readOnly = true;
+		    		                }else if(visualColIndex==7){
+		    		                	cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg;
+		    		                }
+		                		}
+		                	}
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterBeginEditing:function(row,column){
@@ -1324,34 +1338,34 @@ var ReportUnitPropertiesHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==0 || visualColIndex ==1) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
-		                }
-	                    if(reportUnitPropertiesHandsontableHelper.classes===0){
-							cellProperties.readOnly = true;
-							cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
-		                }else if(reportUnitPropertiesHandsontableHelper.classes===1){
-	                    	if(visualColIndex === 2 && visualRowIndex===0){
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
-		                    	}
-		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
-//		                    	this.type = 'dropdown';
-//		                    	this.source = ['抽油机井','螺杆泵井'];
-//		                    	this.strict = true;
-//		                    	this.allowInvalid = false;
-
-		                    	this.validator=function (val, callback) {
-		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
-		                    	}
-		                    
-		                    }else if(visualColIndex === 2 && visualRowIndex===3){
-//		                    	this.validator=function (val, callback) {
-//		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
-//		                    	}
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	if (visualColIndex ==0 || visualColIndex ==1) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
+			                }
+		                    if(reportUnitPropertiesHandsontableHelper.classes===0){
+								cellProperties.readOnly = true;
+								cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
+			                }else if(reportUnitPropertiesHandsontableHelper.classes===1){
+		                    	if(visualColIndex === 2 && visualRowIndex===0){
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
+			                    	}
+			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+			                    	this.validator=function (val, callback) {
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
+			                    	}
+			                    
+			                    }else if(visualColIndex === 2 && visualRowIndex===3){
+			                    	
+			                    }
 		                    }
+	                    }else{
+	                    	cellProperties.readOnly = true;
+							cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
 	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
@@ -1670,19 +1684,25 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
-	                	if(reportUnitTreeSelectedRow!=''){
-	                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
-	                		if(selectedItem.data.classes==0){
-	                			cellProperties.readOnly = true;
-	                		}else{
-	                			if (visualColIndex >=1 && visualColIndex<=3) {
-	    							cellProperties.readOnly = true;
-	    		                }else if(visualColIndex==9){
-	    		                	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCurveBg;
-	    		                }
-	                		}
-	                	}
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag==1){
+	                    	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+		                	if(reportUnitTreeSelectedRow!=''){
+		                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+		                		if(selectedItem.data.classes==0){
+		                			cellProperties.readOnly = true;
+		                		}else{
+		                			if (visualColIndex >=1 && visualColIndex<=3) {
+		    							cellProperties.readOnly = true;
+		    		                }else if(visualColIndex==9){
+		    		                	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCurveBg;
+		    		                }
+		                		}
+		                	}
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    }
+	                    
 	                    return cellProperties;
 	                },
 	                afterBeginEditing:function(row,column){

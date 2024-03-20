@@ -63,6 +63,7 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 id: 'addroleLabelClassBtn_Id',
                 action: 'addroleAction',
                 text: cosog.string.add,
+                disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                 iconCls: 'add'
     		}]
         });

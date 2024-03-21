@@ -1,3 +1,4 @@
+var loginUserDeviceManagerModuleRight=getRoleModuleRight('WellInformation');
 Ext.define("AP.view.well.DeviceManagerInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deviceManagerInfoView', // 定义别名
@@ -72,7 +73,23 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         
         
         Ext.apply(me, {
-        	items: [{
+        	tbar:[{
+            	id: 'DeviceManagerModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserDeviceManagerModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'DeviceManagerModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserDeviceManagerModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'DeviceManagerModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserDeviceManagerModuleRight.controlFlag,
+                hidden: true
+            }],
+            items: [{
         		xtype: 'tabpanel',
         		id:"DeviceManagerTabPanel",
         		activeTab: 0,

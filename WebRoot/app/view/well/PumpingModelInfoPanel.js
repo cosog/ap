@@ -1,5 +1,6 @@
 var pumpingModelInfoHandsontableHelper = null;
 var pumpingUnitPTFHandsontableHelper=null;
+var loginUserPumpingModelManagerModuleRight=getRoleModuleRight('PumpingModelManagement');
 Ext.define('AP.view.well.PumpingModelInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.pumpingModelInfoPanel',
@@ -134,7 +135,23 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                 }
             });
     	Ext.apply(this, {
-        	items: [{
+    		tbar:[{
+            	id: 'PumpingModelManagerModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserPumpingModelManagerModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'PumpingModelManagerModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserPumpingModelManagerModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'PumpingModelManagerModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserPumpingModelManagerModuleRight.controlFlag,
+                hidden: true
+            }],
+            items: [{
                 layout: "border",
                 border: false,
                 id: 'PumpingModelInformationPanel_Id',
@@ -219,6 +236,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
             			xtype: 'button',
                         text: '添加设备',
                         iconCls: 'add',
+                        disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {
                         	var window = Ext.create("AP.view.well.PumpingModelInfoWindow", {
                                 title: '添加设备'
@@ -232,6 +250,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
             			xtype: 'button',
             			text: '删除设备',
             			iconCls: 'delete',
+            			disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
             			handler: function (v, o) {
             				var startRow= Ext.getCmp("PumpingModelSelectRow_Id").getValue();
             				var endRow= Ext.getCmp("PumpingModelSelectEndRow_Id").getValue();
@@ -290,6 +309,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         hidden: false,
                         text: cosog.string.save,
                         iconCls: 'save',
+                        disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {
                             pumpingModelInfoHandsontableHelper.saveData();
                         }
@@ -298,6 +318,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         text: '批量添加',
                         iconCls: 'batchAdd',
                         hidden: false,
+                        disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {
                         	var window = Ext.create("AP.view.well.BatchAddPumpingModelWindow", {
                                 title: '辅件设备批量添加'
@@ -371,6 +392,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         hidden: false,
                         text: cosog.string.save,
                         iconCls: 'save',
+                        disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {
                         	pumpingUnitPTFHandsontableHelper.saveData();
                         }
@@ -535,6 +557,11 @@ var PumpingModelInfoHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
+                    var PumpingModelManagerModuleEditFlag=parseInt(Ext.getCmp("PumpingModelManagerModuleEditFlag").getValue());
+                    if(PumpingModelManagerModuleEditFlag!=1){
+                    	cellProperties.readOnly = true;
+						cellProperties.renderer = pumpingModelInfoHandsontableHelper.addColBg;
+                    }
                 },
                 afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
                 	if(row<0 && row2<0){//只选中表头
@@ -853,6 +880,11 @@ var PumpingUnitPTFHandsontableHelper = {
 	        pumpingUnitPTFHandsontableHelper.columns=[];
 	        pumpingUnitPTFHandsontableHelper.AllData=[];
 	        
+	        pumpingUnitPTFHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(242, 242, 242)';
+	        }
+	        
 	        pumpingUnitPTFHandsontableHelper.createTable = function (data) {
 	        	$('#'+pumpingUnitPTFHandsontableHelper.divid).empty();
 	        	var hotElement = document.querySelector('#'+pumpingUnitPTFHandsontableHelper.divid);
@@ -875,7 +907,17 @@ var PumpingUnitPTFHandsontableHelper = {
 	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
 	                filters: true,
 	                renderAllRows: true,
-	                search: true
+	                search: true,
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var PumpingModelManagerModuleEditFlag=parseInt(Ext.getCmp("PumpingModelManagerModuleEditFlag").getValue());
+	                    if(PumpingModelManagerModuleEditFlag!=1){
+	                    	cellProperties.readOnly = true;
+							cellProperties.renderer = pumpingUnitPTFHandsontableHelper.addColBg;
+	                    }
+	                },
 	        	});
 	        }
 	        //保存数据

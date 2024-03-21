@@ -64,7 +64,8 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         dataIndex: 'userName',
                         flex:2,
                         editor: {
-                            allowBlank: false
+                            allowBlank: false,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
                         },
                         renderer: function (value, o, p, e) {
                             return adviceCurrentUserName(value, o, p, e);
@@ -77,7 +78,8 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         dataIndex: 'userId',
                         flex:2,
                         editor: {
-                            allowBlank: false
+                            allowBlank: false,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
                         },
                         renderer: function (value) {
                         	if(isNotVal(value)){
@@ -97,7 +99,8 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             triggerAction: 'all',
                             allowBlank: false,
                             editable: false,
-                            store: get_rawData.roleList
+                            store: get_rawData.roleList,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
                         },
                         renderer: function (value) {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -111,7 +114,8 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         flex:2,
                         editor: {
                         	regex: /^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\d{8}$/,
-                        	allowBlank: true
+                        	allowBlank: true,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
                         },
                         renderer: function (value) {
                             if(isNotVal(value)){
@@ -128,7 +132,8 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         editor: {
                         	vtype: 'email',
                             regex: /^([a-z0-9A-Z]+[-|\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/,
-                            allowBlank: true
+                            allowBlank: true,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
                         },
                         renderer: function (value) {
                         	if(isNotVal(value)){
@@ -147,7 +152,15 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        }
+                        },
+                        listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+        	                    if(OrgAndUserModuleEditFlag!=1){
+        	                    	return false;
+        	                    }
+                    	    }
+                    	}
                     }, {
                         header: '接收短信',
                         xtype: 'checkcolumn',
@@ -160,7 +173,15 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        }
+                        },
+                        listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+        	                    if(OrgAndUserModuleEditFlag!=1){
+        	                    	return false;
+        	                    }
+                    	    }
+                    	}
                     }, {
                         header: '接收邮件',
                         xtype: 'checkcolumn',
@@ -173,7 +194,15 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        }
+                        },
+                        listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+        	                    if(OrgAndUserModuleEditFlag!=1){
+        	                    	return false;
+        	                    }
+                    	    }
+                    	}
                     }, {
                         header: '使能',
                         xtype: 'checkcolumn',
@@ -190,11 +219,16 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         },
                     	listeners: {
                     	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	if(rowIndex==0){
-                    	    		return false;
-                    	    	}else{
-                                    return true;
-                                }
+                    	    	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+        	                    if(OrgAndUserModuleEditFlag==1){
+        	                    	if(rowIndex==0){
+                        	    		return false;
+                        	    	}else{
+                                        return true;
+                                    }
+        	                    }else{
+        	                    	return false;
+        	                    }
                     	    }
                     	}
                     }, {

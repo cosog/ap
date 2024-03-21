@@ -1,6 +1,3 @@
-/**
- * author 钱邓水 数据字典面板信息 GridPanel
- */
 Ext.define('AP.view.data.SystemdataInfoGridPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.systemdataInfoGridPanel',
@@ -8,6 +5,8 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
     border: false,
     layout: 'fit',
     initComponent: function () {
+        var geSystemdataInfoStore = Ext.create("AP.store.data.SystemdataInfoStore");
+        
         var sysdatastore = new Ext.data.SimpleStore({
             fields: ['sysdataId', 'sysdataName'],
             data: [[0, cosog.string.dataModuleName], [1, cosog.string.dataModuleCode]]
@@ -26,7 +25,6 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
             valueField: 'sysdataId',
             mode: 'local'
         });
-        var geSystemdataInfoStore = Ext.create("AP.store.data.SystemdataInfoStore");
         Ext.apply(this, {
             tbar: [{
                 xtype: 'button',
@@ -65,12 +63,14 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 id: 'addSystemdataInfoAction_Id',
                 action: 'addSystemdataInfoAction',
                 text: cosog.string.add,
+                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
          }, '-', {
                 xtype: 'button',
                 itemId: 'editBtnId',
                 id: 'editSDBtnId',
                 text: cosog.string.update,
+                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 scope: this,
                 action: 'editSystemdataInfoAction',
                 disabled: false,
@@ -83,6 +83,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 disabled: false,
                 action: 'delSystemdataInfoAction',
                 text: cosog.string.del,
+                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'delete'
          }]
         });

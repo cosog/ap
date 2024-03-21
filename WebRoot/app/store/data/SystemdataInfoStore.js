@@ -1,7 +1,3 @@
-/*
- * author:钱邓水
- * 构造一个系统数据字典管理Store层
- */
 Ext.define('AP.store.data.SystemdataInfoStore', {
     extend: 'Ext.data.BufferedStore',
     id: "SystemdataInfoStoreId",
@@ -38,25 +34,20 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     border: false,
                     columnLines: true,
                     forceFit: true,
-                    selType: 'checkboxmodel',
+                    selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
                     multiSelect: true,
                     emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
                     store: store,
                     columns: newColumns,
                     listeners: {
-                        itemdblclick: editSystemdataInfo,
+                        itemdblclick: function () {
+                        	var DataDictionaryManagementModuleEditFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+                            if(DataDictionaryManagementModuleEditFlag==1){
+                            	editSystemdataInfo();
+                            }
+                        },
                         selectionchange: function (sm, selections) {
-//                            var n = selections.length || 0;
-//                            var edit = Ext.getCmp("editSDBtnId");
-//                            edit.setDisabled(n != 1);
-//                            if (n > 0) {
-//                                var add = Ext.getCmp("addSystemdataInfoAction_Id")
-//                                add.setDisabled(true);
-//                                Ext.getCmp("delSDBtnId").setDisabled(false);
-//                            } else {
-//                                Ext.getCmp("addSystemdataInfoAction_Id").setDisabled(false);
-//                                Ext.getCmp("delSDBtnId").setDisabled(true);
-//                            }
+                        	
                         }
                     }
                 });

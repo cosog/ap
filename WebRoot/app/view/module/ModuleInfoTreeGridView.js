@@ -58,6 +58,7 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 id: 'addmoduleLableClassBtn_Id',
                 action: 'addmoduleAction',
                 text: cosog.string.add,
+                disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
          }, "-", {
                 xtype: 'button',
@@ -66,6 +67,7 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 text: cosog.string.update,
                 action: 'editmoduleInfoAction',
                 disabled: false,
+                disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'edit'
          }, "-", {
                 xtype: 'button',
@@ -74,6 +76,7 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 disabled: false,
                 action: 'delmoduleAction',
                 text: cosog.string.del,
+                disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'delete'
          }]
         });

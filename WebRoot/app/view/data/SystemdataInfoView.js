@@ -1,7 +1,4 @@
-/**
- * author 钱邓水
- * 系统数据字典管理
- */
+var loginUserDataDictionaryManagementModuleRight=getRoleModuleRight('DataDictionaryManagement');
 Ext.define("AP.view.data.SystemdataInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.systemdataInfoView',
@@ -13,6 +10,22 @@ Ext.define("AP.view.data.SystemdataInfoView", {
 
         var SystemdataInfoGridPanel = Ext.create('AP.view.data.SystemdataInfoGridPanel');
         Ext.apply(me, {
+        	tbar:[{
+            	id: 'DataDictionaryManagementModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserDataDictionaryManagementModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'DataDictionaryManagementModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserDataDictionaryManagementModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'DataDictionaryManagementModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserDataDictionaryManagementModuleRight.controlFlag,
+                hidden: true
+            }],
             items: [
                 SystemdataInfoGridPanel
             ]

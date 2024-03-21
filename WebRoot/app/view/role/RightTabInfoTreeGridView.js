@@ -23,6 +23,7 @@ Ext.define('AP.view.role.RightTabInfoTreeGridView', {
         var tabStore = Ext.create("AP.store.role.RightTabTreeInfoStore");
         Ext.apply(tabTree, {
             store: tabStore,
+            selType:'',
             columns: [{
             	xtype: 'treecolumn',
             	text: '设备类型',

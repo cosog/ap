@@ -36,7 +36,7 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                     forceFit: true,
                     onlyLeafCheckable: false, // 所有结点可选，如果不需要checkbox,该属性去掉
                     singleExpand: false,
-                    selType: 'checkboxmodel',
+                    selType: (loginUserModuleManagementModuleRight.editFlag==1?'checkboxmodel':''),
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
                         forceFit: true
@@ -47,10 +47,12 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                         selectionchange: function (sm, selections) {
                         },
                         itemdblclick: function () {
-                            modifymoduleInfo();
+                        	var ModuleManagementModuleEditFlag=parseInt(Ext.getCmp("ModuleManagementModuleEditFlag").getValue());
+                            if(ModuleManagementModuleEditFlag==1){
+                            	modifymoduleInfo();
+                            }
                         }
                     }
-
                 });
                 var ModuleInfoTreeGridViewPanel_Id = Ext.getCmp("ModuleInfoTreeGridViewPanel_Id");
                 ModuleInfoTreeGridViewPanel_Id.add(ResHeadrInfoGridViewPanelGrid);

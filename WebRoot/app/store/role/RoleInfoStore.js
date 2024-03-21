@@ -54,7 +54,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     stripeRows: true,
                     forceFit: false,
                     selModel:{
-                    	selType: 'checkboxmodel',
+                    	selType: (loginUserRoleManagerModuleRight.editFlag==1?'checkboxmodel':''),
                     	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly:false,
                     	allowDeselect:false

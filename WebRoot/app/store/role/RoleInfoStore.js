@@ -224,10 +224,16 @@ Ext.define('AP.store.role.RoleInfoStore', {
                                     Ext.getCmp("addRightTabLableClassBtn_Id").disable();
                                 }else{
                                 	Ext.getCmp("RightModuleTreeInfoGridPanel_Id").enable();
-                                	Ext.getCmp("addRightModuleLableClassBtn_Id").enable();
-                                	
                                 	Ext.getCmp("RightTabTreeInfoGridPanel_Id").enable();
-                                    Ext.getCmp("addRightTabLableClassBtn_Id").enable();
+                                	
+                                	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+            	                    if(RoleManagerModuleEditFlag==1){
+            	                    	Ext.getCmp("addRightModuleLableClassBtn_Id").enable();
+                                        Ext.getCmp("addRightTabLableClassBtn_Id").enable();
+            	                    }else{
+            	                    	Ext.getCmp("addRightModuleLableClassBtn_Id").disable();
+                                        Ext.getCmp("addRightTabLableClassBtn_Id").disable();
+            	                    }
                                 }
                         	}
                         },

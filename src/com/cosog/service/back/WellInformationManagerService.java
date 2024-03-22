@@ -4996,7 +4996,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String ddicName="auxiliaryDeviceManager";
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select t.id,t.name,decode(t.type,1,'管辅件','泵辅件') as type,t.model,t.remark,t.sort from tbl_auxiliarydevice t where 1=1";
+		String sql = "select t.id,t.name,t2.name as type,t.manufacturer,t.model,t.remark,t.sort "
+				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
+				+ " where t.type=t2.id";
 		if(StringManagerUtils.isNotNull(deviceType)){
 			sql+= " and t.type="+deviceType;
 		}
@@ -5013,9 +5015,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"name\":\""+obj[1]+"\",");
 			result_json.append("\"type\":\""+obj[2]+"\",");
-			result_json.append("\"model\":\""+obj[3]+"\",");
-			result_json.append("\"remark\":\""+obj[4]+"\",");
-			result_json.append("\"sort\":\""+obj[5]+"\"},");
+			result_json.append("\"manufacturer\":\""+obj[3]+"\",");
+			result_json.append("\"model\":\""+obj[4]+"\",");
+			result_json.append("\"remark\":\""+obj[5]+"\",");
+			result_json.append("\"sort\":\""+obj[6]+"\"},");
 		}
 //		for(int i=1;i<=recordCount-list.size();i++){
 //			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -5158,10 +5161,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean judgeAuxiliaryDeviceExistOrNot(String name,String type,String model) {
+	public boolean judgeAuxiliaryDeviceExistOrNot(String name,String type,String manufacturer,String model) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(name)&&StringManagerUtils.isNotNull(type)&&StringManagerUtils.isNotNull(model)) {
-			String sql = "select t.id from tbl_auxiliarydevice t where t.name='"+name+"' and t.type="+type+" and t.model='"+model+"'";
+			String sql = "select t.id from tbl_auxiliarydevice t "
+					+ " where t.name='"+name+"' "
+					+ " and t.type="+type
+					+ " and t.model='"+model+"'"
+					+ " and t.manufacturer='"+manufacturer+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;

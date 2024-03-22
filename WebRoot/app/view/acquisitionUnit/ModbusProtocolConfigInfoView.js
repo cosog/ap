@@ -573,9 +573,9 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 			                    }
 		                    }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+							cellProperties.readOnly = true;
+							cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
 	                    }
-	                    
 	                    
 	                    return cellProperties;
 	                },

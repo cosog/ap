@@ -904,7 +904,9 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 			                }
 	                    }else{
 	                    	cellProperties.readOnly = true;
-							cellProperties.renderer = rpcFESDiagramCalculateMaintainingHandsontableHelper.addBoldBg;
+	                    	if (visualColIndex >= 1 && visualColIndex <= 7) {
+								cellProperties.renderer = rpcFESDiagramCalculateMaintainingHandsontableHelper.addBoldBg;
+			                }
 	                    }
 	                    
 	                    return cellProperties;

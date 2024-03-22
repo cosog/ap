@@ -1870,30 +1870,32 @@ var PumpingModelHandsontableHelper = {
 								cellProperties.readOnly = true;
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = false;
+	                    	cellProperties.readOnly = true;
 	                    }
 	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	var selectedRow=row;
-	                	var selectedCol=column;
-	                	if(row>row2){
-	                		selectedRow=row2;
-	                	}
-	                	if(column>column2){
-	                		selectedCol=column2;
-	                	}
-	                	var checkboxColData=pumpingModelHandsontableHelper.hot.getDataAtCol(0);
-	                	var rowdata = pumpingModelHandsontableHelper.hot.getDataAtRow(selectedRow);
-	                	for(var i=0;i<checkboxColData.length;i++){
-                			if(i!=selectedRow&&checkboxColData[i]){
-                				pumpingModelHandsontableHelper.hot.setDataAtCell(i,0,false);
-                			}
-                		}
-	                	pumpingModelHandsontableHelper.hot.setDataAtCell(selectedRow,0,true);
-	        			CreateAndLoadPumpingInfoTable(pumpingModelHandsontableHelper.deviceId,pumpingModelHandsontableHelper.deviceName,pumpingModelHandsontableHelper.isNew);
-	                	
+	                	var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    if(DeviceManagerModuleEditFlag==1){
+	                    	var selectedRow=row;
+		                	var selectedCol=column;
+		                	if(row>row2){
+		                		selectedRow=row2;
+		                	}
+		                	if(column>column2){
+		                		selectedCol=column2;
+		                	}
+		                	var checkboxColData=pumpingModelHandsontableHelper.hot.getDataAtCol(0);
+		                	var rowdata = pumpingModelHandsontableHelper.hot.getDataAtRow(selectedRow);
+		                	for(var i=0;i<checkboxColData.length;i++){
+	                			if(i!=selectedRow&&checkboxColData[i]){
+	                				pumpingModelHandsontableHelper.hot.setDataAtCell(i,0,false);
+	                			}
+	                		}
+		                	pumpingModelHandsontableHelper.hot.setDataAtCell(selectedRow,0,true);
+		        			CreateAndLoadPumpingInfoTable(pumpingModelHandsontableHelper.deviceId,pumpingModelHandsontableHelper.deviceName,pumpingModelHandsontableHelper.isNew);
+	                    }
 	                }
 	        	});
 	        }
@@ -2085,7 +2087,9 @@ var ProductionHandsontableHelper = {
 		                    }
 	                    }else{
 	                    	cellProperties.readOnly = true;
-							cellProperties.renderer = productionHandsontableHelper.addBoldBg;
+	                    	if (visualColIndex !=2) {
+	                    		cellProperties.renderer = productionHandsontableHelper.addBoldBg;
+	                    	}
 	                    }
 	                    
 	                    
@@ -2273,8 +2277,10 @@ var PumpingInfoHandsontableHelper = {
 		                    	this.allowInvalid = true;
 		                    }
 	                    }else{
-	                    	cellProperties.readOnly = false;
-							cellProperties.renderer = pumpingInfoHandsontableHelper.addBoldBg;
+	                    	cellProperties.readOnly = true;
+	                    	if ( (visualRowIndex==0&&visualColIndex==1) || (visualRowIndex>=1&&visualRowIndex<=2)    ) {
+								cellProperties.renderer = pumpingInfoHandsontableHelper.addBoldBg;
+			                }
 	                    }
 	                    
 	                    return cellProperties;
@@ -2415,7 +2421,9 @@ var VideoInfoHandsontableHelper = {
 			                }
 	                    }else{
 							cellProperties.readOnly = true;
-							cellProperties.renderer = videoInfoHandsontableHelper.addBoldBg;
+							if (visualColIndex < 2) {
+								cellProperties.renderer = videoInfoHandsontableHelper.addBoldBg;
+							}
 		                }
 	                    
 	                    return cellProperties;
@@ -2552,8 +2560,9 @@ var DeviceAdditionalInfoHandsontableHelper = {
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag!=1){
 	                    	cellProperties.readOnly = true;
-							cellProperties.renderer = deviceAdditionalInfoHandsontableHelper.addBoldBg;
+//							cellProperties.renderer = deviceAdditionalInfoHandsontableHelper.addBoldBg;
 	                    }
+	                    return cellProperties;
 	                }
 	            });
 	        }

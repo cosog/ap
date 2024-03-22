@@ -1,4 +1,5 @@
 var auxiliaryDeviceInfoHandsontableHelper = null;
+var auxiliaryDeviceDetailsHandsontableHelper=null;
 Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.auxiliaryDeviceInfoPanel',
@@ -18,33 +19,6 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 value: 0,
                 hidden: true
             },{
-                xtype: "combobox",
-                fieldLabel: '辅件类型',
-                id: 'AuxiliaryDeviceTypeComb_Id',
-                labelWidth: 60,
-                width: 170,
-                labelAlign: 'left',
-                triggerAction: 'all',
-                displayField: "boxval",
-                valueField: "boxkey",
-                selectOnFocus: true,
-                forceSelection: true,
-                value: '',
-                allowBlank: false,
-                editable: false,
-                emptyText: cosog.string.all,
-                blankText: cosog.string.all,
-                store: new Ext.data.SimpleStore({
-                    fields: ['boxkey', 'boxval'],
-                    data: [['', '选择全部'], [0, '泵辅件'], [1, '管辅件']]
-                }),
-                queryMode: 'local',
-                listeners: {
-                    select: function (v, o) {
-                        CreateAndLoadAuxiliaryDeviceInfoTable();
-                    }
-                }
-            }, '-', {
                 xtype: 'button',
                 text: cosog.string.exportExcel,
 //                pressed: true,
@@ -54,7 +28,8 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     var fields = "";
                     var heads = "";
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceType = Ext.getCmp('AuxiliaryDeviceTypeComb_Id').getValue();
+                    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
+                    var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
                     var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceData';
                     for (var i = 0; i < auxiliaryDeviceInfoHandsontableHelper.colHeaders.length; i++) {
                         fields += auxiliaryDeviceInfoHandsontableHelper.columns[i].data + ",";
@@ -65,15 +40,8 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                         heads = heads.substring(0, heads.length - 1);
                     }
                     
-                    var fileName='辅件设备';
-                    var title='辅件设备';
-                    if(deviceType===0){
-                    	fileName='泵辅件设备';
-                    	title='泵辅件设备';
-                    }else if(deviceType===1){
-                    	fileName='管辅件设备';
-                    	title='泵辅件设备';
-                    }
+                    var fileName=deviceTypeName+'辅件设备';
+                    var title=fileName;
 
                     var param = "&fields=" + fields 
                     + "&heads=" + URLencode(URLencode(heads)) 
@@ -109,6 +77,8 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                         title: '添加设备'
                     });
                     window.show();
+                    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
+                    Ext.getCmp("auxiliaryDeviceType_Id").setValue(deviceType);
                     Ext.getCmp("addFormAuxiliaryDevice_Id").show();
                     Ext.getCmp("updateFormAuxiliaryDevice_Id").hide();
                     return false;
@@ -191,29 +161,75 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     return false;
     			}
     		}],
-            html: '<div class="AuxiliaryDeviceContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceTableDiv_id"></div></div>',
-            listeners: {
-            	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                	if (auxiliaryDeviceInfoHandsontableHelper != null && auxiliaryDeviceInfoHandsontableHelper.hot != null && auxiliaryDeviceInfoHandsontableHelper.hot != undefined) {
-                    	var newWidth=width;
-                		var newHeight=height;
-                		var header=thisPanel.getHeader();
-                		if(header){
-                			newHeight=newHeight-header.lastBox.height-2;
-                		}
-                		auxiliaryDeviceInfoHandsontableHelper.hot.updateSettings({
-                			width:newWidth,
-                			height:newHeight
-                		});
-                    }
-                },
-                beforeclose: function (panel, eOpts) {
-                    if (auxiliaryDeviceInfoHandsontableHelper != null) {
-                        if (auxiliaryDeviceInfoHandsontableHelper.hot != undefined) {
-                            auxiliaryDeviceInfoHandsontableHelper.hot.destroy();
+    		layout: 'border',
+    		items: [{
+    			region: 'center',
+    			title:'设备列表',
+        		header: true,
+        		layout: 'fit',
+        		id:'AuxiliaryDeviceListPanel_Id',
+        		html: '<div class="AuxiliaryDeviceContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceTableDiv_id"></div></div>',
+                listeners: {
+                	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                    	if (auxiliaryDeviceInfoHandsontableHelper != null && auxiliaryDeviceInfoHandsontableHelper.hot != null && auxiliaryDeviceInfoHandsontableHelper.hot != undefined) {
+                        	var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		auxiliaryDeviceInfoHandsontableHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
                         }
-                        auxiliaryDeviceInfoHandsontableHelper = null;
                     }
+                }
+    		},{
+    			region: 'east',
+            	width: '50%',
+            	split: true,
+            	collapsible: true,
+            	title:'详细信息',
+        		id:'AuxiliaryDeviceDetailsPanel_Id',
+        		html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
+        		tbar:[{
+                    xtype: 'radiogroup',
+                    fieldLabel: '特殊类型',
+                    labelWidth: 60,
+                    id: 'AuxiliaryDeviceSpecificType_Id',
+                    cls: 'x-check-group-alt',
+                    items: [
+                        {boxLabel: '抽油机',name: 'deviceCalculateDataType',width: 70, inputValue: 1},
+//                        {boxLabel: '转速计产',name: 'deviceCalculateDataType',width: 70, inputValue: 2},
+                        {boxLabel: '无',name: 'deviceCalculateDataType',width: 70, inputValue: 0}
+                    ],
+                    listeners: {
+                    	change: function (radiogroup, newValue, oldValue, eOpts) {
+                    		
+                    	}
+                    }
+                }],
+                listeners: {
+                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                    	if (auxiliaryDeviceDetailsHandsontableHelper != null && auxiliaryDeviceDetailsHandsontableHelper.hot != null && auxiliaryDeviceDetailsHandsontableHelper.hot != undefined) {
+                    		var newWidth=width;
+                    		var newHeight=height;
+                    		var header=thisPanel.getHeader();
+                    		if(header){
+                    			newHeight=newHeight-header.lastBox.height-2;
+                    		}
+                    		auxiliaryDeviceDetailsHandsontableHelper.hot.updateSettings({
+                    			width:newWidth,
+                    			height:newHeight
+                    		});
+                        }
+                    }
+                }
+    		}],
+            listeners: {
+                beforeclose: function (panel, eOpts) {
+                    
                 }
             }
         })
@@ -228,7 +244,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
     	}
     	auxiliaryDeviceInfoHandsontableHelper=null;
     }
-    var deviceType = Ext.getCmp('AuxiliaryDeviceTypeComb_Id').getValue();
+    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doAuxiliaryDeviceShow',
@@ -564,3 +580,137 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
         return auxiliaryDeviceInfoHandsontableHelper;
     }
 };
+
+function CreateAndLoadAuxiliaryDeviceDetailsTable(deviceId,deviceName,isNew){
+	if(auxiliaryDeviceDetailsHandsontableHelper!=null){
+		if(auxiliaryDeviceDetailsHandsontableHelper.hot!=undefined){
+			auxiliaryDeviceDetailsHandsontableHelper.hot.destroy();
+		}
+		auxiliaryDeviceDetailsHandsontableHelper=null;
+	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getDeviceAdditionalInfo',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			if(!isNotVal(deviceName)){
+				deviceName='';
+			}
+//			Ext.getCmp("DeviceAdditionalInfoPanel_Id").setTitle(deviceName+"附加信息");
+			if(auxiliaryDeviceDetailsHandsontableHelper==null || auxiliaryDeviceDetailsHandsontableHelper.hot==undefined){
+				auxiliaryDeviceDetailsHandsontableHelper = AuxiliaryDeviceDetailsHandsontableHelper.createNew("AuxiliaryDeviceDetailsTableDiv_id");
+				var colHeaders="['序号','名称','变量','单位']";
+				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
+				
+				auxiliaryDeviceDetailsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				auxiliaryDeviceDetailsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					auxiliaryDeviceDetailsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					auxiliaryDeviceDetailsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					auxiliaryDeviceDetailsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					auxiliaryDeviceDetailsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			deviceId:deviceId,
+			deviceType: getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel")
+        }
+	});
+};
+
+var AuxiliaryDeviceDetailsHandsontableHelper = {
+	    createNew: function (divid) {
+	        var auxiliaryDeviceDetailsHandsontableHelper = {};
+	        auxiliaryDeviceDetailsHandsontableHelper.hot = '';
+	        auxiliaryDeviceDetailsHandsontableHelper.divid = divid;
+	        auxiliaryDeviceDetailsHandsontableHelper.colHeaders = [];
+	        auxiliaryDeviceDetailsHandsontableHelper.columns = [];
+	        auxiliaryDeviceDetailsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(242, 242, 242)';
+	        }
+
+	        auxiliaryDeviceDetailsHandsontableHelper.createTable = function (data) {
+	            $('#' + auxiliaryDeviceDetailsHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + auxiliaryDeviceDetailsHandsontableHelper.divid);
+	            auxiliaryDeviceDetailsHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	            	data: data,
+	                hiddenColumns: {
+	                    columns: [0],
+	                    indicators: false
+	                },
+	                columns: auxiliaryDeviceDetailsHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: true, //显示行头
+	                colHeaders: auxiliaryDeviceDetailsHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                contextMenu: {
+	                    items: {
+	                        "row_above": {
+	                            name: '向上插入一行',
+	                        },
+	                        "row_below": {
+	                            name: '向下插入一行',
+	                        },
+	                        "col_left": {
+	                            name: '向左插入一列',
+	                        },
+	                        "col_right": {
+	                            name: '向右插入一列',
+	                        },
+	                        "remove_row": {
+	                            name: '删除行',
+	                        },
+	                        "remove_col": {
+	                            name: '删除列',
+	                        },
+	                        "merge_cell": {
+	                            name: '合并单元格',
+	                        },
+	                        "copy": {
+	                            name: '复制',
+	                        },
+	                        "cut": {
+	                            name: '剪切',
+	                        },
+	                        "paste": {
+	                            name: '粘贴',
+	                            disabled: function () {
+	                            },
+	                            callback: function () {
+	                            }
+	                        }
+	                    }
+	                }, 
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var AuxiliaryDeviceManagerModuleEditFlag=parseInt(Ext.getCmp("AuxiliaryDeviceManagerModuleEditFlag").getValue());
+	                    if(AuxiliaryDeviceManagerModuleEditFlag!=1){
+	                    	cellProperties.readOnly = true;
+	                    }
+	                    return cellProperties;
+	                }
+	            });
+	        }
+	        return auxiliaryDeviceDetailsHandsontableHelper;
+	    }
+	};

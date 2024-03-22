@@ -143,6 +143,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     }, {
                         header: '快捷登录',
                         xtype: 'checkcolumn',
+                        disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -165,6 +166,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         header: '接收短信',
                         xtype: 'checkcolumn',
                         lockable: true,
+                        disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         align: 'center',
                         sortable: true,
                         width: 65,
@@ -185,6 +187,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     }, {
                         header: '接收邮件',
                         xtype: 'checkcolumn',
+                        disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -206,6 +209,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     }, {
                         header: '使能',
                         xtype: 'checkcolumn',
+                        disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,
                         align: 'center',
                         sortable: true,

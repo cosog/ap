@@ -673,7 +673,8 @@ public class WellInformationManagerController extends BaseController {
 		String name = ParamUtils.getParameter(request, "name");
 		String type = ParamUtils.getParameter(request, "type");
 		String model = ParamUtils.getParameter(request, "model");
-		boolean flag = this.wellInformationManagerService.judgeAuxiliaryDeviceExistOrNot(name,type,model);
+		String manufacturer = ParamUtils.getParameter(request, "manufacturer");
+		boolean flag = this.wellInformationManagerService.judgeAuxiliaryDeviceExistOrNot(name,type,manufacturer,model);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";

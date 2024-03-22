@@ -53,7 +53,7 @@ Ext.define('AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore', {
                     stripeRows: true,
                     forceFit: false,
                     selModel:{
-                    	selType:'checkboxmodel',
+                    	selType:(loginUserCalculateMaintainingModuleRight.editFlag==1?'checkboxmodel':''),
                     	showHeaderCheckbox:false,
                     	mode:'MULTI'//"SINGLE" / "SIMPLE" / "MULTI" 
                     },

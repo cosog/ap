@@ -22,6 +22,7 @@ public class AuxiliaryDeviceInformation implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private Integer type;
+	private String manufacturer;
 	private String model;
 	private String remark;
 	private Integer sort;
@@ -98,5 +99,14 @@ public class AuxiliaryDeviceInformation implements java.io.Serializable {
 	
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	@Column(name = "manufacturer", nullable = false, length = 50)
+	public String getManufacturer() {
+		return manufacturer;
+	}
+
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
 	}
 }

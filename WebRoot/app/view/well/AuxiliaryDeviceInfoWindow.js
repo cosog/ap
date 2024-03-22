@@ -31,15 +31,16 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                 listeners: {
                 	blur: function (t, e) {
                         var name=t.value;
-                        var type=Ext.getCmp("auxiliaryDeviceTypeComb_Id").getValue();
-                        var typeName=Ext.getCmp("auxiliaryDeviceTypeComb_Id").rawValue;
+                        var type=Ext.getCmp("auxiliaryDeviceType_Id").getValue();
+                        var manufacturer=Ext.getCmp("auxiliaryDeviceManufacturer_Id").getValue();
                         var model=Ext.getCmp("auxiliaryDeviceModel_Id").getValue();
-                		if(name!=''&&typeName!=''&&model!=''){
+                		if(name!='' && model!=''){
                     		Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
                                 	name: name,
                                 	type:type,
+                                	manufacturer:manufacturer,
                                 	model:model
                                 },
                                 url: context + '/wellInformationManagerController/judgeAuxiliaryDeviceExistOrNot',
@@ -61,41 +62,33 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                         }
                     }
                 }
-            }, {
-            	xtype : "combobox",
-				fieldLabel : '类型<font color=red>*</font>',
-				id : 'auxiliaryDeviceTypeComb_Id',
-				anchor : '95%',
-				triggerAction : 'all',
-				selectOnFocus : false,
-			    forceSelection : true,
-			    value:'',
-			    allowBlank: false,
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, '泵辅件'],[1, '管辅件']]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : '请选择辅件类型',
-				blankText : '请选择辅件类型',
-				listeners : {
-					select:function(v,o){
-						Ext.getCmp("auxiliaryDeviceType_Id").setValue(this.value);
-					},
-					blur: function (t, e) {
+            },{
+                xtype: "hidden",
+                fieldLabel: '类型值',
+                id: 'auxiliaryDeviceType_Id',
+                value: '',
+                name: "auxiliaryDeviceInformation.type"
+            },{
+                xtype: "textfield",
+                fieldLabel: '厂家',
+                allowBlank: true,
+                id: 'auxiliaryDeviceManufacturer_Id',
+                anchor: '95%',
+                name: "auxiliaryDeviceInformation.manufacturer",
+                value: '',
+                listeners : {
+                	blur: function (t, e) {
                         var name=Ext.getCmp("auxiliaryDeviceName_Id").getValue();
-                        var type=Ext.getCmp("auxiliaryDeviceTypeComb_Id").getValue();
-                        var typeName=Ext.getCmp("auxiliaryDeviceTypeComb_Id").rawValue;
+                        var type=Ext.getCmp("auxiliaryDeviceType_Id").getValue();
                         var model=Ext.getCmp("auxiliaryDeviceModel_Id").getValue();
-                		if(name!=''&&typeName!=''&&model!=''){
+                        var manufacturer=Ext.getCmp("auxiliaryDeviceManufacturer_Id").getValue();
+                		if(name!='' && model!=''){
                     		Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
                                 	name: name,
                                 	type:type,
+                                	manufacturer: manufacturer,
                                 	model:model
                                 },
                                 url: context + '/wellInformationManagerController/judgeAuxiliaryDeviceExistOrNot',
@@ -116,13 +109,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                             });
                         }
                     }
-				}
-            },{
-                xtype: "hidden",
-                fieldLabel: '类型值',
-                id: 'auxiliaryDeviceType_Id',
-                value: '',
-                name: "auxiliaryDeviceInformation.type"
+                }
             },{
                 xtype: "textfield",
                 fieldLabel: '规格型号',
@@ -134,15 +121,16 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                 listeners : {
                 	blur: function (t, e) {
                         var name=Ext.getCmp("auxiliaryDeviceName_Id").getValue();
-                        var type=Ext.getCmp("auxiliaryDeviceTypeComb_Id").getValue();
-                        var typeName=Ext.getCmp("auxiliaryDeviceTypeComb_Id").rawValue;
+                        var type=Ext.getCmp("auxiliaryDeviceType_Id").getValue();
+                        var manufacturer=Ext.getCmp("auxiliaryDeviceManufacturer_Id").getValue();
                         var model=Ext.getCmp("auxiliaryDeviceModel_Id").getValue();
-                		if(name!=''&&typeName!=''&&model!=''){
+                		if(name!='' && model!=''){
                     		Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
                                 	name: name,
                                 	type:type,
+                                	manufacturer: manufacturer,
                                 	model:model
                                 },
                                 url: context + '/wellInformationManagerController/judgeAuxiliaryDeviceExistOrNot',

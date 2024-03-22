@@ -872,7 +872,9 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 			                }
 	                    }else{
 							cellProperties.readOnly = true;
-							cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addBoldBg;
+							if (visualColIndex >= 1 && visualColIndex <= 7) {
+								cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addBoldBg;
+			                }
 		                }
 	                    
 	                    return cellProperties;

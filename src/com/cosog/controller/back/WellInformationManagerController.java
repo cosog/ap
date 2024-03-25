@@ -607,6 +607,22 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getAuxiliaryDeviceDetailsInfo")
+	public String getAuxiliaryDeviceDetailsInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		String auxiliaryDeviceSpecificType= ParamUtils.getParameter(request, "auxiliaryDeviceSpecificType");
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getAuxiliaryDeviceDetailsInfo(deviceId,auxiliaryDeviceSpecificType);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getBatchAddAuxiliaryDeviceTableInfo")
 	public String getBatchAddAuxiliaryDeviceTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -711,6 +727,9 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/saveAuxiliaryDeviceHandsontableData")
 	public String saveAuxiliaryDeviceHandsontableData() throws Exception {
 		HttpSession session=request.getSession();
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String auxiliaryDeviceSpecificType = ParamUtils.getParameter(request, "auxiliaryDeviceSpecificType");
+		String auxiliaryDeviceDetailsSaveData = ParamUtils.getParameter(request, "auxiliaryDeviceDetailsSaveData").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();

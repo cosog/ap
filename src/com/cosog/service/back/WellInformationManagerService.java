@@ -4996,7 +4996,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String ddicName="auxiliaryDeviceManager";
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select t.id,t.name,t2.name as type,t.manufacturer,t.model,t.remark,t.sort "
+		String sql = "select t.id,t.specificType,t.name,t.manufacturer,t.model,t.remark,t.sort "
 				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
 				+ " where t.type=t2.id";
 		if(StringManagerUtils.isNotNull(deviceType)){
@@ -5013,22 +5013,74 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"name\":\""+obj[1]+"\",");
-			result_json.append("\"type\":\""+obj[2]+"\",");
+			result_json.append("\"specificType\":\""+obj[1]+"\",");
+			result_json.append("\"name\":\""+obj[2]+"\",");
 			result_json.append("\"manufacturer\":\""+obj[3]+"\",");
 			result_json.append("\"model\":\""+obj[4]+"\",");
 			result_json.append("\"remark\":\""+obj[5]+"\",");
 			result_json.append("\"sort\":\""+obj[6]+"\"},");
 		}
-//		for(int i=1;i<=recordCount-list.size();i++){
-//			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
-//		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		json=result_json.toString().replaceAll("null", "");
 		return json;
+	}
+	
+	public String getAuxiliaryDeviceDetailsInfo(String deviceId,String auxiliaryDeviceSpecificType) {
+		StringBuffer result_json = new StringBuffer();
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
+				+ "]";
+		 
+		int totalCount=0;
+		StringBuffer totalRootBuffer = new StringBuffer();
+		if(StringManagerUtils.stringToInteger(auxiliaryDeviceSpecificType)==1){
+			String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
+					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
+					+ " t.structuralunbalance,t.balanceweight"
+					+ " from tbl_pumpingmodel t ,tbl_auxiliarydevice t2"
+					+ " where t.auxiliarydeviceid=t2.id and t2.id="+deviceId;
+			
+			String stroke="",crankRotationDirection="",offsetAngleOfCrank="",crankGravityRadius="",singleCrankWeight="",singleCrankPinWeight="",structuralUnbalance="",balanceWeight="";
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj = (Object[]) list.get(0);
+				stroke=obj[3]+"";
+				crankRotationDirection=obj[4]+"";
+				offsetAngleOfCrank=obj[5]+"";
+				crankGravityRadius=obj[6]+"";
+				singleCrankWeight=obj[7]+"";
+				singleCrankPinWeight=obj[8]+"";
+				structuralUnbalance=obj[9]+"";
+				balanceWeight=obj[10]+"";
+			}
+			totalRootBuffer.append("{\"id\":1,\"itemName\":\"冲程\",\"itemValue\":\""+stroke+"\",\"itemUnit\":\"m\"},");
+			totalRootBuffer.append("{\"id\":2,\"itemName\":\"旋转方向\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\"},");
+			totalRootBuffer.append("{\"id\":3,\"itemName\":\"曲柄偏置角\",\"itemValue\":\""+offsetAngleOfCrank+"\",\"itemUnit\":\"°\"},");
+			totalRootBuffer.append("{\"id\":4,\"itemName\":\"曲柄重心半径\",\"itemValue\":\""+crankGravityRadius+"\",\"itemUnit\":\"m\"},");
+			totalRootBuffer.append("{\"id\":5,\"itemName\":\"单块曲柄重量\",\"itemValue\":\""+singleCrankWeight+"\",\"itemUnit\":\"kN\"},");
+			totalRootBuffer.append("{\"id\":6,\"itemName\":\"单块曲柄销重量\",\"itemValue\":\""+singleCrankPinWeight+"\",\"itemUnit\":\"kN\"},");
+			totalRootBuffer.append("{\"id\":7,\"itemName\":\"结构不平衡重\",\"itemValue\":\""+structuralUnbalance+"\",\"itemUnit\":\"kN\"},");
+			totalRootBuffer.append("{\"id\":8,\"itemName\":\"平衡块重量\",\"itemValue\":\""+balanceWeight+"\",\"itemUnit\":\"kN\"}");
+			
+			totalCount=8;
+		}else{
+			for(int i=0;i<20;i++){
+				totalRootBuffer.append("{},");
+			}
+		}
+		if(totalRootBuffer.toString().endsWith(",")){
+			totalRootBuffer.deleteCharAt(totalRootBuffer.length() - 1);
+		}
+		result_json.append("{\"success\":true,\"totalCount\":"+totalCount+",\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append(totalRootBuffer.toString());
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	@SuppressWarnings("rawtypes")

@@ -200,14 +200,24 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     id: 'AuxiliaryDeviceSpecificType_Id',
                     cls: 'x-check-group-alt',
                     items: [
-                        {boxLabel: '抽油机',name: 'deviceCalculateDataType',width: 70, inputValue: 1},
-//                        {boxLabel: '转速计产',name: 'deviceCalculateDataType',width: 70, inputValue: 2},
-                        {boxLabel: '无',name: 'deviceCalculateDataType',width: 70, inputValue: 0}
+                        {boxLabel: '抽油机',name: 'auxiliaryDeviceSpecificType',width: 70, inputValue: 1},
+                        {boxLabel: '无',name: 'auxiliaryDeviceSpecificType',width: 70, inputValue: 0}
                     ],
                     listeners: {
                     	change: function (radiogroup, newValue, oldValue, eOpts) {
-                    		
-                    	}
+            				var deviceId=0;
+            				var specificType=0;
+            				var DeviceSelectRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
+            				if(isNotVal(DeviceSelectRow)){
+            					var deviceInfoHandsontableData=auxiliaryDeviceInfoHandsontableHelper.hot.getData();
+                	        	if(deviceInfoHandsontableData.length>0){
+                	        		var rowdata = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
+                	        		deviceId=rowdata[0];
+                	        		specificType=rowdata[1];
+                	        	}
+            				}
+            				CreateAuxiliaryDeviceDetailsTable(deviceId,specificType);
+                      	}
                     }
                 }],
                 listeners: {
@@ -252,25 +262,15 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             var result = Ext.JSON.decode(response.responseText);
             if (auxiliaryDeviceInfoHandsontableHelper == null || auxiliaryDeviceInfoHandsontableHelper.hot == null || auxiliaryDeviceInfoHandsontableHelper.hot == undefined) {
                 auxiliaryDeviceInfoHandsontableHelper = AuxiliaryDeviceInfoHandsontableHelper.createNew("AuxiliaryDeviceTableDiv_id");
-                var colHeaders = "[";
-                var columns = "[";
-
-                for (var i = 0; i < result.columns.length; i++) {
-                    colHeaders += "'" + result.columns[i].header + "'";
-                    if (result.columns[i].dataIndex.toUpperCase() === "type".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['泵辅件', '管辅件']}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "sort".toUpperCase()) {
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,auxiliaryDeviceInfoHandsontableHelper);}}";
-                    } else {
-                        columns += "{data:'" + result.columns[i].dataIndex + "'}";
-                    }
-                    if (i < result.columns.length - 1) {
-                        colHeaders += ",";
-                        columns += ",";
-                    }
-                }
-                colHeaders += "]";
-                columns += "]";
+                var colHeaders="['序号','类型','设备名称','厂家','规格型号','备注','排序编号']";
+                var columns="[{data:'id'}," 
+                		+"{data:'specificType'}," 
+                		+"{data:'name'}," 
+                		+"{data:'manufacturer'}," 
+                		+"{data:'model'},"
+                		+"{data:'remark'}," 
+                		+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,auxiliaryDeviceInfoHandsontableHelper);}}" 
+                		+"]";
                 auxiliaryDeviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 auxiliaryDeviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
                 auxiliaryDeviceInfoHandsontableHelper.createTable(result.totalRoot);
@@ -280,13 +280,20 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             if(result.totalRoot.length==0){
             	Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue('');
             	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue('');
+            	
+            	CreateAndLoadAuxiliaryDeviceDetailsTable(0,0);
             }else{
             	Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(0);
             	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(0);
+            	
+            	var rowdata = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(0);
+            	CreateAndLoadAuxiliaryDeviceDetailsTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("AuxiliaryDeviceTotalCount_Id").update({
                 count: result.totalCount
             });
+            
+            
         },
         failure: function () {
             Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
@@ -327,7 +334,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
             	data: data,
                 hiddenColumns: {
-                    columns: [0],
+                    columns: [0,1],
                     indicators: false
                 },
                 columns: auxiliaryDeviceInfoHandsontableHelper.columns,
@@ -348,6 +355,12 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
+                    
+                    var AuxiliaryDeviceManagerModuleEditFlag=parseInt(Ext.getCmp("AuxiliaryDeviceManagerModuleEditFlag").getValue());
+                    if(AuxiliaryDeviceManagerModuleEditFlag!=1){
+                    	cellProperties.readOnly = true;
+                    }
+                    return cellProperties;
                 },
                 afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
                 	if(row<0 && row2<0){//只选中表头
@@ -366,8 +379,26 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     		startRow=row2;
                         	endRow=row;
                     	}
-                    	Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(startRow);
-                    	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(endRow);
+                    	
+                    	var selectedRow=Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
+                    	if(selectedRow!=startRow){
+                    		Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(startRow);
+                        	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(endRow);
+                    		
+                    		var row1=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(startRow);
+                        	var recordId=0;
+                        	var specificType=0;
+                        	if(isNotVal(row1[0])){
+                        		recordId=row1[0];
+                        		specificType=row1[1];
+                        	}
+                        	
+                        	CreateAndLoadAuxiliaryDeviceDetailsTable(recordId,specificType);
+                        	
+                    	}else{
+                    		Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(startRow);
+                        	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(endRow);
+                    	}
                 	}
                 },
                 afterDestroy: function () {
@@ -448,6 +479,74 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
             var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
             //插入的数据的获取
             auxiliaryDeviceInfoHandsontableHelper.insertExpressCount();
+            
+            var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+          //获取设备ID
+            var DeviceSelectRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
+            var rowdata = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
+        	var deviceId=rowdata[0];
+        	var manufacturer=rowdata[3];
+        	var model=rowdata[4];
+            
+        	var auxiliaryDeviceDetailsSaveData={};
+        	auxiliaryDeviceDetailsSaveData.deviceId=deviceId;
+        	auxiliaryDeviceDetailsSaveData.auxiliaryDeviceSpecificType=auxiliaryDeviceSpecificType;
+        	auxiliaryDeviceDetailsSaveData.data="";
+        	
+        	if(auxiliaryDeviceSpecificType==0){
+        		var auxiliaryDeviceDetailsList=[];
+        		if(auxiliaryDeviceDetailsHandsontableHelper!=null && auxiliaryDeviceDetailsHandsontableHelper.hot!=undefined){
+            		var auxiliaryDeviceDetailsData=auxiliaryDeviceDetailsHandsontableHelper.hot.getData();
+                	Ext.Array.each(auxiliaryDeviceDetailsData, function (name, index, countriesItSelf) {
+                        if (isNotVal(auxiliaryDeviceDetailsData[index][1])) {
+                        	var auxiliaryDeviceDetails={};
+                        	auxiliaryDeviceDetails.itemName=auxiliaryDeviceDetailsData[index][1];
+                        	auxiliaryDeviceDetails.itemValue=isNotVal(auxiliaryDeviceDetailsData[index][2])?auxiliaryDeviceDetailsData[index][2]:"";
+                        	auxiliaryDeviceDetails.itemUnit=isNotVal(auxiliaryDeviceDetailsData[index][3])?auxiliaryDeviceDetailsData[index][3]:"";
+                        	auxiliaryDeviceDetailsList.push(auxiliaryDeviceDetails);
+                        }
+                    });
+            	}
+        		if(auxiliaryDeviceDetailsList.length>0){
+        			auxiliaryDeviceDetailsSaveData.data=JSON.stringify(auxiliaryDeviceDetailsList);
+        		}
+        	}else if(auxiliaryDeviceSpecificType==1){
+        		if(auxiliaryDeviceDetailsHandsontableHelper!=null && auxiliaryDeviceDetailsHandsontableHelper.hot!=undefined){
+        			var auxiliaryDeviceDetailsData=auxiliaryDeviceDetailsHandsontableHelper.hot.getData();
+        			var pumpingUnit={};
+        			pumpingUnit.Manufacturer=manufacturer;
+        			pumpingUnit.Model=model;
+        			
+        			pumpingUnit.Stroke=auxiliaryDeviceDetailsData[0][2];
+        			pumpingUnit.CrankRotationDirection=auxiliaryDeviceDetailsData[1][2]=='顺时针'?'Clockwise':'Anticlockwise';
+        			
+        			if(isNumber(parseFloat(auxiliaryDeviceDetailsData[2][2]))){
+        				pumpingUnit.OffsetAngleOfCrank=parseFloat(auxiliaryDeviceDetailsData[2][2]);
+        			}
+        			
+        			if(isNumber(parseFloat(auxiliaryDeviceDetailsData[3][2]))){
+        				pumpingUnit.CrankGravityRadius=parseFloat(auxiliaryDeviceDetailsData[3][2]);
+        			}
+        			
+        			if(isNumber(parseFloat(auxiliaryDeviceDetailsData[4][2]))){
+        				pumpingUnit.SingleCrankWeight=parseFloat(auxiliaryDeviceDetailsData[4][2]);
+        			}
+        			
+        			if(isNumber(parseFloat(auxiliaryDeviceDetailsData[5][2]))){
+        				pumpingUnit.SingleCrankPinWeight=parseFloat(auxiliaryDeviceDetailsData[5][2]);
+        			}
+        			
+        			if(isNumber(parseFloat(auxiliaryDeviceDetailsData[6][2]))){
+        				pumpingUnit.StructuralUnbalance=parseFloat(auxiliaryDeviceDetailsData[6][2]);
+        			}
+        			
+        			pumpingUnit.Balance=parseFloat(auxiliaryDeviceDetailsData[7][2]);
+        			
+        			auxiliaryDeviceDetailsSaveData.data=JSON.stringify(pumpingUnit);
+        		}
+        		
+        	}
+            
             if (JSON.stringify(auxiliaryDeviceInfoHandsontableHelper.AllData) != "{}" && auxiliaryDeviceInfoHandsontableHelper.validresult) {
                 Ext.Ajax.request({
                     method: 'POST',
@@ -476,7 +575,10 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
-                        data: JSON.stringify(auxiliaryDeviceInfoHandsontableHelper.AllData)
+                    	deviceId:deviceId,
+                    	auxiliaryDeviceSpecificType:auxiliaryDeviceSpecificType,
+                    	data: JSON.stringify(auxiliaryDeviceInfoHandsontableHelper.AllData),
+                    	auxiliaryDeviceDetailsSaveData: JSON.stringify(auxiliaryDeviceDetailsSaveData)
                     }
                 });
             } else {
@@ -581,22 +683,29 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
     }
 };
 
-function CreateAndLoadAuxiliaryDeviceDetailsTable(deviceId,deviceName,isNew){
+function CreateAndLoadAuxiliaryDeviceDetailsTable(deviceId,specificType){
+	var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	if(specificType!=auxiliaryDeviceSpecificType){
+		Ext.getCmp('AuxiliaryDeviceSpecificType_Id').setValue({auxiliaryDeviceSpecificType:specificType});
+	}else{
+		CreateAuxiliaryDeviceDetailsTable(deviceId,specificType);
+	}
+}
+
+function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType){
 	if(auxiliaryDeviceDetailsHandsontableHelper!=null){
 		if(auxiliaryDeviceDetailsHandsontableHelper.hot!=undefined){
 			auxiliaryDeviceDetailsHandsontableHelper.hot.destroy();
 		}
 		auxiliaryDeviceDetailsHandsontableHelper=null;
 	}
+	var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/wellInformationManagerController/getDeviceAdditionalInfo',
+		url:context + '/wellInformationManagerController/getAuxiliaryDeviceDetailsInfo',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			if(!isNotVal(deviceName)){
-				deviceName='';
-			}
-//			Ext.getCmp("DeviceAdditionalInfoPanel_Id").setTitle(deviceName+"附加信息");
 			if(auxiliaryDeviceDetailsHandsontableHelper==null || auxiliaryDeviceDetailsHandsontableHelper.hot==undefined){
 				auxiliaryDeviceDetailsHandsontableHelper = AuxiliaryDeviceDetailsHandsontableHelper.createNew("AuxiliaryDeviceDetailsTableDiv_id");
 				var colHeaders="['序号','名称','变量','单位']";
@@ -622,7 +731,7 @@ function CreateAndLoadAuxiliaryDeviceDetailsTable(deviceId,deviceName,isNew){
 		},
 		params: {
 			deviceId:deviceId,
-			deviceType: getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel")
+			auxiliaryDeviceSpecificType: auxiliaryDeviceSpecificType
         }
 	});
 };
@@ -639,6 +748,11 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
 	        }
 
+	        auxiliaryDeviceDetailsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
 	        auxiliaryDeviceDetailsHandsontableHelper.createTable = function (data) {
 	            $('#' + auxiliaryDeviceDetailsHandsontableHelper.divid).empty();
 	            var hotElement = document.querySelector('#' + auxiliaryDeviceDetailsHandsontableHelper.divid);
@@ -706,6 +820,21 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    var AuxiliaryDeviceManagerModuleEditFlag=parseInt(Ext.getCmp("AuxiliaryDeviceManagerModuleEditFlag").getValue());
 	                    if(AuxiliaryDeviceManagerModuleEditFlag!=1){
 	                    	cellProperties.readOnly = true;
+	                    }else{
+	                    	var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	                    	if(auxiliaryDeviceSpecificType==1){
+	                    		if(visualColIndex!=2){
+	                    			cellProperties.readOnly = true;
+	                    			cellProperties.renderer = auxiliaryDeviceDetailsHandsontableHelper.addBoldBg;
+	                    		}
+	                    		
+	                    		if (visualColIndex === 2 && visualRowIndex===1) {
+			                    	this.type = 'dropdown';
+			                    	this.source = ['顺时针','逆时针'];
+			                    	this.strict = true;
+			                    	this.allowInvalid = false;
+			                    }
+	                    	}
 	                    }
 	                    return cellProperties;
 	                }

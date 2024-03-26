@@ -1,5 +1,4 @@
 var deviceInfoHandsontableHelper = null;
-var pumpingModelHandsontableHelper = null;
 var productionHandsontableHelper = null;
 var pumpingInfoHandsontableHelper = null;
 var videoInfoHandsontableHelper = null;
@@ -492,7 +491,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     	        	}
                 				}
                 				CreateAndLoadProductionDataTable(deviceId,deviceName,true);
-                				CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,true);
+                				CreateAndLoadPumpingInfoTable(deviceId,deviceName,true);
                           	}
                         }
                     },'->',{
@@ -557,30 +556,6 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         header:false,
                         items: [{
                         	region: 'center',
-                        	title:'抽油机型号选择',
-                            id:'PumpingModelListPanel_Id',
-                            split: true,
-                            collapsible: true,
-                            html: '<div class="PumpingModelListContainer" style="width:100%;height:100%;"><div class="con" id="PumpingModelListTableDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if (pumpingModelHandsontableHelper != null && pumpingModelHandsontableHelper.hot != null && pumpingModelHandsontableHelper.hot != undefined) {
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		pumpingModelHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                    }
-                                }
-                            }
-                        },{
-                        	region: 'south',
-                        	height:'50%',
                         	split: true,
                             collapsible: true,
                         	title:'抽油机详情',
@@ -656,7 +631,7 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,isNew){
 			Ext.getCmp('DeviceCalculateDataType_Id').setValue({deviceCalculateDataType:calculateType});
 		}else{
 			CreateAndLoadProductionDataTable(deviceId,deviceName,isNew);
-			CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,isNew);
+			CreateAndLoadPumpingInfoTable(deviceId,deviceName,isNew);
 		}
 	}
 }
@@ -1159,7 +1134,7 @@ var DeviceInfoHandsontableHelper = {
                 		var auxiliaryDeviceData=deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getData();
                     	Ext.Array.each(auxiliaryDeviceData, function (name, index, countriesItSelf) {
                             if (auxiliaryDeviceData[index][0]) {
-                            	var auxiliaryDeviceId = auxiliaryDeviceData[index][4];
+                            	var auxiliaryDeviceId = auxiliaryDeviceData[index][5];
                             	auxiliaryDevice.push(auxiliaryDeviceId);
                             }
                         });
@@ -1382,27 +1357,16 @@ var DeviceInfoHandsontableHelper = {
                     	}
                         
                         //获取抽油机型号配置数据
-                        var pumpingModelId='';
-                        if(isNotVal(deviceId) && parseInt(deviceId)>0 ){
-                        	if(pumpingModelHandsontableHelper!=null && pumpingModelHandsontableHelper.hot!=undefined){
-                        		var pumpingModelHandsontableData=pumpingModelHandsontableHelper.hot.getData();
-                            	for(var i=0;i<pumpingModelHandsontableData.length;i++){
-                            		if (pumpingModelHandsontableData[i][0]) {
-                                    	pumpingModelId = pumpingModelHandsontableData[i][4];
-                                    	break;
-                                    }
-                            	}
-                        	}
-                    	}
+                        var pumpingModelId=0;
                         
                         //抽油机详情
                         var balanceInfo={};
                         var stroke="";
                         if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
                         	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
-                        	stroke=pumpingInfoHandsontableData[0][2];
+                        	stroke=pumpingInfoHandsontableData[3][2];
                         	balanceInfo.EveryBalance=[];
-                        	for(var i=3;i<pumpingInfoHandsontableData.length;i++){
+                        	for(var i=6;i<pumpingInfoHandsontableData.length;i++){
                         		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
                             		var EveryBalance={};
                             		EveryBalance.Position=pumpingInfoHandsontableData[i][1];
@@ -1740,174 +1704,6 @@ var DeviceInfoHandsontableHelper = {
     }
 };
 
-function CreateAndLoadPumoingModelInfoTable(deviceId,deviceName,isNew){
-	var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
-	
-	if(pumpingModelHandsontableHelper!=null){
-		if(pumpingModelHandsontableHelper.hot!=undefined){
-			pumpingModelHandsontableHelper.hot.destroy();
-		}
-		pumpingModelHandsontableHelper=null;
-	}
-	
-	if(pumpingInfoHandsontableHelper!=null){
-		if(pumpingInfoHandsontableHelper.hot!=undefined){
-			pumpingInfoHandsontableHelper.hot.destroy();
-		}
-		pumpingInfoHandsontableHelper=null;
-	}
-	
-	if(deviceCalculateDataType==2){
-		Ext.getCmp("PumpingModelConfigInfoPanel_Id").hide();;
-	}else{
-		Ext.getCmp("PumpingModelConfigInfoPanel_Id").show();;
-	}
-	
-	if(deviceCalculateDataType==1){
-		Ext.getCmp("PumpingModelListPanel_Id").el.mask(cosog.string.loading).show();
-		
-		Ext.Ajax.request({
-			method:'POST',
-			url:context + '/wellInformationManagerController/getPumpingModelList',
-			success:function(response) {
-				Ext.getCmp("PumpingModelListPanel_Id").getEl().unmask();
-				var result =  Ext.JSON.decode(response.responseText);
-				var panelTitle='抽油机型号选择';
-				if(isNotVal(deviceName)){
-					panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】抽油机型号选择";
-				}
-//				Ext.getCmp("PumpingModelListPanel_Id").setTitle(panelTitle);
-				if(pumpingModelHandsontableHelper==null || pumpingModelHandsontableHelper.hot==undefined){
-					pumpingModelHandsontableHelper = PumpingModelHandsontableHelper.createNew("PumpingModelListTableDiv_id");
-					var colHeaders="['','序号','厂家','型号','','','']";
-					var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'manufacturer'},{data:'model'},{data:'realId'},{data:'stroke'},{data:'balanceWeight'}]";
-					
-					pumpingModelHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-					pumpingModelHandsontableHelper.columns=Ext.JSON.decode(columns);
-					if(result.totalRoot.length==0){
-						pumpingModelHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-					}else{
-						pumpingModelHandsontableHelper.createTable(result.totalRoot);
-					}
-				}else{
-					pumpingModelHandsontableHelper.hot.loadData(result.totalRoot);
-				}
-				
-				pumpingModelHandsontableHelper.deviceId=deviceId;
-		        pumpingModelHandsontableHelper.deviceName=deviceName;
-		        pumpingModelHandsontableHelper.isNew=isNew;
-				
-				CreateAndLoadPumpingInfoTable(deviceId,deviceName,isNew);
-			},
-			failure:function(){
-				Ext.getCmp("PumpingModelListPanel_Id").getEl().unmask();
-				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-			},
-			params: {
-				deviceId:deviceId,
-				deviceType:getDeviceTypeFromTabId("DeviceManagerTabPanel")
-	        }
-		});
-	}
-};
-
-var PumpingModelHandsontableHelper = {
-		createNew: function (divid) {
-	        var pumpingModelHandsontableHelper = {};
-	        pumpingModelHandsontableHelper.hot1 = '';
-	        pumpingModelHandsontableHelper.divid = divid;
-	        pumpingModelHandsontableHelper.validresult=true;//数据校验
-	        pumpingModelHandsontableHelper.colHeaders=[];
-	        pumpingModelHandsontableHelper.columns=[];
-	        pumpingModelHandsontableHelper.AllData=[];
-	        
-	        pumpingModelHandsontableHelper.deviceId;
-	        pumpingModelHandsontableHelper.deviceName;
-	        pumpingModelHandsontableHelper.isNew;
-	        
-	        pumpingModelHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        pumpingModelHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        }
-	        
-	        pumpingModelHandsontableHelper.createTable = function (data) {
-	        	$('#'+pumpingModelHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+pumpingModelHandsontableHelper.divid);
-	        	pumpingModelHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		hiddenColumns: {
-	                    columns: [4,5,6],
-	                    indicators: false,
-	                    copyPasteEnabled: false
-	                },
-	        		colWidths: [25,30,30,80],
-	                columns:pumpingModelHandsontableHelper.columns,
-	                columns:pumpingModelHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-	                colHeaders:pumpingModelHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
-	                    if(DeviceManagerModuleEditFlag==1){
-	                    	if (visualColIndex >0) {
-								cellProperties.readOnly = true;
-			                }
-	                    }else{
-	                    	cellProperties.readOnly = true;
-	                    }
-	                    
-	                    return cellProperties;
-	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
-	                    if(DeviceManagerModuleEditFlag==1){
-	                    	var selectedRow=row;
-		                	var selectedCol=column;
-		                	if(row>row2){
-		                		selectedRow=row2;
-		                	}
-		                	if(column>column2){
-		                		selectedCol=column2;
-		                	}
-		                	var checkboxColData=pumpingModelHandsontableHelper.hot.getDataAtCol(0);
-		                	var rowdata = pumpingModelHandsontableHelper.hot.getDataAtRow(selectedRow);
-		                	for(var i=0;i<checkboxColData.length;i++){
-	                			if(i!=selectedRow&&checkboxColData[i]){
-	                				pumpingModelHandsontableHelper.hot.setDataAtCell(i,0,false);
-	                			}
-	                		}
-		                	pumpingModelHandsontableHelper.hot.setDataAtCell(selectedRow,0,true);
-		        			CreateAndLoadPumpingInfoTable(pumpingModelHandsontableHelper.deviceId,pumpingModelHandsontableHelper.deviceName,pumpingModelHandsontableHelper.isNew);
-	                    }
-	                }
-	        	});
-	        }
-	        //保存数据
-	        pumpingModelHandsontableHelper.saveData = function () {}
-	        pumpingModelHandsontableHelper.clearContainer = function () {
-	        	pumpingModelHandsontableHelper.AllData = [];
-	        }
-	        return pumpingModelHandsontableHelper;
-	    }
-};
-
 function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
 	var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	
@@ -2126,23 +1922,14 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,isNew){
 				var result =  Ext.JSON.decode(response.responseText);
 				var panelTitle='抽油机详情';
 				if(isNotVal(deviceName)){
-					panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】抽油机详情";
+					panelTitle="【<font color='red'>"+deviceName+"</font>】抽油机详情";
 				}
-//				Ext.getCmp("PumpingInfoPanel_Id").setTitle(panelTitle);
+				Ext.getCmp("PumpingInfoPanel_Id").setTitle(panelTitle);
 				if(pumpingInfoHandsontableHelper==null || pumpingInfoHandsontableHelper.hot==undefined){
 					pumpingInfoHandsontableHelper = PumpingInfoHandsontableHelper.createNew("PumpingInfoTableDiv_id");
 					
-					var checkboxColData=pumpingModelHandsontableHelper.hot.getDataAtCol(0);
-		        	for(var i=0;i<checkboxColData.length;i++){
-		    			if(checkboxColData[i]){
-		    				var rowdata = pumpingModelHandsontableHelper.hot.getDataAtRow(i);
-		    				if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
-		    	        		pumpingInfoHandsontableHelper.strokeList = rowdata[5];
-		    	    	        pumpingInfoHandsontableHelper.balanceWeightList = rowdata[6];
-		    	        	}
-		    				break;
-		    			}
-		    		}
+					pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
+	    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
 					
 					var colHeaders="['序号','名称','变量','']";
 					var columns="[{data:'id'}," 
@@ -2157,17 +1944,8 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,isNew){
 						pumpingInfoHandsontableHelper.createTable(result.totalRoot);
 					}
 				}else{
-					var checkboxColData=pumpingModelHandsontableHelper.hot.getDataAtCol(0);
-		        	for(var i=0;i<checkboxColData.length;i++){
-		    			if(checkboxColData[i]){
-		    				var rowdata = pumpingModelHandsontableHelper.hot.getDataAtRow(i);
-		    				if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
-		    	        		pumpingInfoHandsontableHelper.strokeList = rowdata[5];
-		    	    	        pumpingInfoHandsontableHelper.balanceWeightList = rowdata[6];
-		    	        	}
-		    				break;
-		    			}
-		    		}
+					pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
+	    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
 					if(result.totalRoot.length==0){
 						pumpingInfoHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{}]);
 					}else{
@@ -2249,7 +2027,7 @@ var PumpingInfoHandsontableHelper = {
 	                	colspan:2
 	                }]],
 	                mergeCells: [{
-	                	"row": 1,
+	                	"row": 4,
                         "col": 1,
                         "rowspan": 1,
                         "colspan": 2
@@ -2260,17 +2038,20 @@ var PumpingInfoHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag==1){
-	                    	if ( (visualRowIndex==0&&visualColIndex==1) || (visualRowIndex>=1&&visualRowIndex<=2)    ) {
+	                    	if ( (visualRowIndex<=3&&visualColIndex==1) || (visualRowIndex>=4&&visualRowIndex<=5)    ) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addBoldBg;
 			                }
-		                    if (visualColIndex === 2 && visualRowIndex===0) {
+	                    	if(visualRowIndex<=2 && visualColIndex==2){
+	                    		cellProperties.readOnly = true;
+	                    	}
+		                    if (visualColIndex === 2 && visualRowIndex===3) {
 		                    	this.type = 'dropdown';
 		                    	this.source = pumpingInfoHandsontableHelper.strokeList;
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
-		                    if (visualColIndex === 2 && visualRowIndex>=3) {
+		                    if (visualColIndex === 2 && visualRowIndex>=6) {
 		                    	this.type = 'dropdown';
 		                    	this.source = pumpingInfoHandsontableHelper.balanceWeightList;
 		                    	this.strict = true;
@@ -2278,7 +2059,7 @@ var PumpingInfoHandsontableHelper = {
 		                    }
 	                    }else{
 	                    	cellProperties.readOnly = true;
-	                    	if ( (visualRowIndex==0&&visualColIndex==1) || (visualRowIndex>=1&&visualRowIndex<=2)    ) {
+	                    	if ( (visualRowIndex<=3&&visualColIndex==1) || (visualRowIndex>=4&&visualRowIndex<=5)    ) {
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addBoldBg;
 			                }
 	                    }
@@ -2577,6 +2358,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 		}
 		deviceAuxiliaryDeviceInfoHandsontableHelper=null;
 	}
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getAuxiliaryDevice',
@@ -2588,8 +2370,8 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 //			Ext.getCmp("DeviceAuxiliaryDevicePanel_Id").setTitle(deviceName+"辅件设备列表");
 			if(deviceAuxiliaryDeviceInfoHandsontableHelper==null || deviceAuxiliaryDeviceInfoHandsontableHelper.hot==undefined){
 				deviceAuxiliaryDeviceInfoHandsontableHelper = DeviceAuxiliaryDeviceInfoHandsontableHelper.createNew("DeviceAuxiliaryDeviceTableDiv_id");
-				var colHeaders="['','序号','名称','规格型号','']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'name'},{data:'model'},{data:'realId'}]";
+				var colHeaders="['','序号','名称','厂家','规格型号','ID']";
+				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'name'},{data:'manufacturer'},{data:'model'},{data:'realId'}]";
 				
 				deviceAuxiliaryDeviceInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceAuxiliaryDeviceInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -2607,7 +2389,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 		},
 		params: {
 			deviceId:deviceId,
-			deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
+			deviceType: getDeviceTypeFromTabId_first("DeviceManagerTabPanel")
         }
 	});
 };
@@ -2639,10 +2421,10 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [4],
+	                    columns: [5],
 	                    indicators: false
 	                },
-	        		colWidths: [25,50,80,80],
+	        		colWidths: [20,20,80,80],
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

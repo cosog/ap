@@ -134,12 +134,6 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					}
         					deviceInfoHandsontableHelper=null;
         				}
-        				if(pumpingModelHandsontableHelper!=null){
-        					if(pumpingModelHandsontableHelper.hot!=undefined){
-        						pumpingModelHandsontableHelper.hot.destroy();
-        					}
-        					pumpingModelHandsontableHelper=null;
-        				}
         				if(productionHandsontableHelper!=null){
         					if(productionHandsontableHelper.hot!=undefined){
         						productionHandsontableHelper.hot.destroy();

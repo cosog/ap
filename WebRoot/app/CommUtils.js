@@ -4703,9 +4703,29 @@ function getTabPanelActiveId(tabTanelId){
 	return activeId;
 }
 
+function getTabPanelActiveId_first(tabTanelId){
+	var activeId='';
+	var tabPanel = Ext.getCmp(tabTanelId);
+	if(isNotVal(tabPanel)){
+		activeId=tabPanel.getActiveTab().id;
+	}
+	return activeId;
+}
+
 function getDeviceTypeFromTabId(tabTanelId){
 	var deviceType=0;
 	var activeId=getTabPanelActiveId(tabTanelId);
+	if(isNotVal(activeId)){
+		if(activeId.split('_').length==2){
+			deviceType=activeId.split('_')[1];
+		}
+	}
+	return deviceType;
+}
+
+function getDeviceTypeFromTabId_first(tabTanelId){
+	var deviceType=0;
+	var activeId=getTabPanelActiveId_first(tabTanelId);
 	if(isNotVal(activeId)){
 		if(activeId.split('_').length==2){
 			deviceType=activeId.split('_')[1];

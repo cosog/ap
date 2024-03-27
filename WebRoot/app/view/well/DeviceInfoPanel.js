@@ -617,7 +617,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 
 function CreateDeviceAdditionalInformationTable(deviceId,deviceName,isNew){
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationRabpanel_Id");
-	var activeId=tabPanel.getActiveTab().id
+	var activeId=tabPanel.getActiveTab().id;
 	if(activeId=='DeviceAdditionalInfoPanel_Id'){
 		CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew);
 	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){
@@ -1134,7 +1134,7 @@ var DeviceInfoHandsontableHelper = {
                 		var auxiliaryDeviceData=deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getData();
                     	Ext.Array.each(auxiliaryDeviceData, function (name, index, countriesItSelf) {
                             if (auxiliaryDeviceData[index][0]) {
-                            	var auxiliaryDeviceId = auxiliaryDeviceData[index][5];
+                            	var auxiliaryDeviceId = auxiliaryDeviceData[index][7];
                             	auxiliaryDevice.push(auxiliaryDeviceId);
                             }
                         });
@@ -2038,13 +2038,10 @@ var PumpingInfoHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag==1){
-	                    	if ( (visualRowIndex<=3&&visualColIndex==1) || (visualRowIndex>=4&&visualRowIndex<=5)    ) {
+	                    	if (visualRowIndex<=2 || (visualRowIndex>=4&&visualRowIndex<=5) ||(visualRowIndex==3&&visualColIndex==1) ) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addBoldBg;
 			                }
-	                    	if(visualRowIndex<=2 && visualColIndex==2){
-	                    		cellProperties.readOnly = true;
-	                    	}
 		                    if (visualColIndex === 2 && visualRowIndex===3) {
 		                    	this.type = 'dropdown';
 		                    	this.source = pumpingInfoHandsontableHelper.strokeList;
@@ -2059,7 +2056,7 @@ var PumpingInfoHandsontableHelper = {
 		                    }
 	                    }else{
 	                    	cellProperties.readOnly = true;
-	                    	if ( (visualRowIndex<=3&&visualColIndex==1) || (visualRowIndex>=4&&visualRowIndex<=5)    ) {
+	                    	if (visualRowIndex<=2 || (visualRowIndex>=4&&visualRowIndex<=5) ||(visualRowIndex==3&&visualColIndex==1) ) {
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addBoldBg;
 			                }
 	                    }
@@ -2370,8 +2367,15 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 //			Ext.getCmp("DeviceAuxiliaryDevicePanel_Id").setTitle(deviceName+"辅件设备列表");
 			if(deviceAuxiliaryDeviceInfoHandsontableHelper==null || deviceAuxiliaryDeviceInfoHandsontableHelper.hot==undefined){
 				deviceAuxiliaryDeviceInfoHandsontableHelper = DeviceAuxiliaryDeviceInfoHandsontableHelper.createNew("DeviceAuxiliaryDeviceTableDiv_id");
-				var colHeaders="['','序号','名称','厂家','规格型号','ID']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'name'},{data:'manufacturer'},{data:'model'},{data:'realId'}]";
+				var colHeaders="['','序号','设备名称','厂家','规格型号','指定类型','指定类型值','ID']";
+				var columns="[{data:'checked',type:'checkbox'}," 
+						+"{data:'id'}," 
+						+"{data:'name'}," 
+						+"{data:'manufacturer'}," 
+						+"{data:'model'}," 
+						+"{data:'specificTypeName'}," 
+						+"{data:'specificType'}," 
+						+"{data:'realId'}]";
 				
 				deviceAuxiliaryDeviceInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceAuxiliaryDeviceInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -2421,10 +2425,10 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [5],
+	                    columns: [6,7],
 	                    indicators: false
 	                },
-	        		colWidths: [20,20,80,80],
+	        		colWidths: [20,20,80,80,80,80],
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -2454,6 +2458,32 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                	var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    if(DeviceManagerModuleEditFlag==1){
+	                    	if(row==row2 && column==column2 && column==0){
+	                    		var selectedRow=row;
+			                	var selectedCol=column;
+			                	
+			                	var checkboxColData=deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCol(0);
+			                	var specificTypeData=deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCol(6);
+			                	
+			                	var rowdata = deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(selectedRow);
+			                	
+			                	if(rowdata[6]==1){
+			                		for(var i=0;i<checkboxColData.length;i++){
+			                			if(i!=selectedRow&&checkboxColData[i]&&specificTypeData[i]==1){
+			                				deviceAuxiliaryDeviceInfoHandsontableHelper.hot.setDataAtCell(i,0,false);
+			                			}
+			                		}
+			                	}
+			                	
+			                	if(rowdata[0]){
+			                		deviceAuxiliaryDeviceInfoHandsontableHelper.hot.setDataAtCell(selectedRow,0,false);
+			                	}else{
+			                		deviceAuxiliaryDeviceInfoHandsontableHelper.hot.setDataAtCell(selectedRow,0,true);
+			                	}
+	                    	}
+	                    }
 	                }
 	        	});
 	        }

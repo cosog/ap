@@ -87,8 +87,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
         	for(var i=0;i<auxiliaryDeviceList.length;i++){
         		deviceAuxiliaryInfoDataStr+="{\"id\":"+auxiliaryDeviceList[i].id+","
         		+"\"name\":\""+auxiliaryDeviceList[i].name+"\","
-        		+"\"model\":\""+auxiliaryDeviceList[i].model+"\","
-        		+"\"remark\":\""+auxiliaryDeviceList[i].remark+"\""
+        		+"\"detailsInfo\":\""+auxiliaryDeviceList[i].detailsInfo+"\""
         		+"},";
         	}
         	if(stringEndWith(deviceAuxiliaryInfoDataStr,",")){
@@ -98,7 +97,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
         	
         	var deviceAuxiliaryInfoStoreData=Ext.JSON.decode(deviceAuxiliaryInfoDataStr);
         	var deviceAuxiliaryInfoStore=Ext.create('Ext.data.Store', {
-			    fields:['id', 'name','model','remark'],
+			    fields:['id', 'name','detailsInfo'],
 			    data:deviceAuxiliaryInfoStoreData,
 			    proxy: {
 			        type: 'memory',
@@ -110,6 +109,11 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
 			});
         	var deviceAuxiliaryInfoGridPanel=Ext.getCmp("RealTimeMonitoringAuxiliaryDeviceInfoDataGridPanel_Id");
     		if(!isNotVal(deviceAuxiliaryInfoGridPanel)){
+    			var  aaa=[];
+//    			aaa.push('<p><b>厂家:</b> {manufacturer}</p>');
+//    			aaa.push('<p><b>规格型号:</b> {model}</p>');
+//    			aaa.push('<p><b>备注:</b> {remark}</p>');
+//    			alert(aaa.join(','));
     			deviceAuxiliaryInfoGridPanel=Ext.create('Ext.grid.Panel', {
     				id:'RealTimeMonitoringAuxiliaryDeviceInfoDataGridPanel_Id',
     				xtype: 'row-expander-grid',
@@ -137,8 +141,8 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     			    plugins: [{
     			        ptype: 'rowexpander',
     			        rowBodyTpl : new Ext.XTemplate(
-    			            '<p><b>规格型号:</b> {model}</p>',
-    			            '<p><b>备注:</b> {remark}</p>',
+//    			        		'<h style="line-height:1.5;"><b>厂家:</b> {manufacturer}</h><br/><h style="line-height:1.5;"><b>规格型号:</b> {model}</h><br/><h style="line-height:1.5;"><b>备注:</b> {remark}</h>',
+    			        		'{detailsInfo}',
     			        {
     			            formatChange: function(v){
     			                var color = v >= 0 ? 'green' : 'red';
@@ -152,10 +156,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     			deviceAuxiliaryInfoGridPanel.reconfigure(deviceAuxiliaryInfoStore);
     		}
     		var total=deviceAuxiliaryInfoGridPanel.getStore().getCount();
-    		if(total>0
-    				&&Ext.getCmp("RealTimeMonitoringRightTabPanel").getActiveTab().id=="RealTimeMonitoringRightDeviceInfoTabPanel"
-    				&&Ext.getCmp("RealTimeMonitoringRightDeviceInfoTabPanel").getActiveTab().id=="RealTimeMonitoringRightDeviceInfoPanel"
-    					){
+    		if(total>0&&Ext.getCmp("RealTimeMonitoringRightTabPanel").getActiveTab().id=="RealTimeMonitoringRightDeviceInfoPanel"){
     			deviceAuxiliaryInfoGridPanel.plugins[0].toggleRow(0,0);
     		}
         },
@@ -165,7 +166,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
         	var new_params = {
         			deviceId:deviceId,
         			wellName: wellName,
-        			deviceType:0
+        			deviceType:getDeviceTypeFromTabId_first("RealTimeMonitoringTabPanel")
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

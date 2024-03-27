@@ -2316,9 +2316,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		
 		
-		String auxiliaryDeviceSql="select t3.id,t3.name,t3.model,t3.remark "
+		String auxiliaryDeviceSql="select t3.id,t3.name,t3.manufacturer,t3.model,t3.remark "
 				+ " from "+deviceTableName+" t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id "
+				+" and t3.type="+deviceType
 				+" and t.id="+deviceId
 				+ " order by t3.sort,t3.name";
 		String deviceAddInfoSql = "select t2.id,t2.itemname,t2.itemvalue||decode(t2.itemunit,null,'','','','('||t2.itemunit||')') as itemvalue "
@@ -2326,9 +2327,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ " where t.id=t2.deviceid and t.id="+deviceId
 				+ " order by t2.id";
 		
+		String auxiliaryDeviceDetailsSql="select t4.deviceid,t4.itemname,t4.itemvalue,t3.specifictype "
+				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
+				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
+				+ " and t3.type= "+deviceType
+				+ " and t.id= "+deviceId
+				+ " order by t4.deviceid,t4.id";
+		
 		List<?> auxiliaryDeviceQueryList = this.findCallSql(auxiliaryDeviceSql);
 		List<?> deviceAddInfoList = this.findCallSql(deviceAddInfoSql);
-		
+		List<?> auxiliaryDeviceDetailsList = this.findCallSql(auxiliaryDeviceDetailsSql);
 		
 		
 		StringBuffer deviceInfoDataList=new StringBuffer();
@@ -2339,10 +2347,29 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		//辅件设备
 		for(int i=0;i<auxiliaryDeviceQueryList.size();i++){
 			Object[] obj=(Object[]) auxiliaryDeviceQueryList.get(i);
+			String details="<h style='line-height:1.5;'><b>厂家:</b> "+obj[2]+"</h><br/><h style='line-height:1.5;'><b>规格型号:</b> "+obj[3]+"</h><br/><h style='line-height:1.5;'><b>备注:</b> "+obj[4]+"</h>";
+			for(int j=0;j<auxiliaryDeviceDetailsList.size();j++){
+				Object[] detailsObj=(Object[]) auxiliaryDeviceDetailsList.get(j);
+				String itemName=detailsObj[1]+"";
+				String itemValue=detailsObj[2]+"";
+				String specificType=detailsObj[3]+"";
+				if("1".equalsIgnoreCase(specificType) && "旋转方向".equalsIgnoreCase(itemName)){
+					if("Clockwise".equalsIgnoreCase(itemValue)){
+						itemValue="顺时针";
+					}else if("Anticlockwise".equalsIgnoreCase(itemValue)){
+						itemValue="逆时针";
+					}
+				}
+				if((detailsObj[0]+"").equalsIgnoreCase(obj[0]+"")){
+					details+="<br/><h style='line-height:1.5;'><b>"+itemName+":</b> "+itemValue+"</h>";
+				}
+			}
+			
 			auxiliaryDeviceList.append("{\"id\":"+obj[0]+","
 					+ "\"name\":\""+obj[1]+"\","
-					+ "\"model\":\""+obj[2]+"\","
-					+ "\"remark\":\""+obj[3]+"\"},");
+//					+ "\"manufacturer\":\""+obj[2]+"\","
+//					+ "\"model\":\""+obj[3]+"\","
+					+ "\"detailsInfo\":\""+details+"\"},");
 		}
 		
 		if(auxiliaryDeviceList.toString().endsWith(",")){

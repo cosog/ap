@@ -195,7 +195,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
         		html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
         		tbar:[{
                     xtype: 'radiogroup',
-                    fieldLabel: '特殊类型',
+                    fieldLabel: '指定类型',
                     labelWidth: 60,
                     id: 'AuxiliaryDeviceSpecificType_Id',
                     cls: 'x-check-group-alt',

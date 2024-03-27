@@ -3405,11 +3405,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String auxiliaryDeviceSql="select t3.name,t3.manufacturer,t3.model "
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id "
+				+ " and t3.specifictype=1"
 				+ " and t.id="+deviceId;
 		
 		String auxiliaryDeviceDetailsSql="select t4.itemname,t4.itemvalue "
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
+				+ " and t3.specifictype=1"
 				+ " and t4.itemname in('冲程','平衡块重量') "
 				+ " and t.id="+deviceId;
 		
@@ -5103,8 +5105,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		 
 		int totalCount=0;
 		StringBuffer totalRootBuffer = new StringBuffer();
-		String sql = "select t.id,t.itemname,t.itemvalue,t.itemunit from tbl_auxiliarydeviceaddinfo t "
-				+ " where t.deviceid="+deviceId
+		String sql = "select t.id,t.itemname,t.itemvalue,t.itemunit "
+				+ " from tbl_auxiliarydeviceaddinfo t,tbl_auxiliarydevice t2 "
+				+ " where t.deviceid=t2.id "
+				+  "and t.deviceid="+deviceId
+				+  "and t2.specifictype="+auxiliaryDeviceSpecificType
 				+ " order by t.id";
 		List<?> list = this.findCallSql(sql);
 		if(StringManagerUtils.stringToInteger(auxiliaryDeviceSpecificType)==1){
@@ -5159,6 +5164,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			for(int i=list.size();i<20;i++){
 				totalRootBuffer.append("{},");
 			}
+			
 			if(totalRootBuffer.toString().endsWith(",")){
 				totalRootBuffer.deleteCharAt(totalRootBuffer.length() - 1);
 			}
@@ -5236,7 +5242,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "]";
 		String deviceTableName="tbl_device";
 		
-		String sql = "select t.id,t.name,t.type,t.manufacturer,t.model,t.remark,t.sort from tbl_auxiliarydevice t where t.type="+deviceType;
+		String sql = "select t.id,t.name,t.type,t.manufacturer,t.model,"
+				+ " t.remark,t.sort,"
+				+ " decode(t.specificType,1,'抽油机','无') as specificTypeName,t.specificType"
+				+ " from tbl_auxiliarydevice t where t.type="+deviceType;
 		String auxiliarySql="select t2.auxiliaryid from "+deviceTableName+" t,tbl_auxiliary2master t2 "
 				+ " where t.id=t2.masterid and t.id="+deviceId;
 		
@@ -5262,7 +5271,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"realId\":\""+obj[0]+"\",");
 			result_json.append("\"name\":\""+obj[1]+"\",");
 			result_json.append("\"manufacturer\":\""+obj[3]+"\",");
-			result_json.append("\"model\":\""+obj[4]+"\"},");
+			result_json.append("\"model\":\""+obj[4]+"\",");
+			result_json.append("\"specificTypeName\":\""+obj[7]+"\",");
+			result_json.append("\"specificType\":\""+obj[8]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

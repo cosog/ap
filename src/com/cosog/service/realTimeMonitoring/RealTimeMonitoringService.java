@@ -1914,33 +1914,34 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			//设备信息
 			for(int i=0;i<fields.size();i++){
 				if(deviceInfo.getCalculateType()==1){
-					if("manufacturer".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getManufacturer():"")+"\"},");
-					}else if("model".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getModel():"")+"\"},");
-					}else if("stroke".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getStroke():"")+"\"},");
-					}else if("crankRotationDirection".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?("Clockwise".equalsIgnoreCase(deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getCrankRotationDirection())?"顺时针":"逆时针"):"")+"\"},");
-					}else if("offsetAngleOfCrank".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getOffsetAngleOfCrank():"")+"\"},");
-					}else if("crankGravityRadius".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getCrankGravityRadius():"")+"\"},");
-					}else if("singleCrankWeight".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getSingleCrankWeight():"")+"\"},");
-					}else if("singleCrankPinWeight".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getSingleCrankPinWeight():"")+"\"},");
-					}else if("structuralUnbalance".equalsIgnoreCase(fields.get(i))){
-						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getStructuralUnbalance():"")+"\"},");
-					}else if("balance".equalsIgnoreCase(fields.get(i))){
-						if(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance()!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().size()>0){
-							for(int j=0;j<deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().size();j++){
-								deviceInfoDataList.append("{\"item\":\"平衡块"+(j+1)+"位置重量\","+ "\"value\":\""+(deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().get(j).getPosition()+","+deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().get(j).getWeight())+"\"},");
-							}
-						}else{
-//							deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
-						}
-					}else if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
+//					if("manufacturer".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getManufacturer():"")+"\"},");
+//					}else if("model".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getModel():"")+"\"},");
+//					}else if("stroke".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getStroke():"")+"\"},");
+//					}else if("crankRotationDirection".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?("Clockwise".equalsIgnoreCase(deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getCrankRotationDirection())?"顺时针":"逆时针"):"")+"\"},");
+//					}else if("offsetAngleOfCrank".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getOffsetAngleOfCrank():"")+"\"},");
+//					}else if("crankGravityRadius".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getCrankGravityRadius():"")+"\"},");
+//					}else if("singleCrankWeight".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getSingleCrankWeight():"")+"\"},");
+//					}else if("singleCrankPinWeight".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getSingleCrankPinWeight():"")+"\"},");
+//					}else if("structuralUnbalance".equalsIgnoreCase(fields.get(i))){
+//						deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null?deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getStructuralUnbalance():"")+"\"},");
+//					}else if("balance".equalsIgnoreCase(fields.get(i))){
+//						if(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance()!=null&&deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().size()>0){
+//							for(int j=0;j<deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().size();j++){
+//								deviceInfoDataList.append("{\"item\":\"平衡块"+(j+1)+"位置重量\","+ "\"value\":\""+(deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().get(j).getPosition()+","+deviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance().getEveryBalance().get(j).getWeight())+"\"},");
+//							}
+//						}else{
+////							deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
+//						}
+//					}else 
+					if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
 						if( !(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0) ){
 							deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getFluidPVT()!=null?deviceInfo.getRpcCalculateRequestData().getFluidPVT().getCrudeOilDensity():"")+"\"},");
 						}
@@ -2347,7 +2348,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		//辅件设备
 		for(int i=0;i<auxiliaryDeviceQueryList.size();i++){
 			Object[] obj=(Object[]) auxiliaryDeviceQueryList.get(i);
-			String details="<h style='line-height:1.5;'><b>厂家:</b> "+obj[2]+"</h><br/><h style='line-height:1.5;'><b>规格型号:</b> "+obj[3]+"</h><br/><h style='line-height:1.5;'><b>备注:</b> "+obj[4]+"</h>";
+			String details="<h style='line-height:1.5;'>厂家: "+obj[2]+"</h><br/><h style='line-height:1.5;'>规格型号: "+obj[3]+"</h><br/><h style='line-height:1.5;'>备注: "+obj[4]+"</h>";
 			for(int j=0;j<auxiliaryDeviceDetailsList.size();j++){
 				Object[] detailsObj=(Object[]) auxiliaryDeviceDetailsList.get(j);
 				String itemName=detailsObj[1]+"";
@@ -2361,7 +2362,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				if((detailsObj[0]+"").equalsIgnoreCase(obj[0]+"")){
-					details+="<br/><h style='line-height:1.5;'><b>"+itemName+":</b> "+itemValue+"</h>";
+					details+="<br/><h style='line-height:1.5;'>"+itemName+": "+itemValue+"</h>";
 				}
 			}
 			

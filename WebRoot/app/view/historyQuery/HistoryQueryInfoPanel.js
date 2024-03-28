@@ -128,11 +128,6 @@ var historyQueryCenterTabPanelItems=[{
     html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;"></div>',
     listeners: {
     	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-//    		var GridPanel = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id");
-//    		if(isNotVal(GridPanel)){
-//    			loadSurfaceCardList(1);
-//    		}
-
         	var container=$('#surfaceCardContainer');
 			if(container!=undefined && container.length>0){
 				var containerChildren=container[0].children;
@@ -963,7 +958,7 @@ loadSurfaceCardList = function (page) {
         	if(page==1){
         		$("#surfaceCardContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("HistoryDiagramTabPanel").unmask(cosog.string.loading); // 数据加载中，请稍后
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(cosog.string.loading); // 取消遮罩
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var gtlist = get_rawData.list; // 获取功图数据
             

@@ -2672,7 +2672,6 @@ showSurfaceCard = function(result, divId) {
 	}
 	data+="]";
 	var pointdata = Ext.JSON.decode(data);
-//	var pointdata = JSON.parse(data);
 	initSurfaceCardChart(pointdata, result, divId);
 	return false;
 }
@@ -2812,13 +2811,9 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		        xAxis: {                                                                           
 		            title: {                                                                         
 		                text: xtext,    // 坐标+显示文字
-//		                align:'low',
 		                useHTML: false,
 		                margin:5,
-//                        offset: 10,
                         style: {
-//                            color: '#000',
-//                            fontWeight: 'normal',
                         	fontSize: '12px',
                             padding: '5px'
                         }
@@ -2827,7 +2822,6 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		            endOnTick: false,        //是否强制轴线在标线处结束                                                        
 		            showLastLabel: true,
 		            allowDecimals: false,    // 刻度值是否为小数
-//		            min:0,
 		            minorTickInterval: ''    // 最小刻度间隔
 		        },                                                                                   
 		        yAxis: {                                                                             

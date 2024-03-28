@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "TBL_AUXILIARYDEVICEADDINFO")
@@ -15,6 +16,9 @@ public class AuxiliaryDeviceAddInfo implements java.io.Serializable{
 	private String itemName;
 	private String itemValue;
 	private String itemUnit;
+	private Integer masterId;
+	private String manufacturer;
+	private String model;
 	
 	public AuxiliaryDeviceAddInfo() {
 		super();
@@ -73,6 +77,33 @@ public class AuxiliaryDeviceAddInfo implements java.io.Serializable{
 
 	public void setItemUnit(String itemUnit) {
 		this.itemUnit = itemUnit;
+	}
+
+	@Transient
+	public Integer getMasterId() {
+		return masterId;
+	}
+
+	public void setMasterId(Integer masterId) {
+		this.masterId = masterId;
+	}
+
+	@Transient
+	public String getManufacturer() {
+		return manufacturer;
+	}
+
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+
+	@Transient
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 	
 }

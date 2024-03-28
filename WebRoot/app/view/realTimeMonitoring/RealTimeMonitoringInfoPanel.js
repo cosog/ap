@@ -380,9 +380,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
 		id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
 		title:'附加信息',
         border: false,
-        layout: 'fit',
-        autoScroll: true,
-        scrollable: true
+        layout: 'fit'
 	},{
 		region: 'south',
 		id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
@@ -392,9 +390,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
         layout: 'fit',
         split: true,
         hidden: false,
-        collapsible: true,
-        autoScroll: true,
-        scrollable: true
+        collapsible: true
 	}]
 },{
 	title:'设备控制',

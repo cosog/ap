@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DataSourceConfig;
 import com.cosog.model.DataWriteBackConfig;
@@ -603,6 +604,10 @@ public class MemoryDataManagerTask {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		
+		PreparedStatement pstmt2 = null;
+		ResultSet rs2 = null;
+		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		conn=OracleJdbcUtis.getConnection();
@@ -623,16 +628,22 @@ public class MemoryDataManagerTask {
 					for(int i=0;i<wellList.size();i++){
 						jedis.hdel("DeviceInfo".getBytes(), wellList.get(i).getBytes());
 						jedis.hdel("RPCDeviceTodayData".getBytes(), wellList.get(i).getBytes());
+						jedis.hdel("PCPDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 					}
 				}else if(condition==1){
 					for(int i=0;i<wellList.size();i++){
 						if(jedis.exists("DeviceInfo".getBytes())){
-							List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-							for(int j=0;j<rpcDeviceInfoByteList.size();j++){
-								RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
-								if(wellList.get(i).equalsIgnoreCase(rpcDeviceInfo.getWellName())){
-									jedis.hdel("DeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes());
-									jedis.hdel("RPCDeviceTodayData".getBytes(), (rpcDeviceInfo.getId()+"").getBytes());
+							List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+							for(int j=0;j<deviceInfoByteList.size();j++){
+								DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+								if(wellList.get(i).equalsIgnoreCase(deviceInfo.getWellName())){
+									jedis.hdel("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes());
+									if(deviceInfo.getCalculateType()==1){
+										jedis.hdel("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
+									}else if(deviceInfo.getCalculateType()==2){
+										jedis.hdel("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
+									}
+									
 									break;
 								}
 							}
@@ -650,8 +661,8 @@ public class MemoryDataManagerTask {
 						+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
 						+ "t.status,t.statusName,"
 						+ "t.productiondata,t.balanceinfo,t.stroke,"
-						+ "t.pumpingmodelid,"
-						+ "t.manufacturer,t.model,t.crankrotationdirection,t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,"
+//						+ "t.pumpingmodelid,"
+//						+ "t.manufacturer,t.model,t.crankrotationdirection,t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,"
 						+ "t.sortnum,"
 						+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 						+ "t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
@@ -665,16 +676,37 @@ public class MemoryDataManagerTask {
 						+ " left outer join tbl_rpcacqdata_latest t3 on t3.deviceid=t.id "
 						+ " left outer join tbl_pcpacqdata_latest t4 on t4.deviceid=t.id "
 						+ " where 1=1 ";
+				String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemname,t4.itemvalue "
+						+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
+						+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
+						+ " and t3.specifictype=1";
 				if(StringManagerUtils.isNotNull(wells)){
 					if(condition==0){
 						sql+=" and t.id in("+wells+")";
+						auxiliaryDeviceSql+=" and t.id in("+wells+")";
 					}else{
 						sql+=" and t.devicename in("+wells+")";
+						auxiliaryDeviceSql+=" and t.devicename in("+wells+")";
 					}
 				}
 				sql+=" order by t.sortNum,t.devicename";
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();
+				
+				pstmt2 = conn.prepareStatement(auxiliaryDeviceSql);
+				rs2=pstmt2.executeQuery();
+				
+				List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
+				while(rs2.next()){
+					AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
+					auxiliaryDeviceAddInfo.setMasterId(rs2.getInt(1));
+					auxiliaryDeviceAddInfo.setDeviceId(rs2.getInt(2));
+					auxiliaryDeviceAddInfo.setManufacturer(rs2.getString(3));
+					auxiliaryDeviceAddInfo.setModel(rs2.getString(4));
+					auxiliaryDeviceAddInfo.setItemName(rs2.getString(5));
+					auxiliaryDeviceAddInfo.setItemValue(rs2.getString(6));
+					auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
+				}
 				while(rs.next()){
 					DeviceInfo deviceInfo=new DeviceInfo();
 					deviceInfo.setId(rs.getInt(1));
@@ -707,16 +739,25 @@ public class MemoryDataManagerTask {
 					deviceInfo.setDisplayInstanceName(rs.getString(24)+"");
 					deviceInfo.setStatus(rs.getInt(25));
 					deviceInfo.setStatusName(rs.getString(26)+"");
+					
 					String productionData=rs.getString(27)+"";
 					String balanceInfo=rs.getString(28)+"";
 					float stroke=rs.getFloat(29);
 					
-					int pumpingModelId=rs.getInt(30);
-					deviceInfo.setPumpingModelId(pumpingModelId);
 					if(StringManagerUtils.isNotNull(productionData)){
 						if(deviceInfo.getCalculateType()==1){//功图计算
 							type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 							RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+							
+							List<AuxiliaryDeviceAddInfo> thisAuxiliaryDeviceAddInfoList=new ArrayList<>();
+							String manufacturer="";
+							String model="";
+							for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++){
+								if(auxiliaryDeviceAddInfoList.get(i).getDeviceId()==deviceInfo.getId()){
+									thisAuxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfoList.get(i));
+								}
+							}
+							
 							deviceInfo.setRpcCalculateRequestData(new RPCCalculateRequestData());
 							deviceInfo.getRpcCalculateRequestData().init();
 							
@@ -730,17 +771,29 @@ public class MemoryDataManagerTask {
 							
 							deviceInfo.getRpcCalculateRequestData().setManualIntervention(rpcProductionData.getManualIntervention());
 							
-							if(pumpingModelId>0){
+							if(thisAuxiliaryDeviceAddInfoList.size()>0){
 								deviceInfo.getRpcCalculateRequestData().setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setManufacturer(rs.getString(31)+"");
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setModel(rs.getString(32)+"");
+								for(int i=0;i<thisAuxiliaryDeviceAddInfoList.size();i++ ){
+									manufacturer=thisAuxiliaryDeviceAddInfoList.get(i).getManufacturer();
+									model=thisAuxiliaryDeviceAddInfoList.get(i).getModel();
+									if("旋转方向".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
+									}else if("曲柄偏置角".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+									}else if("曲柄重心半径".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+									}else if("单块曲柄重量".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+									}else if("单块曲柄销重量".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+									}else if("结构不平衡重".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+									}
+								}
+								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setManufacturer(manufacturer);
+								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setModel(model);
 								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setStroke(stroke);
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setCrankRotationDirection(rs.getString(33)+"");
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(rs.getFloat(34));
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setCrankGravityRadius(rs.getFloat(35));
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setSingleCrankWeight(rs.getFloat(36));
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(rs.getFloat(37));
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setStructuralUnbalance(rs.getFloat(38));
+								
 								type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
 								RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 								if(balance!=null){
@@ -769,43 +822,43 @@ public class MemoryDataManagerTask {
 						deviceInfo.setRpcCalculateRequestData(null);
 						deviceInfo.setPcpCalculateRequestData(null);
 					}
-					deviceInfo.setSortNum(rs.getInt(39));
+					deviceInfo.setSortNum(rs.getInt(30));
 					
-					deviceInfo.setAcqTime(rs.getString(40));
+					deviceInfo.setAcqTime(rs.getString(31));
 					deviceInfo.setSaveTime("");
 					
-					deviceInfo.setCommStatus(rs.getInt(41));
-					deviceInfo.setCommTime(rs.getFloat(42));
-					deviceInfo.setCommEff(rs.getFloat(43));
-					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(44)));
+					deviceInfo.setCommStatus(rs.getInt(32));
+					deviceInfo.setCommTime(rs.getFloat(33));
+					deviceInfo.setCommEff(rs.getFloat(34));
+					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(35)));
 					
-					deviceInfo.setOnLineAcqTime(rs.getString(40));
-					deviceInfo.setOnLineCommStatus(rs.getInt(41));
-					deviceInfo.setOnLineCommTime(rs.getFloat(42));
-					deviceInfo.setOnLineCommEff(rs.getFloat(43));
-					deviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(44)));
+					deviceInfo.setOnLineAcqTime(rs.getString(31));
+					deviceInfo.setOnLineCommStatus(rs.getInt(32));
+					deviceInfo.setOnLineCommTime(rs.getFloat(33));
+					deviceInfo.setOnLineCommEff(rs.getFloat(34));
+					deviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(35)));
 					
-					deviceInfo.setRunStatusAcqTime(rs.getString(40));
-					deviceInfo.setRunStatus(rs.getInt(45));
-					deviceInfo.setRunTime(rs.getFloat(46));
-					deviceInfo.setRunEff(rs.getFloat(47));
-					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(48)));
+					deviceInfo.setRunStatusAcqTime(rs.getString(31));
+					deviceInfo.setRunStatus(rs.getInt(36));
+					deviceInfo.setRunTime(rs.getFloat(37));
+					deviceInfo.setRunEff(rs.getFloat(38));
+					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(39)));
 					
-					deviceInfo.setKWattHAcqTime(rs.getString(40));
-					deviceInfo.setTotalKWattH(rs.getFloat(49));
-					deviceInfo.setTodayKWattH(rs.getFloat(50));
+					deviceInfo.setKWattHAcqTime(rs.getString(31));
+					deviceInfo.setTotalKWattH(rs.getFloat(40));
+					deviceInfo.setTodayKWattH(rs.getFloat(41));
 					
-					deviceInfo.setTotalGasAcqTime(rs.getString(40));
-					deviceInfo.setGasVolumetricProduction(rs.getFloat(51));
-					deviceInfo.setTotalGasVolumetricProduction(rs.getFloat(52));
+					deviceInfo.setTotalGasAcqTime(rs.getString(31));
+					deviceInfo.setGasVolumetricProduction(rs.getFloat(42));
+					deviceInfo.setTotalGasVolumetricProduction(rs.getFloat(43));
 					
-					deviceInfo.setTotalWaterAcqTime(rs.getString(40));
-					deviceInfo.setWaterVolumetricProduction(rs.getFloat(53));
-					deviceInfo.setTotalWaterVolumetricProduction(rs.getFloat(54));
+					deviceInfo.setTotalWaterAcqTime(rs.getString(31));
+					deviceInfo.setWaterVolumetricProduction(rs.getFloat(44));
+					deviceInfo.setTotalWaterVolumetricProduction(rs.getFloat(45));
 					
 					
-					deviceInfo.setResultStatus(rs.getInt(55));
-					deviceInfo.setResultCode(rs.getInt(56));
+					deviceInfo.setResultStatus(rs.getInt(46));
+					deviceInfo.setResultCode(rs.getInt(47));
 					
 					String key=deviceInfo.getId()+"";
 					jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceInfo));//哈希(Hash)
@@ -818,6 +871,34 @@ public class MemoryDataManagerTask {
 			if(jedis!=null&&jedis.isConnected()){
 				jedis.close();
 			}
+		}
+	}
+	
+	public static void loadDeviceInfoByPumpingAuxiliaryId(String auxiliaryId,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select distinct(t.id) from tbl_device t,tbl_auxiliary2master t2 where t.id = t2.masterid and t2.auxiliaryid in("+auxiliaryId+")";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadDeviceInfo(wellList,0,method);
 		}
 	}
 	

@@ -2403,12 +2403,6 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-//			if(StringManagerUtils.stringToInteger(selectedRecordId)>0){
-//				List<String> clobCont=new ArrayList<String>();
-//				clobCont.add(pumpingUnitPTRData);
-//				String updatePRTFClobSql="update tbl_pumpingmodel t set t.prtf=? where t.id="+selectedRecordId;
-//				executeSqlUpdateClob(updatePRTFClobSql,clobCont);
-//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -4635,6 +4629,10 @@ public class BaseDao extends HibernateDaoSupport {
 						auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
 						auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
 						collisionList.add(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i));
+						
+						if(saveSign==1){
+							MemoryDataManagerTask.loadDeviceInfoByPumpingAuxiliaryId(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getId(),"update");
+						}
 					}
 				}
 			}
@@ -4658,8 +4656,13 @@ public class BaseDao extends HibernateDaoSupport {
 					}
 				}
 			}
-			if(auxiliaryDeviceHandsontableChangedData.getDelidslist()!=null){
+			if(auxiliaryDeviceHandsontableChangedData.getDelidslist()!=null && auxiliaryDeviceHandsontableChangedData.getDelidslist().size()>0){
 				String delSql="delete from tbl_auxiliarydevice t where t.id in ("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
+				ps=conn.prepareStatement(delSql);
+				delSql="delete from tbl_auxiliarydeviceaddinfo t where t.deviceid in("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
+				ps=conn.prepareStatement(delSql);
+				MemoryDataManagerTask.loadDeviceInfoByPumpingAuxiliaryId(StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ","),"update");
+				delSql="delete from tbl_auxiliary2master t where t.auxiliaryid in("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}

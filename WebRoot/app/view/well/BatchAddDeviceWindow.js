@@ -128,18 +128,6 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     var colHeader="'" + result.columns[i].header + "'";
                     var dataIndex=result.columns[i].dataIndex;
                     
-//                    if(applicationScenarios==0){
-//                    	if(dataIndex.toUpperCase() === "crudeOilDensity".toUpperCase() 
-//                    			|| dataIndex.toUpperCase() === "saturationPressure".toUpperCase() 
-//                    			|| dataIndex.toUpperCase() === "waterCut".toUpperCase() 
-//                    			|| dataIndex.toUpperCase() === "weightWaterCut".toUpperCase() 
-//                    			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
-//                    		continue;
-//                    	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
-//                    		colHeader=colHeader.replace('油层','煤层');
-//                    	}
-//                    }
-                    
                 	colHeaders += colHeader;
                     if (dataIndex.toUpperCase() === "orgName".toUpperCase()) {
                         columns += "{data:'" + dataIndex + "',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
@@ -461,10 +449,6 @@ var BatchAddDeviceHandsontableHelper = {
             var isCheckout=1;
             var saveDate={};
             saveDate.updatelist=[];
-//            var applicationScenariosName='油井';
-//            if(applicationScenarios==0){
-//            	applicationScenariosName='煤层气井';
-//            }
             var batchAddData=batchAddDeviceHandsontableHelper.hot.getData();
             for(var i=0;i<batchAddData.length;i++){
             	if(isNotVal(batchAddData[i][1])){
@@ -475,7 +459,6 @@ var BatchAddDeviceHandsontableHelper = {
                             data += ",";
                         }
                     }
-//                    data += ",applicationScenariosName:'"+applicationScenariosName+"'";
                     data += "}";
                     var record=Ext.JSON.decode(data);
                     record.id=i;

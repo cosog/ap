@@ -5376,8 +5376,10 @@ public class DriverAPIController extends BaseController{
 	public static List<ProtocolItemResolutionData> getRPCInputItemData(DeviceInfo deviceInfo){
 		List<ProtocolItemResolutionData> rpcInputItemList=new ArrayList<ProtocolItemResolutionData>();
 		String reservoirName="油层";
+		String tubingPressureName="油压";
 		if(deviceInfo.getApplicationScenarios()==0){
 			reservoirName="煤层";
+			tubingPressureName="管压";
 		}
 		if(deviceInfo!=null && deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getFluidPVT()!=null){
 			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"","","CrudeOilDensity","","","","g/cm^3",1));
@@ -5400,7 +5402,7 @@ public class DriverAPIController extends BaseController{
 		}
 		
 		if(deviceInfo!=null && deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压",deviceInfo.getRpcCalculateRequestData().getProduction().getTubingPressure()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1));
+			rpcInputItemList.add(new ProtocolItemResolutionData(tubingPressureName,tubingPressureName,deviceInfo.getRpcCalculateRequestData().getProduction().getTubingPressure()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1));
 			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压",deviceInfo.getRpcCalculateRequestData().getProduction().getCasingPressure()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getCasingPressure()+"","","CasingPressure","","","","MPa",1));
 			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度",deviceInfo.getRpcCalculateRequestData().getProduction().getWellHeadTemperature()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getWellHeadTemperature()+"","","WellHeadTemperature","","","","℃",1));
 			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率",deviceInfo.getRpcCalculateRequestData().getProduction().getWaterCut()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getWaterCut()+"","","WaterCut","","","","%",1));

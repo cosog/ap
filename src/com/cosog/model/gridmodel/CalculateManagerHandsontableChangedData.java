@@ -84,6 +84,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String tubingStringInsideDiameter="62";
 
 	    private String casingStringInsideDiameter="139.7";
+	    
+	    private String rodTypeName1="钢杆";
 
 	    private String rodGrade1="D";
 
@@ -92,6 +94,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String rodInsideDiameter1="0";
 
 	    private String rodLength1="0";
+	    
+	    private String rodTypeName2="钢杆";
 
 	    private String rodGrade2="D";
 
@@ -100,6 +104,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String rodInsideDiameter2="0";
 
 	    private String rodLength2="0";
+	    
+	    private String rodTypeName3="钢杆";
 
 	    private String rodGrade3="D";
 
@@ -108,6 +114,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String rodInsideDiameter3="0";
 
 	    private String rodLength3="0";
+	    
+	    private String rodTypeName4="钢杆";
 
 	    private String rodGrade4="D";
 
@@ -527,6 +535,38 @@ public class CalculateManagerHandsontableChangedData {
 
 		public void setLevelCorrectValue(String levelCorrectValue) {
 			this.levelCorrectValue = levelCorrectValue;
+		}
+
+		public String getRodTypeName1() {
+			return rodTypeName1;
+		}
+
+		public void setRodTypeName1(String rodTypeName1) {
+			this.rodTypeName1 = rodTypeName1;
+		}
+
+		public String getRodTypeName2() {
+			return rodTypeName2;
+		}
+
+		public void setRodTypeName2(String rodTypeName2) {
+			this.rodTypeName2 = rodTypeName2;
+		}
+
+		public String getRodTypeName3() {
+			return rodTypeName3;
+		}
+
+		public void setRodTypeName3(String rodTypeName3) {
+			this.rodTypeName3 = rodTypeName3;
+		}
+
+		public String getRodTypeName4() {
+			return rodTypeName4;
+		}
+
+		public void setRodTypeName4(String rodTypeName4) {
+			this.rodTypeName4 = rodTypeName4;
 		}
 	}
 }

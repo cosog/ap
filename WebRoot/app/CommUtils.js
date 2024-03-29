@@ -2289,6 +2289,19 @@ function handsontableDataCheck_PumpGrade(val, callback,row,col,handsontableHelpe
 	}
 };
 
+function handsontableDataCheck_RodType(val, callback,row,col,handsontableHelper){
+	if(val==''
+		||val.toUpperCase()=='钢杆'
+		||val.toUpperCase()=='玻璃钢杆'
+		||val.toUpperCase()=='空心抽油杆'){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};
+
 function handsontableDataCheck_RodGrade(val, callback,row,col,handsontableHelper){
 	if(val==''
 		||val.toUpperCase()=='A'||val.toUpperCase()=='B'

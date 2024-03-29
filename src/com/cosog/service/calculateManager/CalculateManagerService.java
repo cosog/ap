@@ -242,6 +242,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					if(rpcProductionData.getRodString()!=null && rpcProductionData.getRodString().getEveryRod()!=null){
 						for(int j=0;j<rpcProductionData.getRodString().getEveryRod().size();j++){
+							String rodType="钢杆";
+							if(rpcProductionData.getRodString().getEveryRod().get(j).getType()==1){
+								rodType="钢杆";
+							}else if(rpcProductionData.getRodString().getEveryRod().get(j).getType()==2){
+								rodType="玻璃钢杆";
+							}else if(rpcProductionData.getRodString().getEveryRod().get(j).getType()==3){
+								rodType="空心抽油杆";
+							}
+							result_json.append("\"rodTypeName"+(j+1)+"\":\""+rodType+"\",");
 							result_json.append("\"rodGrade"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getGrade()+"\",");
 							result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getOutsideDiameter()*1000+"\",");
 							result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getInsideDiameter()*1000+"\",");
@@ -404,6 +413,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(calculateRequestData.getRodString()!=null && calculateRequestData.getRodString().getEveryRod()!=null){
 					for(int j=0;j<calculateRequestData.getRodString().getEveryRod().size();j++){
+						String rodType="钢杆";
+						if(calculateRequestData.getRodString().getEveryRod().get(j).getType()==1){
+							rodType="钢杆";
+						}else if(calculateRequestData.getRodString().getEveryRod().get(j).getType()==2){
+							rodType="玻璃钢杆";
+						}else if(calculateRequestData.getRodString().getEveryRod().get(j).getType()==3){
+							rodType="空心抽油杆";
+						}
+						result_json.append("\"rodTypeName"+(j+1)+"\":\""+rodType+"\",");
 						result_json.append("\"rodGrade"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getGrade()+"\",");
 						result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getOutsideDiameter()*1000+"\",");
 						result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getInsideDiameter()*1000+"\",");
@@ -803,6 +821,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						int rodType=0;
+						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+							rodType=1;
+						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+							rodType=2;
+						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+							rodType=3;
+						}
+						everyRod.setType(rodType);
 						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
 						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
 						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
@@ -812,6 +839,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						int rodType=0;
+						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+							rodType=1;
+						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+							rodType=2;
+						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+							rodType=3;
+						}
+						everyRod.setType(rodType);
 						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
 						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
 						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
@@ -821,6 +857,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						int rodType=0;
+						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+							rodType=1;
+						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+							rodType=2;
+						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+							rodType=3;
+						}
+						everyRod.setType(rodType);
 						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
 						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
 						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
@@ -830,6 +875,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						int rodType=0;
+						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+							rodType=1;
+						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+							rodType=2;
+						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+							rodType=3;
+						}
+						everyRod.setType(rodType);
 						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
 						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
 						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
@@ -951,6 +1005,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+					int rodType=0;
+					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+						rodType=1;
+					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+						rodType=2;
+					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+						rodType=3;
+					}
+					everyRod.setType(rodType);
 					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
 					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
 					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
@@ -960,6 +1023,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+					int rodType=0;
+					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+						rodType=1;
+					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+						rodType=2;
+					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+						rodType=3;
+					}
+					everyRod.setType(rodType);
 					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
 					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
 					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
@@ -969,6 +1041,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+					int rodType=0;
+					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+						rodType=1;
+					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+						rodType=2;
+					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+						rodType=3;
+					}
+					everyRod.setType(rodType);
 					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
 					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
 					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
@@ -978,6 +1059,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+					int rodType=0;
+					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+						rodType=1;
+					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+						rodType=2;
+					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+						rodType=3;
+					}
+					everyRod.setType(rodType);
 					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
 					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
 					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));

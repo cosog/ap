@@ -513,10 +513,12 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                                 		plugin.hideRows(hiddenRows);
                                 		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
                                 		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
                                 	}else{
                                 		plugin.showRows(hiddenRows);
                                 		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
                                 		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
                                 	}
                                 	productionHandsontableHelper.hot.render();
                         		}
@@ -1052,10 +1054,12 @@ var DeviceInfoHandsontableHelper = {
                                 		plugin.hideRows(hiddenRows);
                                 		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
                                 		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
                                 	}else{
                                 		plugin.showRows(hiddenRows);
                                 		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
                                 		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
                                 	}
                                 	productionHandsontableHelper.hot.render();
                                 }
@@ -1263,96 +1267,136 @@ var DeviceInfoHandsontableHelper = {
                     		deviceProductionData.RodString.EveryRod=[];
                     		
                     		if(isNotVal(productionHandsontableData[19][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[20][2])) 
-                    				&& (productionHandsontableData[21][2]=='' || isNumber(parseInt(productionHandsontableData[21][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[22][2]))){
+                    				&& isNotVal(productionHandsontableData[20][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[21][2])) 
+                    				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[23][2]))){
                     			var Rod1={};
-                        		if(isNotVal(productionHandsontableData[19][2])){
-                        			Rod1.Grade=productionHandsontableData[19][2];
+                    			if(isNotVal(productionHandsontableData[19][2])){
+                        			if(productionHandsontableData[19][2]=='钢杆'){
+                        				Rod1.Type=1;
+                        			}else if(productionHandsontableData[19][2]=='玻璃钢杆'){
+                        				Rod1.Type=2;
+                        			}else if(productionHandsontableData[19][2]=='空心抽油杆'){
+                        				Rod1.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[20][2]))){
-                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[20][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[20][2])){
+                        			Rod1.Grade=productionHandsontableData[20][2];
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-                        			Rod1.Length=parseInt(productionHandsontableData[22][2]);
+                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[23][2]))){
+                        			Rod1.Length=parseInt(productionHandsontableData[23][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod1);
                     		}
                     		
-                    		if(isNotVal(productionHandsontableData[23][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[24][2])) 
-                    				&& (productionHandsontableData[25][2]=='' || isNumber(parseInt(productionHandsontableData[25][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[26][2]))){
+                    		if(isNotVal(productionHandsontableData[24][2]) 
+                    				&& isNotVal(productionHandsontableData[25][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[26][2])) 
+                    				&& (productionHandsontableData[27][2]=='' || isNumber(parseInt(productionHandsontableData[27][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[28][2]))){
                     			var Rod2={};
-                        		if(isNotVal(productionHandsontableData[23][2])){
-                        			Rod2.Grade=productionHandsontableData[23][2];
+                    			if(isNotVal(productionHandsontableData[24][2])){
+                    				if(productionHandsontableData[24][2]=='钢杆'){
+                    					Rod2.Type=1;
+                        			}else if(productionHandsontableData[24][2]=='玻璃钢杆'){
+                        				Rod2.Type=2;
+                        			}else if(productionHandsontableData[24][2]=='空心抽油杆'){
+                        				Rod2.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[24][2]))){
-                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[24][2])*0.001;
-                        		}
-                        		if(isNumber(parseInt(productionHandsontableData[25][2]))){
-                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[25][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[25][2])){
+                        			Rod2.Grade=productionHandsontableData[25][2];
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-                        			Rod2.Length=parseInt(productionHandsontableData[26][2]);
+                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[27][2]))){
+                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
+                        			Rod2.Length=parseInt(productionHandsontableData[28][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod2);
                     		}
                     		
-                    		if(isNotVal(productionHandsontableData[27][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[28][2])) 
-                    				&& (productionHandsontableData[29][2]=='' || isNumber(parseInt(productionHandsontableData[29][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[30][2]))){
+                    		if(isNotVal(productionHandsontableData[29][2]) 
+                    				&& isNotVal(productionHandsontableData[30][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[31][2])) 
+                    				&& (productionHandsontableData[32][2]=='' || isNumber(parseInt(productionHandsontableData[32][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[33][2]))){
                     			var Rod3={};
-                        		if(isNotVal(productionHandsontableData[27][2])){
-                        			Rod3.Grade=productionHandsontableData[27][2];
+                        		if(isNotVal(productionHandsontableData[29][2])){
+                        			if(productionHandsontableData[29][2]=='钢杆'){
+                        				Rod3.Type=1;
+                        			}else if(productionHandsontableData[29][2]=='玻璃钢杆'){
+                        				Rod3.Type=2;
+                        			}else if(productionHandsontableData[29][2]=='空心抽油杆'){
+                        				Rod3.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[30][2])){
+                        			Rod3.Grade=productionHandsontableData[30][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[29][2]))){
-                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[29][2])*0.001;
+                        		if(isNumber(parseInt(productionHandsontableData[31][2]))){
+                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[30][2]))){
-                        			Rod3.Length=parseInt(productionHandsontableData[30][2]);
+                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
+                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
+                        			Rod3.Length=parseInt(productionHandsontableData[33][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod3);
                     		}
                     		
-                    		if(isNotVal(productionHandsontableData[31][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[32][2])) 
-                    				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[34][2]))){
+                    		if(isNotVal(productionHandsontableData[34][2]) 
+                    				&& isNotVal(productionHandsontableData[35][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[36][2])) 
+                    				&& (productionHandsontableData[37][2]=='' || isNumber(parseInt(productionHandsontableData[37][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[38][2]))){
                     			var Rod4={};
-                        		if(isNotVal(productionHandsontableData[31][2])){
-                        			Rod4.Grade=productionHandsontableData[31][2];
+                        		if(isNotVal(productionHandsontableData[34][2])){
+                        			if(productionHandsontableData[34][2]=='钢杆'){
+                        				Rod4.Type=1;
+                        			}else if(productionHandsontableData[34][2]=='玻璃钢杆'){
+                        				Rod4.Type=2;
+                        			}else if(productionHandsontableData[34][2]=='空心抽油杆'){
+                        				Rod4.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[35][2])){
+                        			Rod4.Grade=productionHandsontableData[35][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+                        		if(isNumber(parseInt(productionHandsontableData[36][2]))){
+                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[34][2]))){
-                        			Rod4.Length=parseInt(productionHandsontableData[34][2]);
+                        		if(isNumber(parseInt(productionHandsontableData[37][2]))){
+                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[38][2]))){
+                        			Rod4.Length=parseInt(productionHandsontableData[38][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod4);
                     		}
                     		
                     		
                     		deviceProductionData.ManualIntervention={};
-                    		manualInterventionResultName=productionHandsontableData[35][2];
-                    		if(isNumber(parseFloat(productionHandsontableData[36][2]))){
-                    			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[36][2]);
+                    		manualInterventionResultName=productionHandsontableData[39][2];
+                    		if(isNumber(parseFloat(productionHandsontableData[40][2]))){
+                    			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[40][2]);
                     		}
-                    		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
-                    			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[37][2]);
+                    		if(isNumber(parseFloat(productionHandsontableData[41][2]))){
+                    			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[41][2]);
                     		}
-                    		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
-                    			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[38][2]);
+                    		if(isNumber(parseFloat(productionHandsontableData[42][2]))){
+                    			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[42][2]);
                     		}
                     	}
                         
@@ -1472,90 +1516,130 @@ var DeviceInfoHandsontableHelper = {
                     		deviceProductionData.RodString.EveryRod=[];
                     		
                     		if(isNotVal(productionHandsontableData[19][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[20][2])) 
-                    				&& (productionHandsontableData[21][2]=='' || isNumber(parseInt(productionHandsontableData[21][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[22][2]))){
+                    				&& isNotVal(productionHandsontableData[20][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[21][2])) 
+                    				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[23][2]))){
                     			var Rod1={};
-                        		if(isNotVal(productionHandsontableData[19][2])){
-                        			Rod1.Grade=productionHandsontableData[19][2];
+                    			if(isNotVal(productionHandsontableData[19][2])){
+                        			if(productionHandsontableData[19][2]=='钢杆'){
+                        				Rod1.Type=1;
+                        			}else if(productionHandsontableData[19][2]=='玻璃钢杆'){
+                        				Rod1.Type=2;
+                        			}else if(productionHandsontableData[19][2]=='空心抽油杆'){
+                        				Rod1.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[20][2]))){
-                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[20][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[20][2])){
+                        			Rod1.Grade=productionHandsontableData[20][2];
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-                        			Rod1.Length=parseInt(productionHandsontableData[22][2]);
+                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[23][2]))){
+                        			Rod1.Length=parseInt(productionHandsontableData[23][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod1);
                     		}
                     		
-                    		if(isNotVal(productionHandsontableData[23][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[24][2])) 
-                    				&& (productionHandsontableData[25][2]=='' || isNumber(parseInt(productionHandsontableData[25][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[26][2]))){
+                    		if(isNotVal(productionHandsontableData[24][2]) 
+                    				&& isNotVal(productionHandsontableData[25][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[26][2])) 
+                    				&& (productionHandsontableData[27][2]=='' || isNumber(parseInt(productionHandsontableData[27][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[28][2]))){
                     			var Rod2={};
-                        		if(isNotVal(productionHandsontableData[23][2])){
-                        			Rod2.Grade=productionHandsontableData[23][2];
+                    			if(isNotVal(productionHandsontableData[24][2])){
+                    				if(productionHandsontableData[24][2]=='钢杆'){
+                    					Rod2.Type=1;
+                        			}else if(productionHandsontableData[24][2]=='玻璃钢杆'){
+                        				Rod2.Type=2;
+                        			}else if(productionHandsontableData[24][2]=='空心抽油杆'){
+                        				Rod2.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[24][2]))){
-                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[24][2])*0.001;
-                        		}
-                        		if(isNumber(parseInt(productionHandsontableData[25][2]))){
-                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[25][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[25][2])){
+                        			Rod2.Grade=productionHandsontableData[25][2];
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-                        			Rod2.Length=parseInt(productionHandsontableData[26][2]);
+                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[27][2]))){
+                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
+                        			Rod2.Length=parseInt(productionHandsontableData[28][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod2);
                     		}
                     		
-                    		if(isNotVal(productionHandsontableData[27][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[28][2])) 
-                    				&& (productionHandsontableData[29][2]=='' || isNumber(parseInt(productionHandsontableData[29][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[30][2]))){
+                    		if(isNotVal(productionHandsontableData[29][2]) 
+                    				&& isNotVal(productionHandsontableData[30][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[31][2])) 
+                    				&& (productionHandsontableData[32][2]=='' || isNumber(parseInt(productionHandsontableData[32][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[33][2]))){
                     			var Rod3={};
-                        		if(isNotVal(productionHandsontableData[27][2])){
-                        			Rod3.Grade=productionHandsontableData[27][2];
+                        		if(isNotVal(productionHandsontableData[29][2])){
+                        			if(productionHandsontableData[29][2]=='钢杆'){
+                        				Rod3.Type=1;
+                        			}else if(productionHandsontableData[29][2]=='玻璃钢杆'){
+                        				Rod3.Type=2;
+                        			}else if(productionHandsontableData[29][2]=='空心抽油杆'){
+                        				Rod3.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[30][2])){
+                        			Rod3.Grade=productionHandsontableData[30][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[29][2]))){
-                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[29][2])*0.001;
+                        		if(isNumber(parseInt(productionHandsontableData[31][2]))){
+                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[30][2]))){
-                        			Rod3.Length=parseInt(productionHandsontableData[30][2]);
+                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
+                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
+                        			Rod3.Length=parseInt(productionHandsontableData[33][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod3);
                     		}
                     		
-                    		if(isNotVal(productionHandsontableData[31][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[32][2])) 
-                    				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[34][2]))){
+                    		if(isNotVal(productionHandsontableData[34][2]) 
+                    				&& isNotVal(productionHandsontableData[35][2]) 
+                    				&& isNumber(parseInt(productionHandsontableData[36][2])) 
+                    				&& (productionHandsontableData[37][2]=='' || isNumber(parseInt(productionHandsontableData[37][2])) )
+                    				&& isNumber(parseInt(productionHandsontableData[38][2]))){
                     			var Rod4={};
-                        		if(isNotVal(productionHandsontableData[31][2])){
-                        			Rod4.Grade=productionHandsontableData[31][2];
+                        		if(isNotVal(productionHandsontableData[34][2])){
+                        			if(productionHandsontableData[34][2]=='钢杆'){
+                        				Rod4.Type=1;
+                        			}else if(productionHandsontableData[34][2]=='玻璃钢杆'){
+                        				Rod4.Type=2;
+                        			}else if(productionHandsontableData[34][2]=='空心抽油杆'){
+                        				Rod4.Type=3;
+                        			}
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		if(isNotVal(productionHandsontableData[35][2])){
+                        			Rod4.Grade=productionHandsontableData[35][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+                        		if(isNumber(parseInt(productionHandsontableData[36][2]))){
+                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[34][2]))){
-                        			Rod4.Length=parseInt(productionHandsontableData[34][2]);
+                        		if(isNumber(parseInt(productionHandsontableData[37][2]))){
+                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+                        		}
+                        		if(isNumber(parseInt(productionHandsontableData[38][2]))){
+                        			Rod4.Length=parseInt(productionHandsontableData[38][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod4);
                     		}
                     		deviceProductionData.ManualIntervention={};
-                    		if(isNumber(parseFloat(productionHandsontableData[35][2]))){
-                    			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[35][2]);
+                    		if(isNumber(parseFloat(productionHandsontableData[39][2]))){
+                    			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[39][2]);
                     		}
-                    		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[36][2]))))){
-                    			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[36][2]);
+                    		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[40][2]))))){
+                    			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[40][2]);
                     		}
                     	}
                         var productionInfoList=[];
@@ -1836,6 +1920,8 @@ var ProductionHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=2) {
 								cellProperties.readOnly = true;
@@ -1844,14 +1930,14 @@ var ProductionHandsontableHelper = {
 		                    	cellProperties.readOnly = true;
 		                    }
 		                    
-		                    if (visualColIndex === 2 && visualRowIndex===13) {
+		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['组合泵','整筒泵'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
 		                    
-		                    if (visualColIndex === 2 && visualRowIndex===14) {
+		                    if (visualColIndex === 2 && visualRowIndex===14 && deviceCalculateDataType==1) {
 		                    	var barrelType='';
 		                    	if(isNotVal(productionHandsontableHelper.hot)){
 		                    		barrelType=productionHandsontableHelper.hot.getDataAtCell(13,2);
@@ -1868,14 +1954,21 @@ var ProductionHandsontableHelper = {
 		                    	this.allowInvalid = false;
 		                    }
 		                    
-		                    if (visualColIndex === 2 && (visualRowIndex===19 || visualRowIndex===23||visualRowIndex===27||visualRowIndex===31)) {
+		                    if (visualColIndex === 2 && (visualRowIndex===19 || visualRowIndex===24||visualRowIndex===29||visualRowIndex===32)) {
+		                    	this.type = 'dropdown';
+		                    	this.source = ['钢杆','玻璃钢杆','空心抽油杆'];
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && (visualRowIndex===20 || visualRowIndex===25||visualRowIndex===30||visualRowIndex===33)) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['A','B','C','K','D','KD','HL','HY'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
 		                    
-		                    if (visualColIndex === 2 && visualRowIndex===35) {
+		                    if (visualColIndex === 2 && visualRowIndex===40 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = productionHandsontableHelper.resultList;
 		                    	this.strict = true;
@@ -1887,8 +1980,6 @@ var ProductionHandsontableHelper = {
 	                    		cellProperties.renderer = productionHandsontableHelper.addBoldBg;
 	                    	}
 	                    }
-	                    
-	                    
 	                    return cellProperties;
 	                }
 	            });

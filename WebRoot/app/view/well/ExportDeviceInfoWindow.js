@@ -165,6 +165,8 @@ function CreateAndLoadExportDeviceInfoTable(isNew) {
                     		continue;
                     	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
                     		colHeader=colHeader.replace('油层','煤层');
+                    	}else if(dataIndex.toUpperCase() === "TubingPressure".toUpperCase()){
+                    		colHeader=colHeader.replace('油压','管压');
                     	}
                     }
                     

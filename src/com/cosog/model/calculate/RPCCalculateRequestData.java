@@ -247,6 +247,8 @@ public class RPCCalculateRequestData implements Serializable {
 	public static class EveryRod implements Serializable {
 		private static final long serialVersionUID = 1L;
 
+		private int Type;
+		
 	    private String Grade;
 
 	    private float Length;
@@ -279,6 +281,12 @@ public class RPCCalculateRequestData implements Serializable {
 	    public float getInsideDiameter(){
 	        return this.InsideDiameter;
 	    }
+		public int getType() {
+			return Type;
+		}
+		public void setType(int type) {
+			Type = type;
+		}
 	}
 	
 	public static class RodString implements Serializable {

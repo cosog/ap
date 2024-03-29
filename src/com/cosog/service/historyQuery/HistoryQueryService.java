@@ -1850,8 +1850,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}
 										}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
 											value=rpcProductionData.getProduction().getTubingPressure()+"";
+											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
+												columnName=columnName.replace("油压", "管压");
+											}
 										}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
 											value=rpcProductionData.getProduction().getCasingPressure()+"";
+											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
+												columnName=columnName.replace("油压", "管压");
+											}
 										}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
 											value=rpcProductionData.getProduction().getWellHeadTemperature()+"";
 										}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
@@ -1916,6 +1922,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}
 										}else if("TubingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
 											value=pcpProductionData.getProduction().getTubingPressure()+"";
+											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
+												columnName=columnName.replace("油压", "管压");
+											}
 										}else if("CasingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
 											value=pcpProductionData.getProduction().getCasingPressure()+"";
 										}else if("WellHeadTemperature".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){

@@ -226,7 +226,7 @@ public class DriverAPIController extends BaseController{
 	
 	@RequestMapping(path={"/acq/id/online","/acq/online"})
 	public String AcqOnlineData() {
-		ServletInputStream ss;
+		ServletInputStream ss=null;
 		Gson gson=new Gson();
 		Jedis jedis=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -433,6 +433,13 @@ public class DriverAPIController extends BaseController{
 			if(jedis!=null){
 				jedis.close();
 			}
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			if(pw!=null){
 				pw.close();
 			}
@@ -442,7 +449,7 @@ public class DriverAPIController extends BaseController{
 	
 	@RequestMapping("/acq/ipport/online")
 	public String IPPortAcqOnlineData() {
-		ServletInputStream ss;
+		ServletInputStream ss=null;
 		Gson gson=new Gson();
 		Jedis jedis=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -651,6 +658,13 @@ public class DriverAPIController extends BaseController{
 			if(jedis!=null){
 				jedis.close();
 			}
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			if(pw!=null){
 				pw.close();
 			}
@@ -674,7 +688,6 @@ public class DriverAPIController extends BaseController{
 			if(acqGroup!=null){
 				jedis = RedisUtil.jedisPool.getResource();
 				DeviceInfo deviceInfo=null;
-				
 				if(!jedis.exists("DeviceInfo".getBytes())){
 					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
@@ -689,9 +702,11 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 				}
-				
-				
-				this.DataProcessing(deviceInfo,acqGroup);
+				if(deviceInfo!=null){
+					this.DataProcessing(deviceInfo,acqGroup);
+				}else{
+					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getID()+","+acqGroup.getSlave());
+				}
 			}else{
 				json = "{success:true,flag:false}";
 			}
@@ -706,17 +721,23 @@ public class DriverAPIController extends BaseController{
 			if(jedis!=null){
 				jedis.close();
 			}
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			if(pw!=null){
 				pw.close();
 			}
 		}
-		
 		return null;
 	}
 	
 	@RequestMapping("/acq/ipport/group")
 	public String IPPortAcqGroupData(){
-		ServletInputStream ss;
+		ServletInputStream ss=null;
 		Jedis jedis=null;
 		String json = "{success:true,flag:true}";
 		PrintWriter pw=null;
@@ -762,6 +783,13 @@ public class DriverAPIController extends BaseController{
 		} finally{
 			if(jedis!=null){
 				jedis.close();
+			}
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			if(pw!=null){
 				pw.close();
@@ -1441,24 +1469,18 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"allItemInfo\":"+allItemInfo_json);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 		return webSocketSendData.toString();
-	
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
-		Gson gson=new Gson();
-		java.lang.reflect.Type type=null;
-		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		List<String> websocketClientUserList=new ArrayList<>();
-		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) { 
+		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
             String[] clientInfo=item.userId.split("_");
             if(clientInfo!=null && clientInfo.length==3 && !StringManagerUtils.existOrNot(websocketClientUserList, clientInfo[1], true)){
             	websocketClientUserList.add(clientInfo[1]);
             }
         }
 		
-		StringBuffer webSocketSendData = new StringBuffer();
-		StringBuffer displayItemInfo_json = new StringBuffer();
-		StringBuffer allItemInfo_json = new StringBuffer();
 		boolean save=false;
 		boolean alarm=false;
 		try{
@@ -1475,7 +1497,6 @@ public class DriverAPIController extends BaseController{
 			String rawDataTable="tbl_acqrawdata";
 			String totalDataTable="tbl_dailycalculationdata";
 			String functionCode="deviceRealTimeMonitoringData";
-			int calculateType=deviceInfo.getCalculateType();
 			if(acqGroup!=null){
 				String protocolName="";
 				String acqProtocolType="";
@@ -1514,7 +1535,7 @@ public class DriverAPIController extends BaseController{
 					
 					PCPCalculateRequestData pcpCalculateRequestData=null;
 					
-					if(deviceInfo.getCalculateType()==1){
+					if(deviceInfo.getCalculateType()==1){//功图计算
 						rpcCalculateRequestData=new RPCCalculateRequestData();
 						rpcCalculateRequestData.init();
 						if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
@@ -1523,26 +1544,11 @@ public class DriverAPIController extends BaseController{
 							rpcCalculateRequestData.getFESDiagram().setSrc(0);
 						}
 						updateRequestData(rpcCalculateRequestData,deviceInfo);
-					}else if(deviceInfo.getCalculateType()==2){
+					}else if(deviceInfo.getCalculateType()==2){//转速计产
 						pcpCalculateRequestData=new PCPCalculateRequestData();
 						pcpCalculateRequestData.init();
-						
-						if(deviceInfo.getApplicationScenarios()==0){
-							pcpCalculateRequestData.setScene("cbm");
-						}else{
-							pcpCalculateRequestData.setScene("oil");
-						}
-						
-						pcpCalculateRequestData.setWellName(deviceInfo.getWellName());
 						pcpCalculateRequestData.setAcqTime(acqTime);
-						pcpCalculateRequestData.setFluidPVT(deviceInfo.getPcpCalculateRequestData().getFluidPVT());
-						pcpCalculateRequestData.setReservoir(deviceInfo.getPcpCalculateRequestData().getReservoir());
-						pcpCalculateRequestData.setRodString(deviceInfo.getPcpCalculateRequestData().getRodString());
-						pcpCalculateRequestData.setTubingString(deviceInfo.getPcpCalculateRequestData().getTubingString());
-						pcpCalculateRequestData.setCasingString(deviceInfo.getPcpCalculateRequestData().getCasingString());
-						pcpCalculateRequestData.setPump(deviceInfo.getPcpCalculateRequestData().getPump());
-						pcpCalculateRequestData.setProduction(deviceInfo.getPcpCalculateRequestData().getProduction());
-						pcpCalculateRequestData.setManualIntervention(deviceInfo.getPcpCalculateRequestData().getManualIntervention());
+						updateRPMRequestData(pcpCalculateRequestData,deviceInfo);
 					}
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
@@ -1550,26 +1556,6 @@ public class DriverAPIController extends BaseController{
 					float totalKWattH=0;
 					float totalGasVolumetricProduction=0;
 					float totalWaterVolumetricProduction=0;
-					
-					boolean isAcqCalResultData=false;
-					boolean isAcqRPMData=false;
-					
-					
-					int acqResultCode=0;
-					int acqResultStatus=1;
-					float acqFMax=0,acqFMin=0,acqFullnessCoefficient=0,
-					acqUpperLoadLine=0,acqLowerLoadLine=0,
-					acqTheoreticalProduction=0,
-					acqLiquidVolumetricProduction=0,acqOilVolumetricProduction=0,acqWaterVolumetricProduction=0,
-					acqAvailablePlungerStrokeProd_v=0,acqPumpClearanceLeakProd_v=0,acqTVLeakVolumetricProduction=0,acqSVLeakVolumetricProduction=0,acqGasInfluenceProd_v=0,
-					acqLiquidWeightProduction=0,acqOilWeightProduction=0,acqWaterWeightProduction=0,
-					acqAvailablePlungerStrokeProd_w=0,acqPumpClearanceLeakProd_w=0,acqTVLeakWeightProduction=0,acqSVLeakWeightProduction=0,acqGasInfluenceProd_w=0,
-					acqAverageWatt=0,acqPolishRodPower=0,acqWaterPower=0,acqSurfaceSystemEfficiency=0,acqWellDownSystemEfficiency=0,acqSystemEfficiency=0,acqEnergyPer100mLift=0,acqArea=0,
-					acqRodFlexLength=0,acqTubingFlexLength=0,acqInertiaLength=0,acqPumpEff1=0,acqPumpEff2=0,acqPumpEff3=0,acqPumpEff4=0,acqPumpEff=0,
-					acqCalcProducingfluidLevel=0,acqLevelDifferenceValue=0,
-					acqUpStrokeWattMax=0,acqDownStrokeWattMax=0,acqWattDegreeBalance=0,acqUpStrokeIMax=0,acqDownStrokeIMax=0,acqIDegreeBalance=0,acqDeltaRadius=0,
-					acqSubmergence=0,
-					acqRPM=0;
 					
 					//进行通信计算
 					commResponseData=commEffCalaulate(deviceInfo,acqTime,1);
@@ -1581,8 +1567,6 @@ public class DriverAPIController extends BaseController{
 					
 					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1";
 					
-					int FESDiagramAcqCount=0;
-					boolean FESDiagramCalculate=false;
 					List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(acqGroup,protocol,acqInstanceOwnItem);
 					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
@@ -1621,567 +1605,6 @@ public class DriverAPIController extends BaseController{
 								}else{
 									totalWaterVolumetricProduction=deviceInfo.getTotalWaterVolumetricProduction();
 								}
-							}
-							else if("BottomHolePressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("TubingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("CasingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("WellHeadTemperature".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
-									}
-								}
-							}else if("ProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
-									}
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("BottomHolePressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("VolumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "WaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData!=null && rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
-										rpcCalculateRequestData.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null&&deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
-										deviceInfo.getRpcCalculateRequestData().getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
-									}
-								}
-							}else if("RealtimeLiquidVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeOilVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeWaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeGasVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeLiquidWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeOilWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeWaterWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-//									updateRealtimeData+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-//									insertHistColumns+=","+dataMappingColumn.getCalColumn();
-//									insertHistValue+=","+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}
-							else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
-								FESDiagramCalculate=true;
-							}else if("FESDiagramAcqtime".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								String FESDiagramAcqtime="";
-								if(rawValue.endsWith("simulate")){
-									FESDiagramAcqtime=acqTime;
-									if(isAcqEnergy){
-										totalKWattH=System.currentTimeMillis()/1000/60;
-									}
-								}else{
-									if(rawValue.length()==24){
-							        	String[] acqTimeStrArr=StringManagerUtils.stringToStringArray(rawValue,2);
-							        	if(acqTimeStrArr!=null && acqTimeStrArr.length==12){
-							        		FESDiagramAcqtime=acqTimeStrArr[0]+acqTimeStrArr[1]+"-"+acqTimeStrArr[3]+"-"+acqTimeStrArr[5]+" "+acqTimeStrArr[7]+":"+acqTimeStrArr[9]+":"+acqTimeStrArr[11];
-							        	}
-							        }
-								}
-						        rpcCalculateRequestData.getFESDiagram().setAcqTime(FESDiagramAcqtime);
-						        FESDiagramCalculate=true;
-							}else if("Stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								rpcCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
-							}else if("SPM".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
-							}else if("Position_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getS().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}else if("Load_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getF().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}else if("Power_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getWatt().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}else if("Current_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getI().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}
-							else if("ResultCode".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//功图工况
-								isAcqCalResultData=true;
-								acqResultCode=StringManagerUtils.stringToInteger(rawValue);
-							}else if("FMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqFMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("FMin".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqFMin=StringManagerUtils.stringToFloat(rawValue);
-							}else if("FullnessCoefficient".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqFullnessCoefficient=StringManagerUtils.stringToFloat(rawValue);
-							}else if("UpperLoadLine".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqUpperLoadLine=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LowerLoadLine".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLowerLoadLine=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TheoreticalProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTheoreticalProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LiquidVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLiquidVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("OilVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqOilVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWaterVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("AvailablePlungerStrokeProd_v".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqAvailablePlungerStrokeProd_v=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpClearanceLeakProd_v".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpClearanceLeakProd_v=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TVLeakVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTVLeakVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SVLeakVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSVLeakVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("GasInfluenceProd_v".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqGasInfluenceProd_v=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LiquidWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLiquidWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("OilWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqOilWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WaterWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWaterWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("AvailablePlungerStrokeProd_w".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqAvailablePlungerStrokeProd_w=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpClearanceLeakProd_w".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpClearanceLeakProd_w=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TVLeakWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTVLeakWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SVLeakWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSVLeakWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("GasInfluenceProd_w".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqGasInfluenceProd_w=StringManagerUtils.stringToFloat(rawValue);
-							}else if("AverageWatt".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqAverageWatt=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PolishRodPower".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPolishRodPower=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WaterPower".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWaterPower=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SurfaceSystemEfficiency".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSurfaceSystemEfficiency=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WellDownSystemEfficiency".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWellDownSystemEfficiency=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SystemEfficiency".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSystemEfficiency=StringManagerUtils.stringToFloat(rawValue);
-							}else if("EnergyPer100mLift".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqEnergyPer100mLift=StringManagerUtils.stringToFloat(rawValue);
-							}else if("Area".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqArea=StringManagerUtils.stringToFloat(rawValue);
-							}else if("RodFlexLength".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqRodFlexLength=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TubingFlexLength".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTubingFlexLength=StringManagerUtils.stringToFloat(rawValue);
-							}else if("InertiaLength".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqInertiaLength=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff1".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff1=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff2".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff2=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff3".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff3=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff4".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff4=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff=StringManagerUtils.stringToFloat(rawValue);
-							}else if("CalcProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqCalcProducingfluidLevel=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LevelDifferenceValue".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLevelDifferenceValue=StringManagerUtils.stringToFloat(rawValue);
-							}else if("UpStrokeWattMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqUpStrokeWattMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("DownStrokeWattMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqDownStrokeWattMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WattDegreeBalance".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWattDegreeBalance=StringManagerUtils.stringToFloat(rawValue);
-							}else if("UpStrokeIMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqUpStrokeIMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("DownStrokeIMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqDownStrokeIMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("IDegreeBalance".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqIDegreeBalance=StringManagerUtils.stringToFloat(rawValue);
-							}else if("DeltaRadius".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqDeltaRadius=StringManagerUtils.stringToFloat(rawValue);
-							}else if("Submergence".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSubmergence=StringManagerUtils.stringToFloat(rawValue);
-							}else if("RPM".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								isAcqRPMData=true;
-								acqRPM=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TubingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("CasingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
-									}
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("WellHeadTemperature".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
-									}
-								}
-							}else if("ProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
-									}
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("BottomHolePressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}else if("VolumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "WaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									if(rpcCalculateRequestData.getProduction()!=null){
-										rpcCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
-										rpcCalculateRequestData.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
-									}
-									if(deviceInfo.getRpcCalculateRequestData()!=null&&deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-										deviceInfo.getRpcCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
-										deviceInfo.getRpcCalculateRequestData().getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
-									}
-								}
-							}else if("RealtimeLiquidVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeOilVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeWaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeGasVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeLiquidWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeOilWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									|| "RealtimeWaterWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
-									){
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									updateRealtimeData+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-									insertHistColumns+=","+dataMappingColumn.getCalColumn();
-									insertHistValue+=","+StringManagerUtils.stringToFloat(rawValue)+"";
-								}
-							}
-							else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
-								FESDiagramCalculate=true;
-							}else if("FESDiagramAcqtime".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								String FESDiagramAcqtime="";
-								if(rawValue.endsWith("simulate")){
-									FESDiagramAcqtime=acqTime;
-									if(isAcqEnergy){
-										totalKWattH=System.currentTimeMillis()/1000/60;
-									}
-								}else{
-									if(rawValue.length()==24){
-							        	String[] acqTimeStrArr=StringManagerUtils.stringToStringArray(rawValue,2);
-							        	if(acqTimeStrArr!=null && acqTimeStrArr.length==12){
-							        		FESDiagramAcqtime=acqTimeStrArr[0]+acqTimeStrArr[1]+"-"+acqTimeStrArr[3]+"-"+acqTimeStrArr[5]+" "+acqTimeStrArr[7]+":"+acqTimeStrArr[9]+":"+acqTimeStrArr[11];
-							        	}
-							        }
-								}
-						        rpcCalculateRequestData.getFESDiagram().setAcqTime(FESDiagramAcqtime);
-						        FESDiagramCalculate=true;
-							}else if("Stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								rpcCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
-							}else if("SPM".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-								rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
-							}else if("Position_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getS().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}else if("Load_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getF().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}else if("Power_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getWatt().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}else if("Current_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								if(StringManagerUtils.isNotNull(rawValue)){
-									String[] dataArr=rawValue.split(",");
-									for(int k=0;k<dataArr.length;k++){
-										rpcCalculateRequestData.getFESDiagram().getI().add(StringManagerUtils.stringToFloat(dataArr[k]));
-									}
-								}
-								FESDiagramCalculate=true;
-							}
-							else if("ResultCode".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//功图工况
-								isAcqCalResultData=true;
-								acqResultCode=StringManagerUtils.stringToInteger(rawValue);
-							}else if("FMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqFMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("FMin".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqFMin=StringManagerUtils.stringToFloat(rawValue);
-							}else if("FullnessCoefficient".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqFullnessCoefficient=StringManagerUtils.stringToFloat(rawValue);
-							}else if("UpperLoadLine".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqUpperLoadLine=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LowerLoadLine".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLowerLoadLine=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TheoreticalProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTheoreticalProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LiquidVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLiquidVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("OilVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqOilVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWaterVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("AvailablePlungerStrokeProd_v".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqAvailablePlungerStrokeProd_v=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpClearanceLeakProd_v".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpClearanceLeakProd_v=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TVLeakVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTVLeakVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SVLeakVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSVLeakVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("GasInfluenceProd_v".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqGasInfluenceProd_v=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LiquidWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLiquidWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("OilWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqOilWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WaterWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWaterWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("AvailablePlungerStrokeProd_w".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqAvailablePlungerStrokeProd_w=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpClearanceLeakProd_w".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpClearanceLeakProd_w=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TVLeakWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTVLeakWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SVLeakWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSVLeakWeightProduction=StringManagerUtils.stringToFloat(rawValue);
-							}else if("GasInfluenceProd_w".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqGasInfluenceProd_w=StringManagerUtils.stringToFloat(rawValue);
-							}else if("AverageWatt".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqAverageWatt=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PolishRodPower".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPolishRodPower=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WaterPower".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWaterPower=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SurfaceSystemEfficiency".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSurfaceSystemEfficiency=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WellDownSystemEfficiency".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWellDownSystemEfficiency=StringManagerUtils.stringToFloat(rawValue);
-							}else if("SystemEfficiency".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSystemEfficiency=StringManagerUtils.stringToFloat(rawValue);
-							}else if("EnergyPer100mLift".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqEnergyPer100mLift=StringManagerUtils.stringToFloat(rawValue);
-							}else if("Area".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqArea=StringManagerUtils.stringToFloat(rawValue);
-							}else if("RodFlexLength".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqRodFlexLength=StringManagerUtils.stringToFloat(rawValue);
-							}else if("TubingFlexLength".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqTubingFlexLength=StringManagerUtils.stringToFloat(rawValue);
-							}else if("InertiaLength".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqInertiaLength=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff1".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff1=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff2".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff2=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff3".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff3=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff4".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff4=StringManagerUtils.stringToFloat(rawValue);
-							}else if("PumpEff".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqPumpEff=StringManagerUtils.stringToFloat(rawValue);
-							}else if("CalcProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqCalcProducingfluidLevel=StringManagerUtils.stringToFloat(rawValue);
-							}else if("LevelDifferenceValue".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqLevelDifferenceValue=StringManagerUtils.stringToFloat(rawValue);
-							}else if("UpStrokeWattMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqUpStrokeWattMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("DownStrokeWattMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqDownStrokeWattMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("WattDegreeBalance".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqWattDegreeBalance=StringManagerUtils.stringToFloat(rawValue);
-							}else if("UpStrokeIMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqUpStrokeIMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("DownStrokeIMax".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqDownStrokeIMax=StringManagerUtils.stringToFloat(rawValue);
-							}else if("IDegreeBalance".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqIDegreeBalance=StringManagerUtils.stringToFloat(rawValue);
-							}else if("DeltaRadius".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqDeltaRadius=StringManagerUtils.stringToFloat(rawValue);
-							}else if("Submergence".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								acqSubmergence=StringManagerUtils.stringToFloat(rawValue);
-							}else if("RPM".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-								isAcqCalResultData=true;
-								isAcqRPMData=true;
-								acqRPM=StringManagerUtils.stringToFloat(rawValue);
 							}
 						}
 					}
@@ -2311,9 +1734,7 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setTotalWaterAcqTime(acqTime);
 						deviceInfo.setTotalWaterVolumetricProduction(totalWaterVolumetricProduction);
 						deviceInfo.setWaterVolumetricProduction(totalWaterCalculateResponseData.getCurrent().getToday().getKWattH());
-						if(!FESDiagramCalculate){
-							
-						}
+						
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"","","waterVolumetricProduction","","","","m^3/d",1));
 					}
 					
@@ -2324,7 +1745,7 @@ public class DriverAPIController extends BaseController{
 					//排序
 					Collections.sort(protocolItemResolutionDataList);
 					//报警判断
-					int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+					int commAlarmLevel=0,runAlarmLevel=0;
 					if(alarmInstanceOwnItem!=null){
 						for(int i=0;i<alarmInstanceOwnItem.itemList.size();i++){
 							if(alarmInstanceOwnItem.getItemList().get(i).getType()==3 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase("在线")){
@@ -2337,11 +1758,6 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					acquisitionItemInfoList=InputDataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
-					
-					//将采集数据放入内存
-//					if(deviceTodayData!=null){
-//						deviceTodayData.setAcquisitionItemInfoList(acquisitionItemInfoList);
-//					}
 					
 					//如果满足单组入库间隔或者有报警，保存数据
 					if(save || alarm){
@@ -2372,29 +1788,22 @@ public class DriverAPIController extends BaseController{
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}
 						
-//						if(FESDiagramCalculate || isAcqCalResultData){
-//							commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
-//						}
-						
-//						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-//							int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
-//							commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
-//						}else{
-//							
-//						}
-						
 						//报警项
 						if(alarm){
 							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getWellName(),deviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
 						}
 					}
+					
+					
+					if(deviceInfo.getCalculateType()==1){
+						RPCDataProcessing(deviceInfo,acqGroup,timeEffResponseData,acqTime);
+					}else if(deviceInfo.getCalculateType()==2){
+						PCPDataProcessing(deviceInfo,acqGroup,timeEffResponseData,acqTime);
+					}
+					
+					
 					//放入内存数据库中
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
-//					if(jedis!=null && deviceTodayData!=null){
-//						jedis.hset("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
-//					}
-					
-					
 					//处理websocket推送
 					if(displayInstanceOwnItem!=null){
 						for (String websocketClientUser : websocketClientUserList) {
@@ -5816,6 +5225,24 @@ public class DriverAPIController extends BaseController{
 		
 	}
 	
+	public void updateRPMRequestData(PCPCalculateRequestData pcpCalculateRequestData,DeviceInfo deviceInfo){
+		if(deviceInfo.getApplicationScenarios()==0){
+			pcpCalculateRequestData.setScene("cbm");
+		}else{
+			pcpCalculateRequestData.setScene("oil");
+		}
+		pcpCalculateRequestData.setWellName(deviceInfo.getWellName());
+//		pcpCalculateRequestData.setAcqTime(acqTime);
+		pcpCalculateRequestData.setFluidPVT(deviceInfo.getPcpCalculateRequestData().getFluidPVT());
+		pcpCalculateRequestData.setReservoir(deviceInfo.getPcpCalculateRequestData().getReservoir());
+		pcpCalculateRequestData.setRodString(deviceInfo.getPcpCalculateRequestData().getRodString());
+		pcpCalculateRequestData.setTubingString(deviceInfo.getPcpCalculateRequestData().getTubingString());
+		pcpCalculateRequestData.setCasingString(deviceInfo.getPcpCalculateRequestData().getCasingString());
+		pcpCalculateRequestData.setPump(deviceInfo.getPcpCalculateRequestData().getPump());
+		pcpCalculateRequestData.setProduction(deviceInfo.getPcpCalculateRequestData().getProduction());
+		pcpCalculateRequestData.setManualIntervention(deviceInfo.getPcpCalculateRequestData().getManualIntervention());
+	}
+	
 	@RequestMapping("/userLogin")
 	public String userLogin() throws Exception {
 		String user = "";
@@ -5866,6 +5293,14 @@ public class DriverAPIController extends BaseController{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return null;
 	}
@@ -5895,6 +5330,14 @@ public class DriverAPIController extends BaseController{
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+		}finally{
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		if(userCheckSign==1){
@@ -5948,6 +5391,14 @@ public class DriverAPIController extends BaseController{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return null;
 	}
@@ -5957,16 +5408,17 @@ public class DriverAPIController extends BaseController{
 	 * ***/
 	@RequestMapping("/read/oilWell/pumpingModelInformation")
 	public String getPumpingModelInformation() throws Exception {
-		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-//		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
-		this.pager = new Page("pagerForm", request);
-		String json = mobileService.getPumpingModelInformation(data,pager);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
+		ServletInputStream ss=null;
 		try {
+			ss = request.getInputStream();
+			String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+//			data="{}";
+//			data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
+			this.pager = new Page("pagerForm", request);
+			String json = mobileService.getPumpingModelInformation(data,pager);
+			response.setContentType("application/json;charset=utf-8");
+			response.setHeader("Cache-Control", "no-cache");
+			PrintWriter pw;
 			pw = response.getWriter();
 			pw.print(json);
 			pw.flush();
@@ -5974,6 +5426,14 @@ public class DriverAPIController extends BaseController{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return null;
 	}

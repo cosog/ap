@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -987,6 +988,50 @@ public class DriverAPIController extends BaseController{
 		return acquisitionItemInfoList;
 	}
 	
+	public Map<String,String> DataProcessing(AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol){
+		Map<String,String> map=new HashMap<>();
+		
+		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		}
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		
+		if(acqGroup!=null && protocol!=null){
+			for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
+				for(int j=0;j<protocol.getItems().size();j++){
+					if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
+						String value="";
+						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
+						String columnName=dataMappingColumn.getMappingColumn();
+						
+						if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null ){
+							value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
+						}
+						String rawValue=value;
+						String addr=protocol.getItems().get(j).getAddr()+"";
+						String title=protocol.getItems().get(j).getTitle();
+						String rawTitle=title;
+						String columnDataType=protocol.getItems().get(j).getIFDataType();
+						String resolutionMode=protocol.getItems().get(j).getResolutionMode()+"";
+						String bitIndex="";
+						String unit=protocol.getItems().get(j).getUnit();
+						int alarmLevel=0;
+						int sort=9999;
+						
+						String saveValue=rawValue;
+						if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
+							saveValue=rawValue.substring(0, 50);
+						}
+						map.put(columnName, saveValue);
+					}
+				}
+			}
+		}
+		return map;
+	} 
+	
 	public List<ProtocolItemResolutionData> DataProcessing(AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,AcqInstanceOwnItem acqInstanceOwnItem){
 		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
@@ -1017,11 +1062,12 @@ public class DriverAPIController extends BaseController{
 						int alarmLevel=0;
 						int sort=9999;
 						
+						String saveValue=rawValue;
+						if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
+							saveValue=rawValue.substring(0, 50);
+						}
+						
 						if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
-							String saveValue=rawValue;
-							if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
-								saveValue=rawValue.substring(0, 50);
-							}
 							if(protocol.getItems().get(j).getResolutionMode()==1||protocol.getItems().get(j).getResolutionMode()==2){//如果是枚举量或数据量
 								if(protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(j).getMeaning().size();l++){
@@ -1106,97 +1152,97 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	public int RunStatusProcessing(String rawValue,String code){
-		int runStatus=-99;
+		int runStatus=2;
 		Jedis jedis=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			ProtocolRunStatusConfig protocolRunStatusConfig=MemoryDataManagerTask.getProtocolRunStatusConfig(code);
-					if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
-						if(protocolRunStatusConfig.getResolutionMode()==1){
-							int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
-							if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
-								runStatus=1;
-							}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
-								runStatus=0;
-							}else{
-							}
-						}else if(protocolRunStatusConfig.getResolutionMode()==2){
-							if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
-								float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
-								boolean runConditionMatch=false;
-								boolean stopConditionMatch=false;
-								for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
-									if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
-										if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-											runConditionMatch=true;
-										}else{
-											runConditionMatch=false;
-											break;
-										}
-									}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
-										if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-											runConditionMatch=true;
-										}else{
-											runConditionMatch=false;
-											break;
-										}
-									}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
-										if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-											runConditionMatch=true;
-										}else{
-											runConditionMatch=false;
-											break;
-										}
-									}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
-										if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
-											runConditionMatch=true;
-										}else{
-											runConditionMatch=false;
-											break;
-										}
-									}
+			if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
+				if(protocolRunStatusConfig.getResolutionMode()==1){
+					int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+					if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+						runStatus=1;
+					}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+						runStatus=0;
+					}else{
+					}
+				}else if(protocolRunStatusConfig.getResolutionMode()==2){
+					if(protocolRunStatusConfig.getRunConditionList()!=null && protocolRunStatusConfig.getRunConditionList().size()>0){
+						float rawRunStatus=StringManagerUtils.stringToFloat(rawValue);
+						boolean runConditionMatch=false;
+						boolean stopConditionMatch=false;
+						for(int k=0;k<protocolRunStatusConfig.getRunConditionList().size();k++){
+							if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==1){//大于
+								if(rawRunStatus>protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+									runConditionMatch=true;
+								}else{
+									runConditionMatch=false;
+									break;
 								}
-								
-								for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
-									if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
-										if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-											stopConditionMatch=true;
-										}else{
-											stopConditionMatch=false;
-											break;
-										}
-									}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
-										if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-											stopConditionMatch=true;
-										}else{
-											stopConditionMatch=false;
-											break;
-										}
-									}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
-										if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-											stopConditionMatch=true;
-										}else{
-											stopConditionMatch=false;
-											break;
-										}
-									}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
-										if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
-											stopConditionMatch=true;
-										}else{
-											stopConditionMatch=false;
-											break;
-										}
-									}
+							}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==2){//大于等于
+								if(rawRunStatus>=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+									runConditionMatch=true;
+								}else{
+									runConditionMatch=false;
+									break;
 								}
-								
-								if(runConditionMatch){
-									runStatus=1;
-								}else if(stopConditionMatch){
-									runStatus=0;
+							}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==3){//大于等于
+								if(rawRunStatus<=protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+									runConditionMatch=true;
+								}else{
+									runConditionMatch=false;
+									break;
+								}
+							}else if(protocolRunStatusConfig.getRunConditionList().get(k).getLogic()==4){//小于
+								if(rawRunStatus<protocolRunStatusConfig.getRunConditionList().get(k).getValue()){
+									runConditionMatch=true;
+								}else{
+									runConditionMatch=false;
+									break;
 								}
 							}
 						}
+						
+						for(int k=0;k<protocolRunStatusConfig.getStopConditionList().size();k++){
+							if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==1){//大于
+								if(rawRunStatus>protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+									stopConditionMatch=true;
+								}else{
+									stopConditionMatch=false;
+									break;
+								}
+							}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==2){//大于等于
+								if(rawRunStatus>=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+									stopConditionMatch=true;
+								}else{
+									stopConditionMatch=false;
+									break;
+								}
+							}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==3){//大于等于
+								if(rawRunStatus<=protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+									stopConditionMatch=true;
+								}else{
+									stopConditionMatch=false;
+									break;
+								}
+							}else if(protocolRunStatusConfig.getStopConditionList().get(k).getLogic()==4){//小于
+								if(rawRunStatus<protocolRunStatusConfig.getStopConditionList().get(k).getValue()){
+									stopConditionMatch=true;
+								}else{
+									stopConditionMatch=false;
+									break;
+								}
+							}
+						}
+						
+						if(runConditionMatch){
+							runStatus=1;
+						}else if(stopConditionMatch){
+							runStatus=0;
+						}
 					}
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -1569,14 +1615,29 @@ public class DriverAPIController extends BaseController{
 					
 					List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(acqGroup,protocol,acqInstanceOwnItem);
+					Map<String,String> saveDataMap=DataProcessing(acqGroup,protocol);
+					
+					Iterator<Map.Entry<String, String>> iterator = saveDataMap.entrySet().iterator();
+					while (iterator.hasNext()) {
+					    Map.Entry<String, String> entry = iterator.next();
+					    String key = entry.getKey();
+					    String value = entry.getValue();
+					    updateRealtimeData+=",t."+key+"='"+value+"'";
+						insertHistColumns+=","+key;
+						insertHistValue+=",'"+value+"'";
+					}
+					
 					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
 							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getColumnName());
 							String columnName=dataMappingColumn.getMappingColumn();
 							String rawValue=protocolItemResolutionDataList.get(i).getRawValue();
-							runStatus=RunStatusProcessing(rawValue,protocol.getCode()+"_"+protocolItemResolutionDataList.get(i).getColumnName());
-							if(runStatus!=-99){
+							if(runStatus==2){
+								runStatus=RunStatusProcessing(rawValue,protocol.getCode()+"_"+protocolItemResolutionDataList.get(i).getColumnName());
+							}
+							
+							if(runStatus==2){
 								isAcqRunStatus=false;
 							}else{
 								isAcqRunStatus=true;
@@ -1775,7 +1836,11 @@ public class DriverAPIController extends BaseController{
 					if(save || alarm){
 						String saveRawDataSql="insert into "+rawDataTable+"(deviceid,acqtime,rawdata)values("+deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
 						deviceInfo.setSaveTime(acqTime);
-						commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						if(result==0){
+							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
+							result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						}
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(saveRawDataSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
@@ -1834,7 +1899,8 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	public String RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,TimeEffResponseData timeEffResponseData,String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList){
+	public String RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,TimeEffResponseData timeEffResponseData,String acqTime,
+			List<ProtocolItemResolutionData> calItemResolutionDataList){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -2542,7 +2608,20 @@ public class DriverAPIController extends BaseController{
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+					commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
 					
+					if(FESDiagramCalculate || isAcqCalResultData){
+						commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
+					}
+					
+					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
+						int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+						commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
+					}else{
+						
+					}
 					
 					
 					//放入内存数据库中
@@ -4617,6 +4696,18 @@ public class DriverAPIController extends BaseController{
 					updateRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+					
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+					commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
+					
+					commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
+					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
+						int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+						commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
+					}else{
+						
+					}
 					
 					if(jedis!=null && deviceTodayData!=null){
 						jedis.hset("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));

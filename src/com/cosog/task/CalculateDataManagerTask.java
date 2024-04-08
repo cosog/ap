@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.cosog.model.calculate.CommResponseData;
 import com.cosog.utils.Config;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
@@ -223,6 +225,96 @@ public class CalculateDataManagerTask {
             }
         }), initDelay, interval, TimeUnit.MILLISECONDS);
     }
+	
+	public static void acquisitionDataTotal(String deviceId,String date){
+		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_acqdata_hist");
+		List<String> totalTableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_dailycalculationdata");
+		CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,Config.getInstance().configFile.getAp().getReport().getOffsetHour());
+		
+		List<String> columnList=new ArrayList<>();
+		for(int i=0;i<tableColumnList.size();i++){
+			if(StringManagerUtils.existOrNot(totalTableColumnList, tableColumnList.get(i), false)){
+				columnList.add(tableColumnList.get(i));
+			}
+		}
+		if(columnList.size()>0){
+			String sql="select deviceid";
+			String newestDataSql="select deviceid";
+			String oldestDataSql="select deviceid";
+			for(int i=0;i<columnList.size();i++){
+				String column=columnList.get(i);
+				sql+=",max(t."+column+")||';'||min(t."+column+")||';'||round(avg(t."+column+"),2) as "+column+"";
+				newestDataSql+=",t."+column;
+				oldestDataSql+=",t."+column;
+			}
+			
+			sql+=" from tbl_acqdata_hist t "
+				+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
+			newestDataSql+=" from tbl_acqdata_hist t"
+					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
+			oldestDataSql+=" from tbl_acqdata_hist t"
+					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+=" and t.deviceid="+deviceId;
+				newestDataSql+=" and t.deviceid="+deviceId;
+				oldestDataSql+=" and t.deviceid="+deviceId;
+			}else{
+				newestDataSql+=" and t.acqtime=(select min(t2.acqtime) from tbl_acqdata_hist t2 "
+						+ " where t2.deviceid=t.deviceid"
+						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " )";
+				oldestDataSql+=" and t.acqtime=(select max(t2.acqtime) from tbl_acqdata_hist t2 "
+						+ " where t2.deviceid=t.deviceid"
+						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " )";
+			}
+			
+			
+			if(StringManagerUtils.isNotNull(deviceId)){
+				newestDataSql+=" order by t.acqtime";
+				newestDataSql="select * from("+newestDataSql+") where rownum=1";
+				oldestDataSql+=" order by t.acqtime";
+				oldestDataSql="select * from("+oldestDataSql+") where rownum=1";
+			}
+			
+			
+			sql+="group by t.deviceid";
+			
+			
+			List<Object[]> totalList=OracleJdbcUtis.query(sql);
+			List<Object[]> newestValueList=OracleJdbcUtis.query(newestDataSql);
+			List<Object[]> oldestValueList=OracleJdbcUtis.query(oldestDataSql);
+			
+			for(int i=0;i<totalList.size();i++){
+				Object[] obj=totalList.get(i);
+				String deviceIdStr=obj[0]+"";
+				Object[] newestValueObj=null;
+				Object[]oldestValueObj=null;
+				for(int j=0;j<newestValueList.size();j++){
+					if(deviceIdStr.equalsIgnoreCase(newestValueList.get(j)[0]+"")){
+						newestValueObj=newestValueList.get(j);
+						break;
+					}
+				}
+				for(int j=0;j<oldestValueList.size();j++){
+					if(deviceIdStr.equalsIgnoreCase(oldestValueList.get(j)[0]+"")){
+						oldestValueObj=oldestValueList.get(j);
+						break;
+					}
+				}
+				String updatesql="update tbl_dailycalculationdata set t.deviceid="+deviceIdStr+"";
+				for(int j=1;j<obj.length;j++){
+					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
+					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
+					String tatalValue=obj[j]+";"+oldestValue+";"+newestValue;
+					String colnum=columnList.get(j-1);
+					updatesql+=",t."+colnum+"='"+tatalValue+"'";
+				}
+				updatesql+=" where t.deviceid="+deviceIdStr+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+				OracleJdbcUtis.executeSqlUpdate(updatesql);
+			}
+		}
+	}
 	
 	public static  int getCount(String sql){  
         int result=0;

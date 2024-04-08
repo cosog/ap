@@ -51,7 +51,6 @@ public class ModbusProtocolConfig implements Serializable{
 	public static class Items implements Comparable<Items>, Serializable{
 		
 		private static final long serialVersionUID = 1L;
-//	    private String Name;
 
 	    private String Title;
 
@@ -77,12 +76,6 @@ public class ModbusProtocolConfig implements Serializable{
 	    
 	    private List<ItemsMeaning> Meaning;
 
-//	    public void setName(String Name){
-//	        this.Name = Name;
-//	    }
-//	    public String getName(){
-//	        return this.Name;
-//	    }
 	    public void setTitle(String Title){
 	        this.Title = Title;
 	    }

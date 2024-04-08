@@ -55,6 +55,7 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.service.mobile.MobileService;
 import com.cosog.service.right.UserManagerService;
+import com.cosog.task.CalculateDataManagerTask;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.OuterDatabaseSyncTask;
@@ -1566,6 +1567,8 @@ public class DriverAPIController extends BaseController{
 						date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 					}
 					
+					CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,Config.getInstance().configFile.getAp().getReport().getOffsetHour());
+					
 					long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
 					if(save_cycle<=acq_cycle || timeDiff>=save_cycle*1000){
 						save=true;
@@ -1865,15 +1868,13 @@ public class DriverAPIController extends BaseController{
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}
 						
+						//统计
+						CalculateDataManagerTask.acquisitionDataTotal(deviceInfo.getId()+"", date);
 						//报警项
 						if(alarm){
 							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getWellName(),deviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
 						}
 					}
-					
-					
-					
-					
 					
 					//放入内存数据库中
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
@@ -1885,7 +1886,7 @@ public class DriverAPIController extends BaseController{
 								int items=3;
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,alarmShowStyle);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
-//								System.out.println(webSocketSendDataStr);
+								System.out.println(webSocketSendDataStr);
 							}
 						}
 					}
@@ -1937,7 +1938,7 @@ public class DriverAPIController extends BaseController{
 			
 			String realtimeTable="tbl_rpcacqdata_latest";
 			String historyTable="tbl_rpcacqdata_hist";
-			String totalDataTable="tbl_dailycalculationdata";
+			String totalDataTable="tbl_rpcdailycalculationdata";
 			if(acqGroup!=null){
 				String protocolName="";
 				String acqProtocolType="";

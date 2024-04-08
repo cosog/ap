@@ -30,7 +30,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('UpstreamAndDownstreamInteractionRPCDeviceListComb_Id').getValue();
+                    var wellName = Ext.getCmp('UpstreamAndDownstreamInteractionDeviceListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: 0,
@@ -44,7 +44,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
         var rpcDeviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '井名',
-                    id: "UpstreamAndDownstreamInteractionRPCDeviceListComb_Id",
+                    id: "UpstreamAndDownstreamInteractionDeviceListComb_Id",
                     labelWidth: 35,
                     width: 145,
                     labelAlign: 'left',

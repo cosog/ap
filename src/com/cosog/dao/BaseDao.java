@@ -2846,7 +2846,9 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveAcqFESDiagramAndCalculateData(DeviceInfo rpcDeviceInfo,RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData,
+	public Boolean saveAcqFESDiagramAndCalculateData(DeviceInfo rpcDeviceInfo,
+			RPCCalculateRequestData calculateRequestData,
+			RPCCalculateResponseData calculateResponseData,
 			boolean fesDiagramEnabled) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
@@ -3015,7 +3017,7 @@ public class BaseDao extends HibernateDaoSupport {
 			
 			cs.setString(3,RPCProductionDataToString(calculateRequestData));
 			cs.setString(4,rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null&&rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()!=null?gson.toJson(rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()):"{}");
-			cs.setString(5,rpcDeviceInfo.getPumpingModelId()==0?"":(rpcDeviceInfo.getPumpingModelId()+""));
+			cs.setString(5,"");
 			
 			cs.setString(6,calculateRequestData.getFESDiagram().getAcqTime());
 			cs.setInt(7, calculateRequestData.getFESDiagram().getSrc());

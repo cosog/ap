@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -115,6 +117,27 @@ public class OracleJdbcUtis {
         }  
     }
 	
+	public static void closeDBConnection(Connection conn,PreparedStatement pstmt){  
+        if(conn != null){  
+            try{           
+            	if(pstmt!=null)
+            		pstmt.close();  
+                conn.close();  
+            }catch(SQLException e){  
+                StringManagerUtils.printLog("closeDBConnectionError!");  
+                e.printStackTrace();  
+            }finally{  
+                try{
+                	if(pstmt!=null)
+                		pstmt.close();
+                }catch(SQLException e){  
+                    e.printStackTrace();  
+                }  
+                conn = null;  
+            }  
+        }  
+    }
+	
 	public static void closeDBConnection(Connection conn,PreparedStatement pstmt,ResultSet rs){  
         if(conn != null){  
             try{           
@@ -182,5 +205,50 @@ public class OracleJdbcUtis {
 //		ps.close();  
 //		conn.commit(); 
 		return n;
+	}
+	
+	public static int executeSqlUpdate(String sql){
+		int r=0;
+		Connection conn=null;
+		PreparedStatement pstmt = null;
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			r = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt);
+		} 
+		return r;
+	}
+	
+	public static List<Object[]> query(String sql) {
+		Connection conn=OracleJdbcUtis.getConnection();
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		ResultSetMetaData rsmd=null;
+		List<Object[]> list=new ArrayList<Object[]>();
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			rs=ps.executeQuery();
+			rsmd=rs.getMetaData();  
+			int columnCount=rsmd.getColumnCount();  
+			while(rs.next())
+			{
+				Object[] objs=new Object[columnCount];
+				for(int i=0;i<columnCount;i++){
+					objs[i]=rs.getObject(i+1);
+				}
+				list.add(objs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, ps, rs);
+		}  
+		
+		return list;
 	}
 }

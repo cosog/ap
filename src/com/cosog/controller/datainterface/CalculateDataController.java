@@ -88,7 +88,7 @@ public class CalculateDataController extends BaseController{
 				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getKeepAliveTime(), 
 				TimeUnit.SECONDS, 
 				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getWattingCount());
-		String wellListSql="select distinct wellid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
+		String wellListSql="select distinct deviceid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
 				+ " from tbl_rpcacqdata_hist t "
 				+ " where t.productiondata is not null "
 				+ " and t.fesdiagramacqtime is not null "
@@ -98,7 +98,7 @@ public class CalculateDataController extends BaseController{
 		for(int j=0;j<wellList.size();j++){
 			Object[] obj=(Object[]) wellList.get(j);
 			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(obj[0]+""),
-					StringManagerUtils.stringToInteger(obj[0]+""),obj[1]+"",0,calculateDataService));
+					StringManagerUtils.stringToInteger(obj[0]+""),obj[1]+"",1,calculateDataService));
 		}
 		while (!executor.isCompletedByTaskCount()) {
 			Thread.sleep(1000*1);
@@ -136,7 +136,7 @@ public class CalculateDataController extends BaseController{
 				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getKeepAliveTime(), 
 				TimeUnit.SECONDS, 
 				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getWattingCount());
-		String wellListSql="select distinct wellid,to_char(t.acqtime,'yyyy-mm-dd') as acqdate "
+		String wellListSql="select distinct deviceid,to_char(t.acqtime,'yyyy-mm-dd') as acqdate "
 				+ " from tbl_pcpacqdata_hist t "
 				+ " where t.productiondata is not null "
 				+ " and t.rpm is not null "
@@ -146,7 +146,7 @@ public class CalculateDataController extends BaseController{
 		for(int j=0;j<wellList.size();j++){
 			Object[] obj=(Object[]) wellList.get(j);
 			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(obj[0]+""),
-					StringManagerUtils.stringToInteger(obj[0]+""),obj[1]+"",1,calculateDataService));
+					StringManagerUtils.stringToInteger(obj[0]+""),obj[1]+"",2,calculateDataService));
 		}
 		while (!executor.isCompletedByTaskCount()) {
 			Thread.sleep(1000*1);
@@ -157,6 +157,38 @@ public class CalculateDataController extends BaseController{
 		System.out.println(json);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/AcquisitionDataDailyCalculation")
+	public String AcquisitionDataDailyCalculation() throws ParseException, SQLException, IOException{
+		String tatalDate=ParamUtils.getParameter(request, "date");
+		String wellId=ParamUtils.getParameter(request, "wellId");
+		
+		String date="";
+		if(!StringManagerUtils.isNotNull(tatalDate)){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd")),-1);
+		}else{
+			date=tatalDate;
+		}
+		
+		calculateDataService.AcquisitionDataDailyCalculation(tatalDate,wellId);
+		
+		System.out.println("抽油机井曲线数据汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
 		PrintWriter pw;
 		try {
 			pw = response.getWriter();
@@ -204,6 +236,30 @@ public class CalculateDataController extends BaseController{
 				continue;
 			}
 		}
+		
+		System.out.println("抽油机井曲线数据汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/AcquisitionDataTimingTotalCalculation")
+	public String AcquisitionDataTimingTotalCalculation() throws ParseException, SQLException, IOException{
+		String time=ParamUtils.getParameter(request, "time");
+		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+		calculateDataService.AcquisitionDataTimingTotalCalculation(timeStr);
 		
 		System.out.println("抽油机井曲线数据汇总完成");
 		
@@ -324,13 +380,15 @@ public class CalculateDataController extends BaseController{
 	
 	@RequestMapping("/initDailyReportData")
 	public String initDailyReportData() throws ParseException, SQLException, IOException{
-		String deviceTypeStr=ParamUtils.getParameter(request, "deviceType");
-		String deviceTypeName="抽油机井";
-		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-		if(deviceType==1){
-			deviceTypeName="螺杆泵井井";
+		String calculateTypeStr=ParamUtils.getParameter(request, "calculateType");
+		String deviceTypeName="设备";
+		int calculateType=StringManagerUtils.stringToInteger(calculateTypeStr);
+		if(calculateType==1){
+			deviceTypeName="抽油机井";
+		}else if(calculateType==2){
+			deviceTypeName="螺杆泵井";
 		}
-		calculateDataService.initDailyReportData(deviceType);
+		calculateDataService.initDailyReportData(calculateType);
 		System.out.println(deviceTypeName+"报表数据初始化完成-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

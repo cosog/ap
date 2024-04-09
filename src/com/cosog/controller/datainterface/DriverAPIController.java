@@ -1869,7 +1869,7 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						//统计
-						CalculateDataManagerTask.acquisitionDataTotal(deviceInfo.getId()+"", date);
+						CalculateDataManagerTask.acquisitionDataTotalCalculate(deviceInfo.getId()+"", date);
 						//报警项
 						if(alarm){
 							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getWellName(),deviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);

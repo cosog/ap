@@ -22,17 +22,23 @@ import com.cosog.utils.StringManagerUtils;
 
 @Component("calculateDataManagerTast")  
 public class CalculateDataManagerTask {
+	public static ScheduledExecutorService AcquisitionDataTotalCalculationExecutor=null;
 	public static ScheduledExecutorService RPCTotalCalculationExecutor=null;
 	public static ScheduledExecutorService PCPTotalCalculationExecutor=null;
 	public static ScheduledExecutorService timingInitDailyReportDataExecutor=null;
-	public static ScheduledExecutorService RPCTimingCalculateexecutor=null;
-	public static ScheduledExecutorService PCPTimingCalculateexecutor=null;
+	public static ScheduledExecutorService AcquisitionTimingCalculateExecutor=null;
+	public static ScheduledExecutorService RPCTimingCalculateExecutor=null;
+	public static ScheduledExecutorService PCPTimingCalculateExecutor=null;
 	
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
 		timingInitDailyReportData();
+		
+		
 		RPCTotalCalculation();
 		PCPTotalCalculation();
+		
+		AcquisitionTimingCalculate();
 		RPCTimingCalculate();
 		PCPTimingCalculate();
 	}
@@ -73,6 +79,32 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
+	public static void AcquisitionDataTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/AcquisitionDataDailyCalculation";
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+	}
+	
+	public static void AcquisitionDataTotalCalculation(){
+		AcquisitionDataTotalCalculationExecutor = Executors.newScheduledThreadPool(1);
+		long interval=24 * 60 * 60 * 1000;
+		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ Config.getInstance().configFile.getAp().getReport().getDelay() * 60 * 1000 - System.currentTimeMillis();
+		while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+		AcquisitionDataTotalCalculationExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	try {
+            		AcquisitionDataTotalCalculationTast();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+	}
+	
 	/**
 	 * 抽油机井汇总计算
 	 * */
@@ -100,6 +132,13 @@ public class CalculateDataManagerTask {
 				}
             }
         }), initDelay, interval, TimeUnit.MILLISECONDS);
+	}
+	
+	public static void AcquisitionDataTimingTotalCalculation(String timeStr){
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/AcquisitionDataTimingTotalCalculation?time="+time;
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	public static void RPCTimingTotalCalculation(String timeStr){
@@ -153,9 +192,9 @@ public class CalculateDataManagerTask {
 	@SuppressWarnings("static-access")
 	public static void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=0";
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?calculateType=1";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
-		url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?deviceType=1";
+		url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?calculateType=2";
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
@@ -180,8 +219,8 @@ public class CalculateDataManagerTask {
         }), initDelay, interval, TimeUnit.MILLISECONDS);
 	}
 	
-	public static void RPCTimingCalculate() {
-		RPCTimingCalculateexecutor = Executors.newScheduledThreadPool(1);
+	public static void AcquisitionTimingCalculate() {
+		AcquisitionTimingCalculateExecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
 //        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
@@ -189,7 +228,30 @@ public class CalculateDataManagerTask {
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-        RPCTimingCalculateexecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+        AcquisitionTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            	try {
+            		AcquisitionDataTimingTotalCalculation(timeStr);
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+    }
+	
+	public static void RPCTimingCalculate() {
+		RPCTimingCalculateExecutor = Executors.newScheduledThreadPool(1);
+        long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
+//        interval=5 * 60 * 1000;
+        long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
+//        initDelay=StringManagerUtils.getTimeMillis("08:00:00") - System.currentTimeMillis();
+        while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+        RPCTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
                 String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -204,7 +266,7 @@ public class CalculateDataManagerTask {
     }
 	
 	public static void PCPTimingCalculate() {
-		PCPTimingCalculateexecutor = Executors.newScheduledThreadPool(1);
+		PCPTimingCalculateExecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
 //        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
@@ -212,7 +274,7 @@ public class CalculateDataManagerTask {
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-        PCPTimingCalculateexecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+        PCPTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
                 String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -226,7 +288,7 @@ public class CalculateDataManagerTask {
         }), initDelay, interval, TimeUnit.MILLISECONDS);
     }
 	
-	public static void acquisitionDataTotal(String deviceId,String date){
+	public static void acquisitionDataTotalCalculate(String deviceId,String date){
 		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_acqdata_hist");
 		List<String> totalTableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_dailycalculationdata");
 		CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,Config.getInstance().configFile.getAp().getReport().getOffsetHour());
@@ -316,6 +378,102 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
+	public static void acquisitionDataTimingTotalCalculate(String deviceId,String timeStr){
+		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_acqdata_hist");
+		List<String> totalTableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_dailycalculationdata");
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
+		String date=timeStr.split(" ")[0];
+		if(!StringManagerUtils.timeMatchDate(timeStr, date, offsetHour)){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
+		}
+		CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,offsetHour);
+		
+		List<String> columnList=new ArrayList<>();
+		for(int i=0;i<tableColumnList.size();i++){
+			if(StringManagerUtils.existOrNot(totalTableColumnList, tableColumnList.get(i), false)){
+				columnList.add(tableColumnList.get(i));
+			}
+		}
+		if(columnList.size()>0){
+			String sql="select deviceid";
+			String newestDataSql="select deviceid";
+			String oldestDataSql="select deviceid";
+			for(int i=0;i<columnList.size();i++){
+				String column=columnList.get(i);
+				sql+=",max(t."+column+")||';'||min(t."+column+")||';'||round(avg(t."+column+"),2) as "+column+"";
+				newestDataSql+=",t."+column;
+				oldestDataSql+=",t."+column;
+			}
+			
+			sql+=" from tbl_acqdata_hist t "
+				+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+			newestDataSql+=" from tbl_acqdata_hist t"
+					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+			oldestDataSql+=" from tbl_acqdata_hist t"
+					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+=" and t.deviceid="+deviceId;
+				newestDataSql+=" and t.deviceid="+deviceId;
+				oldestDataSql+=" and t.deviceid="+deviceId;
+			}else{
+				newestDataSql+=" and t.acqtime=(select min(t2.acqtime) from tbl_acqdata_hist t2 "
+						+ " where t2.deviceid=t.deviceid"
+						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " )";
+				oldestDataSql+=" and t.acqtime=(select max(t2.acqtime) from tbl_acqdata_hist t2 "
+						+ " where t2.deviceid=t.deviceid"
+						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+						+ " )";
+			}
+			
+			
+			if(StringManagerUtils.isNotNull(deviceId)){
+				newestDataSql+=" order by t.acqtime";
+				newestDataSql="select * from("+newestDataSql+") where rownum=1";
+				oldestDataSql+=" order by t.acqtime";
+				oldestDataSql="select * from("+oldestDataSql+") where rownum=1";
+			}
+			
+			
+			sql+="group by t.deviceid";
+			
+			
+			List<Object[]> totalList=OracleJdbcUtis.query(sql);
+			List<Object[]> newestValueList=OracleJdbcUtis.query(newestDataSql);
+			List<Object[]> oldestValueList=OracleJdbcUtis.query(oldestDataSql);
+			
+			for(int i=0;i<totalList.size();i++){
+				Object[] obj=totalList.get(i);
+				String deviceIdStr=obj[0]+"";
+				Object[] newestValueObj=null;
+				Object[]oldestValueObj=null;
+				for(int j=0;j<newestValueList.size();j++){
+					if(deviceIdStr.equalsIgnoreCase(newestValueList.get(j)[0]+"")){
+						newestValueObj=newestValueList.get(j);
+						break;
+					}
+				}
+				for(int j=0;j<oldestValueList.size();j++){
+					if(deviceIdStr.equalsIgnoreCase(oldestValueList.get(j)[0]+"")){
+						oldestValueObj=oldestValueList.get(j);
+						break;
+					}
+				}
+				String updatesql="update tbl_dailycalculationdata set t.deviceid="+deviceIdStr+"";
+				for(int j=1;j<obj.length;j++){
+					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
+					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
+					String tatalValue=obj[j]+";"+oldestValue+";"+newestValue;
+					String colnum=columnList.get(j-1);
+					updatesql+=",t."+colnum+"='"+tatalValue+"'";
+				}
+				updatesql+=" where t.deviceid="+deviceIdStr+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+				OracleJdbcUtis.executeSqlUpdate(updatesql);
+			}
+		}
+	}
+	
 	public static  int getCount(String sql){  
         int result=0;
         Connection conn=null;
@@ -349,11 +507,17 @@ public class CalculateDataManagerTask {
 		if(timingInitDailyReportDataExecutor!=null && !timingInitDailyReportDataExecutor.isShutdown()){
 			timingInitDailyReportDataExecutor.shutdownNow();
 		}
-		if(RPCTimingCalculateexecutor!=null && !RPCTimingCalculateexecutor.isShutdown()){
-			RPCTimingCalculateexecutor.shutdownNow();
+		if(RPCTimingCalculateExecutor!=null && !RPCTimingCalculateExecutor.isShutdown()){
+			RPCTimingCalculateExecutor.shutdownNow();
 		}
-		if(PCPTimingCalculateexecutor!=null && !PCPTimingCalculateexecutor.isShutdown()){
-			PCPTimingCalculateexecutor.shutdownNow();
+		if(PCPTimingCalculateExecutor!=null && !PCPTimingCalculateExecutor.isShutdown()){
+			PCPTimingCalculateExecutor.shutdownNow();
+		}
+		if(AcquisitionDataTotalCalculationExecutor!=null && !AcquisitionDataTotalCalculationExecutor.isShutdown()){
+			AcquisitionDataTotalCalculationExecutor.shutdownNow();
+		}
+		if(AcquisitionTimingCalculateExecutor!=null && !AcquisitionTimingCalculateExecutor.isShutdown()){
+			AcquisitionTimingCalculateExecutor.shutdownNow();
 		}
 		
 		StringManagerUtils.printLog("scheduledDestory!");

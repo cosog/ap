@@ -4585,7 +4585,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return productionDataBuff.toString();
 	}
 	
-	public Boolean initDeviceTimingReportDate(int deviceId,String timeStr,String dateStr,int deviceType) throws SQLException, ParseException {
+	public Boolean initDeviceTimingReportDate(int deviceId,String timeStr,String dateStr,int calculateType) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
@@ -4593,7 +4593,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setInt(1,deviceId);
 			cs.setString(2,timeStr);
 			cs.setString(3,dateStr);
-			cs.setInt(4,deviceType);
+			cs.setInt(4,calculateType);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

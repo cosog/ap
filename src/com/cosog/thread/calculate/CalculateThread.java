@@ -28,20 +28,20 @@ public class CalculateThread extends Thread{
 	private int threadId;
 	private int wellNo;
 	private String acqDate;
-	private int deviceType;
+	private int calculateType;
 	private CalculateDataService<?> calculateDataService=null;
 
-	public CalculateThread(int threadId, int wellNo,String acqDate,int deviceType, CalculateDataService<?> calculateManagerService) {
+	public CalculateThread(int threadId, int wellNo,String acqDate,int calculateType, CalculateDataService<?> calculateManagerService) {
 		super();
 		this.threadId = threadId;
 		this.wellNo = wellNo;
 		this.acqDate = acqDate;
-		this.deviceType = deviceType;
+		this.calculateType = calculateType;
 		this.calculateDataService = calculateManagerService;
 	}
 
 	public void run(){
-		System.out.println("线程"+threadId+"开始计算"+(deviceType==0?"抽油机井":"螺杆泵井")+"编号"+wellNo+"井");
+		System.out.println("线程"+threadId+"开始计算"+(calculateType==1?"抽油机井":"螺杆泵井")+"编号"+wellNo+"井");
 		long startTime=new Date().getTime();
 		int count=0;
 		int totalCount=0;
@@ -49,7 +49,7 @@ public class CalculateThread extends Thread{
 		java.lang.reflect.Type type=null;
 		String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
-		if(deviceType==0){
+		if(calculateType==1){
 			String minAcqTime="";
 			String sql="select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 					+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
@@ -349,7 +349,7 @@ public class CalculateThread extends Thread{
 				wellList.add(wellNo+"");
 				MemoryDataManagerTask.loadTodayFESDiagram(wellList,0);
 			}
-		}else{
+		}else if(calculateType==2){
 			String minAcqTime="";
 			String sql="select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 					+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
@@ -623,5 +623,21 @@ public class CalculateThread extends Thread{
 
 	public void setCalculateDataService(CalculateDataService<?> calculateDataService) {
 		this.calculateDataService = calculateDataService;
+	}
+
+	public String getAcqDate() {
+		return acqDate;
+	}
+
+	public void setAcqDate(String acqDate) {
+		this.acqDate = acqDate;
+	}
+
+	public int getCalculateType() {
+		return calculateType;
+	}
+
+	public void setCalculateType(int calculateType) {
+		this.calculateType = calculateType;
 	}
 }

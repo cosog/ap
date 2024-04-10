@@ -30,11 +30,11 @@ public class CalculateDataManagerTask {
 	public static ScheduledExecutorService RPCTimingCalculateExecutor=null;
 	public static ScheduledExecutorService PCPTimingCalculateExecutor=null;
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
 		timingInitDailyReportData();
 		
-		
+		AcquisitionDataTotalCalculation();
 		RPCTotalCalculation();
 		PCPTotalCalculation();
 		
@@ -43,7 +43,7 @@ public class CalculateDataManagerTask {
 		PCPTimingCalculate();
 	}
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -63,7 +63,7 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -192,8 +192,10 @@ public class CalculateDataManagerTask {
 	@SuppressWarnings("static-access")
 	public static void initDailyReportDataTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?calculateType=1";
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?calculateType=0";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+		url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?calculateType=1";
+		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 		url=stringManagerUtils.getProjectUrl()+"/calculateDataController/initDailyReportData?calculateType=2";
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
@@ -305,9 +307,11 @@ public class CalculateDataManagerTask {
 			String oldestDataSql="select deviceid";
 			for(int i=0;i<columnList.size();i++){
 				String column=columnList.get(i);
-				sql+=",max(t."+column+")||';'||min(t."+column+")||';'||round(avg(t."+column+"),2) as "+column+"";
-				newestDataSql+=",t."+column;
-				oldestDataSql+=",t."+column;
+				sql+=",max(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
+						+ "'||min(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
+						+ "'||round(avg(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END),2) as "+column+"";
+				newestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
+				oldestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
 			}
 			
 			sql+=" from tbl_acqdata_hist t "
@@ -364,11 +368,11 @@ public class CalculateDataManagerTask {
 						break;
 					}
 				}
-				String updatesql="update tbl_dailycalculationdata set t.deviceid="+deviceIdStr+"";
+				String updatesql="update tbl_dailycalculationdata t set t.deviceid="+deviceIdStr+"";
 				for(int j=1;j<obj.length;j++){
 					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
 					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-					String tatalValue=obj[j]+";"+oldestValue+";"+newestValue;
+					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue).replaceAll("null", "");
 					String colnum=columnList.get(j-1);
 					updatesql+=",t."+colnum+"='"+tatalValue+"'";
 				}
@@ -401,9 +405,11 @@ public class CalculateDataManagerTask {
 			String oldestDataSql="select deviceid";
 			for(int i=0;i<columnList.size();i++){
 				String column=columnList.get(i);
-				sql+=",max(t."+column+")||';'||min(t."+column+")||';'||round(avg(t."+column+"),2) as "+column+"";
-				newestDataSql+=",t."+column;
-				oldestDataSql+=",t."+column;
+				sql+=",max(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
+						+ "'||min(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
+						+ "'||round(avg(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END),2) as "+column+"";
+				newestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
+				oldestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
 			}
 			
 			sql+=" from tbl_acqdata_hist t "
@@ -464,7 +470,7 @@ public class CalculateDataManagerTask {
 				for(int j=1;j<obj.length;j++){
 					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
 					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-					String tatalValue=obj[j]+";"+oldestValue+";"+newestValue;
+					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue).replaceAll("null", "");
 					String colnum=columnList.get(j-1);
 					updatesql+=",t."+colnum+"='"+tatalValue+"'";
 				}

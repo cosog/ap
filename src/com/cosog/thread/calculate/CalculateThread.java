@@ -1,6 +1,5 @@
 package com.cosog.thread.calculate;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -40,6 +39,7 @@ public class CalculateThread extends Thread{
 		this.calculateDataService = calculateManagerService;
 	}
 
+	@SuppressWarnings("static-access")
 	public void run(){
 		System.out.println("线程"+threadId+"开始计算"+(calculateType==1?"抽油机井":"螺杆泵井")+"编号"+wellNo+"井");
 		long startTime=new Date().getTime();
@@ -62,7 +62,7 @@ public class CalculateThread extends Thread{
 					+ " from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_device t2 on t.deviceId=t2.id"
 					+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
-					+ " where t.calculateType=1  "
+					+ " where t2.calculateType=1  "
 					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.productiondata is not null"
 					+ " and t.fesdiagramacqtime is not null "

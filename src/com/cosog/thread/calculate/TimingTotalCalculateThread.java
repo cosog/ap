@@ -17,11 +17,9 @@ import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.service.base.CommonDataService;
-import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
-import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -50,6 +48,7 @@ public class TimingTotalCalculateThread  extends Thread{
 		this.commonDataService = commonDataService;
 	}
 
+	@SuppressWarnings({ "static-access", "unused" })
 	public void run(){
 		if(deviceId==1){
 			System.out.println("");
@@ -58,7 +57,6 @@ public class TimingTotalCalculateThread  extends Thread{
 		long time1=0,time2=0;
 		
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
-		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
 		String date=timeStr.split(" ")[0];
 		if(!StringManagerUtils.timeMatchDate(timeStr, date, offsetHour)){
 			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
@@ -1719,9 +1717,11 @@ public class TimingTotalCalculateThread  extends Thread{
 				String oldestDataSql="select deviceid";
 				for(int i=0;i<columnList.size();i++){
 					String column=columnList.get(i);
-					sql+=",max(t."+column+")||';'||min(t."+column+")||';'||round(avg(t."+column+"),2) as "+column+"";
-					newestDataSql+=",t."+column;
-					oldestDataSql+=",t."+column;
+					sql+=",max(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
+							+ "'||min(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
+							+ "'||round(avg(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END),2) as "+column+"";
+					newestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
+					oldestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
 				}
 				
 				sql+=" from tbl_acqdata_hist t "
@@ -1778,7 +1778,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					for(int j=1;j<obj.length;j++){
 						String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
 						String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-						String tatalValue=obj[j]+";"+oldestValue+";"+newestValue;
+						String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue).replaceAll("null", "");
 						String colnum=columnList.get(j-1);
 						updateSql+=",t."+colnum+"='"+tatalValue+"'";
 					}

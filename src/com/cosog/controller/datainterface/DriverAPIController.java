@@ -159,8 +159,6 @@ public class DriverAPIController extends BaseController{
 							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 								updateRealData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 										+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
-//								updateHistData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
-//										+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 								insertHistColumns+=",commTimeEfficiency,commTime";
 								insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
 								
@@ -1805,10 +1803,10 @@ public class DriverAPIController extends BaseController{
 					List<ProtocolItemResolutionData> inputItemItemResolutionDataList=new ArrayList<>();;
 					
 					if(deviceInfo.getCalculateType()==1){
-						RPCDataProcessing(deviceInfo,acqGroup,timeEffResponseData,acqTime,calItemResolutionDataList);
+						RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus);
 						inputItemItemResolutionDataList=getRPCInputItemData(deviceInfo);
 					}else if(deviceInfo.getCalculateType()==2){
-						PCPDataProcessing(deviceInfo,acqGroup,timeEffResponseData,acqTime,calItemResolutionDataList);
+						PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 					}
 					
@@ -1900,8 +1898,8 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	public String RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,TimeEffResponseData timeEffResponseData,String acqTime,
-			List<ProtocolItemResolutionData> calItemResolutionDataList){
+	public String RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
+			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -1991,14 +1989,32 @@ public class DriverAPIController extends BaseController{
 					acqRPM=0;
 					
 					
-					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
 					
 					
-					String insertHistColumns="deviceid,acqTime";
-					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+					String insertHistColumns="deviceid,acqTime,CommStatus,runStatus";
+					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),1,"+runStatus;
 					String insertHistSql="";
 					
-					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1";
+					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1,t.runStatus="+runStatus;
+					
+					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+						insertHistColumns+=",commTimeEfficiency,commTime";
+						insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
+						
+						updateTotalDataSql+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+					}
+					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
+						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+						insertHistColumns+=",runTimeEfficiency,runTime";
+						insertHistValue+=","+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+","+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+						updateTotalDataSql+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+					}
 					
 					int FESDiagramAcqCount=0;
 					boolean FESDiagramCalculate=false;
@@ -2613,6 +2629,26 @@ public class DriverAPIController extends BaseController{
 					commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
 					
+					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						List<String> clobCont=new ArrayList<String>();
+						String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
+						String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
+						String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
+						clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+							updateRealRangeClobSql+=", t.runrange=?";
+							updateHisRangeClobSql+=", t.runrange=?";
+							updateTotalRangeClobSql+=", t.runrange=?";
+							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+						}
+						updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+						updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+						updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
+					}
+					
 					if(FESDiagramCalculate || isAcqCalResultData){
 						commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
 					}
@@ -2620,10 +2656,7 @@ public class DriverAPIController extends BaseController{
 					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
 						int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
 						commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
-					}else{
-						
 					}
-					
 					
 					//放入内存数据库中
 					if(jedis!=null && deviceTodayData!=null){
@@ -4412,7 +4445,8 @@ public class DriverAPIController extends BaseController{
 //		return null;
 //	}
 	
-	public String PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,TimeEffResponseData timeEffResponseData,String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList){
+	public String PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
+			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		Jedis jedis=null;
@@ -4481,14 +4515,32 @@ public class DriverAPIController extends BaseController{
 					
 					boolean isAcqRPM=false;
 					
-					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
 					
 					
-					String insertHistColumns="deviceid,acqTime";
-					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+					String insertHistColumns="deviceid,acqTime,CommStatus,runStatus";
+					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),1,"+runStatus;
 					String insertHistSql="";
 					
-					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1";
+					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1,t.runStatus="+runStatus;
+					
+					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+						insertHistColumns+=",commTimeEfficiency,commTime";
+						insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
+						
+						updateTotalDataSql+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+					}
+					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
+						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+						insertHistColumns+=",runTimeEfficiency,runTime";
+						insertHistValue+=","+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+","+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+						updateTotalDataSql+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+					}
 					
 					for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
 						for(int j=0;j<protocol.getItems().size();j++){
@@ -4701,6 +4753,26 @@ public class DriverAPIController extends BaseController{
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 					commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
+					
+					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						List<String> clobCont=new ArrayList<String>();
+						String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
+						String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
+						String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
+						clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+							updateRealRangeClobSql+=", t.runrange=?";
+							updateHisRangeClobSql+=", t.runrange=?";
+							updateTotalRangeClobSql+=", t.runrange=?";
+							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+						}
+						updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+						updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+						updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
+					}
 					
 					commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
 					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据

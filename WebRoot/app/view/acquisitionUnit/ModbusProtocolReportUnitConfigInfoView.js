@@ -276,7 +276,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 	}else{
                                 		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
                                 	}
-                                	CreateSingleWellDailyReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                                	CreateSingleWellDailyReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
                                 	
             					}else if(newCard.id=="ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id"){
                             		var ReportUnitSingleWellRangeReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
@@ -285,7 +285,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 	}else{
                                 		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
                                 	}
-                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
                             	}
                             }
                         }
@@ -397,7 +397,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 	}else{
                                 		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
                                 	}
-                                	CreateSingleWellDailyReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                                	CreateSingleWellDailyReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
                                 	
             					}else if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id'){
             						var ReportUnitSingleWellRangeReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
@@ -406,7 +406,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 	}else{
                                 		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
                                 	}
-                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
             					}
                         	}else if(newCard.id=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
                         		var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
@@ -415,7 +415,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	}else{
                             		Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
                             	}
-                            	CreateproductionReportTotalItemsInfoTable(record.data.deviceType,selectedUnitId,record.data.text,record.data.classes);
+                            	CreateproductionReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
                         	}
                         }
                     }
@@ -426,7 +426,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
     }
 });
 
-function CreateSingleWellRangeReportTemplateInfoTable(name,deviceType,code){
+function CreateSingleWellRangeReportTemplateInfoTable(name,calculateType,code){
 	Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -454,7 +454,7 @@ function CreateSingleWellRangeReportTemplateInfoTable(name,deviceType,code){
 		},
 		params: {
 			reportType:0,
-			deviceType:deviceType,
+			calculateType:calculateType,
 			code:code
         }
 	});
@@ -618,7 +618,7 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
 	    }
 	};
 
-function CreateSingleWellDailyReportTemplateInfoTable(name,deviceType,code){
+function CreateSingleWellDailyReportTemplateInfoTable(name,calculateType,code){
 	Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -646,7 +646,7 @@ function CreateSingleWellDailyReportTemplateInfoTable(name,deviceType,code){
 		},
 		params: {
 			reportType:2,
-			deviceType:deviceType,
+			calculateType:calculateType,
 			code:code
         }
 	});
@@ -810,7 +810,7 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
 	    }
 	};
 
-function CreateSingleWellRangeReportTotalItemsInfoTable(deviceType,unitId,unitName,classes){
+function CreateSingleWellRangeReportTotalItemsInfoTable(calculateType,unitId,unitName,classes){
 	Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -852,7 +852,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(deviceType,unitId,unitNa
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType: deviceType,
+			calculateType: calculateType,
 			reportType: 0,
 			unitId: unitId,
 			classes: classes
@@ -1034,7 +1034,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	    }
 };
 
-function CreateSingleWellDailyReportTotalItemsInfoTable(deviceType,unitId,unitName,classes){
+function CreateSingleWellDailyReportTotalItemsInfoTable(calculateType,unitId,unitName,classes){
 	Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1049,12 +1049,14 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(deviceType,unitId,unitNa
 			}
 			if(singleWellDailyReportTemplateContentHandsontableHelper==null || singleWellDailyReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellDailyReportTemplateContentHandsontableHelper = SingleWellDailyReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','小数位数','报表曲线','','','','']";
+				var colHeaders="['','序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
+					 	+"{data:'dataSource',type:'dropdown',strict:true,allowInvalid:false,source:['采集', '计算', '录入']}," 
+					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值']}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
@@ -1076,7 +1078,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(deviceType,unitId,unitNa
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType: deviceType,
+			calculateType: calculateType,
 			reportType: 2,
 			unitId: unitId,
 			classes: classes
@@ -1116,11 +1118,11 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9,10,11],
+	                    columns: [10,11,12,13],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,85,85,85],
+	                colWidths: [25,30,140,80,60,60,60,60,85,85,85],
 	                columns:singleWellDailyReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1147,7 +1149,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex<=3) {
 		    							cellProperties.readOnly = true;
-		    		                }else if(visualColIndex==7){
+		    		                }else if(visualColIndex==9){
 		    		                	cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg;
 		    		                }
 		                		}
@@ -1161,7 +1163,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(singleWellDailyReportTemplateContentHandsontableHelper!=null && singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==7)){
+		                	if(row1[0] && (column==9)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
@@ -1175,8 +1177,8 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 		                				CurveConfigWindow.show();
 		                				
 		                				var curveConfig=null;
-		                				if(column==7 && isNotVal(row1[8])){
-		                					curveConfig=row1[8];
+		                				if(column==9 && isNotVal(row1[10])){
+		                					curveConfig=row1[10];
 		                				}
 		                				var value='ff0000';
 		                				
@@ -1380,7 +1382,7 @@ var ReportUnitPropertiesHandsontableHelper = {
 	    }
 };
 
-function CreateProductionReportTemplateInfoTable(name,deviceType,code){
+function CreateProductionReportTemplateInfoTable(name,calculateType,code){
 	Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1409,7 +1411,7 @@ function CreateProductionReportTemplateInfoTable(name,deviceType,code){
 		params: {
 			reportType: 1,
 			name:name,
-			deviceType:deviceType,
+			calculateType:calculateType,
 			code:code
         }
 	});
@@ -1573,7 +1575,7 @@ var ProductionReportTemplateHandsontableHelper = {
 	    }
 	};
 
-function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,classes){
+function CreateproductionReportTotalItemsInfoTable(calculateType,unitId,unitName,classes){
 	Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1623,7 +1625,7 @@ function CreateproductionReportTotalItemsInfoTable(deviceType,unitId,unitName,cl
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType: deviceType,
+			calculateType: calculateType,
 			reportType: 1,
 			unitId: unitId,
 			classes: classes
@@ -1843,7 +1845,7 @@ function SaveReportUnitData(){
 				}
 			}
 			
-//			reportUnitProperties.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
+//			reportUnitProperties.calculateType=(propertiesData[1][2]=="抽油机井"?0:1);
 			reportUnitProperties.sort=propertiesData[1][2];
 		}
 		if(selectedItem.data.classes==1){//保存单元

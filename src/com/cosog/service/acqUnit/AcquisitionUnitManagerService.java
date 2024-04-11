@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -1910,6 +1911,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("1".equalsIgnoreCase(deviceType)){
 			key="pcpTimingTotalCalItemList";
 		}
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		}
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		Jedis jedis=null;
 		List<byte[]> rpcCalItemSet=null;
 		try{
@@ -2074,6 +2080,31 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			}
 		}
+		
+		Iterator<Map.Entry<String, DataMapping>> iterator = loadProtocolMappingColumnByTitleMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+		    Map.Entry<String, DataMapping> entry = iterator.next();
+		    DataMapping dataMappingColumn = entry.getValue();
+		    
+		    result_json.append("{\"checked\":"+false+","
+					+ "\"id\":"+(index)+","
+					+ "\"title\":\""+dataMappingColumn.getName()+"\","
+					+ "\"unit\":\"\","
+					+ "\"showLevel\":\"\","
+					+ "\"sort\":\"\","
+					+ "\"prec\":\"\","
+					+ "\"sumSign\":\"\","
+					+ "\"averageSign\":\"\","
+					+ "\"reportCurveConfShowValue\":\"\","
+					+ "\"reportCurveConf\":\"\","
+					+ "\"curveStatType\":\"\","
+					+ "\"dataType\":\"\","
+					+ "\"code\":\""+dataMappingColumn.getMappingColumn()+"\","
+					+ "\"remark\":\"\""
+					+ "},");
+		}
+		
+		
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
@@ -3985,7 +4016,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				for(int i=0;i<templateList.size();i++){
 					totalCount++;
 					result_json.append("{\"templateName\":\""+templateList.get(i).getTemplateName()+"\",");
-					result_json.append("\"templateCode\":\""+templateList.get(i).getTemplateCode()+"\"},");
+					result_json.append("\"templateCode\":\""+templateList.get(i).getTemplateCode()+"\",");
+					result_json.append("\"calculateType\":\""+templateList.get(i).getCalculateType()+"\"},");
 				}
 			}
 		}
@@ -3996,7 +4028,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportTemplateData(String reportType,String code){
+	public String getReportTemplateData(String reportType,String code,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		String result="{}";

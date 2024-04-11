@@ -1,6 +1,6 @@
 {
     "singleWellRangeReportTemplate": [{
-        "deviceType": 0,
+        "calculateType": 0,
         "templateCode": "CBMWell_heichao",
         "templateName": "煤层气井排采数据表_单井日报表",
         "header": [{
@@ -117,7 +117,7 @@
             "endColumn": 11
         }]
     }, {
-        "deviceType": 0,
+        "calculateType": 2,
         "templateCode": "oilWell_ScrewPump",
         "templateName": "油井_螺杆泵井单井日报表",
         "header": [{
@@ -234,7 +234,7 @@
         }]
     }],
     "singleWellDailyReportTemplate": [{
-        "deviceType": 0,
+        "calculateType": 0,
         "templateCode": "CBMWell_heichaoDailyReport",
         "templateName": "煤层气井排采数据表_单井班报表",
         "header": [{
@@ -371,7 +371,7 @@
             "endColumn": 13
         }]
     }, {
-        "deviceType": 0,
+        "calculateType": 2,
         "templateCode": "oilWell_ScrewPumpDailyReport",
         "templateName": "油井_螺杆泵井单井班报表",
         "header": [{
@@ -493,7 +493,7 @@
         }]
     }],
     "productionReportTemplate": [{
-        "deviceType": 0,
+        "calculateType": 0,
         "templateCode": "CBMWell_heichaoProductionReport",
         "templateName": "煤层气井排采生产报表_区域日报",
         "header": [{
@@ -594,7 +594,7 @@
             "endColumn": 12
         }]
     }, {
-        "deviceType": 0,
+        "calculateType": 2,
         "templateCode": "oilWell_ScrewPumpProductionReoirt",
         "templateName": "油井_螺杆泵井区域日报",
         "header": [{

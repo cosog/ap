@@ -191,7 +191,7 @@ function websocketOnMessage(evt) {
             if (isNotVal(RealTimeMonitoringListGridPanel)) {
                 if (RealTimeMonitoringListGridPanel.getSelectionModel().getSelection().length > 0) {
                     var selectedWellId = RealTimeMonitoringListGridPanel.getSelectionModel().getSelection()[0].data.id;
-                    if (selectedWellId == data.wellId) {
+                    if (selectedWellId == data.deviceId) {
                         isSelectWell = true;
                         if (RealTimeMonitoringListGridPanel.getSelectionModel().getSelection()[0].data.commStatus == 0) {
                             commStatusChange = true;
@@ -202,7 +202,7 @@ function websocketOnMessage(evt) {
                 var store = RealTimeMonitoringListGridPanel.getStore();
                 for (var i = 0; i < store.getCount(); i++) {
                     var record = store.getAt(i);
-                    if (record.data.id == data.wellId) {
+                    if (record.data.id == data.deviceId) {
                         record.set("commStatusName", "在线");
                         record.set("commStatus", 1);
                         record.set("acqTime", data.acqTime);
@@ -281,12 +281,28 @@ function websocketOnMessage(evt) {
                     }
                     showPSDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
                     showASDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
-                    showBalanceAnalysisCurveChart(data.surfaceChartsData.crankAngle, data.surfaceChartsData.loadRorque, data.surfaceChartsData.crankTorque, data.surfaceChartsData.currentBalanceTorque, data.surfaceChartsData.currentNetTorque,
-                        "目前扭矩曲线", data.surfaceChartsData.wellName + ' [' + data.surfaceChartsData.acqTime + ']', "FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
-                    showBalanceAnalysisCurveChart(data.surfaceChartsData.crankAngle, data.surfaceChartsData.loadRorque, data.surfaceChartsData.crankTorque, data.surfaceChartsData.expectedBalanceTorque, data.surfaceChartsData.expectedNetTorque,
-                        expectedTorqueChartTitle, data.surfaceChartsData.wellName + ' [' + data.surfaceChartsData.acqTime + ']', "FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
-                    //	                	showBalanceAnalysisMotionCurveChart(data.surfaceChartsData.crankAngle,data.surfaceChartsData.positionCurveData,data.surfaceChartsData.polishrodV,data.surfaceChartsData.polishrodA,
-                    //	                			"运动特性曲线",data.surfaceChartsData.wellName+' ['+data.surfaceChartsData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id",2);
+                    showBalanceAnalysisCurveChart(
+                    		data.surfaceChartsData.crankAngle, 
+                    		data.surfaceChartsData.loadRorque, 
+                    		data.surfaceChartsData.crankTorque, 
+                    		data.surfaceChartsData.currentBalanceTorque, 
+                    		data.surfaceChartsData.currentNetTorque,
+                    		"目前扭矩曲线", 
+                    		data.surfaceChartsData.deviceName ,
+                    		data.surfaceChartsData.acqTime, 
+                    		"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id"
+                        );
+                    showBalanceAnalysisCurveChart(
+                    		data.surfaceChartsData.crankAngle, 
+                    		data.surfaceChartsData.loadRorque, 
+                    		data.surfaceChartsData.crankTorque, 
+                    		data.surfaceChartsData.expectedBalanceTorque, 
+                    		data.surfaceChartsData.expectedNetTorque,
+                    		expectedTorqueChartTitle, 
+                    		data.surfaceChartsData.deviceName,
+                    		data.surfaceChartsData.acqTime, 
+                    		"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id"
+                    	);
                 }
                 if (commStatusChange) {
                     Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringControlAndInfoStore');
@@ -299,7 +315,7 @@ function websocketOnMessage(evt) {
                 //更新概览表
                 for (var i = 0; i < store.getCount(); i++) {
                     var record = store.getAt(i);
-                    if (record.data.id == data.wellId) {
+                    if (record.data.id == data.deviceId) {
                         record.set("commStatusName", "在线");
                         record.set("commStatus", 1);
                         record.commit();
@@ -329,7 +345,7 @@ function websocketOnMessage(evt) {
                 if (isNotVal(gridPanel)) {
                     if (gridPanel.getSelectionModel().getSelection().length > 0) {
                         var selectedWellId = gridPanel.getSelectionModel().getSelection()[0].data.id;
-                        if (selectedWellId == data.wellId) {
+                        if (selectedWellId == data.deviceId) {
                             isSelectWell = true;
                             if (gridPanel.getSelectionModel().getSelection()[0].data.commStatus != data.commStatus) {
                                 commStatusChange = true;
@@ -343,7 +359,7 @@ function websocketOnMessage(evt) {
                     var commStatus = Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
                     for (var i = 0; i < store.getCount(); i++) {
                         var record = store.getAt(i);
-                        if (record.data.id == data.wellId) {
+                        if (record.data.id == data.deviceId) {
                             haveDevice = true;
                             if (commStatus != '' && commStatus != data.commStatusName) {
                                 store.loadPage(1);
@@ -371,7 +387,7 @@ function websocketOnMessage(evt) {
                         var activeId = tabPanel.getActiveTab().id;
                         if (activeId == "RealTimeMonitoringTableTabPanel_Id") {
                             if (isNotVal(deviceRealTimeMonitoringDataHandsontableHelper) && isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.hot)) {
-                                var value = data.wellName + ":" + data.acqTime + " " + (data.commStatus > 0 ? "上线" : "离线");
+                                var value = data.deviceName + ":" + data.acqTime + " " + (data.commStatus > 0 ? "上线" : "离线");
                                 deviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
                             }
                         }
@@ -388,7 +404,7 @@ function websocketOnMessage(evt) {
                 //更新概览表
                 for (var i = 0; i < store.getCount(); i++) {
                     var record = store.getAt(i);
-                    if (record.data.id == data.wellId) {
+                    if (record.data.id == data.deviceId) {
                         record.set("commStatusName", data.commStatusName);
                         record.set("commStatus", data.commStatus);
                         record.commit();

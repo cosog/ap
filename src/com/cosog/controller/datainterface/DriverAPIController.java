@@ -246,7 +246,7 @@ public class DriverAPIController extends BaseController{
 				List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
 				int deviceType=101;
 				int deviceId=0;
-				String wellName="";
+				String deviceName="";
 				int orgId=0;
 				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 				
@@ -284,7 +284,7 @@ public class DriverAPIController extends BaseController{
 						DeviceInfo deviceInfo=deviceInfoList.get(i);
 						deviceType=deviceInfo.getDeviceType();
 						deviceId=deviceInfo.getId();
-						wellName=deviceInfo.getWellName();
+						deviceName=deviceInfo.getWellName();
 						orgId=deviceInfo.getOrgId();
 						
 						alarmTableName="tbl_alarminfo_hist";
@@ -362,11 +362,11 @@ public class DriverAPIController extends BaseController{
 							if(acqOnline.getStatus()){
 								key=deviceId+","+deviceType+",上线";
 								alarmInfo="上线";
-								alarmSMSContent="设备"+wellName+"于"+currentTime+"上线";
+								alarmSMSContent="设备"+deviceName+"于"+currentTime+"上线";
 							}else{
 								key=deviceId+","+deviceType+",离线";
 								alarmInfo="离线";
-								alarmSMSContent="设备"+wellName+"于"+currentTime+"离线";
+								alarmSMSContent="设备"+deviceName+"于"+currentTime+"离线";
 							}
 							for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
 								if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 &&   alarmInfo.equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(j).getItemName()) && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0){
@@ -385,7 +385,7 @@ public class DriverAPIController extends BaseController{
 							long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
 							if(commAlarmLevel>0&&timeDiff>delay*1000){
 								result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
-								calculateDataService.sendAlarmSMS(wellName, deviceType+"",isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
+								calculateDataService.sendAlarmSMS(deviceName, deviceType+"",isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 								alarmInfoMap.put(key, currentTime);
 							}
 						}
@@ -403,7 +403,7 @@ public class DriverAPIController extends BaseController{
 						
 						webSocketSendData = new StringBuffer();
 						webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
-						webSocketSendData.append("\"wellName\":\""+wellName+"\",");
+						webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
 						webSocketSendData.append("\"deviceId\":"+deviceId+",");
 						webSocketSendData.append("\"orgId\":"+orgId+",");
 						webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
@@ -469,7 +469,7 @@ public class DriverAPIController extends BaseController{
 				List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
 				int deviceType=101;
 				int deviceId=0;
-				String wellName="";
+				String deviceName="";
 				int orgId=0;
 				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 				if(!jedis.exists("DeviceInfo".getBytes())){
@@ -508,7 +508,7 @@ public class DriverAPIController extends BaseController{
 						DeviceInfo deviceInfo=deviceInfoList.get(i);
 						deviceType=deviceInfo.getDeviceType();
 						deviceId=deviceInfo.getId();
-						wellName=deviceInfo.getWellName();
+						deviceName=deviceInfo.getWellName();
 						orgId=deviceInfo.getOrgId();
 						
 						alarmTableName="tbl_alarminfo_hist";
@@ -586,11 +586,11 @@ public class DriverAPIController extends BaseController{
 							if(acqOnline.getStatus()){
 								key=deviceId+","+deviceType+",上线";
 								alarmInfo="上线";
-								alarmSMSContent="设备"+wellName+"于"+currentTime+"上线";
+								alarmSMSContent="设备"+deviceName+"于"+currentTime+"上线";
 							}else{
 								key=deviceId+","+deviceType+",离线";
 								alarmInfo="离线";
-								alarmSMSContent="设备"+wellName+"于"+currentTime+"离线";
+								alarmSMSContent="设备"+deviceName+"于"+currentTime+"离线";
 							}
 							for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
 								if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 &&   alarmInfo.equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(j).getItemName()) && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0){
@@ -609,7 +609,7 @@ public class DriverAPIController extends BaseController{
 							long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
 							if(commAlarmLevel>0&&timeDiff>delay*1000){
 								result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
-								calculateDataService.sendAlarmSMS(wellName, deviceType+"",isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
+								calculateDataService.sendAlarmSMS(deviceName, deviceType+"",isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 								alarmInfoMap.put(key, currentTime);
 							}
 						}
@@ -627,7 +627,7 @@ public class DriverAPIController extends BaseController{
 						
 						webSocketSendData = new StringBuffer();
 						webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
-						webSocketSendData.append("\"wellName\":\""+wellName+"\",");
+						webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
 						webSocketSendData.append("\"deviceId\":"+deviceId+",");
 						webSocketSendData.append("\"orgId\":"+orgId+",");
 						webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
@@ -872,7 +872,12 @@ public class DriverAPIController extends BaseController{
 		return acquisitionItemInfoList;
 	}
 	
-	public List<AcquisitionItemInfo> CalculateDataAlarmProcessing(List<ProtocolItemResolutionData> calItemResolutionDataList,AlarmInstanceOwnItem alarmInstanceOwnItem,List<AcquisitionItemInfo> acquisitionItemInfoList){
+	public List<AcquisitionItemInfo> CalculateDataAlarmProcessing(List<ProtocolItemResolutionData> calItemResolutionDataList,AlarmInstanceOwnItem alarmInstanceOwnItem,
+			List<AcquisitionItemInfo> acquisitionItemInfoList,RPCCalculateResponseData rpcCalculateResponseData){
+		WorkType workType=null;
+		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+		}
 		for(int i=0;i<calItemResolutionDataList.size();i++){
 
 			int alarmLevel=0;
@@ -888,33 +893,31 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setBitIndex(calItemResolutionDataList.get(i).getBitIndex());
 			
 			
-//			if("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
-//				WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(calItemResolutionDataList.get(i).getRawValue());
-//				if(workType!=null){
-//					acquisitionItemInfo.setValue(workType.getResultName());
-//				}
-//			}else if("optimizationSuggestion".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
-//				if(workType!=null){
-//					acquisitionItemInfo.setValue(workType.getOptimizationSuggestion());
-//					acquisitionItemInfo.setRawValue(workType.getOptimizationSuggestion());
-//				}
-//			}
+			if("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
+				if(workType!=null){
+					acquisitionItemInfo.setValue(workType.getResultName());
+				}
+			}else if("optimizationSuggestion".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
+				if(workType!=null){
+					acquisitionItemInfo.setValue(workType.getOptimizationSuggestion());
+					acquisitionItemInfo.setRawValue(workType.getOptimizationSuggestion());
+				}
+			}
 			
 			for(int k=0;alarmInstanceOwnItem!=null&&k<alarmInstanceOwnItem.getItemList().size();k++){
-//				if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
-//						&&alarmInstanceOwnItem.getItemList().get(k).getType()==4
-//						&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-//					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-//					if(alarmLevel>0){
-//						acquisitionItemInfo.setAlarmInfo("工况报警:"+workType.getResultName());
-//						acquisitionItemInfo.setAlarmType(4);
-//						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-//						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-//						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-//					}
-//					break;
-//				}else 
-				if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+				if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+						&&alarmInstanceOwnItem.getItemList().get(k).getType()==4
+						&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
+					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+					if(alarmLevel>0){
+						acquisitionItemInfo.setAlarmInfo("工况报警:"+workType.getResultName());
+						acquisitionItemInfo.setAlarmType(4);
+						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+					}
+					break;
+				}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
 						&& alarmInstanceOwnItem.getItemList().get(k).getType()==6
 						&& calItemResolutionDataList.get(i).getValue().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemName()) ){
 					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
@@ -1394,10 +1397,138 @@ public class DriverAPIController extends BaseController{
 		return totalWaterCalculateResponseData;
 	}
 	
-	public String getWebSocketSendData(DeviceInfo deviceInfo,String acqTime,UserInfo userInfo,List<AcquisitionItemInfo> acquisitionItemInfoList,DisplayInstanceOwnItem displayInstanceOwnItem,int items,String functionCode,int commAlarmLevel,int runAlarmLevel,AlarmShowStyle alarmShowStyle){
+	public String getWebSocketSendData(DeviceInfo deviceInfo,String acqTime,UserInfo userInfo,List<AcquisitionItemInfo> acquisitionItemInfoList,
+			DisplayInstanceOwnItem displayInstanceOwnItem,int items,
+			String functionCode,int commAlarmLevel,int runAlarmLevel,
+			RPCCalculateResponseData rpcCalculateResponseData,RPCCalculateRequestData rpcCalculateRequestData,int resultAlarmLevel,
+			AlarmShowStyle alarmShowStyle){
 		StringBuffer webSocketSendData = new StringBuffer();
 		StringBuffer displayItemInfo_json = new StringBuffer();
 		StringBuffer allItemInfo_json = new StringBuffer();
+		
+		StringBuffer wellBoreChartsData = new StringBuffer();
+		StringBuffer surfaceChartsData = new StringBuffer();
+		
+		WorkType workType=null;
+		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+		}
+		
+		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
+		//井筒分析图形数据
+		StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
+		String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
+		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+			int curvecount=rpcCalculateResponseData.getFESDiagram().getS().get(0).size();
+			int pointcount=rpcCalculateResponseData.getFESDiagram().getS().size();
+			if(pointcount<rpcCalculateResponseData.getFESDiagram().getF().size()){
+				pointcount=rpcCalculateResponseData.getFESDiagram().getF().size();
+			}
+			for(int i=0;i<curvecount;i++){
+				for(int j=0;j<pointcount;j++){
+					pumpFSDiagramStrBuff.append(rpcCalculateResponseData.getFESDiagram().getS().get(j).get(i)+",");//位移
+					pumpFSDiagramStrBuff.append(rpcCalculateResponseData.getFESDiagram().getF().get(j).get(i)+",");//载荷
+				}
+				if(pumpFSDiagramStrBuff.toString().endsWith(",")){
+					pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
+				}
+				pumpFSDiagramStrBuff.append("#");
+			}
+			if(pumpFSDiagramStrBuff.toString().endsWith("#")){
+				pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
+			}
+		}
+		
+		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+			for(int i=0;i<rpcCalculateResponseData.getRodString().getEveryRod().size();i++){
+				if(i==0){
+	        		rodStressRatio1=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        	}else if(i==1){
+	        		rodStressRatio2=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        	}if(i==2){
+	        		rodStressRatio3=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        	}if(i==3){
+	        		rodStressRatio4=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        	}
+			}
+		}
+		
+		wellBoreChartsData.append("{\"success\":true,");
+		wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getWellName()+"\",");
+		wellBoreChartsData.append("\"acqTime\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+		wellBoreChartsData.append("\"pointCount\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getS().size():"")+"\",");
+		wellBoreChartsData.append("\"upperLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
+		wellBoreChartsData.append("\"lowerLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
+		
+		String fmax="",fmin="";
+		if(rpcCalculateResponseData!=null&&(rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+			if(rpcCalculateResponseData.getFESDiagram()!=null&&rpcCalculateResponseData.getFESDiagram().getFMax()!=null&&rpcCalculateResponseData.getFESDiagram().getFMax().size()>0){
+				fmax=rpcCalculateResponseData.getFESDiagram().getFMax().get(0)+"";
+			}
+			if(rpcCalculateResponseData.getFESDiagram()!=null&&rpcCalculateResponseData.getFESDiagram().getFMin()!=null&&rpcCalculateResponseData.getFESDiagram().getFMin().size()>0){
+				fmin=rpcCalculateResponseData.getFESDiagram().getFMin().get(0)+"";
+			}
+		}
+		
+		wellBoreChartsData.append("\"fmax\":\""+fmax+"\",");
+		wellBoreChartsData.append("\"fmin\":\""+fmin+"\",");
+		
+		wellBoreChartsData.append("\"stroke\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getStroke():"")+"\",");
+		wellBoreChartsData.append("\"spm\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getSPM():"")+"\",");
+		
+		wellBoreChartsData.append("\"liquidProduction\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?(productionUnit.equalsIgnoreCase("ton")?rpcCalculateResponseData.getProduction().getLiquidWeightProduction():rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()):"")+"\",");
+		wellBoreChartsData.append("\"resultName\":\""+(workType!=null?workType.getResultName():"")+"\",");
+		wellBoreChartsData.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
+		wellBoreChartsData.append("\"resultCode\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getCalculationStatus().getResultCode():"")+"\",");
+		
+		
+		wellBoreChartsData.append("\"rodStressRatio1\":\""+rodStressRatio1+"\",");
+		wellBoreChartsData.append("\"rodStressRatio2\":\""+rodStressRatio2+"\",");
+		wellBoreChartsData.append("\"rodStressRatio3\":\""+rodStressRatio3+"\",");
+		wellBoreChartsData.append("\"rodStressRatio4\":\""+rodStressRatio4+"\",");
+		
+		wellBoreChartsData.append("\"pumpEff1\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff1():"")+"\",");
+		wellBoreChartsData.append("\"pumpEff2\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff2():"")+"\",");
+		wellBoreChartsData.append("\"pumpEff3\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff3():"")+"\",");
+		wellBoreChartsData.append("\"pumpEff4\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff4():"")+"\",");
+		wellBoreChartsData.append("\"pumpEff\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff():"")+"\",");
+		
+		wellBoreChartsData.append("\"pumpFSDiagramData\":\""+pumpFSDiagramStrBuff.toString()+"\",");
+		wellBoreChartsData.append("\"positionCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getS(), ",")+"\",");
+		wellBoreChartsData.append("\"loadCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getF(), ",")+"\"");
+		
+		wellBoreChartsData.append("}");
+		
+		//地面分析图形数据
+		surfaceChartsData.append("{\"success\":true,");
+		surfaceChartsData.append("\"deviceName\":\""+deviceInfo.getWellName()+"\",");
+		surfaceChartsData.append("\"acqTime\":\""+rpcCalculateRequestData.getFESDiagram().getAcqTime()+"\",");
+		
+		surfaceChartsData.append("\"upStrokeWattMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
+		surfaceChartsData.append("\"downStrokeWattMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");
+		surfaceChartsData.append("\"wattDegreeBalance\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getWattDegreeBalance():"")+"\",");
+		surfaceChartsData.append("\"upStrokeIMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
+		surfaceChartsData.append("\"downStrokeIMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
+		surfaceChartsData.append("\"iDegreeBalance\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+		surfaceChartsData.append("\"deltaRadius\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+		
+		surfaceChartsData.append("\"positionCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getS(), ",")+"\",");
+		surfaceChartsData.append("\"loadCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getF(), ",")+"\",");
+		surfaceChartsData.append("\"powerCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getWatt(), ",")+"\",");
+		surfaceChartsData.append("\"currentCurveData\":\""+StringUtils.join(rpcCalculateRequestData.getFESDiagram().getI(), ",")+"\",");
+		
+		surfaceChartsData.append("\"crankAngle\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCrankAngle(), ","):"")+"\",");
+		surfaceChartsData.append("\"loadRorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getLoadTorque(), ","):"")+"\",");
+		surfaceChartsData.append("\"crankTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCrankTorque(), ","):"")+"\",");
+		surfaceChartsData.append("\"currentBalanceTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","):"")+"\",");
+		surfaceChartsData.append("\"currentNetTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCurrentNetTorque(), ","):"")+"\",");
+		surfaceChartsData.append("\"expectedBalanceTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","):"")+"\",");
+		surfaceChartsData.append("\"expectedNetTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
+		surfaceChartsData.append("\"polishrodV\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
+		surfaceChartsData.append("\"polishrodA\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
+		
+		surfaceChartsData.append("}");
+		
 		String columns = "[";
 		for(int i=1;i<=items;i++){
 			columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
@@ -1408,9 +1539,10 @@ public class DriverAPIController extends BaseController{
 		}
 		columns+= "]";
 		
-		webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"wellName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+		webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"deviceName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
 		webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 		webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
+		webSocketSendData.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
 		webSocketSendData.append("\"totalRoot\":[");
 		displayItemInfo_json.append("[");
 		allItemInfo_json.append("[");
@@ -1512,6 +1644,8 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append("]");
 		webSocketSendData.append(",\"CellInfo\":"+displayItemInfo_json);
 		webSocketSendData.append(",\"allItemInfo\":"+allItemInfo_json);
+		webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
+		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 		return webSocketSendData.toString();
 	}
@@ -1579,24 +1713,9 @@ public class DriverAPIController extends BaseController{
 					EnergyCalculateResponseData totalWaterCalculateResponseData=null;
 					
 					RPCCalculateRequestData rpcCalculateRequestData=null;
-					
-					PCPCalculateRequestData pcpCalculateRequestData=null;
-					
-					if(deviceInfo.getCalculateType()==1){//功图计算
-						rpcCalculateRequestData=new RPCCalculateRequestData();
-						rpcCalculateRequestData.init();
-						if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
-							rpcCalculateRequestData.getFESDiagram().setSrc(1);
-						}else{
-							rpcCalculateRequestData.getFESDiagram().setSrc(0);
-						}
-						updateRequestData(rpcCalculateRequestData,deviceInfo);
-					}else if(deviceInfo.getCalculateType()==2){//转速计产
-						pcpCalculateRequestData=new PCPCalculateRequestData();
-						pcpCalculateRequestData.init();
-						pcpCalculateRequestData.setAcqTime(acqTime);
-						updateRPMRequestData(pcpCalculateRequestData,deviceInfo);
-					}
+					RPCCalculateResponseData rpcCalculateResponseData=null;
+					WorkType workType=null;
+					PCPCalculateResponseData pcpCalculateResponseData=null;
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
 					int runStatus=2;
@@ -1803,10 +1922,15 @@ public class DriverAPIController extends BaseController{
 					List<ProtocolItemResolutionData> inputItemItemResolutionDataList=new ArrayList<>();;
 					
 					if(deviceInfo.getCalculateType()==1){
-						RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus);
+						rpcCalculateRequestData=new RPCCalculateRequestData();
+						rpcCalculateRequestData.init();
+						rpcCalculateResponseData=RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus,rpcCalculateRequestData);
 						inputItemItemResolutionDataList=getRPCInputItemData(deviceInfo);
+						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+						}
 					}else if(deviceInfo.getCalculateType()==2){
-						PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus);
+						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 					}
 					
@@ -1819,18 +1943,20 @@ public class DriverAPIController extends BaseController{
 					//排序
 					Collections.sort(protocolItemResolutionDataList);
 					//报警判断
-					int commAlarmLevel=0,runAlarmLevel=0;
+					int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
 					if(alarmInstanceOwnItem!=null){
 						for(int i=0;i<alarmInstanceOwnItem.itemList.size();i++){
 							if(alarmInstanceOwnItem.getItemList().get(i).getType()==3 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase("在线")){
 								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
+							}else if(workType!=null&&alarmInstanceOwnItem.getItemList().get(i).getType()==4 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停抽":"无数据"))){
 								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}
 						}
 					}
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
-					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
+					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,rpcCalculateResponseData);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					
 					//如果满足单组入库间隔或者有报警，保存数据
@@ -1882,7 +2008,9 @@ public class DriverAPIController extends BaseController{
 							UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
 							if(userInfo!=null){
 								int items=3;
-								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,alarmShowStyle);
+								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
+										rpcCalculateResponseData,rpcCalculateRequestData,resultAlarmLevel,
+										alarmShowStyle);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 								System.out.println(webSocketSendDataStr);
 							}
@@ -1898,8 +2026,8 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	public String RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
-			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus){
+	public RPCCalculateResponseData RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
+			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,RPCCalculateRequestData rpcCalculateRequestData){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -1907,6 +2035,7 @@ public class DriverAPIController extends BaseController{
 		
 		Jedis jedis=null;
 		RPCDeviceTodayData deviceTodayData=null;
+		RPCCalculateResponseData rpcCalculateResponseData=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceTodayData".getBytes())){
@@ -1953,8 +2082,7 @@ public class DriverAPIController extends BaseController{
 					if(!StringManagerUtils.timeMatchDate(acqTime, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
 						date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 					}
-					RPCCalculateRequestData rpcCalculateRequestData=new RPCCalculateRequestData();
-					rpcCalculateRequestData.init();
+					
 					
 					if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
 						rpcCalculateRequestData.getFESDiagram().setSrc(1);
@@ -1963,7 +2091,7 @@ public class DriverAPIController extends BaseController{
 					}
 					updateRequestData(rpcCalculateRequestData,deviceInfo);
 					
-					RPCCalculateResponseData rpcCalculateResponseData=null;
+					
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=null;
 					TotalAnalysisRequestData totalAnalysisRequestData=null;
@@ -2671,7 +2799,7 @@ public class DriverAPIController extends BaseController{
 				jedis.close();
 			}
 		}
-		return null;
+		return rpcCalculateResponseData;
 	}
 	
 //	public String RPCDataProcessing2(DeviceInfo deviceInfo,AcqGroup acqGroup,TimeEffResponseData timeEffResponseData,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList){
@@ -4230,7 +4358,7 @@ public class DriverAPIController extends BaseController{
 //						}
 //						
 //						wellBoreChartsData.append("{\"success\":true,");
-//						wellBoreChartsData.append("\"wellName\":\""+deviceInfo.getWellName()+"\",");
+//						wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getWellName()+"\",");
 //						wellBoreChartsData.append("\"acqTime\":\""+rpcCalculateRequestData.getFESDiagram().getAcqTime()+"\",");
 //						wellBoreChartsData.append("\"pointCount\":\""+rpcCalculateRequestData.getFESDiagram().getS().size()+"\",");
 //						wellBoreChartsData.append("\"upperLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
@@ -4277,7 +4405,7 @@ public class DriverAPIController extends BaseController{
 //						
 //						//地面分析图形数据
 //						surfaceChartsData.append("{\"success\":true,");
-//						surfaceChartsData.append("\"wellName\":\""+deviceInfo.getWellName()+"\",");
+//						surfaceChartsData.append("\"deviceName\":\""+deviceInfo.getWellName()+"\",");
 //						surfaceChartsData.append("\"acqTime\":\""+rpcCalculateRequestData.getFESDiagram().getAcqTime()+"\",");
 //						
 //						surfaceChartsData.append("\"upStrokeWattMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
@@ -4320,7 +4448,7 @@ public class DriverAPIController extends BaseController{
 //								}
 //								columns+= "]";
 //								
-//								webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"wellName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+//								webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"deviceName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
 //								webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 //								webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 //								webSocketSendData.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
@@ -4445,12 +4573,13 @@ public class DriverAPIController extends BaseController{
 //		return null;
 //	}
 	
-	public String PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
+	public PCPCalculateResponseData PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
 			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		Jedis jedis=null;
 		PCPDeviceTodayData deviceTodayData=null;
+		PCPCalculateResponseData pcpCalculateResponseData=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			
@@ -4508,7 +4637,7 @@ public class DriverAPIController extends BaseController{
 					}
 					updateRPMRequestData(pcpCalculateRequestData,deviceInfo);
 					
-					PCPCalculateResponseData pcpCalculateResponseData=null;
+					
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=null;
 					TotalAnalysisRequestData totalAnalysisRequestData=null;
@@ -4795,7 +4924,7 @@ public class DriverAPIController extends BaseController{
 			}
 		}
 		
-		return null;
+		return pcpCalculateResponseData;
 	}
 	
 //	public String PCPDataProcessing2(DeviceInfo deviceInfo,AcqGroup acqGroup,TimeEffResponseData timeEffResponseData,String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList){
@@ -5861,7 +5990,7 @@ public class DriverAPIController extends BaseController{
 //								}
 //								columns+= "]";
 //								
-//								webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"wellName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+//								webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"deviceName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
 //								webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 //								webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 //								webSocketSendData.append("\"totalRoot\":[");

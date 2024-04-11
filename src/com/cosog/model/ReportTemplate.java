@@ -183,6 +183,8 @@ public class ReportTemplate  implements Serializable{
 	    private String templateName;
 	    
 	    private int sort;
+	    
+	    private int calculateType;
 
 	    private List<Header> header;
 
@@ -262,6 +264,14 @@ public class ReportTemplate  implements Serializable{
 		}
 		public void setSort(int sort) {
 			this.sort = sort;
+		}
+
+		public int getCalculateType() {
+			return calculateType;
+		}
+
+		public void setCalculateType(int calculateType) {
+			this.calculateType = calculateType;
 		}
 	}
 

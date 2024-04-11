@@ -226,8 +226,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==7){
-                				singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),8,curveConfig);
+                			if(parseInt(col)==9){
+                				singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),10,curveConfig);
                 			}
                 		}
                 	}

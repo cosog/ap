@@ -1,7 +1,7 @@
 Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.ModbusProtocolSingleWellDailyReportTemplateStore',
-    fields: ['templateName','templateCode','deviceType'],
+    fields: ['templateName','templateCode','calculateType'],
     autoLoad: true,
     proxy: {
         type: 'ajax',
@@ -51,9 +51,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
                         hidden: true,
                         dataIndex: 'templateCode'
                     },{
-                        header: 'deviceType',
+                        header: 'calculateType',
                         hidden: true,
-                        dataIndex: 'deviceType'
+                        dataIndex: 'calculateType'
                     }],
                     listeners: {
                     	checkchange: function (node, checked) {
@@ -62,7 +62,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-                        	CreateSingleWellDailyReportTemplateInfoTable(record.data.templateName,record.data.deviceType,record.data.templateCode);
+                        	CreateSingleWellDailyReportTemplateInfoTable(record.data.templateName,record.data.calculateType,record.data.templateCode);
                         }
                     }
 
@@ -108,14 +108,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
         	}
         },
         beforeload: function (store, options) {
-        	var deviceType=0;
         	var reportType=2;
-        	var selectRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
-        	if(selectRow>=0){
-        		deviceType = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceType;
-        	}
         	var new_params = {
-        			deviceType: deviceType,
         			reportType: reportType
                 };
             Ext.apply(store.proxy.extraParams, new_params);

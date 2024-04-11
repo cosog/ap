@@ -753,7 +753,7 @@ public class MemoryDataManagerTask {
 							String manufacturer="";
 							String model="";
 							for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++){
-								if(auxiliaryDeviceAddInfoList.get(i).getDeviceId()==deviceInfo.getId()){
+								if(auxiliaryDeviceAddInfoList.get(i).getMasterId()==deviceInfo.getId()){
 									thisAuxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfoList.get(i));
 								}
 							}

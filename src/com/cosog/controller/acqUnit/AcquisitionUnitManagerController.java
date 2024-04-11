@@ -1139,10 +1139,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getReportTemplateData")
 	public String getReportTemplateData() throws Exception {
 		String reportType = ParamUtils.getParameter(request, "reportType");
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportTemplateData(reportType,code);
+		json = acquisitionUnitItemManagerService.getReportTemplateData(reportType,code,calculateType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1846,7 +1846,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getReportDataTemplateList")
 	public String getReportDataTemplateList() throws IOException {
-		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		String reportType=ParamUtils.getParameter(request, "reportType");
 		String json = acquisitionUnitItemManagerService.getReportDataTemplateList(reportType);
 		response.setContentType("application/json;charset=utf-8");

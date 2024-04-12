@@ -204,8 +204,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==7){
-                				singleWellRangeReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),8,curveConfig);
+                			if(parseInt(col)==9){
+                				singleWellRangeReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),10,curveConfig);
                 			}
                 		}else if(tableType==22){//区域报表汇总计算项
                 			productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);

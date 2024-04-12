@@ -1044,6 +1044,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					reportUnitItem.setItemName(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName());
 					reportUnitItem.setItemCode(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemCode());
 					
+					reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
+					
 					reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
 					reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
 					
@@ -1326,12 +1328,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getReportUnitTotalCalItemsConfigData")
 	public String getReportUnitTotalCalItemsConfigData() throws Exception {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(deviceType,reportType,unitId,classes);
+		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,unitId,classes);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1343,12 +1345,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getReportUnitTimingTotalCalItemsConfigData")
 	public String getReportUnitTimingTotalCalItemsConfigData() throws Exception {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTimingTotalCalItemsConfigData(deviceType,reportType,unitId,classes);
+		json = acquisitionUnitItemManagerService.getReportUnitTimingTotalCalItemsConfigData(calculateType,reportType,unitId,classes);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3123,6 +3125,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				reportUnit.setSingleWellRangeReportTemplate(modbusProtocolReportUnitSaveData.getSingleWellRangeReportTemplate());
 				reportUnit.setSingleWellDailyReportTemplate(modbusProtocolReportUnitSaveData.getSingleWellDailyReportTemplate());
 				reportUnit.setProductionReportTemplate(modbusProtocolReportUnitSaveData.getProductionReportTemplate());
+				reportUnit.setCalculateType(StringManagerUtils.stringToInteger(modbusProtocolReportUnitSaveData.getCalculateType()));
 				if(StringManagerUtils.isNum(modbusProtocolReportUnitSaveData.getSort()) || StringManagerUtils.isNumber(modbusProtocolReportUnitSaveData.getSort())){
 					reportUnit.setSort(StringManagerUtils.stringToInteger(modbusProtocolReportUnitSaveData.getSort()));
 				}else{

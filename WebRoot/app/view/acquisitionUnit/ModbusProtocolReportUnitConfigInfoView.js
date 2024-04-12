@@ -825,12 +825,14 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(calculateType,unitId,uni
 			}
 			if(singleWellRangeReportTemplateContentHandsontableHelper==null || singleWellRangeReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','小数位数','报表曲线','','','','']";
+				var colHeaders="['','序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
+					 	+"{data:'dataSource'}," 
+					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值']}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
@@ -892,11 +894,11 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9,10,11],
+	                    columns: [10,11,12,13],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,85,85,85],
+	                colWidths: [25,30,150,80,60,60,60,60,60,85,85],
 	                columns:singleWellRangeReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -921,9 +923,9 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 		                		if(selectedItem.data.classes==0){
 		                			cellProperties.readOnly = true;
 		                		}else{
-		                			if (visualColIndex >=1 && visualColIndex<=3) {
+		                			if (visualColIndex >=1 && visualColIndex<=4) {
 		    							cellProperties.readOnly = true;
-		    		                }else if(visualColIndex==7){
+		    		                }else if(visualColIndex==9){
 		    		                	cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
 		    		                }
 		                		}
@@ -937,7 +939,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(singleWellRangeReportTemplateContentHandsontableHelper!=null && singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==7)){
+		                	if(row1[0] && (column==9)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
@@ -951,8 +953,8 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 		                				CurveConfigWindow.show();
 		                				
 		                				var curveConfig=null;
-		                				if(column==7 && isNotVal(row1[8])){
-		                					curveConfig=row1[8];
+		                				if(column==9 && isNotVal(row1[10])){
+		                					curveConfig=row1[10];
 		                				}
 		                				var value='ff0000';
 		                				
@@ -1055,7 +1057,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(calculateType,unitId,uni
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
-					 	+"{data:'dataSource',type:'dropdown',strict:true,allowInvalid:false,source:['采集', '计算', '录入']}," 
+					 	+"{data:'dataSource'}," 
 					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值']}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
@@ -1122,7 +1124,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,60,60,85,85,85],
+	                colWidths: [25,30,150,80,60,60,60,60,60,85,85],
 	                columns:singleWellDailyReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1147,7 +1149,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 		                		if(selectedItem.data.classes==0){
 		                			cellProperties.readOnly = true;
 		                		}else{
-		                			if (visualColIndex >=1 && visualColIndex<=3) {
+		                			if (visualColIndex >=1 && visualColIndex<=4) {
 		    							cellProperties.readOnly = true;
 		    		                }else if(visualColIndex==9){
 		    		                	cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg;
@@ -1271,15 +1273,21 @@ function CreateProtocolReportUnitPropertiesInfoTable(data){
 	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
-		item1.title='实例名称';
+		item1.title='单元名称';
 		item1.value=data.text;
 		root.push(item1);
 		
 		var item2={};
 		item2.id=2;
-		item2.title='排序序号';
-		item2.value=data.sort;
+		item2.title='计算类型';
+		item2.value=data.calculateTypeName;
 		root.push(item2);
+		
+		var item3={};
+		item3.id=3;
+		item3.title='排序序号';
+		item3.value=data.sort;
+		root.push(item3);
 	}
 	
 	if(reportUnitPropertiesHandsontableHelper==null || reportUnitPropertiesHandsontableHelper.hot==undefined){
@@ -1323,7 +1331,7 @@ var ReportUnitPropertiesHandsontableHelper = {
 	        	reportUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [2,5,5],
+	        		colWidths: [2,4,6],
 	                columns:reportUnitPropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1354,13 +1362,15 @@ var ReportUnitPropertiesHandsontableHelper = {
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
 			                    	}
-			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
 			                    	}
-			                    
-			                    }else if(visualColIndex === 2 && visualRowIndex===3){
-			                    	
+			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+			                    	this.type = 'dropdown';
+			                    	this.source = ['无','功图计算','转速计产'];
+			                    	this.strict = true;
+			                    	this.allowInvalid = false;
 			                    }
 		                    }
 	                    }else{
@@ -1846,7 +1856,13 @@ function SaveReportUnitData(){
 			}
 			
 //			reportUnitProperties.calculateType=(propertiesData[1][2]=="抽油机井"?0:1);
-			reportUnitProperties.sort=propertiesData[1][2];
+			reportUnitProperties.calculateType=0;
+			if(propertiesData[1][2]=="功图计算"){
+				reportUnitProperties.calculateType=1;
+			}else if(propertiesData[1][2]=="转速计产"){
+				reportUnitProperties.calculateType=2;
+			}
+			reportUnitProperties.sort=propertiesData[2][2];
 		}
 		if(selectedItem.data.classes==1){//保存单元
 			SaveModbusProtocolReportUnitData(reportUnitProperties);
@@ -1926,27 +1942,73 @@ var grantReportTotalCalItemsPermission = function () {
         if ((calItemsData[index][0]+'')==='true') {
         	var item={};
         	item.matrix='0,0,0';
-        	if(reportType==0 || reportType==2){
+        	if(reportType==0){
         		item.itemName = calItemsData[index][2];
-            	
-        		item.itemShowLevel = calItemsData[index][4];
-        		item.itemSort = calItemsData[index][5];
+        		item.totalType=0;
+        		item.itemShowLevel = calItemsData[index][6];
+        		item.itemSort = calItemsData[index][7];
         		
         		var reportCurveConfig=null;
         		var reportCurveConfigStr="";
-    			if(isNotVal(calItemsData[index][7]) && isNotVal(calItemsData[index][8])){
-    				reportCurveConfig=calItemsData[index][8];
+    			if(isNotVal(calItemsData[index][9]) && isNotVal(calItemsData[index][10])){
+    				reportCurveConfig=calItemsData[index][10];
     				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
     			}
         		
         		
         		item.reportCurveConf=reportCurveConfigStr;
             	
-        		item.itemCode = calItemsData[index][9];
-        		item.dataType = calItemsData[index][10];
+        		item.itemCode = calItemsData[index][11];
+        		item.dataType = calItemsData[index][12];
         		
         		if(item.dataType==2){
-        			item.itemPrec=calItemsData[index][6];
+        			item.itemPrec=calItemsData[index][8];
+        			
+        			if(calItemsData[index][5]=='最大值'){
+            			item.totalType=1;
+            		}else if(calItemsData[index][5]=='最小值'){
+            			item.totalType=2;
+            		}else if(calItemsData[index][5]=='平均值'){
+            			item.totalType=3;
+            		}else if(calItemsData[index][5]=='最新值'){
+            			item.totalType=4;
+            		}else if(calItemsData[index][5]=='最旧值'){
+            			item.totalType=5;
+            		}
+        		}
+        	}else if(reportType==2){
+        		item.itemName = calItemsData[index][2];
+        		item.totalType=0;
+        		item.itemShowLevel = calItemsData[index][6];
+        		item.itemSort = calItemsData[index][7];
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(calItemsData[index][9]) && isNotVal(calItemsData[index][10])){
+    				reportCurveConfig=calItemsData[index][10];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+            	
+        		item.itemCode = calItemsData[index][11];
+        		item.dataType = calItemsData[index][12];
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=calItemsData[index][8];
+        			
+        			if(calItemsData[index][5]=='最大值'){
+            			item.totalType=1;
+            		}else if(calItemsData[index][5]=='最小值'){
+            			item.totalType=2;
+            		}else if(calItemsData[index][5]=='平均值'){
+            			item.totalType=3;
+            		}else if(calItemsData[index][5]=='最新值'){
+            			item.totalType=4;
+            		}else if(calItemsData[index][5]=='最旧值'){
+            			item.totalType=5;
+            		}
         		}
         	}else if(reportType==1){
         		item.itemName = calItemsData[index][2];

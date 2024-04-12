@@ -30,7 +30,7 @@ public class CalculateDataManagerTask {
 	public static ScheduledExecutorService RPCTimingCalculateExecutor=null;
 	public static ScheduledExecutorService PCPTimingCalculateExecutor=null;
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
 		timingInitDailyReportData();
 		
@@ -43,7 +43,7 @@ public class CalculateDataManagerTask {
 		PCPTimingCalculate();
 	}
 	
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -63,7 +63,7 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){

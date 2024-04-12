@@ -7,6 +7,7 @@ public class ModbusProtocolReportUnitSaveData {
 	int id;
 	String unitCode;
 	String unitName;
+	String calculateType;
 	String singleWellRangeReportTemplate;
 	String singleWellDailyReportTemplate;
 	String productionReportTemplate;
@@ -76,5 +77,13 @@ public class ModbusProtocolReportUnitSaveData {
 
 	public void setDelidslist(List<String> delidslist) {
 		this.delidslist = delidslist;
+	}
+
+	public String getCalculateType() {
+		return calculateType;
+	}
+
+	public void setCalculateType(String calculateType) {
+		this.calculateType = calculateType;
 	}
 }

@@ -26,42 +26,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                 id: 'formModbusProtocolReportUnit_Id',
                 anchor: '100%',
                 name: "reportUnit.id"
-            },
-//            {
-//				xtype : "hidden",
-//				id : 'modbusProtocolReportUnitDeviceType_Id',
-//				value: 0,
-//				name : "reportUnit.deviceType"
-//			},{
-//            	xtype : "combobox",
-//				fieldLabel : '设备类型<font color=red>*</font>',
-//				id : 'modbusProtocolReportUnitDeviceTypeComb_Id',
-//				anchor : '100%',
-//				triggerAction : 'all',
-//				selectOnFocus : false,
-//			    forceSelection : true,
-//			    value:0,
-//			    allowBlank: false,
-//				editable : false,
-//				store : new Ext.data.SimpleStore({
-//							fields : ['value', 'text'],
-//							data : [[0, '抽油机井'],[1, '螺杆泵井']]
-//						}),
-//				displayField : 'text',
-//				valueField : 'value',
-//				queryMode : 'local',
-//				emptyText : '请选择设备类型',
-//				blankText : '请选择设备类型',
-//				listeners : {
-//					select:function(v,o){
-//						Ext.getCmp("modbusProtocolReportUnitDeviceType_Id").setValue(this.value);
-//						Ext.getCmp("modbusProtocolReportUnitTemplateComb_Id").setValue("");
-//						Ext.getCmp("modbusProtocolReportUnitTemplateComb_Id").setRawValue("");
-//						
-//					}
-//				}
-//            }, 
-            {
+            },{
                 id: 'formModbusProtocolReportUnitName_Id',
                 name: "reportUnit.unitName",
                 fieldLabel: '单元名称<font color=red>*</font>',
@@ -97,6 +62,37 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                     }
                 }
             },{
+				xtype : "hidden",
+				id : 'modbusProtocolReportUnitCalculateType_Id',
+				value: 0,
+				name : "reportUnit.calculateType"
+			},{
+            	xtype : "combobox",
+				fieldLabel : '计算类型<font color=red>*</font>',
+				id : 'modbusProtocolReportUnitCalculateTypeComb_Id',
+				anchor : '100%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:0,
+			    allowBlank: false,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [[0, '无'],[1, '功图计算'],[2, '转速计产']]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : '请选择设备类型',
+				blankText : '请选择设备类型',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("modbusProtocolReportUnitCalculateType_Id").setValue(this.value);
+						
+					}
+				}
+            }, {
 				xtype : "hidden",
 				id : 'modbusUnitReportUnitCode_Id',
 				value: '',

@@ -30,7 +30,7 @@ public class ReportUnitItem implements java.io.Serializable {
 	
 	private Integer dataType;
 	private Integer reportType;
-	
+	private Integer totalType;
 	private Integer prec;
 
 	public ReportUnitItem() {
@@ -41,7 +41,8 @@ public class ReportUnitItem implements java.io.Serializable {
 	/** full constructor */
 	public ReportUnitItem(Integer id, Integer itemId, String itemName, String itemCode, Integer unitId, String matrix,
 			Integer showLevel, Integer sort, 
-			String reportCurveConf, Integer dataType, Integer reportType, Integer prec) {
+			String reportCurveConf, Integer dataType, Integer reportType, Integer totalType,  
+			Integer prec) {
 		super();
 		this.id = id;
 		this.itemId = itemId;
@@ -54,6 +55,7 @@ public class ReportUnitItem implements java.io.Serializable {
 		this.reportCurveConf = reportCurveConf;
 		this.dataType = dataType;
 		this.reportType = reportType;
+		this.totalType = totalType;
 		this.prec=prec;
 	}
 
@@ -191,5 +193,14 @@ public class ReportUnitItem implements java.io.Serializable {
 
 	public void setPrec(Integer prec) {
 		this.prec = prec;
+	}
+
+	@Column(name = "totalType")
+	public Integer getTotalType() {
+		return totalType;
+	}
+
+	public void setTotalType(Integer totalType) {
+		this.totalType = totalType;
 	}
 }

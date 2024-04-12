@@ -29,6 +29,8 @@ public class TotalCalItemsToReportUnitSaveData {
 	    private String itemCode;
 
 	    private String dataType;
+	    
+	    private String totalType;
 
 	    public void setMatrix(String matrix){
 	        this.matrix = matrix;
@@ -95,6 +97,12 @@ public class TotalCalItemsToReportUnitSaveData {
 		}
 		public void setItemPrec(String itemPrec) {
 			this.itemPrec = itemPrec;
+		}
+		public String getTotalType() {
+			return totalType;
+		}
+		public void setTotalType(String totalType) {
+			this.totalType = totalType;
 		}
 	}
 

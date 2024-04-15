@@ -31,6 +31,8 @@ public class TotalCalItemsToReportUnitSaveData {
 	    private String dataType;
 	    
 	    private String totalType;
+	    
+	    private String dataSource;
 
 	    public void setMatrix(String matrix){
 	        this.matrix = matrix;
@@ -103,6 +105,12 @@ public class TotalCalItemsToReportUnitSaveData {
 		}
 		public void setTotalType(String totalType) {
 			this.totalType = totalType;
+		}
+		public String getDataSource() {
+			return dataSource;
+		}
+		public void setDataSource(String dataSource) {
+			this.dataSource = dataSource;
 		}
 	}
 

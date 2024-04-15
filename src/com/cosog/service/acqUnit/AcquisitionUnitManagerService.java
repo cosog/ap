@@ -1725,7 +1725,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String key="acqTotalCalItemList";
 		if("1".equalsIgnoreCase(calculateType)){
-			key="pcpTotalCalItemList";
+			key="rpcTotalCalItemList";
 		}else if("2".equalsIgnoreCase(calculateType)){
 			key="pcpTotalCalItemList";
 		}
@@ -1735,7 +1735,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		Jedis jedis=null;
-		List<byte[]> rpcCalItemSet=null;
+		List<byte[]> calItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(key.getBytes())){
@@ -1747,7 +1747,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					MemoryDataManagerTask.loadAcqTotalCalculateItem();
 				}
 			}
-			rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			calItemSet= jedis.zrange(key.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -1784,8 +1784,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> reportCurveConfList=new ArrayList<String>();
 		
 		List<String> curveStatTypeList=new ArrayList<String>();
+		
+		List<String> itemsTotalTypeList=new ArrayList<String>();
 		if("1".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec "
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
+					+ " decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值','') "
 					+ " from tbl_report_items2unit_conf t "
 					+ " where t.unitid="+unitId+" and t.reportType="+reportType
 					+ " order by t.sort";
@@ -1806,14 +1809,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				reportCurveConfList.add(reportCurveConf);
 				curveStatTypeList.add(obj[7]+"");
-				
 				itemsPrecList.add(obj[8]+"");
+				itemsTotalTypeList.add(obj[9]+"");
 			}
 		}
+		
 		int index=1;
-		if(rpcCalItemSet!=null){
-			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+		if(calItemSet!=null){
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
 				
 				boolean checked=false;
 				String sort="";
@@ -1909,23 +1913,95 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		    Map.Entry<String, DataMapping> entry = iterator.next();
 		    DataMapping dataMappingColumn = entry.getValue();
 		    
-		    result_json.append("{\"checked\":"+false+","
+		    boolean checked=false;
+			String sort="";
+			String showLevel="";
+			String prec="";
+			
+			boolean sumSign=false;
+			boolean averageSign=false;
+			
+			String reportCurveConf="\"\"";
+			String reportCurveConfShowValue="";
+			
+			String curveStatType="";
+			
+			String totalType="";
+
+			checked=StringManagerUtils.existOrNot(itemsCodeList, dataMappingColumn.getMappingColumn(),false);
+			if(checked){
+				for(int k=0;k<itemsList.size();k++){
+					if(itemsCodeList.get(k).equalsIgnoreCase(dataMappingColumn.getMappingColumn())){
+						sort=itemsSortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						prec=itemsPrecList.get(k);
+						totalType=itemsTotalTypeList.get(k);
+						if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+							if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+								sumSign=true;
+							}else{
+								sumSign=false;
+							}
+						}
+						
+						if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+							if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+								averageSign=true;
+							}else{
+								averageSign=false;
+							}
+						}
+						
+						reportCurveConf=reportCurveConfList.get(k);
+						
+						CurveConf reportCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+						}
+						
+						if(reportCurveConfObj!=null){
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+						}
+						
+						
+						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+								curveStatType="合计";
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+								curveStatType="平均";
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+								curveStatType="最大值";
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+								curveStatType="最小值";
+							}
+						}
+						break;
+					}
+				}
+			}
+		    
+			result_json.append("{\"checked\":"+checked+","
 					+ "\"id\":"+(index)+","
 					+ "\"title\":\""+dataMappingColumn.getName()+"\","
 					+ "\"unit\":\"\","
+					+ "\"totalType\":\""+totalType+"\","
 					+ "\"dataSource\":\"采集\","
-					+ "\"showLevel\":\"\","
-					+ "\"sort\":\"\","
-					+ "\"prec\":\"\","
-					+ "\"sumSign\":\"\","
-					+ "\"averageSign\":\"\","
-					+ "\"reportCurveConfShowValue\":\"\","
-					+ "\"reportCurveConf\":\"\","
-					+ "\"curveStatType\":\"\","
-					+ "\"dataType\":\"\","
+					+ "\"showLevel\":\""+showLevel+"\","
+					+ "\"sort\":\""+sort+"\","
+					+ "\"prec\":\""+prec+"\","
+					+ "\"sumSign\":"+sumSign+","
+					+ "\"averageSign\":"+averageSign+","
+					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+					+ "\"reportCurveConf\":"+reportCurveConf+","
+					+ "\"curveStatType\":\""+curveStatType+"\","
+					+ "\"dataType\":2,"
 					+ "\"code\":\""+dataMappingColumn.getMappingColumn()+"\","
 					+ "\"remark\":\"\""
 					+ "},");
+			index++;
+		
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -2231,26 +2307,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportInstanceTotalCalItemsConfigData(String deviceType,String unitId,String reportType){
+	public String getReportInstanceTotalCalItemsConfigData(String calculateType,String unitId,String reportType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="rpcTotalCalItemList";
-		if("1".equalsIgnoreCase(deviceType)){
+		String key="acqTotalCalItemList";
+		if("1".equalsIgnoreCase(calculateType)){
+			key="rpcTotalCalItemList";
+		}else if("2".equalsIgnoreCase(calculateType)){
 			key="pcpTotalCalItemList";
 		}
 		Jedis jedis=null;
-		List<byte[]> rpcCalItemSet=null;
+		List<byte[]> calItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(key.getBytes())){
-				if("1".equalsIgnoreCase(deviceType)){
+				if("1".equalsIgnoreCase(calculateType)){
+					MemoryDataManagerTask.loadRPCTotalCalculateItem();
+				}else if("2".equalsIgnoreCase(calculateType)){
 					MemoryDataManagerTask.loadPCPTotalCalculateItem();
 				}else{
-					MemoryDataManagerTask.loadRPCTotalCalculateItem();
+					MemoryDataManagerTask.loadAcqTotalCalculateItem();
 				}
 			}
-			rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			calItemSet= jedis.zrange(key.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -2274,7 +2354,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec "
+		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec,"
+				+ "t.dataSource, decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值','') as totalType"
 				+ " from tbl_report_items2unit_conf t "
 				+ " where t.unitid="+unitId+" and t.reportType="+reportType
 				+ " order by t.sort";
@@ -2284,10 +2365,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(i);
 			String unit="";
 			String dataType="\"\"";
-			if(rpcCalItemSet!=null){
+			if(calItemSet!=null){
 				CalItem calItem=null;
-				for(byte[] rpcCalItemByteArr:rpcCalItemSet){
-					calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				for(byte[] calItemByteArr:calItemSet){
+					calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
 					if( (obj[1]+"").equalsIgnoreCase(calItem.getCode()) ){
 						unit=calItem.getUnit();
 						dataType=calItem.getDataType()+"";
@@ -2351,6 +2432,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+obj[0]+""+"\","
 					+ "\"unit\":\""+unit+"\","
+					+ "\"dataSource\":\""+obj[9]+"\","
+					+ "\"totalType\":\""+obj[10]+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","
 					+ "\"sort\":\""+obj[2]+""+"\","
 					+ "\"prec\":\""+obj[8]+""+"\","
@@ -2371,26 +2454,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportInstanceTimingTotalCalItemsConfigData(String deviceType,String unitId,String reportType){
+	public String getReportInstanceTimingTotalCalItemsConfigData(String calculateType,String unitId,String reportType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="rpcTimingTotalCalItemList";
-		if("1".equalsIgnoreCase(deviceType)){
+		String key="acqTimingTotalCalItemList";
+		if("1".equalsIgnoreCase(calculateType)){
+			key="rpcTimingTotalCalItemList";
+		}else if("2".equalsIgnoreCase(calculateType)){
 			key="pcpTimingTotalCalItemList";
 		}
 		Jedis jedis=null;
-		List<byte[]> rpcCalItemSet=null;
+		List<byte[]> calItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(key.getBytes())){
-				if("1".equalsIgnoreCase(deviceType)){
+				if("1".equalsIgnoreCase(calculateType)){
+					MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
+				}else if("2".equalsIgnoreCase(calculateType)){
 					MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
 				}else{
-					MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
+					MemoryDataManagerTask.loadAcqTimingTotalCalculateItem();
 				}
 			}
-			rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			calItemSet= jedis.zrange(key.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -2414,7 +2501,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec "
+		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec,"
+				+ "t.dataSource, decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值','') as totalType"
 				+ " from tbl_report_items2unit_conf t "
 				+ " where t.unitid="+unitId+" and t.reportType="+reportType
 				+ " order by t.sort";
@@ -2424,10 +2512,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(i);
 			String unit="";
 			String dataType="\"\"";
-			if(rpcCalItemSet!=null){
+			if(calItemSet!=null){
 				CalItem calItem=null;
-				for(byte[] rpcCalItemByteArr:rpcCalItemSet){
-					calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				for(byte[] calItemByteArr:calItemSet){
+					calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
 					if( (obj[1]+"").equalsIgnoreCase(calItem.getCode()) ){
 						unit=calItem.getUnit();
 						dataType=calItem.getDataType()+"";
@@ -2491,6 +2579,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+obj[0]+""+"\","
 					+ "\"unit\":\""+unit+"\","
+					+ "\"dataSource\":\""+obj[9]+"\","
+					+ "\"totalType\":\""+obj[10]+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","
 					+ "\"sort\":\""+obj[2]+""+"\","
 					+ "\"prec\":\""+obj[8]+""+"\","
@@ -4557,7 +4647,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort,"
-				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate "
+				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate,"
+				+ " t2.calculateType "
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id "
 				+ " order by t.sort,t.id";
@@ -4575,6 +4666,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
 			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
 			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"expanded\": true,");
 			tree_json.append("\"children\": [");
@@ -4584,6 +4676,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
 			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
 			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
 			tree_json.append("\"iconCls\": \"acqUnit\","); 
 			tree_json.append("\"leaf\": true}");
 			tree_json.append("]");

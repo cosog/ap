@@ -115,14 +115,14 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         	}
                         	
                         	if(reportType==0){
-                    			CreateReportInstanceSingleWellRangeReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                    			CreateSingleWellRangeReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                    			CreateReportInstanceSingleWellRangeReportTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                    			CreateSingleWellRangeReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                         	}else if(reportType==2){
-                    			CreateReportInstanceSingleWellDailyReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                    			CreateSingleWellDailyReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                    			CreateReportInstanceSingleWellDailyReportTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                    			CreateSingleWellDailyReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                         	}else{
-                        		CreateReportInstanceProductionTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                        		CreateProductionReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                        		CreateReportInstanceProductionTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                        		CreateProductionReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                         	}
                         	
                         	CreateProtocolReportInstancePropertiesInfoTable(record.data);

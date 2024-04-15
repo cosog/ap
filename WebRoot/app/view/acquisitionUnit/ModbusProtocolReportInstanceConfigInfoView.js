@@ -249,7 +249,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                 				var selectedUnitId=0;
                             	if(instanceTreeSelection.length>0){
                 					var record=instanceTreeSelection[0];
-                					if(record.data.classes==0){//选中设备类型deviceType
+                					if(record.data.classes==0){
                                 		if(isNotVal(record.data.children) && record.data.children.length>0){
                                 			selectedUnitId=record.data.children[0].unitId;
                                 			selectedInstanceName=record.data.children[0].text;
@@ -278,11 +278,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                                 	}
                                 	
                                 	if(reportType==0){
-                            			CreateReportInstanceSingleWellRangeReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                            			CreateSingleWellRangeReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                            			CreateReportInstanceSingleWellRangeReportTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                            			CreateSingleWellRangeReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                                 	}else if(reportType==2){
-                            			CreateReportInstanceSingleWellDailyReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                            			CreateSingleWellDailyReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                            			CreateReportInstanceSingleWellDailyReportTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                            			CreateSingleWellDailyReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                                 	}
                 				}
                             }
@@ -377,7 +377,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
             				var selectedUnitId=0;
                         	if(instanceTreeSelection.length>0){
             					var record=instanceTreeSelection[0];
-            					if(record.data.classes==0){//选中设备类型deviceType
+            					if(record.data.classes==0){
                             		if(isNotVal(record.data.children) && record.data.children.length>0){
                             			selectedUnitId=record.data.children[0].unitId;
                             			selectedInstanceName=record.data.children[0].text;
@@ -412,14 +412,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                             	}
                             	
                             	if(reportType==0){
-                        			CreateReportInstanceSingleWellRangeReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                        			CreateSingleWellRangeReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                        			CreateReportInstanceSingleWellRangeReportTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                        			CreateSingleWellRangeReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                             	}else if(reportType==2){
-                        			CreateReportInstanceSingleWellDailyReportTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                        			CreateSingleWellDailyReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                        			CreateReportInstanceSingleWellDailyReportTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                        			CreateSingleWellDailyReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                             	}else{
-                            		CreateReportInstanceProductionTemplateInfoTable(record.data.deviceType,selectedTemplateCode,selectedInstanceName);
-                            		CreateProductionReportInstanceTotalItemsInfoTable(record.data.deviceType,selectedUnitId,selectedInstanceName);
+                            		CreateReportInstanceProductionTemplateInfoTable(record.data.calculateType,selectedTemplateCode,selectedInstanceName);
+                            		CreateProductionReportInstanceTotalItemsInfoTable(record.data.calculateType,selectedUnitId,selectedInstanceName);
                             	}
             				}
                         }
@@ -431,7 +431,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
     }
 });
 
-function CreateReportInstanceSingleWellRangeReportTemplateInfoTable(deviceType,code,selectedInstanceName){
+function CreateReportInstanceSingleWellRangeReportTemplateInfoTable(calculateType,code,selectedInstanceName){
 	Ext.getCmp("ReportInstanceSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -459,7 +459,7 @@ function CreateReportInstanceSingleWellRangeReportTemplateInfoTable(deviceType,c
 		},
 		params: {
 			reportType:0,
-			deviceType:deviceType,
+			calculateType:calculateType,
 			code:code
         }
 	});
@@ -623,7 +623,7 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 	    }
 	};
 
-function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(deviceType,selectedUnitId,selectedInstanceName){
+function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(calculateType,selectedUnitId,selectedInstanceName){
 	Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -638,11 +638,13 @@ function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(deviceType,selec
 			}
 			if(reportInstanceSingleWellRangeReportContentHandsontableHelper==null || reportInstanceSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellRangeReportContentHandsontableHelper = ReportInstanceSingleWellRangeReportContentHandsontableHelper.createNew("ReportInstanceSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','数据顺序','小数位数','报表曲线','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
+					 	+"{data:'dataSource'}," 
+					 	+"{data:'totalType' }," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellRangeReportContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellRangeReportContentHandsontableHelper);}}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellRangeReportContentHandsontableHelper);}}," 
@@ -663,7 +665,7 @@ function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(deviceType,selec
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType:deviceType,
+			calculateType:calculateType,
 			unitId:selectedUnitId,
 			reportType:0
         }
@@ -702,11 +704,11 @@ var ReportInstanceSingleWellRangeReportContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7,8,9],
+	                    columns: [9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [30,140,80,60,60,85,85,85],
+	                colWidths: [30,140,80,60,60,60,60,85,85,85],
 	                columns:reportInstanceSingleWellRangeReportContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -724,7 +726,7 @@ var ReportInstanceSingleWellRangeReportContentHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6){
+	                    if(visualColIndex==8){
 		                	cellProperties.renderer = reportInstanceSingleWellRangeReportContentHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;
@@ -746,7 +748,7 @@ var ReportInstanceSingleWellRangeReportContentHandsontableHelper = {
 	    }
 };
 
-function CreateReportInstanceSingleWellDailyReportTemplateInfoTable(deviceType,code,selectedInstanceName){
+function CreateReportInstanceSingleWellDailyReportTemplateInfoTable(calculateType,code,selectedInstanceName){
 	Ext.getCmp("ReportInstanceSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -774,7 +776,7 @@ function CreateReportInstanceSingleWellDailyReportTemplateInfoTable(deviceType,c
 		},
 		params: {
 			reportType:2,
-			deviceType:deviceType,
+			calculateType:calculateType,
 			code:code
         }
 	});
@@ -938,7 +940,7 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 	    }
 	};
 
-function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(deviceType,selectedUnitId,selectedInstanceName){
+function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(calculateType,selectedUnitId,selectedInstanceName){
 	Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -953,11 +955,13 @@ function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(deviceType,selec
 			}
 			if(reportInstanceSingleWellDailyReportContentHandsontableHelper==null || reportInstanceSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellDailyReportContentHandsontableHelper = ReportInstanceSingleWellDailyReportContentHandsontableHelper.createNew("ReportInstanceSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','数据顺序','小数位数','报表曲线','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
+					 	+"{data:'dataSource'}," 
+					 	+"{data:'totalType'}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellDailyReportContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellDailyReportContentHandsontableHelper);}}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportInstanceSingleWellDailyReportContentHandsontableHelper);}}," 
@@ -978,7 +982,7 @@ function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(deviceType,selec
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType:deviceType,
+			calculateType:calculateType,
 			unitId:selectedUnitId,
 			reportType:2
         }
@@ -1017,11 +1021,11 @@ var ReportInstanceSingleWellDailyReportContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7,8,9],
+	                    columns: [9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [30,140,80,60,60,85,85,85],
+	                colWidths: [30,140,80,60,60,60,60,85,85,85],
 	                columns:reportInstanceSingleWellDailyReportContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1039,7 +1043,7 @@ var ReportInstanceSingleWellDailyReportContentHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6){
+	                    if(visualColIndex==8){
 		                	cellProperties.renderer = reportInstanceSingleWellDailyReportContentHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;
@@ -1061,7 +1065,7 @@ var ReportInstanceSingleWellDailyReportContentHandsontableHelper = {
 	    }
 };
 
-function CreateProductionReportInstanceTotalItemsInfoTable(deviceType,selectedUnitId,selectedInstanceName){
+function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selectedUnitId,selectedInstanceName){
 	Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1076,11 +1080,13 @@ function CreateProductionReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','数据顺序','小数位数','求和','求平均','报表曲线','曲线统计类型','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','报表曲线','曲线统计类型','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
+					 	+"{data:'dataSource'}," 
+					 	+"{data:'totalType'}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						
@@ -1110,7 +1116,7 @@ function CreateProductionReportInstanceTotalItemsInfoTable(deviceType,selectedUn
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-			deviceType:deviceType,
+			calculateType:calculateType,
 			unitId:selectedUnitId,
 			reportType:1
         }
@@ -1149,11 +1155,11 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [10,11,12],
+	                    columns: [12,13,14],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [30,140,80,60,60,60,30,45,85,85,70],
+	                colWidths: [30,140,80,60,60,60,60,60,30,45,85,85,70],
 	                columns:reportInstanceProductionTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1171,7 +1177,7 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==8){
+	                    if(visualColIndex==10){
 		                	cellProperties.renderer = reportInstanceProductionTemplateContentHandsontableHelper.addCurveBg;
 		                }
 	                    return cellProperties;
@@ -1369,9 +1375,9 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
 			                    	}
 			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
-			                    	var deviceType='';
+			                    	var calculateType='';
 			                    	if(isNotVal(protocolReportInstancePropertiesHandsontableHelper.hot)){
-			                    		deviceType=protocolReportInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
+			                    		calculateType=protocolReportInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
 			                    	}
 			                    	
 		                    		this.type = 'dropdown';
@@ -1398,7 +1404,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	        return protocolReportInstancePropertiesHandsontableHelper;
 	    }
 };
-function CreateReportInstanceProductionTemplateInfoTable(deviceType,code,selectedInstanceName){
+function CreateReportInstanceProductionTemplateInfoTable(calculateType,code,selectedInstanceName){
 	Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1425,7 +1431,7 @@ function CreateReportInstanceProductionTemplateInfoTable(deviceType,code,selecte
 		},
 		params: {
 			reportType:1,
-			deviceType:deviceType,
+			calculateType:calculateType,
 			code:code
         }
 	});

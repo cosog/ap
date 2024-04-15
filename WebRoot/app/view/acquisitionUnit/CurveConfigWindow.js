@@ -215,8 +215,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==9){
-                				productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),11,curveConfig);
+                			if(parseInt(col)==11){
+                				productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),13,curveConfig);
                 			}
                 		}else if(tableType==23){//单井单日报表汇总计算项
                 			singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);

@@ -1600,12 +1600,14 @@ function CreateproductionReportTotalItemsInfoTable(calculateType,unitId,unitName
 			}
 			if(productionReportTemplateContentHandsontableHelper==null || productionReportTemplateContentHandsontableHelper.hot==undefined){
 				productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','小数位数','求和','求平均','报表曲线','曲线统计类型','','','','']";
+				var colHeaders="['','序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','报表曲线','曲线统计类型','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
+					 	+"{data:'dataSource'}," 
+					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值']}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						
@@ -1675,11 +1677,11 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [11,12,13,14],
+	                    columns: [13,14,15,16],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,30,140,80,60,60,60,30,45,85,70],
+	                colWidths: [25,30,150,60,60,70,60,60,60,30,45,85,70],
 	                columns:productionReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1704,9 +1706,9 @@ var ProductionReportTemplateContentHandsontableHelper = {
 		                		if(selectedItem.data.classes==0){
 		                			cellProperties.readOnly = true;
 		                		}else{
-		                			if (visualColIndex >=1 && visualColIndex<=3) {
+		                			if (visualColIndex >=1 && visualColIndex<=4) {
 		    							cellProperties.readOnly = true;
-		    		                }else if(visualColIndex==9){
+		    		                }else if(visualColIndex==11){
 		    		                	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCurveBg;
 		    		                }
 		                		}
@@ -1720,7 +1722,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                afterBeginEditing:function(row,column){
 	                	if(productionReportTemplateContentHandsontableHelper!=null && productionReportTemplateContentHandsontableHelper.hot!=undefined){
 	                		var row1=productionReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
-		                	if(row1[0] && (column==9)){
+		                	if(row1[0] && (column==11)){
 		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                		if(reportUnitTreeSelectedRow!=''){
 		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
@@ -1734,8 +1736,8 @@ var ProductionReportTemplateContentHandsontableHelper = {
 		                				CurveConfigWindow.show();
 		                				
 		                				var curveConfig=null;
-		                				if(column==9 && isNotVal(row1[11])){
-		                					curveConfig=row1[11];
+		                				if(column==11 && isNotVal(row1[13])){
+		                					curveConfig=row1[13];
 		                				}
 		                				var value='ff0000';
 		                				
@@ -1866,7 +1868,7 @@ function SaveReportUnitData(){
 		}
 		if(selectedItem.data.classes==1){//保存单元
 			SaveModbusProtocolReportUnitData(reportUnitProperties);
-			grantReportTotalCalItemsPermission();
+			grantReportTotalCalItemsPermission(reportUnitProperties.calculateType);
 		}
 	}
 };
@@ -1896,7 +1898,7 @@ function SaveModbusProtocolReportUnitData(saveData){
 	});
 }
 
-var grantReportTotalCalItemsPermission = function () {
+var grantReportTotalCalItemsPermission = function (calculateType) {
 	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 	var reportType=0;
 	var calItemsData = null;
@@ -1945,6 +1947,7 @@ var grantReportTotalCalItemsPermission = function () {
         	if(reportType==0){
         		item.itemName = calItemsData[index][2];
         		item.totalType=0;
+        		item.dataSource=calItemsData[index][4];
         		item.itemShowLevel = calItemsData[index][6];
         		item.itemSort = calItemsData[index][7];
         		
@@ -1964,21 +1967,24 @@ var grantReportTotalCalItemsPermission = function () {
         		if(item.dataType==2){
         			item.itemPrec=calItemsData[index][8];
         			
-        			if(calItemsData[index][5]=='最大值'){
-            			item.totalType=1;
-            		}else if(calItemsData[index][5]=='最小值'){
-            			item.totalType=2;
-            		}else if(calItemsData[index][5]=='平均值'){
-            			item.totalType=3;
-            		}else if(calItemsData[index][5]=='最新值'){
-            			item.totalType=4;
-            		}else if(calItemsData[index][5]=='最旧值'){
-            			item.totalType=5;
-            		}
+        			if(item.dataSource=='采集'){
+        				if(calItemsData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(calItemsData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(calItemsData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(calItemsData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(calItemsData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}
+        			}
         		}
         	}else if(reportType==2){
         		item.itemName = calItemsData[index][2];
         		item.totalType=0;
+        		item.dataSource=calItemsData[index][4];
         		item.itemShowLevel = calItemsData[index][6];
         		item.itemSort = calItemsData[index][7];
         		
@@ -1998,61 +2004,78 @@ var grantReportTotalCalItemsPermission = function () {
         		if(item.dataType==2){
         			item.itemPrec=calItemsData[index][8];
         			
-        			if(calItemsData[index][5]=='最大值'){
-            			item.totalType=1;
-            		}else if(calItemsData[index][5]=='最小值'){
-            			item.totalType=2;
-            		}else if(calItemsData[index][5]=='平均值'){
-            			item.totalType=3;
-            		}else if(calItemsData[index][5]=='最新值'){
-            			item.totalType=4;
-            		}else if(calItemsData[index][5]=='最旧值'){
-            			item.totalType=5;
-            		}
+        			if(item.dataSource=='采集'){
+        				if(calItemsData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(calItemsData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(calItemsData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(calItemsData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(calItemsData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}
+        			}
         		}
         	}else if(reportType==1){
         		item.itemName = calItemsData[index][2];
-            	
-        		item.itemShowLevel = calItemsData[index][4];
-        		item.itemSort = calItemsData[index][5];
+        		
+        		item.totalType=0;
+        		item.dataSource=calItemsData[index][4];
+        		item.itemShowLevel = calItemsData[index][6];
+        		item.itemSort = calItemsData[index][7];
         		
         		item.sumSign='0';
-        		if((calItemsData[index][7]+'')==='true'){
+        		if((calItemsData[index][9]+'')==='true'){
         			item.sumSign='1';
         		}
         		
         		item.averageSign='0';
-        		if((calItemsData[index][8]+'')==='true'){
+        		if((calItemsData[index][10]+'')==='true'){
         			item.averageSign='1';
         		}
         		
         		var reportCurveConfig=null;
         		var reportCurveConfigStr="";
-    			if(isNotVal(calItemsData[index][9]) && isNotVal(calItemsData[index][11])){
-    				reportCurveConfig=calItemsData[index][11];
+    			if(isNotVal(calItemsData[index][11]) && isNotVal(calItemsData[index][13])){
+    				reportCurveConfig=calItemsData[index][13];
     				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
     			}
         		
         		
         		item.reportCurveConf=reportCurveConfigStr;
         		
-        		item.curveStatType = calItemsData[index][10];
-        		if(calItemsData[index][10]=='合计'){
+        		item.curveStatType = calItemsData[index][12];
+        		if(calItemsData[index][12]=='合计'){
         			item.curveStatType='1';
-        		}else if(calItemsData[index][9]=='平均'){
+        		}else if(calItemsData[index][12]=='平均'){
         			item.curveStatType='2';
-        		}else if(calItemsData[index][9]=='最大值'){
+        		}else if(calItemsData[index][12]=='最大值'){
         			item.curveStatType='3';
-        		}else if(calItemsData[index][9]=='最小值'){
+        		}else if(calItemsData[index][12]=='最小值'){
         			item.curveStatType='4';
         		}
-        		
             	
-        		item.itemCode = calItemsData[index][12];
-        		item.dataType = calItemsData[index][13]+"";
+        		item.itemCode = calItemsData[index][14];
+        		item.dataType = calItemsData[index][15]+"";
         		
         		if(item.dataType==2){
-        			item.itemPrec=calItemsData[index][6];
+        			item.itemPrec=calItemsData[index][8];
+        			
+        			if(item.dataSource=='采集'){
+        				if(calItemsData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(calItemsData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(calItemsData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(calItemsData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(calItemsData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}
+        			}
         		}
         	}
         	saveData.itemList.push(item);
@@ -2064,6 +2087,7 @@ var grantReportTotalCalItemsPermission = function () {
         params: {
             unitId: unitId,
             reportType: reportType,
+            calculateType: calculateType,
             saveData: JSON.stringify(saveData)
         },
         success: function (response) {

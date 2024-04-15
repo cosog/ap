@@ -32,6 +32,8 @@ public class ReportUnitItem implements java.io.Serializable {
 	private Integer reportType;
 	private Integer totalType;
 	private Integer prec;
+	
+	private String dataSource;
 
 	public ReportUnitItem() {
 		super();
@@ -202,5 +204,14 @@ public class ReportUnitItem implements java.io.Serializable {
 
 	public void setTotalType(Integer totalType) {
 		this.totalType = totalType;
+	}
+
+	@Column(name = "dataSource")
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
 	}
 }

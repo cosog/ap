@@ -120,10 +120,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 
 	
-	public String getRPCDailyReportData(Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+	public String getRPCDailyReportData(Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String sql="select t.id, t.wellName,to_char(t.caldate,'yyyy-mm-dd') as calDate,"
+		String sql="select t.id, t.deviceName,to_char(t.caldate,'yyyy-mm-dd') as calDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
 				+ " t.resultName,t.optimizationSuggestion,";
@@ -140,15 +140,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			+ " from viw_rpcdailycalculationdata t "
 			+ " where t.org_id in ("+orgId+") "
 			+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName='"+wellName+"'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName='"+deviceName+"'";
 		}
-		sql+=" order by t.sortNum, t.wellName,t.calDate";
+		sql+=" order by t.sortNum, t.deviceName,t.calDate";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		String columns= "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\"},"
 				+ "{ \"header\":\"日期\",\"dataIndex\":\"calculateDate\",width:100},"
 				
 				+ "{ \"header\":\"通信时间(h)\",\"dataIndex\":\"commTime\"},"
@@ -176,7 +176,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"备注\",\"dataIndex\":\"remark\"}"
 				+ "]";
 		
-		result_json.append("{ \"success\":true,\"wellName\":\""+wellName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"columns\":"+columns+",");
+		result_json.append("{ \"success\":true,\"deviceName\":\""+deviceName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
 		result_json.append("\"totalRoot\":[");
 		float sumCommTime=0;
@@ -221,7 +221,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
  		   		waterProductionRecords+=1;
  		   	}
     	    result_json.append("{\"id\":"+obj[0]+",");
-    	    result_json.append("\"wellName\":\""+obj[1]+"\",");
+    	    result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
@@ -265,7 +265,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		
 		result_json.append("{\"id\":\"合计\",");
-	    result_json.append("\"wellName\":\"\",");
+	    result_json.append("\"deviceName\":\"\",");
 		result_json.append("\"calculateDate\":\"\",");
 		result_json.append("\"commTime\":\""+StringManagerUtils.stringToFloat(sumCommTime+"",2)+"\",");
 		result_json.append("\"commRange\":\"\",");
@@ -293,7 +293,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append("\"remark\":\"\"},");
 		
 		result_json.append("{\"id\":\"平均\",");
-	    result_json.append("\"wellName\":\"\",");
+	    result_json.append("\"deviceName\":\"\",");
 		result_json.append("\"calculateDate\":\"\",");
 		result_json.append("\"commTime\":\""+averageCommTime+"\",");
 		result_json.append("\"commRange\":\"\",");
@@ -328,10 +328,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportRPCDailyReportData(Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+	public String exportRPCDailyReportData(Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String sql="select t.id, t.wellName,to_char(t.caldate,'yyyy-mm-dd') as calDate,"
+		String sql="select t.id, t.deviceName,to_char(t.caldate,'yyyy-mm-dd') as calDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
 				+ " t.resultName,t.optimizationSuggestion,";
@@ -348,10 +348,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			+ " from viw_rpcdailycalculationdata t "
 			+ " where t.org_id in ("+orgId+") "
 			+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName='"+wellName+"'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName='"+deviceName+"'";
 		}
-		sql+=" order by t.sortNum, t.wellName,t.calDate";
+		sql+=" order by t.sortNum, t.deviceName,t.calDate";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		
@@ -359,7 +359,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"id\":"+obj[0]+",");
-    	    result_json.append("\"wellName\":\""+obj[1]+"\",");
+    	    result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
@@ -392,7 +392,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public boolean exportRPCDailyReportData(User user,HttpServletResponse response,String fileName,String title,
-			Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+			Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			ConfigFile configFile=Config.getInstance().configFile;
@@ -403,7 +403,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}else{
 				productionUnit="m^3/d"; 
 			}
-			String sql="select t.id, t.wellName,to_char(t.caldate,'yyyy-mm-dd') as calDate,"
+			String sql="select t.id, t.deviceName,to_char(t.caldate,'yyyy-mm-dd') as calDate,"
 					+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 					+ " t.runTime,t.runRange, t.runTimeEfficiency,"
 					+ " t.resultName,t.optimizationSuggestion,";
@@ -420,10 +420,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " from viw_rpcdailycalculationdata t "
 				+ " where t.org_id in ("+orgId+") "
 				+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+=" and  t.wellName='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and  t.deviceName='"+deviceName+"'";
 			}
-			sql+=" order by t.sortNum, t.wellName,t.calDate";
+			sql+=" order by t.sortNum, t.deviceName,t.calDate";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			
 			List<List<Object>> sheetDataList = new ArrayList<>();
@@ -505,7 +505,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				record = new ArrayList<>();
 				result_json = new StringBuffer();
 				result_json.append("{\"id\":"+(i+1)+",");
-	    	    result_json.append("\"wellName\":\""+obj[1]+"\",");
+	    	    result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 				result_json.append("\"commTime\":\""+obj[3]+"\",");
 				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
@@ -532,7 +532,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				record.add(jsonObject.getString("id"));
-				record.add(jsonObject.getString("wellName"));
+				record.add(jsonObject.getString("deviceName"));
 				record.add(jsonObject.getString("calculateDate"));
 				record.add(jsonObject.getString("commTime"));
 				record.add(jsonObject.getString("commRange"));
@@ -670,10 +670,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String showPCPDailyReportData(Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+	public String showPCPDailyReportData(Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String sql="select t.id, t.wellName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
+		String sql="select t.id, t.deviceName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
@@ -688,10 +688,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " from viw_pcpdailycalculationdata t "
 				+ " where t.org_id in ("+orgId+") "
 				+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName='"+wellName+"'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName='"+deviceName+"'";
 		}
-		sql+=" order by t.sortNum, t.wellName,t.calDate";
+		sql+=" order by t.sortNum, t.deviceName,t.calDate";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		
@@ -715,7 +715,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		String columns= "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\"},"
 				+ "{ \"header\":\"日期\",\"dataIndex\":\"calculateDate\",width:100},"
 				
 				+ "{ \"header\":\"通信时间(h)\",\"dataIndex\":\"commTime\"},"
@@ -739,7 +739,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"备注\",\"dataIndex\":\"remark\"}"
 				
 		        + "]";
-		result_json.append("{ \"success\":true,\"wellName\":\""+wellName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"columns\":"+columns+",");
+		result_json.append("{ \"success\":true,\"deviceName\":\""+deviceName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
@@ -768,7 +768,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
  		   	}
 			
 			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
@@ -806,7 +806,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		result_json.append("{\"id\":\"合计\",");
-		result_json.append("\"wellName\":\"\",");
+		result_json.append("\"deviceName\":\"\",");
 		result_json.append("\"calculateDate\":\"\",");
 		result_json.append("\"commTime\":\""+StringManagerUtils.stringToFloat(sumCommTime+"",2)+"\",");
 		result_json.append("\"commRange\":\"\",");
@@ -828,7 +828,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		
 		result_json.append("{\"id\":\"平均\",");
-		result_json.append("\"wellName\":\"\",");
+		result_json.append("\"deviceName\":\"\",");
 		result_json.append("\"calculateDate\":\"\",");
 		result_json.append("\"commTime\":\""+averageCommTime+"\",");
 		result_json.append("\"commRange\":\"\",");
@@ -855,7 +855,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getSingleWellRangeReportData(Page pager, String orgId,String deviceType,String reportType,String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getSingleWellRangeReportData(Page pager, String orgId,String deviceType,String reportType,String deviceId,String deviceName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
 		String reportTemplateCode="";
@@ -870,7 +870,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
-				+ " and t.id="+wellId;
+				+ " and t.id="+deviceId;
 		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 		if(reportTemplateCodeList.size()>0){
 			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
@@ -895,7 +895,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
 					String header=template.getHeader().get(0).getTitle().get(i);
 					if(StringManagerUtils.isNotNull(header)){
-						template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+						template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
 					}
 				}
 			}
@@ -903,8 +903,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String labelInfoStr="";
 				String[] labelInfoArr=null;
 				String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
-						+ " where t.wellid="+wellId+" "
-						+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+						+ " where t.deviceId="+deviceId+" "
+						+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
 				List<?> labelInfoList = this.findCallSql(labelInfoSql);
 				if(labelInfoList.size()>0){
 					labelInfoStr=labelInfoList.get(0).toString();
@@ -975,7 +975,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 				}
 			}
-			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 			sqlBuff.append(" order by t.calDate");
 			
@@ -1024,7 +1024,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}else{
 			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
 		}
-		result_json.append(",\"wellName\":\""+wellName+"\"");
+		result_json.append(",\"deviceName\":\""+deviceName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
 		result_json.append(",\"endDate\":\""+endDate+"\"");
 		result_json.append("}");
@@ -1033,7 +1033,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public boolean exportSingleWellRangeReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
-			String wellId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+			String deviceId,String deviceName,String startDate,String endDate,int userNo)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
@@ -1041,8 +1041,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCode="";
 			String reportUnitId="";
 			int headerRowCount=0;
-			String title=wellName+"井区间生产报表";
-			String fileName=wellName+"井区间生产报表";
+			String title=deviceName+"井区间生产报表";
+			String fileName=deviceName+"井区间生产报表";
 			String deviceTableName="tbl_rpcdevice";
 			String tableName="VIW_RPCDAILYCALCULATIONDATA";
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -1053,7 +1053,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
-					+ " and t.id="+wellId;
+					+ " and t.id="+deviceId;
 			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 			if(reportTemplateCodeList.size()>0){
 				Object[] obj=(Object[]) reportTemplateCodeList.get(0);
@@ -1075,8 +1075,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
 						String header=template.getHeader().get(0).getTitle().get(i);
 						if(StringManagerUtils.isNotNull(header)){
-							title=header.replaceAll("wellNameLabel", wellName);
-//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+							title=header.replaceAll("deviceNameLabel", deviceName);
+//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
 						}
 					}
 				}
@@ -1085,8 +1085,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					String labelInfoStr="";
 					String[] labelInfoArr=null;
 					String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
-							+ " where t.wellid="+wellId+" "
-							+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.wellid="+wellId+")";
+							+ " where t.deviceId="+deviceId+" "
+							+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.deviceId="+deviceId+")";
 					List<?> labelInfoList = this.findCallSql(labelInfoSql);
 					if(labelInfoList.size()>0){
 						labelInfoStr=labelInfoList.get(0).toString();
@@ -1169,7 +1169,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						sqlBuff.append(","+reportItemList.get(i).getItemCode()+"");
 					}
 				}
-				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 				sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 				sqlBuff.append(" order by t.calDate");
 				
@@ -1247,7 +1247,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public boolean batchExportSingleWellRangeReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
-			String wellName,String startDate,String endDate,int userNo)throws Exception {
+			String deviceName,String startDate,String endDate,int userNo)throws Exception {
 		try{
 			List<List<List<Object>>> sheetList =new ArrayList<>();
 			List<String> sheetNameList =new ArrayList<>();
@@ -1266,26 +1266,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				tableName="VIW_PCPDAILYCALCULATIONDATA";
 			}
 			
-			String wellListSql="select t.id,t.wellname,t3.id as unitid,t3.singlewellrangereporttemplate "
+			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewellrangereporttemplate "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
 					+ " where t.orgid in ("+orgId+")";
-			if(StringManagerUtils.isNotNull(wellName)){
-				wellListSql+=" and t.wellName='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				wellListSql+=" and t.deviceName='"+deviceName+"'";
 			}
-			wellListSql+=" order by t.sortnum,t.wellname";
+			wellListSql+=" order by t.sortnum,t.deviceName";
 			
 			List<?> wellList = this.findCallSql(wellListSql);
 			
 			for(int i=0;i<wellList.size();i++){
 				Object[] obj=(Object[]) wellList.get(i);
-				String wellId=obj[0]+"";
-				wellName=obj[1]+"";
+				String deviceId=obj[0]+"";
+				deviceName=obj[1]+"";
 				String reportUnitId=(obj[2]+"").replaceAll("null", "");
 				String reportTemplateCode=(obj[3]+"").replaceAll("null", "");
 				
-				String sheetName=wellName+"井"+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
+				String sheetName=deviceName+"井"+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
 				List<List<Object>> sheetDataList = new ArrayList<>();
@@ -1307,8 +1307,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						for(int j=0;j<template.getHeader().get(0).getTitle().size();j++){
 							String header=template.getHeader().get(0).getTitle().get(j);
 							if(StringManagerUtils.isNotNull(header)){
-								title=header.replaceAll("wellNameLabel", wellName);
-//								template.getHeader().get(0).getTitle().set(j, header.replaceAll("wellNameLabel", wellName));
+								title=header.replaceAll("deviceNameLabel", deviceName);
+//								template.getHeader().get(0).getTitle().set(j, header.replaceAll("deviceNameLabel", deviceName));
 							}
 						}
 					}
@@ -1319,8 +1319,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String labelInfoStr="";
 						String[] labelInfoArr=null;
 						String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
-								+ " where t.wellid="+wellId+" "
-								+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.wellid="+wellId+")";
+								+ " where t.deviceId="+deviceId+" "
+								+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.deviceId="+deviceId+")";
 						List<?> labelInfoList = this.findCallSql(labelInfoSql);
 						if(labelInfoList.size()>0){
 							labelInfoStr=labelInfoList.get(0).toString();
@@ -1398,7 +1398,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							sqlBuff.append(","+reportItemList.get(j).getItemCode()+"");
 						}
 					}
-					sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+					sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 					sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 					sqlBuff.append(" order by t.calDate");
 					
@@ -1478,7 +1478,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getSingleWellDailyReportData(Page pager, String orgId,String deviceType,String reportType,
-			String wellId,String wellName,
+			String deviceId,String deviceName,String calculateType,
 			String startDate,String endDate,String reportDate,
 			String reportInterval,
 			int userNo)throws Exception {
@@ -1488,17 +1488,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Gson gson =new Gson();
 		String reportTemplateCode="";
 		String reportUnitId="";
-		String deviceTableName="tbl_rpcdevice";
+		String deviceTableName="tbl_device";
 		String tableName="VIW_RPCTIMINGCALCULATIONDATA";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			deviceTableName="tbl_pcpdevice";
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			tableName="VIW_RPCTIMINGCALCULATIONDATA";
+		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="VIW_PCPTIMINGCALCULATIONDATA";
 		}
 		
 		List<List<String>> dataList=new ArrayList<>();
 		int totalCount=0;
 		int timeColIndex=-99;
-		int wellNameColIndex=-99;
+		int deviceNameColIndex=-99;
 		String maxTimeStr="";
 		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 		
@@ -1507,7 +1508,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
-				+ " and t.id="+wellId;
+				+ " and t.id="+deviceId;
 		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 		if(reportTemplateCodeList.size()>0){
 			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
@@ -1524,7 +1525,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
 					String header=template.getHeader().get(0).getTitle().get(i);
 					if(StringManagerUtils.isNotNull(header)){
-						template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+						template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
 					}
 				}
 			}
@@ -1532,8 +1533,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String labelInfoStr="";
 				String[] labelInfoArr=null;
 				String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
-						+ " where t.wellid="+wellId+" "
-						+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+						+ " where t.deviceId="+deviceId+" "
+						+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
 				List<?> labelInfoList = this.findCallSql(labelInfoSql);
 				if(labelInfoList.size()>0){
 					labelInfoStr=labelInfoList.get(0).toString();
@@ -1607,12 +1608,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					timeColIndex=reportItemList.get(i).getSort()-1;
 				}
 				
-				if(wellNameColIndex<0 && "wellName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
-					wellNameColIndex=reportItemList.get(i).getSort()-1;
+				if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
+					deviceNameColIndex=reportItemList.get(i).getSort()-1;
 				}
 				
 			}
-			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+			sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 			sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 			
 			if(StringManagerUtils.stringToInteger(reportInterval)>1){
@@ -1681,8 +1682,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if(timeColIndex>=0){
 							everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
 						}
-						if(wellNameColIndex>=0){
-							everyDaya.set(wellNameColIndex,wellName);
+						if(deviceNameColIndex>=0){
+							everyDaya.set(deviceNameColIndex,deviceName);
 						}
 						dataList.add(everyDaya);
 						rownum++;
@@ -1693,7 +1694,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}else{
 			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
 		}
-		result_json.append(",\"wellName\":\""+wellName+"\"");
+		result_json.append(",\"deviceName\":\""+deviceName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
 		result_json.append(",\"endDate\":\""+endDate+"\"");
 		result_json.append(",\"reportDate\":\""+reportDate+"\"");
@@ -1704,7 +1705,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public boolean exportSingleWellDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
-			String wellId,String wellName,String startDate,String endDate,String reportDate,String reportInterval,
+			String deviceId,String deviceName,String startDate,String endDate,String reportDate,String reportInterval,
 			int userNo)throws Exception {
 		try{
 			List<List<Object>> sheetDataList = new ArrayList<>();
@@ -1713,8 +1714,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCode="";
 			String reportUnitId="";
 			int headerRowCount=0;
-			String title=wellName+"井单日生产报表";
-			String fileName=wellName+"井单日生产报表";
+			String title=deviceName+"井单日生产报表";
+			String fileName=deviceName+"井单日生产报表";
 			String deviceTableName="tbl_rpcdevice";
 			String tableName="VIW_RPCTIMINGCALCULATIONDATA";
 			if(StringManagerUtils.stringToInteger(deviceType)==1){
@@ -1724,7 +1725,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			int totalCount=0;
 			int timeColIndex=-99;
-			int wellNameColIndex=-99;
+			int deviceNameColIndex=-99;
 			String maxTimeStr="";
 			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
@@ -1732,7 +1733,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
-					+ " and t.id="+wellId;
+					+ " and t.id="+deviceId;
 			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 			if(reportTemplateCodeList.size()>0){
 				Object[] obj=(Object[]) reportTemplateCodeList.get(0);
@@ -1750,8 +1751,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
 						String header=template.getHeader().get(0).getTitle().get(i);
 						if(StringManagerUtils.isNotNull(header)){
-							title=header.replaceAll("wellNameLabel", wellName);
-//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("wellNameLabel", wellName));
+							title=header.replaceAll("deviceNameLabel", deviceName);
+//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
 						}
 					}
 				}
@@ -1760,8 +1761,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					String labelInfoStr="";
 					String[] labelInfoArr=null;
 					String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
-							+ " where t.wellid="+wellId+" "
-							+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+							+ " where t.deviceId="+deviceId+" "
+							+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
 					List<?> labelInfoList = this.findCallSql(labelInfoSql);
 					if(labelInfoList.size()>0){
 						labelInfoStr=labelInfoList.get(0).toString();
@@ -1845,11 +1846,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						timeColIndex=reportItemList.get(i).getSort()-1;
 					}
 					
-					if(wellNameColIndex<0 && "wellName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
-						wellNameColIndex=reportItemList.get(i).getSort()-1;
+					if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
+						deviceNameColIndex=reportItemList.get(i).getSort()-1;
 					}
 				}
-				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+				sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 				sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 				
 				if(StringManagerUtils.stringToInteger(reportInterval)>1){
@@ -1898,8 +1899,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(timeColIndex>=0){
 								everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
 							}
-							if(wellNameColIndex>=0){
-								everyDaya.set(wellNameColIndex,wellName);
+							if(deviceNameColIndex>=0){
+								everyDaya.set(deviceNameColIndex,deviceName);
 							}
 							dataList.add(everyDaya);
 							rownum++;
@@ -1958,7 +1959,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public boolean batchExportSingleWellDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String deviceType,String reportType,
-			String wellName,String startDate,String endDate,String reportDate,String reportInterval,
+			String deviceName,String startDate,String endDate,String reportDate,String reportInterval,
 			int userNo)throws Exception {
 		try{
 			List<List<List<Object>>> sheetList =new ArrayList<>();
@@ -1982,33 +1983,33 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			
-			String wellListSql="select t.id,t.wellname,t3.id as unitid,t3.singlewelldailyreporttemplate "
+			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewelldailyreporttemplate "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
 					+ " where t.orgid in ("+orgId+")";
-			if(StringManagerUtils.isNotNull(wellName)){
-				wellListSql+=" and t.wellName='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				wellListSql+=" and t.deviceName='"+deviceName+"'";
 			}
-			wellListSql+=" order by t.sortnum,t.wellname";
+			wellListSql+=" order by t.sortnum,t.deviceName";
 			
 			List<?> wellList = this.findCallSql(wellListSql);
 			
 			for(int i=0;i<wellList.size();i++){
 				Object[] obj=(Object[]) wellList.get(i);
-				String wellId=obj[0]+"";
-				wellName=obj[1]+"";
+				String deviceId=obj[0]+"";
+				deviceName=obj[1]+"";
 				String reportUnitId=(obj[2]+"").replaceAll("null", "");
 				String reportTemplateCode=(obj[3]+"").replaceAll("null", "");
 				
-				String sheetName=wellName+"井"+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
+				String sheetName=deviceName+"井"+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
 				List<List<Object>> sheetDataList = new ArrayList<>();
 				
 				int totalCount=0;
 				int timeColIndex=-99;
-				int wellNameColIndex=-99;
+				int deviceNameColIndex=-99;
 				String maxTimeStr="";
 				
 				ReportTemplate.Template template=null;
@@ -2026,8 +2027,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						for(int j=0;j<template.getHeader().get(0).getTitle().size();j++){
 							String header=template.getHeader().get(0).getTitle().get(j);
 							if(StringManagerUtils.isNotNull(header)){
-								title=header.replaceAll("wellNameLabel", wellName);
-//								template.getHeader().get(0).getTitle().set(j, header.replaceAll("wellNameLabel", wellName));
+								title=header.replaceAll("deviceNameLabel", deviceName);
+//								template.getHeader().get(0).getTitle().set(j, header.replaceAll("deviceNameLabel", deviceName));
 							}
 						}
 					}
@@ -2037,8 +2038,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String labelInfoStr="";
 						String[] labelInfoArr=null;
 						String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
-								+ " where t.wellid="+wellId+" "
-								+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.wellid=t.wellid and t2.headerLabelInfo is not null)";
+								+ " where t.deviceId="+deviceId+" "
+								+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
 						List<?> labelInfoList = this.findCallSql(labelInfoSql);
 						if(labelInfoList.size()>0){
 							labelInfoStr=labelInfoList.get(0).toString();
@@ -2120,11 +2121,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							timeColIndex=reportItemList.get(j).getSort()-1;
 						}
 						
-						if(wellNameColIndex<0 && "wellName".equalsIgnoreCase(reportItemList.get(j).getItemCode())){
-							wellNameColIndex=reportItemList.get(j).getSort()-1;
+						if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportItemList.get(j).getItemCode())){
+							deviceNameColIndex=reportItemList.get(j).getSort()-1;
 						}
 					}
-					sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+wellId+" ");
+					sqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 					sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 					
 					if(StringManagerUtils.stringToInteger(reportInterval)>1){
@@ -2173,8 +2174,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if(timeColIndex>=0){
 									everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(k), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
 								}
-								if(wellNameColIndex>=0){
-									everyDaya.set(wellNameColIndex,wellName);
+								if(deviceNameColIndex>=0){
+									everyDaya.set(deviceNameColIndex,deviceName);
 								}
 								dataList.add(everyDaya);
 								rownum++;
@@ -2236,7 +2237,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getProductionDailyReportData(Page pager, String orgId,String selectedOrgName,String deviceType,String reportType,
-			String instanceCode,String unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+			String instanceCode,String unitId,String deviceName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
 		String reportTemplateCode="";
@@ -2429,7 +2430,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}else{
 			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"statData\":[],\"columns\":[]");
 		}
-		result_json.append(",\"wellName\":\""+wellName+"\"");
+		result_json.append(",\"deviceName\":\""+deviceName+"\"");
 		result_json.append(",\"startDate\":\""+startDate+"\"");
 		result_json.append(",\"endDate\":\""+endDate+"\"");
 		result_json.append(",\"reportDate\":\""+reportDate+"\"");
@@ -2440,7 +2441,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public boolean exportProductionDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String selectedOrgName,
 			String deviceType,String reportType,
-			String instanceCode,String  unitId,String wellName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+			String instanceCode,String  unitId,String deviceName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
@@ -2934,7 +2935,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getSingleWellRangeReportCurveData(Page pager, String orgId,String deviceType,String reportType,String deviceId,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getSingleWellRangeReportCurveData(Page pager, String orgId,String deviceType,String reportType,String deviceId,String deviceName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -3040,7 +3041,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		curveConfBuff.append("]");
 		
-		result_json.append("\"wellName\":\""+wellName+"\","
+		result_json.append("\"deviceName\":\""+deviceName+"\","
 				+ "\"startDate\":\""+startDate+"\","
 				+ "\"endDate\":\""+endDate+"\","
 				+ "\"curveItems\":"+itemsBuff+","
@@ -3079,7 +3080,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String deviceId,String wellName,
+	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,String deviceId,String deviceName,
 			String startDate,String endDate,String reportDate,String reportInterval,
 			int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
@@ -3190,7 +3191,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		curveConfBuff.append("]");
 		
-		result_json.append("\"wellName\":\""+wellName+"\","
+		result_json.append("\"deviceName\":\""+deviceName+"\","
 				+ "\"startDate\":\""+startDate+"\","
 				+ "\"endDate\":\""+endDate+"\","
 				+ "\"reportDate\":\""+reportDate+"\","
@@ -3206,7 +3207,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportCurveItemList.size();i++){
 				cueveSqlBuff.append(","+reportCurveItemList.get(i).getItemCode()+"");
 			}
-			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.wellid="+deviceId+" ");
+			cueveSqlBuff.append(" from "+tableName+" t where t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 			cueveSqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 			
 			if(StringManagerUtils.stringToInteger(reportInterval)>1){
@@ -3235,7 +3236,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProductionDailyReportCurveData(Page pager, String orgId,String selectedOrgName,String deviceType,String reportType,String unitId,String instanceCode,String wellName,String startDate,String endDate,int userNo)throws Exception {
+	public String getProductionDailyReportCurveData(Page pager, String orgId,String selectedOrgName,String deviceType,String reportType,String unitId,String instanceCode,String deviceName,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -3347,7 +3348,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		curveConfBuff.append("]");
 		
-		result_json.append("\"wellName\":\""+wellName+"\","
+		result_json.append("\"deviceName\":\""+deviceName+"\","
 				+ "\"selectedOrgName\":\""+selectedOrgName+"\","
 				+ "\"startDate\":\""+startDate+"\","
 				+ "\"endDate\":\""+endDate+"\","
@@ -3578,20 +3579,20 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				saveStr=gson.toJson(graphicSetData);
 			}
-			String sql="select t.wellid from "+graphicSetTableName+" t where t.wellid="+deviceId;
+			String sql="select t.deviceId from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 			String updateSql="";
 			List<?> list = this.findCallSql(sql);
 			if(list.size()>0){
-				updateSql="update "+graphicSetTableName+" t set t.graphicstyle='"+saveStr+"' where t.wellid="+deviceId;
+				updateSql="update "+graphicSetTableName+" t set t.graphicstyle='"+saveStr+"' where t.deviceId="+deviceId;
 			}else{
-				updateSql="insert into "+graphicSetTableName+" (wellid,graphicstyle) values("+deviceId+",'"+saveStr+"')";
+				updateSql="insert into "+graphicSetTableName+" (deviceId,graphicstyle) values("+deviceId+",'"+saveStr+"')";
 			}
 			result=this.getBaseDao().updateOrDeleteBySql(updateSql);
 		}
 		return result;
 	}
 	
-	public int saveSingleWellRangeDailyReportData(String wellId,String wellName,String deviceType,String data) {
+	public int saveSingleWellRangeDailyReportData(String deviceId,String deviceName,String deviceType,String data) {
 		int result=0;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -3646,7 +3647,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(labelBuff.toString().endsWith(",")){
 								labelBuff.deleteCharAt(labelBuff.length() - 1);
 							}
-							updateSql="update "+tableName+" t set t.headerlabelinfo='"+labelBuff.toString()+"' where t.wellid="+wellId+" and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.wellid=t.wellid )";
+							updateSql="update "+tableName+" t set t.headerlabelinfo='"+labelBuff.toString()+"' where t.deviceId="+deviceId+" and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.deviceId=t.deviceId )";
 						}
 						if(StringManagerUtils.isNotNull(updateSql)){
 							result+=this.getBaseDao().updateOrDeleteBySql(updateSql);
@@ -3661,7 +3662,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public int saveSingleWellDailyDailyReportData(String wellId,String wellName,String deviceType,String data) {
+	public int saveSingleWellDailyDailyReportData(String deviceId,String deviceName,String deviceType,String data) {
 		int result=0;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -3716,7 +3717,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(labelBuff.toString().endsWith(",")){
 								labelBuff.deleteCharAt(labelBuff.length() - 1);
 							}
-							updateSql="update "+tableName+" t set t.headerlabelinfo='"+labelBuff.toString()+"' where t.wellid="+wellId+" and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.wellid=t.wellid )";
+							updateSql="update "+tableName+" t set t.headerlabelinfo='"+labelBuff.toString()+"' where t.deviceId="+deviceId+" and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.deviceId=t.deviceId )";
 						}
 						if(StringManagerUtils.isNotNull(updateSql)){
 							result+=this.getBaseDao().updateOrDeleteBySql(updateSql);
@@ -3731,10 +3732,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String exportPCPDailyReportData(Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+	public String exportPCPDailyReportData(Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String sql="select t.id, t.wellName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
+		String sql="select t.id, t.deviceName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
@@ -3749,17 +3750,17 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " from viw_pcpdailycalculationdata t "
 				+ " where t.org_id in ("+orgId+") "
 				+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName='"+wellName+"'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  t.deviceName='"+deviceName+"'";
 		}
-		sql+=" order by t.sortNum, t.wellName,t.calDate";
+		sql+=" order by t.sortNum, t.deviceName,t.calDate";
 		List<?> list = this.findCallSql(sql);
 		
 		result_json.append("[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
@@ -3787,7 +3788,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public boolean exportPCPDailyReportData(User user,HttpServletResponse response,String fileName,String title,
-			Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+			Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			ConfigFile configFile=Config.getInstance().configFile;
@@ -3798,7 +3799,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}else{
 				productionUnit="m^3/d"; 
 			}
-	        String sql="select t.id, t.wellName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
+	        String sql="select t.id, t.deviceName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
 					+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 					+ " t.runTime,t.runRange, t.runTimeEfficiency,";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
@@ -3813,10 +3814,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " from viw_pcpdailycalculationdata t "
 					+ " where t.org_id in ("+orgId+") "
 					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-			if(StringManagerUtils.isNotNull(wellName)){
-				sql+=" and  t.wellName='"+wellName+"'";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and  t.deviceName='"+deviceName+"'";
 			}
-			sql+=" order by t.sortNum, t.wellName,t.calDate";
+			sql+=" order by t.sortNum, t.deviceName,t.calDate";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			
 			List<List<Object>> sheetDataList = new ArrayList<>();
@@ -3884,7 +3885,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				record = new ArrayList<>();
 				result_json = new StringBuffer();
 				result_json.append("{\"id\":"+(i+1)+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 				result_json.append("\"commTime\":\""+obj[3]+"\",");
 				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
@@ -3906,7 +3907,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				record.add(jsonObject.getString("id"));
-				record.add(jsonObject.getString("wellName"));
+				record.add(jsonObject.getString("deviceName"));
 				record.add(jsonObject.getString("calculateDate"));
 				record.add(jsonObject.getString("commTime"));
 				record.add(jsonObject.getString("commRange"));
@@ -4027,24 +4028,21 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getWellList(String orgId,String wellName,String deviceType){
+	public String getDeviceList(String orgId,String deviceName,String deviceType){
 		StringBuffer result_json = new StringBuffer();
-		String tableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdevice";
-		}
-		String sql="select t.id,t.wellname"
+		String tableName="tbl_device";
+		String sql="select t.id,t.deviceName,t.calculateType"
 				+ " from "+tableName+" t "
 				+ " where  t.orgid in ("+orgId+")";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and t.wellName='"+wellName+"'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
-		sql+=" order by t.sortnum,t.wellname";
+		sql+=" order by t.sortnum,t.deviceName";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] }"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\" ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
@@ -4052,7 +4050,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\"},");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
+			result_json.append("\"calculateType\":\""+obj[2]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -4061,7 +4060,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getReportTemplateList(String orgId,String wellName,String deviceType,String reportType){
+	public String getReportTemplateList(String orgId,String deviceName,String deviceType,String reportType){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		String tableName="tbl_rpcdevice";
@@ -4072,8 +4071,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " from tbl_rpcdevice t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
 				+ " and t.orgid in("+orgId+")";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and t.wellName='"+wellName+"'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
 		sql+=" group by t3.singleWellRangeReportTemplate,t3.productionreporttemplate";
 		
@@ -4114,7 +4113,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getReportInstanceList(String orgId,String wellName,String deviceType){
+	public String getReportInstanceList(String orgId,String deviceName,String deviceType){
 		StringBuffer result_json = new StringBuffer();
 		String tableName="tbl_rpcdevice";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -4124,8 +4123,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " from "+tableName+" t,tbl_protocolreportinstance t2 "
 				+ " where t.reportinstancecode=t2.code "
 				+ " and t.orgid in("+orgId+")";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and t.wellName='"+wellName+"'";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
 		sql+=" group by t2.id,t2.name,t2.code,t2.unitid,t2.sort order by t2.sort";
 		List<?> list = this.findCallSql(sql);

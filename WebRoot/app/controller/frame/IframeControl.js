@@ -337,58 +337,32 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 	}else if(module_Code == "DailyReport"){
 		var tabChange=false;
 		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
-		var tabPanel = Ext.getCmp("ProductionWellDailyReportPanel_Id");
-		var activeId = tabPanel.getActiveTab().id;
-		if(selectedDeviceType_global==0 && activeId!='RPCDailyReportPanel_Id'){
-			tabPanel.setActiveTab("RPCDailyReportPanel_Id");
-			tabChange=true;
-		}else if(selectedDeviceType_global==1 && activeId!='PCPDailyReportPanel_Id'){
-			tabPanel.setActiveTab("PCPDailyReportPanel_Id");
-			tabChange=true;
+		var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
+		if(selectedDeviceType_global!=deviceType){
+//			tabPanel.setActiveTab("HistoryQueryRootTabPanel_"+deviceType);
+//			tabChange=true;
 		}
+		
 		if(!tabChange){
-			if(activeId=="RPCDailyReportPanel_Id"){
-				var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
-				if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
-					Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
-					Ext.getCmp('RPCSingleWellDailyReportPanelWellListCombo_Id').setValue('');
-					var gridPanel = Ext.getCmp("RPCSingleWellDailyReportGridPanel_Id");
-					if (isNotVal(gridPanel)) {
-						gridPanel.getStore().load();
-					}else{
-						Ext.create('AP.store.reportOut.RPCSingleWellDailyReportWellListStore');
-					}
-				}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
-					Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setRawValue('');
-					Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').setValue('');
-					var gridPanel = Ext.getCmp("RPCProductionDailyReportGridPanel_Id");
-	    			if (isNotVal(gridPanel)) {
-	    				gridPanel.getStore().load();
-	    			}else{
-	    				Ext.create('AP.store.reportOut.RPCProductionDailyReportInstanceListStore');
-	    			}
+			var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
+			if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
+				Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+				Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setValue('');
+				var gridPanel = Ext.getCmp("SingleWellDailyReportGridPanel_Id");
+				if (isNotVal(gridPanel)) {
+					gridPanel.getStore().load();
+				}else{
+					Ext.create('AP.store.reportOut.SingleWellDailyReportWellListStore');
 				}
-			}else if(activeId=="PCPDailyReportPanel_Id"){
-				var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
-				if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
-					Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
-					Ext.getCmp('PCPSingleWellDailyReportPanelWellListCombo_Id').setValue('');
-					var gridPanel = Ext.getCmp("PCPSingleWellDailyReportGridPanel_Id");
-					if (isNotVal(gridPanel)) {
-						gridPanel.getStore().load();
-					}else{
-						Ext.create('AP.store.reportOut.PCPSingleWellDailyReportWellListStore');
-					}
-				}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
-					Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setRawValue('');
-					Ext.getCmp('PCPProductionDailyReportPanelWellListCombo_Id').setValue('');
-					var gridPanel = Ext.getCmp("PCPProductionDailyReportGridPanel_Id");
-	    			if (isNotVal(gridPanel)) {
-	    				gridPanel.getStore().load();
-	    			}else{
-	    				Ext.create('AP.store.reportOut.PCPProductionDailyReportInstanceListStore');
-	    			}
-				}
+			}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
+				Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+				Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setValue('');
+				var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
+    			if (isNotVal(gridPanel)) {
+    				gridPanel.getStore().load();
+    			}else{
+    				Ext.create('AP.store.reportOut.ProductionDailyReportInstanceListStore');
+    			}
 			}
 		}
 	}else if(module_Code == 'SystemLogQuery'){

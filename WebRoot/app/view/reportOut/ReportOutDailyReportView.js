@@ -16,7 +16,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
-        	        		id: 'DailyReportPanel_'+tabInfo.children[i].deviceTypeId,
+        	        		id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].deviceTypeId,
         	        		activeTab: 0,
         	        		border: false,
         	        		tabPosition: 'left',
@@ -26,40 +26,51 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         	        				oldCard.removeAll();
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
-//        	        				var DailyReportPanel = Ext.create('AP.view.reportOut.DailyReportPanel');
-//        	        				newCard.add(DailyReportPanel);
-//        	        				Ext.getCmp("selectedDeviceType_global").setValue(newCard.id.split('_')[1]); 
-//        	        				
-//        	        				Ext.getCmp("DeviceSelectRow_Id").setValue(0);
-//        	        		    	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
-//        	        				CreateAndLoadDeviceInfoTable(true);
+        	        				var DailyReportPanel = Ext.create('AP.view.reportOut.DailyReportPanel');
+        	        				newCard.add(DailyReportPanel);
+        	        				
+        	        				var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
+        	        				Ext.getCmp('selectedDeviceType_global').setValue();
         	        			},
         	        			afterrender: function (panel, eOpts) {
         	        				
         	        			}
         	        		}
         			}
-        			
+        			var allSecondIds='';
         			for(var j=0;j<tabInfo.children[i].children.length;j++){
         				var secondTabPanel={
         						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
-        						id: 'DailyReportPanel_'+tabInfo.children[i].children[j].deviceTypeId,
+        						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
             			if(j==0){
             				secondTabPanel.items=[];
             				secondTabPanel.items.push(DailyReportPanel);
+            				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
+                		}else{
+                			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
                 		}
             			panelItem.items.push(secondTabPanel);
+        			}
+        			if(panelItem.items.length>1){//添加全部标签
+        				var secondTabPanel_all={
+        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
+        						tpl:'全部',
+        						layout: 'fit',
+        						id: 'ProductionReportRootTabPanel_'+allSecondIds,
+        						border: false
+        				};
+        				panelItem.items.push(secondTabPanel_all);
         			}
         		}else{
         			panelItem={
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
-    						id: 'DailyReportPanel_'+tabInfo.children[i].deviceTypeId,
+    						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].deviceTypeId,
     						border: false
         			};
         			if(i==0){
@@ -75,13 +86,32 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         Ext.apply(me, {
             items: [{
                 xtype: 'tabpanel',
-                id:'ProductionWellDailyReportPanel_Id',
+                id:'ProductionReportRootTabPanel',
                 activeTab: 0,
                 border: false,
                 tabPosition: 'bottom',
                 items: items,
                 listeners: {
-                    tabchange: function (tabPanel, newCard,oldCard, obj) {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				if(oldCard.xtype=='tabpanel'){
+        					oldCard.activeTab.removeAll();
+        				}else{
+        					oldCard.removeAll();
+        				}
+        			},
+        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+        				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
+    					
+    					var DailyReportPanel = Ext.create('AP.view.reportOut.DailyReportPanel');
+        				if(newCard.xtype=='tabpanel'){
+        					newCard.activeTab.add(DailyReportPanel);
+        				}else{
+	        				newCard.add(DailyReportPanel);
+        				}
+        				
+        				var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
+        				Ext.getCmp('selectedDeviceType_global').setValue();
+        				
 //                    	if(newCard.id=="RPCDailyReportPanel_Id"){
 //                    		Ext.getCmp("selectedDeviceType_global").setValue(0); 
 //                    		var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
@@ -127,7 +157,6 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
 //                    			}
 //                			}
 //                    	}
-                        Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
                     },
                     delay: 500
                 }

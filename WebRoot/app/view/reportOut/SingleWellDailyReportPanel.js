@@ -440,12 +440,12 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 }],
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
-                    	if(Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id=='SingleWellDailyReportTabPanel_id'){
-                        	Ext.getCmp("SingleWellDailyReportDate_Id").setValue("");
-                        	Ext.getCmp("SingleWellDailyReportDate_Id").setRawValue("");
-                    	}
-                    	CreateSingleWellReportTable();
-                		CreateSingleWellReportCurve();
+//                    	if(Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id=='SingleWellDailyReportTabPanel_id'){
+//                        	Ext.getCmp("SingleWellDailyReportDate_Id").setValue("");
+//                        	Ext.getCmp("SingleWellDailyReportDate_Id").setRawValue("");
+//                    	}
+//                    	CreateSingleWellReportTable();
+//                		CreateSingleWellReportCurve();
                     }
                 }
             }]
@@ -894,13 +894,16 @@ function CreateSingleWellDailyReportTable(){
     var endDate = Ext.getCmp('SingleWellDailyReportEndDate_Id').rawValue;
     var reportDate = Ext.getCmp('SingleWellDailyReportDate_Id').rawValue;
     var interval = Ext.getCmp('SingleWellDailyReportIntervalComb_Id').getValue();
+    var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
     
-    var wellName='';
-    var wellId=0;
+    var deviceName='';
+    var deviceId=0;
+    var calculateType=0;
     var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
     if(selectRow>=0){
-    	wellName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-    	wellId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    	deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+    	deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
     }
     
     Ext.getCmp("SingleWellDailyReportPanel_id").el.mask(cosog.string.loading).show();
@@ -946,14 +949,15 @@ function CreateSingleWellDailyReportTable(){
 		},
 		params: {
 			orgId: orgId,
-			wellId:wellId,
-			wellName: wellName,
+			deviceId:deviceId,
+			deviceName: deviceName,
 			startDate: startDate,
 			endDate: endDate,
 			reportDate: reportDate,
 			reportType: 2,
 			interval: interval,
-            deviceType:0
+            deviceType:deviceType,
+            calculateType:calculateType
         }
 	});
 };

@@ -1,6 +1,6 @@
-Ext.define('AP.store.reportOut.RPCProductionDailyReportInstanceListStore', {
+Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.RPCProductionDailyReportInstanceListStore',
+    alias: 'widget.ProductionDailyReportInstanceListStore',
     fields: ['id','wellName'],
     autoLoad: true,
     pageSize: 10000,
@@ -22,12 +22,12 @@ Ext.define('AP.store.reportOut.RPCProductionDailyReportInstanceListStore', {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
-            var gridPanel = Ext.getCmp("RPCProductionDailyReportGridPanel_Id");
+            var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
             if (!isNotVal(gridPanel)) {
-                var column = createRPCProductionDailyReportTemplateListDataColumn(arrColumns);
+                var column = createProductionDailyReportTemplateListDataColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(column);
                 gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "RPCProductionDailyReportGridPanel_Id",
+                    id: "ProductionDailyReportGridPanel_Id",
                     border: false,
                     autoLoad: false,
                     columnLines: true,
@@ -41,39 +41,39 @@ Ext.define('AP.store.reportOut.RPCProductionDailyReportInstanceListStore', {
                     	selectionchange: function (view, selected, o) {
                     	},
                     	select: function(grid, record, index, eOpts) {
-                    		Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").setValue(index);
-                    		CreateRPCProductionDailyReportTable();
-                    		CreateRPCProductionDailyReportCurve();
+                    		Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(index);
+                    		CreateProductionDailyReportTable();
+                    		CreateProductionDailyReportCurve();
                         }
                     }
                 });
-                var RPCProductionDailyReportInstanceListPanel = Ext.getCmp("RPCProductionDailyReportInstanceListPanel_Id");
-                RPCProductionDailyReportInstanceListPanel.add(gridPanel);
+                var ProductionDailyReportInstanceListPanel = Ext.getCmp("ProductionDailyReportInstanceListPanel_Id");
+                ProductionDailyReportInstanceListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(0, true);
             	if(get_rawData.totalCount==1){
-            		Ext.getCmp("RPCProductionDailyReportInstanceListPanel_Id").hide();
+            		Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").hide();
             	}else{
-            		Ext.getCmp("RPCProductionDailyReportInstanceListPanel_Id").show();
+            		Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").show();
             	}
             }else{
-            	Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").setValue(-1);
-            	if(rpcProductionDailyReportHelper!=null){
-    				if(rpcProductionDailyReportHelper.hot!=undefined){
-    					rpcProductionDailyReportHelper.hot.destroy();
+            	Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(-1);
+            	if(productionDailyReportHelper!=null){
+    				if(productionDailyReportHelper.hot!=undefined){
+    					productionDailyReportHelper.hot.destroy();
     				}
-    				rpcProductionDailyReportHelper=null;
+    				productionDailyReportHelper=null;
     			}
-            	$("#RPCProductionDailyReportDiv_id").html('');
-                $("#RPCProductionDailyReportCurveDiv_Id").html('');
+            	$("#ProductionDailyReportDiv_id").html('');
+                $("#ProductionDailyReportCurveDiv_Id").html('');
             }
         },
         beforeload: function (store, options) {
-        	Ext.getCmp("RPCProductionDailyReportInstanceListPanel_Id").show();
+        	Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").show();
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var wellName = Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').getValue();
+        	var wellName = Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').getValue();
             var new_params = {
                     orgId: orgId,
                     reportType:1,

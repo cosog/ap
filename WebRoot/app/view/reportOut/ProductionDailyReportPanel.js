@@ -1,9 +1,9 @@
 var productionDailyReportHelper=null
-Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
+Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.RPCProductionDailyReportPanel',
+    alias: 'widget.ProductionDailyReportPanel',
     layout: 'fit',
-    id: 'RPCProductionDailyReportPanel_view',
+    id: 'ProductionDailyReportPanel_view',
     border: false,
     initComponent: function () {
         var me = this;
@@ -32,7 +32,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('RPCProductionDailyReportPanelWellListCombo_Id').getValue();
+                    var wellName = Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: 0,
@@ -45,7 +45,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
         var wellListCombo = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: cosog.string.wellName,
-                id: 'RPCProductionDailyReportPanelWellListCombo_Id',
+                id: 'ProductionDailyReportPanelWellListCombo_Id',
                 hidden:true,
                 store: wellListCombStore,
                 labelWidth: 35,
@@ -67,11 +67,11 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                         wellListCombo.getStore().loadPage(1); // 加载井下拉框的store
                     },
                     specialkey: function (field, e) {
-                        onEnterKeyDownFN(field, e, 'RPCProductionDailyReportPanel_Id');
+                        onEnterKeyDownFN(field, e, 'ProductionDailyReportPanel_Id');
                     },
                     select: function (combo, record, index) {
-                    	CreateRPCProductionDailyReportTable();
-                    	CreateRPCProductionDailyReportCurve();
+                    	CreateProductionDailyReportTable();
+                    	CreateProductionDailyReportCurve();
                     }
                 }
             });
@@ -82,11 +82,11 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {
-                	var gridPanel = Ext.getCmp("RPCProductionDailyReportGridPanel_Id");
+                	var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
         			if (isNotVal(gridPanel)) {
         				gridPanel.getStore().load();
         			}else{
-        				Ext.create('AP.store.reportOut.RPCProductionDailyReportInstanceListStore');
+        				Ext.create('AP.store.reportOut.ProductionDailyReportInstanceListStore');
         			}
                 }
     		},'-',wellListCombo, {
@@ -96,15 +96,15 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                 labelWidth: 36,
                 width: 136,
                 format: 'Y-m-d',
-                id: 'RPCProductionDailyReportStartDate_Id',
+                id: 'ProductionDailyReportStartDate_Id',
 //                value: new Date(),
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
-                        	Ext.getCmp("RPCProductionDailyReportDate_Id").setValue("");
-                        	Ext.getCmp("RPCProductionDailyReportDate_Id").setRawValue("");
-                        	CreateRPCProductionDailyReportTable();
-                        	CreateRPCProductionDailyReportCurve();
+                        	Ext.getCmp("ProductionDailyReportDate_Id").setValue("");
+                        	Ext.getCmp("ProductionDailyReportDate_Id").setRawValue("");
+                        	CreateProductionDailyReportTable();
+                        	CreateProductionDailyReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -118,15 +118,15 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                 labelWidth: 15,
                 width: 115,
                 format: 'Y-m-d ',
-                id: 'RPCProductionDailyReportEndDate_Id',
+                id: 'ProductionDailyReportEndDate_Id',
                 value: new Date(),
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
-                        	Ext.getCmp("RPCProductionDailyReportDate_Id").setValue("");
-                        	Ext.getCmp("RPCProductionDailyReportDate_Id").setRawValue("");
-                        	CreateRPCProductionDailyReportTable();
-                        	CreateRPCProductionDailyReportCurve();
+                        	Ext.getCmp("ProductionDailyReportDate_Id").setValue("");
+                        	Ext.getCmp("ProductionDailyReportDate_Id").setRawValue("");
+                        	CreateProductionDailyReportTable();
+                        	CreateProductionDailyReportCurve();
                         } catch (ex) {
                             Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
                         }
@@ -138,13 +138,13 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                 iconCls: 'search',
                 hidden:false,
                 handler: function (v, o) {
-                	Ext.getCmp("RPCProductionDailyReportDate_Id").setValue("");
-                	Ext.getCmp("RPCProductionDailyReportDate_Id").setRawValue("");
-                	CreateRPCProductionDailyReportTable();
-                	CreateRPCProductionDailyReportCurve();
+                	Ext.getCmp("ProductionDailyReportDate_Id").setValue("");
+                	Ext.getCmp("ProductionDailyReportDate_Id").setRawValue("");
+                	CreateProductionDailyReportTable();
+                	CreateProductionDailyReportCurve();
                 }
     		},{
-            	id: 'RPCProductionDailyReportInstanceListSelectRow_Id',
+            	id: 'ProductionDailyReportInstanceListSelectRow_Id',
             	xtype: 'textfield',
                 value: -1,
                 hidden: true
@@ -155,7 +155,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
             	region: 'west',
             	width: '20%',
             	title: '报表实例列表',
-            	id: 'RPCProductionDailyReportInstanceListPanel_Id',
+            	id: 'ProductionDailyReportInstanceListPanel_Id',
             	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠
                 split: true, // 竖折叠条
@@ -163,12 +163,12 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
             },{
             	region: 'center',
             	xtype: 'tabpanel',
-            	id:"RPCProductionReportTabPanel_Id",
+            	id:"ProductionReportTabPanel_Id",
                 activeTab: 0,
                 border: false,
                 tabPosition: 'top',
                 items: [{
-                	id:'RPCProductionRangeReportTabPanel_id',
+                	id:'ProductionRangeReportTabPanel_id',
                 	title:'日报表',
                 	layout:'border',
                 	border: false,
@@ -180,12 +180,12 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
                         border: false,
-                        id:'RPCProductionDailyReportCurvePanel_id',
-                        html: '<div id="RPCProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        id:'ProductionDailyReportCurvePanel_id',
+                        html: '<div id="ProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                if ($("#RPCProductionDailyReportCurveDiv_Id").highcharts() != undefined) {
-                                	highchartsResize("RPCProductionDailyReportCurveDiv_Id");
+                                if ($("#ProductionDailyReportCurveDiv_Id").highcharts() != undefined) {
+                                	highchartsResize("ProductionDailyReportCurveDiv_Id");
                                 }
                             }
                         }
@@ -193,22 +193,22 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                 		region: 'center',
                 		title:'报表数据',
                         layout: "fit",
-                    	id:'RPCProductionDailyReportPanel_id',
+                    	id:'ProductionDailyReportPanel_id',
                         border: false,
                         tbar:[{
                             xtype: 'button',
                             text: '前一天',
                             iconCls: 'forward',
-                            id:'RPCProductionDailyReportForwardBtn_Id',
+                            id:'ProductionDailyReportForwardBtn_Id',
                             handler: function (v, o) {
-                            	var str = Ext.getCmp("RPCProductionDailyReportDate_Id").rawValue;
+                            	var str = Ext.getCmp("ProductionDailyReportDate_Id").rawValue;
                             	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
                             	var day=-1;
                             	var value = startDate.getTime();
                             	value += day * (24 * 3600 * 1000);
                             	var endDate = new Date(value);
-                            	Ext.getCmp("RPCProductionDailyReportDate_Id").setValue(endDate);
-                            	CreateRPCProductionDailyReportTable();
+                            	Ext.getCmp("ProductionDailyReportDate_Id").setValue(endDate);
+                            	CreateProductionDailyReportTable();
                             }
                         },'-',{
                             xtype: 'datefield',
@@ -218,12 +218,12 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             readOnly:true,
                             width: 90,
                             format: 'Y-m-d ',
-                            id: 'RPCProductionDailyReportDate_Id',
+                            id: 'ProductionDailyReportDate_Id',
                             listeners: {
                             	change ( thisField, newValue, oldValue, eOpts )  {
-                            		var startDateStr=Ext.getCmp("RPCProductionDailyReportStartDate_Id").rawValue;
-                            		var endDateStr=Ext.getCmp("RPCProductionDailyReportEndDate_Id").rawValue;
-                            		var reportDateStr=Ext.getCmp("RPCProductionDailyReportDate_Id").rawValue;
+                            		var startDateStr=Ext.getCmp("ProductionDailyReportStartDate_Id").rawValue;
+                            		var endDateStr=Ext.getCmp("ProductionDailyReportEndDate_Id").rawValue;
+                            		var reportDateStr=Ext.getCmp("ProductionDailyReportDate_Id").rawValue;
                             		
                             		var startDate = new Date(Date.parse(startDateStr .replace(/-/g, '/'))).getTime();
                             		var endDate = new Date(Date.parse(endDateStr .replace(/-/g, '/'))).getTime();
@@ -231,32 +231,32 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             		
                             		
                             		if(reportDate>startDate){
-                            			Ext.getCmp("RPCProductionDailyReportForwardBtn_Id").enable();
+                            			Ext.getCmp("ProductionDailyReportForwardBtn_Id").enable();
                             		}else{
-                            			Ext.getCmp("RPCProductionDailyReportForwardBtn_Id").disable();
+                            			Ext.getCmp("ProductionDailyReportForwardBtn_Id").disable();
                             		}
                             		
                             		if(reportDate<endDate){
-                            			Ext.getCmp("RPCProductionDailyReportBackwardsBtn_Id").enable();
+                            			Ext.getCmp("ProductionDailyReportBackwardsBtn_Id").enable();
                             		}else{
-                            			Ext.getCmp("RPCProductionDailyReportBackwardsBtn_Id").disable();
+                            			Ext.getCmp("ProductionDailyReportBackwardsBtn_Id").disable();
                             		}
                             	}
                             }
                         },'-',{
                             xtype: 'button',
                             text: '后一天',
-                            id:'RPCProductionDailyReportBackwardsBtn_Id',
+                            id:'ProductionDailyReportBackwardsBtn_Id',
                             iconCls: 'backwards',
                             handler: function (v, o) {
-                            	var str = Ext.getCmp("RPCProductionDailyReportDate_Id").rawValue;
+                            	var str = Ext.getCmp("ProductionDailyReportDate_Id").rawValue;
                             	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
                             	var day=1;
                             	var value = startDate .getTime();
                             	value += day * (24 * 3600 * 1000);
                             	var endDate = new Date(value);
-                            	Ext.getCmp("RPCProductionDailyReportDate_Id").setValue(endDate);
-                            	CreateRPCProductionDailyReportTable();
+                            	Ext.getCmp("ProductionDailyReportDate_Id").setValue(endDate);
+                            	CreateProductionDailyReportTable();
                             }
                         },'->', {
                             xtype: 'button',
@@ -264,7 +264,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             iconCls: 'export',
                             handler: function (v, o) {
                             	var timestamp=new Date().getTime();
-                            	var key='exportRPCProductionDailyReportData'+timestamp;
+                            	var key='exportProductionDailyReportData'+timestamp;
                             	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
@@ -282,17 +282,17 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	}
                             	
                             	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                                var startDate = Ext.getCmp('RPCProductionDailyReportStartDate_Id').rawValue;
-                                var endDate = Ext.getCmp('RPCProductionDailyReportEndDate_Id').rawValue;
-                                var reportDate = Ext.getCmp('RPCProductionDailyReportDate_Id').rawValue;
+                                var startDate = Ext.getCmp('ProductionDailyReportStartDate_Id').rawValue;
+                                var endDate = Ext.getCmp('ProductionDailyReportEndDate_Id').rawValue;
+                                var reportDate = Ext.getCmp('ProductionDailyReportDate_Id').rawValue;
                                 
                                 var wellName='';
                                 var unitId=0;
                                 var instanceCode='';
-                                var selectRow= Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").getValue();
+                                var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
                                 if(selectRow>=0){
-                                	instanceCode=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
-                                	unitId=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
+                                	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
+                                	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
                                 }
                             	
                             	var url=context + '/reportDataMamagerController/exportProductionDailyReportData?deviceType=0'
@@ -306,7 +306,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	+'&reportDate='+reportDate
                             	+'&orgId='+orgId
                             	+'&key='+key;
-                            	exportDataMask(key,"RPCProductionDailyReportPanel_view",cosog.string.loading);
+                            	exportDataMask(key,"ProductionDailyReportPanel_view",cosog.string.loading);
                             	document.location.href = url;
                             }
                         },'-',{
@@ -315,7 +315,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             iconCls: 'export',
                             handler: function (v, o) {
                             	var timestamp=new Date().getTime();
-                            	var key='batchExportRPCProductionDailyReportData'+timestamp;
+                            	var key='batchExportProductionDailyReportData'+timestamp;
                             	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
@@ -333,17 +333,17 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	}
                             	
                             	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                                var startDate = Ext.getCmp('RPCProductionDailyReportStartDate_Id').rawValue;
-                                var endDate = Ext.getCmp('RPCProductionDailyReportEndDate_Id').rawValue;
-                                var reportDate = Ext.getCmp('RPCProductionDailyReportDate_Id').rawValue;
+                                var startDate = Ext.getCmp('ProductionDailyReportStartDate_Id').rawValue;
+                                var endDate = Ext.getCmp('ProductionDailyReportEndDate_Id').rawValue;
+                                var reportDate = Ext.getCmp('ProductionDailyReportDate_Id').rawValue;
                                 
                                 var wellName='';
                                 var unitId=0;
                                 var instanceCode='';
-                                var selectRow= Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").getValue();
+                                var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
                                 if(selectRow>=0){
-                                	instanceCode=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
-                                	unitId=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
+                                	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
+                                	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
                                 }
                             	
                             	var url=context + '/reportDataMamagerController/batchExportProductionDailyReportData?deviceType=0'
@@ -357,7 +357,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	+'&reportDate='+reportDate
                             	+'&orgId='+orgId
                             	+'&key='+key;
-                            	exportDataMask(key,"RPCProductionDailyReportPanel_view",cosog.string.loading);
+                            	exportDataMask(key,"ProductionDailyReportPanel_view",cosog.string.loading);
                             	document.location.href = url;
                             }
                         },'-', {
@@ -369,12 +369,12 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
                             	productionDailyReportHelper.saveData();
                             }
                         },'-', {
-                            id: 'RPCProductionDailyReportTotalCount_Id',
+                            id: 'ProductionDailyReportTotalCount_Id',
                             xtype: 'component',
                             tpl: cosog.string.totalCount + ': {count}',
                             style: 'margin-right:15px'
                         }],
-                        html:'<div class="RPCProductionDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="RPCProductionDailyReportDiv_id"></div></div>',
+                        html:'<div class="ProductionDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="ProductionDailyReportDiv_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         		if(productionDailyReportHelper!=null && productionDailyReportHelper.hot!=undefined){
@@ -406,7 +406,7 @@ Ext.define("AP.view.reportOut.RPCProductionDailyReportPanel", {
     }
 });
 
-function CreateRPCProductionDailyReportTable(){
+function CreateProductionDailyReportTable(){
 	var selectedOrgName="";
 	var selectedOrgId="";
 	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -424,36 +424,36 @@ function CreateRPCProductionDailyReportTable(){
 	}
 	
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-    var startDate = Ext.getCmp('RPCProductionDailyReportStartDate_Id').rawValue;
-    var endDate = Ext.getCmp('RPCProductionDailyReportEndDate_Id').rawValue;
-    var reportDate = Ext.getCmp('RPCProductionDailyReportDate_Id').rawValue;
+    var startDate = Ext.getCmp('ProductionDailyReportStartDate_Id').rawValue;
+    var endDate = Ext.getCmp('ProductionDailyReportEndDate_Id').rawValue;
+    var reportDate = Ext.getCmp('ProductionDailyReportDate_Id').rawValue;
     
     var wellName='';
     var unitId=0;
     var instanceCode='';
-    var selectRow= Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").getValue();
+    var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
     if(selectRow>=0){
-    	instanceCode=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
-    	unitId=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
+    	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
+    	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }
     
-    Ext.getCmp("RPCProductionDailyReportPanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("ProductionDailyReportPanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getProductionDailyReportData',
 		success:function(response) {
-			Ext.getCmp("RPCProductionDailyReportPanel_id").getEl().unmask();
+			Ext.getCmp("ProductionDailyReportPanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			
-			var startDate=Ext.getCmp('RPCProductionDailyReportStartDate_Id');
+			var startDate=Ext.getCmp('ProductionDailyReportStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
             	startDate.setValue(result.startDate);
             }
-            var endDate=Ext.getCmp('RPCProductionDailyReportEndDate_Id');
+            var endDate=Ext.getCmp('ProductionDailyReportEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(result.endDate);
             }
-            var reportDate = Ext.getCmp('RPCProductionDailyReportDate_Id');
+            var reportDate = Ext.getCmp('ProductionDailyReportDate_Id');
             if(reportDate.rawValue==''||null==reportDate.rawValue){
             	reportDate.setValue(result.reportDate);
             }
@@ -465,14 +465,14 @@ function CreateRPCProductionDailyReportTable(){
 			}
 			if(result.success){
 				if(productionDailyReportHelper==null || productionDailyReportHelper.hot==undefined){
-					productionDailyReportHelper = ProductionDailyReportHelper.createNew("RPCProductionDailyReportDiv_id","RPCProductionDailyReportContainer",result.template,result.data,result.statData,result.columns);
+					productionDailyReportHelper = ProductionDailyReportHelper.createNew("ProductionDailyReportDiv_id","ProductionDailyReportContainer",result.template,result.data,result.statData,result.columns);
 					productionDailyReportHelper.createTable();
 				}
 			}else{
-				$("#RPCProductionDailyReportDiv_id").html('');
+				$("#ProductionDailyReportDiv_id").html('');
 			}
 			
-			Ext.getCmp("RPCProductionDailyReportTotalCount_Id").update({count: result.data.length});
+			Ext.getCmp("ProductionDailyReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -821,10 +821,10 @@ var ProductionDailyReportHelper = {
 	        		productionDailyReportHelper.editData.contentUpdateList=productionDailyReportHelper.contentUpdateList;
 	        		var wellName='';
 	        	    var wellId=0;
-	        	    var selectRow= Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").getValue();
+	        	    var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
 	        	    if(selectRow>=0){
-	        	    	wellName=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-	        	    	wellId=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+	        	    	wellName=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+	        	    	wellId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	        	    }
 //	        		alert(JSON.stringify(productionDailyReportHelper.editData));
 	        		Ext.Ajax.request({
@@ -835,8 +835,8 @@ var ProductionDailyReportHelper = {
 	                        if (rdata.success) {
 	                        	Ext.MessageBox.alert("信息", '保存成功');
 	                        	productionDailyReportHelper.clearContainer();
-	                        	CreateRPCProductionDailyReportTable();
-	                        	CreateRPCProductionDailyReportCurve();
+	                        	CreateProductionDailyReportTable();
+	                        	CreateProductionDailyReportCurve();
 	                        } else {
 	                        	productionDailyReportHelper.clearContainer();
 	                        	Ext.MessageBox.alert("信息", "数据保存失败");
@@ -870,7 +870,7 @@ var ProductionDailyReportHelper = {
 	    }
 	};
 
-function createRPCProductionDailyReportTemplateListDataColumn(columnInfo) {
+function createProductionDailyReportTemplateListDataColumn(columnInfo) {
     var myArr = columnInfo;
 
     var myColumns = "[";
@@ -910,7 +910,7 @@ function createRPCProductionDailyReportTemplateListDataColumn(columnInfo) {
     return myColumns;
 };
 
-function CreateRPCProductionDailyReportCurve(){
+function CreateProductionDailyReportCurve(){
 	var selectedOrgName="";
 	var selectedOrgId="";
 	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
@@ -928,31 +928,31 @@ function CreateRPCProductionDailyReportCurve(){
 	}
 	
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-    var startDate = Ext.getCmp('RPCProductionDailyReportStartDate_Id').rawValue;
-    var endDate = Ext.getCmp('RPCProductionDailyReportEndDate_Id').rawValue;
+    var startDate = Ext.getCmp('ProductionDailyReportStartDate_Id').rawValue;
+    var endDate = Ext.getCmp('ProductionDailyReportEndDate_Id').rawValue;
     
     var wellName='';
     var unitId=0;
     var instanceCode='';
-    var selectRow= Ext.getCmp("RPCProductionDailyReportInstanceListSelectRow_Id").getValue();
+    var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
     if(selectRow>=0){
-    	instanceCode=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
-    	unitId=Ext.getCmp("RPCProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
+    	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
+    	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }
     
-    Ext.getCmp("RPCProductionDailyReportCurvePanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("ProductionDailyReportCurvePanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getProductionDailyReportCurveData',
 		success:function(response) {
-			Ext.getCmp("RPCProductionDailyReportCurvePanel_id").getEl().unmask();
+			Ext.getCmp("ProductionDailyReportCurvePanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			
-			var startDate=Ext.getCmp('RPCProductionDailyReportStartDate_Id');
+			var startDate=Ext.getCmp('ProductionDailyReportStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
             	startDate.setValue(result.startDate);
             }
-            var endDate=Ext.getCmp('RPCProductionDailyReportEndDate_Id');
+            var endDate=Ext.getCmp('ProductionDailyReportEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(result.endDate);
             }
@@ -1091,7 +1091,7 @@ function CreateRPCProductionDailyReportCurve(){
 		    for(var i=0;i<color_r.length;i++){
 		    	color_all.push(color_r[i]);
 		    }
-		    initRPCProductionDailyReportCurveChartFn(series, tickInterval, 'RPCProductionDailyReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
+		    initProductionDailyReportCurveChartFn(series, tickInterval, 'ProductionDailyReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -1110,7 +1110,7 @@ function CreateRPCProductionDailyReportCurve(){
 	});
 };
 
-function initRPCProductionDailyReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
+function initProductionDailyReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
 	Highcharts.setOptions({
         global: {

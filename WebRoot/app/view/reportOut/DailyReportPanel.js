@@ -30,26 +30,26 @@ Ext.define("AP.view.reportOut.DailyReportPanel", {
     			}],
         		listeners: {
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
-        				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
-        				if(newCard.id=="SingleWellDailyReportTabPanel_Id"){
-        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
-        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setValue('');
-        					var gridPanel = Ext.getCmp("SingleWellDailyReportGridPanel_Id");
-        					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
-        					}else{
-        						Ext.create('AP.store.reportOut.SingleWellDailyReportWellListStore');
-        					}
-        				}else if(newCard.id=="ProductionDailyReportTabPanel_Id"){
-        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setRawValue('');
-        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setValue('');
-        					var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
-        	    			if (isNotVal(gridPanel)) {
-        	    				gridPanel.getStore().load();
-        	    			}else{
-        	    				Ext.create('AP.store.reportOut.ProductionDailyReportInstanceListStore');
-        	    			}
-        				}
+//        				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
+//        				if(newCard.id=="SingleWellDailyReportTabPanel_Id"){
+//        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+//        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setValue('');
+//        					var gridPanel = Ext.getCmp("SingleWellDailyReportGridPanel_Id");
+//        					if (isNotVal(gridPanel)) {
+//        						gridPanel.getStore().load();
+//        					}else{
+//        						Ext.create('AP.store.reportOut.SingleWellDailyReportWellListStore');
+//        					}
+//        				}else if(newCard.id=="ProductionDailyReportTabPanel_Id"){
+//        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+//        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setValue('');
+//        					var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
+//        	    			if (isNotVal(gridPanel)) {
+//        	    				gridPanel.getStore().load();
+//        	    			}else{
+//        	    				Ext.create('AP.store.reportOut.ProductionDailyReportInstanceListStore');
+//        	    			}
+//        				}
         			}
         		}
             }]

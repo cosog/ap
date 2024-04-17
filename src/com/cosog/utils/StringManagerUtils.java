@@ -1281,6 +1281,28 @@ public class StringManagerUtils {
         return flag;
 
     }
+    
+    public static boolean generalCalColumnFiter(String value) {
+        boolean flag = false;
+        String arrays[] = {
+            "commstatus",
+            "commStatusName",
+            "commtime",
+            "commtimeefficiency",
+            "commrange",
+            "runStatus",
+            "runStatusName",
+            "runtime",
+            "runrange",
+            "runtimeefficiency"
+        };
+        for (String str: arrays) {
+            if (str.equalsIgnoreCase(value)) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
 
     public static boolean databaseColumnFiter(String value) {
         boolean flag = false;

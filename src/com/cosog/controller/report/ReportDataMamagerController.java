@@ -327,7 +327,7 @@ public class ReportDataMamagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_dailycalculationdata";
-		String timingcalculationTableName="";
+		String timingcalculationTableName="tbl_timingcalculationdata";
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
 			timingcalculationTableName="tbl_rpctimingcalculationdata";
 		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -412,6 +412,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String reportInterval = ParamUtils.getParameter(request, "interval");
 		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
@@ -419,12 +420,12 @@ public class ReportDataMamagerController extends BaseController {
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
-		String timingcalculationTableName="tbl_rpctimingcalculationdata";
+		String timingcalculationTableName="tbl_timingcalculationdata";
 		String deviceTypeName="抽油机井";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-			tableName="tbl_pcpdailycalculationdata";
-			deviceTypeName="螺杆泵井";
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			timingcalculationTableName="tbl_rpctimingcalculationdata";
+		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+			timingcalculationTableName="tbl_pcptimingcalculationdata";
 		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
@@ -486,7 +487,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -509,13 +510,8 @@ public class ReportDataMamagerController extends BaseController {
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
-		String timingcalculationTableName="tbl_rpctimingcalculationdata";
+		String timingcalculationTableName="tbl_timingcalculationdata";
 		String deviceTypeName="抽油机井";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-			tableName="tbl_pcpdailycalculationdata";
-			deviceTypeName="螺杆泵井";
-		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -836,13 +832,15 @@ public class ReportDataMamagerController extends BaseController {
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String reportInterval = ParamUtils.getParameter(request, "interval");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String tableName="tbl_rpcdailycalculationdata";
-		String timingcalculationTableName="tbl_rpctimingcalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
+		String tableName="tbl_dailycalculationdata";
+		String timingcalculationTableName="tbl_timingcalculationdata";
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			timingcalculationTableName="tbl_rpctimingcalculationdata";
+		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 			timingcalculationTableName="tbl_pcptimingcalculationdata";
 		}
 		
@@ -896,7 +894,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

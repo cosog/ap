@@ -12,7 +12,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["wellNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["deviceNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -129,7 +129,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["wellNameLabel井日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["deviceNameLabel井日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -246,7 +246,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["wellNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -383,7 +383,7 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["wellNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title": ["deviceNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",

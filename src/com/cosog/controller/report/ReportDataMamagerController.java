@@ -146,12 +146,10 @@ public class ReportDataMamagerController extends BaseController {
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String tableName="tbl_rpcdailycalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -174,7 +172,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellRangeReportData(pager, orgId,deviceType,reportType, deviceId, deviceName, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellRangeReportData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -197,11 +195,12 @@ public class ReportDataMamagerController extends BaseController {
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String key = ParamUtils.getParameter(request, "key");
 		
 		User user=null;
@@ -211,12 +210,7 @@ public class ReportDataMamagerController extends BaseController {
 			session.setAttribute(key, 0);
 		}
 		
-		String tableName="tbl_rpcdailycalculationdata";
-		String deviceTypeName="抽油机井";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-			deviceTypeName="螺杆泵井";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -239,8 +233,8 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String fileName = deviceTypeName;
-		String title = deviceTypeName+"生产报表";
+		String fileName = deviceName;
+		String title = deviceName+"生产报表";
         if(StringManagerUtils.isNotNull(deviceName)){
         	fileName+=deviceName;
         }
@@ -248,7 +242,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo());
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
@@ -261,22 +255,18 @@ public class ReportDataMamagerController extends BaseController {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String deviceTypeName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceTypeName"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
-		String tableName="tbl_rpcdailycalculationdata";
-		String deviceTypeName="抽油机井";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-			deviceTypeName="螺杆泵井";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -296,16 +286,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String fileName = deviceTypeName;
-		String title = deviceTypeName+"生产报表";
-        if(StringManagerUtils.isNotNull(deviceName)){
-        	fileName+=deviceName;
-        }
-        fileName+="生产报表-"+startDate;
-        if(!startDate.equalsIgnoreCase(endDate)){
-        	fileName+="~"+endDate;
-        }
-		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(user,response,pager, orgId,deviceType,reportType, deviceName, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(user,response,pager, orgId,deviceType,deviceTypeName,reportType, deviceName, startDate,endDate,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -406,7 +387,7 @@ public class ReportDataMamagerController extends BaseController {
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
@@ -421,7 +402,6 @@ public class ReportDataMamagerController extends BaseController {
 		session.setAttribute(key, 0);
 		String tableName="tbl_rpcdailycalculationdata";
 		String timingcalculationTableName="tbl_timingcalculationdata";
-		String deviceTypeName="抽油机井";
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
 			timingcalculationTableName="tbl_rpctimingcalculationdata";
 		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -478,8 +458,8 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String fileName = deviceTypeName;
-		String title = deviceTypeName+"单日生产报表";
+		String fileName = deviceName;
+		String title = deviceName+"单日生产报表";
         if(StringManagerUtils.isNotNull(deviceName)){
         	fileName+=deviceName;
         }
@@ -498,20 +478,21 @@ public class ReportDataMamagerController extends BaseController {
 		HttpSession session=request.getSession();
 		
 		orgId = ParamUtils.getParameter(request, "orgId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportDate= ParamUtils.getParameter(request, "reportDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String deviceTypeName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceTypeName"),"utf-8");
+		
 		String reportInterval = ParamUtils.getParameter(request, "interval");
 		String key = ParamUtils.getParameter(request, "key");
 		User user = (User) session.getAttribute("userLogin");
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
-		String tableName="tbl_rpcdailycalculationdata";
+		String tableName="tbl_dailycalculationdata";
 		String timingcalculationTableName="tbl_timingcalculationdata";
-		String deviceTypeName="抽油机井";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -555,7 +536,7 @@ public class ReportDataMamagerController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, deviceName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+		reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,deviceTypeName,reportType, deviceName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -576,10 +557,7 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String tableName="tbl_rpcdailycalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1 ";
@@ -654,10 +632,7 @@ public class ReportDataMamagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
-		String tableName="tbl_rpcdailycalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -717,10 +692,7 @@ public class ReportDataMamagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
-		String tableName="tbl_rpcdailycalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -775,12 +747,10 @@ public class ReportDataMamagerController extends BaseController {
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String tableName="tbl_rpcdailycalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -803,7 +773,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellRangeReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellRangeReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -926,10 +896,7 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String tableName="tbl_rpcdailycalculationdata";
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			tableName="tbl_pcpdailycalculationdata";
-		}
+		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -1059,7 +1026,7 @@ public class ReportDataMamagerController extends BaseController {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String tableName="tbl_rpcdailycalculationdata";
@@ -1116,7 +1083,7 @@ public class ReportDataMamagerController extends BaseController {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String tableName="tbl_pcpdailycalculationdata";
@@ -1488,7 +1455,7 @@ public class ReportDataMamagerController extends BaseController {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String tableName="tbl_pcpdailycalculationdata";
@@ -1567,14 +1534,14 @@ public class ReportDataMamagerController extends BaseController {
 	public String exportExcelReportPumpingUnitData() throws Exception {
 		// TODO Auto-generated method stub
 		log.debug("ReportPumpingUnit enter==");
-		String heads = ParamUtils.getParameter(request, "heads");
+		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
-		String fileName=ParamUtils.getParameter(request, "fileName");
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		heads = java.net.URLDecoder.decode(heads, "utf-8");
 		fields = java.net.URLDecoder.decode(fields, "utf-8");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
-		deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		calculateDate = ParamUtils.getParameter(request, "calculateDate");
 		orgId=this.findCurrentUserOrgIdInfo(orgId);
 		deviceName = java.net.URLDecoder.decode(deviceName, "utf-8");

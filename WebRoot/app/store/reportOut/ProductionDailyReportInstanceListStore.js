@@ -43,7 +43,7 @@ Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(index);
                     		CreateProductionDailyReportTable();
-                    		CreateProductionDailyReportCurve();
+//                    		CreateProductionDailyReportCurve();
                         }
                     }
                 });
@@ -74,10 +74,11 @@ Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
         	Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").show();
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var wellName = Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').getValue();
+        	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
             var new_params = {
                     orgId: orgId,
                     reportType:1,
-                    deviceType:0
+                    deviceType:deviceType
                 };
             Ext.apply(store.proxy.extraParams, new_params);
         },

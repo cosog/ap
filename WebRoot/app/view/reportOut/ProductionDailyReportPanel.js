@@ -268,6 +268,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
+                            	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
                             	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
                             	var count=IframeViewStore.getCount();
                             	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
@@ -295,7 +296,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                                 	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
                                 }
                             	
-                            	var url=context + '/reportDataMamagerController/exportProductionDailyReportData?deviceType=0'
+                            	var url=context + '/reportDataMamagerController/exportProductionDailyReportData?deviceType='+deviceType
                             	+'&reportType=1'
                             	+'&wellName='+URLencode(URLencode(wellName))
                             	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))
@@ -319,6 +320,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             	
                             	var selectedOrgName="";
                             	var selectedOrgId="";
+                            	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
                             	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
                             	var count=IframeViewStore.getCount();
                             	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
@@ -346,7 +348,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                                 	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
                                 }
                             	
-                            	var url=context + '/reportDataMamagerController/batchExportProductionDailyReportData?deviceType=0'
+                            	var url=context + '/reportDataMamagerController/batchExportProductionDailyReportData?deviceType='+deviceType
                             	+'&reportType=1'
                             	+'&wellName='+URLencode(URLencode(wellName))
                             	+'&selectedOrgName='+URLencode(URLencode(selectedOrgName))
@@ -409,11 +411,11 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
 function CreateProductionDailyReportTable(){
 	var selectedOrgName="";
 	var selectedOrgId="";
+	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
 	var count=IframeViewStore.getCount();
 	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
 	if (IframeViewSelection.length > 0) {
-//		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
 		selectedOrgName=IframeViewSelection[0].data.text;
 		selectedOrgId=IframeViewSelection[0].data.orgId;
 	} else {
@@ -487,7 +489,7 @@ function CreateProductionDailyReportTable(){
 			endDate: endDate,
 			reportDate: reportDate,
 			reportType: 1,
-            deviceType:0
+            deviceType:deviceType
         }
 	});
 };
@@ -913,11 +915,11 @@ function createProductionDailyReportTemplateListDataColumn(columnInfo) {
 function CreateProductionDailyReportCurve(){
 	var selectedOrgName="";
 	var selectedOrgId="";
+	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
 	var count=IframeViewStore.getCount();
 	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
 	if (IframeViewSelection.length > 0) {
-//		selectedOrgName=foreachAndSearchOrgAbsolutePath(IframeViewStore.data.items,IframeViewSelection[0].data.orgId);
 		selectedOrgName=IframeViewSelection[0].data.text;
 		selectedOrgId=IframeViewSelection[0].data.orgId;
 	} else {
@@ -1105,7 +1107,7 @@ function CreateProductionDailyReportCurve(){
 			startDate: startDate,
 			endDate: endDate,
 			reportType: 1,
-            deviceType:0
+            deviceType: deviceType
         }
 	});
 };

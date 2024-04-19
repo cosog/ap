@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.CellEditData;
 import com.cosog.model.CurveConf;
+import com.cosog.model.DataMapping;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
 import com.cosog.model.User;
@@ -1384,7 +1386,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " from "+deviceTableName+" t "
 					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
-					+ " where t.orgid in ("+orgId+") and t.deviceType="+deviceType;
+					+ " where t.orgid in ("+orgId+") ";
+			if(StringManagerUtils.isNum(deviceType)){
+				wellListSql+= " and t.devicetype="+deviceType;
+			}else{
+				wellListSql+= " and t.devicetype in ("+deviceType+")";
+			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				wellListSql+=" and t.deviceName='"+deviceName+"'";
 			}
@@ -2271,7 +2278,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
 					+ " where t.orgid in ("+orgId+")";
-			wellListSql+= " and t.deviceType="+deviceType;
+			if(StringManagerUtils.isNum(deviceType)){
+				wellListSql+= " and t.devicetype="+deviceType;
+			}else{
+				wellListSql+= " and t.devicetype in ("+deviceType+")";
+			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				wellListSql+=" and t.deviceName='"+deviceName+"'";
 			}
@@ -2728,7 +2739,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				sqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
 			}
 			
-			sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceType="+deviceType+" and t.reportinstancecode='"+instanceCode+"' ");
+			sqlBuff.append(" and t.org_id in ("+orgId+")");
+			if(StringManagerUtils.isNum(deviceType)){
+				sqlBuff.append("and t.deviceType="+deviceType);
+			}else{
+				sqlBuff.append("and t.deviceType in("+deviceType+")");
+			}
+			sqlBuff.append(" and t.reportinstancecode='"+instanceCode+"' ");
+			
 			sqlBuff.append(" and t.calDate = to_date('"+reportDate+"','yyyy-mm-dd')");
 			sqlBuff.append(" order by t.sortnum");
 			List<String> allColList=new ArrayList<String>();;
@@ -2993,7 +3011,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
 				}
 				
-				sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceType="+deviceType+" and t.reportinstancecode='"+instanceCode+"' ");
+				sqlBuff.append(" and t.org_id in ("+orgId+")");
+				if(StringManagerUtils.isNum(deviceType)){
+					sqlBuff.append("and t.deviceType="+deviceType);
+				}else{
+					sqlBuff.append("and t.deviceType in("+deviceType+")");
+				}
+				sqlBuff.append(" and t.reportinstancecode='"+instanceCode+"' ");
 				sqlBuff.append(" and t.calDate = to_date('"+reportDate+"','yyyy-mm-dd')");
 				sqlBuff.append(" order by t.sortnum");
 				
@@ -3142,11 +3166,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
-			String reportTemplateCodeSql="select t2.id,t2.productionreporttemplate,t.name,t.code,t3.calculateType "
+			String reportTemplateCodeSql="select t2.id,t2.productionreporttemplate,t.name,t.code,t2.calculateType "
 					+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
-					+ " where t.unitid=t2.id and t2.devicetype="+deviceType
+					+ " where t.unitid=t2.id "
+					+ " and t.code in ( select t3.reportinstancecode from tbl_device t3 where t3.deviceType in("+deviceType+") )"
 					+ " order by t.sort";
-			
 			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 			
 			for(int i=0;i<reportTemplateCodeList.size();i++){
@@ -3293,7 +3317,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						sqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
 					}
 					
-					sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceType="+deviceType+" and t.reportinstancecode='"+reportInstanceCode+"' ");
+					sqlBuff.append(" and t.org_id in ("+orgId+")");
+					if(StringManagerUtils.isNum(deviceType)){
+						sqlBuff.append("and t.deviceType="+deviceType);
+					}else{
+						sqlBuff.append("and t.deviceType in("+deviceType+")");
+					}
+					sqlBuff.append(" and t.reportinstancecode='"+reportInstanceCode+"' ");
+					
 					sqlBuff.append(" and t.calDate = to_date('"+reportDate+"','yyyy-mm-dd')");
 					sqlBuff.append(" order by t.sortnum");
 					
@@ -3895,10 +3926,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
 		
-		String graphicSetTableName="tbl_devicegraphicset";
 		result_json.append("{\"success\":true,");
-		
-		ReportTemplate.Template template=null;
 		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
@@ -4026,47 +4054,193 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ "\"graphicSet\":"+graphicSet+","
 				+ "\"list\":[");
 		if(reportCurveItemList.size()>0){
-			StringBuffer cueveSqlBuff = new StringBuffer();
-			5
-			cueveSqlBuff.append("select to_char(calDate,'yyyy-mm-dd') as calDate");
-			for(int i=0;i<reportCurveItemList.size();i++){
-				String statType="";
-				if(reportCurveItemList.get(i).getCurveStatType()==1){
-					statType="sum";
-				}else if(reportCurveItemList.get(i).getCurveStatType()==2){
-					statType="avg";
-				}else if(reportCurveItemList.get(i).getCurveStatType()==3){
-					statType="max";
-				}else if(reportCurveItemList.get(i).getCurveStatType()==4){
-					statType="min";
+			boolean acqSign=false;
+			for(ReportUnitItem reportUnitItem:reportCurveItemList){
+				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+					acqSign=true;
+					break;
+				}
+			}
+			
+			if(!acqSign){
+				StringBuffer cueveSqlBuff = new StringBuffer();
+				cueveSqlBuff.append("select to_char(t.calDate,'yyyy-mm-dd') as calDate");
+				for(int i=0;i<reportCurveItemList.size();i++){
+					String tableAlias="t";
+					if(reportUnitCalculateType>0){
+						if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+							tableAlias="t2";
+						}else if("计算".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+							if(StringManagerUtils.generalCalColumnFiter(reportCurveItemList.get(i).getItemCode())){
+								tableAlias="t";
+							}else{
+								tableAlias="t3";
+							}
+						}
+					}
+					
+					
+					String statType="";
+					if(reportCurveItemList.get(i).getCurveStatType()==1){
+						statType="sum";
+					}else if(reportCurveItemList.get(i).getCurveStatType()==2){
+						statType="avg";
+					}else if(reportCurveItemList.get(i).getCurveStatType()==3){
+						statType="max";
+					}else if(reportCurveItemList.get(i).getCurveStatType()==4){
+						statType="min";
+					}else{
+						statType="sum";
+					}
+					cueveSqlBuff.append(","+statType+"("+tableAlias+"."+reportCurveItemList.get(i).getItemCode()+")"+"");
+				}
+
+				cueveSqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+				if(reportUnitCalculateType>0){
+					cueveSqlBuff.append(","+calTotalTableName+" t3");
+					
+				}
+				cueveSqlBuff.append(" where t.id=t2.id");
+				
+				if(reportUnitCalculateType>0){
+					cueveSqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
+				}
+				cueveSqlBuff.append(" and t.org_id in ("+orgId+") ");
+				cueveSqlBuff.append(" and t.reportinstancecode='"+instanceCode+"'");
+				
+				if(StringManagerUtils.isNum(deviceType)){
+					cueveSqlBuff.append(" and t.deviceType="+deviceType+"");
 				}else{
-					statType="sum";
+					cueveSqlBuff.append(" and t.deviceType in("+deviceType+")");
 				}
 				
 				
-				cueveSqlBuff.append(","+statType+"("+reportCurveItemList.get(i).getItemCode()+")"+"");
-			}
-			cueveSqlBuff.append(" from "+tableName+" t ");
-			cueveSqlBuff.append(" where t.org_id in ("+orgId+") ");
-			cueveSqlBuff.append(" and t.reportinstancecode='"+instanceCode+"'");
-			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
-			cueveSqlBuff.append(" group by t.calDate");
-			cueveSqlBuff.append(" order by t.calDate");
-			
-			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
-			for(int i=0;i<reportCurveDataList.size();i++){
-				Object[] obj=(Object[]) reportCurveDataList.get(i);
-				result_json.append("{\"calDate\":\"" + obj[0] + "\",\"data\":[");
-				for(int j=1;j<obj.length;j++){
-					result_json.append(obj[j]+",");
+				cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+				cueveSqlBuff.append(" group by t.calDate");
+				cueveSqlBuff.append(" order by t.calDate");
+				
+				List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
+				for(int i=0;i<reportCurveDataList.size();i++){
+					Object[] obj=(Object[]) reportCurveDataList.get(i);
+					result_json.append("{\"calDate\":\"" + obj[0] + "\",\"data\":[");
+					for(int j=1;j<obj.length;j++){
+						result_json.append(obj[j]+",");
+					}
+					if (result_json.toString().endsWith(",")) {
+						result_json.deleteCharAt(result_json.length() - 1);
+					}
+					result_json.append("]},");
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
-				result_json.append("]},");
-			}
-			if (result_json.toString().endsWith(",")) {
-				result_json.deleteCharAt(result_json.length() - 1);
+			}else{
+				StringBuffer cueveSqlBuff = new StringBuffer();
+				cueveSqlBuff.append("select to_char(calDate,'yyyy-mm-dd') as calDate");
+				for(int i=0;i<reportCurveItemList.size();i++){
+					String tableAlias="t";
+					if(reportUnitCalculateType>0){
+						if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+							tableAlias="t2";
+						}else if("计算".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+							if(StringManagerUtils.generalCalColumnFiter(reportCurveItemList.get(i).getItemCode())){
+								tableAlias="t";
+							}else{
+								tableAlias="t3";
+							}
+						}
+					}
+					cueveSqlBuff.append(","+tableAlias+"."+reportCurveItemList.get(i).getItemCode()+"");
+				}
+
+				cueveSqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+				if(reportUnitCalculateType>0){
+					cueveSqlBuff.append(","+calTotalTableName+" t3");
+					
+				}
+				cueveSqlBuff.append(" where t.id=t2.id");
+				
+				if(reportUnitCalculateType>0){
+					cueveSqlBuff.append(" and t.deviceId=t3.deviceId and t.calTime=t3.calTime");
+				}
+				cueveSqlBuff.append(" and t.org_id in ("+orgId+") ");
+				cueveSqlBuff.append(" and t.reportinstancecode='"+instanceCode+"'");
+				cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
+				cueveSqlBuff.append(" order by t.calDate");
+				List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
+				
+				Map<String,List<Object[]>> reportCurveDataMap=new HashMap<>();
+				for(int i=0;i<reportCurveDataList.size();i++){
+					Object[] obj=(Object[]) reportCurveDataList.get(i);
+					String calDate=obj[0]+"";
+					if(reportCurveDataMap.containsKey(calDate)){
+						reportCurveDataMap.get(calDate).add(obj);
+					}else{
+						List<Object[]> list=new ArrayList<>();
+						list.add(obj);
+						reportCurveDataMap.put(calDate, list);
+					}
+				}
+				
+				Iterator<Map.Entry<String,List<Object[]>>> iterator = reportCurveDataMap.entrySet().iterator();
+				while (iterator.hasNext()) {
+					Map.Entry<String,List<Object[]>> entry = iterator.next();
+					String calDate=entry.getKey();
+					List<Object[]> dataList = entry.getValue();
+					List<Float> totalDataList=new ArrayList<>();
+					
+					int curveCount=reportCurveItemList.size();
+					for(int i=0;i<curveCount;i++){
+						int totalCount=dataList.size();
+						float sum=0;
+						float avg=0;
+						for(int j=0;j<dataList.size();j++){
+							String value=dataList.get(j)[i+1]+"";
+							if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+								String[] totalValueArr=value.split(";");
+								if(totalValueArr.length==5){
+									if(reportCurveItemList.get(j).getTotalType()==1){
+										value=totalValueArr[0];
+									}else if(reportCurveItemList.get(j).getTotalType()==2){
+										value=totalValueArr[1];
+									}else if(reportCurveItemList.get(j).getTotalType()==3){
+										value=totalValueArr[2];
+									}else if(reportCurveItemList.get(j).getTotalType()==4){
+										value=totalValueArr[3];
+									}else if(reportCurveItemList.get(j).getTotalType()==5){
+										value=totalValueArr[4];
+									}
+								}
+							}
+							if(StringManagerUtils.isNum(value) && StringManagerUtils.isNumber(value)){
+								sum+=(StringManagerUtils.stringToFloat(value));
+							}
+						}
+						if(totalCount>0){
+							avg=sum/totalCount;
+						}
+						if(reportCurveItemList.get(i).getCurveStatType()==1){
+							totalDataList.add(sum);
+						}else if(reportCurveItemList.get(i).getCurveStatType()==2){
+							totalDataList.add(avg);
+						}else{
+							totalDataList.add(sum);
+						}
+					}
+					
+					result_json.append("{\"calDate\":\"" + calDate + "\",\"data\":[");
+					for(int i=0;i<totalDataList.size();i++){
+						result_json.append(totalDataList.get(i)+",");
+					}
+					if (result_json.toString().endsWith(",")) {
+						result_json.deleteCharAt(result_json.length() - 1);
+					}
+					result_json.append("]},");
+					
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
 			}
 		}
 		result_json.append("]}");
@@ -4268,10 +4442,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		CellEditData cellEditData=gson.fromJson(data, type);
 		
 		if(cellEditData!=null && cellEditData.getContentUpdateList().size()>0){
-			String tableName="tbl_rpcdailycalculationdata";
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				tableName="tbl_pcpdailycalculationdata";
-			}
+			String tableName="tbl_dailycalculationdata";
 			String updateSql="";
 			for(int i=0;i<cellEditData.getContentUpdateList().size();i++){
 				try {
@@ -4338,10 +4509,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		CellEditData cellEditData=gson.fromJson(data, type);
 		
 		if(cellEditData!=null && cellEditData.getContentUpdateList().size()>0){
-			String tableName="tbl_rpctimingcalculationdata";
-			if(StringManagerUtils.stringToInteger(deviceType)==1){
-				tableName="tbl_pcptimingcalculationdata";
-			}
+			String tableName="tbl_timingcalculationdata";
 			String updateSql="";
 			for(int i=0;i<cellEditData.getContentUpdateList().size();i++){
 				try {
@@ -4701,8 +4869,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String tableName="tbl_device";
 		String sql="select t.id,t.deviceName,t.calculateType"
 				+ " from "+tableName+" t "
-				+ " where  t.orgid in ("+orgId+")"
-				+ " and t.deviceType="+deviceType;
+				+ " where  t.orgid in ("+orgId+")";
+		if(StringManagerUtils.isNum(deviceType)){
+			sql+= " and t.devicetype="+deviceType;
+		}else{
+			sql+= " and t.devicetype in ("+deviceType+")";
+		}
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName='"+deviceName+"'";
 		}
@@ -4785,8 +4957,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String sql="select  t2.id,t2.name,t2.code,t2.unitid,t2.sort "
 				+ " from "+tableName+" t,tbl_protocolreportinstance t2 "
 				+ " where t.reportinstancecode=t2.code "
-				+ " and t.orgid in("+orgId+")"
-				+ " and t.deviceType="+deviceType;
+				+ " and t.orgid in("+orgId+")";
+		if(StringManagerUtils.isNum(deviceType)){
+			sql+= " and t.devicetype="+deviceType;
+		}else{
+			sql+= " and t.devicetype in ("+deviceType+")";
+		}
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName='"+deviceName+"'";
 		}

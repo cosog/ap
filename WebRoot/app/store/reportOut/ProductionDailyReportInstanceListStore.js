@@ -43,7 +43,7 @@ Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(index);
                     		CreateProductionDailyReportTable();
-//                    		CreateProductionDailyReportCurve();
+                    		CreateProductionDailyReportCurve();
                         }
                     }
                 });

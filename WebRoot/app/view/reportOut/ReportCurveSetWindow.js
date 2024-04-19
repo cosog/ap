@@ -33,36 +33,22 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 text: cosog.string.save,
                 iconCls: 'save',
                 handler: function (v, o) {
-                	var activeId = Ext.getCmp("ProductionWellDailyReportPanel_Id").getActiveTab().id;
-                	var deviceType=0;
+                	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
                 	var reportType=0;
-                	var selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
-                	var gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
-                	var divId="RPCSingleWellRangeReportCurveDiv_Id";
+                	var selectRowId="SingleWellDailyReportDeviceListSelectRow_Id";
+                	var gridPanelId="SingleWellDailyReportGridPanel_Id";
+                	var divId="SingleWellRangeReportCurveDiv_Id";
                 	
-                	var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
-        			if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
+                	var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
+        			if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
         				reportType=2;
-        				divId="RPCSingleWellDailyReportCurveDiv_Id";
-        			}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
+        				divId="SingleWellDailyReportCurveDiv_Id";
+        			}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
         				reportType=0;
-        				divId="RPCSingleWellRangeReportCurveDiv_Id";
+        				divId="SingleWellRangeReportCurveDiv_Id";
         			}
                 	
-                	if(activeId=="PCPDailyReportPanel_Id"){
-                		deviceType=1;
-                		selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
-                		gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
-                		
-                		var PCPSingleWellReportTabPanelActiveId=Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id;
-            			if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellDailyReportTabPanel_id'){
-            				reportType=2;
-            				divId="PCPSingleWellDailyReportCurveDiv_Id";
-            			}else if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellRangeReportTabPanel_id'){
-            				reportType=0;
-            				divId="PCPSingleWellRangeReportCurveDiv_Id";
-            			}
-                	}
+                	
                 	var deviceName='';
                 	var deviceId=0;
                 	var selectRow= Ext.getCmp(selectRowId).getValue();
@@ -216,56 +202,33 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
 
 
 function CreateDeviceReportCurveSetTable(){
-	var activeId = Ext.getCmp("ProductionWellDailyReportPanel_Id").getActiveTab().id;
-	
-	var deviceType=0;
+	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	var reportType=0;
-	var selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
-	var gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
-	var divId="RPCSingleWellRangeReportCurveDiv_Id";
+	var selectRowId="SingleWellDailyReportDeviceListSelectRow_Id";
+	var gridPanelId="SingleWellDailyReportGridPanel_Id";
+	var divId="SingleWellRangeReportCurveDiv_Id";
 	
-	if(activeId=="RPCDailyReportPanel_Id"){
-		deviceType=0;
-		var secondActiveId = Ext.getCmp("RPCDailyReportTabPanel").getActiveTab().id;
-		if(secondActiveId=="RPCSingleWellDailyReportTabPanel_Id"){
-			selectRowId="RPCSingleWellDailyReportDeviceListSelectRow_Id";
-			gridPanelId="RPCSingleWellDailyReportGridPanel_Id";
-			
-			var RPCSingleWellReportTabPanelActiveId=Ext.getCmp("RPCSingleWellReportTabPanel_Id").getActiveTab().id;
-			if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellDailyReportTabPanel_id'){
-				reportType=2;
-				divId="RPCSingleWellDailyReportCurveDiv_Id";
-			}else if(RPCSingleWellReportTabPanelActiveId=='RPCSingleWellRangeReportTabPanel_id'){
-				reportType=0;
-				divId="RPCSingleWellRangeReportCurveDiv_Id";
-			}
-		}else if(secondActiveId=="RPCProductionDailyReportTabPanel_Id"){
-			reportType=1;
-			selectRowId="RPCProductionDailyReportInstanceListSelectRow_Id";
-			gridPanelId="RPCProductionDailyReportGridPanel_Id";
-			divId="RPCProductionDailyReportCurveDiv_Id";
+	var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
+	if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
+		selectRowId="SingleWellDailyReportDeviceListSelectRow_Id";
+		gridPanelId="SingleWellDailyReportGridPanel_Id";
+		
+		var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
+		if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
+			reportType=2;
+			divId="SingleWellDailyReportCurveDiv_Id";
+		}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
+			reportType=0;
+			divId="SingleWellRangeReportCurveDiv_Id";
 		}
-	}else{
-		deviceType=1;
-		var secondActiveId = Ext.getCmp("PCPDailyReportTabPanel").getActiveTab().id;
-		if(secondActiveId=="PCPSingleWellDailyReportTabPanel_Id"){
-			selectRowId="PCPSingleWellDailyReportDeviceListSelectRow_Id";
-			gridPanelId="PCPSingleWellDailyReportGridPanel_Id";
-			var PCPSingleWellReportTabPanelActiveId=Ext.getCmp("PCPSingleWellReportTabPanel_Id").getActiveTab().id;
-			if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellDailyReportTabPanel_id'){
-				reportType=2;
-				divId="PCPSingleWellDailyReportCurveDiv_Id";
-			}else if(PCPSingleWellReportTabPanelActiveId=='PCPSingleWellRangeReportTabPanel_id'){
-				reportType=0;
-				divId="PCPSingleWellRangeReportCurveDiv_Id";
-			}
-		}else if(secondActiveId=="PCPProductionDailyReportTabPanel_Id"){
-			reportType=1;
-			selectRowId="PCPProductionDailyReportDeviceListSelectRow_Id";
-			gridPanelId="PCPProductionDailyReportGridPanel_Id";
-			divId="PCPProductionDailyReportCurveDiv_Id";
-		}
+	}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
+		reportType=1;
+		selectRowId="ProductionDailyReportInstanceListSelectRow_Id";
+		gridPanelId="ProductionDailyReportGridPanel_Id";
+		divId="ProductionDailyReportCurveDiv_Id";
 	}
+
+	
 	var deviceName='';
 	var deviceId=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();

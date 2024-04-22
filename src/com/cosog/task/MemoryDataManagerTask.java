@@ -82,6 +82,8 @@ public class MemoryDataManagerTask {
 		
 		loadDeviceInfo(null,0,"update");
 		
+		loadDeviceRealtimeAcqData(null);
+		
 		loadTodayFESDiagram(null,0);
 		loadTodayRPMData(null,0);
 	}
@@ -118,6 +120,7 @@ public class MemoryDataManagerTask {
 			jedis.del("AlarmShowStyle".getBytes());
 			jedis.del("UIKitAccessToken".getBytes());
 			jedis.del("ReportTemplateConfig".getBytes());
+			jedis.del("DeviceRealtimeAcqData".getBytes());
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -867,6 +870,99 @@ public class MemoryDataManagerTask {
 				}
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static Map<String,Map<String,String>> getDeviceRealtimeAcqDataById(String deviceId){
+		Jedis jedis=null;
+		Map<String,Map<String,String>> realtimeDataTimeMap=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			String key=deviceId;
+			if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+				List<String> deviceIdList=new ArrayList<>();
+				deviceIdList.add(deviceId);
+				loadDeviceRealtimeAcqData(deviceIdList);
+			}
+			if(jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+				realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return realtimeDataTimeMap;
+	}
+	
+	public static void loadDeviceRealtimeAcqData(List<String> deviceIdList){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Jedis jedis=null;
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			if(conn==null){
+	        	return;
+	        }
+			jedis = RedisUtil.jedisPool.getResource();
+			
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			if(!dataModelMap.containsKey("ProtocolMappingColumn")){
+				MemoryDataManagerTask.loadProtocolMappingColumn();
+			}
+			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			List<String> queryAcqColumns=new ArrayList<>();
+			List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_acqdata_hist");
+			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime";
+			for(String column:tableColumnList){
+				if(loadProtocolMappingColumnMap.containsKey(column)){
+					sql+=",t."+column;
+					queryAcqColumns.add(column);
+				}
+			}
+			
+			
+			
+			sql+=" from tbl_acqdata_hist t where 1=1";
+			if(deviceIdList!=null && deviceIdList.size()>0){
+				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+			}
+			sql+=" order by t.deviceId,t.acqTime";
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				int deviceId=rs.getInt(1);
+				String acqTime=rs.getString(2);
+				String key=deviceId+"";
+				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+					Map<String,Map<String,String>> realtimeDataTimeMap=new HashMap<>();
+					Map<String,String> everyDataMap =new HashMap<>();
+					
+					for(int i=0;i<queryAcqColumns.size();i++){
+						everyDataMap.put(queryAcqColumns.get(i), rs.getString(i+3));
+					}
+					realtimeDataTimeMap.put(acqTime, everyDataMap);
+					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+				}else{
+					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+					Map<String,String> everyDataMap =new HashMap<>();
+					for(int i=0;i<queryAcqColumns.size();i++){
+						everyDataMap.put(queryAcqColumns.get(i), rs.getString(i+3));
+					}
+					realtimeDataTimeMap.put(acqTime, everyDataMap);
+					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+				}
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);

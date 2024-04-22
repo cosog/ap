@@ -1689,6 +1689,9 @@ public class DriverAPIController extends BaseController{
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
 				if(protocol!=null){
+					Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceInfo.getId()+"");
+					
+					
 					String lastSaveTime=deviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
 					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
@@ -1958,6 +1961,20 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,rpcCalculateResponseData);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
+					
+					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
+						if(acquisitionItemInfo.getAlarmLevel()>0){
+							alarm=true;
+							break;
+						}
+					}
+					if(realtimeDataTimeMap!=null){
+						Map<String,String> everyDataMap =new HashMap<>();
+						for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
+							everyDataMap.put(acquisitionItemInfo.getColumn(), acquisitionItemInfo.getValue());
+						}
+						realtimeDataTimeMap.put(acqTime, everyDataMap);
+					}
 					
 					//如果满足单组入库间隔或者有报警，保存数据
 					if(save || alarm){

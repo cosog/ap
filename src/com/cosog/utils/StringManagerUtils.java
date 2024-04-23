@@ -727,10 +727,7 @@ public class StringManagerUtils {
     public static String getCurrentTime() {
         String time = null;
         Date now = new Date();
-        // Calendar cal = Calendar.getInstance();
-        // DateFormat df = DateFormat.getDateTimeInstance();
         SimpleDateFormat f = new SimpleDateFormat(DATEPATTERN);
-        // DateFormat df = DateFormat.getDateInstance();
         time = f.format(now);
         return time;
     }

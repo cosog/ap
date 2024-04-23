@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2699,145 +2700,170 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "\"curveConf\":"+curveConfBuff+","
 					+ "\"list\":[");
 			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
-				String columns="";
-				String calAndInputColumn="";
-				String calAndInputDataTable="";
-				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calAndInputDataTable="tbl_rpcacqdata_hist";
-				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-					calAndInputDataTable="tbl_pcpacqdata_hist";
-				}
-				for(int i=0;i<itemColumnList.size();i++){
-					columns+=",t."+itemColumnList.get(i);
-				}
-				if(StringManagerUtils.stringToInteger(calculateType)>0){
-					for(int i=0;i<calItemColumnList.size();i++){
-						calAndInputColumn+=",t3."+calItemColumnList.get(i);
-					}
-					if(inputItemColumnList.size()>0){
-						calAndInputColumn+=",t3.productiondata";
-					}
-				}
-				
-				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
-						+ " from "+tableName +" t"
-						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id";
-				if(StringManagerUtils.stringToInteger(calculateType)>0){
-					sql+= " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime";
-				}	
-				sql+= " where t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
-						+ " and t2.id="+deviceId;
-				int total=this.getTotalCountRows(sql);
-				int rarefy=total/vacuateThreshold+1;
-				sql+= " order by t.acqtime";
-				
-				String finalSql=sql;
-				if(rarefy>1){
-					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
-				}
-				List<?> list = this.findCallSql(finalSql);
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[]) list.get(i);
-					result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
-					for(int j=1;j<=itemColumnList.size();j++){
-						result_json.append(obj[j]+",");
-					}
-					
-					for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
-						result_json.append(obj[j]+",");
-					}
-					if(inputItemColumnList.size()>0){
-						String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
-						Gson gson = new Gson();
-						java.lang.reflect.Type type=null;
-						if(StringManagerUtils.stringToInteger(calculateType)==1){
-							type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-							RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
-							for(int j=0;j<inputItemColumnList.size();j++){
-								String inputItemValue="";
-								String column=inputItemColumnList.get(j);
-								if(rpcProductionData!=null){
-									if("CrudeOilDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getCrudeOilDensity()+"";
-									}else if("WaterDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getWaterDensity()+"";
-									}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-									}else if("SaturationPressure".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
-									}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-										inputItemValue=rpcProductionData.getReservoir().getDepth()+"";
-									}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-										inputItemValue=rpcProductionData.getReservoir().getTemperature()+"";
-									}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getTubingPressure()+"";
-									}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getCasingPressure()+"";
-									}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getWellHeadTemperature()+"";
-									}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getWaterCut()+"";
-									}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getProductionGasOilRatio()+"";
-									}else if("ProducingfluidLevel".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getProducingfluidLevel()+"";
-									}else if("PumpSettingDepth".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getPumpSettingDepth()+"";
-									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && rpcProductionData.getPump()!=null ){
-										inputItemValue=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
-									}else if("LevelCorrectValue".equalsIgnoreCase(column) && rpcProductionData.getManualIntervention()!=null ){
-										inputItemValue=rpcProductionData.getManualIntervention().getLevelCorrectValue()+"";
-									}
-								}
-								result_json.append(inputItemValue+",");
+				Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceId+"");
+				if(realtimeDataTimeMap!=null && realtimeDataTimeMap.size()>0){
+					Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
+					while(realtimeDataTimeMapIterator.hasNext()){
+						Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
+					    String key = entry.getKey();
+					    Map<String,String> everyDataMap = entry.getValue();
+					    result_json.append("{\"acqTime\":\"" + key + "\",\"data\":[");
+					    for(int j=1;j<=itemColumnList.size();j++){
+							String value=null;
+							if(everyDataMap.containsKey(itemColumnList.get(j).toUpperCase())){
+								value=everyDataMap.get(itemColumnList.get(j).toUpperCase());
 							}
-						}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-							type = new TypeToken<PCPCalculateRequestData>() {}.getType();
-							PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
-							for(int j=0;j<inputItemColumnList.size();j++){
-								String inputItemValue="";
-								String column=inputItemColumnList.get(j);
-								if(pcpProductionData!=null){
-									if("CrudeOilDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getCrudeOilDensity()+"";
-									}else if("WaterDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getWaterDensity()+"";
-									}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-									}else if("SaturationPressure".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getSaturationPressure()+"";
-									}else if("ReservoirDepth".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
-										inputItemValue=pcpProductionData.getReservoir().getDepth()+"";
-									}else if("ReservoirTemperature".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
-										inputItemValue=pcpProductionData.getReservoir().getTemperature()+"";
-									}else if("TubingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getTubingPressure()+"";
-									}else if("CasingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getCasingPressure()+"";
-									}else if("WellHeadTemperature".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getWellHeadTemperature()+"";
-									}else if("WaterCut".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getWaterCut()+"";
-									}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getProductionGasOilRatio()+"";
-									}else if("ProducingfluidLevel".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getProducingfluidLevel()+"";
-									}else if("PumpSettingDepth".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getPumpSettingDepth()+"";
-									}
-								}
-								result_json.append(inputItemValue+",");
-							}
+					    	result_json.append(value+",");
 						}
+						if (result_json.toString().endsWith(",")) {
+							result_json.deleteCharAt(result_json.length() - 1);
+						}
+						result_json.append("]},");
 					}
-					
 					if (result_json.toString().endsWith(",")) {
 						result_json.deleteCharAt(result_json.length() - 1);
 					}
-					result_json.append("]},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
+				}else{
+					String columns="";
+					String calAndInputColumn="";
+					String calAndInputDataTable="";
+					if(StringManagerUtils.stringToInteger(calculateType)==1){
+						calAndInputDataTable="tbl_rpcacqdata_hist";
+					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+						calAndInputDataTable="tbl_pcpacqdata_hist";
+					}
+					for(int i=0;i<itemColumnList.size();i++){
+						columns+=",t."+itemColumnList.get(i);
+					}
+					if(StringManagerUtils.stringToInteger(calculateType)>0){
+						for(int i=0;i<calItemColumnList.size();i++){
+							calAndInputColumn+=",t3."+calItemColumnList.get(i);
+						}
+						if(inputItemColumnList.size()>0){
+							calAndInputColumn+=",t3.productiondata";
+						}
+					}
+					
+					String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
+							+ " from "+tableName +" t"
+							+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id";
+					if(StringManagerUtils.stringToInteger(calculateType)>0){
+						sql+= " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime";
+					}	
+					sql+= " where t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
+							+ " and t2.id="+deviceId;
+					int total=this.getTotalCountRows(sql);
+					int rarefy=total/vacuateThreshold+1;
+					sql+= " order by t.acqtime";
+					
+					String finalSql=sql;
+					if(rarefy>1){
+						finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+					}
+					List<?> list = this.findCallSql(finalSql);
+					for(int i=0;i<list.size();i++){
+						Object[] obj=(Object[]) list.get(i);
+						result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
+						for(int j=1;j<=itemColumnList.size();j++){
+							result_json.append(obj[j]+",");
+						}
+						
+						for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
+							result_json.append(obj[j]+",");
+						}
+						if(inputItemColumnList.size()>0){
+							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
+							Gson gson = new Gson();
+							java.lang.reflect.Type type=null;
+							if(StringManagerUtils.stringToInteger(calculateType)==1){
+								type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+								RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+								for(int j=0;j<inputItemColumnList.size();j++){
+									String inputItemValue="";
+									String column=inputItemColumnList.get(j);
+									if(rpcProductionData!=null){
+										if("CrudeOilDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
+											inputItemValue=rpcProductionData.getFluidPVT().getCrudeOilDensity()+"";
+										}else if("WaterDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
+											inputItemValue=rpcProductionData.getFluidPVT().getWaterDensity()+"";
+										}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
+											inputItemValue=rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+										}else if("SaturationPressure".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
+											inputItemValue=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
+										}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
+											inputItemValue=rpcProductionData.getReservoir().getDepth()+"";
+										}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
+											inputItemValue=rpcProductionData.getReservoir().getTemperature()+"";
+										}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
+											inputItemValue=rpcProductionData.getProduction().getTubingPressure()+"";
+										}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
+											inputItemValue=rpcProductionData.getProduction().getCasingPressure()+"";
+										}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
+											inputItemValue=rpcProductionData.getProduction().getWellHeadTemperature()+"";
+										}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
+											inputItemValue=rpcProductionData.getProduction().getWaterCut()+"";
+										}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
+											inputItemValue=rpcProductionData.getProduction().getProductionGasOilRatio()+"";
+										}else if("ProducingfluidLevel".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
+											inputItemValue=rpcProductionData.getProduction().getProducingfluidLevel()+"";
+										}else if("PumpSettingDepth".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
+											inputItemValue=rpcProductionData.getProduction().getPumpSettingDepth()+"";
+										}else if("PumpBoreDiameter".equalsIgnoreCase(column) && rpcProductionData.getPump()!=null ){
+											inputItemValue=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
+										}else if("LevelCorrectValue".equalsIgnoreCase(column) && rpcProductionData.getManualIntervention()!=null ){
+											inputItemValue=rpcProductionData.getManualIntervention().getLevelCorrectValue()+"";
+										}
+									}
+									result_json.append(inputItemValue+",");
+								}
+							}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
+								for(int j=0;j<inputItemColumnList.size();j++){
+									String inputItemValue="";
+									String column=inputItemColumnList.get(j);
+									if(pcpProductionData!=null){
+										if("CrudeOilDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
+											inputItemValue=pcpProductionData.getFluidPVT().getCrudeOilDensity()+"";
+										}else if("WaterDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
+											inputItemValue=pcpProductionData.getFluidPVT().getWaterDensity()+"";
+										}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
+											inputItemValue=pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+										}else if("SaturationPressure".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
+											inputItemValue=pcpProductionData.getFluidPVT().getSaturationPressure()+"";
+										}else if("ReservoirDepth".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
+											inputItemValue=pcpProductionData.getReservoir().getDepth()+"";
+										}else if("ReservoirTemperature".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
+											inputItemValue=pcpProductionData.getReservoir().getTemperature()+"";
+										}else if("TubingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
+											inputItemValue=pcpProductionData.getProduction().getTubingPressure()+"";
+										}else if("CasingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
+											inputItemValue=pcpProductionData.getProduction().getCasingPressure()+"";
+										}else if("WellHeadTemperature".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
+											inputItemValue=pcpProductionData.getProduction().getWellHeadTemperature()+"";
+										}else if("WaterCut".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
+											inputItemValue=pcpProductionData.getProduction().getWaterCut()+"";
+										}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
+											inputItemValue=pcpProductionData.getProduction().getProductionGasOilRatio()+"";
+										}else if("ProducingfluidLevel".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
+											inputItemValue=pcpProductionData.getProduction().getProducingfluidLevel()+"";
+										}else if("PumpSettingDepth".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
+											inputItemValue=pcpProductionData.getProduction().getPumpSettingDepth()+"";
+										}
+									}
+									result_json.append(inputItemValue+",");
+								}
+							}
+						}
+						
+						if (result_json.toString().endsWith(",")) {
+							result_json.deleteCharAt(result_json.length() - 1);
+						}
+						result_json.append("]},");
+					}
+					if (result_json.toString().endsWith(",")) {
+						result_json.deleteCharAt(result_json.length() - 1);
+					}
 				}
 			}
 			result_json.append("]}");

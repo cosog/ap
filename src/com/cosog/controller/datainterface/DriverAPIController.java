@@ -1927,13 +1927,13 @@ public class DriverAPIController extends BaseController{
 					if(deviceInfo.getCalculateType()==1){
 						rpcCalculateRequestData=new RPCCalculateRequestData();
 						rpcCalculateRequestData.init();
-						rpcCalculateResponseData=RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus,rpcCalculateRequestData);
+						rpcCalculateResponseData=RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus,rpcCalculateRequestData,save);
 						inputItemItemResolutionDataList=getRPCInputItemData(deviceInfo);
 						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
 						}
 					}else if(deviceInfo.getCalculateType()==2){
-						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus);
+						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus,save);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 					}
 					
@@ -1968,10 +1968,24 @@ public class DriverAPIController extends BaseController{
 							break;
 						}
 					}
+					
+					//保存至内存中
 					if(realtimeDataTimeMap!=null){
+						//删除非当天采集的数据
+						Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
+						while(realtimeDataTimeMapIterator.hasNext()){
+							Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
+						    String key = entry.getKey();
+						    Map<String,String> value = entry.getValue();
+							if(!StringManagerUtils.timeMatchDate(key, StringManagerUtils.getCurrentTime(), 0)
+									){
+								realtimeDataTimeMapIterator.remove();
+							}
+						}
+						//添加新采集数据至内存
 						Map<String,String> everyDataMap =new HashMap<>();
 						for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-							everyDataMap.put(acquisitionItemInfo.getColumn(), acquisitionItemInfo.getValue());
+							everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 						}
 						realtimeDataTimeMap.put(acqTime, everyDataMap);
 					}
@@ -2015,6 +2029,14 @@ public class DriverAPIController extends BaseController{
 						if(alarm){
 							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getWellName(),deviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
 						}
+						
+						//保存计算数据
+						if(rpcCalculateResponseData!=null){
+							
+						}
+						if(pcpCalculateResponseData!=null){
+							
+						}
 					}
 					
 					//放入内存数据库中
@@ -2043,8 +2065,61 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
+	public void SaveFESDiagramCalData(DeviceInfo deviceInfo,
+			CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
+			String acqTime,int runStatus,
+			RPCCalculateRequestData rpcCalculateRequestData,RPCCalculateResponseData rpcCalculateResponseData){
+		String realtimeTable="tbl_rpcacqdata_latest";
+		String historyTable="tbl_rpcacqdata_hist";
+		String totalDataTable="tbl_rpcdailycalculationdata";
+		
+		String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
+		
+		
+		String insertHistColumns="deviceid,acqTime,CommStatus,runStatus";
+		String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),1,"+runStatus;
+		String insertHistSql="";
+		
+		String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1,t.runStatus="+runStatus;
+		
+		if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+			updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+					+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+			insertHistColumns+=",commTimeEfficiency,commTime";
+			insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
+			
+			updateTotalDataSql+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+					+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+		}
+		if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
+			updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+					+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+			insertHistColumns+=",runTimeEfficiency,runTime";
+			insertHistValue+=","+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+","+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+			updateTotalDataSql+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+					+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+		}
+		
+		
+		updateTotalDataSql+=",t.TubingPressure="+rpcCalculateRequestData.getProduction().getTubingPressure()+"";
+		updateTotalDataSql+=",t.CasingPressure="+rpcCalculateRequestData.getProduction().getCasingPressure()+"";
+		updateTotalDataSql+=",t.ProducingfluidLevel="+rpcCalculateRequestData.getProduction().getProducingfluidLevel()+"";
+		updateTotalDataSql+=",t.Stroke="+rpcCalculateRequestData.getFESDiagram().getStroke()+"";
+		updateTotalDataSql+=",t.TubingPressure="+rpcCalculateRequestData.getProduction().getTubingPressure()+"";
+		updateTotalDataSql+=",t.TubingPressure="+rpcCalculateRequestData.getProduction().getTubingPressure()+"";
+		
+		if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
+				&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
+				&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0
+				&& !updateTotalDataSql.toLowerCase().contains("producingfluidLevel")){
+			updateTotalDataSql+=",t.producingfluidLevel= "+rpcCalculateResponseData.getProduction().getProducingfluidLevel();
+		}
+		
+	}
+	
 	public RPCCalculateResponseData RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
-			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,RPCCalculateRequestData rpcCalculateRequestData){
+			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,RPCCalculateRequestData rpcCalculateRequestData,
+			boolean save){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -2602,7 +2677,9 @@ public class DriverAPIController extends BaseController{
 								deviceInfo.getRpcCalculateRequestData().getProduction().setWaterCut(weightWaterCut);
 							}
 						}
-						rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
+						if(!isAcqCalResultData){
+							rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
+						}
 						
 						if(rpcCalculateResponseData!=null && isAcqRPMData){
 							rpcCalculateResponseData.setRPM(acqRPM);
@@ -2770,39 +2847,40 @@ public class DriverAPIController extends BaseController{
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
-					commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-					commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-					commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
-					
-					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-						List<String> clobCont=new ArrayList<String>();
-						String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
-						String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
-						String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
-						clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-							updateRealRangeClobSql+=", t.runrange=?";
-							updateHisRangeClobSql+=", t.runrange=?";
-							updateTotalRangeClobSql+=", t.runrange=?";
-							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+					if(save){
+						commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
+						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
+						
+						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+							List<String> clobCont=new ArrayList<String>();
+							String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
+							String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
+							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
+							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+								updateRealRangeClobSql+=", t.runrange=?";
+								updateHisRangeClobSql+=", t.runrange=?";
+								updateTotalRangeClobSql+=", t.runrange=?";
+								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+							}
+							updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+							updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+							updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+							commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}
-						updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
-						updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-						updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
-						commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
-						commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
-						commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
+						
+						if(FESDiagramCalculate || isAcqCalResultData){
+							commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
+						}
+						
+						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
+							int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+							commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
+						}
 					}
-					
-					if(FESDiagramCalculate || isAcqCalResultData){
-						commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
-					}
-					
-					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-						int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
-						commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
-					}
-					
 					//放入内存数据库中
 					if(jedis!=null && deviceTodayData!=null){
 						jedis.hset("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
@@ -4591,7 +4669,8 @@ public class DriverAPIController extends BaseController{
 //	}
 	
 	public PCPCalculateResponseData PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
-			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus){
+			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,
+			boolean save){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		Jedis jedis=null;
@@ -4896,36 +4975,36 @@ public class DriverAPIController extends BaseController{
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
-					commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-					commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-					commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
-					
-					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-						List<String> clobCont=new ArrayList<String>();
-						String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
-						String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
-						String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
-						clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-							updateRealRangeClobSql+=", t.runrange=?";
-							updateHisRangeClobSql+=", t.runrange=?";
-							updateTotalRangeClobSql+=", t.runrange=?";
-							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
-						}
-						updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
-						updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-						updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
-						commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
-						commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
-						commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
-					}
-					
-					commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
-					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-						int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
-						commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
-					}else{
+					if(save){
+						commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
+						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
 						
+						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+							List<String> clobCont=new ArrayList<String>();
+							String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
+							String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
+							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
+							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+								updateRealRangeClobSql+=", t.runrange=?";
+								updateHisRangeClobSql+=", t.runrange=?";
+								updateTotalRangeClobSql+=", t.runrange=?";
+								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+							}
+							updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+							updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+							updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+							commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
+						}
+						
+						commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
+						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
+							int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+							commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
+						}
 					}
 					
 					if(jedis!=null && deviceTodayData!=null){

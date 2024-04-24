@@ -3118,7 +3118,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(63,calculateResponseData.getFESDiagram().getArea());
 				//泵效
 				cs.setFloat(64,calculateResponseData.getPumpEfficiency().getRodFlexLength());
-				cs.setFloat(65,calculateResponseData.getPumpEfficiency().getTubingFlexLength());
+				cs.setFloat(65,calculateResponseData.getPumpEfficiency().getTubingFlexLength());               
 				cs.setFloat(66,calculateResponseData.getPumpEfficiency().getInertiaLength());
 				cs.setFloat(67,calculateResponseData.getPumpEfficiency().getPumpEff1());
 				cs.setFloat(68,calculateResponseData.getPumpEfficiency().getPumpEff2());

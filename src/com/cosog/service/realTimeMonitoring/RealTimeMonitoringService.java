@@ -2708,13 +2708,30 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					    String key = entry.getKey();
 					    Map<String,String> everyDataMap = entry.getValue();
 					    result_json.append("{\"acqTime\":\"" + key + "\",\"data\":[");
-					    for(int j=1;j<=itemColumnList.size();j++){
+					    for(int j=0;j<itemColumnList.size();j++){
 							String value=null;
 							if(everyDataMap.containsKey(itemColumnList.get(j).toUpperCase())){
 								value=everyDataMap.get(itemColumnList.get(j).toUpperCase());
 							}
 					    	result_json.append(value+",");
 						}
+					    for(int j=0;j<calItemColumnList.size();j++){
+							String value=null;
+							if(everyDataMap.containsKey(calItemColumnList.get(j).toUpperCase())){
+								value=everyDataMap.get(calItemColumnList.get(j).toUpperCase());
+							}
+					    	result_json.append(value+",");
+						}
+					    for(int j=0;j<inputItemColumnList.size();j++){
+							String value=null;
+							if(everyDataMap.containsKey(inputItemColumnList.get(j).toUpperCase())){
+								value=everyDataMap.get(inputItemColumnList.get(j).toUpperCase());
+							}
+					    	result_json.append(value+",");
+						}
+					    
+					    
+					    
 						if (result_json.toString().endsWith(",")) {
 							result_json.deleteCharAt(result_json.length() - 1);
 						}

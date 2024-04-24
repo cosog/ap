@@ -413,7 +413,7 @@ public class RealTimeMonitoringController extends BaseController {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		if(user!=null){
-			json = realTimeMonitoringService.getRealTimeMonitoringCurveData(deviceId,deviceName,deviceType,calculateType,user.getUserNo());
+			json = realTimeMonitoringService.getRealTimeMonitoringCurveDataFromMemory(deviceId,deviceName,deviceType,calculateType,user.getUserNo());
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

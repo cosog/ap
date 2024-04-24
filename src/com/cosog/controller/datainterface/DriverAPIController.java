@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1690,7 +1691,9 @@ public class DriverAPIController extends BaseController{
 				
 				if(protocol!=null){
 					Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceInfo.getId()+"");
-					
+					if(realtimeDataTimeMap==null){
+						realtimeDataTimeMap=new LinkedHashMap<>();
+					}
 					
 					String lastSaveTime=deviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
@@ -1983,11 +1986,13 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 						//添加新采集数据至内存
-						Map<String,String> everyDataMap =new HashMap<>();
+						Map<String,String> everyDataMap =new LinkedHashMap<>();
 						for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 							everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 						}
 						realtimeDataTimeMap.put(acqTime, everyDataMap);
+						
+						MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"",realtimeDataTimeMap);
 					}
 					
 					//如果满足单组入库间隔或者有报警，保存数据
@@ -2677,9 +2682,7 @@ public class DriverAPIController extends BaseController{
 								deviceInfo.getRpcCalculateRequestData().getProduction().setWaterCut(weightWaterCut);
 							}
 						}
-						if(!isAcqCalResultData){
-							rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
-						}
+						rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
 						
 						if(rpcCalculateResponseData!=null && isAcqRPMData){
 							rpcCalculateResponseData.setRPM(acqRPM);

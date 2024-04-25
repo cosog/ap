@@ -18,19 +18,6 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
-        //var moduleParentInfoStore = Ext.create("AP.store.module.ModuleParentInfoStore");
-        /**下拉机构数*/
-//        var xltree = Ext.create('AP.view.module.ModuleTreeComboBox', {
-//            fieldLabel: cosog.string.superModule,
-//            emptyText: cosog.string.checkModule,
-//            blankText: cosog.string.checkModule,
-//            id: 'mdName_Parent_Id1',
-//            anchor: '95%',
-//            value: '',
-//            callback: function (id, text) {
-//                Ext.getCmp("module_addwin_Id").down('form').getChildByElement("mdName_Parent_Id").setValue(id);
-//            }
-//        });
         var ModTreeStore=Ext.create('Ext.data.TreeStore', {
             fields: ['id', 'text', 'leaf'],
             autoLoad: false,

@@ -33,7 +33,7 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                     rootVisible: false,
                     useArrows: true,
                     draggable: false,
-                    forceFit: true,
+                    forceFit: false,
                     onlyLeafCheckable: false, // 所有结点可选，如果不需要checkbox,该属性去掉
                     singleExpand: false,
                     selType: (loginUserModuleManagementModuleRight.editFlag==1?'checkboxmodel':''),
@@ -47,10 +47,7 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                         selectionchange: function (sm, selections) {
                         },
                         itemdblclick: function () {
-                        	var ModuleManagementModuleEditFlag=parseInt(Ext.getCmp("ModuleManagementModuleEditFlag").getValue());
-                            if(ModuleManagementModuleEditFlag==1){
-                            	modifymoduleInfo();
-                            }
+                        	modifymoduleInfo();
                         }
                     }
                 });

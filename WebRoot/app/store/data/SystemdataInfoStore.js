@@ -7,7 +7,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
     pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
-        url: context + '/systemdataInfoController/findSystemdataInfoByListId',
+        url: context + '/systemdataInfoController/findSystemdataInfo',
         actionMethods: {
             read: 'POST'
         },
@@ -33,7 +33,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     id: "SystemdataInfoGridPanelId",
                     border: false,
                     columnLines: true,
-                    forceFit: true,
+                    forceFit: false,
                     selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
                     multiSelect: true,
                     emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
@@ -41,10 +41,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     columns: newColumns,
                     listeners: {
                         itemdblclick: function () {
-                        	var DataDictionaryManagementModuleEditFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
-                            if(DataDictionaryManagementModuleEditFlag==1){
-                            	editSystemdataInfo();
-                            }
+                        	editSystemdataInfo();
                         },
                         selectionchange: function (sm, selections) {
                         	

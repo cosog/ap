@@ -64,24 +64,28 @@ Ext.define('AP.controller.data.SystemdataInfoControl', {
 });
 //创建数据字典信息窗体
 function addSystemdataInfo() {
-    //解决死窗，前提必须把closeAction设置为'hide'关闭方式
-	var win_Obj = Ext.getCmp("SystemdataInfoWinId")
-    if (win_Obj != undefined) {
-        win_Obj.destroy();
+	var DataDictionaryManagementModuleEditFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+    if(DataDictionaryManagementModuleEditFlag==1){
+    	//解决死窗，前提必须把closeAction设置为'hide'关闭方式
+    	var win_Obj = Ext.getCmp("SystemdataInfoWinId")
+        if (win_Obj != undefined) {
+            win_Obj.destroy();
+        }
+        var SystemdataInfoWin = Ext.create("AP.view.data.SystemdataInfoWin", {
+            title: cosog.string.addDataInfo
+        });
+        SystemdataInfoWin.show();
+        SystemdataInfoWin.down('form').getForm().reset();
+//        Ext.getCmp("DataitemsInfoEditGridPanelId").hide();
+//        Ext.getCmp("DataitemsInfoAddGridPanelId").show();
+        var sysadditems = Ext.create("AP.view.data.DataitemsInfoAddGridPanel");
+        Ext.getCmp("DataItemsListPanel_Id").removeAll();
+        Ext.getCmp("DataItemsListPanel_Id").add(sysadditems);
+        Ext.getCmp("systaddtodataitemsBtnId").show();
+        Ext.getCmp("sysSDSaveBtnId").show();
+        Ext.getCmp("sysSDUpdBtnId").hide();
     }
-    var SystemdataInfoWin = Ext.create("AP.view.data.SystemdataInfoWin", {
-        title: cosog.string.addDataInfo
-    });
-    SystemdataInfoWin.show();
-    SystemdataInfoWin.down('form').getForm().reset();
-//    Ext.getCmp("DataitemsInfoEditGridPanelId").hide();
-//    Ext.getCmp("DataitemsInfoAddGridPanelId").show();
-    var sysadditems = Ext.create("AP.view.data.DataitemsInfoAddGridPanel");
-    Ext.getCmp("DataItemsListPanel_Id").removeAll();
-    Ext.getCmp("DataItemsListPanel_Id").add(sysadditems);
-    Ext.getCmp("systaddtodataitemsBtnId").show();
-    Ext.getCmp("sysSDSaveBtnId").show();
-    Ext.getCmp("sysSDUpdBtnId").hide();
+    
     return false;
 };
 //静态添加数据项值
@@ -153,51 +157,65 @@ function savesystemdataInfoSubmit() {
 };
 //删除按钮事件
 function delSystemdataInfo() {
-    //获得被选中的对象
-    var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
-    if (sys_row.length>0) {
-    	Ext.Msg.confirm(cosog.string.ts, cosog.string.yesdeldata,
-                function (btn) {
-                    if (btn == "yes") {
-                        ExtDelspace_ObjectInfo("systemdataInfoController", "SystemdataInfoGridPanelId", sys_row, "sysdataid", "deleteSystemdataInfoById");
-                    }
-                });
-    } else {
-    	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+	var DataDictionaryManagementModuleEditFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+    if(DataDictionaryManagementModuleEditFlag==1){
+    	//获得被选中的对象
+        var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
+        if (sys_row.length>0) {
+        	Ext.Msg.confirm(cosog.string.ts, cosog.string.yesdeldata,
+                    function (btn) {
+                        if (btn == "yes") {
+                            ExtDelspace_ObjectInfo("systemdataInfoController", "SystemdataInfoGridPanelId", sys_row, "sysdataid", "deleteSystemdataInfoById");
+                        }
+                    });
+        } else {
+        	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        }
     }
 };
 
 function editSystemdataInfo() {
-	var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
-    if (sys_row.length>0) {
-    	var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
-        var sysdataid_id = sys_row[0].data.sysdataid;
-        var sdcname = sys_row[0].data.cname;
-        var sdename = sys_row[0].data.ename;
-        var sdsorts = sys_row[0].data.sorts;
-        var status = sys_row[0].data.status;
-        Ext.getCmp("sys_txt_find_ids").setValue(sysdataid_id);
-        var editSystemdataInfoWin = Ext.create("AP.view.data.SystemdataInfoWin", {
-            title: cosog.string.editDataInfo
-        });
-        editSystemdataInfoWin.show();
-//        Ext.getCmp("DataitemsInfoEditGridPanelId").show();
-//        Ext.getCmp("DataitemsInfoAddGridPanelId").hide();
-        var sysedititems = Ext.create("AP.view.data.DataitemsInfoEditGridPanel");
-        Ext.getCmp("DataItemsListPanel_Id").removeAll();
-        Ext.getCmp("DataItemsListPanel_Id").add(sysedititems);
-        Ext.getCmp("systaddtodataitemsBtnId").hide();
-        Ext.getCmp("sysSDSaveBtnId").hide();
-        Ext.getCmp("sysSDUpdBtnId").show();
+	if(DataDictionaryManagementModuleEditFlag==1){
+		var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
+	    if (sys_row.length>0) {
+	    	var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
+	        var sysdataid_id = sys_row[0].data.sysdataid;
+	        var sdcname = sys_row[0].data.cname;
+	        var sdename = sys_row[0].data.ename;
+	        var sdsorts = sys_row[0].data.sorts;
+	        var status = sys_row[0].data.status;
+	        
+	        var moduleId = sys_row[0].data.moduleId;
+	        var moduleName = sys_row[0].data.moduleName;
+	        
+	        
+	        Ext.getCmp("sys_txt_find_ids").setValue(sysdataid_id);
+	        var editSystemdataInfoWin = Ext.create("AP.view.data.SystemdataInfoWin", {
+	            title: cosog.string.editDataInfo
+	        });
+	        editSystemdataInfoWin.show();
+	        var sysedititems = Ext.create("AP.view.data.DataitemsInfoEditGridPanel");
+	        Ext.getCmp("DataItemsListPanel_Id").removeAll();
+	        Ext.getCmp("DataItemsListPanel_Id").add(sysedititems);
+	        Ext.getCmp("systaddtodataitemsBtnId").hide();
+	        Ext.getCmp("sysSDSaveBtnId").hide();
+	        Ext.getCmp("sysSDUpdBtnId").show();
 
-        Ext.getCmp('hidesysdata_Id').setValue(sysdataid_id);
-        Ext.getCmp('hidesysstatus_Id').setValue(status);
-        Ext.getCmp('sysename_Id').setValue(sdename);
-        Ext.getCmp('syscname_Id').setValue(sdcname);
-        Ext.getCmp('syssorts_Id').setValue(sdsorts);
-    } else {
-    	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
-    }
+	        Ext.getCmp('hidesysdata_Id').setValue(sysdataid_id);
+	        Ext.getCmp('hidesysstatus_Id').setValue(status);
+	        Ext.getCmp('sysename_Id').setValue(sdename);
+	        Ext.getCmp('syscname_Id').setValue(sdcname);
+	        Ext.getCmp('syssorts_Id').setValue(sdsorts);
+	        
+	        Ext.getCmp('systemdataModule_Id1').setValue(moduleId);
+	        Ext.getCmp('systemdataModule_Id1').setRawValue(moduleName);
+	        
+	        Ext.getCmp('sysmodule_Id').setValue(moduleId);
+	        
+	    } else {
+	    	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+	    }
+	}
     return false;
 };
 

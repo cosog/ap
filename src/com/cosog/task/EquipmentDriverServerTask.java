@@ -800,10 +800,8 @@ public class EquipmentDriverServerTask {
 			initAcquisitionItemDataBaseColumns();
 			loadAcquisitionItemColumns();
 			//同步数据字典
-			initDataDictionary("7f13446d19b4497986980fa16a750f95");//抽油机井实时概览字典
-			initDataDictionary("cd7b24562b924d19b556de31256e22a1");//抽油机井历史查询字典
-			initDataDictionary("e0f5f3ff8a1f46678c284fba9cc113e8");//螺杆泵井实时概览字典
-			initDataDictionary("fb7d070a349c403b8a26d71c12af7a05");//螺杆泵井历史查询字典
+			initDataDictionary("7f13446d19b4497986980fa16a750f95");//实时监控_设备概览字典
+			initDataDictionary("cd7b24562b924d19b556de31256e22a1");//历史查询_设备历史数据字典
 		}
 	}
 	

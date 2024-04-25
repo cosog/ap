@@ -1,10 +1,13 @@
 package com.cosog.controller.data;
 
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -18,7 +21,9 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.User;
 import com.cosog.model.data.SystemdataInfo;
 import com.cosog.service.data.SystemdataInfoService;
+import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
+import com.cosog.utils.StringManagerUtils;
 
 /**
  * 系统数据字典表
@@ -90,6 +95,26 @@ public class SystemdataInfoController extends BaseController {
 		// 输出json数据。
 		response.getWriter().write(data);
 	}
+	
+	@RequestMapping("/findSystemdataInfo")
+	public String findSystemdataInfo() throws Exception {
+		String typeName = request.getParameter("typeName");
+		String findName = request.getParameter("sysName");
+		this.pager = new Page("pagerForm", request);
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		
+		String json=systemdataInfoService.findSystemdataInfo(user,typeName,findName,pager);
+		
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	/**
 	 * 创建字典信息
@@ -121,8 +146,6 @@ public class SystemdataInfoController extends BaseController {
 	 */
 	@RequestMapping("/editSystemdataInfo")
 	public void editSystemdataInfo(@ModelAttribute SystemdataInfo systemdataInfo) throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		//HttpServletRequest request = ServletActionContext.getRequest();
 		String jsonaddstr = "";
 		if (null != systemdataInfo && !"".equals(systemdataInfo)) {
 			String getParamsId=request.getParameter("hideSysDataValName");
@@ -130,7 +153,6 @@ public class SystemdataInfoController extends BaseController {
 			User userInfo = this.findCurrentUserInfo();
 			// 添加项值
 			jsonaddstr = systemdataInfoService.editSystemdataInfo(systemdataInfo, userInfo,getParamsId);
-
 		} else {
 			jsonaddstr = "{success:true,msg:false}";
 		}

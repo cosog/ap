@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -959,6 +960,8 @@ public class MemoryDataManagerTask {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		Jedis jedis=null;
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		try {
 			conn=OracleJdbcUtis.getConnection();
 			if(conn==null){
@@ -1084,6 +1087,39 @@ public class MemoryDataManagerTask {
 				int deviceId=rs.getInt(1);
 				String acqTime=rs.getString(2);
 				String key=deviceId+"";
+				String productionDataStr=rs.getString(3);
+				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
+				Map<String,String> productionDataMap=new LinkedHashMap<>();
+				if(productionData!=null){
+					if(productionData.getFluidPVT()!=null){
+						productionDataMap.put("CrudeOilDensity".toUpperCase(), productionData.getFluidPVT().getCrudeOilDensity()+"");
+						productionDataMap.put("WaterDensity".toUpperCase(), productionData.getFluidPVT().getWaterDensity()+"");
+						productionDataMap.put("NaturalGasRelativeDensity".toUpperCase(), productionData.getFluidPVT().getNaturalGasRelativeDensity()+"");
+						productionDataMap.put("SaturationPressure".toUpperCase(), productionData.getFluidPVT().getSaturationPressure()+"");
+					}
+					if(productionData.getReservoir()!=null){
+						productionDataMap.put("ReservoirDepth".toUpperCase(), productionData.getReservoir().getDepth()+"");
+						productionDataMap.put("ReservoirTemperature".toUpperCase(), productionData.getReservoir().getTemperature()+"");
+					}
+					if(productionData.getProduction()!=null){
+						productionDataMap.put("TubingPressure".toUpperCase(), productionData.getProduction().getTubingPressure()+"");
+						productionDataMap.put("CasingPressure".toUpperCase(), productionData.getProduction().getCasingPressure()+"");
+						productionDataMap.put("WellHeadTemperature".toUpperCase(), productionData.getProduction().getWellHeadTemperature()+"");
+						productionDataMap.put("WaterCut".toUpperCase(), productionData.getProduction().getWaterCut()+"");
+						productionDataMap.put("ProductionGasOilRatio".toUpperCase(), productionData.getProduction().getProductionGasOilRatio()+"");
+						productionDataMap.put("ProducingfluidLevel".toUpperCase(), productionData.getProduction().getProducingfluidLevel()+"");
+						productionDataMap.put("PumpSettingDepth".toUpperCase(), productionData.getProduction().getPumpSettingDepth()+"");
+						
+					}
+					if(productionData.getPump()!=null){
+						productionDataMap.put("PumpBoreDiameter".toUpperCase(), productionData.getPump().getPumpBoreDiameter()+"");
+					}
+					if(productionData.getManualIntervention()!=null){
+						productionDataMap.put("LevelCorrectValue".toUpperCase(), productionData.getManualIntervention().getLevelCorrectValue()+"");
+					}
+				}
+				
 				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
 					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
@@ -1091,6 +1127,13 @@ public class MemoryDataManagerTask {
 					for(int i=0;i<rpcCalItemList.size();i++){
 						everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
 					}
+
+					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+					while(productionDataMapIterator.hasNext()){
+						Map.Entry<String,String> entry = productionDataMapIterator.next();
+						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+					}
+					
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
 					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}else{
@@ -1100,6 +1143,13 @@ public class MemoryDataManagerTask {
 						for(int i=0;i<rpcCalItemList.size();i++){
 							everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
 						}
+						
+						Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+						while(productionDataMapIterator.hasNext()){
+							Map.Entry<String,String> entry = productionDataMapIterator.next();
+							everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+						}
+						
 						realtimeDataTimeMap.put(acqTime, everyDataMap);
 						jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 					}
@@ -1125,6 +1175,34 @@ public class MemoryDataManagerTask {
 				int deviceId=rs.getInt(1);
 				String acqTime=rs.getString(2);
 				String key=deviceId+"";
+				
+				String productionDataStr=rs.getString(3);
+				type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+				PCPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
+				Map<String,String> productionDataMap=new LinkedHashMap<>();
+				if(productionData!=null){
+					if(productionData.getFluidPVT()!=null){
+						productionDataMap.put("CrudeOilDensity".toUpperCase(), productionData.getFluidPVT().getCrudeOilDensity()+"");
+						productionDataMap.put("WaterDensity".toUpperCase(), productionData.getFluidPVT().getWaterDensity()+"");
+						productionDataMap.put("NaturalGasRelativeDensity".toUpperCase(), productionData.getFluidPVT().getNaturalGasRelativeDensity()+"");
+						productionDataMap.put("SaturationPressure".toUpperCase(), productionData.getFluidPVT().getSaturationPressure()+"");
+					}
+					if(productionData.getReservoir()!=null){
+						productionDataMap.put("ReservoirDepth".toUpperCase(), productionData.getReservoir().getDepth()+"");
+						productionDataMap.put("ReservoirTemperature".toUpperCase(), productionData.getReservoir().getTemperature()+"");
+					}
+					if(productionData.getProduction()!=null){
+						productionDataMap.put("TubingPressure".toUpperCase(), productionData.getProduction().getTubingPressure()+"");
+						productionDataMap.put("CasingPressure".toUpperCase(), productionData.getProduction().getCasingPressure()+"");
+						productionDataMap.put("WellHeadTemperature".toUpperCase(), productionData.getProduction().getWellHeadTemperature()+"");
+						productionDataMap.put("WaterCut".toUpperCase(), productionData.getProduction().getWaterCut()+"");
+						productionDataMap.put("ProductionGasOilRatio".toUpperCase(), productionData.getProduction().getProductionGasOilRatio()+"");
+						productionDataMap.put("ProducingfluidLevel".toUpperCase(), productionData.getProduction().getProducingfluidLevel()+"");
+						productionDataMap.put("PumpSettingDepth".toUpperCase(), productionData.getProduction().getPumpSettingDepth()+"");
+						
+					}
+				}
+				
 				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
 					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
@@ -1132,6 +1210,13 @@ public class MemoryDataManagerTask {
 					for(int i=0;i<pcpCalItemList.size();i++){
 						everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
 					}
+					
+					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+					while(productionDataMapIterator.hasNext()){
+						Map.Entry<String,String> entry = productionDataMapIterator.next();
+						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+					}
+					
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
 					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}else{
@@ -1141,6 +1226,13 @@ public class MemoryDataManagerTask {
 						for(int i=0;i<pcpCalItemList.size();i++){
 							everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
 						}
+						
+						Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+						while(productionDataMapIterator.hasNext()){
+							Map.Entry<String,String> entry = productionDataMapIterator.next();
+							everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+						}
+						
 						realtimeDataTimeMap.put(acqTime, everyDataMap);
 						jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 					}

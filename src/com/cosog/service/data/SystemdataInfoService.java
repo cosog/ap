@@ -18,6 +18,7 @@ import com.cosog.utils.DateUtils;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UUIDGenerator;
+import com.google.gson.Gson;
 
 /**
  * 系统数据字典表
@@ -58,6 +59,56 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 
 		List<SystemdataInfo> list = findAllPageByEntity(pager);
 		return list;
+	}
+	
+	public String findSystemdataInfo(User user,String typeName,String findName,Page pager){
+		StringBuffer result_json = new StringBuffer();
+		String ddicName="dictionary_DataDictionaryManage";
+		DataDictionary ddic= dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		String columns = ddic.getTableHeader();
+		
+		String sql="select t.sysdataid,t.cname,t.ename,t.sorts,t.status,t.creator,t.updateuser,"
+				+ "t.moduleid,t2.md_name as moduleName,"
+				+ "to_char(t.updatetime,'yyyy-mm-dd hh24:mi:ss') as updatetime,"
+				+ "to_char(t.createdate,'yyyy-mm-dd hh24:mi:ss') as createdate"
+				+ " from TBL_DIST_NAME t,tbl_module t2,tbl_module2role t3,tbl_role t4,tbl_user t5"
+				+ " where t.moduleid=t2.md_id and t2.md_id=t3.rm_moduleid and t3.rm_roleid=t4.role_id and t4.role_id=t5.user_type"
+				+ " and t5.user_no="+user.getUserNo();
+		if (StringUtils.isNotBlank(typeName)) {
+			if (typeName.equals("0") && StringUtils.isNotBlank(findName)) {
+				sql+=" and cname like '%" + findName + "%'";
+			}
+			if (typeName.equals("1") && StringUtils.isNotBlank(findName)) {
+				sql+=" and ename like '%" + findName + "%'";
+			}
+		}
+		sql+= " order by t.sorts";
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"sysdataid\":\""+obj[0]+"\",");
+			result_json.append("\"cname\":\""+obj[1]+"\",");
+			result_json.append("\"ename\":\""+obj[2]+"\",");
+			result_json.append("\"sorts\":"+obj[3]+",");
+			result_json.append("\"status\":"+obj[4]+",");
+			result_json.append("\"creator\":\""+obj[5]+"\",");
+			result_json.append("\"updateuser\":\""+obj[6]+"\",");
+			result_json.append("\"moduleId\":"+obj[7]+",");
+			result_json.append("\"moduleName\":\""+obj[8]+"\",");
+			result_json.append("\"updatetime\":\""+obj[9]+"\",");
+			result_json.append("\"createdate\":\""+obj[10]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
 	}
 
 	/**

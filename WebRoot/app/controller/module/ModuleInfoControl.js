@@ -126,7 +126,9 @@ SelectmoduleDataAttrInfoGridPanel = function () {
 };
 // open win
 function addmoduleInfo() {
-        var win_Obj = Ext.getCmp("module_addwin_Id")
+	var ModuleManagementModuleEditFlag=parseInt(Ext.getCmp("ModuleManagementModuleEditFlag").getValue());
+    if(ModuleManagementModuleEditFlag==1){
+    	var win_Obj = Ext.getCmp("module_addwin_Id")
         if (win_Obj != undefined) {
             win_Obj.destroy();
         }
@@ -136,48 +138,52 @@ function addmoduleInfo() {
         moduleInfoWindow.show();
         Ext.getCmp("addFormmodule_Id").show();
         Ext.getCmp("updateFormmodule_Id").hide();
-
-        // Ext.Msg.alert("title", "add module Info!");
     }
+}
     // del to action
 function delmoduleInfo() {
-    var module_panel = Ext.getCmp("moduleInfoTreeGridView_Id");
-    var module_model = module_panel.getSelectionModel();
-    var _record = module_model.getSelection();
-    var delUrl = context + '/moduleManagerController/doModuleBulkDelete'
-    if (_record.length>0) {
-        // 提示是否删除数据
-        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
-            if (btn == "yes") {
-                ExtDel_ObjectInfo("moduleInfoTreeGridView_Id", _record,"mdId", delUrl);
-            }
-        });
-    } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+	var ModuleManagementModuleEditFlag=parseInt(Ext.getCmp("ModuleManagementModuleEditFlag").getValue());
+    if(ModuleManagementModuleEditFlag==1){
+    	var module_panel = Ext.getCmp("moduleInfoTreeGridView_Id");
+        var module_model = module_panel.getSelectionModel();
+        var _record = module_model.getSelection();
+        var delUrl = context + '/moduleManagerController/doModuleBulkDelete'
+        if (_record.length>0) {
+            // 提示是否删除数据
+            Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+            Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+            Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+                if (btn == "yes") {
+                    ExtDel_ObjectInfo("moduleInfoTreeGridView_Id", _record,"mdId", delUrl);
+                }
+            });
+        } else {
+            Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        }
     }
-    // Ext.Msg.alert("title", "delete module Info!");
 }
 
 function modifymoduleInfo() {
-	var module_panel = Ext.getCmp("moduleInfoTreeGridView_Id");
-    var module_model = module_panel.getSelectionModel();
-    var _record = module_model.getSelection();
-    if (_record.length>0) {
-    	var win_Obj = Ext.getCmp("module_addwin_Id")
-        if (win_Obj != undefined) {
-            win_Obj.destroy();
+	var ModuleManagementModuleEditFlag=parseInt(Ext.getCmp("ModuleManagementModuleEditFlag").getValue());
+    if(ModuleManagementModuleEditFlag==1){
+    	var module_panel = Ext.getCmp("moduleInfoTreeGridView_Id");
+        var module_model = module_panel.getSelectionModel();
+        var _record = module_model.getSelection();
+        if (_record.length>0) {
+        	var win_Obj = Ext.getCmp("module_addwin_Id")
+            if (win_Obj != undefined) {
+                win_Obj.destroy();
+            }
+            var moduleUpdateInfoWindow = Ext.create(
+                "AP.view.module.ModuleInfoWindow", {
+                    title: cosog.string.editmodule
+                });
+            moduleUpdateInfoWindow.show();
+            Ext.getCmp("addFormmodule_Id").hide();
+            Ext.getCmp("updateFormmodule_Id").show();
+            SelectmoduleDataAttrInfoGridPanel();
+        }else {
+            Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
         }
-        var moduleUpdateInfoWindow = Ext.create(
-            "AP.view.module.ModuleInfoWindow", {
-                title: cosog.string.editmodule
-            });
-        moduleUpdateInfoWindow.show();
-        Ext.getCmp("addFormmodule_Id").hide();
-        Ext.getCmp("updateFormmodule_Id").show();
-        SelectmoduleDataAttrInfoGridPanel();
-    }else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
 }

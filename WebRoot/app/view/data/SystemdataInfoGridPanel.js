@@ -71,9 +71,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 id: 'editSDBtnId',
                 text: cosog.string.update,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-                scope: this,
                 action: 'editSystemdataInfoAction',
-                disabled: false,
                 iconCls: 'edit'
 
          }, '-', {

@@ -1966,6 +1966,9 @@ createTreeHeadColumns = function(columnInfo) {
 	for (var i = 0; i < myArr.length; i++) {
 		var attr = myArr[i];
 		myColumns += "{ header:'" + attr.header + "'";
+		if (isNotVal(attr.flex)) {
+			myColumns+=",flex:" + attr.flex;
+		}
 		if (attr.dataIndex=='text'){
 			myColumns +=",xtype: 'treecolumn',dataIndex:'"+attr.dataIndex+"'";
 		}else {

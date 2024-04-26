@@ -112,12 +112,14 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             id: "oktosysfordataFormBtnId",
             text: cosog.string.sure,
             iconCls: 'save',
+            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             action: 'oktosysfordataAction'
         },
         {
             id: "savettosysfordataFormBtnId",
             text: cosog.string.save,
             iconCls: 'save',
+            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             action: 'savetosysfordatasAction',
             hidden: true
         },
@@ -125,6 +127,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             id: "editttosysfordataFormBtnId",
             text: cosog.string.save,
             iconCls: 'save',
+            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             action: 'edittosysfordatasAction',
             hidden: true
         },

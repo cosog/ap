@@ -9,7 +9,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
         
         var sysdatastore = new Ext.data.SimpleStore({
             fields: ['sysdataId', 'sysdataName'],
-            data: [[0, cosog.string.dataModuleName], [1, cosog.string.dataModuleCode]]
+            data: [[0, '字典名称'], [1, '字典代码']]
         });
         var sysdatacomboxsimp = new Ext.form.ComboBox({
             id: 'sysdatacomboxfield_Id',

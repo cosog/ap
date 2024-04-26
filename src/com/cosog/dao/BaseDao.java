@@ -4607,7 +4607,10 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	@SuppressWarnings("resource")
-	public List<AuxiliaryDeviceHandsontableChangedData.Updatelist> saveAuxiliaryDeviceHandsontableData(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData) throws SQLException {
+	public List<AuxiliaryDeviceHandsontableChangedData.Updatelist> saveAuxiliaryDeviceHandsontableData(
+			AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData,
+			int deviceType
+			) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
@@ -4619,7 +4622,7 @@ public class BaseDao extends HibernateDaoSupport {
 					if(StringManagerUtils.isNotNull(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName())){
 						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getId());
 						cs.setString(2, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName());
-						cs.setInt(3, "管辅件".equals(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getType())?1:0);
+						cs.setInt(3, deviceType);
 						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getModel());
 						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getRemark());
 						cs.setString(6, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort():"9999");
@@ -4643,7 +4646,7 @@ public class BaseDao extends HibernateDaoSupport {
 					if(StringManagerUtils.isNotNull(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getName())){
 						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getId());
 						cs.setString(2, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getName());
-						cs.setInt(3, "管辅件".equals(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getType())?1:0);
+						cs.setInt(3, deviceType);
 						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getModel());
 						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getRemark());
 						cs.setString(6, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort():"9999");

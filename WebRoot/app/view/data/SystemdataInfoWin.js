@@ -33,8 +33,9 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
         });
         var moduleTree=Ext.create('AP.view.well.TreePicker',{
         	id:'systemdataModule_Id1',
-        	width: 300,
-        	fieldLabel: '所属模块<font color=red>*</font>',
+        	labelWidth: 70,
+            width: 300,
+        	fieldLabel: '隶属模块<font color=red>*</font>',
             emptyText: cosog.string.checkModule,
             blankText: cosog.string.checkModule,
             displayField: 'text',
@@ -81,8 +82,9 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                    	xtype:'textfield',
 		                                    	id: "syscname_Id",
 		                                        name: 'systemdataInfo.cname',
-		                                        fieldLabel: cosog.string.dataModuleName+'<font color=red>*</font>',
+		                                        fieldLabel: '字典名称<font color=red>*</font>',
 		                                        allowBlank: false,
+		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        msgTarget: 'side',
 		                                        blankText: cosog.string.required
@@ -90,8 +92,9 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                    	xtype:'textfield',
 		                                    	id: "sysename_Id",
 		                                        name: 'systemdataInfo.ename',
-		                                        fieldLabel: cosog.string.dataModuleCode+'<font color=red>*</font>',
+		                                        fieldLabel: '字典代码<font color=red>*</font>',
 		                                        vtype: "alpha",
+		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        allowBlank: false,
 		                                        msgTarget: 'side',
@@ -100,7 +103,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        xtype: "hidden",
 		                                        fieldLabel: '模块',
 		                                        id: 'sysmodule_Id',
-		                                        anchor: '95%',
+		                                        labelWidth: 70,
+		                                        width: 300,
 		                                        name: 'systemdataInfo.moduleId'
 		                                    }, {
 		                                    	xtype:'numberfield',
@@ -109,6 +113,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        fieldLabel: cosog.string.dataSorts+'<font color=red>*</font>',
 		                                        allowBlank: false,
 		                                        minValue: 0,
+		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        msgTarget: 'side',
 		                                        blankText: cosog.string.required
@@ -146,36 +151,36 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 				}
 			],
 		    buttons: [{
-		            	id: "systaddtodataitemsBtnId",
-		            	text: cosog.string.dataShowParams,
-		            	action: 'zpsystemdataitemsSubmitForm',
-		            	handler: function () {
-		            		var datiswin = Ext.create("AP.view.data.DataitemsInfoWin", {
-		            			title: cosog.string.dataValue
-		            		});
-		            		datiswin.show();
-		            		return false;
-		            	}
-		            },
-		        {
-		            id: "sysSDSaveBtnId",
-		            text: cosog.string.save,
-		            iconCls: 'save',
-		            action: 'SystemdataInfoSubmitForm'
-		        },
-		        {
-		            id: "sysSDUpdBtnId",
-		            text: cosog.string.save,
-		            iconCls: 'save',
-		            action: 'SystemdataInfoUpdataForm',
-		            hidden: true
-		        },
-		        {
-		            text: cosog.string.cancel,
-		            closewin: 'SystemdataInfoWinId',
-		            iconCls: 'cancel',
-		            handler: closeWindow
-		        }]
+            	id: "systaddtodataitemsBtnId",
+            	text: cosog.string.dataShowParams,
+            	action: 'zpsystemdataitemsSubmitForm',
+            	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+            	handler: function () {
+            		var datiswin = Ext.create("AP.view.data.DataitemsInfoWin", {
+            			title: cosog.string.dataValue
+            		});
+            		datiswin.show();
+            		return false;
+            	}
+		    },{
+	            id: "sysSDSaveBtnId",
+	            text: cosog.string.save,
+	            iconCls: 'save',
+	            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+	            action: 'SystemdataInfoSubmitForm'
+	        },{
+	            id: "sysSDUpdBtnId",
+	            text: cosog.string.save,
+	            iconCls: 'save',
+	            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+	            action: 'SystemdataInfoUpdataForm',
+	            hidden: true
+	        },{
+	            text: cosog.string.cancel,
+	            closewin: 'SystemdataInfoWinId',
+	            iconCls: 'cancel',
+	            handler: closeWindow
+	        }]
         });
 		me.callParent(arguments);
 	}

@@ -5430,10 +5430,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		getBaseDao().addObject(auxiliaryDeviceInformation);
 	}
 	
-	public String saveAuxiliaryDeviceHandsontableData(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData) throws Exception {
+	public String saveAuxiliaryDeviceHandsontableData(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData,int deviceType) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer collisionbuff = new StringBuffer();
-		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> list=getBaseDao().saveAuxiliaryDeviceHandsontableData(auxiliaryDeviceHandsontableChangedData);
+		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> list=getBaseDao().saveAuxiliaryDeviceHandsontableData(auxiliaryDeviceHandsontableChangedData,deviceType);
 		int successCount=0;
 		int collisionCount=0;
 		collisionbuff.append("[");

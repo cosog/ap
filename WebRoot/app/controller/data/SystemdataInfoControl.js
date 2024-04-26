@@ -175,6 +175,7 @@ function delSystemdataInfo() {
 };
 
 function editSystemdataInfo() {
+	var DataDictionaryManagementModuleEditFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
 	if(DataDictionaryManagementModuleEditFlag==1){
 		var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
 	    if (sys_row.length>0) {

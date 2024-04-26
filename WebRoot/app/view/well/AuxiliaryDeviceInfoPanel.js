@@ -546,6 +546,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     	deviceId:deviceId,
                     	auxiliaryDeviceSpecificType:auxiliaryDeviceSpecificType,
                     	data: JSON.stringify(auxiliaryDeviceInfoHandsontableHelper.AllData),
+                    	deviceType: getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel"),
                     	auxiliaryDeviceDetailsSaveData: JSON.stringify(auxiliaryDeviceDetailsSaveData)
                     }
                 });

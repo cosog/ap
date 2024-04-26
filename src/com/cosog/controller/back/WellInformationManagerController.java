@@ -730,13 +730,14 @@ public class WellInformationManagerController extends BaseController {
 	public String saveAuxiliaryDeviceHandsontableData() throws Exception {
 		HttpSession session=request.getSession();
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String auxiliaryDeviceSpecificType = ParamUtils.getParameter(request, "auxiliaryDeviceSpecificType");
 		String auxiliaryDeviceDetailsSaveDataStr = ParamUtils.getParameter(request, "auxiliaryDeviceDetailsSaveData").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();
 		AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData=gson.fromJson(data, type);
-		String json=this.wellInformationManagerService.saveAuxiliaryDeviceHandsontableData(auxiliaryDeviceHandsontableChangedData);
+		String json=this.wellInformationManagerService.saveAuxiliaryDeviceHandsontableData(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(deviceType));
 		int r=wellInformationManagerService.updateAuxiliaryDeviceSpecificType(deviceId,auxiliaryDeviceSpecificType);
 		type = new TypeToken<AuxiliaryDeviceDetailsSaveData>() {}.getType();
 		AuxiliaryDeviceDetailsSaveData auxiliaryDeviceDetailsSaveData=gson.fromJson(auxiliaryDeviceDetailsSaveDataStr, type);

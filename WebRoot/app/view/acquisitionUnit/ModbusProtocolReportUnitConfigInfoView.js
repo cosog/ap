@@ -832,7 +832,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(calculateType,unitId,uni
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
 					 	+"{data:'dataSource'}," 
-					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值']}," 
+					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 

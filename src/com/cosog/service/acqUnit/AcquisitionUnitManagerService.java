@@ -264,13 +264,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
+		List<Integer> dailyTotalCalculateList=new ArrayList<Integer>();
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.bitindex from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2 where t.groupid=t2.id and t2.group_code='"+code+"' order by t.id";
+			String sql="select t.itemname,t.bitindex,t.dailyTotalCalculate from "
+					+ " TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2 "
+					+ " where t.groupid=t2.id and t2.group_code='"+code+"' order by t.id";
 			List<?> list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
+				dailyTotalCalculateList.add(StringManagerUtils.stringToInteger(obj[2]+""));
 			}
 		}
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
@@ -291,6 +295,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 					if(sign){
 						boolean checked=false;
+						boolean dailyTotalCalculate=false;
 						String resolutionMode="数据量";
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
 							resolutionMode="开关量";
@@ -316,6 +321,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 										){
 										checked=true;
+										dailyTotalCalculate=dailyTotalCalculateList.get(m)==1;
 										break;
 									}
 								}
@@ -339,13 +345,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 						}else{
 							checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false);
-//							if(checked){
-//								for(int k=0;k<itemsList.size();k++){
-//									if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-//										break;
-//									}
-//								}
-//							}
+							
+							for(int m=0;m<itemsList.size();m++){
+								if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
+									checked=true;
+									dailyTotalCalculate=dailyTotalCalculateList.get(m)==1;
+									break;
+								}
+							}
+							
 							result_json.append("{\"checked\":"+checked+","
 									+ "\"id\":"+(index)+","
 									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
@@ -358,7 +366,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"RWType\":\""+RWType+"\","
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 									+ "\"resolutionMode\":\""+resolutionMode+"\","
-									+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\""
+									+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\","
+									+ "\"dailyTotalCalculate\":"+dailyTotalCalculate
 									+ "},");
 							index++;
 						}

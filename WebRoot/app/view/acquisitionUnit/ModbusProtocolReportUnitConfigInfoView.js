@@ -984,7 +984,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(singleWellRangeReportTemplateContentHandsontableHelper!=null&&singleWellRangeReportTemplateContentHandsontableHelper.hot!=''&&singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined && singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		if(coords.col==2){
-	                			var remark=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,11);
+	                			var remark=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,13);
 	                			if(isNotVal(remark)){
 	                				var showValue=remark;
 	            					var rowChar=90;
@@ -1210,7 +1210,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(singleWellDailyReportTemplateContentHandsontableHelper!=null&&singleWellDailyReportTemplateContentHandsontableHelper.hot!=''&&singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined && singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		if(coords.col==2){
-	                			var remark=singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,11);
+	                			var remark=singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,13);
 	                			if(isNotVal(remark)){
 	                				var showValue=remark;
 	            					var rowChar=90;
@@ -1767,7 +1767,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(productionReportTemplateContentHandsontableHelper!=null&&productionReportTemplateContentHandsontableHelper.hot!=''&&productionReportTemplateContentHandsontableHelper.hot!=undefined && productionReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		if(coords.col==2){
-	                			var remark=productionReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,14);
+	                			var remark=productionReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,16);
 	                			if(isNotVal(remark)){
 	                				var showValue=remark;
 	            					var rowChar=90;

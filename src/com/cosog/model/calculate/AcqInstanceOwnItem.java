@@ -21,6 +21,7 @@ public class AcqInstanceOwnItem  implements Serializable {
 		public String itemName;
 		public String itemCode;
 		public int bitIndex;
+		public int dailyTotalCalculate;
 		public int getGroupId() {
 			return groupId;
 		}
@@ -50,6 +51,12 @@ public class AcqInstanceOwnItem  implements Serializable {
 		}
 		public void setBitIndex(int bitIndex) {
 			this.bitIndex = bitIndex;
+		}
+		public int getDailyTotalCalculate() {
+			return dailyTotalCalculate;
+		}
+		public void setDailyTotalCalculate(int dailyTotalCalculate) {
+			this.dailyTotalCalculate = dailyTotalCalculate;
 		}
 	}
 	

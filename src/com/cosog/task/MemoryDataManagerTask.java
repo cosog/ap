@@ -618,6 +618,25 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static DeviceInfo getDeviceInfo(String deviceId){
+		Jedis jedis=null;
+		DeviceInfo deviceInfo=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("DeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+			}
+			deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return deviceInfo;
+	}
+	
 	public static List<DeviceInfo> getDeviceInfo(){
 		Jedis jedis=null;
 		List<DeviceInfo> list=new ArrayList<>();
@@ -1509,7 +1528,7 @@ public class MemoryDataManagerTask {
 			String sql="select t5.code as instanceCode,t5.acqprotocoltype,t5.ctrlprotocoltype,"
 					+ "t4.protocol,t3.unitid,"
 					+ "t2.grouptiminginterval,t2.groupsavinginterval,"
-					+ "t.id as itemid,t.itemname,t.itemcode,t.bitindex,t.groupid "
+					+ "t.id as itemid,t.itemname,t.itemcode,t.bitindex,t.groupid,t.dailyTotalCalculate "
 					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_protocolinstance t5 "
 					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t2.type=0 ";
 			if(StringManagerUtils.isNotNull(instanceId)){
@@ -1563,7 +1582,7 @@ public class MemoryDataManagerTask {
 					acqItem.setItemCode(rs.getString(10)+"");
 					acqItem.setBitIndex(rs.getInt(11));
 					acqItem.setGroupId(rs.getInt(12));
-					
+					acqItem.setDailyTotalCalculate(rs.getInt(13));
 					int index=-1;
 					for(int i=0;i<acqInstanceOwnItem.getItemList().size();i++){
 						if(acqItem.getItemId()==acqInstanceOwnItem.getItemList().get(i).getItemId()){

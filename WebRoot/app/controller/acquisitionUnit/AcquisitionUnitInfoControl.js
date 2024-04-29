@@ -471,7 +471,7 @@ showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitId) {
 }
 
 //为当前采控组安排采控项
-var grantAcquisitionItemsPermission = function () {
+var grantAcquisitionItemsPermission = function (groupType) {
     if (protocolAcqUnitConfigItemsHandsontableHelper == null) {
         return false;
     }
@@ -499,6 +499,10 @@ var grantAcquisitionItemsPermission = function () {
             	var itemAddr = driverConfigItemsData[index][3];
             	var resolutionMode = driverConfigItemsData[index][6];
             	var bitIndex=driverConfigItemsData[index][7];
+            	var dailyTotalCalculate=0;
+            	if(driverConfigItemsData[index][8]){
+            		dailyTotalCalculate=1;
+            	}
                 
                 addjson.push(itemName);
                 var matrix_value = "";
@@ -507,16 +511,11 @@ var grantAcquisitionItemsPermission = function () {
                     matrix_value = matrix_value.substring(0, matrix_value.length - 1);
                 }
                 matrixData += itemName + ":"
-                +itemAddr+ ":"
-                +resolutionMode+ ":"
-//                +itemSort+ ":"
-//                +itemShowLevel+ ":" 
-//                + isRealtimeCurve+ ":" 
-//                + realtimeCurveColor+ ":" 
-//                + isHistoryCurve + ":" 
-//                + historyCurveColor + ":" 
+                + itemAddr+ ":"
+                + resolutionMode+ ":"
                 + bitIndex +":"
-                +matrix_value+ "|";
+                + matrix_value +":"
+                + dailyTotalCalculate+ "|";
             }
         });
         if (addjson.length > 0) {

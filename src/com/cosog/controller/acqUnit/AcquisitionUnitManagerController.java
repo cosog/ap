@@ -642,37 +642,23 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionGroupItem.setGroupId(Integer.parseInt(groupId));
 						log.debug("groupCode==" + groupCode);
 						acquisitionGroupItem.setItemName(itemName);
-//						acquisitionGroupItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						acquisitionGroupItem.setMatrix(module_[4]);
+						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringTransferInteger(module_[5]));
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 				}
-//				HttpSession session=request.getSession();
-//				User user = (User) session.getAttribute("userLogin");
-//				if(user!=null){
-//					this.service.saveSystemLog(user,2,"为采控组安排采控项,采集组名称:"+groupName);
-//				}
 			}
 			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-			
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(021);
 			dataSynchronizationThread.setParam1(groupId);
 			dataSynchronizationThread.setMethod("update");
 			dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 			executor.execute(dataSynchronizationThread);
-			
-//			EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(groupId,"update");
-//			EquipmentDriverServerTask.initPumpDriverAcquisitionInfoConfigByAcqGroupId(groupId,"update");
-//			this.acquisitionUnitManagerService.doAcquisitionGroupOwnItemChange(groupId);
-//			MemoryDataManagerTask.loadAcqInstanceOwnItemByGroupId(groupId,"update");
-//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqGroupId(groupId,"update");
-			
-			
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);

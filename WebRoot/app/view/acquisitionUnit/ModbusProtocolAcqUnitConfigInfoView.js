@@ -143,12 +143,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAcqUnitConfigItemsHandsontableHelper==null || protocolAcqUnitConfigItemsHandsontableHelper.hot==undefined){
 				protocolAcqUnitConfigItemsHandsontableHelper = ProtocolAcqUnitConfigItemsHandsontableHelper.createNew("ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','起始地址(十进制)','读写类型','单位','解析模式',''" ;
-				if(classes==3 && type==0){
-					colHeaders+=",'日累计计算'";
-				}
-					
-				colHeaders+="]";
+				var colHeaders="['','序号','名称','起始地址(十进制)','读写类型','单位','解析模式','','日累计计算']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -157,14 +152,18 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 						+"{data:'unit'},"
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
-						+"{data:'bitIndex'}";
-				if(classes==3 && type==0){
-					columns+=",{data:'dailyTotalCalculate',type:'checkbox'}";
-				}
-				columns+="]";
-				
+						+"{data:'bitIndex'}," 
+						+"{data:'dailyTotalCalculate',type:'checkbox'}"
+						+"]";
 				protocolAcqUnitConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAcqUnitConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				
+				if(classes==3 && type==0){
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[7];
+				}else{
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[7,8];
+				}
+				
 				protocolAcqUnitConfigItemsHandsontableHelper.createTable(result.totalRoot);
 			}else{
 				protocolAcqUnitConfigItemsHandsontableHelper.hot.loadData(result.totalRoot);
@@ -192,6 +191,7 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	        protocolAcqUnitConfigItemsHandsontableHelper.colHeaders=[];
 	        protocolAcqUnitConfigItemsHandsontableHelper.columns=[];
 	        protocolAcqUnitConfigItemsHandsontableHelper.AllData=[];
+	        protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[];
 	        
 	        protocolAcqUnitConfigItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -212,7 +212,7 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7],
+	                    columns: protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -492,16 +492,14 @@ function SaveModbusProtocolAcqUnitConfigTreeData(){
 			protocolProperties.groupCode=selectedItem.data.code;
 			protocolProperties.groupName=propertiesData[0][2];
 			protocolProperties.typeName=propertiesData[1][2];
+			
 			if(selectedItem.data.type==0){//采集组
 				protocolProperties.groupTimingInterval=propertiesData[2][2];
 				protocolProperties.groupSavingInterval=propertiesData[3][2];
 				protocolProperties.remark=propertiesData[4][2];
 			}else if(selectedItem.data.type==1){//控制组
-//				protocolProperties.groupTimingInterval=propertiesData[2][2];
-//				protocolProperties.groupSavingInterval=propertiesData[3][2];
 				protocolProperties.remark=propertiesData[2][2];
 			}
-			
 		}
 		if(selectedItem.data.classes==2){//保存采控单元
 			var acqUnitSaveData={};
@@ -517,7 +515,11 @@ function SaveModbusProtocolAcqUnitConfigTreeData(){
 			
 			saveAcquisitionGroupConfigData(acqGroupSaveData,selectedItem.data.protocol,selectedItem.parentNode.data.id);
 			//给采控组授予采控项
-			grantAcquisitionItemsPermission();
+			var groupType=0;
+			if(protocolProperties.typeName=='控制组'){
+				groupType=1;
+			}
+			grantAcquisitionItemsPermission(groupType);
 		}
 	}
 };

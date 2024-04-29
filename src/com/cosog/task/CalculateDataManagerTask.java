@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.CommResponseData;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.utils.Config;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
@@ -354,6 +358,21 @@ public class CalculateDataManagerTask {
 			for(int i=0;i<totalList.size();i++){
 				Object[] obj=totalList.get(i);
 				String deviceIdStr=obj[0]+"";
+				
+				AcqInstanceOwnItem acqInstanceOwnItem=null;
+				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceIdStr);
+				Map<String,AcqInstanceOwnItem.AcqItem> dailyTotalCalculateMap=new LinkedHashMap<>();;
+				if(deviceInfo!=null){
+					acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+					if(acqInstanceOwnItem!=null && acqInstanceOwnItem.getItemList()!=null){
+						for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+							if(acqItem.getDailyTotalCalculate()==1){
+								dailyTotalCalculateMap.put(acqItem.getItemCode(), acqItem);
+							}
+						}
+					}
+				}
+				
 				Object[] newestValueObj=null;
 				Object[]oldestValueObj=null;
 				for(int j=0;j<newestValueList.size();j++){
@@ -372,8 +391,12 @@ public class CalculateDataManagerTask {
 				for(int j=1;j<obj.length;j++){
 					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
 					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue).replaceAll("null", "");
+					String dailyTotalValue="";
 					String colnum=columnList.get(j-1);
+					if(dailyTotalCalculateMap.containsKey(colnum)){
+						AcqInstanceOwnItem.AcqItem acqItem=dailyTotalCalculateMap.get(colnum);
+					}
+					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
 					updatesql+=",t."+colnum+"='"+tatalValue+"'";
 				}
 				updatesql+=" where t.deviceid="+deviceIdStr+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";

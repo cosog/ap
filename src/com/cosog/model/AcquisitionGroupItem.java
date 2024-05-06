@@ -20,6 +20,7 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 	private String matrix;
 	private Integer bitIndex;
 	private Integer dailyTotalCalculate;
+	private String dailyTotalCalculateName;
 
 	public AcquisitionGroupItem() {
 		super();
@@ -28,7 +29,8 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 
 	/** full constructor */
 	public AcquisitionGroupItem(Integer id, Integer groupId, Integer itemId, String itemName, String itemCode,
-			String matrix, Integer bitIndex, Integer dailyTotalCalculate) {
+			String matrix, Integer bitIndex, 
+			Integer dailyTotalCalculate, String dailyTotalCalculateName) {
 		super();
 		this.id = id;
 		this.groupId = groupId;
@@ -38,6 +40,7 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 		this.matrix = matrix;
 		this.bitIndex = bitIndex;
 		this.dailyTotalCalculate = dailyTotalCalculate;
+		this.dailyTotalCalculateName = dailyTotalCalculateName;
 	}
 
 	@Id
@@ -111,5 +114,14 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 
 	public void setDailyTotalCalculate(Integer dailyTotalCalculate) {
 		this.dailyTotalCalculate = dailyTotalCalculate;
+	}
+
+	@Column(name = "dailyTotalCalculateName")
+	public String getDailyTotalCalculateName() {
+		return dailyTotalCalculateName;
+	}
+
+	public void setDailyTotalCalculateName(String dailyTotalCalculateName) {
+		this.dailyTotalCalculateName = dailyTotalCalculateName;
 	}
 }

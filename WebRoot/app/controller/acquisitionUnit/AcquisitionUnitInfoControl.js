@@ -500,8 +500,13 @@ var grantAcquisitionItemsPermission = function (groupType) {
             	var resolutionMode = driverConfigItemsData[index][6];
             	var bitIndex=driverConfigItemsData[index][7];
             	var dailyTotalCalculate=0;
+            	var dailyTotalCalculateName='';
             	if(driverConfigItemsData[index][8]){
             		dailyTotalCalculate=1;
+            		dailyTotalCalculateName=driverConfigItemsData[index][9];
+            		if(!isNotVal(dailyTotalCalculateName)){
+            			dailyTotalCalculateName=itemName.replace('累计','').replace('累积','')+'日累计';
+            		}
             	}
                 
                 addjson.push(itemName);
@@ -515,6 +520,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
                 + resolutionMode+ ":"
                 + bitIndex +":"
                 + matrix_value +":"
+                + dailyTotalCalculateName+ ":"
                 + dailyTotalCalculate+ "|";
             }
         });

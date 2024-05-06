@@ -643,7 +643,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 						log.debug("groupCode==" + groupCode);
 						acquisitionGroupItem.setItemName(itemName);
 						acquisitionGroupItem.setMatrix(module_[4]);
-						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringTransferInteger(module_[5]));
+						acquisitionGroupItem.setDailyTotalCalculateName(module_[5]);
+						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringTransferInteger(module_[6]));
+						
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 				}

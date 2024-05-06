@@ -143,7 +143,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAcqUnitConfigItemsHandsontableHelper==null || protocolAcqUnitConfigItemsHandsontableHelper.hot==undefined){
 				protocolAcqUnitConfigItemsHandsontableHelper = ProtocolAcqUnitConfigItemsHandsontableHelper.createNew("ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','起始地址(十进制)','读写类型','单位','解析模式','','日累计计算']";
+				var colHeaders="['','序号','名称','起始地址(十进制)','读写类型','单位','解析模式','','日累计计算','日累计计算名称']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -153,7 +153,8 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 						+"{data:'unit'},"
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
 						+"{data:'bitIndex'}," 
-						+"{data:'dailyTotalCalculate',type:'checkbox'}"
+						+"{data:'dailyTotalCalculate',type:'checkbox'},"
+						+"{data:'dailyTotalCalculateName'}"
 						+"]";
 				protocolAcqUnitConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAcqUnitConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -161,7 +162,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 				if(classes==3 && type==0){
 					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[7];
 				}else{
-					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[7,8];
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[7,8,9];
 				}
 				
 				protocolAcqUnitConfigItemsHandsontableHelper.createTable(result.totalRoot);
@@ -216,7 +217,7 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,140,60,80,80,80,80,80],
+	        		colWidths: [25,50,140,60,80,80,80,80,80,80],
 	                columns:protocolAcqUnitConfigItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

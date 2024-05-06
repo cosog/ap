@@ -2369,7 +2369,7 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd("rpcCalItemList".getBytes(),77, SerializeObjectUnils.serialize(new CalItem("沉没度","Submergence","m",2,"计算","沉没度")));
 			
-			jedis.zadd("rpcCalItemList".getBytes(),78, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,"计算","日用电量")));
+//			jedis.zadd("rpcCalItemList".getBytes(),78, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,"计算","日用电量")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -2451,7 +2451,7 @@ public class MemoryDataManagerTask {
 			jedis.zadd("pcpCalItemList".getBytes(),34, SerializeObjectUnils.serialize(new CalItem("泵出口粘度","PumpOutletVisl","mPa·s",2,"计算","泵出口粘度")));
 			jedis.zadd("pcpCalItemList".getBytes(),35, SerializeObjectUnils.serialize(new CalItem("泵出口原油体积系数","PumpOutletBo","",2,"计算","泵出口原油体积系数")));
 			
-			jedis.zadd("pcpCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,"计算","日用电量")));
+//			jedis.zadd("pcpCalItemList".getBytes(),36, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,"计算","日用电量")));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

@@ -517,7 +517,7 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceCalItemsHandsontableHelper==null || protocolDisplayInstanceCalItemsHandsontableHelper.hot==undefined){
 				protocolDisplayInstanceCalItemsHandsontableHelper = ProtocolDisplayInstanceCalItemsHandsontableHelper.createNew("ProtocolDisplayInstanceCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线']";
+				var colHeaders="['序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','数据来源']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -525,7 +525,8 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
 						+"{data:'realtimeCurveConfShowValue'},"
-						+"{data:'historyCurveConfShowValue'}"
+						+"{data:'historyCurveConfShowValue'},"
+						+"{data:'dataSource'}"
 						+"]";
 				protocolDisplayInstanceCalItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceCalItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -590,7 +591,7 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	        	protocolDisplayInstanceCalItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,60,85,85],
+	        		colWidths: [50,140,80,60,60,85,85,85],
 	                columns:protocolDisplayInstanceCalItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

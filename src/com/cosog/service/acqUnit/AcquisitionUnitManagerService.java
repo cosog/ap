@@ -1496,9 +1496,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		
-		
-		
-		if(StringManagerUtils.isNotNull(unitId)){
+		if("2".equalsIgnoreCase(classes) && StringManagerUtils.isNotNull(unitId)){
+			ModbusProtocolConfig.Protocol protocol=null;
+			String protocolSql="select t.protocol from TBL_ACQ_UNIT_CONF t,tbl_display_unit_conf t2 where t.id=t2.acqunitid and t2.id="+unitId;
+			List<?> protocolList=this.findCallSql(protocolSql);
+			if(protocolList.size()>0){
+				protocol=MemoryDataManagerTask.getProtocolByName(protocolList.get(0)+"");
+			}
 			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
 					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
 					+ " tbl_datamapping t6 "
@@ -1510,9 +1514,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
 				String itemName=obj[0]+"";
 				String name=obj[1]+"";
-				String code=obj[2]+"";
-				
-				CalItem calItem=new CalItem(name,code,"",2,"计算",itemName+"日累计计算");
+				String code=(obj[2]+"_TOTAL").toUpperCase();
+				String unit="";
+				if(protocol!=null&&protocol.getItems()!=null){
+					for(ModbusProtocolConfig.Items item:protocol.getItems()){
+						if(itemName.equalsIgnoreCase(item.getTitle())){
+							unit=item.getUnit();
+							break;
+						}
+					}
+				}
+				CalItem calItem=new CalItem(name,code,unit,2,"日汇总计算",itemName+"日累计计算");
 				calItemList.add(calItem);
 			}
 		}
@@ -1597,7 +1609,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 					+ "\"historyCurveConf\":"+historyCurveConf+","
 					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-					+ "\"code\":\""+calItem.getCode()+"\""
+					+ "\"code\":\""+calItem.getCode()+"\","
+					+ "\"dataSource\":\""+calItem.getDataSource()+"\""
 					+ "},");
 			index++;
 		
@@ -3030,6 +3043,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		
 		if(StringManagerUtils.isNotNull(id)){
+			
+			ModbusProtocolConfig.Protocol protocol=null;
+			String protocolSql="select t.protocol from TBL_ACQ_UNIT_CONF t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 where t.id=t2.acqunitid and t2.id=t3.displayunitid and t3.id="+id;
+			List<?> protocolList=this.findCallSql(protocolSql);
+			if(protocolList.size()>0){
+				protocol=MemoryDataManagerTask.getProtocolByName(protocolList.get(0)+"");
+			}
+			
 			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
 					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
 					+ " tbl_datamapping t6,tbl_protocoldisplayinstance t7 "
@@ -3042,9 +3063,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
 				String itemName=obj[0]+"";
 				String name=obj[1]+"";
-				String code=obj[2]+"";
-				
-				CalItem calItem=new CalItem(name,code,"",2,"计算",itemName+"日累计计算");
+				String code=(obj[2]+"_TOTAL").toUpperCase();
+				String unit="";
+				if(protocol!=null&&protocol.getItems()!=null){
+					for(ModbusProtocolConfig.Items item:protocol.getItems()){
+						if(itemName.equalsIgnoreCase(item.getTitle())){
+							unit=item.getUnit();
+							break;
+						}
+					}
+				}
+				CalItem calItem=new CalItem(name,code,unit,2,"日汇总计算",itemName+"日累计计算");
 				calItemList.add(calItem);
 			}
 		}
@@ -3112,7 +3141,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"showLevel\":\""+showLevel+"\","
 							+ "\"sort\":\""+sort+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+							+ "\"dataSource\":\""+calItem.getDataSource()+"\""
 							+ "},");
 					index++;
 				}

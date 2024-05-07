@@ -1,6 +1,7 @@
 package com.cosog.model.calculate;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class DeviceInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -31,7 +32,6 @@ public class DeviceInfo implements Serializable {
 	
 	private Integer status;
 	private String statusName;
-	private Integer pumpingModelId;
 	private Integer sortNum;
 
 
@@ -89,9 +89,43 @@ public class DeviceInfo implements Serializable {
 	
 	private PCPCalculateRequestData pcpCalculateRequestData;
 	
+	private List<DailyTotalItem> dailyTotalItemList;
+	
 	private Integer resultCode;
 	
 	private Integer resultStatus;
+	
+	public static class DailyTotalItem implements Serializable {
+		private static final long serialVersionUID = 1L;
+		private String itemColumn;
+		private String acqTime;
+		private float totalValue;
+		private float todayValue;
+		public String getItemColumn() {
+			return itemColumn;
+		}
+		public void setItemColumn(String itemColumn) {
+			this.itemColumn = itemColumn;
+		}
+		public String getAcqTime() {
+			return acqTime;
+		}
+		public void setAcqTime(String acqTime) {
+			this.acqTime = acqTime;
+		}
+		public float getTotalValue() {
+			return totalValue;
+		}
+		public void setTotalValue(float totalValue) {
+			this.totalValue = totalValue;
+		}
+		public float getTodayValue() {
+			return todayValue;
+		}
+		public void setTodayValue(float todayValue) {
+			this.todayValue = todayValue;
+		}
+	}
 
 	public Integer getId() {
 		return id;
@@ -253,28 +287,12 @@ public class DeviceInfo implements Serializable {
 		this.acqTime = acqTime;
 	}
 
-//	public List<AcquisitionItemInfo> getAcquisitionItemInfoList() {
-//		return acquisitionItemInfoList;
-//	}
-//
-//	public void setAcquisitionItemInfoList(List<AcquisitionItemInfo> acquisitionItemInfoList) {
-//		this.acquisitionItemInfoList = acquisitionItemInfoList;
-//	}
-
 	public Integer getCommStatus() {
 		return commStatus;
 	}
 
 	public void setCommStatus(Integer commStatus) {
 		this.commStatus = commStatus;
-	}
-
-	public Integer getPumpingModelId() {
-		return pumpingModelId;
-	}
-
-	public void setPumpingModelId(Integer pumpingModelId) {
-		this.pumpingModelId = pumpingModelId;
 	}
 
 	public float getCommTime() {
@@ -566,6 +584,14 @@ public class DeviceInfo implements Serializable {
 
 	public void setPcpCalculateRequestData(PCPCalculateRequestData pcpCalculateRequestData) {
 		this.pcpCalculateRequestData = pcpCalculateRequestData;
+	}
+
+	public List<DailyTotalItem> getDailyTotalItemList() {
+		return dailyTotalItemList;
+	}
+
+	public void setDailyTotalItemList(List<DailyTotalItem> dailyTotalItemList) {
+		this.dailyTotalItemList = dailyTotalItemList;
 	}
 
 }

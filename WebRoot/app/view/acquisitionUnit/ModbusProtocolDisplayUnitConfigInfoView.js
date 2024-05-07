@@ -408,7 +408,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','','','','数据来源']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -420,7 +420,8 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
 						+"{data:'historyCurveConf'},"
-						+"{data:'code'}"
+						+"{data:'code'},"
+						+"{data:'dataSource'}"
 						+"]";
 				protocolDisplayUnitCalItemsConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayUnitCalItemsConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -477,7 +478,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,60,85,85],
+	                colWidths: [25,50,140,80,60,60,85,85,85,85,85,85],
 	                columns:protocolDisplayUnitCalItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -502,7 +503,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 		                		if(selectedItem.data.classes!=2){
 		                			cellProperties.readOnly = true;
 		                		}else{
-		                			if (visualColIndex >=1 && visualColIndex<=3) {
+		                			if ((visualColIndex >=1 && visualColIndex<=3) || visualColIndex==11) {
 		    							cellProperties.readOnly = true;
 		    		                }else if(visualColIndex==6||visualColIndex==7){
 		    		                	cellProperties.renderer = protocolDisplayUnitCalItemsConfigHandsontableHelper.addCurveBg;

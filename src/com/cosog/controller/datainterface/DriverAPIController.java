@@ -2,6 +2,7 @@ package com.cosog.controller.datainterface;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,6 +49,7 @@ import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.calculate.UserInfo;
+import com.cosog.model.calculate.DeviceInfo.DailyTotalItem;
 import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.AcqOnline;
 import com.cosog.model.drive.AcquisitionItemInfo;
@@ -1035,7 +1037,43 @@ public class DriverAPIController extends BaseController{
 		return map;
 	} 
 	
-	public List<ProtocolItemResolutionData> DataProcessing(AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,AcqInstanceOwnItem acqInstanceOwnItem){
+	public void saveDailyTotalData(DeviceInfo deviceInfo){
+		if(deviceInfo.getDailyTotalItemMap().size()>0){
+			Iterator<Map.Entry<String, DeviceInfo.DailyTotalItem>> iterator = deviceInfo.getDailyTotalItemMap().entrySet().iterator();
+			while (iterator.hasNext()) {
+			    Map.Entry<String,  DeviceInfo.DailyTotalItem> entry = iterator.next();
+			    String key = entry.getKey();
+			    DeviceInfo.DailyTotalItem dailyTotalItem = entry.getValue();
+			    try {
+					commonDataService.getBaseDao().saveDailyTotalData(deviceInfo.getId(), dailyTotalItem);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void cleanDailyTotalItems(DeviceInfo deviceInfo,AcqInstanceOwnItem acqInstanceOwnItem){
+		List<String> dailyTotalItemList=new ArrayList<>();
+		for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+			if(acqItem.getDailyTotalCalculate()==1){
+				dailyTotalItemList.add((acqItem.getItemCode()+"_total").toUpperCase());
+			}
+		}
+		Iterator<Map.Entry<String, DailyTotalItem>> iterator = deviceInfo.getDailyTotalItemMap().entrySet().iterator();
+		while (iterator.hasNext()) {
+		    Map.Entry<String,  DeviceInfo.DailyTotalItem> entry = iterator.next();
+		    String key = entry.getKey();
+		    DeviceInfo.DailyTotalItem value = entry.getValue();
+		    if(!StringManagerUtils.existOrNot(dailyTotalItemList, key, false)){
+		    	deviceInfo.getDailyTotalItemMap().remove(key);
+		    }
+		}
+	}
+	
+	public List<ProtocolItemResolutionData> DataProcessing(DeviceInfo deviceInfo,String acqTime,AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,
+			AcqInstanceOwnItem acqInstanceOwnItem,
+			List<ProtocolItemResolutionData> calItemResolutionDataList){
 		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
@@ -1048,7 +1086,8 @@ public class DriverAPIController extends BaseController{
 				for(int j=0;j<protocol.getItems().size();j++){
 					if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
 						String value="";
-						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
+						String title=protocol.getItems().get(j).getTitle();
+						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(title);
 						String columnName=dataMappingColumn.getMappingColumn();
 						
 						if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null ){
@@ -1056,13 +1095,12 @@ public class DriverAPIController extends BaseController{
 						}
 						String rawValue=value;
 						String addr=protocol.getItems().get(j).getAddr()+"";
-						String title=protocol.getItems().get(j).getTitle();
+						
 						String rawTitle=title;
 						String columnDataType=protocol.getItems().get(j).getIFDataType();
 						String resolutionMode=protocol.getItems().get(j).getResolutionMode()+"";
 						String bitIndex="";
 						String unit=protocol.getItems().get(j).getUnit();
-						int alarmLevel=0;
 						int sort=9999;
 						
 						String saveValue=rawValue;
@@ -1071,6 +1109,36 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
+							AcqInstanceOwnItem.AcqItem thisAcqItem=null;
+							for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+								if(columnName.equalsIgnoreCase(acqItem.getItemCode())){
+									thisAcqItem=acqItem;
+									break;
+								}
+							}
+							
+							if(thisAcqItem!=null && thisAcqItem.getDailyTotalCalculate()==1){
+								String code=(columnName+"_total").toUpperCase();
+								DeviceInfo.DailyTotalItem thisDailyTotalItem=deviceInfo.getDailyTotalItemMap().get(code);
+								EnergyCalculateResponseData totalCalculateResponseData=energyCalaulate(deviceInfo,thisDailyTotalItem,acqTime,StringManagerUtils.stringToFloat(rawValue));
+								if(totalCalculateResponseData!=null && totalCalculateResponseData.getResultStatus()==1){
+									calItemResolutionDataList.add(new ProtocolItemResolutionData(thisAcqItem.getDailyTotalCalculateName(),thisAcqItem.getDailyTotalCalculateName(),
+											totalCalculateResponseData.getCurrent().getToday().getKWattH()+"",
+											totalCalculateResponseData.getCurrent().getToday().getKWattH()+"","",
+											code,"","","",
+											unit,1)
+											);
+									if(thisDailyTotalItem==null){
+										thisDailyTotalItem=new DeviceInfo.DailyTotalItem();
+									}
+									thisDailyTotalItem.setAcqTime(acqTime);
+									thisDailyTotalItem.setItemColumn(code);
+									thisDailyTotalItem.setTotalValue(StringManagerUtils.stringToFloat(rawValue));
+									thisDailyTotalItem.setTodayValue(totalCalculateResponseData.getCurrent().getToday().getKWattH());
+									
+									deviceInfo.getDailyTotalItemMap().put(thisDailyTotalItem.getItemColumn(), thisDailyTotalItem);
+								}
+							}
 							if(protocol.getItems().get(j).getResolutionMode()==1||protocol.getItems().get(j).getResolutionMode()==2){//如果是枚举量或数据量
 								if(protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(j).getMeaning().size();l++){
@@ -1308,6 +1376,35 @@ public class DriverAPIController extends BaseController{
 		timeEffResponseData=CalculateUtils.runCalculate(tiemEffRequest);
 	
 		return timeEffResponseData;
+	}
+	
+	public EnergyCalculateResponseData energyCalaulate(DeviceInfo deviceInfo,DeviceInfo.DailyTotalItem thisDailyTotalItem,String acqTime,float totalKWattH){
+		EnergyCalculateResponseData energyCalculateResponseData=null;
+
+		String energyRequest="{"
+				+ "\"AKString\":\"\","
+				+ "\"WellName\":\""+deviceInfo.getWellName()+"\","
+				+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+		if(thisDailyTotalItem!=null){
+			energyRequest+= "\"Last\":{"
+					+ "\"AcqTime\": \""+thisDailyTotalItem.getAcqTime()+"\","
+					+ "\"Total\":{"
+					+ "\"KWattH\":"+thisDailyTotalItem.getTotalValue()
+					+ "},\"Today\":{"
+					+ "\"KWattH\":"+thisDailyTotalItem.getTodayValue()
+					+ "}"
+					+ "},";
+		}	
+		energyRequest+= "\"Current\": {"
+				+ "\"AcqTime\":\""+acqTime+"\","
+				+ "\"Total\":{"
+				+ "\"KWattH\":"+totalKWattH
+				+ "}"
+				+ "}"
+				+ "}";
+		energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
+	
+		return energyCalculateResponseData;
 	}
 	
 	public EnergyCalculateResponseData energyCalaulate(DeviceInfo deviceInfo,String acqTime,float totalKWattH){
@@ -1679,11 +1776,9 @@ public class DriverAPIController extends BaseController{
 			String functionCode="deviceRealTimeMonitoringData";
 			if(acqGroup!=null){
 				String protocolName="";
-				String acqProtocolType="";
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				if(acqInstanceOwnItem!=null){
 					protocolName=acqInstanceOwnItem.getProtocol();
-					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 				}
 				DisplayInstanceOwnItem displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(deviceInfo.getDisplayInstanceCode());
 				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
@@ -1714,10 +1809,6 @@ public class DriverAPIController extends BaseController{
 					CommResponseData commResponseData=null;
 					TimeEffResponseData timeEffResponseData=null;
 					
-					EnergyCalculateResponseData energyCalculateResponseData=null;
-					EnergyCalculateResponseData totalGasCalculateResponseData=null;
-					EnergyCalculateResponseData totalWaterCalculateResponseData=null;
-					
 					RPCCalculateRequestData rpcCalculateRequestData=null;
 					RPCCalculateResponseData rpcCalculateResponseData=null;
 					WorkType workType=null;
@@ -1725,9 +1816,6 @@ public class DriverAPIController extends BaseController{
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
 					int runStatus=2;
-					float totalKWattH=0;
-					float totalGasVolumetricProduction=0;
-					float totalWaterVolumetricProduction=0;
 					
 					//进行通信计算
 					commResponseData=commEffCalaulate(deviceInfo,acqTime,1);
@@ -1740,7 +1828,12 @@ public class DriverAPIController extends BaseController{
 					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1";
 					
 					List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
-					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(acqGroup,protocol,acqInstanceOwnItem);
+					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
+					
+					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList);
+					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
+					
+					
 					Map<String,String> saveDataMap=DataProcessing(acqGroup,protocol);
 					
 					Iterator<Map.Entry<String, String>> iterator = saveDataMap.entrySet().iterator();
@@ -1753,7 +1846,7 @@ public class DriverAPIController extends BaseController{
 						insertHistValue+=",'"+value+"'";
 					}
 					
-					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
+					
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
 							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getColumnName());
@@ -1768,50 +1861,10 @@ public class DriverAPIController extends BaseController{
 							}else{
 								isAcqRunStatus=true;
 							}
-							
-							
-							if("TotalKWattH".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计有功功耗
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									isAcqEnergy=true;
-									totalKWattH=StringManagerUtils.stringToFloat(rawValue);
-								}else{
-									totalKWattH=deviceInfo.getTotalKWattH();
-								}
-							}else if("TotalGasVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计产气量
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									isAcqTotalGasProd=true;
-									totalGasVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-								}else{
-									totalGasVolumetricProduction=deviceInfo.getTotalGasVolumetricProduction();
-								}
-							}
-							else if("TotalWaterVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//累计产水量
-								if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-									isAcqTotalWaterProd=true;
-									totalWaterVolumetricProduction=StringManagerUtils.stringToFloat(rawValue);
-								}else{
-									totalWaterVolumetricProduction=deviceInfo.getTotalWaterVolumetricProduction();
-								}
-							}
 						}
 					}
 					if(isAcqRunStatus){
 						timeEffResponseData=tiemEffCalaulate(deviceInfo,acqTime,runStatus);
-					}
-					
-					//判断是否采集了电量，如采集则进行电量计算
-					if(isAcqEnergy){
-						energyCalculateResponseData=energyCalaulate(deviceInfo,acqTime,totalKWattH);
-					}
-					
-					//判断是否采集了累计气量，如采集则进行日产气量计算
-					if(isAcqTotalGasProd){
-						totalGasCalculateResponseData=totalGasCalaulate(deviceInfo,acqTime,totalGasVolumetricProduction);
-					}
-					
-					//判断是否采集了累计水量，如采集则进行日产水量计算
-					if(isAcqTotalWaterProd){
-						totalWaterCalculateResponseData=totalWaterCalaulate(deviceInfo,acqTime,totalWaterVolumetricProduction);
 					}
 					//通信
 					deviceInfo.setAcqTime(acqTime);
@@ -1866,63 +1919,6 @@ public class DriverAPIController extends BaseController{
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时间","运行时间",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"","","runTime","","","","",1));
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时率","运行时率",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+"",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+"","","runtimeEfficiency","","","","",1));
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行区间","运行区间",timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),"","runRange","","","","",1));
-					}
-					//如果进行了功耗计算
-					if(isAcqEnergy){
-						updateRealtimeData+=",t.totalKWattH= "+totalKWattH;
-						insertHistColumns+=",totalKWattH";
-						insertHistValue+=","+totalKWattH;
-						updateTotalDataSql+=",t.totalKWattH= "+totalKWattH;
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计用电量","累计用电量",totalKWattH+"",totalKWattH+"","","totalKWattH","","","","kW·h",1));
-					}
-					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-						updateRealtimeData+=",t.todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
-						insertHistColumns+=",todayKWattH";
-						insertHistValue+=","+energyCalculateResponseData.getCurrent().getToday().getKWattH();
-						updateTotalDataSql+=",t.todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
-						deviceInfo.setKWattHAcqTime(acqTime);
-						deviceInfo.setTotalKWattH(totalKWattH);
-						deviceInfo.setTodayKWattH(energyCalculateResponseData.getCurrent().getToday().getKWattH());
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("日用电量","日用电量",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"","","todayKWattH","","","","kW·h",1));
-					}
-					
-					//如果进行了日产气量计算
-					if(isAcqTotalGasProd){
-						updateRealtimeData+=",t.totalgasvolumetricproduction= "+totalGasVolumetricProduction;
-						insertHistColumns+=",totalgasvolumetricproduction";
-						insertHistValue+=","+totalGasVolumetricProduction;
-						updateTotalDataSql+=",t.totalgasvolumetricproduction= "+totalGasVolumetricProduction;
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产气量","累计产气量",totalGasVolumetricProduction+"",totalGasVolumetricProduction+"","","totalGasVolumetricProduction","","","","m^3",1));
-					}
-					if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
-						updateRealtimeData+=",t.gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
-						insertHistColumns+=",gasvolumetricproduction";
-						insertHistValue+=","+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
-						updateTotalDataSql+=",t.gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
-						deviceInfo.setTotalGasAcqTime(acqTime);
-						deviceInfo.setTotalGasVolumetricProduction(totalGasVolumetricProduction);
-						deviceInfo.setGasVolumetricProduction(totalGasCalculateResponseData.getCurrent().getToday().getKWattH());
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产气量","日累计产气量",totalGasCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalGasCalculateResponseData.getCurrent().getToday().getKWattH()+"","","gasVolumetricProduction","","","","m^3/d",1));
-					}
-					
-					//如果进行了日产水量计算
-					if(isAcqTotalWaterProd){
-						updateRealtimeData+=",t.totalWatervolumetricproduction= "+totalWaterVolumetricProduction;
-						insertHistColumns+=",totalWatervolumetricproduction";
-						insertHistValue+=","+totalWaterVolumetricProduction;
-						updateTotalDataSql+=",t.totalWatervolumetricproduction= "+totalWaterVolumetricProduction;
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产水量","累计产水量",totalWaterVolumetricProduction+"",totalWaterVolumetricProduction+"","","totalWaterVolumetricProduction","","","","m^3",1));
-					}
-					if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
-						updateRealtimeData+=",t.Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
-						insertHistColumns+=",Watervolumetricproduction";
-						insertHistValue+=","+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
-						updateTotalDataSql+=",t.Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
-						deviceInfo.setTotalWaterAcqTime(acqTime);
-						deviceInfo.setTotalWaterVolumetricProduction(totalWaterVolumetricProduction);
-						deviceInfo.setWaterVolumetricProduction(totalWaterCalculateResponseData.getCurrent().getToday().getKWattH());
-						
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"",totalWaterCalculateResponseData.getCurrent().getToday().getKWattH()+"","","waterVolumetricProduction","","","","m^3/d",1));
 					}
 					
 					List<ProtocolItemResolutionData> inputItemItemResolutionDataList=new ArrayList<>();;
@@ -2027,7 +2023,8 @@ public class DriverAPIController extends BaseController{
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}
-						
+						//保存日汇总数据
+						saveDailyTotalData(deviceInfo);
 						//统计
 						CalculateDataManagerTask.acquisitionDataTotalCalculate(deviceInfo.getId()+"", date);
 						//报警项
@@ -2169,8 +2166,10 @@ public class DriverAPIController extends BaseController{
 				AcqInstanceOwnItem acqInstanceOwnItem=null;
 				if(jedis!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes())){
 					acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes()));
-					protocolName=acqInstanceOwnItem.getProtocol();
-					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
+					if(acqInstanceOwnItem!=null){
+						protocolName=acqInstanceOwnItem.getProtocol();
+						acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
+					}
 				}
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
@@ -2265,6 +2264,12 @@ public class DriverAPIController extends BaseController{
 								int sort=9999;
 								
 								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
+									
+									for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+										
+									}
+									
+									
 									String saveValue=rawValue;
 									if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
 										saveValue=rawValue.substring(0, 50);

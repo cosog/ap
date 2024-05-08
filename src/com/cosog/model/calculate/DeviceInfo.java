@@ -2,6 +2,7 @@ package com.cosog.model.calculate;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class DeviceInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -89,7 +90,7 @@ public class DeviceInfo implements Serializable {
 	
 	private PCPCalculateRequestData pcpCalculateRequestData;
 	
-	private List<DailyTotalItem> dailyTotalItemList;
+	private Map<String,DailyTotalItem> dailyTotalItemMap;
 	
 	private Integer resultCode;
 	
@@ -586,12 +587,12 @@ public class DeviceInfo implements Serializable {
 		this.pcpCalculateRequestData = pcpCalculateRequestData;
 	}
 
-	public List<DailyTotalItem> getDailyTotalItemList() {
-		return dailyTotalItemList;
+	public Map<String, DailyTotalItem> getDailyTotalItemMap() {
+		return dailyTotalItemMap;
 	}
 
-	public void setDailyTotalItemList(List<DailyTotalItem> dailyTotalItemList) {
-		this.dailyTotalItemList = dailyTotalItemList;
+	public void setDailyTotalItemMap(Map<String, DailyTotalItem> dailyTotalItemMap) {
+		this.dailyTotalItemMap = dailyTotalItemMap;
 	}
 
 }

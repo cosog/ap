@@ -1524,7 +1524,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				CalItem calItem=new CalItem(name,code,unit,2,"日汇总计算",itemName+"日累计计算");
+				CalItem calItem=new CalItem(name,code,unit,2,"组态",itemName+"日累计计算");
 				calItemList.add(calItem);
 			}
 		}
@@ -3073,7 +3073,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				CalItem calItem=new CalItem(name,code,unit,2,"日汇总计算",itemName+"日累计计算");
+				CalItem calItem=new CalItem(name,code,unit,2,"组态",itemName+"日累计计算");
 				calItemList.add(calItem);
 			}
 		}

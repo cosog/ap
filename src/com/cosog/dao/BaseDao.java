@@ -4755,4 +4755,25 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return collisionList;
 	}
+	
+	public void saveDailyTotalData(int deviceId,DeviceInfo.DailyTotalItem dailyTotalItem) throws SQLException{
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		try {
+			cs = conn.prepareCall("{call prd_save_dailytotalcalculate(?,?,?,?,?)}");
+			cs.setInt(1, deviceId);
+			cs.setString(2, dailyTotalItem.getItemColumn());
+			cs.setString(3, dailyTotalItem.getAcqTime());
+			cs.setFloat(4, dailyTotalItem.getTotalValue());
+			cs.setFloat(5, dailyTotalItem.getTodayValue());
+			cs.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			if(cs!=null){
+				cs.close();
+			}
+			conn.close();
+		}
+	}
 }

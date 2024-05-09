@@ -388,6 +388,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 			String totalDataSql="select deviceId";
 			String newestDataSql="select deviceId";
 			String oldestDataSql="select deviceId";
+			
+			String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
+					+ " from tbl_dailytotalcalculate_hist t,"
+					+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  from tbl_dailytotalcalculate_hist group by deviceid,itemcolumn) v "
+					+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
+					+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
+			
+			
 			for(int i=0;i<columnList.size();i++){
 				String column=columnList.get(i);
 				totalDataSql+=",max(t."+column+")||';'||min(t."+column+")||';'||round(avg(t."+column+"),2) as "+column+"";
@@ -405,6 +413,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				totalDataSql+=" and t.deviceId="+deviceId;
 				newestDataSql+=" and t.deviceId="+deviceId;
 				oldestDataSql+=" and t.deviceId="+deviceId;
+				newestDailyTotalDataSql+=" and t.deviceid="+deviceId;
 			}else{
 				newestDataSql+=" and t.acqtime=(select min(t2.acqtime) from tbl_acqdata_hist t2 "
 						+ " where t2.deviceId=t.deviceId"
@@ -426,11 +435,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 			
 			
 			totalDataSql+="group by t.deviceId";
-			
+			newestDailyTotalDataSql+=" order by t.deviceid";
 			
 			List<?> totalList=findCallSql(totalDataSql);
 			List<?> newestValueList=findCallSql(newestDataSql);
 			List<?> oldestValueList=findCallSql(oldestDataSql);
+			List<?> newestDailyTotalDataList=findCallSql(newestDailyTotalDataSql);
 			
 			for(int i=0;i<totalList.size();i++){
 				Object[] obj=(Object[]) totalList.get(i);
@@ -562,10 +572,23 @@ public class CalculateDataService<T> extends BaseService<T> {
 				updateSql+=",runStatus="+runStatus+",runTimeEfficiency="+runTimeEfficiency+",runTime="+runTime;
 				
 				for(int j=1;j<obj.length;j++){
-					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
-					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-					String tatalValue=obj[j]+";"+oldestValue+";"+newestValue;
+					String oldestValue=oldestValueObj==null?" ":(oldestValueObj[j]+"");
+					String newestValue=oldestValueObj==null?" ":(newestValueObj[j]+"");
+					String dailyTotalValue=" ";
+					
 					String colnum=columnList.get(j-1);
+					String totalColumn=(colnum+"_total").toUpperCase();
+					
+					for(int k=0;k<newestDailyTotalDataList.size();k++){
+						Object[] newestDailyTotalDataObj=(Object[]) newestDailyTotalDataList.get(k);
+						if(deviceIdStr.equalsIgnoreCase(newestDailyTotalDataObj[1]+"") && totalColumn.equalsIgnoreCase(newestDailyTotalDataObj[3]+"")){
+							dailyTotalValue=newestDailyTotalDataObj[6]+"";
+							break;
+						}
+					}
+					
+					
+					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
 					updateSql+=",t."+colnum+"='"+tatalValue+"'";
 				}
 				

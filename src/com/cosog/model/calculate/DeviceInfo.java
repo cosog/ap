@@ -99,6 +99,7 @@ public class DeviceInfo implements Serializable {
 	public static class DailyTotalItem implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private String itemColumn;
+		private String itemName;
 		private String acqTime;
 		private float totalValue;
 		private float todayValue;
@@ -125,6 +126,12 @@ public class DeviceInfo implements Serializable {
 		}
 		public void setTodayValue(float todayValue) {
 			this.todayValue = todayValue;
+		}
+		public String getItemName() {
+			return itemName;
+		}
+		public void setItemName(String itemName) {
+			this.itemName = itemName;
 		}
 	}
 

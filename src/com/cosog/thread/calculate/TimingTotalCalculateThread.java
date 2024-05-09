@@ -1715,6 +1715,13 @@ public class TimingTotalCalculateThread  extends Thread{
 				String sql="select deviceid";
 				String newestDataSql="select deviceid";
 				String oldestDataSql="select deviceid";
+				
+				String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
+						+ " from tbl_dailytotalcalculate_hist t,"
+						+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  from tbl_dailytotalcalculate_hist group by deviceid,itemcolumn) v "
+						+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
+						+ " and t.acqtime between to_date('"+range.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+				
 				for(int i=0;i<columnList.size();i++){
 					String column=columnList.get(i);
 					sql+=",max(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
@@ -1734,6 +1741,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					sql+=" and t.deviceid="+deviceId;
 					newestDataSql+=" and t.deviceid="+deviceId;
 					oldestDataSql+=" and t.deviceid="+deviceId;
+					newestDailyTotalDataSql+=" and t.deviceid="+deviceId;
 				}else{
 					newestDataSql+=" and t.acqtime=(select min(t2.acqtime) from tbl_acqdata_hist t2 "
 							+ " where t2.deviceid=t.deviceid"
@@ -1752,9 +1760,11 @@ public class TimingTotalCalculateThread  extends Thread{
 					oldestDataSql="select * from("+oldestDataSql+") where rownum=1";
 				}
 				sql+="group by t.deviceid";
+				newestDailyTotalDataSql+=" order by t.deviceid";
 				List<?> totalList=commonDataService.findCallSql(sql);
 				List<?> newestValueList=commonDataService.findCallSql(newestDataSql);
 				List<?> oldestValueList=commonDataService.findCallSql(oldestDataSql);
+				List<?> newestDailyTotalDataList=commonDataService.findCallSql(newestDailyTotalDataSql);
 				
 				for(int i=0;i<totalList.size();i++){
 					Object[] obj=(Object[]) totalList.get(i);
@@ -1776,10 +1786,23 @@ public class TimingTotalCalculateThread  extends Thread{
 						}
 					}
 					for(int j=1;j<obj.length;j++){
-						String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
-						String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-						String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue).replaceAll("null", "");
+						String oldestValue=oldestValueObj==null?" ":(oldestValueObj[j]+"");
+						String newestValue=oldestValueObj==null?" ":(newestValueObj[j]+"");
+						
+						String dailyTotalValue=" ";
+						
 						String colnum=columnList.get(j-1);
+						String totalColumn=(colnum+"_total").toUpperCase();
+						
+						for(int k=0;k<newestDailyTotalDataList.size();k++){
+							Object[] newestDailyTotalDataObj=(Object[]) newestDailyTotalDataList.get(k);
+							if(deviceIdStr.equalsIgnoreCase(newestDailyTotalDataObj[1]+"") && totalColumn.equalsIgnoreCase(newestDailyTotalDataObj[3]+"")){
+								dailyTotalValue=newestDailyTotalDataObj[6]+"";
+								break;
+							}
+						}
+						
+						String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
 						updateSql+=",t."+colnum+"='"+tatalValue+"'";
 					}
 					

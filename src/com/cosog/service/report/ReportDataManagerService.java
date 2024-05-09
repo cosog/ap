@@ -1047,7 +1047,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
-								if(totalValueArr.length==5){
+								if(totalValueArr.length==6){
 									if(reportItemList.get(j).getTotalType()==1){
 										addValue=totalValueArr[0];
 									}else if(reportItemList.get(j).getTotalType()==2){
@@ -1058,6 +1058,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										addValue=totalValueArr[3];
 									}else if(reportItemList.get(j).getTotalType()==5){
 										addValue=totalValueArr[4];
+									}else if(reportItemList.get(j).getTotalType()==6){
+										addValue=totalValueArr[5];
 									}
 								}
 							}
@@ -1294,7 +1296,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
-									if(totalValueArr.length==5){
+									if(totalValueArr.length==6){
 										if(reportItemList.get(j).getTotalType()==1){
 											addValue=totalValueArr[0];
 										}else if(reportItemList.get(j).getTotalType()==2){
@@ -1305,6 +1307,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											addValue=totalValueArr[3];
 										}else if(reportItemList.get(j).getTotalType()==5){
 											addValue=totalValueArr[4];
+										}else if(reportItemList.get(j).getTotalType()==6){
+											addValue=totalValueArr[5];
 										}
 									}
 								}
@@ -1585,7 +1589,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 									if(StringManagerUtils.isNotNull(addValue)){
 										String[] totalValueArr=addValue.split(";");
-										if(totalValueArr.length==5){
+										if(totalValueArr.length==6){
 											if(reportItemList.get(j).getTotalType()==1){
 												addValue=totalValueArr[0];
 											}else if(reportItemList.get(j).getTotalType()==2){
@@ -1596,6 +1600,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 												addValue=totalValueArr[3];
 											}else if(reportItemList.get(j).getTotalType()==5){
 												addValue=totalValueArr[4];
+											}else if(reportItemList.get(j).getTotalType()==6){
+												addValue=totalValueArr[5];
 											}
 										}
 									}
@@ -1869,7 +1875,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
-								if(totalValueArr.length==5){
+								if(totalValueArr.length==6){
 									if(reportItemList.get(j).getTotalType()==1){
 										addValue=totalValueArr[0];
 									}else if(reportItemList.get(j).getTotalType()==2){
@@ -1880,6 +1886,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										addValue=totalValueArr[3];
 									}else if(reportItemList.get(j).getTotalType()==5){
 										addValue=totalValueArr[4];
+									}else if(reportItemList.get(j).getTotalType()==6){
+										addValue=totalValueArr[5];
 									}
 								}
 							}
@@ -2156,7 +2164,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
-									if(totalValueArr.length==5){
+									if(totalValueArr.length==6){
 										if(reportItemList.get(j).getTotalType()==1){
 											addValue=totalValueArr[0];
 										}else if(reportItemList.get(j).getTotalType()==2){
@@ -2167,6 +2175,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											addValue=totalValueArr[3];
 										}else if(reportItemList.get(j).getTotalType()==5){
 											addValue=totalValueArr[4];
+										}else if(reportItemList.get(j).getTotalType()==6){
+											addValue=totalValueArr[5];
 										}
 									}
 								}
@@ -2496,7 +2506,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 									if(StringManagerUtils.isNotNull(addValue)){
 										String[] totalValueArr=addValue.split(";");
-										if(totalValueArr.length==5){
+										if(totalValueArr.length==6){
 											if(reportItemList.get(j).getTotalType()==1){
 												addValue=totalValueArr[0];
 											}else if(reportItemList.get(j).getTotalType()==2){
@@ -2507,6 +2517,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 												addValue=totalValueArr[3];
 											}else if(reportItemList.get(j).getTotalType()==5){
 												addValue=totalValueArr[4];
+											}else if(reportItemList.get(j).getTotalType()==6){
+												addValue=totalValueArr[5];
 											}
 										}
 									}
@@ -2777,7 +2789,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
-								if(totalValueArr.length==5){
+								if(totalValueArr.length==6){
 									if(reportItemList.get(j).getTotalType()==1){
 										addValue=totalValueArr[0];
 									}else if(reportItemList.get(j).getTotalType()==2){
@@ -2788,6 +2800,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										addValue=totalValueArr[3];
 									}else if(reportItemList.get(j).getTotalType()==5){
 										addValue=totalValueArr[4];
+									}else if(reportItemList.get(j).getTotalType()==6){
+										addValue=totalValueArr[5];
 									}
 								}
 							}
@@ -3046,7 +3060,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
-									if(totalValueArr.length==5){
+									if(totalValueArr.length==6){
 										if(reportItemList.get(j).getTotalType()==1){
 											addValue=totalValueArr[0];
 										}else if(reportItemList.get(j).getTotalType()==2){
@@ -3057,6 +3071,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											addValue=totalValueArr[3];
 										}else if(reportItemList.get(j).getTotalType()==5){
 											addValue=totalValueArr[4];
+										}else if(reportItemList.get(j).getTotalType()==6){
+											addValue=totalValueArr[5];
 										}
 									}
 								}
@@ -3353,7 +3369,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 									if(StringManagerUtils.isNotNull(addValue)){
 										String[] totalValueArr=addValue.split(";");
-										if(totalValueArr.length==5){
+										if(totalValueArr.length==6){
 											if(reportItemList.get(j).getTotalType()==1){
 												addValue=totalValueArr[0];
 											}else if(reportItemList.get(j).getTotalType()==2){
@@ -3364,6 +3380,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 												addValue=totalValueArr[3];
 											}else if(reportItemList.get(j).getTotalType()==5){
 												addValue=totalValueArr[4];
+											}else if(reportItemList.get(j).getTotalType()==6){
+												addValue=totalValueArr[5];
 											}
 										}
 									}
@@ -3645,7 +3663,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if("采集".equalsIgnoreCase(reportCurveItemList.get(j-2).getDataSource())){
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
-							if(totalValueArr.length==5){
+							if(totalValueArr.length==6){
 								if(reportCurveItemList.get(j).getTotalType()==1){
 									addValue=totalValueArr[0];
 								}else if(reportCurveItemList.get(j).getTotalType()==2){
@@ -3656,6 +3674,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue=totalValueArr[3];
 								}else if(reportCurveItemList.get(j).getTotalType()==5){
 									addValue=totalValueArr[4];
+								}else if(reportCurveItemList.get(j).getTotalType()==6){
+									addValue=totalValueArr[5];
 								}
 							}
 						}
@@ -3870,7 +3890,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if("采集".equalsIgnoreCase(reportCurveItemList.get(j-2).getDataSource())){
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
-							if(totalValueArr.length==5){
+							if(totalValueArr.length==6){
 								if(reportCurveItemList.get(j).getTotalType()==1){
 									addValue=totalValueArr[0];
 								}else if(reportCurveItemList.get(j).getTotalType()==2){
@@ -3881,6 +3901,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue=totalValueArr[3];
 								}else if(reportCurveItemList.get(j).getTotalType()==5){
 									addValue=totalValueArr[4];
+								}else if(reportCurveItemList.get(j).getTotalType()==6){
+									addValue=totalValueArr[5];
 								}
 							}
 						}
@@ -4198,7 +4220,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							String value=dataList.get(j)[i+1]+"";
 							if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
 								String[] totalValueArr=value.split(";");
-								if(totalValueArr.length==5){
+								if(totalValueArr.length==6){
 									if(reportCurveItemList.get(j).getTotalType()==1){
 										value=totalValueArr[0];
 									}else if(reportCurveItemList.get(j).getTotalType()==2){
@@ -4209,6 +4231,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										value=totalValueArr[3];
 									}else if(reportCurveItemList.get(j).getTotalType()==5){
 										value=totalValueArr[4];
+									}else if(reportCurveItemList.get(j).getTotalType()==6){
+										value=totalValueArr[5];
 									}
 								}
 							}

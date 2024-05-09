@@ -4760,12 +4760,13 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
-			cs = conn.prepareCall("{call prd_save_dailytotalcalculate(?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_dailytotalcalculate(?,?,?,?,?,?)}");
 			cs.setInt(1, deviceId);
 			cs.setString(2, dailyTotalItem.getItemColumn());
-			cs.setString(3, dailyTotalItem.getAcqTime());
-			cs.setFloat(4, dailyTotalItem.getTotalValue());
-			cs.setFloat(5, dailyTotalItem.getTodayValue());
+			cs.setString(3, dailyTotalItem.getItemName());
+			cs.setString(4, dailyTotalItem.getAcqTime());
+			cs.setFloat(5, dailyTotalItem.getTotalValue());
+			cs.setFloat(6, dailyTotalItem.getTodayValue());
 			cs.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();

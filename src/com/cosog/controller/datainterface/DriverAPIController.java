@@ -1111,7 +1111,7 @@ public class DriverAPIController extends BaseController{
 						if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 							AcqInstanceOwnItem.AcqItem thisAcqItem=null;
 							for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
-								if(columnName.equalsIgnoreCase(acqItem.getItemCode())){
+								if(title.equalsIgnoreCase(acqItem.getItemName())){
 									thisAcqItem=acqItem;
 									break;
 								}
@@ -1133,6 +1133,7 @@ public class DriverAPIController extends BaseController{
 									}
 									thisDailyTotalItem.setAcqTime(acqTime);
 									thisDailyTotalItem.setItemColumn(code);
+									thisDailyTotalItem.setItemName(thisAcqItem.getDailyTotalCalculateName());
 									thisDailyTotalItem.setTotalValue(StringManagerUtils.stringToFloat(rawValue));
 									thisDailyTotalItem.setTodayValue(totalCalculateResponseData.getCurrent().getToday().getKWattH());
 									

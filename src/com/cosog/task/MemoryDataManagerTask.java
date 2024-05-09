@@ -738,7 +738,7 @@ public class MemoryDataManagerTask {
 						+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
 						+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
 						+ " and t3.specifictype=1";
-				String dailyTotalSql="select t.id,t.deviceid,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.itemcolumn,t.totalvalue,t.todayvalue "
+				String dailyTotalSql="select t.id,t.deviceid,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.itemcolumn,t.itemName,t.totalvalue,t.todayvalue "
 						+ "from TBL_DAILYTOTALCALCULATE_LATEST t,tbl_device t2 "
 						+ "where t.deviceid=t2.id";
 				if(StringManagerUtils.isNotNull(wells)){
@@ -932,8 +932,9 @@ public class MemoryDataManagerTask {
 							DeviceInfo.DailyTotalItem dailyTotalItem=new DeviceInfo.DailyTotalItem();
 							dailyTotalItem.setAcqTime(obj[2]+"");
 							dailyTotalItem.setItemColumn((obj[3]+"").toUpperCase());
-							dailyTotalItem.setTotalValue(StringManagerUtils.stringToFloat(obj[4]+""));
-							dailyTotalItem.setTodayValue(StringManagerUtils.stringToFloat(obj[5]+""));
+							dailyTotalItem.setItemName((obj[4]+"").toUpperCase());
+							dailyTotalItem.setTotalValue(StringManagerUtils.stringToFloat(obj[5]+""));
+							dailyTotalItem.setTodayValue(StringManagerUtils.stringToFloat(obj[6]+""));
 							deviceInfo.getDailyTotalItemMap().put(dailyTotalItem.getItemColumn(), dailyTotalItem);
 						}
 					}
@@ -1544,10 +1545,11 @@ public class MemoryDataManagerTask {
 			String sql="select t5.code as instanceCode,t5.acqprotocoltype,t5.ctrlprotocoltype,"
 					+ "t4.protocol,t3.unitid,"
 					+ "t2.grouptiminginterval,t2.groupsavinginterval,"
-					+ "t.id as itemid,t.itemname,t.itemcode,t.bitindex,t.groupid,"
+					+ "t.id as itemid,t.itemname,t6.mappingcolumn as itemcode,t.bitindex,t.groupid,"
 					+ "t.dailyTotalCalculate,t.dailyTotalCalculateName "
-					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_protocolinstance t5 "
-					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t2.type=0 ";
+					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_protocolinstance t5,"
+					+ " tbl_datamapping t6 "
+					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t2.type=0 and t.itemname=t6.name";
 			if(StringManagerUtils.isNotNull(instanceId)){
 				instanceSql+=" and t.id="+instanceId;
 				sql+=" and t5.id ="+instanceId;

@@ -34,7 +34,7 @@ public class CalculateDataManagerTask {
 	public static ScheduledExecutorService RPCTimingCalculateExecutor=null;
 	public static ScheduledExecutorService PCPTimingCalculateExecutor=null;
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
 		timingInitDailyReportData();
 		
@@ -47,7 +47,7 @@ public class CalculateDataManagerTask {
 		PCPTimingCalculate();
 	}
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -67,7 +67,7 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -309,6 +309,11 @@ public class CalculateDataManagerTask {
 			String sql="select deviceid";
 			String newestDataSql="select deviceid";
 			String oldestDataSql="select deviceid";
+			String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
+					+ " from tbl_dailytotalcalculate_hist t,"
+					+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  from tbl_dailytotalcalculate_hist group by deviceid,itemcolumn) v "
+					+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
+					+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
 			for(int i=0;i<columnList.size();i++){
 				String column=columnList.get(i);
 				sql+=",max(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
@@ -328,6 +333,8 @@ public class CalculateDataManagerTask {
 				sql+=" and t.deviceid="+deviceId;
 				newestDataSql+=" and t.deviceid="+deviceId;
 				oldestDataSql+=" and t.deviceid="+deviceId;
+				
+				newestDailyTotalDataSql+=" and t.deviceid="+deviceId;
 			}else{
 				newestDataSql+=" and t.acqtime=(select min(t2.acqtime) from tbl_acqdata_hist t2 "
 						+ " where t2.deviceid=t.deviceid"
@@ -349,29 +356,16 @@ public class CalculateDataManagerTask {
 			
 			
 			sql+="group by t.deviceid";
-			
+			newestDailyTotalDataSql+=" order by t.deviceid";
 			
 			List<Object[]> totalList=OracleJdbcUtis.query(sql);
 			List<Object[]> newestValueList=OracleJdbcUtis.query(newestDataSql);
 			List<Object[]> oldestValueList=OracleJdbcUtis.query(oldestDataSql);
+			List<Object[]> newestDailyTotalDataList=OracleJdbcUtis.query(newestDailyTotalDataSql);
 			
 			for(int i=0;i<totalList.size();i++){
 				Object[] obj=totalList.get(i);
 				String deviceIdStr=obj[0]+"";
-				
-				AcqInstanceOwnItem acqInstanceOwnItem=null;
-				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceIdStr);
-				Map<String,AcqInstanceOwnItem.AcqItem> dailyTotalCalculateMap=new LinkedHashMap<>();;
-				if(deviceInfo!=null){
-					acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
-					if(acqInstanceOwnItem!=null && acqInstanceOwnItem.getItemList()!=null){
-						for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
-							if(acqItem.getDailyTotalCalculate()==1){
-								dailyTotalCalculateMap.put(acqItem.getItemCode(), acqItem);
-							}
-						}
-					}
-				}
 				
 				Object[] newestValueObj=null;
 				Object[]oldestValueObj=null;
@@ -389,13 +383,20 @@ public class CalculateDataManagerTask {
 				}
 				String updatesql="update tbl_dailycalculationdata t set t.deviceid="+deviceIdStr+"";
 				for(int j=1;j<obj.length;j++){
-					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
-					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-					String dailyTotalValue="";
+					String oldestValue=oldestValueObj==null?" ":(oldestValueObj[j]+"");
+					String newestValue=oldestValueObj==null?" ":(newestValueObj[j]+"");
+					String dailyTotalValue=" ";
+					
 					String colnum=columnList.get(j-1);
-					if(dailyTotalCalculateMap.containsKey(colnum)){
-						AcqInstanceOwnItem.AcqItem acqItem=dailyTotalCalculateMap.get(colnum);
+					String totalColumn=(colnum+"_total").toUpperCase();
+					
+					for(Object[] newestDailyTotalDataObj:newestDailyTotalDataList){
+						if(deviceIdStr.equalsIgnoreCase(newestDailyTotalDataObj[1]+"") && totalColumn.equalsIgnoreCase(newestDailyTotalDataObj[3]+"")){
+							dailyTotalValue=newestDailyTotalDataObj[6]+"";
+							break;
+						}
 					}
+					
 					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
 					updatesql+=",t."+colnum+"='"+tatalValue+"'";
 				}

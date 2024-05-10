@@ -111,57 +111,11 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-			String historyEnergyStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalkwatth,t.todaykwatth"
-					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
-					+ " where t3.commstatus=1 "
-					+ " and t3.totalkwatth>0 "
-					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
-					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )";
-			
-			String historyGasStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
-					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
-					+ " where t3.commstatus=1 "
-					+ " and t3.totalgasvolumetricproduction>0 "
-					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
-					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )";
-			
-			String historyWaterStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_rpcacqdata_hist t3  "
-					+ " where t3.commstatus=1 "
-					+ " and t3.totalwatervolumetricproduction>0 "
-					+ " and t3.acqtime >= to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 "
-					+ " and t3.acqtime < to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )";
-			
 			TimeEffResponseData timeEffResponseData=null;
 			CommResponseData commResponseData=null;
-			EnergyCalculateResponseData energyCalculateResponseData=null;
-			EnergyCalculateResponseData totalGasCalculateResponseData=null;
-			EnergyCalculateResponseData totalWaterCalculateResponseData=null;
 			
 			String lastRunTime="";
 			String lastCommTime="";
-			
-			String lastEnergyTime="";
-			String lastGasTime="";
-			String lastWaterTime="";
 			
 			int commStatus=0;
 			float commTime=0;
@@ -172,12 +126,6 @@ public class TimingTotalCalculateThread  extends Thread{
 			float runTime=0;
 			float runTimeEfficiency=0;
 			String runRange="";
-			
-			float totalkwatth=0,todaykwatth=0;
-			float totalgasvolumetricproduction=0,gasvolumetricproduction=0;
-			float totalwatervolumetricproduction=0,watervolumetricproduction=0;
-			
-			boolean isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
 			
 			
 			time1=System.nanoTime();
@@ -217,7 +165,8 @@ public class TimingTotalCalculateThread  extends Thread{
 				if(template.getEditable()!=null && template.getEditable().size()>0){
 					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
-							+ " where t.unitid="+reportUnitId+" "
+							+ " where t.unitid="+reportUnitId
+							+ " and t.datasource='计算'"
 							+ " and t.sort>=0"
 							+ " and t.reporttype=2"
 							+ " order by t.sort";
@@ -376,154 +325,6 @@ public class TimingTotalCalculateThread  extends Thread{
 				}
 				updateSql+=",runTimeEfficiency="+runTimeEfficiency+",runTime="+runTime;
 			}
-			
-			time1=System.nanoTime();
-			List<?> historyEnergyStatusQueryList=commonDataService.findCallSql(historyEnergyStatusSql);
-			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyEnergyStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
-			if(historyEnergyStatusQueryList.size()>0){
-				Object[] historyEnergyStatuObj=(Object[]) historyEnergyStatusQueryList.get(0);
-				lastEnergyTime=historyEnergyStatuObj[3]+"";
-				if(historyEnergyStatuObj[4]!=null){
-					isAcqEnergy=true;
-				}
-				totalkwatth=StringManagerUtils.stringToFloat(historyEnergyStatuObj[4]+"");
-				todaykwatth=StringManagerUtils.stringToFloat(historyEnergyStatuObj[5]+"");
-			}
-			//判断是否采集了电量，如采集则进行电量计算
-			if(isAcqEnergy){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastEnergyTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalkwatth
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+todaykwatth
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalkwatth
-						+ "}"
-						+ "}"
-						+ "}";
-				time1=System.nanoTime();
-				energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",energyCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
-				
-				updateSql+=",totalKWattH="+totalkwatth;
-				if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && energyCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
-			time1=System.nanoTime();
-			List<?> historyGasStatusQueryList=commonDataService.findCallSql(historyGasStatusSql);
-			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyGasStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
-			if(historyGasStatusQueryList.size()>0){
-				Object[] historyGasStatuObj=(Object[]) historyGasStatusQueryList.get(0);
-				lastGasTime=historyGasStatuObj[3]+"";
-				if(historyGasStatuObj[4]!=null){
-					isAcqTotalGasProd=true;
-				}
-				totalgasvolumetricproduction=StringManagerUtils.stringToFloat(historyGasStatuObj[4]+"");
-				gasvolumetricproduction=StringManagerUtils.stringToFloat(historyGasStatuObj[5]+"");
-			}
-			//判断是否采集了累计气量，如采集则进行日产气量计算
-			if(isAcqTotalGasProd){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastGasTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalgasvolumetricproduction
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+gasvolumetricproduction
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalgasvolumetricproduction
-						+ "}"
-						+ "}"
-						+ "}";
-				updateSql+=",totalgasvolumetricproduction="+totalgasvolumetricproduction;
-				time1=System.nanoTime();
-				totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",totalGasCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
-				
-				if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalGasCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalGasCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
-			time1=System.nanoTime();
-			List<?> historyWaterStatusQueryList=commonDataService.findCallSql(historyWaterStatusSql);
-			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyWaterStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
-			if(historyWaterStatusQueryList.size()>0){
-				Object[] historyWaterStatuObj=(Object[]) historyWaterStatusQueryList.get(0);
-				lastWaterTime=historyWaterStatuObj[3]+"";
-				if(historyWaterStatuObj[4]!=null){
-					isAcqTotalWaterProd=true;
-				}
-				totalwatervolumetricproduction=StringManagerUtils.stringToFloat(historyWaterStatuObj[4]+"");
-				watervolumetricproduction=StringManagerUtils.stringToFloat(historyWaterStatuObj[5]+"");
-			}
-			//判断是否采集了累计水量，如采集则进行日产水量计算
-			if(isAcqTotalWaterProd){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastWaterTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalwatervolumetricproduction
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+watervolumetricproduction
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalwatervolumetricproduction
-						+ "}"
-						+ "}"
-						+ "}";
-				updateSql+=",totalWatervolumetricproduction="+totalwatervolumetricproduction;
-				time1=System.nanoTime();
-				totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",totalWaterCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
-				
-				if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalWaterCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalWaterCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
 			
 			List<String> acqTimeList=new ArrayList<String>();
 			List<Integer> commStatusList=new ArrayList<Integer>();
@@ -795,52 +596,11 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-			String historyEnergyStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalkwatth,t.todaykwatth"
-					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
-					+ " where t3.commstatus=1 and t3.totalkwatth>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )";
-			
-			String historyGasStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
-					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
-					+ " where t3.commstatus=1 and t3.totalgasvolumetricproduction>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )";
-			
-			String historyWaterStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_pcpacqdata_hist t3  "
-					+ " where t3.commstatus=1 and t3.totalwatervolumetricproduction>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )"
-					+ " and t.deviceId="+deviceId;
-			
 			TimeEffResponseData timeEffResponseData=null;
 			CommResponseData commResponseData=null;
-			EnergyCalculateResponseData energyCalculateResponseData=null;
-			EnergyCalculateResponseData totalGasCalculateResponseData=null;
-			EnergyCalculateResponseData totalWaterCalculateResponseData=null;
 			
 			String lastRunTime="";
 			String lastCommTime="";
-			
-			String lastEnergyTime="";
-			String lastGasTime="";
-			String lastWaterTime="";
 			
 			int commStatus=0;
 			float commTime=0;
@@ -851,12 +611,6 @@ public class TimingTotalCalculateThread  extends Thread{
 			float runTime=0;
 			float runTimeEfficiency=0;
 			String runRange="";
-			
-			float totalkwatth=0,todaykwatth=0;
-			float totalgasvolumetricproduction=0,gasvolumetricproduction=0;
-			float totalwatervolumetricproduction=0,watervolumetricproduction=0;
-			
-			boolean isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
 			
 			List<?> labelInfoQueryList=commonDataService.findCallSql(labelInfoSql);
 			String labelInfo="";
@@ -887,7 +641,8 @@ public class TimingTotalCalculateThread  extends Thread{
 				if(template.getEditable()!=null && template.getEditable().size()>0){
 					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
-							+ " where t.unitid="+reportUnitId+" "
+							+ " where t.unitid="+reportUnitId
+							+ " and t.datasource='计算'"
 							+ " and t.sort>=0"
 							+ " and t.reporttype=2"
 							+ " order by t.sort";
@@ -942,11 +697,6 @@ public class TimingTotalCalculateThread  extends Thread{
 					}
 				}
 			}
-			
-			
-			
-			
-			
 			
 			List<?> historyCommStatusQueryList=commonDataService.findCallSql(historyCommStatusSql);
 			if(historyCommStatusQueryList.size()>0){
@@ -1033,131 +783,6 @@ public class TimingTotalCalculateThread  extends Thread{
 				updateSql+=",runTimeEfficiency="+runTimeEfficiency+",runTime="+runTime;
 			}
 			
-			List<?> historyEnergyStatusQueryList=commonDataService.findCallSql(historyEnergyStatusSql);
-			if(historyEnergyStatusQueryList.size()>0){
-				Object[] historyEnergyStatuObj=(Object[]) historyEnergyStatusQueryList.get(0);
-				lastEnergyTime=historyEnergyStatuObj[3]+"";
-				if(historyEnergyStatuObj[4]!=null){
-					isAcqEnergy=true;
-				}
-				totalkwatth=StringManagerUtils.stringToFloat(historyEnergyStatuObj[4]+"");
-				todaykwatth=StringManagerUtils.stringToFloat(historyEnergyStatuObj[5]+"");
-			}
-			//判断是否采集了电量，如采集则进行电量计算
-			if(isAcqEnergy){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastEnergyTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalkwatth
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+todaykwatth
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalkwatth
-						+ "}"
-						+ "}"
-						+ "}";
-				energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				updateSql+=",totalKWattH="+totalkwatth;
-				if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && energyCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
-			List<?> historyGasStatusQueryList=commonDataService.findCallSql(historyGasStatusSql);
-			if(historyGasStatusQueryList.size()>0){
-				Object[] historyGasStatuObj=(Object[]) historyGasStatusQueryList.get(0);
-				lastGasTime=historyGasStatuObj[3]+"";
-				if(historyGasStatuObj[4]!=null){
-					isAcqTotalGasProd=true;
-				}
-				totalgasvolumetricproduction=StringManagerUtils.stringToFloat(historyGasStatuObj[4]+"");
-				gasvolumetricproduction=StringManagerUtils.stringToFloat(historyGasStatuObj[5]+"");
-			}
-			//判断是否采集了累计气量，如采集则进行日产气量计算
-			if(isAcqTotalGasProd){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastGasTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalgasvolumetricproduction
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+gasvolumetricproduction
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalgasvolumetricproduction
-						+ "}"
-						+ "}"
-						+ "}";
-				updateSql+=",totalgasvolumetricproduction="+totalgasvolumetricproduction;
-				totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalGasCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalGasCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
-			List<?> historyWaterStatusQueryList=commonDataService.findCallSql(historyWaterStatusSql);
-			if(historyWaterStatusQueryList.size()>0){
-				Object[] historyWaterStatuObj=(Object[]) historyWaterStatusQueryList.get(0);
-				lastWaterTime=historyWaterStatuObj[3]+"";
-				if(historyWaterStatuObj[4]!=null){
-					isAcqTotalWaterProd=true;
-				}
-				totalwatervolumetricproduction=StringManagerUtils.stringToFloat(historyWaterStatuObj[4]+"");
-				watervolumetricproduction=StringManagerUtils.stringToFloat(historyWaterStatuObj[5]+"");
-			}
-			//判断是否采集了累计水量，如采集则进行日产水量计算
-			if(isAcqTotalWaterProd){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastWaterTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalwatervolumetricproduction
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+watervolumetricproduction
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalwatervolumetricproduction
-						+ "}"
-						+ "}"
-						+ "}";
-				updateSql+=",totalWatervolumetricproduction="+totalwatervolumetricproduction;
-				totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalWaterCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalWaterCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
 			List<String> acqTimeList=new ArrayList<String>();
 			List<Integer> commStatusList=new ArrayList<Integer>();
 			List<Integer> runStatusList=new ArrayList<Integer>();
@@ -1346,52 +971,11 @@ public class TimingTotalCalculateThread  extends Thread{
 					+ " and t3.deviceId="+deviceId
 					+ " )";
 			
-			String historyEnergyStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalkwatth,t.todaykwatth"
-					+ " from tbl_acqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_acqdata_hist t3  "
-					+ " where t3.commstatus=1 and t3.totalkwatth>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )";
-			
-			String historyGasStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalgasvolumetricproduction,t.gasvolumetricproduction"
-					+ " from tbl_acqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_acqdata_hist t3  "
-					+ " where t3.commstatus=1 and t3.totalgasvolumetricproduction>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )";
-			
-			String historyWaterStatusSql="select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
-					+ " t.totalwatervolumetricproduction,t.watervolumetricproduction "
-					+ " from tbl_acqdata_hist t,tbl_device t2 "
-					+ " where t.deviceId=t2.id "
-					+ " and t.id=("
-					+ " select max(t3.id) from  tbl_acqdata_hist t3  "
-					+ " where t3.commstatus=1 and t3.totalwatervolumetricproduction>0 "
-					+ " and t3.acqtime between to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')-1 and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t3.deviceId="+deviceId
-					+ " )"
-					+ " and t.deviceId="+deviceId;
-			
 			TimeEffResponseData timeEffResponseData=null;
 			CommResponseData commResponseData=null;
-			EnergyCalculateResponseData energyCalculateResponseData=null;
-			EnergyCalculateResponseData totalGasCalculateResponseData=null;
-			EnergyCalculateResponseData totalWaterCalculateResponseData=null;
 			
 			String lastRunTime="";
 			String lastCommTime="";
-			
-			String lastEnergyTime="";
-			String lastGasTime="";
-			String lastWaterTime="";
 			
 			int commStatus=0;
 			float commTime=0;
@@ -1402,12 +986,6 @@ public class TimingTotalCalculateThread  extends Thread{
 			float runTime=0;
 			float runTimeEfficiency=0;
 			String runRange="";
-			
-			float totalkwatth=0,todaykwatth=0;
-			float totalgasvolumetricproduction=0,gasvolumetricproduction=0;
-			float totalwatervolumetricproduction=0,watervolumetricproduction=0;
-			
-			boolean isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
 			
 			List<?> labelInfoQueryList=commonDataService.findCallSql(labelInfoSql);
 			String labelInfo="";
@@ -1438,7 +1016,8 @@ public class TimingTotalCalculateThread  extends Thread{
 				if(template.getEditable()!=null && template.getEditable().size()>0){
 					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "
 							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
-							+ " where t.unitid="+reportUnitId+" "
+							+ " where t.unitid="+reportUnitId
+							+ " and t.datasource<>'计算'"
 							+ " and t.sort>=0"
 							+ " and t.reporttype=2"
 							+ " order by t.sort";
@@ -1579,132 +1158,6 @@ public class TimingTotalCalculateThread  extends Thread{
 				updateSql+=",runTimeEfficiency="+runTimeEfficiency+",runTime="+runTime;
 			}
 			
-			List<?> historyEnergyStatusQueryList=commonDataService.findCallSql(historyEnergyStatusSql);
-			if(historyEnergyStatusQueryList.size()>0){
-				Object[] historyEnergyStatuObj=(Object[]) historyEnergyStatusQueryList.get(0);
-				lastEnergyTime=historyEnergyStatuObj[3]+"";
-				if(historyEnergyStatuObj[4]!=null){
-					isAcqEnergy=true;
-				}
-				totalkwatth=StringManagerUtils.stringToFloat(historyEnergyStatuObj[4]+"");
-				todaykwatth=StringManagerUtils.stringToFloat(historyEnergyStatuObj[5]+"");
-			}
-			//判断是否采集了电量，如采集则进行电量计算
-			if(isAcqEnergy){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastEnergyTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalkwatth
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+todaykwatth
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalkwatth
-						+ "}"
-						+ "}"
-						+ "}";
-				energyCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				updateSql+=",totalKWattH="+totalkwatth;
-				if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && energyCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",todayKWattH="+energyCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
-			List<?> historyGasStatusQueryList=commonDataService.findCallSql(historyGasStatusSql);
-			if(historyGasStatusQueryList.size()>0){
-				Object[] historyGasStatuObj=(Object[]) historyGasStatusQueryList.get(0);
-				lastGasTime=historyGasStatuObj[3]+"";
-				if(historyGasStatuObj[4]!=null){
-					isAcqTotalGasProd=true;
-				}
-				totalgasvolumetricproduction=StringManagerUtils.stringToFloat(historyGasStatuObj[4]+"");
-				gasvolumetricproduction=StringManagerUtils.stringToFloat(historyGasStatuObj[5]+"");
-			}
-			//判断是否采集了累计气量，如采集则进行日产气量计算
-			if(isAcqTotalGasProd){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastGasTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalgasvolumetricproduction
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+gasvolumetricproduction
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalgasvolumetricproduction
-						+ "}"
-						+ "}"
-						+ "}";
-				updateSql+=",totalgasvolumetricproduction="+totalgasvolumetricproduction;
-				totalGasCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				if(totalGasCalculateResponseData!=null&&totalGasCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalGasCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalGasCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",gasvolumetricproduction="+totalGasCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
-			List<?> historyWaterStatusQueryList=commonDataService.findCallSql(historyWaterStatusSql);
-			if(historyWaterStatusQueryList.size()>0){
-				Object[] historyWaterStatuObj=(Object[]) historyWaterStatusQueryList.get(0);
-				lastWaterTime=historyWaterStatuObj[3]+"";
-				if(historyWaterStatuObj[4]!=null){
-					isAcqTotalWaterProd=true;
-				}
-				totalwatervolumetricproduction=StringManagerUtils.stringToFloat(historyWaterStatuObj[4]+"");
-				watervolumetricproduction=StringManagerUtils.stringToFloat(historyWaterStatuObj[5]+"");
-			}
-			//判断是否采集了累计水量，如采集则进行日产水量计算
-			if(isAcqTotalWaterProd){
-				String energyRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+deviceName+"\","
-						+ "\"OffsetHour\":"+offsetHour+",";
-				energyRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+lastWaterTime+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalwatervolumetricproduction
-						+ "},\"Today\":{"
-						+ "\"KWattH\":"+watervolumetricproduction
-						+ "}"
-						+ "},";
-				energyRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+timeStr+"\","
-						+ "\"Total\":{"
-						+ "\"KWattH\":"+totalwatervolumetricproduction
-						+ "}"
-						+ "}"
-						+ "}";
-				updateSql+=",totalWatervolumetricproduction="+totalwatervolumetricproduction;
-				totalWaterCalculateResponseData=CalculateUtils.energyCalculate(energyRequest);
-				if(totalWaterCalculateResponseData!=null&&totalWaterCalculateResponseData.getResultStatus()==1){
-					if(timeStr.equalsIgnoreCase(range.getEndTime()) && totalWaterCalculateResponseData.getDaily()!=null && StringManagerUtils.isNotNull(totalWaterCalculateResponseData.getDaily().getDate()) ){
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getDaily().getKWattH();
-					}else{
-						updateSql+=",Watervolumetricproduction="+totalWaterCalculateResponseData.getCurrent().getToday().getKWattH();
-					}
-				}
-			}
-			
 			List<String> columnList=new ArrayList<>();
 			for(int i=0;i<tableColumnList.size();i++){
 				if(StringManagerUtils.existOrNot(totalTableColumnList, tableColumnList.get(i), false)){
@@ -1718,7 +1171,10 @@ public class TimingTotalCalculateThread  extends Thread{
 				
 				String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
 						+ " from tbl_dailytotalcalculate_hist t,"
-						+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  from tbl_dailytotalcalculate_hist group by deviceid,itemcolumn) v "
+						+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  "
+						+ "  from tbl_dailytotalcalculate_hist "
+						+ "  where acqtime between to_date('2024-05-10 08:00:00','yyyy-mm-dd hh24:mi:ss') and to_date('2024-05-10 09:00:00','yyyy-mm-dd hh24:mi:ss')"
+						+ "  group by deviceid,itemcolumn) v "
 						+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
 						+ " and t.acqtime between to_date('"+range.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
 				

@@ -1290,7 +1290,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				RPMString=StringManagerUtils.CLOBtoString(realClob);
 			}
 			result_json.append("{\"AKString\":\"\",");
-			result_json.append("\"deviceName\":\""+obj[0]+"\",");
+			result_json.append("\"WellName\":\""+obj[0]+"\",");
 			result_json.append("\"AcqTime\":\""+obj[2]+"\",");
 			result_json.append("\"SPM\":"+obj[3]+",");
 			result_json.append("\"Watt\":["+WattString+"],");
@@ -1762,7 +1762,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				rpmList.add(StringManagerUtils.stringToFloat(obj[30]+""));
 			}
 			dataSbf.append("{\"AKString\":\"\",");
-			dataSbf.append("\"deviceName\":\""+deviceName+"\",");
+			dataSbf.append("\"WellName\":\""+deviceName+"\",");
 			dataSbf.append("\"Date\":\""+calDate+"\",");
 			dataSbf.append("\"OffsetHour\":0,");
 			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -1927,7 +1927,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				submergenceList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 			}
 			dataSbf.append("{\"AKString\":\"\",");
-			dataSbf.append("\"deviceName\":\""+deviceName+"\",");
+			dataSbf.append("\"WellName\":\""+deviceName+"\",");
 			dataSbf.append("\"Date\":\""+calDate+"\",");
 			dataSbf.append("\"OffsetHour\":0,");
 			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");

@@ -36,6 +36,8 @@ public class CalculateDataManagerTask {
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
+		long time=StringManagerUtils.stringToTimeStamp("2024-05-10 09:00:00", "yyyy-MM-dd HH:mm:ss");
+		
 		timingInitDailyReportData();
 		
 		AcquisitionDataTotalCalculation();
@@ -311,7 +313,10 @@ public class CalculateDataManagerTask {
 			String oldestDataSql="select deviceid";
 			String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
 					+ " from tbl_dailytotalcalculate_hist t,"
-					+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  from tbl_dailytotalcalculate_hist group by deviceid,itemcolumn) v "
+					+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  "
+					+ "  from tbl_dailytotalcalculate_hist "
+					+ "  where acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ "  group by deviceid,itemcolumn) v "
 					+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
 					+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
 			for(int i=0;i<columnList.size();i++){

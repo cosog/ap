@@ -195,7 +195,7 @@ public class TotalCalculateThread extends Thread{
 					rpmList.add(StringManagerUtils.stringToFloat(obj[30]+""));
 				}
 				dataSbf.append("{\"AKString\":\"\",");
-				dataSbf.append("\"DeviceName\":\""+deviceName+"\",");
+				dataSbf.append("\"WellName\":\""+deviceName+"\",");
 				dataSbf.append("\"Date\":\""+calDate+"\",");
 				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -364,7 +364,7 @@ public class TotalCalculateThread extends Thread{
 					submergenceList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 				}
 				dataSbf.append("{\"AKString\":\"\",");
-				dataSbf.append("\"DeviceName\":\""+deviceName+"\",");
+				dataSbf.append("\"WellName\":\""+deviceName+"\",");
 				dataSbf.append("\"Date\":\""+calDate+"\",");
 				dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");

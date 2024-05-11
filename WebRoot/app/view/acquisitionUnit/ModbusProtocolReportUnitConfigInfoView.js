@@ -1058,7 +1058,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(calculateType,unitId,uni
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
 					 	+"{data:'dataSource'}," 
-					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值']}," 
+					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellDailyReportTemplateContentHandsontableHelper);}}," 
@@ -1607,7 +1607,7 @@ function CreateproductionReportTotalItemsInfoTable(calculateType,unitId,unitName
 						+"{data:'title'},"
 					 	+"{data:'unit'},"
 					 	+"{data:'dataSource'}," 
-					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值']}," 
+					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']}," 
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateContentHandsontableHelper);}}," 
 						
@@ -1978,6 +1978,8 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                 			item.totalType=4;
                 		}else if(calItemsData[index][5]=='最旧值'){
                 			item.totalType=5;
+                		}else if(calItemsData[index][5]=='日累计'){
+                			item.totalType=6;
                 		}
         			}
         		}
@@ -2015,6 +2017,8 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                 			item.totalType=4;
                 		}else if(calItemsData[index][5]=='最旧值'){
                 			item.totalType=5;
+                		}else if(calItemsData[index][5]=='日累计'){
+                			item.totalType=6;
                 		}
         			}
         		}
@@ -2074,6 +2078,8 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                 			item.totalType=4;
                 		}else if(calItemsData[index][5]=='最旧值'){
                 			item.totalType=5;
+                		}else if(calItemsData[index][5]=='日累计'){
+                			item.totalType=6;
                 		}
         			}
         		}

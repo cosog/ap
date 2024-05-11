@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1225,6 +1226,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		int dataSaveMode=1;
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
+		AcqInstanceOwnItem acqInstanceOwnItem=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		List<byte[]> calItemSet=null;
@@ -1238,6 +1240,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String rpcInputItemsKey="rpcInputItemList";
 		String pcpCalItemsKey="pcpCalItemList";
 		String pcpInputItemsKey="pcpInputItemList";
+		String acqInstanceCode="";
 		String displayInstanceCode="";
 		String alarmInstanceCode="";
 		
@@ -1263,6 +1266,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
 					displayInstanceCode=deviceInfo.getDisplayInstanceCode();
 					alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
+					acqInstanceCode=deviceInfo.getInstanceCode();
 				}
 			
 				
@@ -1275,17 +1279,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
 				}
 				
-				if(StringManagerUtils.isNotNull(displayInstanceCode)&&jedis.hexists("DisplayInstanceOwnItem".getBytes(),displayInstanceCode.getBytes())){
-					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes()));
+				acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(acqInstanceCode);
+				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
+				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
+				ModbusProtocolConfig.Protocol protocol=null;
+				if(acqInstanceOwnItem!=null){
+					protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
 				}
 				
-				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-				}
-				
-				if(StringManagerUtils.isNotNull(alarmInstanceCode)&&jedis.hexists("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes()));
-				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
 					if(!jedis.exists(rpcCalItemsKey.getBytes())){
@@ -1297,8 +1298,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						MemoryDataManagerTask.loadRPCInputItem();
 					}
 					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
-				}
-				if(StringManagerUtils.stringToInteger(calculateType)==2){
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					if(!jedis.exists(pcpCalItemsKey.getBytes())){
 						MemoryDataManagerTask.loadPCPCalculateItem();
 					}
@@ -1361,6 +1361,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
 					List<CalItem> calItemList=new ArrayList<CalItem>();
 					List<CalItem> inputItemList=new ArrayList<CalItem>();
+					Map<String,DisplayInstanceOwnItem.DisplayItem> dailyTotalCalItemMap=new HashMap<>();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					WorkType workType=null;
 					for(int j=0;j<protocol.getItems().size();j++){
@@ -1389,6 +1390,24 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 										calItemList.add(calItem);
+										break;
+									}
+								}
+								
+							}
+						}
+					}
+					//日汇总计算项
+					if(acqInstanceOwnItem!=null){
+						for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0)){
+								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
+											&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
+										displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
+										displayInstanceOwnItem.getItemList().get(k).setItemSourceCode(acqItem.getItemCode());
+										dailyTotalCalItemMap.put(displayInstanceOwnItem.getItemList().get(k).getItemCode().toUpperCase(), displayInstanceOwnItem.getItemList().get(k));
 										break;
 									}
 								}
@@ -1741,6 +1760,49 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							} 
 						}
 						
+						//获取日汇总计算数据
+						if(dailyTotalCalItemMap.size()>0){
+							String dailyTotalDatasql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
+									+ "t.itemcolumn,t.itemname,"
+									+ "t.totalvalue,t.todayvalue "
+									+ " from TBL_DAILYTOTALCALCULATE_LATEST t "
+									+ " where t.deviceid="+deviceId;
+							List<?> dailyTotalDatasList = this.findCallSql(dailyTotalDatasql);
+							for(int j=0;j<dailyTotalDatasList.size();j++){
+								Object[] dailyTotalDataObj=(Object[]) dailyTotalDatasList.get(j);
+								if(dailyTotalCalItemMap.containsKey( (dailyTotalDataObj[1]+"").toUpperCase() )){
+									DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
+									if(displayItem!=null){
+										String unit="";
+										
+										if(protocol!=null&&protocol.getItems()!=null){
+											for(ModbusProtocolConfig.Items item:protocol.getItems()){
+												if(displayItem.getItemSourceName().equalsIgnoreCase(item.getTitle())){
+													unit=item.getUnit();
+													break;
+												}
+											}
+										}
+										
+										
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+												dailyTotalDataObj[2]+"",
+												dailyTotalDataObj[2]+"",
+												dailyTotalDataObj[4]+"",
+												dailyTotalDataObj[4]+"",
+												"",
+												dailyTotalDataObj[1]+"",
+												"",
+												"",
+												"",
+												unit,
+												displayItem.getSort());
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									}
+								}
+							}
+						}
+						
 						//排序
 						Collections.sort(protocolItemResolutionDataList);
 						//插入排序间隔的空项
@@ -1871,6 +1933,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							result_json.deleteCharAt(result_json.length() - 1);
 						}
 					}
+					
 				}
 			}
 			if(info_json.toString().endsWith(",")){

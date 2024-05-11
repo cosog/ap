@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1598,6 +1599,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			int dataSaveMode=1;
 			jedis = RedisUtil.jedisPool.getResource();
 			AlarmShowStyle alarmShowStyle=null;
+			AcqInstanceOwnItem acqInstanceOwnItem=null;
 			DisplayInstanceOwnItem displayInstanceOwnItem=null;
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 			
@@ -1630,29 +1632,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 			}
 			deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-			displayInstanceCode=deviceInfo.getDisplayInstanceCode();
-			alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
+			acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+			displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(deviceInfo.getDisplayInstanceCode());
+			alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 			
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
 			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-			
-			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-			}
-			
-			if(StringManagerUtils.isNotNull(displayInstanceCode)&&jedis.hexists("DisplayInstanceOwnItem".getBytes(),displayInstanceCode.getBytes())){
-				displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes()));
-			}
-			
-			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-			}
-			
-			if(StringManagerUtils.isNotNull(alarmInstanceCode)&&jedis.hexists("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes())){
-				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes()));
-			}
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
 				if(!jedis.exists(rpcCalItemsKey.getBytes())){
@@ -1664,8 +1651,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					MemoryDataManagerTask.loadRPCInputItem();
 				}
 				inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
-			}
-			if(StringManagerUtils.stringToInteger(calculateType)==2){
+			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				if(!jedis.exists(pcpCalItemsKey.getBytes())){
 					MemoryDataManagerTask.loadPCPCalculateItem();
 				}
@@ -1723,6 +1709,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
 					List<CalItem> calItemList=new ArrayList<CalItem>();
 					List<CalItem> inputItemList=new ArrayList<CalItem>();
+					Map<String,DisplayInstanceOwnItem.DisplayItem> dailyTotalCalItemMap=new HashMap<>();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					WorkType workType=null;
 					for(int j=0;j<protocol.getItems().size();j++){
@@ -1757,6 +1744,26 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							
 						}
 					}
+					
+					//日汇总计算项
+					if(acqInstanceOwnItem!=null){
+						for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0)){
+								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
+											&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
+										displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
+										displayInstanceOwnItem.getItemList().get(k).setItemSourceCode(acqItem.getItemCode());
+										dailyTotalCalItemMap.put(displayInstanceOwnItem.getItemList().get(k).getItemCode().toUpperCase(), displayInstanceOwnItem.getItemList().get(k));
+										break;
+									}
+								}
+								
+							}
+						}
+					}
+					
 					//录入项
 					if(inputItemSet!=null){
 						for(byte[] inputItemByteArr:inputItemSet){
@@ -1803,6 +1810,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(list.size()>0){
 						int row=1;
 						Object[] obj=(Object[]) list.get(0);
+						
+						String acqTime=obj[2]+"";
+						
 						if(inputItemList.size()>0){
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 							Gson gson = new Gson();
@@ -2096,6 +2106,50 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
 								protocolItemResolutionDataList.add(protocolItemResolutionData);
 							} 
+						}
+						
+						//获取日汇总计算数据
+						if(dailyTotalCalItemMap.size()>0){
+							String dailyTotalDatasql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
+									+ "t.itemcolumn,t.itemname,"
+									+ "t.totalvalue,t.todayvalue "
+									+ " from TBL_DAILYTOTALCALCULATE_LATEST t "
+									+ " where t.deviceid="+deviceId
+									+ " and t.acqtime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+							List<?> dailyTotalDatasList = this.findCallSql(dailyTotalDatasql);
+							for(int j=0;j<dailyTotalDatasList.size();j++){
+								Object[] dailyTotalDataObj=(Object[]) dailyTotalDatasList.get(j);
+								if(dailyTotalCalItemMap.containsKey( (dailyTotalDataObj[1]+"").toUpperCase() )){
+									DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
+									if(displayItem!=null){
+										String unit="";
+										
+										if(protocol!=null&&protocol.getItems()!=null){
+											for(ModbusProtocolConfig.Items item:protocol.getItems()){
+												if(displayItem.getItemSourceName().equalsIgnoreCase(item.getTitle())){
+													unit=item.getUnit();
+													break;
+												}
+											}
+										}
+										
+										
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+												dailyTotalDataObj[2]+"",
+												dailyTotalDataObj[2]+"",
+												dailyTotalDataObj[4]+"",
+												dailyTotalDataObj[4]+"",
+												"",
+												dailyTotalDataObj[1]+"",
+												"",
+												"",
+												"",
+												unit,
+												displayItem.getSort());
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									}
+								}
+							}
 						}
 						
 						//排序

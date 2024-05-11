@@ -1047,20 +1047,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
-								if(totalValueArr.length==6){
-									if(reportItemList.get(j).getTotalType()==1){
-										addValue=totalValueArr[0];
-									}else if(reportItemList.get(j).getTotalType()==2){
-										addValue=totalValueArr[1];
-									}else if(reportItemList.get(j).getTotalType()==3){
-										addValue=totalValueArr[2];
-									}else if(reportItemList.get(j).getTotalType()==4){
-										addValue=totalValueArr[3];
-									}else if(reportItemList.get(j).getTotalType()==5){
-										addValue=totalValueArr[4];
-									}else if(reportItemList.get(j).getTotalType()==6){
-										addValue=totalValueArr[5];
-									}
+								addValue="";
+								if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+									addValue=totalValueArr[0];
+								}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+									addValue=totalValueArr[1];
+								}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+									addValue=totalValueArr[2];
+								}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+									addValue=totalValueArr[3];
+								}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+									addValue=totalValueArr[4];
+								}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+									addValue=totalValueArr[5];
 								}
 							}
 						}
@@ -1296,20 +1295,20 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
-									if(totalValueArr.length==6){
-										if(reportItemList.get(j).getTotalType()==1){
-											addValue=totalValueArr[0];
-										}else if(reportItemList.get(j).getTotalType()==2){
-											addValue=totalValueArr[1];
-										}else if(reportItemList.get(j).getTotalType()==3){
-											addValue=totalValueArr[2];
-										}else if(reportItemList.get(j).getTotalType()==4){
-											addValue=totalValueArr[3];
-										}else if(reportItemList.get(j).getTotalType()==5){
-											addValue=totalValueArr[4];
-										}else if(reportItemList.get(j).getTotalType()==6){
-											addValue=totalValueArr[5];
-										}
+									
+									addValue="";
+									if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+										addValue=totalValueArr[0];
+									}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+										addValue=totalValueArr[1];
+									}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+										addValue=totalValueArr[2];
+									}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+										addValue=totalValueArr[3];
+									}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+										addValue=totalValueArr[4];
+									}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+										addValue=totalValueArr[5];
 									}
 								}
 							}
@@ -1589,20 +1588,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 									if(StringManagerUtils.isNotNull(addValue)){
 										String[] totalValueArr=addValue.split(";");
-										if(totalValueArr.length==6){
-											if(reportItemList.get(j).getTotalType()==1){
-												addValue=totalValueArr[0];
-											}else if(reportItemList.get(j).getTotalType()==2){
-												addValue=totalValueArr[1];
-											}else if(reportItemList.get(j).getTotalType()==3){
-												addValue=totalValueArr[2];
-											}else if(reportItemList.get(j).getTotalType()==4){
-												addValue=totalValueArr[3];
-											}else if(reportItemList.get(j).getTotalType()==5){
-												addValue=totalValueArr[4];
-											}else if(reportItemList.get(j).getTotalType()==6){
-												addValue=totalValueArr[5];
-											}
+										addValue="";
+										if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+											addValue=totalValueArr[0];
+										}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+											addValue=totalValueArr[1];
+										}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+											addValue=totalValueArr[2];
+										}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+											addValue=totalValueArr[3];
+										}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+											addValue=totalValueArr[4];
+										}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+											addValue=totalValueArr[5];
 										}
 									}
 								}
@@ -1875,20 +1873,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
-								if(totalValueArr.length==6){
-									if(reportItemList.get(j).getTotalType()==1){
-										addValue=totalValueArr[0];
-									}else if(reportItemList.get(j).getTotalType()==2){
-										addValue=totalValueArr[1];
-									}else if(reportItemList.get(j).getTotalType()==3){
-										addValue=totalValueArr[2];
-									}else if(reportItemList.get(j).getTotalType()==4){
-										addValue=totalValueArr[3];
-									}else if(reportItemList.get(j).getTotalType()==5){
-										addValue=totalValueArr[4];
-									}else if(reportItemList.get(j).getTotalType()==6){
-										addValue=totalValueArr[5];
-									}
+								addValue="";
+								if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+									addValue=totalValueArr[0];
+								}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+									addValue=totalValueArr[1];
+								}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+									addValue=totalValueArr[2];
+								}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+									addValue=totalValueArr[3];
+								}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+									addValue=totalValueArr[4];
+								}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+									addValue=totalValueArr[5];
 								}
 							}
 						}
@@ -2164,20 +2161,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
-									if(totalValueArr.length==6){
-										if(reportItemList.get(j).getTotalType()==1){
-											addValue=totalValueArr[0];
-										}else if(reportItemList.get(j).getTotalType()==2){
-											addValue=totalValueArr[1];
-										}else if(reportItemList.get(j).getTotalType()==3){
-											addValue=totalValueArr[2];
-										}else if(reportItemList.get(j).getTotalType()==4){
-											addValue=totalValueArr[3];
-										}else if(reportItemList.get(j).getTotalType()==5){
-											addValue=totalValueArr[4];
-										}else if(reportItemList.get(j).getTotalType()==6){
-											addValue=totalValueArr[5];
-										}
+									addValue="";
+									if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+										addValue=totalValueArr[0];
+									}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+										addValue=totalValueArr[1];
+									}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+										addValue=totalValueArr[2];
+									}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+										addValue=totalValueArr[3];
+									}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+										addValue=totalValueArr[4];
+									}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+										addValue=totalValueArr[5];
 									}
 								}
 							}
@@ -2506,20 +2502,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 									if(StringManagerUtils.isNotNull(addValue)){
 										String[] totalValueArr=addValue.split(";");
-										if(totalValueArr.length==6){
-											if(reportItemList.get(j).getTotalType()==1){
-												addValue=totalValueArr[0];
-											}else if(reportItemList.get(j).getTotalType()==2){
-												addValue=totalValueArr[1];
-											}else if(reportItemList.get(j).getTotalType()==3){
-												addValue=totalValueArr[2];
-											}else if(reportItemList.get(j).getTotalType()==4){
-												addValue=totalValueArr[3];
-											}else if(reportItemList.get(j).getTotalType()==5){
-												addValue=totalValueArr[4];
-											}else if(reportItemList.get(j).getTotalType()==6){
-												addValue=totalValueArr[5];
-											}
+										addValue="";
+										if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+											addValue=totalValueArr[0];
+										}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+											addValue=totalValueArr[1];
+										}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+											addValue=totalValueArr[2];
+										}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+											addValue=totalValueArr[3];
+										}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+											addValue=totalValueArr[4];
+										}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+											addValue=totalValueArr[5];
 										}
 									}
 								}
@@ -2789,20 +2784,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
-								if(totalValueArr.length==6){
-									if(reportItemList.get(j).getTotalType()==1){
-										addValue=totalValueArr[0];
-									}else if(reportItemList.get(j).getTotalType()==2){
-										addValue=totalValueArr[1];
-									}else if(reportItemList.get(j).getTotalType()==3){
-										addValue=totalValueArr[2];
-									}else if(reportItemList.get(j).getTotalType()==4){
-										addValue=totalValueArr[3];
-									}else if(reportItemList.get(j).getTotalType()==5){
-										addValue=totalValueArr[4];
-									}else if(reportItemList.get(j).getTotalType()==6){
-										addValue=totalValueArr[5];
-									}
+								addValue="";
+								if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+									addValue=totalValueArr[0];
+								}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+									addValue=totalValueArr[1];
+								}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+									addValue=totalValueArr[2];
+								}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+									addValue=totalValueArr[3];
+								}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+									addValue=totalValueArr[4];
+								}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+									addValue=totalValueArr[5];
 								}
 							}
 						}
@@ -3060,20 +3054,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
-									if(totalValueArr.length==6){
-										if(reportItemList.get(j).getTotalType()==1){
-											addValue=totalValueArr[0];
-										}else if(reportItemList.get(j).getTotalType()==2){
-											addValue=totalValueArr[1];
-										}else if(reportItemList.get(j).getTotalType()==3){
-											addValue=totalValueArr[2];
-										}else if(reportItemList.get(j).getTotalType()==4){
-											addValue=totalValueArr[3];
-										}else if(reportItemList.get(j).getTotalType()==5){
-											addValue=totalValueArr[4];
-										}else if(reportItemList.get(j).getTotalType()==6){
-											addValue=totalValueArr[5];
-										}
+									addValue="";
+									if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+										addValue=totalValueArr[0];
+									}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+										addValue=totalValueArr[1];
+									}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+										addValue=totalValueArr[2];
+									}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+										addValue=totalValueArr[3];
+									}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+										addValue=totalValueArr[4];
+									}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+										addValue=totalValueArr[5];
 									}
 								}
 							}
@@ -3369,20 +3362,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
 									if(StringManagerUtils.isNotNull(addValue)){
 										String[] totalValueArr=addValue.split(";");
-										if(totalValueArr.length==6){
-											if(reportItemList.get(j).getTotalType()==1){
-												addValue=totalValueArr[0];
-											}else if(reportItemList.get(j).getTotalType()==2){
-												addValue=totalValueArr[1];
-											}else if(reportItemList.get(j).getTotalType()==3){
-												addValue=totalValueArr[2];
-											}else if(reportItemList.get(j).getTotalType()==4){
-												addValue=totalValueArr[3];
-											}else if(reportItemList.get(j).getTotalType()==5){
-												addValue=totalValueArr[4];
-											}else if(reportItemList.get(j).getTotalType()==6){
-												addValue=totalValueArr[5];
-											}
+										addValue="";
+										if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+											addValue=totalValueArr[0];
+										}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+											addValue=totalValueArr[1];
+										}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+											addValue=totalValueArr[2];
+										}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+											addValue=totalValueArr[3];
+										}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+											addValue=totalValueArr[4];
+										}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+											addValue=totalValueArr[5];
 										}
 									}
 								}
@@ -3663,20 +3655,20 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if("采集".equalsIgnoreCase(reportCurveItemList.get(j-2).getDataSource())){
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
-							if(totalValueArr.length==6){
-								if(reportCurveItemList.get(j).getTotalType()==1){
-									addValue=totalValueArr[0];
-								}else if(reportCurveItemList.get(j).getTotalType()==2){
-									addValue=totalValueArr[1];
-								}else if(reportCurveItemList.get(j).getTotalType()==3){
-									addValue=totalValueArr[2];
-								}else if(reportCurveItemList.get(j).getTotalType()==4){
-									addValue=totalValueArr[3];
-								}else if(reportCurveItemList.get(j).getTotalType()==5){
-									addValue=totalValueArr[4];
-								}else if(reportCurveItemList.get(j).getTotalType()==6){
-									addValue=totalValueArr[5];
-								}
+							
+							addValue="";
+							if(reportCurveItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+								addValue=totalValueArr[0];
+							}else if(reportCurveItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+								addValue=totalValueArr[1];
+							}else if(reportCurveItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+								addValue=totalValueArr[2];
+							}else if(reportCurveItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+								addValue=totalValueArr[3];
+							}else if(reportCurveItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+								addValue=totalValueArr[4];
+							}else if(reportCurveItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+								addValue=totalValueArr[5];
 							}
 						}
 					}
@@ -3890,20 +3882,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if("采集".equalsIgnoreCase(reportCurveItemList.get(j-2).getDataSource())){
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
-							if(totalValueArr.length==6){
-								if(reportCurveItemList.get(j).getTotalType()==1){
-									addValue=totalValueArr[0];
-								}else if(reportCurveItemList.get(j).getTotalType()==2){
-									addValue=totalValueArr[1];
-								}else if(reportCurveItemList.get(j).getTotalType()==3){
-									addValue=totalValueArr[2];
-								}else if(reportCurveItemList.get(j).getTotalType()==4){
-									addValue=totalValueArr[3];
-								}else if(reportCurveItemList.get(j).getTotalType()==5){
-									addValue=totalValueArr[4];
-								}else if(reportCurveItemList.get(j).getTotalType()==6){
-									addValue=totalValueArr[5];
-								}
+							addValue="";
+							if(reportCurveItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+								addValue=totalValueArr[0];
+							}else if(reportCurveItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+								addValue=totalValueArr[1];
+							}else if(reportCurveItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+								addValue=totalValueArr[2];
+							}else if(reportCurveItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+								addValue=totalValueArr[3];
+							}else if(reportCurveItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+								addValue=totalValueArr[4];
+							}else if(reportCurveItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+								addValue=totalValueArr[5];
 							}
 						}
 					}
@@ -4217,27 +4208,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						float sum=0;
 						float avg=0;
 						for(int j=0;j<dataList.size();j++){
-							String value=dataList.get(j)[i+1]+"";
+							String addValue=dataList.get(j)[i+1]+"";
 							if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
-								String[] totalValueArr=value.split(";");
-								if(totalValueArr.length==6){
-									if(reportCurveItemList.get(j).getTotalType()==1){
-										value=totalValueArr[0];
-									}else if(reportCurveItemList.get(j).getTotalType()==2){
-										value=totalValueArr[1];
-									}else if(reportCurveItemList.get(j).getTotalType()==3){
-										value=totalValueArr[2];
-									}else if(reportCurveItemList.get(j).getTotalType()==4){
-										value=totalValueArr[3];
-									}else if(reportCurveItemList.get(j).getTotalType()==5){
-										value=totalValueArr[4];
-									}else if(reportCurveItemList.get(j).getTotalType()==6){
-										value=totalValueArr[5];
-									}
+								String[] totalValueArr=addValue.split(";");
+								addValue="";
+								if(reportCurveItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+									addValue=totalValueArr[0];
+								}else if(reportCurveItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+									addValue=totalValueArr[1];
+								}else if(reportCurveItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+									addValue=totalValueArr[2];
+								}else if(reportCurveItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+									addValue=totalValueArr[3];
+								}else if(reportCurveItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+									addValue=totalValueArr[4];
+								}else if(reportCurveItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+									addValue=totalValueArr[5];
 								}
 							}
-							if(StringManagerUtils.isNum(value) && StringManagerUtils.isNumber(value)){
-								sum+=(StringManagerUtils.stringToFloat(value));
+							if(StringManagerUtils.isNum(addValue) && StringManagerUtils.isNumber(addValue)){
+								sum+=(StringManagerUtils.stringToFloat(addValue));
 							}
 						}
 						if(totalCount>0){

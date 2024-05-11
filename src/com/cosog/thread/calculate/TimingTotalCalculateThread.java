@@ -131,7 +131,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> labelInfoQueryList=commonDataService.findCallSql(labelInfoSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",labelInfoSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",labelInfoSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			String labelInfo="";
 			ReportTemplate.Template template=null;
@@ -154,7 +154,7 @@ public class TimingTotalCalculateThread  extends Thread{
 				e.printStackTrace();
 			}
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",initDeviceTimingReportDate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",initDeviceTimingReportDate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			
 			//报表继承可编辑数据
@@ -174,7 +174,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					time1=System.nanoTime();
 					List<?> reportItemQuertList = commonDataService.findCallSql(reportItemSql);
 					time2=System.nanoTime();
-					StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",reportItemSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//					StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",reportItemSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 					
 					for(int k=0;reportItemQuertList!=null&&k<reportItemQuertList.size();k++){
 						Object[] reportItemObj=(Object[]) reportItemQuertList.get(k);
@@ -220,7 +220,7 @@ public class TimingTotalCalculateThread  extends Thread{
 							time1=System.nanoTime();
 							int r=commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
 							time2=System.nanoTime();
-							StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateEditDataSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//							StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateEditDataSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -231,7 +231,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> historyCommStatusQueryList=commonDataService.findCallSql(historyCommStatusSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyCommStatusSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyCommStatusSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			if(historyCommStatusQueryList.size()>0){
 				Object[] historyCommStatusObj=(Object[]) historyCommStatusQueryList.get(0);
 				lastCommTime=historyCommStatusObj[3]+"";
@@ -261,7 +261,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",commCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",commCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			updateSql+=",CommStatus="+commStatus;
 			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
@@ -280,7 +280,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> historyRunStatusQueryList=commonDataService.findCallSql(historyRunStatusSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyRunStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",historyRunStatusQueryList执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			if(historyRunStatusQueryList.size()>0){
 				Object[] historyRunStatuObj=(Object[]) historyRunStatusQueryList.get(0);
 				lastRunTime=historyRunStatuObj[3]+"";
@@ -310,7 +310,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",runCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",runCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			updateSql+=",runStatus="+runStatus;
 			if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
@@ -380,7 +380,7 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			List<?> singleresultlist = commonDataService.findCallSql(fesDiagramSql);
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",fesDiagramSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",fesDiagramSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			for(int j=0;j<singleresultlist.size();j++){
 				Object[] resuleObj=(Object[]) singleresultlist.get(j);
 				String productionData=resuleObj[15].toString();
@@ -510,14 +510,14 @@ public class TimingTotalCalculateThread  extends Thread{
 			time1=System.nanoTime();
 			TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(dataSbf.toString());
 			time2=System.nanoTime();
-			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",totalCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//			StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",totalCalculate执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			
 			updateSql+=" where t.deviceId="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
 			try {
 				time1=System.nanoTime();
 				int r=commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
 				time2=System.nanoTime();
-				StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//				StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -535,7 +535,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					time1=System.nanoTime();
 					int r=commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 					time2=System.nanoTime();
-					StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateHisRangeClobSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//					StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",updateHisRangeClobSql执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -548,7 +548,7 @@ public class TimingTotalCalculateThread  extends Thread{
 					time1=System.nanoTime();
 					commonDataService.getBaseDao().saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,timeStr,recordCount);
 					time2=System.nanoTime();
-					StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",saveFSDiagramTimingTotalCalculationData执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
+//					StringManagerUtils.printLog("定时汇总计算："+"抽油机井"+deviceName+",timeStr="+timeStr+",threadId="+threadId+",saveFSDiagramTimingTotalCalculationData执行耗时:"+StringManagerUtils.getTimeDiff(time1, time2));
 				} catch (SQLException | ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

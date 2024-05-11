@@ -25,6 +25,8 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public String realtimeCurveConf;
 		public String historyCurveConf;
 		public int type;
+		public String itemSourceName;
+		public String itemSourceCode;
 		public int getItemId() {
 			return itemId;
 		}
@@ -90,6 +92,18 @@ public class DisplayInstanceOwnItem implements Serializable {
 		@Override
 		public int compareTo(DisplayItem displayItem) {     //重写Comparable接口的compareTo方法
 			return this.sort-displayItem.getSort();   // 根据值或者位升序排列，降序修改相减顺序即可
+		}
+		public String getItemSourceName() {
+			return itemSourceName;
+		}
+		public void setItemSourceName(String itemSourceName) {
+			this.itemSourceName = itemSourceName;
+		}
+		public String getItemSourceCode() {
+			return itemSourceCode;
+		}
+		public void setItemSourceCode(String itemSourceCode) {
+			this.itemSourceCode = itemSourceCode;
 		}
 	}
 	

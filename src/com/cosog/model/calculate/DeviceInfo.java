@@ -68,24 +68,6 @@ public class DeviceInfo implements Serializable {
 	
 	private String runRange;
 	
-	private String KWattHAcqTime;
-	
-	private float totalKWattH;
-	
-	private float todayKWattH;
-	
-	private String totalGasAcqTime;
-	
-	private float gasVolumetricProduction;
-	
-	private float totalGasVolumetricProduction;
-	
-	private String totalWaterAcqTime;
-	
-	private float waterVolumetricProduction;
-	
-	private float totalWaterVolumetricProduction;
-	
 	private RPCCalculateRequestData rpcCalculateRequestData;
 	
 	private PCPCalculateRequestData pcpCalculateRequestData;
@@ -359,22 +341,6 @@ public class DeviceInfo implements Serializable {
 		this.runRange = runRange;
 	}
 
-	public float getTotalKWattH() {
-		return totalKWattH;
-	}
-
-	public void setTotalKWattH(float totalKWattH) {
-		this.totalKWattH = totalKWattH;
-	}
-
-	public float getTodayKWattH() {
-		return todayKWattH;
-	}
-
-	public void setTodayKWattH(float todayKWattH) {
-		this.todayKWattH = todayKWattH;
-	}
-
 	public String getSaveTime() {
 		return saveTime;
 	}
@@ -480,62 +446,6 @@ public class DeviceInfo implements Serializable {
 
 	public void setRunStatusAcqTime(String runStatusAcqTime) {
 		this.runStatusAcqTime = runStatusAcqTime;
-	}
-
-	public String getKWattHAcqTime() {
-		return KWattHAcqTime;
-	}
-
-	public void setKWattHAcqTime(String kWattHAcqTime) {
-		KWattHAcqTime = kWattHAcqTime;
-	}
-
-	public String getTotalGasAcqTime() {
-		return totalGasAcqTime;
-	}
-
-	public void setTotalGasAcqTime(String totalGasAcqTime) {
-		this.totalGasAcqTime = totalGasAcqTime;
-	}
-
-	public float getGasVolumetricProduction() {
-		return gasVolumetricProduction;
-	}
-
-	public void setGasVolumetricProduction(float gasVolumetricProduction) {
-		this.gasVolumetricProduction = gasVolumetricProduction;
-	}
-
-	public float getTotalGasVolumetricProduction() {
-		return totalGasVolumetricProduction;
-	}
-
-	public void setTotalGasVolumetricProduction(float totalGasVolumetricProduction) {
-		this.totalGasVolumetricProduction = totalGasVolumetricProduction;
-	}
-
-	public String getTotalWaterAcqTime() {
-		return totalWaterAcqTime;
-	}
-
-	public void setTotalWaterAcqTime(String totalWaterAcqTime) {
-		this.totalWaterAcqTime = totalWaterAcqTime;
-	}
-
-	public float getWaterVolumetricProduction() {
-		return waterVolumetricProduction;
-	}
-
-	public void setWaterVolumetricProduction(float waterVolumetricProduction) {
-		this.waterVolumetricProduction = waterVolumetricProduction;
-	}
-
-	public float getTotalWaterVolumetricProduction() {
-		return totalWaterVolumetricProduction;
-	}
-
-	public void setTotalWaterVolumetricProduction(float totalWaterVolumetricProduction) {
-		this.totalWaterVolumetricProduction = totalWaterVolumetricProduction;
 	}
 
 	public String getVideoUrl1() {

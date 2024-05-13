@@ -1968,7 +1968,7 @@ var ProductionHandsontableHelper = {
 		                    	this.allowInvalid = false;
 		                    }
 		                    
-		                    if (visualColIndex === 2 && visualRowIndex===40 && deviceCalculateDataType==1) {
+		                    if (visualColIndex === 2 && visualRowIndex===39 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = productionHandsontableHelper.resultList;
 		                    	this.strict = true;

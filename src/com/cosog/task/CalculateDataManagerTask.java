@@ -36,7 +36,7 @@ public class CalculateDataManagerTask {
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
-		long time=StringManagerUtils.stringToTimeStamp("2024-05-10 09:00:00", "yyyy-MM-dd HH:mm:ss");
+		long time=StringManagerUtils.stringToTimeStamp("2024-05-14 12:00:00", "yyyy-MM-dd HH:mm:ss");
 		
 		timingInitDailyReportData();
 		

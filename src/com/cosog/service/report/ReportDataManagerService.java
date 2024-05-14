@@ -1824,17 +1824,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					deviceNameColIndex=reportItemList.get(i).getSort()-1;
 				}
 			}
-			sqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+			sqlBuff.append(" from "+viewName+" t ");
+			sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 			if(reportUnitCalculateType>0){
-				sqlBuff.append(","+calTotalTableName+" t3");
-				
+				sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calTime=t3.calTime ");
 			}
-			sqlBuff.append(" where t.id=t2.id");
-			
-			if(reportUnitCalculateType>0){
-				sqlBuff.append(" and t.deviceId=t3.deviceId and t.calTime=t3.calTime");
-			}
-			
+			sqlBuff.append(" where 1=1");
 			sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 			sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 			
@@ -2119,24 +2114,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						deviceNameColIndex=reportItemList.get(i).getSort()-1;
 					}
 				}
-				sqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+				sqlBuff.append(" from "+viewName+" t ");
+				sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 				if(reportUnitCalculateType>0){
-					sqlBuff.append(","+calTotalTableName+" t3");
-					
+					sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calTime=t3.calTime ");
 				}
-				sqlBuff.append(" where t.id=t2.id");
-				
-				if(reportUnitCalculateType>0){
-					sqlBuff.append(" and t.deviceId=t3.deviceId and t.calTime=t3.calTime");
-				}
-				
+				sqlBuff.append(" where 1=1");
 				sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 				sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 				
 				if(StringManagerUtils.stringToInteger(reportInterval)>1){
 					sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
 				}
-				
 				sqlBuff.append(" order by t.calTime");
 				
 				List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
@@ -2459,17 +2448,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							deviceNameColIndex=reportItemList.get(j).getSort()-1;
 						}
 					}
-					sqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+					sqlBuff.append(" from "+viewName+" t ");
+					sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 					if(reportUnitCalculateType>0){
-						sqlBuff.append(","+calTotalTableName+" t3");
+						sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calTime=t3.calTime ");
 						
 					}
-					sqlBuff.append(" where t.id=t2.id");
-					
-					if(reportUnitCalculateType>0){
-						sqlBuff.append(" and t.deviceId=t3.deviceId and t.calTime=t3.calTime");
-					}
-					
+					sqlBuff.append(" where 1=1");
 					sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 					sqlBuff.append(" and t.calTime > to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and t.calTime<= to_date('"+reportDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1");
 					

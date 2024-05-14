@@ -1282,6 +1282,8 @@ public class StringManagerUtils {
     public static boolean generalCalColumnFiter(String value) {
         boolean flag = false;
         String arrays[] = {
+        	"calDate",
+            "calTime",
             "commstatus",
             "commStatusName",
             "commtime",
@@ -3993,21 +3995,23 @@ public class StringManagerUtils {
     
     public static boolean timeMatchDate(String timeStr,String dateStr,int offsetHour){
     	boolean result=false;
-		try {
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-	    	DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    	
-	    	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
-			Date currentTime = (Date) format2.parse(timeStr);
-			Date startTime=(Date) format2.parse(range.getStartTime());
-	    	Date endTime=(Date) format2.parse(range.getEndTime());
-	    	
-	    	if(currentTime.getTime()>startTime.getTime() && startTime.getTime()<=endTime.getTime()){
-	    		result=true;
-	    	}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+    	if(isNotNull(timeStr)){
+    		try {
+    			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    	    	DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	    	
+    	    	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
+    			Date currentTime = (Date) format2.parse(timeStr);
+    			Date startTime=(Date) format2.parse(range.getStartTime());
+    	    	Date endTime=(Date) format2.parse(range.getEndTime());
+    	    	
+    	    	if(currentTime.getTime()>startTime.getTime() && startTime.getTime()<=endTime.getTime()){
+    	    		result=true;
+    	    	}
+    		} catch (ParseException e) {
+    			e.printStackTrace();
+    		}
+    	}
     	return result;
     }
     

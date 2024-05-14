@@ -1173,7 +1173,7 @@ public class TimingTotalCalculateThread  extends Thread{
 						+ " from tbl_dailytotalcalculate_hist t,"
 						+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  "
 						+ "  from tbl_dailytotalcalculate_hist "
-						+ "  where acqtime between to_date('2024-05-10 08:00:00','yyyy-mm-dd hh24:mi:ss') and to_date('2024-05-10 09:00:00','yyyy-mm-dd hh24:mi:ss')"
+						+ "  where acqtime between to_date('"+range.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')"
 						+ "  group by deviceid,itemcolumn) v "
 						+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
 						+ " and t.acqtime between to_date('"+range.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";

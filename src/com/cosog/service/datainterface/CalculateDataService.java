@@ -996,6 +996,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
 				+ " where 1=1"
+//				+ " and t.id=1"
 				+ " order by t.id";
 		List<?> welllist = findCallSql(sql);
 		for(int i=0;i<welllist.size();i++){

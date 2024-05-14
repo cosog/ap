@@ -1463,8 +1463,10 @@ public class DriverAPIController extends BaseController{
 	        	}
 			}
 		}
+		wellBoreChartsData.append("{");
+		surfaceChartsData.append("{");
 		if(deviceInfo.getCalculateType()==1){
-			wellBoreChartsData.append("{\"success\":true,");
+			wellBoreChartsData.append("\"success\":true,");
 			wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getWellName()+"\",");
 			wellBoreChartsData.append("\"acqTime\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
@@ -1509,10 +1511,10 @@ public class DriverAPIController extends BaseController{
 			wellBoreChartsData.append("\"positionCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
 			wellBoreChartsData.append("\"loadCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\"");
 			
-			wellBoreChartsData.append("}");
+			
 			
 			//地面分析图形数据
-			surfaceChartsData.append("{\"success\":true,");
+			surfaceChartsData.append("\"success\":true,");
 			surfaceChartsData.append("\"deviceName\":\""+deviceInfo.getWellName()+"\",");
 			surfaceChartsData.append("\"acqTime\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null)?rpcCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
@@ -1538,9 +1540,9 @@ public class DriverAPIController extends BaseController{
 			surfaceChartsData.append("\"expectedNetTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
 			surfaceChartsData.append("\"polishrodV\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
 			surfaceChartsData.append("\"polishrodA\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
-			
-			surfaceChartsData.append("}");
 		}
+		wellBoreChartsData.append("}");
+		surfaceChartsData.append("}");
 		
 		String columns = "[";
 		for(int i=1;i<=items;i++){
@@ -2771,7 +2773,12 @@ public class DriverAPIController extends BaseController{
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
 					if(save){
-						commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						if(result==0){
+							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
+							result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						}
+						
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
 						
@@ -3128,7 +3135,11 @@ public class DriverAPIController extends BaseController{
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
 					if(save){
-						commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						if(result==0){
+							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
+							result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+						}
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
 						

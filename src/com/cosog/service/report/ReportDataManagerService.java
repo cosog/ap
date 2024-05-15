@@ -1800,6 +1800,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							tableAlias="t3";
 						}
 					}
+				}else{
+					if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
+						tableAlias="t2";
+					}
 				}
 				
 				if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){

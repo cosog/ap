@@ -463,6 +463,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
 	title:'计算数据',
 	id: 'RealTimeMonitoringRightCalculateDataPanel',
     border: false,
+    hidden: true,
     layout: 'fit'
 }];
 

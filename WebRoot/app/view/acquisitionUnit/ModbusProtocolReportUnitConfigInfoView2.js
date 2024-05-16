@@ -285,7 +285,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 	}else{
                                 		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
                                 	}
-//                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
+                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
                             	}
                             }
                         }
@@ -406,7 +406,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 	}else{
                                 		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
                                 	}
-//                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
+                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
             					}
                         	}else if(newCard.id=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
                         		var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
@@ -810,39 +810,8 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
 	    }
 	};
 
-function renderButtons(instance, td, row, col, prop, value, cellProperties) {
-//	td.innerHTML = "<button onclick=alert('打开此列内容配置窗口') type='button'>配置</button>";
-	td.innerHTML = "<a href='#' onclick=alert('打开此列内容配置窗口')><span>配置</span></a>";
-}
-
-function CreateSingleWellRangeReportTotalItemsInfoTable(){
+function CreateSingleWellRangeReportTotalItemsInfoTable(calculateType,unitId,unitName,classes){
 	Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
-	
-	var calculateType=0;
-	var unitId=0;
-	var unitName='';
-	var classes=0;
-	var reportUnitConfigTreeSelection= Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
-	if(reportUnitConfigTreeSelection.length>0){
-		var record=reportUnitConfigTreeSelection[0];
-		if(record.data.classes==0){
-    		if(isNotVal(record.data.children) && record.data.children.length>0){
-    			unitId=record.data.children[0].id;
-    		}
-    	}else if(record.data.classes==1){
-    		unitId=record.data.id;
-    	}
-		calculateType=record.data.calculateType;
-		unitName=record.data.text;
-		classes=record.data.classes;
-	}
-	
-	var templateSelection= Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
-	var templateCode="";
-	if(templateSelection.length>0){
-		templateCode=templateSelection[0].data.templateCode;
-	}
-	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
@@ -856,22 +825,25 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(){
 			}
 			if(singleWellRangeReportTemplateContentHandsontableHelper==null || singleWellRangeReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['列','表头','项','单位','数据来源','统计方式','显示级别','小数位数','报表曲线','配置']";
-				var columns=[
-						{data:'id'},
-						{data:'headerName'},
-						{data:'itemName'},
-					 	{data:'unit'},
-					 	{data:'dataSource'},
-					 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']},
-						{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}},
-						{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}},
-						{data:'reportCurveConfShowValue'},
-						{data:'Delete', renderer:renderButtons}
-						];
+				var colHeaders="['','序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','','']";
+				var columns="[" 
+						+"{data:'checked',type:'checkbox'}," 
+						+"{data:'id'}," 
+						+"{data:'title'},"
+					 	+"{data:'unit'},"
+					 	+"{data:'dataSource'}," 
+					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']}," 
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}}," 
+						+"{data:'reportCurveConfShowValue'},"
+						+"{data:'reportCurveConf'},"
+						+"{data:'code'},"
+						+"{data:'dataType'},"
+						+"{data:'remark'}"
+						+"]";
 				singleWellRangeReportTemplateContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-//				singleWellRangeReportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
-				singleWellRangeReportTemplateContentHandsontableHelper.columns=columns;
+				singleWellRangeReportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
 				singleWellRangeReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
 			}else{
 				singleWellRangeReportTemplateContentHandsontableHelper.hot.loadData(result.totalRoot);
@@ -885,7 +857,6 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(){
 			calculateType: calculateType,
 			reportType: 0,
 			unitId: unitId,
-			templateCode: templateCode,
 			classes: classes
         }
 	});
@@ -923,11 +894,11 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [],
+	                    columns: [10,11,12,13],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [50,150,150,80,60,60,60,60,85,80],
+	                colWidths: [25,30,150,80,60,60,60,60,60,85,85],
 	                columns:singleWellRangeReportTemplateContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -946,24 +917,67 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
-	                    	if(visualColIndex<=8){
-	                    		cellProperties.readOnly = true;
-	                    	}
+	                    	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+		                	if(reportUnitTreeSelectedRow!=''){
+		                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+		                		if(selectedItem.data.classes==0){
+		                			cellProperties.readOnly = true;
+		                		}else{
+		                			if (visualColIndex >=1 && visualColIndex<=4) {
+		    							cellProperties.readOnly = true;
+		    		                }else if(visualColIndex==9){
+		    		                	cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
+		    		                }
+		                		}
+		                	}
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
-	                    
-	                    
-	                    if(visualColIndex==8){
-		                	cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
-		                }
 	                    return cellProperties;
 	                },
 	                afterBeginEditing:function(row,column){
 	                	if(singleWellRangeReportTemplateContentHandsontableHelper!=null && singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
-		                	if(column==9){
-		                		alert("配置此列内容!");
+	                		var row1=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtRow(row);
+		                	if(row1[0] && (column==9)){
+		                		var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
+		                		if(reportUnitTreeSelectedRow!=''){
+		                			var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
+		                			if(selectedItem.data.classes==1){
+		                				var CurveConfigWindow=Ext.create("AP.view.acquisitionUnit.CurveConfigWindow");
+		                				
+		                				Ext.getCmp("curveConfigSelectedTableType_Id").setValue(21);//单井报表内容表
+		                				Ext.getCmp("curveConfigSelectedRow_Id").setValue(row);
+		                				Ext.getCmp("curveConfigSelectedCol_Id").setValue(column);
+		                				
+		                				CurveConfigWindow.show();
+		                				
+		                				var curveConfig=null;
+		                				if(column==9 && isNotVal(row1[10])){
+		                					curveConfig=row1[10];
+		                				}
+		                				var value='ff0000';
+		                				
+		                				if(isNotVal(curveConfig)){
+		                					Ext.getCmp("curveConfigSort_Id").setValue(curveConfig.sort);
+		                					Ext.getCmp("curveConfigLineWidth_Id").setValue(curveConfig.lineWidth);
+		                					Ext.getCmp("curveConfigDashStyleComb_Id").setValue(curveConfig.dashStyle);
+		                					Ext.getCmp("curveConfigYAxisOppositeComb_Id").setValue(curveConfig.yAxisOpposite);
+		                		        	
+		                		        	Ext.getCmp('curveConfigColor_id').setValue(curveConfig.color);
+		                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+		                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+		                		            	background: '#'+curveConfig.color,
+		                		            });
+		                				}else{
+		                					Ext.getCmp('curveConfigColor_id').setValue(value);
+		                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
+		                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+		                		            	background: '#'+value
+		                		            });
+		                				}
+		                			}
+		                		}
 		                	}
 	                	}
 	                },
@@ -1024,11 +1038,6 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 
 function CreateSingleWellDailyReportTotalItemsInfoTable(calculateType,unitId,unitName,classes){
 	Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
-	var templateSelection= Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
-	var templateCode="";
-	if(templateSelection.length>0){
-		templateCode=templateSelection[0].data.templateCode;
-	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportUnitTimingTotalCalItemsConfigData',
@@ -1074,7 +1083,6 @@ function CreateSingleWellDailyReportTotalItemsInfoTable(calculateType,unitId,uni
 			calculateType: calculateType,
 			reportType: 2,
 			unitId: unitId,
-			templateCode: templateCode,
 			classes: classes
         }
 	});
@@ -1579,11 +1587,6 @@ var ProductionReportTemplateHandsontableHelper = {
 
 function CreateproductionReportTotalItemsInfoTable(calculateType,unitId,unitName,classes){
 	Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
-	var templateSelection= Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
-	var templateCode="";
-	if(templateSelection.length>0){
-		templateCode=templateSelection[0].data.templateCode;
-	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
@@ -1637,7 +1640,6 @@ function CreateproductionReportTotalItemsInfoTable(calculateType,unitId,unitName
 			calculateType: calculateType,
 			reportType: 1,
 			unitId: unitId,
-			templateSelection: templateSelection,
 			classes: classes
         }
 	});

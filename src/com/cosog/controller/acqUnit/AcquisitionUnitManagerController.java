@@ -1377,6 +1377,24 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getReportUnitTotalCalItemsConfigData() throws Exception {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String reportType = ParamUtils.getParameter(request, "reportType");
+		String templateCode = ParamUtils.getParameter(request, "templateCode");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getReportUnitTotalCalItemsConfigData2")
+	public String getReportUnitTotalCalItemsConfigData2() throws Exception {
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String json = "";

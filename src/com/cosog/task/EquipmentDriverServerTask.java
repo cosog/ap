@@ -445,7 +445,6 @@ public class EquipmentDriverServerTask {
 		}
 		MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
 		MemoryDataManagerTask.loadProtocolMappingColumn();
-		
 
 		return result;
 	}

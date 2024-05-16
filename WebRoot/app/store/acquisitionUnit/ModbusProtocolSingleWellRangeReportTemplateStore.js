@@ -63,6 +63,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
                         	
                         },select( v, record, index, eOpts ){
                         	CreateSingleWellRangeReportTemplateInfoTable(record.data.templateName,record.data.calculateType,record.data.templateCode);
+                        	CreateSingleWellRangeReportTotalItemsInfoTable();
                         }
                     }
 
@@ -103,11 +104,15 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
     					}
     					singleWellRangeReportTemplateHandsontableHelper=null;
     				}
+            		if(singleWellRangeReportTemplateContentHandsontableHelper!=null){
+    					if(singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
+    						singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
+    					}
+    					singleWellRangeReportTemplateContentHandsontableHelper=null;
+    				}
             		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井日报表模板：');
             	}
         	}
-//            gridPanel.getSelectionModel().deselectAll(true);
-//            gridPanel.getSelectionModel().select(0, true);
         },
         beforeload: function (store, options) {
         	var reportType=0;

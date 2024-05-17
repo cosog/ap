@@ -227,7 +227,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                     }
                             	},{
                             		region: 'south',
-                                	height:'50%',
+                                	height:'60%',
                                 	title:'单井日报表内容配置',
                                 	collapsible: true,
                                     split: true,
@@ -810,9 +810,45 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
 	    }
 	};
 
-function renderButtons(instance, td, row, col, prop, value, cellProperties) {
+function renderReportUnitContentConfig(instance, td, row, col, prop, value, cellProperties) {
 //	td.innerHTML = "<button onclick=alert('打开此列内容配置窗口') type='button'>配置</button>";
-	td.innerHTML = "<a href='#' onclick=alert('打开此列内容配置窗口')><span>配置</span></a>";
+	td.innerHTML = "<a href='#' onclick=reportUnitContentConfig("+row+","+col+","+value+")><span>配置</span></a>";
+}
+
+function reportUnitContentConfig(row, col,value) {
+	var reportType=getReportType();
+	var calculateType=0;
+	var unitId=0;
+	var unitName='';
+	var classes=0;
+	var reportUnitConfigTreeSelection= Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+	if(reportUnitConfigTreeSelection.length>0){
+		var record=reportUnitConfigTreeSelection[0];
+		classes=record.data.classes;
+		if(classes==0){
+    		if(isNotVal(record.data.children) && record.data.children.length>0){
+    			unitId=record.data.children[0].id;
+    			unitName=record.data.children[0].text;
+    		}
+    	}else if(classes==1){
+    		unitId=record.data.id;
+    		unitName=record.data.text;
+    	}
+		calculateType=record.data.calculateType;
+	}
+	
+	var window = Ext.create("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
+        title: '报表内容配置'
+    });
+	
+	Ext.getCmp("ReportUnitContentConfig_UnitId").setValue(unitId);
+    Ext.getCmp("ReportUnitContentConfig_ReportType").setValue(reportType);
+    Ext.getCmp("ReportUnitContentConfig_CalculateType").setValue(calculateType);
+    Ext.getCmp("ReportUnitContentConfig_SelectedRow").setValue(row);
+    Ext.getCmp("ReportUnitContentConfig_SelectedCol").setValue(col);
+	
+    window.show();
+    
 }
 
 function CreateSingleWellRangeReportTotalItemsInfoTable(){
@@ -863,11 +899,11 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(){
 						{data:'itemName'},
 					 	{data:'unit'},
 					 	{data:'dataSource'},
-					 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']},
-						{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}},
-						{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,singleWellRangeReportTemplateContentHandsontableHelper);}},
+					 	{data:'totalType'},
+						{data:'showLevel'},
+						{data:'prec'},
 						{data:'reportCurveConfShowValue'},
-						{data:'Delete', renderer:renderButtons}
+						{data:'Delete', renderer:renderReportUnitContentConfig}
 						];
 				singleWellRangeReportTemplateContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 //				singleWellRangeReportTemplateContentHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -944,14 +980,16 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
-	                    if(protocolConfigModuleEditFlag==1){
-	                    	if(visualColIndex<=8){
-	                    		cellProperties.readOnly = true;
-	                    	}
-	                    }else{
-	                    	cellProperties.readOnly = true;
-	                    }
+	                    cellProperties.readOnly = true;
+	                    
+//	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+//	                    if(protocolConfigModuleEditFlag==1){
+//	                    	if(visualColIndex<=8){
+//	                    		cellProperties.readOnly = true;
+//	                    	}
+//	                    }else{
+//	                    	cellProperties.readOnly = true;
+//	                    }
 	                    
 	                    
 	                    
@@ -1866,7 +1904,7 @@ function SaveReportUnitData(){
 		}
 		if(selectedItem.data.classes==1){//保存单元
 			SaveModbusProtocolReportUnitData(reportUnitProperties);
-			grantReportTotalCalItemsPermission(reportUnitProperties.calculateType);
+//			grantReportTotalCalItemsPermission(reportUnitProperties.calculateType);
 		}
 	}
 };
@@ -1895,6 +1933,199 @@ function SaveModbusProtocolReportUnitData(saveData){
         }
 	});
 }
+
+
+var grantReportUnitContentItemsPermission = function (unitId,reportType,calculateType,sort,itemsConfigData) {
+    var addUrl = context + '/acquisitionUnitManagerController/grantReportUnitContentItemsPermission';
+    // 添加条件
+    var saveData={};
+    saveData.itemList=[];
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (!isNotVal(unitId)) {
+        return false
+    }
+    Ext.Array.each(itemsConfigData, function (name, index, countriesItSelf) {
+        if ((itemsConfigData[index][0]+'')==='true') {
+        	var item={};
+        	item.matrix='0,0,0';
+        	if(reportType==0){
+        		item.itemName = itemsConfigData[index][2];
+        		item.totalType=0;
+        		item.dataSource=itemsConfigData[index][4];
+        		item.itemShowLevel = itemsConfigData[index][6];
+        		item.itemSort = sort;
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(itemsConfigData[index][8]) && isNotVal(itemsConfigData[index][9])){
+    				reportCurveConfig=itemsConfigData[index][9];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+            	
+        		item.itemCode = itemsConfigData[index][10];
+        		item.dataType = itemsConfigData[index][11];
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=itemsConfigData[index][8];
+        			
+        			if(item.dataSource=='采集'){
+        				if(itemsConfigData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(itemsConfigData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(itemsConfigData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(itemsConfigData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(itemsConfigData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}else if(itemsConfigData[index][5]=='日累计'){
+                			item.totalType=6;
+                		}
+        			}
+        		}
+        	}else if(reportType==2){
+        		item.itemName = itemsConfigData[index][2];
+        		item.totalType=0;
+        		item.dataSource=itemsConfigData[index][4];
+        		item.itemShowLevel = itemsConfigData[index][6];
+        		item.itemSort = itemsConfigData[index][7];
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(itemsConfigData[index][9]) && isNotVal(itemsConfigData[index][10])){
+    				reportCurveConfig=itemsConfigData[index][10];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+            	
+        		item.itemCode = itemsConfigData[index][11];
+        		item.dataType = itemsConfigData[index][12];
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=itemsConfigData[index][8];
+        			
+        			if(item.dataSource=='采集'){
+        				if(itemsConfigData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(itemsConfigData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(itemsConfigData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(itemsConfigData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(itemsConfigData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}else if(itemsConfigData[index][5]=='日累计'){
+                			item.totalType=6;
+                		}
+        			}
+        		}
+        	}else if(reportType==1){
+        		item.itemName = itemsConfigData[index][2];
+        		
+        		item.totalType=0;
+        		item.dataSource=itemsConfigData[index][4];
+        		item.itemShowLevel = itemsConfigData[index][6];
+        		item.itemSort = itemsConfigData[index][7];
+        		
+        		item.sumSign='0';
+        		if((itemsConfigData[index][9]+'')==='true'){
+        			item.sumSign='1';
+        		}
+        		
+        		item.averageSign='0';
+        		if((itemsConfigData[index][10]+'')==='true'){
+        			item.averageSign='1';
+        		}
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(itemsConfigData[index][11]) && isNotVal(itemsConfigData[index][13])){
+    				reportCurveConfig=itemsConfigData[index][13];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+        		
+        		item.curveStatType = itemsConfigData[index][12];
+        		if(itemsConfigData[index][12]=='合计'){
+        			item.curveStatType='1';
+        		}else if(itemsConfigData[index][12]=='平均'){
+        			item.curveStatType='2';
+        		}else if(itemsConfigData[index][12]=='最大值'){
+        			item.curveStatType='3';
+        		}else if(itemsConfigData[index][12]=='最小值'){
+        			item.curveStatType='4';
+        		}
+            	
+        		item.itemCode = itemsConfigData[index][14];
+        		item.dataType = itemsConfigData[index][15]+"";
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=itemsConfigData[index][8];
+        			
+        			if(item.dataSource=='采集'){
+        				if(itemsConfigData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(itemsConfigData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(itemsConfigData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(itemsConfigData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(itemsConfigData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}else if(itemsConfigData[index][5]=='日累计'){
+                			item.totalType=6;
+                		}
+        			}
+        		}
+        	}
+        	saveData.itemList.push(item);
+        }
+    });
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        params: {
+            unitId: unitId,
+            reportType: reportType,
+            calculateType: calculateType,
+            sort:sort,
+            saveData: JSON.stringify(saveData)
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                if(reportType==0){
+                	CreateSingleWellRangeReportTotalItemsInfoTable();
+                }else if(reportType==1){
+                	
+                }else if(reportType==2){
+                	
+                }
+                
+                
+            }
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
+    return false;
+}
+
 
 var grantReportTotalCalItemsPermission = function (calculateType) {
 	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
@@ -2108,4 +2339,21 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
         }
     });
     return false;
+}
+
+function getReportType(){
+	var reportType=0;
+	var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
+		var singleWellReportActiveId=Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+		if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id'){
+			reportType=2;
+		}else if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id'){
+			reportType=0;
+		}
+	}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
+		reportType=1;
+	}
+	return reportType;
 }

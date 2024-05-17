@@ -1122,6 +1122,124 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/grantReportUnitContentItemsPermission")
+	public String grantReportUnitContentItemsPermission() throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		ReportUnitItem reportUnitItem = null;
+		java.lang.reflect.Type type=null;
+		Gson gson = new Gson();
+		try {
+			
+			String unitId = ParamUtils.getParameter(request, "unitId");
+			String reportType = ParamUtils.getParameter(request, "reportType");
+			String saveData = ParamUtils.getParameter(request, "saveData");
+			String calculateType = ParamUtils.getParameter(request, "calculateType");
+			String sort = ParamUtils.getParameter(request, "sort");
+			
+			List<String> calItemName=new ArrayList<>();
+			
+			String key="acqTotalCalItemList";
+			
+			if(StringManagerUtils.stringToInteger(reportType)==2){
+				key="acqTimingTotalCalItemList";
+				if("1".equalsIgnoreCase(calculateType)){
+					key="rpcTimingTotalCalItemList";
+				}else if("2".equalsIgnoreCase(calculateType)){
+					key="pcpTimingTotalCalItemList";
+				}
+			}else{
+				key="acqTotalCalItemList";
+				if("1".equalsIgnoreCase(calculateType)){
+					key="rpcTotalCalItemList";
+				}else if("2".equalsIgnoreCase(calculateType)){
+					key="pcpTotalCalItemList";
+				}
+			}
+			
+			Jedis jedis=null;
+			List<byte[]> calItemSet=null;
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+				if(!jedis.exists(key.getBytes())){
+					if("1".equalsIgnoreCase(calculateType)){
+						MemoryDataManagerTask.loadRPCTotalCalculateItem();
+					}else if("2".equalsIgnoreCase(calculateType)){
+						MemoryDataManagerTask.loadPCPTotalCalculateItem();
+					}else{
+						MemoryDataManagerTask.loadAcqTotalCalculateItem();
+					}
+				}
+				calItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				if(jedis!=null){
+					jedis.close();
+				}
+			}
+			
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemName.add(calItem.getName());
+			}
+			
+			type = new TypeToken<TotalCalItemsToReportUnitSaveData>() {}.getType();
+			TotalCalItemsToReportUnitSaveData totalCalItemsToReportUnitSaveData=gson.fromJson(saveData, type);
+			
+			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType,sort);
+			
+			
+			if (totalCalItemsToReportUnitSaveData!=null && totalCalItemsToReportUnitSaveData.getItemList()!=null && totalCalItemsToReportUnitSaveData.getItemList().size()>0) {
+				
+				for (int i = 0; i < totalCalItemsToReportUnitSaveData.getItemList().size(); i++) {
+					boolean save=true;
+					if("计算".equalsIgnoreCase(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource())){
+						if(!StringManagerUtils.existOrNot(calItemName, totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName(), false)){
+							save=false;
+						}
+					}
+					if(save){
+						reportUnitItem = new ReportUnitItem();
+						reportUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
+						reportUnitItem.setReportType(StringManagerUtils.stringToInteger(reportType));
+						reportUnitItem.setItemName(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName());
+						reportUnitItem.setItemCode(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemCode());
+						
+						reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
+						
+						reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
+						reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
+						
+						reportUnitItem.setPrec( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()):null);
+						
+						reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
+						reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
+						
+						reportUnitItem.setReportCurveConf(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveConf());
+						
+						reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
+						
+						reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
+						
+						reportUnitItem.setDataSource(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource());
+						reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");
+						this.reportUnitItemManagerService.grantReportItemsPermission(reportUnitItem);
+					}
+				}
+			}
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolEnumOrSwitchItemsConfigData")
 	public String getProtocolEnumOrSwitchItemsConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
@@ -1399,6 +1517,25 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,unitId,classes);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getReportUnitContentConfigItemsData")
+	public String getReportUnitContentConfigItemsData() throws Exception {
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String row = ParamUtils.getParameter(request, "row");
+		String col = ParamUtils.getParameter(request, "col");
+		String json = "";
+		int sort=StringManagerUtils.stringToInteger(row)>0?(StringManagerUtils.stringToInteger(row)+1):0;
+		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -837,15 +837,25 @@ function reportUnitContentConfig(row, col,value) {
 		calculateType=record.data.calculateType;
 	}
 	
+	var templateSelection= Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
+	var templateCode="";
+	if(templateSelection.length>0){
+		templateCode=templateSelection[0].data.templateCode;
+	}
+	
 	var window = Ext.create("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
         title: '报表内容配置'
     });
 	
+	Ext.getCmp("ReportUnitContentConfig_Classes").setValue(classes);
 	Ext.getCmp("ReportUnitContentConfig_UnitId").setValue(unitId);
+	Ext.getCmp("ReportUnitContentConfig_UnitName").setValue(unitName);
+	
     Ext.getCmp("ReportUnitContentConfig_ReportType").setValue(reportType);
     Ext.getCmp("ReportUnitContentConfig_CalculateType").setValue(calculateType);
     Ext.getCmp("ReportUnitContentConfig_SelectedRow").setValue(row);
     Ext.getCmp("ReportUnitContentConfig_SelectedCol").setValue(col);
+    Ext.getCmp("ReportUnitContentConfig_TemplateCode").setValue(templateCode);
 	
     window.show();
     
@@ -892,7 +902,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable(){
 			}
 			if(singleWellRangeReportTemplateContentHandsontableHelper==null || singleWellRangeReportTemplateContentHandsontableHelper.hot==undefined){
 				singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['列','表头','项','单位','数据来源','统计方式','显示级别','小数位数','报表曲线','配置']";
+				var colHeaders="['序号','表头','字段','单位','数据来源','统计方式','显示级别','小数位数','报表曲线','配置']";
 				var columns=[
 						{data:'id'},
 						{data:'headerName'},

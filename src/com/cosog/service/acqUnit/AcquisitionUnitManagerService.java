@@ -1990,6 +1990,218 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getReportUnitTotalItemsConfigColInfoData(String calculateType,String reportType,String templateCode,String unitId,String classes){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		
+		
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		ReportTemplate.Template template=null;
+		if(reportTemplate!=null){
+			List<Template> templateList=null;
+			if(StringManagerUtils.stringToInteger(reportType)==0){
+				templateList=reportTemplate.getSingleWellRangeReportTemplate();
+			}else if(StringManagerUtils.stringToInteger(reportType)==2){
+				templateList=reportTemplate.getSingleWellDailyReportTemplate();
+			}else{
+				templateList=reportTemplate.getProductionReportTemplate();
+			}
+			if(templateList!=null && templateList.size()>0){
+				for(int i=0;i<templateList.size();i++){
+					if(templateCode.equalsIgnoreCase(templateList.get(i).getTemplateCode()) ){
+						template=templateList.get(i);
+						break;
+					}
+				}
+			}
+		}
+		
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
+		
+		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths().size()>0)   ){
+			int columnCoumnt=template.getColumnWidths().size();
+			if(template.getHeader().size()>0){
+				columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle().size();
+			}
+			
+			List<String> itemsList=new ArrayList<String>();
+			List<String> itemsCodeList=new ArrayList<String>();
+			List<String> itemsSortList=new ArrayList<String>();
+			List<String> itemsShowLevelList=new ArrayList<String>();
+			
+			List<String> itemsPrecList=new ArrayList<String>();
+			
+			List<String> sumSignList=new ArrayList<String>();
+			List<String> averageSignList=new ArrayList<String>();
+			
+			List<String> reportCurveConfList=new ArrayList<String>();
+			
+			List<String> curveStatTypeList=new ArrayList<String>();
+			
+			List<String> itemsTotalTypeList=new ArrayList<String>();
+			
+			List<String> dataSourceList=new ArrayList<String>();
+			
+			List<String> dataTypeList=new ArrayList<String>();
+			
+			if("1".equalsIgnoreCase(classes)){
+				String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
+						+ " decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计',''),"
+						+ " t.dataSource,t.dataType "
+						+ " from tbl_report_items2unit_conf t "
+						+ " where t.sort>0 "
+						+ " and t.unitid="+unitId+" "
+						+ " and t.reportType="+reportType
+						+ " order by t.sort";
+				List<?> list=this.findCallSql(sql);
+				for(int i=0;i<list.size();i++){
+					Object[] obj=(Object[])list.get(i);
+					itemsList.add(obj[0]+"");
+					itemsCodeList.add(obj[1]+"");
+					itemsSortList.add(obj[2]+"");
+					itemsShowLevelList.add(obj[3]+"");
+					
+					sumSignList.add(obj[4]+"");
+					averageSignList.add(obj[5]+"");
+					
+					String reportCurveConf=obj[6]+"";
+					if(!StringManagerUtils.isNotNull(reportCurveConf)){
+						reportCurveConf="\"\"";
+					}
+					reportCurveConfList.add(reportCurveConf);
+					curveStatTypeList.add(obj[7]+"");
+					itemsPrecList.add(obj[8]+"");
+					itemsTotalTypeList.add(obj[9]+"");
+					dataSourceList.add(obj[10]+"");
+					dataTypeList.add(obj[11]+"");
+				}
+			}
+			int index=1;
+			for(int i=0;i<columnCoumnt;i++){
+				String headerName="";
+				if(template.getHeader().size()>0){
+					headerName=template.getHeader().get(template.getHeader().size()-1).getTitle().get(i);
+					if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle().size()>=i ){
+						headerName=template.getHeader().get(template.getHeader().size()-2).getTitle().get(i);
+					}
+				}
+				
+				String itemName="";
+				String itemCode="";
+				
+				String unit="";
+				String dataSource="";
+				
+				String totalType="";
+				
+				String sort="";
+				String showLevel="";
+				
+				String prec="";
+				
+				boolean sumSign=false;
+				boolean averageSign=false;
+				
+				String reportCurveConf="\"\"";
+				String reportCurveConfShowValue="";
+				
+				String curveStatType="";
+				
+				String dataType="";
+				
+				String action="双击配置";
+				
+				for(int k=0;k<itemsList.size();k++){
+					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
+						itemName=itemsList.get(k);
+						itemCode=itemsCodeList.get(k);
+						
+						sort=itemsSortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						
+						prec=itemsPrecList.get(k);
+						
+						if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+							if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+								sumSign=true;
+							}else{
+								sumSign=false;
+							}
+						}
+						
+						if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+							if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+								averageSign=true;
+							}else{
+								averageSign=false;
+							}
+						}
+						
+						reportCurveConf=reportCurveConfList.get(k);
+						
+						CurveConf reportCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+						}
+						
+						if(reportCurveConfObj!=null){
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+						}
+						
+						
+						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+								curveStatType="合计";
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+								curveStatType="平均";
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+								curveStatType="最大值";
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+								curveStatType="最小值";
+							}
+						}
+						
+						dataSource=dataSourceList.get(k);
+						totalType=itemsTotalTypeList.get(k);
+						dataType=dataTypeList.get(k);
+						break;
+					}
+				}
+				
+				result_json.append("{"
+						+ "\"id\":"+(index)+","
+						+ "\"headerName\":\""+headerName+"\","
+						+ "\"itemName\":\""+itemName+"\","
+						+ "\"unit\":\""+unit+"\","
+						+ "\"dataSource\":\""+dataSource+"\","
+						+ "\"totalType\":\""+totalType+"\","
+						+ "\"showLevel\":\""+showLevel+"\","
+						+ "\"sort\":\""+sort+"\","
+						+ "\"prec\":\""+prec+"\","
+						+ "\"sumSign\":"+sumSign+","
+						+ "\"averageSign\":"+averageSign+","
+						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+						+ "\"reportCurveConf\":"+reportCurveConf+","
+						+ "\"curveStatType\":\""+curveStatType+"\","
+						+ "\"dataType\":\""+dataType+"\","
+						+ "\"itemCode\":\""+itemCode+"\","
+						+ "\"remark\":\"\","
+						+ "\"action\":\""+action+"\""
+						+ "},");
+				index++;
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String unitId,String classes){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
@@ -2583,30 +2795,55 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String key="acqTimingTotalCalItemList";
-		if("1".equalsIgnoreCase(calculateType)){
-			key="rpcTimingTotalCalItemList";
-		}else if("2".equalsIgnoreCase(calculateType)){
-			key="pcpTimingTotalCalItemList";
+		
+		if(StringManagerUtils.stringToInteger(reportType)==2){
+			if("1".equalsIgnoreCase(calculateType)){
+				key="rpcTimingTotalCalItemList";
+			}else if("2".equalsIgnoreCase(calculateType)){
+				key="pcpTimingTotalCalItemList";
+			}else{
+				key="acqTimingTotalCalItemList";
+			}
+		}else{
+			if("1".equalsIgnoreCase(calculateType)){
+				key="rpcTotalCalItemList";
+			}else if("2".equalsIgnoreCase(calculateType)){
+				key="pcpTotalCalItemList";
+			}else{
+				key="acqTotalCalItemList";
+			}
 		}
+		
+		
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
 			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
 		}
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		Jedis jedis=null;
-		List<byte[]> rpcCalItemSet=null;
+		List<byte[]> totalItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(key.getBytes())){
-				if("1".equalsIgnoreCase(calculateType)){
-					MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
-				}else if("2".equalsIgnoreCase(calculateType)){
-					MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
+				if(StringManagerUtils.stringToInteger(reportType)==2){
+					if("1".equalsIgnoreCase(calculateType)){
+						MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
+					}else if("2".equalsIgnoreCase(calculateType)){
+						MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
+					}else{
+						MemoryDataManagerTask.loadAcqTimingTotalCalculateItem();
+					}
 				}else{
-					MemoryDataManagerTask.loadAcqTimingTotalCalculateItem();
+					if("1".equalsIgnoreCase(calculateType)){
+						MemoryDataManagerTask.loadRPCTotalCalculateItem();
+					}else if("2".equalsIgnoreCase(calculateType)){
+						MemoryDataManagerTask.loadPCPTotalCalculateItem();
+					}else{
+						MemoryDataManagerTask.loadAcqTotalCalculateItem();
+					}
 				}
 			}
-			rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			totalItemSet= jedis.zrange(key.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -2676,9 +2913,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		
 		int index=1;
-		if(rpcCalItemSet!=null){
-			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+		if(totalItemSet!=null){
+			for(byte[] totalItemByteArr:totalItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(totalItemByteArr);
 				
 				boolean checked=false;
 				String sortStr="";

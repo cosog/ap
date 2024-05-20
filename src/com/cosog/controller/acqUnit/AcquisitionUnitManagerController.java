@@ -1509,6 +1509,24 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getReportUnitTotalItemsConfigColInfoData")
+	public String getReportUnitTotalItemsConfigColInfoData() throws Exception {
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String templateCode = ParamUtils.getParameter(request, "templateCode");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportUnitTotalItemsConfigColInfoData(calculateType,reportType,templateCode,unitId,classes);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getReportUnitTotalCalItemsConfigData2")
 	public String getReportUnitTotalCalItemsConfigData2() throws Exception {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
@@ -1534,7 +1552,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String row = ParamUtils.getParameter(request, "row");
 		String col = ParamUtils.getParameter(request, "col");
 		String json = "";
-		int sort=StringManagerUtils.stringToInteger(row)>0?(StringManagerUtils.stringToInteger(row)+1):0;
+		int sort=(StringManagerUtils.isNum(row) && StringManagerUtils.isNumber(row) && StringManagerUtils.stringToInteger(row)>=0)?(StringManagerUtils.stringToInteger(row)+1):0;
 		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

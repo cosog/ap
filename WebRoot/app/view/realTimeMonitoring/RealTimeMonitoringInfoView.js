@@ -1791,7 +1791,7 @@ function getDeviceRealTimeOverviewDataPage(deviceId,deviceType,limit){
 	
 	Ext.Ajax.request({
 		method:'POST',
-		async :  false,
+		async: false,
 		url:context + '/realTimeMonitoringController/getDeviceRealTimeOverviewDataPage',
 		success:function(response) {
 			dataPage = Ext.JSON.decode(response.responseText).dataPage;

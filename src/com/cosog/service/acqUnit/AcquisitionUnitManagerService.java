@@ -1978,7 +1978,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"dataType\":\""+dataType+"\","
 						+ "\"itemCode\":\""+itemCode+"\","
 						+ "\"remark\":\"\","
-						+ "\"action\":\""+action+"\""
+						+ "\"action\":\""+action+"\","
+						+ "\"dataChange\":0"
 						+ "},");
 				index++;
 			}

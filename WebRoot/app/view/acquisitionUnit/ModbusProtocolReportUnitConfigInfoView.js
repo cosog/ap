@@ -2116,6 +2116,8 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
             if (result.msg == true) {
                 Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
                 if(reportType==0){
+                	CreateReportUnitContentConfigColInfoTable();
+                	CreateReportUnitContentConfigTable();
                 	CreateSingleWellRangeReportTotalItemsInfoTable();
                 }else if(reportType==1){
                 	

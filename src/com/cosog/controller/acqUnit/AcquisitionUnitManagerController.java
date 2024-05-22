@@ -1135,7 +1135,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String reportType = ParamUtils.getParameter(request, "reportType");
 			String saveData = ParamUtils.getParameter(request, "saveData");
 			String calculateType = ParamUtils.getParameter(request, "calculateType");
-			String sort = ParamUtils.getParameter(request, "sort");
+//			String sort = ParamUtils.getParameter(request, "sort");
 			
 			List<String> calItemName=new ArrayList<>();
 			
@@ -1187,7 +1187,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			type = new TypeToken<TotalCalItemsToReportUnitSaveData>() {}.getType();
 			TotalCalItemsToReportUnitSaveData totalCalItemsToReportUnitSaveData=gson.fromJson(saveData, type);
 			
-			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType,sort);
+//			this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType,sort);
 			
 			
 			if (totalCalItemsToReportUnitSaveData!=null && totalCalItemsToReportUnitSaveData.getItemList()!=null && totalCalItemsToReportUnitSaveData.getItemList().size()>0) {
@@ -1224,6 +1224,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 						
 						reportUnitItem.setDataSource(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource());
 						reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");
+						
+						this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType,reportUnitItem.getSort()+"");
 						this.reportUnitItemManagerService.grantReportItemsPermission(reportUnitItem);
 					}
 				}

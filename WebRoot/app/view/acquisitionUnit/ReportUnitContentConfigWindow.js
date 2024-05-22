@@ -81,7 +81,7 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
                     var row=Ext.getCmp("ReportUnitContentConfig_SelectedRow").getValue();
                     var col=Ext.getCmp("ReportUnitContentConfig_SelectedCol").getValue();
                     var sort=parseInt(row)+1;
-                    var itemsConfigData = reportUnitContentConfigHandsontableHelper.hot.getData();
+                    var itemsConfigData = reportUnitContentConfigColInfoHandsontableHelper.hot.getData();
                 	
                 	grantReportUnitContentItemsPermission(unitId,reportType,calculateType,sort,itemsConfigData);
                 }
@@ -425,30 +425,124 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                	}
 	                },
 	                afterChange: function (changes, source) {
-	                	if (changes != null) {
+	                	if (changes != null && source=="edit") {
 	                		var row=Ext.getCmp("ReportUnitContentConfig_SelectedRow").getValue();
 	                		var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
 	                		
 	                		for (var i = 0; i < changes.length; i++) {
-	                			var index = changes[i][0]; //行号码 0-行号 1-列 2-新值 3-旧值
+	                			var index = changes[i][0]; //行号码 0-行号 1-列 2-旧值 3-新值
 	                			var col=changes[i][1];
+	                			var oldValue=changes[i][2];
+	                			var newValue=changes[i][3];
 	                            var rowdata = reportUnitContentConfigHandsontableHelper.hot.getDataAtRow(index);
 	                            
-	                            if (source=="edit" && changes[i][2] != changes[i][3] && rowdata[0]) {
-	                            	if(reportType==0){
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,rowdata[2]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,rowdata[3]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,rowdata[4]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[5]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[6]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[7]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[8]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[9]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[11]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[10]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[12]);
-	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+	                            
+	                            
+	                            if (oldValue != newValue) {
+	                            	if(col=='checked'){
+	                            		if(newValue){//选中
+	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,rowdata[2]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,rowdata[3]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,rowdata[4]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[5]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[6]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[7]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[8]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[9]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[11]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[10]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[12]);
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+	                            		}else{//反选清空
+	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,'');
+		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+	                            		}
+	                            	}else{
+	                            		if(rowdata[0]){
+	                            			if(col=='totalType'){
+	                            				var colIndex=5;
+	                            				if(reportType==0){
+	                            					colIndex=5;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[colIndex]);
+	    	                            	}else if(col=='showLevel'){
+	                            				var colIndex=6;
+	                            				if(reportType==0){
+	                            					colIndex=6;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[colIndex]);
+	    	                            	}else if(col=='prec'){
+	                            				var colIndex=7;
+	                            				if(reportType==0){
+	                            					colIndex=7;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[colIndex]);
+	    	                            	}else if(col=='reportCurveConfShowValue'){
+	                            				var colIndex=8;
+	                            				if(reportType==0){
+	                            					colIndex=8;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[colIndex]);
+	    	                            	}else if(col=='reportCurveConf'){
+	                            				var colIndex=9;
+	                            				if(reportType==0){
+	                            					colIndex=9;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[colIndex]);
+	    	                            	}else if(col=='dataType'){
+	                            				var colIndex=11;
+	                            				if(reportType==0){
+	                            					colIndex=11;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[colIndex]);
+	    	                            	}else if(col=='code'){
+	                            				var colIndex=10;
+	                            				if(reportType==0){
+	                            					colIndex=10;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[colIndex]);
+	    	                            	}else if(col=='remark'){
+	                            				var colIndex=12;
+	                            				if(reportType==0){
+	                            					colIndex=12;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[colIndex]);
+	    	                            	}
+	                            			
+	                            			
+	                            			
+	                            			
+	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+	                            		}
 	                            	}
+	                            	
+	                            	
+	                            	
+	                            	
+//	                            	if(reportType==0){
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,rowdata[2]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,rowdata[3]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,rowdata[4]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[5]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[6]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[7]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[8]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[9]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[11]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[10]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[12]);
+//	                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+//	                            	}
 	                            }
 //	                            var columns=[
 //	        						{data:'id'},
@@ -504,6 +598,13 @@ var ReportUnitContentConfigHandsontableHelper = {
 };
 
 function CreateReportUnitContentConfigColInfoTable(){
+	if(reportUnitContentConfigColInfoHandsontableHelper!=null){
+		if(reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined){
+			reportUnitContentConfigColInfoHandsontableHelper.hot.destroy();
+		}
+		reportUnitContentConfigColInfoHandsontableHelper=null;
+	}
+	
 	var calculateType=Ext.getCmp("ReportUnitContentConfig_CalculateType").getValue();
 	var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
 	var unitId=Ext.getCmp("ReportUnitContentConfig_UnitId").getValue();
@@ -544,8 +645,8 @@ function CreateReportUnitContentConfigColInfoTable(){
 						];
 				
 				reportUnitContentConfigColInfoHandsontableHelper.colHeaders=colHeaders;
-//				reportUnitContentConfigColInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				reportUnitContentConfigColInfoHandsontableHelper.columns=columns;
+				reportUnitContentConfigColInfoHandsontableHelper.rawData=result.rawData;
 				reportUnitContentConfigColInfoHandsontableHelper.createTable(result.totalRoot);
 			}else{
 				reportUnitContentConfigColInfoHandsontableHelper.hot.loadData(result.totalRoot);
@@ -574,10 +675,16 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        reportUnitContentConfigColInfoHandsontableHelper.colHeaders=[];
 	        reportUnitContentConfigColInfoHandsontableHelper.columns=[];
 	        reportUnitContentConfigColInfoHandsontableHelper.AllData=[];
+	        reportUnitContentConfigColInfoHandsontableHelper.rawData=[];
 	        
 	        reportUnitContentConfigColInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
+	        
+	        reportUnitContentConfigColInfoHandsontableHelper.addWhiteBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(255, 255, 255)';    
 	        }
 	        
 	        reportUnitContentConfigColInfoHandsontableHelper.addDataChangeBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -593,6 +700,47 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	            		td.style.backgroundColor = '#'+arr[1];
 	            	}
 	            }
+	        }
+	        
+	        reportUnitContentConfigColInfoHandsontableHelper.rowDataChange = function(row){
+	        	var rowdata = reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtRow(row);
+	        	var rawData=reportUnitContentConfigColInfoHandsontableHelper.rawData[parseInt(row)];
+	        	var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
+	        	var dataChange=false;
+	        	if(reportType==0){
+	        		if( ( !isEquals(rowdata[2],rawData.itemName) )
+	        				|| !isEquals(rowdata[5],rawData.totalType) 
+	        				|| !isEquals(rowdata[6],rawData.showLevel )
+	        				|| !isEquals(rowdata[8],rawData.prec )
+	        				|| !isEquals(rowdata[11],rawData.reportCurveConfShowValue )
+	        				|| !isEquals(rowdata[12],rawData.reportCurveConf )
+	        				|| !isEquals(rowdata[14],rawData.dataType )
+	        				|| !isEquals(rowdata[15],rawData.itemCode )
+	        				){
+	        			dataChange=true;
+	        		}
+	        	}
+	        	return dataChange;
+	        	
+//            	var columns=[
+//				{data:'id'},
+//				{data:'headerName'},
+//				{data:'itemName'},
+//			 	{data:'unit'},
+//			 	{data:'dataSource'},
+//			 	{data:'totalType'},
+//				{data:'showLevel'},
+//				{data:'sort'},
+//				{data:'prec'},
+//				{data:'sumSign'},
+//				{data:'averageSign'},
+//				{data:'reportCurveConfShowValue'},
+//				{data:'reportCurveConf'},
+//				{data:'curveStatType'},
+//				{data:'dataType'},
+//				{data:'itemCode'},
+//				{data:'remark'}
+//				];
 	        }
 	        
 	        reportUnitContentConfigColInfoHandsontableHelper.createTable = function (data) {
@@ -628,9 +776,16 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 		                	cellProperties.renderer = reportUnitContentConfigColInfoHandsontableHelper.addCurveBg;
 		                }else if(visualColIndex==2){
 	                    	if(reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined && reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell!=undefined){
-	                    		var dataChange=reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell(visualRowIndex,17);
-	                    		if(dataChange==1){
+//	                    		var dataChange=reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell(visualRowIndex,17);
+	                    		
+	                    		var dataChange=reportUnitContentConfigColInfoHandsontableHelper.rowDataChange(visualRowIndex);
+	                    		
+	                    		var rowdata = reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtRow(visualRowIndex);
+	                    		
+	                    		if(dataChange){
 	                    			cellProperties.renderer=reportUnitContentConfigColInfoHandsontableHelper.addDataChangeBg;
+	                    		}else{
+	                    			cellProperties.renderer = reportUnitContentConfigColInfoHandsontableHelper.addWhiteBg;
 	                    		}
 	                    	}
 	                    }
@@ -796,3 +951,217 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        return reportUnitContentConfigColInfoHandsontableHelper;
 	    }
 };
+
+var grantReportUnitContentItemsPermission = function (unitId,reportType,calculateType,sort,itemsConfigData) {
+    var addUrl = context + '/acquisitionUnitManagerController/grantReportUnitContentItemsPermission';
+    // 添加条件
+    var saveData={};
+    saveData.itemList=[];
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (!isNotVal(unitId)) {
+        return false
+    }
+    Ext.Array.each(itemsConfigData, function (name, index, countriesItSelf) {
+    	if (reportUnitContentConfigColInfoHandsontableHelper.rowDataChange(index)) {
+        	var item={};
+        	item.matrix='0,0,0';
+        	if(reportType==0){
+        		
+//            	var columns=[
+//				{data:'id'},0
+//				{data:'headerName'},1
+//				{data:'itemName'},2
+//			 	{data:'unit'},3
+//			 	{data:'dataSource'},4
+//			 	{data:'totalType'},5
+//				{data:'showLevel'},6
+//				{data:'sort'},7
+//				{data:'prec'},8
+//				{data:'sumSign'},9
+//				{data:'averageSign'},10
+//				{data:'reportCurveConfShowValue'},11
+//				{data:'reportCurveConf'},12
+//				{data:'curveStatType'},13
+//				{data:'dataType'},14
+//				{data:'itemCode'},15
+//				{data:'remark'}16
+//				];
+        		
+        		item.itemName = itemsConfigData[index][2];
+        		item.totalType=0;
+        		item.dataSource=itemsConfigData[index][4];
+        		item.itemShowLevel = itemsConfigData[index][6];
+        		item.itemSort = index+1;
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(itemsConfigData[index][11]) && isNotVal(itemsConfigData[index][12])){
+    				reportCurveConfig=itemsConfigData[index][12];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+            	
+        		item.itemCode = itemsConfigData[index][15];
+        		item.dataType = itemsConfigData[index][14];
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=itemsConfigData[index][8];
+        			
+        			if(item.dataSource=='采集'){
+        				if(itemsConfigData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(itemsConfigData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(itemsConfigData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(itemsConfigData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(itemsConfigData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}else if(itemsConfigData[index][5]=='日累计'){
+                			item.totalType=6;
+                		}
+        			}
+        		}
+        	}else if(reportType==2){
+        		item.itemName = itemsConfigData[index][2];
+        		item.totalType=0;
+        		item.dataSource=itemsConfigData[index][4];
+        		item.itemShowLevel = itemsConfigData[index][6];
+        		item.itemSort = itemsConfigData[index][7];
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(itemsConfigData[index][9]) && isNotVal(itemsConfigData[index][10])){
+    				reportCurveConfig=itemsConfigData[index][10];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+            	
+        		item.itemCode = itemsConfigData[index][11];
+        		item.dataType = itemsConfigData[index][12];
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=itemsConfigData[index][8];
+        			
+        			if(item.dataSource=='采集'){
+        				if(itemsConfigData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(itemsConfigData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(itemsConfigData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(itemsConfigData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(itemsConfigData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}else if(itemsConfigData[index][5]=='日累计'){
+                			item.totalType=6;
+                		}
+        			}
+        		}
+        	}else if(reportType==1){
+        		item.itemName = itemsConfigData[index][2];
+        		
+        		item.totalType=0;
+        		item.dataSource=itemsConfigData[index][4];
+        		item.itemShowLevel = itemsConfigData[index][6];
+        		item.itemSort = itemsConfigData[index][7];
+        		
+        		item.sumSign='0';
+        		if((itemsConfigData[index][9]+'')==='true'){
+        			item.sumSign='1';
+        		}
+        		
+        		item.averageSign='0';
+        		if((itemsConfigData[index][10]+'')==='true'){
+        			item.averageSign='1';
+        		}
+        		
+        		var reportCurveConfig=null;
+        		var reportCurveConfigStr="";
+    			if(isNotVal(itemsConfigData[index][11]) && isNotVal(itemsConfigData[index][13])){
+    				reportCurveConfig=itemsConfigData[index][13];
+    				reportCurveConfigStr=JSON.stringify(reportCurveConfig);
+    			}
+        		
+        		
+        		item.reportCurveConf=reportCurveConfigStr;
+        		
+        		item.curveStatType = itemsConfigData[index][12];
+        		if(itemsConfigData[index][12]=='合计'){
+        			item.curveStatType='1';
+        		}else if(itemsConfigData[index][12]=='平均'){
+        			item.curveStatType='2';
+        		}else if(itemsConfigData[index][12]=='最大值'){
+        			item.curveStatType='3';
+        		}else if(itemsConfigData[index][12]=='最小值'){
+        			item.curveStatType='4';
+        		}
+            	
+        		item.itemCode = itemsConfigData[index][14];
+        		item.dataType = itemsConfigData[index][15]+"";
+        		
+        		if(item.dataType==2){
+        			item.itemPrec=itemsConfigData[index][8];
+        			
+        			if(item.dataSource=='采集'){
+        				if(itemsConfigData[index][5]=='最大值'){
+                			item.totalType=1;
+                		}else if(itemsConfigData[index][5]=='最小值'){
+                			item.totalType=2;
+                		}else if(itemsConfigData[index][5]=='平均值'){
+                			item.totalType=3;
+                		}else if(itemsConfigData[index][5]=='最新值'){
+                			item.totalType=4;
+                		}else if(itemsConfigData[index][5]=='最旧值'){
+                			item.totalType=5;
+                		}else if(itemsConfigData[index][5]=='日累计'){
+                			item.totalType=6;
+                		}
+        			}
+        		}
+        	}
+        	saveData.itemList.push(item);
+        }
+    });
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        params: {
+            unitId: unitId,
+            reportType: reportType,
+            calculateType: calculateType,
+            sort:sort,
+            saveData: JSON.stringify(saveData)
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                if(reportType==0){
+                	CreateReportUnitContentConfigColInfoTable();
+                	CreateReportUnitContentConfigTable();
+                	CreateSingleWellRangeReportTotalItemsInfoTable();
+                }else if(reportType==1){
+                	
+                }else if(reportType==2){
+                	
+                }
+                
+                
+            }
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
+    return false;
+}

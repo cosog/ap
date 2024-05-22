@@ -190,6 +190,23 @@ isNotVal = function(val) {
 	return result;
 }
 
+isEquals = function(v1,v2) {
+	var result = false;
+	if( (!isNotVal(v1)) && (!isNotVal(v2)) ){
+		result = true;
+		return result;
+	}
+	if(v1==v2){
+		result = true;
+		return result;
+	}
+	if(JSON.stringify(v1)==JSON.stringify(v2)){
+		result = true;
+		return result;
+	}
+	return result;
+}
+
 /**
  * 是否为数值
  */

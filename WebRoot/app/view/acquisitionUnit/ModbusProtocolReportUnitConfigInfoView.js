@@ -1945,7 +1945,7 @@ function SaveModbusProtocolReportUnitData(saveData){
 }
 
 
-var grantReportUnitContentItemsPermission = function (unitId,reportType,calculateType,sort,itemsConfigData) {
+var grantReportUnitContentItemsPermission2 = function (unitId,reportType,calculateType,sort,itemsConfigData) {
     var addUrl = context + '/acquisitionUnitManagerController/grantReportUnitContentItemsPermission';
     // 添加条件
     var saveData={};

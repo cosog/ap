@@ -1766,6 +1766,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String templateCode,String unitId,String classes){
 		StringBuffer result_json = new StringBuffer();
+		StringBuffer rawData = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -1807,7 +1808,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
-		
+		rawData.append("[");
 		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths().size()>0)   ){
 			int columnCoumnt=template.getColumnWidths().size();
 			if(template.getHeader().size()>0){
@@ -1981,13 +1982,41 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"action\":\""+action+"\","
 						+ "\"dataChange\":0"
 						+ "},");
+				
+				rawData.append("{"
+						+ "\"id\":"+(index)+","
+						+ "\"headerName\":\""+headerName+"\","
+						+ "\"itemName\":\""+itemName+"\","
+						+ "\"unit\":\""+unit+"\","
+						+ "\"dataSource\":\""+dataSource+"\","
+						+ "\"totalType\":\""+totalType+"\","
+						+ "\"showLevel\":\""+showLevel+"\","
+						+ "\"sort\":\""+sort+"\","
+						+ "\"prec\":\""+prec+"\","
+						+ "\"sumSign\":"+sumSign+","
+						+ "\"averageSign\":"+averageSign+","
+						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+						+ "\"reportCurveConf\":"+reportCurveConf+","
+						+ "\"curveStatType\":\""+curveStatType+"\","
+						+ "\"dataType\":\""+dataType+"\","
+						+ "\"itemCode\":\""+itemCode+"\","
+						+ "\"remark\":\"\","
+						+ "\"action\":\""+action+"\","
+						+ "\"dataChange\":0"
+						+ "},");
 				index++;
 			}
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
-		result_json.append("]}");
+		if(rawData.toString().endsWith(",")){
+			rawData.deleteCharAt(rawData.length() - 1);
+		}
+		result_json.append("]");
+		rawData.append("]");
+		result_json.append(",\"rawData\":"+rawData.toString());
+		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	

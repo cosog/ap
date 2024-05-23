@@ -1226,7 +1226,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 						reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");
 						
 						this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType,reportUnitItem.getSort()+"");
-						this.reportUnitItemManagerService.grantReportItemsPermission(reportUnitItem);
+						if(StringManagerUtils.isNotNull(reportUnitItem.getItemName())){
+							this.reportUnitItemManagerService.grantReportItemsPermission(reportUnitItem);
+						}
 					}
 				}
 			}
@@ -1529,23 +1531,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getReportUnitTotalCalItemsConfigData2")
-	public String getReportUnitTotalCalItemsConfigData2() throws Exception {
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		String reportType = ParamUtils.getParameter(request, "reportType");
-		String unitId = ParamUtils.getParameter(request, "unitId");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,unitId,classes);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getReportUnitContentConfigItemsData")
 	public String getReportUnitContentConfigItemsData() throws Exception {
 		String unitId = ParamUtils.getParameter(request, "unitId");
@@ -1565,22 +1550,23 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getReportUnitTimingTotalCalItemsConfigData")
-	public String getReportUnitTimingTotalCalItemsConfigData() throws Exception {
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		String reportType = ParamUtils.getParameter(request, "reportType");
-		String unitId = ParamUtils.getParameter(request, "unitId");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTimingTotalCalItemsConfigData(calculateType,reportType,unitId,classes);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
+//	@RequestMapping("/getReportUnitTimingTotalCalItemsConfigData")
+//	public String getReportUnitTimingTotalCalItemsConfigData() throws Exception {
+//		String calculateType = ParamUtils.getParameter(request, "calculateType");
+//		String reportType = ParamUtils.getParameter(request, "reportType");
+//		String templateCode = ParamUtils.getParameter(request, "templateCode");
+//		String unitId = ParamUtils.getParameter(request, "unitId");
+//		String classes = ParamUtils.getParameter(request, "classes");
+//		String json = "";
+//		json = acquisitionUnitItemManagerService.getReportUnitTimingTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes);
+//		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+//		response.setHeader("Cache-Control", "no-cache");
+//		PrintWriter pw = response.getWriter();
+//		pw.print(json);
+//		pw.flush();
+//		pw.close();
+//		return null;
+//	}
 	
 	@RequestMapping("/getReportInstanceTotalCalItemsConfigData")
 	public String getReportInstanceTotalCalItemsConfigData() throws Exception {

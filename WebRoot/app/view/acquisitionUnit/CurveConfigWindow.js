@@ -208,26 +208,26 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),9,curveConfig);
                 			}
                 		}else if(tableType==22){//区域报表汇总计算项
-                			productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
+                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==11){
-                				productionReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),13,curveConfig);
+                			if(parseInt(col)==10){
+                				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),12,curveConfig);
                 			}
                 		}else if(tableType==23){//单井单日报表汇总计算项
-                			singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
+                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==9){
-                				singleWellDailyReportTemplateContentHandsontableHelper.hot.setDataAtCell(parseInt(row),10,curveConfig);
+                			if(parseInt(col)==8){
+                				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),9,curveConfig);
                 			}
                 		}
                 	}

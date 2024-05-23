@@ -63,6 +63,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
                         	
                         },select( v, record, index, eOpts ){
                         	CreateSingleWellDailyReportTemplateInfoTable(record.data.templateName,record.data.calculateType,record.data.templateCode);
+                        	CreateSingleWellDailyReportTotalItemsInfoTable();
                         }
                     }
 

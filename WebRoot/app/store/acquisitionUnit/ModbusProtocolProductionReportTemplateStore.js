@@ -63,6 +63,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
                         	
                         },select( v, record, index, eOpts ){
                         	CreateProductionReportTemplateInfoTable(record.data.templateName,record.data.calculateType,record.data.templateCode);
+                        	CreateproductionReportTotalItemsInfoTable();
                         }
                     }
 

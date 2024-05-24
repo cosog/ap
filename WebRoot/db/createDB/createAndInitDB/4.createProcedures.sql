@@ -131,33 +131,149 @@ end prd_clear_data;
 
 CREATE OR REPLACE PROCEDURE prd_init_device_daily is
 begin
-    insert into tbl_rpcdailycalculationdata (wellid,caldate)
-    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_rpcdevice well
-    where well.id not in ( select t2.wellid from tbl_rpcdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    insert into tbl_dailycalculationdata (deviceid,caldate)
+    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_device well
+    where well.id not in ( select t2.deviceid from tbl_dailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    commit;
+
+    update tbl_dailycalculationdata t set t.headerlabelinfo=
+    ( select t2.headerlabelinfo from  tbl_dailycalculationdata t2
+    where t2.deviceid=t.deviceid and t2.caldate=
+    ( select max(t3.caldate) from tbl_dailycalculationdata t3 where t3.deviceid=t2.deviceid and t3.headerlabelinfo is not null ))
+    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
+    and t.headerlabelinfo is null;
+    commit;
+end prd_init_device_daily;
+/
+
+CREATE OR REPLACE PROCEDURE prd_init_device_reportdate(v_offsetHour  in NUMBER,
+                                                       v_interval  in NUMBER
+) as
+begin
+    insert into tbl_rpcdailycalculationdata (deviceid,caldate)
+    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_device well
+    where well.calculatetype=1 and well.id not in ( select t2.deviceid from tbl_rpcdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
     commit;
 
     update tbl_rpcdailycalculationdata t set t.headerlabelinfo=
     ( select t2.headerlabelinfo from  tbl_rpcdailycalculationdata t2
-    where t2.wellid=t.wellid and t2.caldate=
-    ( select max(t3.caldate) from tbl_rpcdailycalculationdata t3 where t3.wellid=t2.wellid and t3.headerlabelinfo is not null ))
+    where t2.deviceid=t.deviceid and t2.caldate=
+    ( select max(t3.caldate) from tbl_rpcdailycalculationdata t3 where t3.deviceid=t2.deviceid and t3.headerlabelinfo is not null ))
     where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
     and t.headerlabelinfo is null;
     commit;
 
-    insert into tbl_pcpdailycalculationdata (wellid,caldate)
-    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_pcpdevice well
-    where well.id not in ( select t2.wellid from tbl_pcpdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    insert into tbl_pcpdailycalculationdata (deviceid,caldate)
+    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_device well
+    where well.calculatetype=1 and well.id not in ( select t2.deviceid from tbl_pcpdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
     commit;
 
     update tbl_pcpdailycalculationdata t set t.headerlabelinfo=
     ( select t2.headerlabelinfo from  tbl_pcpdailycalculationdata t2
-    where t2.wellid=t.wellid and t2.caldate=
-    ( select max(t3.caldate) from tbl_pcpdailycalculationdata t3 where t3.wellid=t2.wellid and t3.headerlabelinfo is not null ))
+    where t2.deviceid=t.deviceid and t2.caldate=
+    ( select max(t3.caldate) from tbl_pcpdailycalculationdata t3 where t3.deviceid=t2.deviceid and t3.headerlabelinfo is not null ))
     where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
     and t.headerlabelinfo is null;
     commit;
 
-end prd_init_device_daily;
+end prd_init_device_reportdate;
+/
+
+CREATE OR REPLACE PROCEDURE prd_init_device_timingreportdate(
+       v_deviceId  in NUMBER,
+       v_timeStr  in varchar2,
+       v_dateStr  in varchar2,
+       v_calculateType  in NUMBER
+       ) is
+  recordCount number :=0;
+  p_msg varchar2(3000) := 'error';
+begin
+    if v_calculateType=1 then
+      select count(1) into recordCount from tbl_rpctimingcalculationdata t  where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      if recordCount=0 then
+        insert into tbl_rpctimingcalculationdata (deviceid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
+        commit;
+      end if;
+      --更新采集生产数据
+      update tbl_rpctimingcalculationdata t set
+        (stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
+        =(
+          select t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
+          from TBL_RPCDAILYCALCULATIONDATA t2 
+           where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
+           and t2.deviceid=v_deviceId
+           and rownum=1
+        )
+        where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+      --更新采集实时产量
+      update tbl_rpctimingcalculationdata t set 
+           (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
+           ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
+           from tbl_rpcacqdata_hist t2 
+           where t2.id=(
+                 select v2.id from
+                 (select v.id,rownum r from
+                 (select t3.id from  tbl_rpcacqdata_hist t3 
+                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
+                 and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
+                 and t3.deviceid=v_deviceId
+                 order by t3.acqtime desc) v
+                 ) v2
+                 where r=1
+            )
+            and t2.deviceid=v_deviceId )
+            where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+    elsif v_calculateType=2 then
+      select count(1) into recordCount from tbl_pcptimingcalculationdata t  where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      if recordCount=0 then
+        insert into tbl_pcptimingcalculationdata (deviceid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
+        commit;
+      end if;
+      --更新采集生产数据
+      update tbl_pcptimingcalculationdata t set
+        (tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
+        =(
+          select t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
+          from TBL_PCPDAILYCALCULATIONDATA t2 
+           where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
+           and t2.deviceid=v_deviceId
+           and rownum=1
+        )
+        where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+      --更新采集实时产量
+      update tbl_pcptimingcalculationdata t set 
+           (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
+           ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
+           from tbl_pcpacqdata_hist t2 
+           where t2.id=(
+                 select v2.id from
+                 (select v.id,rownum r from
+                 (select t3.id from  tbl_pcpacqdata_hist t3 
+                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
+                 and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
+                 and t3.deviceid=v_deviceId
+                 order by t3.acqtime desc) v
+                 ) v2
+                 where r=1
+            )
+            and t2.deviceid=v_deviceId )
+            where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      commit;
+    elsif v_calculateType=0 then
+      select count(1) into recordCount from tbl_timingcalculationdata t  where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      if recordCount=0 then
+        insert into tbl_timingcalculationdata (deviceid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
+        commit;
+      end if;
+    end if;
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_init_device_timingreportdate;
 /
 
 CREATE OR REPLACE PROCEDURE prd_save_alarmcolor (    overviewBackgroundColor0   in varchar2,
@@ -246,6 +362,332 @@ Exception
 end prd_save_alarmcolor;
 /
 
+CREATE OR REPLACE PROCEDURE prd_save_alarminfo (
+  v_deviceName in varchar2,
+  v_deviceType in number,
+  v_alarmTime in varchar2,
+  v_itemName in varchar2,
+  v_alarmType in number,
+  v_alarmValue in number,
+  v_alarmInfo in varchar2,
+  v_alarmLimit in number,
+  v_hystersis in number,
+  v_alarmLevel in number,
+  v_isSendMessage in number,
+  v_isSendMail in number
+  ) is
+  p_msg varchar2(3000) := 'error';
+  counts number :=0;
+  p_deviceid number :=0;
+begin
+  select count(1) into counts from tbl_alarminfo_hist t
+  where t.deviceid=( select t2.id from tbl_device t2 where t2.devicename=v_deviceName and t2.devicetype=v_deviceType )
+  and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
+  and t.itemname=v_itemName;
+  select t.id into p_deviceid from tbl_device t where t.devicename=v_deviceName and t.devicetype=v_deviceType ;
+  if counts=0 and p_deviceid>0 then
+    insert into tbl_alarminfo_hist (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
+    hystersis,alarmlevel,issendmessage,issendmail)
+    values(
+         p_deviceid,
+         to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
+         v_itemName,
+         v_alarmType,
+         v_alarmValue,
+         v_alarmInfo,
+         v_alarmLimit,
+         v_hystersis,
+         v_alarmLevel,
+         v_isSendMessage,
+         v_isSendMail
+      );
+    commit;
+    p_msg := '插入成功';
+  elsif counts>0 then
+    update tbl_alarminfo_hist t set t.alarmtype=v_alarmType,alarmvalue=v_alarmValue,
+    alarminfo=v_alarmInfo,alarmlimit=v_alarmLimit,hystersis=v_hystersis,alarmlevel=v_alarmLevel,
+    issendmessage=v_isSendMessage,issendmail=v_isSendMail
+    where t.deviceid=p_deviceid
+    and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
+    and t.itemname=v_itemName;
+    commit;
+    p_msg := '更新成功';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_alarminfo;
+/
+
+CREATE OR REPLACE PROCEDURE prd_save_auxiliarydevice (
+                                                    v_name in varchar2,
+                                                    v_type in number,
+                                                    v_model in varchar2,
+                                                    v_remark in varchar2,
+                                                    v_sort in number,
+                                                    v_isCheckout in NUMBER,
+                                                    v_result out NUMBER,
+                                                    v_resultstr out varchar2
+  ) is
+  p_msg varchar2(3000) := 'error';
+  counts number :=0;
+begin
+  select count(1) into counts from tbl_auxiliarydevice t where t.name=v_name and t.type=v_type and t.model=v_model;
+  if counts=0 then
+    insert into tbl_auxiliarydevice (name,type,model,remark,sort)
+    values(v_name,v_type,v_model,v_remark,v_sort);
+    commit;
+    v_result:=0;
+    v_resultstr := '添加成功';
+    p_msg := '添加成功';
+  elsif counts>0 then
+    if v_isCheckout=1 then
+      v_result:=-33;
+      v_resultstr := '设备已存在';
+      p_msg := '设备已存在';
+    elsif v_isCheckout=0 then
+      update tbl_auxiliarydevice t set t.remark=v_remark,t.sort=v_sort
+      where t.name=v_name and t.type=v_type and t.model=v_model;
+      commit;
+      v_result:=1;
+      v_resultstr := '修改成功';
+      p_msg := '修改成功';
+    end if;
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_auxiliarydevice;
+/
+
+CREATE OR REPLACE PROCEDURE prd_save_dailytotalcalculate (
+  v_deviceId in number,
+  v_itemColumn in varchar2,
+  v_itemName in varchar2,
+  v_acqTime in varchar2,
+  v_totalValue in number,
+  v_todayValue in number
+  ) is
+  p_msg varchar2(3000) := 'error';
+  counts number :=0;
+  histCounts number :=0;
+begin
+  select count(1) into counts from tbl_dailytotalcalculate_latest t
+  where t.deviceid=v_deviceId and t.itemcolumn=v_itemColumn;
+  if counts=0 then
+    insert into tbl_dailytotalcalculate_latest (deviceid,acqtime,itemcolumn,itemname,totalvalue,todayvalue)
+    values(v_deviceId,
+         to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
+         v_itemColumn,
+         v_itemName,
+         v_totalValue,
+         v_todayValue
+      );
+    commit;
+    p_msg := '插入成功';
+  elsif counts>0 then
+    update tbl_dailytotalcalculate_latest t 
+    set  t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),t.totalvalue=v_totalValue,t.todayvalue=v_todayValue,t.itemname=v_itemName
+    where t.deviceid=v_deviceId and t.itemcolumn=v_itemColumn;
+    commit;
+    p_msg := '更新成功';
+  end if;
+  
+  select count(1) into histCounts from tbl_dailytotalcalculate_hist t
+  where t.deviceid=v_deviceId and t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss') and t.itemcolumn=v_itemColumn;
+  if histCounts=0 then
+    insert into tbl_dailytotalcalculate_hist (deviceid,acqtime,itemcolumn,itemname,totalvalue,todayvalue)
+    values(v_deviceId,
+         to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
+         v_itemColumn,
+         v_itemName,
+         v_totalValue,
+         v_todayValue
+      );
+    commit;
+    p_msg := '插入成功';
+  elsif histCounts>0 then
+    update tbl_dailytotalcalculate_hist t set t.totalvalue=v_totalValue,t.todayvalue=v_todayValue,t.itemname=v_itemName
+    where t.deviceid=v_deviceId and t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss') and t.itemcolumn=v_itemColumn;
+    commit;
+    p_msg := '更新成功';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_dailytotalcalculate;
+/
+
+CREATE OR REPLACE PROCEDURE prd_save_device (
+                                                    v_orgId  in NUMBER,
+                                                    v_deviceName    in varchar2,
+                                                    v_devicetype in NUMBER,
+                                                    v_instance    in varchar2,
+                                                    v_displayInstance    in varchar2,
+                                                    v_reportInstance    in varchar2,
+                                                    v_alarmInstance    in varchar2,
+                                                    v_tcpType    in varchar2,
+                                                    v_signInId    in varchar2,
+                                                    v_ipPort    in varchar2,
+                                                    v_slave   in varchar2,
+                                                    v_peakDelay in NUMBER,
+                                                    v_status in NUMBER,
+                                                    v_sortNum  in NUMBER,
+                                                    v_isCheckout in NUMBER,
+                                                    v_license in NUMBER,
+                                                    v_result out NUMBER,
+                                                    v_resultstr out varchar2) as
+  wellcount number :=0;
+  wellId number :=0;
+  othercount number :=0;
+  totalCount number :=0;
+  otherDeviceAllPath varchar2(3000) := '';
+  p_msg varchar2(3000) := 'error';
+begin
+  select count(1) into wellcount from tbl_device t where t.devicename=v_deviceName and t.orgid=v_orgId;
+  select count(1) into totalCount from tbl_device t;
+  if v_isCheckout=0 then
+    if wellcount>0 then
+      select t.id into wellId from tbl_device t where t.devicename=v_deviceName and t.orgid=v_orgId;
+      --判断signinid和slave是否已存在
+      select count(1) into othercount from tbl_device t
+      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave)
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
+        and t.id<>wellId;
+      if othercount=0 then
+        Update tbl_device t
+        Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
+          t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
+          t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
+          t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
+          t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1),
+          t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
+          t.status=v_status, t.sortnum=v_sortNum,
+          t.productiondataupdatetime=sysdate
+        Where t.deviceName=v_deviceName and t.orgid=v_orgId;
+        commit;
+        v_result:=1;
+        v_resultstr := '修改成功';
+        p_msg := '修改成功';
+      else
+        select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          from tbl_org org
+          start with org.org_parent=0
+          connect by   org.org_parent= prior org.org_id) v
+          where t.orgid=v.org_id
+          and t.id=(select t2.id from tbl_device t2
+            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+            and to_number(t2.slave)=to_number(v_slave)
+            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
+            and t2.id<>wellId);
+        v_result:=-22;
+        v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+        p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+      end if;
+    elsif wellcount=0 then
+      --判断signinid和slave是否已存在
+        select count(1) into othercount from tbl_device t
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave)
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
+        if othercount=0 then
+          if totalCount<v_license then
+            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,Sortnum,productiondataupdatetime)
+            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
+            commit;
+            update tbl_device t
+            set t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
+                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
+                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
+                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1)
+            Where t.deviceName=v_deviceName and t.orgid=v_orgId;
+            commit;
+            v_result:=0;
+            v_resultstr := '添加成功';
+            p_msg := '添加成功';
+          else
+            v_result:=-66;
+            v_resultstr := '井数许可超限';
+            p_msg := '井数许可超限';
+          end if;
+        else
+          select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_device t2
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave)
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
+          v_result:=-22;
+          v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+          p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+        end if;
+    end if;
+  else
+    p_msg := '需要校验';
+    if wellcount>0 then
+      v_result:=-33;
+      v_resultstr := '所选组织下存在同名设备';
+      p_msg := '所选组织下存在同名设备';
+    elsif wellcount=0 then
+      --判断signinid和slave是否已存在
+        select count(1) into othercount from tbl_device t
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave)
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
+        if othercount=0 then
+          if totalCount<v_license then
+            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,Sortnum,productiondataupdatetime)
+            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
+            commit;
+            update tbl_device t
+            set t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
+                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
+                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
+                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1)
+            Where t.deviceName=v_deviceName and t.orgid=v_orgId;
+            commit;
+            v_result:=0;
+            v_resultstr := '添加成功';
+            p_msg := '添加成功';
+          else
+            v_result:=-66;
+            v_resultstr := '井数许可超限';
+            p_msg := '井数许可超限';
+          end if;
+        else
+          select substr(v.path||'/'||t.devicename||'抽油机',2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_device t2
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave)
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
+          v_result:=-22;
+          v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+          p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+        end if;
+    end if;
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+  Exception
+    When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_device;
+/
+
 CREATE OR REPLACE PROCEDURE prd_save_deviceOperationLog (
   v_time in varchar2,
   v_wellName in varchar2,
@@ -257,7 +699,7 @@ CREATE OR REPLACE PROCEDURE prd_save_deviceOperationLog (
   ) is
   p_msg varchar2(3000) := 'error';
 begin
-  insert into tbl_deviceoperationlog (createtime,wellname,devicetype,action,user_id,loginip,remark)
+  insert into tbl_deviceoperationlog (createtime,devicename,devicetype,action,user_id,loginip,remark)
   values(
          to_date(v_time,'yyyy-mm-dd hh24:mi:ss'),
          v_wellName,
@@ -275,303 +717,6 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_deviceOperationLog;
-/
-
-CREATE OR REPLACE PROCEDURE prd_save_pcpalarminfo (
-  v_wellName in varchar2,
-  v_deviceType in number,
-  v_alarmTime in varchar2,
-  v_itemName in varchar2,
-  v_alarmType in number,
-  v_alarmValue in number,
-  v_alarmInfo in varchar2,
-  v_alarmLimit in number,
-  v_hystersis in number,
-  v_alarmLevel in number,
-  v_isSendMessage in number,
-  v_isSendMail in number
-  ) is
-  p_msg varchar2(3000) := 'error';
-  counts number :=0;
-  p_wellid number :=0;
-begin
-  select count(1) into counts from tbl_pcpalarminfo_hist t
-  where t.wellid=( select t2.id from tbl_pcpdevice t2 where t2.wellname=v_wellName and t2.devicetype=v_deviceType )
-  and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
-  and t.itemname=v_itemName;
-  select t.id into p_wellid from tbl_pcpdevice t where t.wellname=v_wellName and t.devicetype=v_deviceType ;
-  if counts=0 and p_wellid>0 then
-    insert into tbl_pcpalarminfo_hist (wellid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
-    hystersis,alarmlevel,issendmessage,issendmail)
-    values(
-         p_wellid,
-         to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
-         v_itemName,
-         v_alarmType,
-         v_alarmValue,
-         v_alarmInfo,
-         v_alarmLimit,
-         v_hystersis,
-         v_alarmLevel,
-         v_isSendMessage,
-         v_isSendMail
-      );
-    commit;
-    p_msg := '插入成功';
-  elsif counts>0 then
-    update tbl_pcpalarminfo_hist t set t.alarmtype=v_alarmType,alarmvalue=v_alarmValue,
-    alarminfo=v_alarmInfo,alarmlimit=v_alarmLimit,hystersis=v_hystersis,alarmlevel=v_alarmLevel,
-    issendmessage=v_isSendMessage,issendmail=v_isSendMail
-    where t.wellid=p_wellid
-    and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
-    and t.itemname=v_itemName;
-    commit;
-    p_msg := '更新成功';
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_pcpalarminfo;
-/
-
-CREATE OR REPLACE PROCEDURE prd_save_pcpdevice (
-                                                    v_orgId  in NUMBER,
-                                                    v_wellName    in varchar2,
-                                                    v_devicetype in NUMBER,
-                                                    v_applicationScenariosName    in varchar2,
-                                                    v_instance    in varchar2,
-                                                    v_displayInstance    in varchar2,
-                                                    v_reportInstance    in varchar2,
-                                                    v_alarmInstance    in varchar2,
-                                                    v_tcpType    in varchar2,
-                                                    v_signInId    in varchar2,
-                                                    v_ipPort    in varchar2,
-                                                    v_slave   in varchar2,
-                                                    v_peakDelay in NUMBER,
-                                                    v_videoUrl1   in varchar2,
-                                                    v_videoKeyName1   in varchar2,
-                                                    v_videoUrl2   in varchar2,
-                                                    v_videoKeyName2   in varchar2,
-                                                    v_status in NUMBER,
-                                                    v_sortNum  in NUMBER,
-                                                    v_productionData in varchar2,
-                                                    v_isCheckout in NUMBER,
-                                                    v_license in NUMBER,
-                                                    v_result out NUMBER,
-                                                    v_resultstr out varchar2) as
-  wellcount number :=0;
-  wellId number :=0;
-  othercount number :=0;
-  otherrpccount number :=0;
-  otherpcpcount number :=0;
-  rpcTotalCount number :=0;
-  pcpTotalCount number :=0;
-  totalCount number :=0;
-  otherDeviceAllPath varchar2(3000) := '';
-  p_msg varchar2(3000) := 'error';
-begin
-  select count(1) into wellcount from tbl_pcpdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
-  select count(1) into rpcTotalCount from tbl_rpcdevice t;
-  select count(1) into pcpTotalCount from tbl_pcpdevice t;
-  totalCount :=rpcTotalCount+pcpTotalCount;
-  if v_isCheckout=0 then
-    if wellcount>0 then
-      select t.id into wellId from tbl_pcpdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
-      --判断signinid和slave是否已存在
-      select count(1) into otherpcpcount from tbl_pcpdevice t
-      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
-        and t.id<>wellId;
-      select count(1) into otherrpccount from tbl_rpcdevice t
-      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-      othercount:=otherrpccount+otherpcpcount;
-      if othercount=0 then
-        Update tbl_pcpdevice t
-        Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
-          t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-          t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
-          t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
-          t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
-          t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
-          t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
-          t.videourl1=v_videourl1,t.videokeyid1=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName1 and rownum=1),
-          t.videourl2=v_videourl2,t.videokeyid2=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName2 and rownum=1),
-          t.status=v_status,t.sortnum=v_sortNum,
-          t.productiondata=v_productionData,
-          t.productiondataupdatetime=sysdate
-        Where t.wellName=v_wellName and t.orgid=v_orgId;
-        commit;
-        v_result:=1;
-        v_resultstr := '修改成功';
-        p_msg := '修改成功';
-      else
-        if otherpcpcount>0 then
-          select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_pcpdevice t2
-            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-            and to_number(t2.slave)=to_number(v_slave)
-            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
-            and t2.id<>wellId);
-        elsif otherrpccount>0 then
-          select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_rpcdevice t2
-            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-            and to_number(t2.slave)=to_number(v_slave)
-            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
-          );
-        end if;
-        v_result:=-22;
-        v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-        p_msg := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-      end if;
-    elsif wellcount=0 then
-      --判断signinid和slave是否已存在
-        select count(1) into otherpcpcount from tbl_pcpdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        select count(1) into otherrpccount from tbl_rpcdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        othercount:=otherrpccount+otherpcpcount;
-        if othercount=0 then
-          if totalCount<v_license then
-            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,productiondataupdatetime)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,sysdate);
-            commit;
-            update tbl_pcpdevice t
-            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
-                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
-                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
-                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
-                t.videokeyid1=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName1 and rownum=1),
-                t.videokeyid2=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName2 and rownum=1)
-            Where t.wellName=v_wellName and t.orgid=v_orgId;
-            commit;
-            v_result:=0;
-            v_resultstr := '添加成功';
-            p_msg := '添加成功';
-          else
-            v_result:=-66;
-            v_resultstr := '井数许可超限';
-            p_msg := '井数许可超限';
-          end if;
-        else
-          if otherpcpcount>0 then
-             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          elsif otherrpccount>0 then
-             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          end if;
-          v_result:=-22;
-          v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-          p_msg := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-        end if;
-    end if;
-  else
-    p_msg := '需要校验';
-    if wellcount>0 then
-      v_result:=-33;
-      v_resultstr := '所选组织下存在同名设备';
-      p_msg := '所选组织下存在同名设备';
-    elsif wellcount=0 then
-      --判断signinid和slave是否已存在
-        select count(1) into otherpcpcount from tbl_pcpdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        select count(1) into otherrpccount from tbl_rpcdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        othercount:=otherrpccount+otherpcpcount;
-        if othercount=0 then
-          if totalCount<v_license then
-            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,productiondataupdatetime)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,sysdate);
-            commit;
-            update tbl_pcpdevice t
-            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
-                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
-                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
-                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
-                t.videokeyid1=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName1 and rownum=1),
-                t.videokeyid2=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName2 and rownum=1)
-            Where t.wellName=v_wellName and t.orgid=v_orgId;
-            commit;
-            v_result:=0;
-            v_resultstr := '添加成功';
-            p_msg := '添加成功';
-          else
-            v_result:=-66;
-            v_resultstr := '井数许可超限';
-            p_msg := '井数许可超限';
-          end if;
-        else
-          if otherpcpcount>0 then
-             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          elsif otherrpccount>0 then
-             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          end if;
-          v_result:=-22;
-          v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-          p_msg := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-        end if;
-    end if;
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-  Exception
-    When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_pcpdevice;
 /
 
 CREATE OR REPLACE PROCEDURE prd_save_pcp_rpm (
@@ -608,7 +753,7 @@ begin
           t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
           t.realtimeliquidweightproduction=v_LiquidWeightProduction,
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
-      where t.wellid=v_wellId;
+      where t.deviceid=v_wellId;
   commit;
   update tbl_pcpacqdata_hist t
       set t.rpm=v_RPM,
@@ -628,7 +773,7 @@ begin
           t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
           t.realtimeliquidweightproduction=v_LiquidWeightProduction,
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
-      where t.wellid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
+      where t.deviceid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
   commit;
   p_msg := '修改成功';
   dbms_output.put_line('p_msg:' || p_msg);
@@ -703,13 +848,13 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdaily (
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
 begin
-  select count(*) into p_count from tbl_pcpdailycalculationdata t where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
+  select count(*) into p_count from tbl_pcpdailycalculationdata t where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
   if p_count>0 then
     p_msg := '记录存在';
     update tbl_pcpdailycalculationdata t
     set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
-    where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
+    where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
     commit;
     if v_recordCount>0 then
       update tbl_pcpdailycalculationdata t
@@ -724,14 +869,14 @@ begin
           t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
           t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
           t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
-       where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
+       where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd');
        commit;
     end if;
     p_msg := '更新成功';
   elsif p_count=0 then
     p_msg := '记录不存在';
     insert into tbl_pcpdailycalculationdata(
-           wellid,caldate,resultstatus,extendeddays,rpm,
+           deviceid,caldate,resultstatus,extendeddays,rpm,
     theoreticalproduction,
     liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
     liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
@@ -801,6 +946,120 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_pcp_rpmdailyrecal;
+/
+
+CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmtimingtotal (
+  v_wellId in number,v_ResultStatus in number,
+  v_ExtendedDays in number,
+  v_rpm in number,
+  v_TheoreticalProduction in number,
+  v_liquidVolumetricProduction in number,v_oilVolumetricProduction in number,v_waterVolumetricProduction in number,v_volumewatercut in number,
+  v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
+  v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
+  v_systemEfficiency in number,v_energyper100mlift in number,
+  v_pumpSettingDepth in number,v_producingfluidLevel in number,v_submergence in number,
+  v_casingPressure in number,v_tubingPressure in number,
+  v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
+  v_commRange in tbl_pcptimingcalculationdata.commrange%TYPE,
+  v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
+  v_runRange in tbl_pcptimingcalculationdata.runrange%TYPE,
+  v_calTime in varchar2,v_recordCount in number
+  ) is
+  p_msg varchar2(3000) := 'error';
+  p_count number:=0;
+begin
+  select count(*) into p_count from tbl_pcptimingcalculationdata t where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+  if p_count>0 then
+    p_msg := '记录存在';
+    update tbl_pcptimingcalculationdata t
+    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
+    t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
+    where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+    commit;
+    if v_recordCount>0 then
+      update tbl_pcptimingcalculationdata t
+      set t.resultstatus=v_ResultStatus,t.extendeddays=v_ExtendedDays,
+          t.rpm=v_rpm,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
+          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
+          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
+          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
+          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+          t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
+       where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+       commit;
+       update tbl_pcptimingcalculationdata t set 
+             (
+             t.theoreticalproduction,
+             t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,
+             t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,
+             t.pumpeff,t.pumpeff1,t.pumpeff2,
+             t.systemefficiency,t.energyper100mlift,
+             t.submergence,
+             t.rpm
+             ) 
+             =( 
+             select 
+             t2.theoreticalproduction,
+             t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
+             t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,
+             t2.pumpeff,t2.pumpeff1,t2.pumpeff2,
+             t2.systemefficiency,t2.energyper100mlift,
+             t2.submergence,
+             t2.rpm
+             from tbl_pcpacqdata_hist t2 
+             where t2.id=(
+                   select v2.id from
+                   (select v.id,rownum r from
+                   (select t3.id from  tbl_pcpacqdata_hist t3  
+                   where t3.commstatus=1 and t3.resultstatus=1 
+                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   and t3.deviceid=v_wellId
+                   order by t3.acqtime desc) v 
+                   ) v2
+                   where r=1
+             )
+             and t2.deviceid=v_wellId )
+             where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+        commit;
+    end if;
+    p_msg := '更新成功';
+  elsif p_count=0 then
+    p_msg := '记录不存在';
+    insert into tbl_pcptimingcalculationdata(
+           deviceid,caltime,resultstatus,extendeddays,rpm,
+    theoreticalproduction,
+    liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
+    liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
+    pumpeff,pumpeff1,pumpeff2,
+    systemefficiency,energyper100mlift,
+    producingfluidlevel,casingpressure,tubingpressure,
+    commstatus,commtime,commtimeefficiency,commrange,
+    runstatus,runtime,runtimeefficiency,runrange
+    )values(
+    v_wellId,to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss'),
+    v_ResultStatus,v_ExtendedDays,v_rpm,
+    v_TheoreticalProduction,
+    v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_volumewatercut,
+    v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
+    v_pumpEff,v_pumpEff1,v_pumpEff2,
+    v_systemEfficiency,v_energyper100mlift,
+    v_producingfluidLevel,v_casingPressure,v_tubingPressure,
+    v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
+    v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
+    );
+    commit;
+    p_msg := '添加成功';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_pcp_rpmtimingtotal;
 /
 
 CREATE OR REPLACE PROCEDURE prd_save_pumpingmodel (
@@ -919,311 +1178,6 @@ Exception
 end prd_save_resourcemonitoring;
 /
 
-CREATE OR REPLACE PROCEDURE prd_save_rpcalarminfo (
-  v_wellName in varchar2,
-  v_deviceType in number,
-  v_alarmTime in varchar2,
-  v_itemName in varchar2,
-  v_alarmType in number,
-  v_alarmValue in number,
-  v_alarmInfo in varchar2,
-  v_alarmLimit in number,
-  v_hystersis in number,
-  v_alarmLevel in number,
-  v_isSendMessage in number,
-  v_isSendMail in number
-  ) is
-  p_msg varchar2(3000) := 'error';
-  counts number :=0;
-  p_wellid number :=0;
-begin
-  select count(1) into counts from tbl_rpcalarminfo_hist t
-  where t.wellid=( select t2.id from tbl_rpcdevice t2 where t2.wellname=v_wellName and t2.devicetype=v_deviceType )
-  and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
-  and t.itemname=v_itemName;
-  select t.id into p_wellid from tbl_rpcdevice t where t.wellname=v_wellName and t.devicetype=v_deviceType ;
-  if counts=0 and p_wellid>0 then
-    insert into tbl_rpcalarminfo_hist (wellid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
-    hystersis,alarmlevel,issendmessage,issendmail)
-    values(
-         p_wellid,
-         to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
-         v_itemName,
-         v_alarmType,
-         v_alarmValue,
-         v_alarmInfo,
-         v_alarmLimit,
-         v_hystersis,
-         v_alarmLevel,
-         v_isSendMessage,
-         v_isSendMail
-      );
-    commit;
-    p_msg := '插入成功';
-  elsif counts>0 then
-    update tbl_rpcalarminfo_hist t set t.alarmtype=v_alarmType,alarmvalue=v_alarmValue,
-    alarminfo=v_alarmInfo,alarmlimit=v_alarmLimit,hystersis=v_hystersis,alarmlevel=v_alarmLevel,
-    issendmessage=v_isSendMessage,issendmail=v_isSendMail
-    where t.wellid=p_wellid
-    and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
-    and t.itemname=v_itemName;
-    commit;
-    p_msg := '更新成功';
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpcalarminfo;
-/
-
-CREATE OR REPLACE PROCEDURE prd_save_rpcdevice (
-                                                    v_orgId  in NUMBER,
-                                                    v_wellName    in varchar2,
-                                                    v_devicetype in NUMBER,
-                                                    v_applicationScenariosName    in varchar2,
-                                                    v_instance    in varchar2,
-                                                    v_displayInstance    in varchar2,
-                                                    v_reportInstance    in varchar2,
-                                                    v_alarmInstance    in varchar2,
-                                                    v_tcpType    in varchar2,
-                                                    v_signInId    in varchar2,
-                                                    v_ipPort    in varchar2,
-                                                    v_slave   in varchar2,
-                                                    v_peakDelay in NUMBER,
-                                                    v_videoUrl1   in varchar2,
-                                                    v_videoKeyName1   in varchar2,
-                                                    v_videoUrl2   in varchar2,
-                                                    v_videoKeyName2   in varchar2,
-                                                    v_status in NUMBER,
-                                                    v_sortNum  in NUMBER,
-                                                    v_productionData in varchar2,
-                                                    v_manufacturer in varchar2,
-                                                    v_model in varchar2,
-                                                    v_stroke  in NUMBER,
-                                                    v_balanceinfo in varchar2,
-                                                    v_isCheckout in NUMBER,
-                                                    v_license in NUMBER,
-                                                    v_result out NUMBER,
-                                                    v_resultstr out varchar2) as
-  wellcount number :=0;
-  wellId number :=0;
-  othercount number :=0;
-  otherrpccount number :=0;
-  otherpcpcount number :=0;
-  rpcTotalCount number :=0;
-  pcpTotalCount number :=0;
-  totalCount number :=0;
-  otherDeviceAllPath varchar2(3000) := '';
-  p_msg varchar2(3000) := 'error';
-begin
-  select count(1) into wellcount from tbl_rpcdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
-  select count(1) into rpcTotalCount from tbl_rpcdevice t;
-  select count(1) into pcpTotalCount from tbl_pcpdevice t;
-  totalCount :=rpcTotalCount+pcpTotalCount;
-  if v_isCheckout=0 then
-    if wellcount>0 then
-      select t.id into wellId from tbl_rpcdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
-      --判断signinid和slave是否已存在
-      select count(1) into otherrpccount from tbl_rpcdevice t
-      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
-        and t.id<>wellId;
-      select count(1) into otherpcpcount from tbl_pcpdevice t
-      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-      othercount:=otherrpccount+otherpcpcount;
-      if othercount=0 then
-        Update tbl_rpcdevice t
-        Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
-          t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-          t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
-          t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
-          t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
-          t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-          t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
-          t.videourl1=v_videourl1,t.videokeyid1=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName1 and rownum=1),
-          t.videourl2=v_videourl2,t.videokeyid2=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName2 and rownum=1),
-          t.status=v_status, t.sortnum=v_sortNum,
-          t.productiondata=v_productionData,
-          t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model),
-          t.stroke=v_stroke,t.balanceinfo=v_balanceinfo,
-          t.productiondataupdatetime=sysdate
-        Where t.wellName=v_wellName and t.orgid=v_orgId;
-        commit;
-        v_result:=1;
-        v_resultstr := '修改成功';
-        p_msg := '修改成功';
-      else
-        if otherrpccount>0 then
-          select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_rpcdevice t2
-            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-            and to_number(t2.slave)=to_number(v_slave)
-            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
-            and t2.id<>wellId);
-        elsif otherpcpcount>0 then
-          select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_pcpdevice t2
-            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-            and to_number(t2.slave)=to_number(v_slave)
-            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
-          );
-        end if;
-        v_result:=-22;
-        v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-        p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-      end if;
-    elsif wellcount=0 then
-      --判断signinid和slave是否已存在
-        select count(1) into otherrpccount from tbl_rpcdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        select count(1) into otherpcpcount from tbl_pcpdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        othercount:=otherrpccount+otherpcpcount;
-        if othercount=0 then
-          if totalCount<v_license then
-            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,stroke,balanceinfo,productiondataupdatetime)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo,sysdate);
-            commit;
-            update tbl_rpcdevice t
-            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
-                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
-                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
-                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-                t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model),
-                t.videokeyid1=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName1 and rownum=1),
-                t.videokeyid2=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName2 and rownum=1)
-            Where t.wellName=v_wellName and t.orgid=v_orgId;
-            commit;
-            v_result:=0;
-            v_resultstr := '添加成功';
-            p_msg := '添加成功';
-          else
-            v_result:=-66;
-            v_resultstr := '井数许可超限';
-            p_msg := '井数许可超限';
-          end if;
-        else
-          if otherrpccount>0 then
-             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          elsif otherpcpcount>0 then
-             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-           end if;
-          v_result:=-22;
-          v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-          p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-        end if;
-    end if;
-  else
-    p_msg := '需要校验';
-    if wellcount>0 then
-      v_result:=-33;
-      v_resultstr := '所选组织下存在同名设备';
-      p_msg := '所选组织下存在同名设备';
-    elsif wellcount=0 then
-      --判断signinid和slave是否已存在
-        select count(1) into otherrpccount from tbl_rpcdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        select count(1) into otherpcpcount from tbl_pcpdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        othercount:=otherrpccount+otherpcpcount;
-        if othercount=0 then
-          if totalCount<v_license then
-            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl1,videourl2,status,Sortnum,productiondata,stroke,balanceinfo,productiondataupdatetime)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl1,v_videourl2,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo,sysdate);
-            commit;
-            update tbl_rpcdevice t
-            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
-                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
-                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
-                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-                t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model),
-                t.videokeyid1=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName1 and rownum=1),
-                t.videokeyid2=(select t2.id from tbl_videokey t2 where t2.account=v_videoKeyName2 and rownum=1)
-            Where t.wellName=v_wellName and t.orgid=v_orgId;
-            commit;
-            v_result:=0;
-            v_resultstr := '添加成功';
-            p_msg := '添加成功';
-          else
-            v_result:=-66;
-            v_resultstr := '井数许可超限';
-            p_msg := '井数许可超限';
-          end if;
-        else
-          if otherrpccount>0 then
-             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          elsif otherpcpcount>0 then
-             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-           end if;
-          v_result:=-22;
-          v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-          p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-        end if;
-    end if;
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-  Exception
-    When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpcdevice;
-/
-
 CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_wellId in NUMBER,v_AcqTime in varchar2,
        v_productionData in varchar2,v_balanceInfo in varchar2,v_pumpingModelId in NUMBER,
@@ -1322,7 +1276,7 @@ begin
           t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
           t.realtimeliquidweightproduction=v_LiquidWeightProduction,
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
-      where t.wellid=v_wellId;
+      where t.deviceid=v_wellId;
   commit;
   update tbl_rpcacqdata_hist t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
@@ -1368,7 +1322,7 @@ begin
           t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
           t.realtimeliquidweightproduction=v_LiquidWeightProduction,
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
-      where t.wellid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
+      where t.deviceid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
   commit;
   p_msg := '修改成功';
   dbms_output.put_line('p_msg:' || p_msg);
@@ -1501,13 +1455,13 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
 begin
-  select count(*) into p_count from tbl_rpcdailycalculationdata t where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
+  select count(*) into p_count from tbl_rpcdailycalculationdata t where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
   if p_count>0 then
     p_msg := '记录存在';
     update tbl_rpcdailycalculationdata t
     set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
-    where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
+    where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
     commit;
 
     if v_recordCount>0 then
@@ -1528,7 +1482,7 @@ begin
           t.submergence=v_submergence,
           t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,
           t.rpm=v_rpm
-      where t.wellid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
+      where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
       commit;
     end if;
 
@@ -1536,7 +1490,7 @@ begin
   elsif p_count=0 then
     p_msg := '记录不存在';
     insert into tbl_rpcdailycalculationdata(
-           wellid,caldate,resultstatus,resultcode,resultstring,extendeddays,
+           deviceid,caldate,resultstatus,resultcode,resultstring,extendeddays,
     stroke,spm,fmax,fmin,fullnesscoefficient,
     theoreticalproduction,
     liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
@@ -1629,6 +1583,151 @@ Exception
 end prd_save_rpc_diagramdailyrecal;
 /
 
+CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramtimingtotal (
+  v_wellId in number,v_ResultStatus in number,
+  v_resultcode in number,v_resultString in tbl_rpcdailycalculationdata.resultstring%TYPE,
+  v_ExtendedDays in number,
+  v_Stroke in number,v_SPM in number,
+  v_FMax in number,v_FMin in number,v_fullnessCoefficient in number,
+  v_TheoreticalProduction in number,
+  v_liquidVolumetricProduction in number,v_oilVolumetricProduction in number,v_waterVolumetricProduction in number,v_volumewatercut in number,
+  v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
+  v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
+  v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
+  v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
+  v_pumpSettingDepth in number,
+  v_producingfluidLevel in number,v_calcProducingfluidLevel in number,v_levelDifferenceValue in number,
+  v_submergence in number,
+  v_casingPressure in number,v_tubingPressure in number,
+  v_rpm in number,
+
+  v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
+  v_commRange in tbl_rpctimingcalculationdata.commrange%TYPE,
+  v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
+  v_runRange in tbl_rpctimingcalculationdata.runrange%TYPE,
+  v_calTime in varchar2,
+  v_recordCount in number
+  ) is
+  p_msg varchar2(3000) := 'error';
+  p_count number:=0;
+begin
+  select count(1) into p_count from tbl_rpctimingcalculationdata t where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+  if p_count>0 then
+    p_msg := '记录存在';
+    update tbl_rpctimingcalculationdata t
+    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
+    t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
+    where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+    commit;
+
+    if v_recordCount>0 then
+      update tbl_rpctimingcalculationdata t
+      set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
+          t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
+          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
+          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
+          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
+          t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
+          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
+          t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
+          t.pumpsettingdepth=v_pumpSettingDepth,
+          t.producingfluidlevel=v_producingfluidLevel,t.calcproducingfluidlevel=v_calcProducingfluidLevel,t.leveldifferencevalue=v_levelDifferenceValue,
+          t.submergence=v_submergence,
+          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,
+          t.rpm=v_rpm
+      where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+      commit;
+      --更新实时计算数据
+      update tbl_rpctimingcalculationdata t set 
+             (
+             t.resultcode,t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,
+             t.theoreticalproduction,
+             t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,
+             t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,
+             t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,
+             t.wattdegreebalance,t.idegreebalance,t.deltaradius,
+             t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,
+             t.calcProducingfluidLevel,t.levelDifferenceValue,
+             t.submergence,
+             t.rpm
+             ) 
+             =( 
+             select 
+             t2.resultcode,t2.stroke,t2.spm,t2.fmax,t2.fmin,t2.fullnesscoefficient,
+             t2.theoreticalproduction,
+             t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
+             t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,
+             t2.pumpeff,t2.pumpeff1,t2.pumpeff2,t2.pumpeff3,t2.pumpeff4,
+             t2.wattdegreebalance,t2.idegreebalance,t2.deltaradius,
+             t2.surfacesystemefficiency,t2.welldownsystemefficiency,t2.systemefficiency,t2.energyper100mlift,
+             t2.calcProducingfluidLevel,t2.levelDifferenceValue,
+             t2.submergence,
+             t2.rpm
+             from tbl_rpcacqdata_hist t2 
+             where t2.id=(
+                   select v2.id from
+                   (select v.id,rownum r from
+                   (select t3.id from  tbl_rpcacqdata_hist t3  
+                   where t3.commstatus=1 and t3.resultstatus=1 
+                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   and t3.deviceid=v_wellId
+                   order by t3.acqtime desc) v
+                   ) v2
+                   where r=1
+             )
+             and t2.deviceid=v_wellId )
+             where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
+       commit;
+    end if;
+    p_msg := '更新成功';
+  elsif p_count=0 then
+    p_msg := '记录不存在';
+    insert into tbl_rpctimingcalculationdata(
+           deviceid,caltime,resultstatus,resultcode,resultstring,extendeddays,
+    stroke,spm,fmax,fmin,fullnesscoefficient,
+    theoreticalproduction,
+    liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
+    liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
+    pumpeff,pumpeff1,pumpeff2,pumpeff3,pumpeff4,
+    welldownsystemefficiency,surfacesystemefficiency,systemefficiency,energyper100mlift,
+    idegreebalance,wattdegreebalance,deltaradius,
+    pumpsettingdepth,
+    producingfluidlevel,calcproducingfluidlevel,leveldifferencevalue,
+    submergence,
+    casingpressure,tubingpressure,
+    commstatus,commtime,commtimeefficiency,commrange,
+    runstatus,runtime,runtimeefficiency,runrange
+    )values(
+    v_wellId,to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss'),
+    v_ResultStatus,v_resultcode,v_resultString,v_ExtendedDays,
+    v_Stroke,v_SPM,v_FMax,v_FMin,v_fullnessCoefficient,
+    v_TheoreticalProduction,
+    v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_volumewatercut,
+    v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
+    v_pumpEff,v_pumpEff1,v_pumpEff2,v_pumpEff3,v_pumpEff4,
+    v_wellDownSystemEfficiency,v_surfaceSystemEfficiency,v_systemEfficiency,v_energyper100mlift,
+    v_iDegreeBalance,v_wattDegreeBalance,v_DeltaRadius,
+    v_pumpSettingDepth,
+    v_producingfluidLevel,v_calcProducingfluidLevel,v_levelDifferenceValue,
+    v_submergence,
+    v_casingPressure,v_tubingPressure,
+    v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
+    v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
+    );
+    commit;
+    p_msg := '添加成功';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_rpc_diagramtimingtotal;
+/
+
 CREATE OR REPLACE PROCEDURE prd_save_smsdevice (v_orgname   in varchar2,
                                                     v_wellName    in varchar2,
                                                     v_instance    in varchar2,
@@ -1649,23 +1748,23 @@ begin
   if orgcount=1 and otherCount=0 then
     p_sql:='select t.org_id  from tbl_org t where t.org_name='''||v_orgname||''' and t.org_id in ('||v_orgId||')';
     EXECUTE IMMEDIATE p_sql into smsOrgId;
-    select count(*) into wellcount from tbl_smsdevice t where t.wellName=v_wellName;
+    select count(*) into wellcount from tbl_smsdevice t where t.deviceName=v_wellName;
     if wellcount>0 then
       Update tbl_smsdevice t set
                t.orgid=smsOrgId,
                t.instancecode=(select t2.code from tbl_protocolsmsinstance t2 where t2.name=v_instance and rownum=1),
                t.signinid=v_signInId,
                t.sortnum=v_sortNum
-           Where t.wellName=v_wellName;
+           Where t.deviceName=v_wellName;
            commit;
            p_msg := '修改成功';
     elsif wellcount=0 then
-      insert into tbl_smsdevice(orgId,wellName,signinid,Sortnum)
+      insert into tbl_smsdevice(orgId,deviceName,signinid,Sortnum)
       values(smsOrgId,v_wellName,v_signInId,v_sortNum);
       commit;
       update tbl_smsdevice t set
              t.instancecode=(select t2.code from tbl_protocolsmsinstance t2 where t2.name=v_instance and rownum=1)
-      Where t.wellName=v_wellName;
+      Where t.deviceName=v_wellName;
       commit;
       p_msg := '添加成功';
     end if;
@@ -1708,10 +1807,47 @@ Exception
 end prd_save_systemLog;
 /
 
-CREATE OR REPLACE PROCEDURE prd_update_pcpdevice ( v_recordId in NUMBER,
-                                                    v_wellName    in varchar2,
+CREATE OR REPLACE PROCEDURE prd_update_auxiliarydevice (
+                                                       v_id in number,
+                                                       v_name in varchar2,
+                                                       v_type in number,
+                                                       v_model in varchar2,
+                                                       v_remark in varchar2,
+                                                       v_sort in number,
+                                                       v_result out NUMBER,
+                                                       v_resultstr out varchar2
+                                                       ) is
+  p_msg varchar2(3000) := 'error';
+  p_typeName varchar2(3000) := '泵辅件';
+  counts number :=0;
+begin
+  select count(1) into counts from tbl_auxiliarydevice t where t.name=v_name and t.type=v_type and t.model=v_model and t.id<>v_id;
+  if counts=0 then
+    update tbl_auxiliarydevice t set t.remark=v_remark,t.sort=v_sort,t.name=v_name,t.model=v_model,t.type=v_type
+    where t.id=v_id;
+    commit;
+    v_result:=1;
+    v_resultstr := '修改成功';
+    p_msg := '修改成功';
+  else
+    if v_type<>0 then
+      p_typeName:='管辅件';
+    end if;
+    v_result:=-22;
+    v_resultstr :='规格型号:'||v_model||',名称:'||v_name||'的'||p_typeName||'设备已存在，保存无效';
+    p_msg :='规格型号:'||v_model||',名称:'||v_name||'的'||p_typeName||'设备已存在，保存无效';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_update_auxiliarydevice;
+/
+
+CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
+                                                    v_deviceName    in varchar2,
                                                     v_devicetype in NUMBER,
-                                                    v_applicationScenariosName    in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -1727,35 +1863,27 @@ CREATE OR REPLACE PROCEDURE prd_update_pcpdevice ( v_recordId in NUMBER,
                                                     v_resultstr out varchar2) as
   wellcount number :=0;
   othercount number :=0;
-  otherrpccount number :=0;
-  otherpcpcount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
   --验证权限
-  select count(1) into wellcount from tbl_pcpdevice t
-  where t.wellname=v_wellName and t.id<>v_recordId
-  and t.orgid=( select t2.orgid from tbl_pcpdevice t2 where t2.id=v_recordId);
+  select count(1) into wellcount from tbl_device t
+  where t.devicename=v_deviceName and t.id<>v_recordId
+  and t.orgid=( select t2.orgid from tbl_device t2 where t2.id=v_recordId);
     if wellcount=0 then
-        select count(1) into otherpcpcount from tbl_pcpdevice t
+        select count(1) into othercount from tbl_device t
         where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
         and to_number(t.slave)=to_number(v_slave)
         and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
         and t.id<>v_recordId;
-        select count(1) into otherrpccount from tbl_rpcdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        othercount:=otherrpccount+otherpcpcount;
         if v_recordId >0 and othercount=0 then
-          Update tbl_pcpdevice t
-           Set t.wellname=v_wellName,
+          Update tbl_device t
+           Set t.devicename=v_deviceName,
                t.devicetype=v_devicetype,
-               t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-               t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
-               t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
-               t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=1 and rownum=1),
-               t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
+               t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
+               t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
+               t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
+               t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1),
                t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
                t.sortnum=v_sortNum,
@@ -1766,43 +1894,31 @@ begin
            v_resultstr := '修改成功';
            p_msg := '修改成功';
         elsif othercount>0 then
-          if otherpcpcount>0 then
-             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
-                 and t2.id<>v_recordId);
-          elsif otherrpccount>0 then
-             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          end if;
+          select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          from tbl_org org
+          start with org.org_parent=0
+          connect by   org.org_parent= prior org.org_id) v
+          where t.orgid=v.org_id
+          and t.id=(select t2.id from tbl_device t2
+              where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+              and to_number(t2.slave)=to_number(v_slave)
+              and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
+              and t2.id<>v_recordId);
           v_result:=-22;
-          v_resultstr :='设备'||v_wellName||'注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
-          p_msg := '设备'||v_wellName||'注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
+          v_resultstr :='设备'||v_deviceName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
+          p_msg := '设备'||v_deviceName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
         end if;
     else
       v_result:=-33;
-      v_resultstr :='同组织下已存在设备'||v_wellName||'，保存无效';
-      p_msg := '同组织下已存在设备'||v_wellName||'，保存无效';
+      v_resultstr :='同组织下已存在设备'||v_deviceName||'，保存无效';
+      p_msg := '同组织下已存在设备'||v_deviceName||'，保存无效';
     end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
-end prd_update_pcpdevice;
+end prd_update_device;
 /
 
 CREATE OR REPLACE PROCEDURE prd_update_pumpingmodel (
@@ -1848,103 +1964,6 @@ Exception
 end prd_update_pumpingmodel;
 /
 
-CREATE OR REPLACE PROCEDURE prd_update_rpcdevice ( v_recordId in NUMBER,
-                                                    v_wellName    in varchar2,
-                                                    v_devicetype in NUMBER,
-                                                    v_applicationScenariosName    in varchar2,
-                                                    v_instance    in varchar2,
-                                                    v_displayInstance    in varchar2,
-                                                    v_reportInstance    in varchar2,
-                                                    v_alarmInstance    in varchar2,
-                                                    v_tcpType    in varchar2,
-                                                    v_signInId    in varchar2,
-                                                    v_ipPort    in varchar2,
-                                                    v_slave   in varchar2,
-                                                    v_peakDelay in NUMBER,
-                                                    v_status in NUMBER,
-                                                    v_sortNum  in NUMBER,
-                                                    v_result out NUMBER,
-                                                    v_resultstr out varchar2) as
-  wellcount number :=0;
-  othercount number :=0;
-  otherrpccount number :=0;
-  otherpcpcount number :=0;
-  otherDeviceAllPath varchar2(3000) := '';
-  p_msg varchar2(3000) := 'error';
-begin
-  --验证权限
-  select count(1) into wellcount from tbl_rpcdevice t
-  where t.wellname=v_wellName and t.id<>v_recordId
-  and t.orgid=( select t2.orgid from tbl_rpcdevice t2 where t2.id=v_recordId);
-    if wellcount=0 then
-        select count(1) into otherrpccount from tbl_rpcdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
-        and t.id<>v_recordId;
-        select count(1) into otherpcpcount from tbl_pcpdevice t
-        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-        and to_number(t.slave)=to_number(v_slave)
-        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
-        othercount:=otherrpccount+otherpcpcount;
-        if v_recordId >0 and othercount=0 then
-          Update tbl_rpcdevice t
-           Set t.wellname=v_wellName,
-               t.devicetype=v_devicetype,
-               t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-               t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
-               t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
-               t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and t2.devicetype=0 and rownum=1),
-               t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-               t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
-               t.status=v_status,
-               t.sortnum=v_sortNum,
-               t.productiondataupdatetime=sysdate
-           Where t.id=v_recordId;
-           commit;
-           v_result:=1;
-           v_resultstr := '修改成功';
-           p_msg := '修改成功';
-        elsif othercount>0 then
-          if otherrpccount>0 then
-             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
-                 and t2.id<>v_recordId);
-          elsif otherpcpcount>0 then
-             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-             from tbl_org org
-             start with org.org_parent=0
-             connect by   org.org_parent= prior org.org_id) v
-             where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2
-                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
-                 and to_number(t2.slave)=to_number(v_slave)
-                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
-          end if;
-          v_result:=-22;
-          v_resultstr :='设备'||v_wellName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
-          p_msg := '设备'||v_wellName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
-        end if;
-    else
-      v_result:=-33;
-      v_resultstr :='同组织下已存在设备'||v_wellName||'，保存无效';
-      p_msg := '同组织下已存在设备'||v_wellName||'，保存无效';
-    end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_update_rpcdevice;
-/
-
 CREATE OR REPLACE PROCEDURE prd_update_smsdevice (v_recordId   in NUMBER,
                                                     v_wellName    in varchar2,
                                                     v_instance    in varchar2,
@@ -1954,11 +1973,11 @@ CREATE OR REPLACE PROCEDURE prd_update_smsdevice (v_recordId   in NUMBER,
   p_msg varchar2(3000) := 'error';
 begin
   --验证权限
-  select count(1) into wellcount from tbl_smsdevice t where t.wellname=v_wellName and t.id<>v_recordId;
+  select count(1) into wellcount from tbl_smsdevice t where t.devicename=v_wellName and t.id<>v_recordId;
     if wellcount=0 then
         if v_recordId >0 then
           Update tbl_smsdevice t set
-               t.wellName=v_wellName,
+               t.devicename=v_wellName,
                t.instancecode=(select t2.code from tbl_protocolsmsinstance t2 where t2.name=v_instance and rownum=1),
                t.signinid=v_signInId,
                t.sortnum=v_sortNum
@@ -1973,338 +1992,4 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_update_smsdevice;
-/
-
-CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramtimingtotal (
-  v_wellId in number,v_ResultStatus in number,
-  v_resultcode in number,v_resultString in tbl_rpcdailycalculationdata.resultstring%TYPE,
-  v_ExtendedDays in number,
-  v_Stroke in number,v_SPM in number,
-  v_FMax in number,v_FMin in number,v_fullnessCoefficient in number,
-  v_TheoreticalProduction in number,
-  v_liquidVolumetricProduction in number,v_oilVolumetricProduction in number,v_waterVolumetricProduction in number,v_volumewatercut in number,
-  v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
-  v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,v_pumpEff3 in number,v_pumpEff4 in number,
-  v_wellDownSystemEfficiency in number,v_surfaceSystemEfficiency in number,v_systemEfficiency in number,v_energyper100mlift in number,
-  v_iDegreeBalance in number,v_wattDegreeBalance in number,v_DeltaRadius in number,
-  v_pumpSettingDepth in number,
-  v_producingfluidLevel in number,v_calcProducingfluidLevel in number,v_levelDifferenceValue in number,
-  v_submergence in number,
-  v_casingPressure in number,v_tubingPressure in number,
-  v_rpm in number,
-
-  v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
-  v_commRange in tbl_rpctimingcalculationdata.commrange%TYPE,
-  v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
-  v_runRange in tbl_rpctimingcalculationdata.runrange%TYPE,
-  v_calTime in varchar2,
-  v_recordCount in number
-  ) is
-  p_msg varchar2(3000) := 'error';
-  p_count number:=0;
-begin
-  select count(1) into p_count from tbl_rpctimingcalculationdata t where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
-  if p_count>0 then
-    p_msg := '记录存在';
-    update tbl_rpctimingcalculationdata t
-    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
-    t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
-    where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
-    commit;
-
-    if v_recordCount>0 then
-      update tbl_rpctimingcalculationdata t
-      set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
-          t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
-          t.theoreticalproduction=v_TheoreticalProduction,
-          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
-          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
-          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
-          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
-          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,t.pumpeff3=v_pumpEff3,t.pumpeff4=v_pumpEff4,
-          t.welldownsystemefficiency=v_wellDownSystemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,
-          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-          t.idegreebalance=v_iDegreeBalance,t.wattdegreebalance=v_wattDegreeBalance,t.deltaradius=v_DeltaRadius,
-          t.pumpsettingdepth=v_pumpSettingDepth,
-          t.producingfluidlevel=v_producingfluidLevel,t.calcproducingfluidlevel=v_calcProducingfluidLevel,t.leveldifferencevalue=v_levelDifferenceValue,
-          t.submergence=v_submergence,
-          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure,
-          t.rpm=v_rpm
-      where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
-      commit;
-      --更新实时计算数据
-      update tbl_rpctimingcalculationdata t set 
-             (
-             t.resultcode,t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,
-             t.theoreticalproduction,
-             t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,
-             t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,
-             t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,
-             t.wattdegreebalance,t.idegreebalance,t.deltaradius,
-             t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyper100mlift,
-             t.calcProducingfluidLevel,t.levelDifferenceValue,
-             t.submergence,
-             t.rpm
-             ) 
-             =( 
-             select 
-             t2.resultcode,t2.stroke,t2.spm,t2.fmax,t2.fmin,t2.fullnesscoefficient,
-             t2.theoreticalproduction,
-             t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
-             t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,
-             t2.pumpeff,t2.pumpeff1,t2.pumpeff2,t2.pumpeff3,t2.pumpeff4,
-             t2.wattdegreebalance,t2.idegreebalance,t2.deltaradius,
-             t2.surfacesystemefficiency,t2.welldownsystemefficiency,t2.systemefficiency,t2.energyper100mlift,
-             t2.calcProducingfluidLevel,t2.levelDifferenceValue,
-             t2.submergence,
-             t2.rpm
-             from tbl_rpcacqdata_hist t2 
-             where t2.id=(
-                   select max(t3.id) from  tbl_rpcacqdata_hist t3  
-                   where t3.commstatus=1 and t3.resultstatus=1 
-                   and t3.acqtime >= to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 
-                   and t3.acqtime < to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
-                   and t3.wellid=v_wellId
-             )
-             and t2.wellid=v_wellId )
-             where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
-       commit;
-    end if;
-    p_msg := '更新成功';
-  elsif p_count=0 then
-    p_msg := '记录不存在';
-    insert into tbl_rpctimingcalculationdata(
-           wellid,caltime,resultstatus,resultcode,resultstring,extendeddays,
-    stroke,spm,fmax,fmin,fullnesscoefficient,
-    theoreticalproduction,
-    liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
-    liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
-    pumpeff,pumpeff1,pumpeff2,pumpeff3,pumpeff4,
-    welldownsystemefficiency,surfacesystemefficiency,systemefficiency,energyper100mlift,
-    idegreebalance,wattdegreebalance,deltaradius,
-    pumpsettingdepth,
-    producingfluidlevel,calcproducingfluidlevel,leveldifferencevalue,
-    submergence,
-    casingpressure,tubingpressure,
-    commstatus,commtime,commtimeefficiency,commrange,
-    runstatus,runtime,runtimeefficiency,runrange
-    )values(
-    v_wellId,to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss'),
-    v_ResultStatus,v_resultcode,v_resultString,v_ExtendedDays,
-    v_Stroke,v_SPM,v_FMax,v_FMin,v_fullnessCoefficient,
-    v_TheoreticalProduction,
-    v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_volumewatercut,
-    v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
-    v_pumpEff,v_pumpEff1,v_pumpEff2,v_pumpEff3,v_pumpEff4,
-    v_wellDownSystemEfficiency,v_surfaceSystemEfficiency,v_systemEfficiency,v_energyper100mlift,
-    v_iDegreeBalance,v_wattDegreeBalance,v_DeltaRadius,
-    v_pumpSettingDepth,
-    v_producingfluidLevel,v_calcProducingfluidLevel,v_levelDifferenceValue,
-    v_submergence,
-    v_casingPressure,v_tubingPressure,
-    v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
-    v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
-    );
-    commit;
-    p_msg := '添加成功';
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpc_diagramtimingtotal;
-/
-
-CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmtimingtotal (
-  v_wellId in number,v_ResultStatus in number,
-  v_ExtendedDays in number,
-  v_rpm in number,
-  v_TheoreticalProduction in number,
-  v_liquidVolumetricProduction in number,v_oilVolumetricProduction in number,v_waterVolumetricProduction in number,v_volumewatercut in number,
-  v_liquidWeightProduction in number,v_oilWeightProduction in number,v_waterWeightProduction in number,v_weightwatercut in number,
-  v_pumpEff in number,v_pumpEff1 in number,v_pumpEff2 in number,
-  v_systemEfficiency in number,v_energyper100mlift in number,
-  v_pumpSettingDepth in number,v_producingfluidLevel in number,v_submergence in number,
-  v_casingPressure in number,v_tubingPressure in number,
-  v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
-  v_commRange in tbl_pcptimingcalculationdata.commrange%TYPE,
-  v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
-  v_runRange in tbl_pcptimingcalculationdata.runrange%TYPE,
-  v_calTime in varchar2,v_recordCount in number
-  ) is
-  p_msg varchar2(3000) := 'error';
-  p_count number:=0;
-begin
-  select count(*) into p_count from tbl_pcptimingcalculationdata t where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
-  if p_count>0 then
-    p_msg := '记录存在';
-    update tbl_pcptimingcalculationdata t
-    set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
-    t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
-    where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
-    commit;
-    if v_recordCount>0 then
-      update tbl_pcptimingcalculationdata t
-      set t.resultstatus=v_ResultStatus,t.extendeddays=v_ExtendedDays,
-          t.rpm=v_rpm,
-          t.theoreticalproduction=v_TheoreticalProduction,
-          t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,
-          t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
-          t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,
-          t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
-          t.pumpeff=v_pumpEff,t.pumpeff1=v_pumpEff1,t.pumpeff2=v_pumpEff2,
-          t.systemefficiency=v_systemEfficiency,t.energyper100mlift=v_energyper100mlift,
-          t.pumpsettingdepth=v_pumpSettingDepth,t.producingfluidlevel=v_producingfluidLevel,t.submergence=v_submergence,
-          t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
-       where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
-       commit;
-       update tbl_pcptimingcalculationdata t set 
-             (
-             t.theoreticalproduction,
-             t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,
-             t.realtimeliquidweightproduction,t.realtimeoilweightproduction,t.realtimewaterweightproduction,
-             t.pumpeff,t.pumpeff1,t.pumpeff2,
-             t.systemefficiency,t.energyper100mlift,
-             t.submergence,
-             t.rpm
-             ) 
-             =( 
-             select 
-             t2.theoreticalproduction,
-             t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
-             t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,
-             t2.pumpeff,t2.pumpeff1,t2.pumpeff2,
-             t2.systemefficiency,t2.energyper100mlift,
-             t2.submergence,
-             t2.rpm
-             from tbl_pcpacqdata_hist t2 
-             where t2.id=(
-                   select max(t3.id) from  tbl_pcpacqdata_hist t3  
-                   where t3.commstatus=1 and t3.resultstatus=1 
-                   and t3.acqtime >= to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 
-                   and t3.acqtime < to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
-                   and t3.wellid=v_wellId
-             )
-             and t2.wellid=v_wellId )
-             where t.wellid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
-        commit;
-    end if;
-    p_msg := '更新成功';
-  elsif p_count=0 then
-    p_msg := '记录不存在';
-    insert into tbl_pcptimingcalculationdata(
-           wellid,caltime,resultstatus,extendeddays,rpm,
-    theoreticalproduction,
-    liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
-    liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
-    pumpeff,pumpeff1,pumpeff2,
-    systemefficiency,energyper100mlift,
-    producingfluidlevel,casingpressure,tubingpressure,
-    commstatus,commtime,commtimeefficiency,commrange,
-    runstatus,runtime,runtimeefficiency,runrange
-    )values(
-    v_wellId,to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss'),
-    v_ResultStatus,v_ExtendedDays,v_rpm,
-    v_TheoreticalProduction,
-    v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_volumewatercut,
-    v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
-    v_pumpEff,v_pumpEff1,v_pumpEff2,
-    v_systemEfficiency,v_energyper100mlift,
-    v_producingfluidLevel,v_casingPressure,v_tubingPressure,
-    v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
-    v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
-    );
-    commit;
-    p_msg := '添加成功';
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_pcp_rpmtimingtotal;
-/
-
-CREATE OR REPLACE PROCEDURE prd_init_device_timingreportdate(
-       v_deviceId  in NUMBER,
-       v_timeStr  in varchar2,
-       v_dateStr  in varchar2,
-       v_deviceType  in NUMBER
-       ) is
-  recordCount number :=0;
-  p_msg varchar2(3000) := 'error';
-begin
-    if v_deviceType=0 then
-      select count(1) into recordCount from tbl_rpctimingcalculationdata t  where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
-      if recordCount=0 then
-        insert into tbl_rpctimingcalculationdata (wellid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
-        commit;
-      end if;
-      --更新采集生产数据
-      update tbl_rpctimingcalculationdata t set
-        (stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
-        =(
-          select t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
-          from TBL_RPCDAILYCALCULATIONDATA t2 
-           where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
-           and t2.wellid=v_deviceId
-           and rownum=1
-        )
-        where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
-      commit;
-      --更新采集实时产量
-      update tbl_rpctimingcalculationdata t set 
-           (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
-           ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
-           from tbl_rpcacqdata_hist t2 
-           where t2.id=(
-                 select max(t3.id) from  tbl_rpcacqdata_hist t3 
-                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
-                 and t3.acqtime >= to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 
-                 and t3.acqtime < to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
-                 and t3.wellid=v_deviceId
-            )
-            and t2.wellid=v_deviceId )
-            where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
-      commit;
-    elsif v_deviceType=1 then
-      select count(1) into recordCount from tbl_pcptimingcalculationdata t  where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
-      if recordCount=0 then
-        insert into tbl_pcptimingcalculationdata (wellid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
-        commit;
-      end if;
-      --更新采集生产数据
-      update tbl_pcptimingcalculationdata t set
-        (tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
-        =(
-          select t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
-          from TBL_PCPDAILYCALCULATIONDATA t2 
-           where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
-           and t2.wellid=v_deviceId
-           and rownum=1
-        )
-        where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
-      commit;
-      --更新采集实时产量
-      update tbl_pcptimingcalculationdata t set 
-           (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
-           ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
-           from tbl_pcpacqdata_hist t2 
-           where t2.id=(
-                 select max(t3.id) from  tbl_pcpacqdata_hist t3 
-                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
-                 and t3.acqtime >= to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 
-                 and t3.acqtime < to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
-                 and t3.wellid=v_deviceId
-            )
-            and t2.wellid=v_deviceId )
-            where t.wellid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
-      commit;
-    end if;
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_init_device_timingreportdate;
 /

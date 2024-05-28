@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 148657
+start with 148717
 increment by 1
 cache 20;
 
@@ -36,14 +36,14 @@ cache 20;
 create sequence SEQ_ACQUISITIONUNIT
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 63
+start with 3
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQ_GROUP_ITEM
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 950
+start with 57
 increment by 1
 cache 20;
 
@@ -57,7 +57,7 @@ cache 20;
 create sequence SEQ_ALARM_ITEM2UNIT_CONF
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 39
+start with 34
 increment by 1
 cache 20;
 
@@ -120,7 +120,7 @@ cache 20;
 create sequence SEQ_DATAMAPPING
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 921
+start with 36
 increment by 1
 cache 20;
 
@@ -155,14 +155,14 @@ cache 20;
 create sequence SEQ_DEVICETYPEINFO
 minvalue 1
 maxvalue 999999999999999999999999
-start with 7
+start with 5
 increment by 1
 cache 2;
 
 create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 1016
+start with 151
 increment by 1
 cache 20;
 
@@ -218,7 +218,7 @@ cache 20;
 create sequence SEQ_PROTOCOL
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 125
+start with 2
 increment by 1
 cache 20;
 
@@ -267,7 +267,7 @@ cache 20;
 create sequence SEQ_REPORT_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 2980
+start with 150
 increment by 1
 cache 20;
 
@@ -295,7 +295,7 @@ cache 20;
 create sequence SEQ_ROLE_DEVICETYPE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 141
+start with 13
 increment by 1
 cache 20;
 

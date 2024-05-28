@@ -618,6 +618,9 @@ public class EquipmentDriverServerTask {
 			//如数字典中不存在，添加字典项
 			for(int i=0;i<acquisitionItemColumns.size();i++){
 				if(!StringManagerUtils.existOrNot(dataDictionaryItems,acquisitionItemColumns.get(i),false)){
+					if(maxSortNum<100){
+						maxSortNum=100;
+					}
 					maxSortNum+=1;
 					int status=0;
 					if(dataTypeList.get(i).toUpperCase().contains("FLOAT")){

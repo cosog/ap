@@ -385,7 +385,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
-	                    if(visualColIndex==10){
+	                    if(visualColIndex==curveShowCol){
 		                	cellProperties.renderer = reportUnitContentConfigHandsontableHelper.addCurveBg;
 		                }
 	                    

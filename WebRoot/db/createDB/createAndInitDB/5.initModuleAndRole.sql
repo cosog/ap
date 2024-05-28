@@ -2,10 +2,13 @@
 /* 初始化TBL_DEVICETYPEINFO数据                                          */
 /*==============================================================*/
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (1, 0, 1, '抽油机');
+values (1, 9999, 1, '抽油机');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (2, 0, 2, '螺杆泵');
+values (2, 9999, 2, '螺杆泵');
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
+values (9999, 0, 0, '设备类型根节点');
 
 /*==============================================================*/
 /* 初始化tbl_module数据                                          */
@@ -245,22 +248,34 @@ insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
 values (2, 2, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (121, 1, 2, '0,0,0');
+values (3, 9999, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (122, 2, 2, '0,0,0');
+values (4, 9999, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (34, 1, 3, '0,0,0');
+values (5, 1, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (37, 2, 3, '0,0,0');
+values (6, 2, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (123, 1, 64, '0,0,0');
+values (7, 9999, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (124, 2, 64, '0,0,0');
+values (8, 1, 3, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (9, 2, 3, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (10, 9999, 64, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (11, 1, 64, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (12, 2, 64, '0,0,0');
 
 /*==============================================================*/
 /* 初始化tbl_org数据                                          */

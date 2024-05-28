@@ -23,7 +23,7 @@ import redis.clients.jedis.Jedis;
 @Service("tabInfoManagerService")
 public class TabInfoManagerService<T> extends BaseService<T> {
 	public List<?> queryTabs(Class<T> clazz, User user) {
-		String queryString = "select t.id,t.parentid,t.name,t.sortnum from tbl_devicetypeinfo t where 1=1 ";
+		String queryString = "select t.id,t.parentid,t.name,t.sortnum from tbl_devicetypeinfo t where t.parentid<>0 ";
 		if(user!=null){
 			queryString+= " and t.id in "
 					+ " ("

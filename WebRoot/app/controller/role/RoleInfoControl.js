@@ -257,7 +257,6 @@ function modifyroleInfo() {
 
 var grantRolePermission = function () {//授予角色模块权限
     var rightmodule_panel = Ext.getCmp("RightModuleTreeInfoGridPanel_Id");
-    //var rightmodule_model = rightmodule_panel.getSelectionModel();
     var _record;
     var roleCode="";
     var roleId="";
@@ -270,17 +269,8 @@ var grantRolePermission = function () {//授予角色模块权限
         	roleLevel=_record[0].data.roleLevel;
         }
     }
-    
-//    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
-//    	_record = rightmodule_panel.store.data.items;
-//    }else{
-//    	_record = rightmodule_panel.getChecked();
-//    }
-    
     _record = rightmodule_panel.store.data.items;
-    
     var addUrl = context + '/moduleShowRightManagerController/doModuleSaveOrUpdate'
-        // 添加条件
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
@@ -291,8 +281,6 @@ var grantRolePermission = function () {//授予角色模块权限
         Ext.Msg.alert(cosog.string.ts, cosog.string.pleaseChooseRole);
         return false
     }
-    
-
     Ext.Array.each(_record, function (name, index, countriesItSelf) {
         var checked=_record[index].get('viewFlagName');
         if(checked){
@@ -311,12 +299,9 @@ var grantRolePermission = function () {//授予角色模块权限
     }
     var addparamsId = "" + addjson.join(",");
     var matrixCodes_ = "" + matrixData;
-
-    // AJAX提交方式
     Ext.Ajax.request({
         url: addUrl,
         method: "POST",
-        // 提交参数
         params: {
             paramsId: addparamsId,
             oldModuleIds: RightOldModuleIds_Id,
@@ -331,8 +316,6 @@ var grantRolePermission = function () {//授予角色模块权限
             if (result.msg == false) {
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
             }
-            // 刷新Grid
-//            Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
             Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
         },
         failure: function () {

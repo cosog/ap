@@ -269,13 +269,13 @@ insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
 values (9, 2, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (10, 9999, 64, '0,0,0');
+values (10, 9999, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (11, 1, 64, '0,0,0');
+values (11, 1, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (12, 2, 64, '0,0,0');
+values (12, 2, 4, '0,0,0');
 
 /*==============================================================*/
 /* 初始化tbl_org数据                                          */

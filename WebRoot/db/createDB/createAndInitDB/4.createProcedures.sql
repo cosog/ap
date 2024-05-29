@@ -1062,60 +1062,6 @@ Exception
 end prd_save_pcp_rpmtimingtotal;
 /
 
-CREATE OR REPLACE PROCEDURE prd_save_pumpingmodel (
-                                                    v_manufacturer in varchar2,
-                                                    v_model in varchar2,
-                                                    v_stroke in varchar2,
-                                                    v_crankRotationDirection in varchar2,
-                                                    v_offsetAngleOfCrank in number,
-                                                    v_crankGravityRadius in number,
-                                                    v_singleCrankWeight in number,
-                                                    v_singleCrankPinWeight in number,
-                                                    v_structuralUnbalance in number,
-                                                    v_balanceWeight in varchar2,
-                                                    v_isCheckout in NUMBER,
-                                                    v_result out NUMBER,
-                                                    v_resultstr out varchar2
-  ) is
-  p_msg varchar2(3000) := 'error';
-  counts number :=0;
-begin
-  select count(1) into counts from tbl_pumpingmodel t where t.manufacturer=v_manufacturer and upper(t.model)=upper(v_model);
-  if counts=0 then
-    insert into tbl_pumpingmodel (manufacturer,model,stroke,crankrotationdirection,offsetangleofcrank,
-    crankgravityradius,singlecrankweight,singlecrankpinweight,structuralunbalance,balanceweight)
-    values(v_manufacturer,v_model,v_stroke,v_crankRotationDirection,v_offsetAngleOfCrank,
-    v_crankGravityRadius,v_singleCrankWeight,v_singleCrankPinWeight,v_structuralUnbalance,v_balanceWeight);
-    commit;
-    v_result:=0;
-    v_resultstr := '添加成功';
-    p_msg := '添加成功';
-  elsif counts>0 then
-    if v_isCheckout=1 then
-      v_result:=-33;
-      v_resultstr := '该型号抽油机已存在';
-      p_msg := '该型号抽油机已存在';
-    elsif v_isCheckout=0 then
-      update tbl_pumpingmodel t
-      set t.stroke=v_stroke,t.crankrotationdirection=v_crankRotationDirection,
-        t.offsetangleofcrank=v_offsetAngleOfCrank,t.crankgravityradius=v_crankGravityRadius,
-        t.singlecrankweight=v_singleCrankWeight,t.singlecrankpinweight=v_singleCrankPinWeight,t.structuralunbalance=v_structuralUnbalance,
-        t.balanceweight=v_balanceWeight
-      where t.manufacturer=v_manufacturer and t.model=v_model;
-      commit;
-      v_result:=1;
-      v_resultstr := '修改成功';
-      p_msg := '修改成功';
-    end if;
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_pumpingmodel;
-/
-
 CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_acqTime in varchar2,
   v_acRunStatus in number,
@@ -1919,49 +1865,6 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_update_device;
-/
-
-CREATE OR REPLACE PROCEDURE prd_update_pumpingmodel (
-                                                       v_id in number,
-                                                       v_manufacturer in varchar2,
-                                                       v_model in varchar2,
-                                                       v_stroke in varchar2,
-                                                       v_crankRotationDirection in varchar2,
-                                                       v_offsetAngleOfCrank in number,
-                                                       v_crankGravityRadius in number,
-                                                       v_singleCrankWeight in number,
-                                                       v_singleCrankPinWeight in number,
-                                                       v_structuralUnbalance in number,
-                                                       v_balanceWeight in varchar2,
-                                                       v_result out NUMBER,
-                                                       v_resultstr out varchar2
-                                                       ) is
-  p_msg varchar2(3000) := 'error';
-  counts number :=0;
-begin
-  select count(1) into counts from tbl_pumpingmodel t where t.manufacturer=v_manufacturer and upper(t.model)=upper(v_model) and t.id<>v_id;
-  if counts=0 then
-    update tbl_pumpingmodel t
-    set t.manufacturer=v_manufacturer,t.model=v_model,t.stroke=v_stroke,t.crankrotationdirection=v_crankRotationDirection,
-        t.offsetangleofcrank=v_offsetAngleOfCrank,t.crankgravityradius=v_crankGravityRadius,
-        t.singlecrankweight=v_singleCrankWeight,t.singlecrankpinweight=v_singleCrankPinWeight,t.structuralunbalance=v_structuralUnbalance,
-        t.balanceweight=v_balanceWeight
-    where t.id=v_id;
-    commit;
-    v_result:=1;
-    v_resultstr := '修改成功';
-    p_msg := '修改成功';
-  else
-    v_result:=-22;
-    v_resultstr :='厂家:'||v_manufacturer||',型号:'||v_model||'的抽油机已存在，保存无效';
-    v_resultstr :='厂家:'||v_manufacturer||',型号:'||v_model||'的抽油机已存在，保存无效';
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_update_pumpingmodel;
 /
 
 CREATE OR REPLACE PROCEDURE prd_update_smsdevice (v_recordId   in NUMBER,

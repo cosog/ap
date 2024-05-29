@@ -274,7 +274,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },{
                 xtype: "hidden",
                 fieldLabel: '单位编号',
-                id: 'deviceOrg_Id',
+                id: 'addDeviceOrg_Id',
                 value: '',
                 name: "deviceInformation.orgId"
             },{
@@ -286,8 +286,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 listeners: {
                 	blur: function (t, e) {
                         if(t.value!=''){
-                        	var orgId=Ext.getCmp("deviceOrg_Id").getValue();
-                        	var deviceType=Ext.getCmp("deviceType_Id").getValue();
+                        	var orgId=Ext.getCmp("addDeviceOrg_Id").getValue();
+                        	var deviceType=Ext.getCmp("addDeviceType_Id").getValue();
                     		Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
@@ -389,9 +389,9 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 listeners: {
                 	blur: function (t, e) {
                         var slave=Ext.getCmp("deviceSlave_Id").getValue();
-                        var deviceType=Ext.getCmp("deviceType_Id").getValue();
+                        var deviceType=Ext.getCmp("addDeviceType_Id").getValue();
                 		if(t.value!=''&&slave!=''){
-                        	var orgId=Ext.getCmp("deviceOrg_Id").getValue();
+                        	var orgId=Ext.getCmp("addDeviceOrg_Id").getValue();
                     		Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
@@ -432,9 +432,9 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 listeners: {
                 	blur: function (t, e) {
                         var slave=Ext.getCmp("deviceSlave_Id").getValue();
-                        var deviceType=Ext.getCmp("deviceType_Id").getValue();
+                        var deviceType=Ext.getCmp("addDeviceType_Id").getValue();
                 		if(t.value!=''&&slave!=''){
-                        	var orgId=Ext.getCmp("deviceOrg_Id").getValue();
+                        	var orgId=Ext.getCmp("addDeviceOrg_Id").getValue();
                     		Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
@@ -472,9 +472,9 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
          		listeners: {
                 	blur: function (t, e) {
                         var signinId=Ext.getCmp("deviceSignInId_Id").getValue();
-                        var deviceType=Ext.getCmp("deviceType_Id").getValue();
+                        var deviceType=Ext.getCmp("addDeviceType_Id").getValue();
                 		if(signinId!=''&&t.value!=''){
-                        	var orgId=Ext.getCmp("deviceOrg_Id").getValue();
+                        	var orgId=Ext.getCmp("addDeviceOrg_Id").getValue();
                     		Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
@@ -549,7 +549,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
          		xtype: "textfield",
          		fieldLabel: '设备类型',
          		hidden:true,
-         		id: 'deviceDeviceType_Id',
+         		id: 'addDeviceType_Id',
          		anchor: '95%',
          		name: "deviceInformation.deviceType",
          		value: getDeviceTypeFromTabId("DeviceManagerTabPanel")

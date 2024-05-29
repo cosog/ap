@@ -236,6 +236,15 @@ private CommonDataService service;
 		return find(queryString);
 	}
 	
+	public List<T> queryRightTabsWithoutRoot(Class<T> clazz, User user) throws Exception {
+		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.id <>9999 and tab.id in " 
+				+ "( select distinct rt.rdDeviceTypeId from User u ,Role role,RoleDeviceType rt "
+				+ "where  role.roleId =rt.rdRoleId   " 
+				+ " and role.roleId = u.userType   and u.userNo="
+				+ user.getUserNo() + ") order by tab.sortNum, tab.id";
+		return find(queryString);
+	}
+	
 	public String getRoleModuleRight(User user,String moduleCode){
 		StringBuffer result_json = new StringBuffer();
 		int viewFlag=0,editFlag=0,controlFlag=0; 

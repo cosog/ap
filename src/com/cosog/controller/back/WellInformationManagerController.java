@@ -2161,7 +2161,7 @@ public class WellInformationManagerController extends BaseController {
 			User user = (User) session.getAttribute("userLogin");
 			this.smsDeviceManagerService.doSMSDeviceAdd(smsDeviceInformation);
 			List<String> addWellList=new ArrayList<String>();
-			addWellList.add(smsDeviceInformation.getWellName());
+			addWellList.add(smsDeviceInformation.getDeviceName());
 			EquipmentDriverServerTask.initSMSDevice(addWellList,"update");
 			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, user);
 			result = "{success:true,msg:true}";

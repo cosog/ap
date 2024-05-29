@@ -39,8 +39,8 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                 		return;
                 	}else{
                 		if(!selectedDeviceType[0].isLeaf()){
-                			Ext.MessageBox.alert("信息","选择的设备类型不是叶子节点！");
-                			return;
+//                			Ext.MessageBox.alert("信息","选择的设备类型不是叶子节点！");
+//                			return;
                 		}
                 	}
                 	var selectedProtocolId="";

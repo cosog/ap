@@ -11,7 +11,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         	items: [{
         		xtype: 'tabpanel',
         		id:"CalculateMaintainingTabPanel",
-        		activeTab: 0,
+//        		activeTab: 0,
         		border: false,
         		tabPosition: 'top',
         		items: [{

@@ -1,8 +1,8 @@
 /*==============================================================*/
-/* 初始化TBL_PROTOCOL数据                                          */
+/* 初始化TBL_PROTOCOL数据                                        */
 /*==============================================================*/
 insert into TBL_PROTOCOL (ID, NAME, CODE, DEVICETYPE, SORT)
-values (1, 'A11协议', 'protocol1', 1, 1);
+values (1, 'A11协议', 'protocol1', 9999, 1);
 
 DECLARE  
   clobValue TBL_PROTOCOL.ITEMS%TYPE;  
@@ -350,6 +350,9 @@ values (56, null, '变频设置频率', null, 4, null, '0,0,0', 0, null);
 insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
 values (1, 'alarmunit1', 'A11-抽油机报警单元', 'A11协议', 'A11-抽油机报警单元');
 
+insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
+values (2, 'alarmunit2', 'A11-螺杆泵报警单元', 'A11协议', 'A11-螺杆泵报警单元');
+
 /*==============================================================*/
 /* 初始化TBL_ALARM_ITEM2UNIT_CONF数据                                          */
 /*==============================================================*/
@@ -451,6 +454,15 @@ values (32, 1, null, '上线', 'online', 0, 1.000, null, null, null, 60, 300, 1, 3
 
 insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL)
 values (33, 1, null, '离线', 'offline', 0, 0.000, null, null, null, 60, 100, 1, 3, 0, 0, 0);
+
+insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL)
+values (34, 2, null, '停抽', 'stop', 0, 0.000, null, null, null, 60, 100, 1, 6, 0, 0, 0);
+
+insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL)
+values (35, 2, null, '上线', 'online', 0, 1.000, null, null, null, 60, 300, 1, 3, 0, 0, 0);
+
+insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL)
+values (36, 2, null, '离线', 'offline', 0, 0.000, null, null, null, 60, 100, 1, 3, 0, 0, 0);
 
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_UNIT_CONF数据                                          */
@@ -1356,20 +1368,23 @@ values (143, null, '备注', 'Remark', 2, 23, null, null, null, null, null, 1, 2, 
 
 
 /*==============================================================*/
-/* 初始化TBL_PROTOCOLINSTANCE数据                                          */
+/* 初始化TBL_PROTOCOLINSTANCE数据                                 */
 /*==============================================================*/
 insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIXSUFFIXHEX, SIGNINPREFIX, SIGNINSUFFIX, SIGNINIDHEX, HEARTBEATPREFIXSUFFIXHEX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, SORT)
 values (1, '抽油机A11MODBUS实例', 'instance1', 'modbus-tcp', 'modbus-tcp', 1, 'BB01', '0B', 0, 1, 'BB01', '0B', 100, 1, 1);
 
 insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIXSUFFIXHEX, SIGNINPREFIX, SIGNINSUFFIX, SIGNINIDHEX, HEARTBEATPREFIXSUFFIXHEX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, SORT)
-values (2, '螺杆泵A11MODBUS实例', 'instance2', 'modbus-tcp', 'modbus-tcp', 1, 'BB01', '0B', 0, 1, 'BB01', '0B', 100, 3, 1);
+values (2, '螺杆泵A11MODBUS实例', 'instance2', 'modbus-tcp', 'modbus-tcp', 1, 'BB01', '0B', 0, 1, 'BB01', '0B', 100, 2, 2);
 
 
 /*==============================================================*/
-/* 初始化tbl_protocolalarminstance数据                                          */
+/* 初始化tbl_protocolalarminstance数据                            */
 /*==============================================================*/
 insert into TBL_PROTOCOLALARMINSTANCE (ID, NAME, CODE, ALARMUNITID, SORT)
 values (1, '抽油机A11报警实例', 'alarminstance1', 1, 1);
+
+insert into TBL_PROTOCOLALARMINSTANCE (ID, NAME, CODE, ALARMUNITID, SORT)
+values (2, '螺杆泵A11报警实例', 'alarminstance2', 2, 2);
 
 /*==============================================================*/
 /* 初始化tbl_protocoldisplayinstance数据                                          */
@@ -1378,7 +1393,7 @@ insert into TBL_PROTOCOLDISPLAYINSTANCE (ID, NAME, CODE, DISPLAYUNITID, SORT)
 values (1, '抽油机A11显示实例', 'displayinstance1', 1, 1);
 
 insert into TBL_PROTOCOLDISPLAYINSTANCE (ID, NAME, CODE, DISPLAYUNITID, SORT)
-values (2, '螺杆泵A11显示实例', 'displayinstance2', 2, 1);
+values (2, '螺杆泵A11显示实例', 'displayinstance2', 2, 2);
 
 /*==============================================================*/
 /* 初始化TBL_PROTOCOLREPORTINSTANCE数据                                          */
@@ -1387,4 +1402,4 @@ insert into TBL_PROTOCOLREPORTINSTANCE (ID, NAME, CODE, UNITID, SORT)
 values (1, '抽油机井报表实例一', 'reportinstance1', 1, 1);
 
 insert into TBL_PROTOCOLREPORTINSTANCE (ID, NAME, CODE, UNITID, SORT)
-values (2, '螺杆泵井报表实例一', 'reportinstance2', 2, 1);
+values (2, '螺杆泵井报表实例一', 'reportinstance2', 2, 2);

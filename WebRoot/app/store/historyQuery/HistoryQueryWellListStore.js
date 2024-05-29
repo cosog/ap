@@ -155,24 +155,35 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
             }else{
             	Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
             	
-				var activeId = Ext.getCmp("HistoryQueryCenterTabPanel").getActiveTab().id;
+            	var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
+				var activeId = tabPanel.getActiveTab().id;
 				if(activeId=="HistoryDataTabPanel"){
+					tabPanel.remove("HistoryDiagramTabPanel");
+					tabPanel.remove("HistoryDiagramOverlayTabPanel");
+					
 					var HistoryQueryDataGridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
                     if (isNotVal(HistoryQueryDataGridPanel)) {
                     	HistoryQueryDataGridPanel.getStore().loadPage(1);
                     }else{
                     	Ext.create("AP.store.historyQuery.HistoryDataStore");
                     }
-				}else if(activeId=="HistoryDiagramTabPanel"){
-					loadSurfaceCardList(1);
-				}else if(activeId=="HistoryDiagramOverlayTabPanel"){
-					var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
-                    	HistoryQueryFSdiagramOverlayGrid.getStore().load();
-                    }else{
-                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
-                    }
+				}else{
+					var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
+					tabPanel.remove("HistoryDiagramTabPanel");
+					tabPanel.remove("HistoryDiagramOverlayTabPanel");
 				}
+				
+				
+//				else if(activeId=="HistoryDiagramTabPanel"){
+//					loadSurfaceCardList(1);
+//				}else if(activeId=="HistoryDiagramOverlayTabPanel"){
+//					var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
+//                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
+//                    	HistoryQueryFSdiagramOverlayGrid.getStore().load();
+//                    }else{
+//                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+//                    }
+//				}
             }
         },
         beforeload: function (store, options) {

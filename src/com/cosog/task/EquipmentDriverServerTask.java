@@ -1288,7 +1288,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initSMSDeviceByInstanceCode(String instanceCode,String method){
-		String sql="select t.wellname from tbl_smsdevice t where t.instancecode='"+instanceCode+"'";
+		String sql="select t.deviceName from tbl_smsdevice t where t.instancecode='"+instanceCode+"'";
 		List<String> wellList=new ArrayList<String>();
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
@@ -1315,7 +1315,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initSMSDeviceByInstanceId(String instanceId,String method){
-		String sql="select t.wellname from tbl_smsdevice t,tbl_protocolsmsinstance t2 where t.instancecode=t2.code and t2.id="+instanceId;
+		String sql="select t.deviceName from tbl_smsdevice t,tbl_protocolsmsinstance t2 where t.instancecode=t2.code and t2.id="+instanceId;
 		List<String> wellList=new ArrayList<String>();
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   

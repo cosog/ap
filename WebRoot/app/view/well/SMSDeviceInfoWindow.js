@@ -94,7 +94,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
                 id: 'smsDeviceName_Id',
                 allowBlank: false,
                 anchor: '95%',
-                name: "smsDeviceInformation.wellName"
+                name: "smsDeviceInformation.deviceName"
             },smsDeviceSMSInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '短信实例编码',

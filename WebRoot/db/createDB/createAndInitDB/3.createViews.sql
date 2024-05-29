@@ -109,7 +109,6 @@ t.displayinstancecode,t5.name as displayinstancename,
 t.reportinstancecode,t7.name as reportinstancename,
 t.status,decode(t.status,1,'Ê¹ÄÜ','Ê§Ð§') as statusName,
 t.productiondata,t.balanceinfo,t.stroke,
-t.pumpingmodelid,t6.manufacturer,t6.model,t6.crankrotationdirection,t6.offsetangleofcrank,t6.crankgravityradius,t6.singlecrankweight,t6.singlecrankpinweight,t6.structuralunbalance,
 t.sortnum,t.productiondataupdatetime
 from tbl_device t
 left outer join  viw_org org  on t.orgid=org.org_id
@@ -118,7 +117,6 @@ left outer join tbl_protocolalarminstance t3 on t.alarminstancecode=t3.code
 left outer join tbl_protocolsmsinstance t4 on t.instancecode =t4.code
 left outer join tbl_protocoldisplayinstance t5 on t.displayinstancecode=t5.code
 left outer join tbl_protocolreportinstance t7 on t.reportinstancecode=t7.code
-left outer join tbl_pumpingmodel t6 on t.pumpingmodelid=t6.id
 left outer join tbl_videokey t8 on t.videokeyid1=t8.id
 left outer join tbl_videokey t9 on t.videokeyid2=t9.id
 left outer join tbl_code c1 on c1.itemcode='APPLICATIONSCENARIOS' and t.applicationscenarios=c1.itemvalue

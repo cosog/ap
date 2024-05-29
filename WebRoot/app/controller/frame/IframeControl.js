@@ -415,13 +415,13 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
 		var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
-		if(selectedDeviceType_global==0 && activeId!='RPCCalculateMaintainingInfoPanel_Id'){
-			tabPanel.setActiveTab("RPCCalculateMaintainingInfoPanel_Id");
-			tabChange=true;
-		}else if(selectedDeviceType_global==1 && activeId!='PCPCalculateMaintainingInfoPanel_Id'){
-			tabPanel.setActiveTab("PCPCalculateMaintainingInfoPanel_Id");
-			tabChange=true;
-		}
+//		if(selectedDeviceType_global==0 && activeId!='RPCCalculateMaintainingInfoPanel_Id'){
+//			tabPanel.setActiveTab("RPCCalculateMaintainingInfoPanel_Id");
+//			tabChange=true;
+//		}else if(selectedDeviceType_global==1 && activeId!='PCPCalculateMaintainingInfoPanel_Id'){
+//			tabPanel.setActiveTab("PCPCalculateMaintainingInfoPanel_Id");
+//			tabChange=true;
+//		}
 		if(!tabChange){
 			if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
 				refreshRPCCalculateMaintainingData();

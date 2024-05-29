@@ -2292,7 +2292,7 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				queryDeleteWellSql="select wellname from tbl_smsdevice t "
+				queryDeleteWellSql="select devicename from tbl_smsdevice t "
 						+ " where  t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
 						+ " and t.orgid in("+orgId+")";
 				delSql="delete from tbl_smsdevice t "

@@ -7,7 +7,7 @@ Ext.define('AP.store.well.DeviceTypeChangeDeviceTypeListStore', {
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/roleManagerController/constructProtocolConfigTabTreeGridTree',
+        url: context + '/roleManagerController/constructProtocolConfigTabTreeGridTreeWithoutRoot',
         actionMethods: {
             read: 'POST'
         },

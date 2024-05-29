@@ -27,7 +27,7 @@ create table TBL_PROTOCOL
   id         NUMBER(10) not null,
   name       VARCHAR2(50),
   code       VARCHAR2(50),
-  devicetype NUMBER(1) default 0,
+  devicetype NUMBER(10),
   items      CLOB,
   sort       NUMBER(10)
 )
@@ -174,6 +174,36 @@ alter table TBL_MODULE2ROLE
 alter table TBL_MODULE2ROLE
   add constraint FK_ORG_ROLEID foreign key (RM_ROLEID)
   references TBL_ROLE (ROLE_ID) on delete cascade
+/
+
+/*==============================================================*/
+/* Table: TBL_USER                                    */
+/*==============================================================*/
+create table TBL_USER
+(
+  user_no         NUMBER(10) not null,
+  user_id         VARCHAR2(20) not null,
+  user_pwd        VARCHAR2(50),
+  user_name       VARCHAR2(40) not null,
+  user_in_email   VARCHAR2(40),
+  user_phone      VARCHAR2(40),
+  user_type       NUMBER(10) default 1,
+  user_orgid      NUMBER(10) default 0 not null,
+  user_regtime    DATE,
+  user_quicklogin NUMBER(1) default 0,
+  user_enable      NUMBER(1) default 1,
+  user_receivesms  NUMBER(10) default 0,
+  user_receivemail NUMBER(10) default 0
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_USER add constraint PK_USER_NO primary key (USER_NO)
 /
 
 /*==============================================================*/
@@ -752,7 +782,7 @@ create table TBL_SMSDEVICE
 (
   id           NUMBER(10) not null,
   orgid        NUMBER(10),
-  wellname     VARCHAR2(200) not null,
+  devicename   VARCHAR2(200) not null,
   signinid     VARCHAR2(200),
   instancecode VARCHAR2(50),
   sortnum      NUMBER(10) default 9999
@@ -1653,33 +1683,6 @@ tablespace AP_DATA
 /
 alter table TBL_RPCACQDATA_HIST
   add constraint PK_TBL_RPCACQDATA_HIST primary key (ID)
-/
-
-/*==============================================================*/
-/* Table: TBL_RESOURCEMONITORING                                    */
-/*==============================================================*/
-create table TBL_RESOURCEMONITORING
-(
-  id             NUMBER(10) not null,
-  acqtime        DATE,
-  acrunstatus    NUMBER(2),
-  acversion      VARCHAR2(50),
-  adrunstatus    NUMBER(2),
-  adversion      VARCHAR2(50),
-  cpuusedpercent VARCHAR2(50),
-  memusedpercent NUMBER(8,2),
-  tablespacesize NUMBER(10,2),
-  jedisstatus    NUMBER(2)
-)
-tablespace AP_DATA
-  storage
-  (
-    initial 64K
-    minextents 1
-    maxextents unlimited
-  )
-/
-alter table TBL_RESOURCEMONITORING add constraint PK_TBL_RESOURCEMONITORING primary key (ID)
 /
 
 /*==============================================================*/

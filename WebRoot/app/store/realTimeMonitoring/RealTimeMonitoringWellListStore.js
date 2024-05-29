@@ -151,32 +151,53 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
     			gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
-            	if(deviceRealTimeMonitoringDataHandsontableHelper!=null){
-					if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
-						deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
-					}
-					deviceRealTimeMonitoringDataHandsontableHelper=null;
-				}
+            	
             	Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-//            	Ext.getCmp("selectedDeviceId_global").setValue(0);
             	
-            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
-            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');
-            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").html('');
-            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").html('');
+            	var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
+            	var activeId = tabPanel.getActiveTab().id;
+            	if(activeId=="RealTimeMonitoringCurveTabPanel_Id"){
+            		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
+                	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
+                	
+                	$("#realTimeMonitoringCurveContainer").html('');
+                	$("#RealTimeMonitoringInfoDataTableInfoContainer").html('');
+            	}else if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
+            		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
+                	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
+                	
+                	if(deviceRealTimeMonitoringDataHandsontableHelper!=null){
+    					if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
+    						deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
+    					}
+    					deviceRealTimeMonitoringDataHandsontableHelper=null;
+    				}
+            	}else{
+            		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
+                	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
+            	}
             	
-            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").html('');
-            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").html('');
-            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").html('');
-            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").html('');
             	
-            	$("#realTimeMonitoringCurveContainer").html('');
-            	$("#RealTimeMonitoringInfoDataTableInfoContainer").html('');
+            	
+//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
+//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');
+//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").html('');
+//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").html('');
+//            	
+//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").html('');
+//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").html('');
+//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").html('');
+//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").html('');
+            	
+            	
             	
             	clearVideo(0);
             	Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
             	Ext.getCmp("RealTimeMonitoringRightCalculateDataPanel").removeAll();
             	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
+            	
+            	
+            	
             }
         },
         beforeload: function (store, options) {

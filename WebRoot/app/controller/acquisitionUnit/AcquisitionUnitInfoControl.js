@@ -31,22 +31,35 @@ function addModbusProtocolAddrMappingConfigData() {
 	}
 	
 	if(selectedDeviceTypeId!=""){
-		if (rec.isLeaf()) {
-			var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
-		        title: '创建协议'
-		    });
-		    window.show();
-		    
-		    Ext.getCmp("protocolWinTabLabel_Id").setHtml("协议将添加到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
-		    Ext.getCmp("protocolWinTabLabel_Id").show();
-		    
-		    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedDeviceTypeId);
-		    
-		    Ext.getCmp("addFormModbusProtocol_Id").show();
-		    Ext.getCmp("updateFormaModbusProtocol_Id").hide();
-		}else{
-			Ext.MessageBox.alert("信息","协议只能添加到标签叶子节点下。");
-		}
+		var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
+	        title: '创建协议'
+	    });
+	    window.show();
+	    
+	    Ext.getCmp("protocolWinTabLabel_Id").setHtml("协议将添加到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+	    Ext.getCmp("protocolWinTabLabel_Id").show();
+	    
+	    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedDeviceTypeId);
+	    
+	    Ext.getCmp("addFormModbusProtocol_Id").show();
+	    Ext.getCmp("updateFormaModbusProtocol_Id").hide();
+	    
+//		if (rec.isLeaf()) {
+//			var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
+//		        title: '创建协议'
+//		    });
+//		    window.show();
+//		    
+//		    Ext.getCmp("protocolWinTabLabel_Id").setHtml("协议将添加到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+//		    Ext.getCmp("protocolWinTabLabel_Id").show();
+//		    
+//		    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedDeviceTypeId);
+//		    
+//		    Ext.getCmp("addFormModbusProtocol_Id").show();
+//		    Ext.getCmp("updateFormaModbusProtocol_Id").hide();
+//		}else{
+//			Ext.MessageBox.alert("信息","协议只能添加到标签叶子节点下。");
+//		}
 	}else{
 		Ext.MessageBox.alert("信息","请先选择标签。");
 	}

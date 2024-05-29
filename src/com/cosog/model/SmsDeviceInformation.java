@@ -21,7 +21,7 @@ public class SmsDeviceInformation implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Integer orgId;
-	private String wellName;
+	private String deviceName;
 	private String instanceCode;
 	private String signInId;
 	private Integer sortNum;
@@ -33,12 +33,12 @@ public class SmsDeviceInformation implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SmsDeviceInformation(Integer id, Integer orgId, String wellName, String instanceCode, String signInId,
+	public SmsDeviceInformation(Integer id, Integer orgId, String deviceName, String instanceCode, String signInId,
 			Integer sortNum) {
 		super();
 		this.id = id;
 		this.orgId = orgId;
-		this.wellName = wellName;
+		this.deviceName = deviceName;
 		this.instanceCode = instanceCode;
 		this.signInId = signInId;
 		this.sortNum = sortNum;
@@ -64,13 +64,13 @@ public class SmsDeviceInformation implements java.io.Serializable {
 		this.orgId = orgId;
 	}
 
-	@Column(name = "wellName", nullable = false, length = 50)
-	public String getWellName() {
-		return wellName;
+	@Column(name = "deviceName", nullable = false, length = 50)
+	public String getDeviceName() {
+		return deviceName;
 	}
 
-	public void setWellName(String wellName) {
-		this.wellName = wellName;
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 	@Column(name = "instanceCode", nullable = true, length = 50)

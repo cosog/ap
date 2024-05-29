@@ -192,8 +192,8 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     });
                     window.show();
                     Ext.getCmp("deviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
-                    Ext.getCmp("deviceType_Id").setValue(getDeviceTypeFromTabId("DeviceManagerTabPanel"));
-                    Ext.getCmp("deviceOrg_Id").setValue(selectedOrgId);
+                    Ext.getCmp("addDeviceType_Id").setValue(getDeviceTypeFromTabId("DeviceManagerTabPanel"));
+                    Ext.getCmp("addDeviceOrg_Id").setValue(selectedOrgId);
                     Ext.getCmp("addFormDevice_Id").show();
                     Ext.getCmp("updateFormDevice_Id").hide();
                     return false;

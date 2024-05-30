@@ -480,46 +480,46 @@ insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID,
 values (1, null, '运行状态', 'C_CLOUMN5', 1, 4, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (2, null, 'A相电流', 'C_CLOUMN11', 1, null, null, null, null, null, 0, '0,0,0');
+values (2, null, 'A相电流', 'C_CLOUMN9', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (3, null, 'B相电流', 'C_CLOUMN12', 1, null, null, null, null, null, 0, '0,0,0');
+values (3, null, 'B相电流', 'C_CLOUMN10', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (4, null, 'C相电流', 'C_CLOUMN13', 1, null, null, null, null, null, 0, '0,0,0');
+values (4, null, 'C相电流', 'C_CLOUMN11', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (5, null, 'A相电压', 'C_CLOUMN14', 1, null, null, null, null, null, 0, '0,0,0');
+values (5, null, 'A相电压', 'C_CLOUMN12', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (6, null, 'B相电压', 'C_CLOUMN15', 1, null, null, null, null, null, 0, '0,0,0');
+values (6, null, 'B相电压', 'C_CLOUMN13', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (7, null, 'C相电压', 'C_CLOUMN16', 1, null, null, null, null, null, 0, '0,0,0');
+values (7, null, 'C相电压', 'C_CLOUMN14', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (8, null, '有功功耗', 'C_CLOUMN17', 1, null, null, null, null, null, 0, '0,0,0');
+values (8, null, '有功功耗', 'C_CLOUMN15', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (9, null, '无功功耗', 'C_CLOUMN18', 1, null, null, null, null, null, 0, '0,0,0');
+values (9, null, '无功功耗', 'C_CLOUMN16', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (10, null, '有功功率', 'C_CLOUMN19', 1, null, null, null, null, null, 0, '0,0,0');
+values (10, null, '有功功率', 'C_CLOUMN17', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (11, null, '无功功率', 'C_CLOUMN20', 1, null, null, null, null, null, 0, '0,0,0');
+values (11, null, '无功功率', 'C_CLOUMN18', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (12, null, '反向功率', 'C_CLOUMN21', 1, null, null, null, null, null, 0, '0,0,0');
+values (12, null, '反向功率', 'C_CLOUMN19', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (13, null, '功率因数', 'C_CLOUMN22', 1, null, null, null, null, null, 0, '0,0,0');
+values (13, null, '功率因数', 'C_CLOUMN20', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (14, null, '变频设置频率', 'C_CLOUMN23', 1, null, null, null, null, null, 0, '0,0,0');
+values (14, null, '变频设置频率', 'C_CLOUMN21', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (15, null, '变频运行频率', 'C_CLOUMN24', 1, null, null, null, null, null, 0, '0,0,0');
+values (15, null, '变频运行频率', 'C_CLOUMN22', 1, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
 values (16, null, '功图设置点数', 'C_CLOUMN27', 1, null, null, null, null, null, 0, '0,0,0');
@@ -708,223 +708,313 @@ insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID,
 values (77, null, '反演动液面', 'CalcProducingfluidLevel', 1, 58, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (78, null, '日用电量', 'C_CLOUMN17_TOTAL', 1, null, null, null, null, null, 1, '0,0,0');
+values (78, null, '原油密度', 'CrudeOilDensity', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (79, null, '原油密度', 'CrudeOilDensity', 1, null, null, null, null, null, 3, '0,0,0');
+values (79, null, '水密度', 'WaterDensity', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (80, null, '水密度', 'WaterDensity', 1, null, null, null, null, null, 3, '0,0,0');
+values (80, null, '天然气相对密度', 'NaturalGasRelativeDensity', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (81, null, '天然气相对密度', 'NaturalGasRelativeDensity', 1, null, null, null, null, null, 3, '0,0,0');
+values (81, null, '饱和压力', 'SaturationPressure', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (82, null, '饱和压力', 'SaturationPressure', 1, null, null, null, null, null, 3, '0,0,0');
+values (82, null, '油层中部深度', 'ReservoirDepth', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (83, null, '油层中部深度', 'ReservoirDepth', 1, null, null, null, null, null, 3, '0,0,0');
+values (83, null, '油层中部温度', 'ReservoirTemperature', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (84, null, '油层中部温度', 'ReservoirTemperature', 1, null, null, null, null, null, 3, '0,0,0');
+values (84, null, '油压', 'TubingPressure', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (85, null, '油压', 'TubingPressure', 1, null, null, null, null, null, 3, '0,0,0');
+values (85, null, '套压', 'CasingPressure', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (86, null, '套压', 'CasingPressure', 1, null, null, null, null, null, 3, '0,0,0');
+values (86, null, '井口温度', 'WellHeadTemperature', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (87, null, '井口温度', 'WellHeadTemperature', 1, null, null, null, null, null, 3, '0,0,0');
+values (87, null, '含水率', 'WaterCut', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (88, null, '含水率', 'WaterCut', 1, null, null, null, null, null, 3, '0,0,0');
+values (88, null, '生产气油比', 'ProductionGasOilRatio', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (89, null, '生产气油比', 'ProductionGasOilRatio', 1, null, null, null, null, null, 3, '0,0,0');
+values (89, null, '动液面', 'ProducingfluidLevel', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (90, null, '动液面', 'ProducingfluidLevel', 1, null, null, null, null, null, 3, '0,0,0');
+values (90, null, '泵挂', 'PumpSettingDepth', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (91, null, '泵挂', 'PumpSettingDepth', 1, null, null, null, null, null, 3, '0,0,0');
+values (91, null, '泵径', 'PumpBoreDiameter', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (92, null, '泵径', 'PumpBoreDiameter', 1, null, null, null, null, null, 3, '0,0,0');
+values (92, null, '反演液面校正值', 'LevelCorrectValue', 1, null, null, null, null, null, 3, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (93, null, '反演液面校正值', 'LevelCorrectValue', 1, null, null, null, null, null, 3, '0,0,0');
+values (93, null, '启停控制', 'C_CLOUMN6', 1, null, null, null, null, null, 2, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (94, null, '启停控制', 'C_CLOUMN6', 1, null, null, null, null, null, 2, '0,0,0');
+values (94, null, '变频设置频率', 'C_CLOUMN21', 1, null, null, null, null, null, 2, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (95, null, '变频设置频率', 'C_CLOUMN23', 1, null, null, null, null, null, 2, '0,0,0');
+values (95, null, '油压', 'C_CLOUMN1', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (96, null, '油压', 'C_CLOUMN2', 2, null, null, null, null, null, 0, '0,0,0');
+values (96, null, '套压', 'C_CLOUMN2', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (97, null, '套压', 'C_CLOUMN3', 2, null, null, null, null, null, 0, '0,0,0');
+values (97, null, '回压', 'C_CLOUMN3', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (98, null, '回压', 'C_CLOUMN146', 2, null, null, null, null, null, 0, '0,0,0');
+values (98, null, '井口温度', 'C_CLOUMN4', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (99, null, '井口温度', 'C_CLOUMN4', 2, null, null, null, null, null, 0, '0,0,0');
+values (99, null, '运行状态', 'C_CLOUMN5', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (100, null, '运行状态', 'C_CLOUMN5', 2, null, null, null, null, null, 0, '0,0,0');
+values (100, null, '含水率', 'C_CLOUMN7', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (101, null, '含水率', 'C_CLOUMN7', 2, null, null, null, null, null, 0, '0,0,0');
+values (101, null, 'A相电流', 'C_CLOUMN9', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (102, null, 'A相电流', 'C_CLOUMN11', 2, null, null, null, null, null, 0, '0,0,0');
+values (102, null, 'B相电流', 'C_CLOUMN10', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (103, null, 'B相电流', 'C_CLOUMN12', 2, null, null, null, null, null, 0, '0,0,0');
+values (103, null, 'C相电流', 'C_CLOUMN11', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (104, null, 'C相电流', 'C_CLOUMN13', 2, null, null, null, null, null, 0, '0,0,0');
+values (104, null, 'A相电压', 'C_CLOUMN12', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (105, null, 'A相电压', 'C_CLOUMN14', 2, null, null, null, null, null, 0, '0,0,0');
+values (105, null, 'B相电压', 'C_CLOUMN13', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (106, null, 'B相电压', 'C_CLOUMN15', 2, null, null, null, null, null, 0, '0,0,0');
+values (106, null, 'C相电压', 'C_CLOUMN14', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (107, null, 'C相电压', 'C_CLOUMN16', 2, null, null, null, null, null, 0, '0,0,0');
+values (107, null, '有功功耗', 'C_CLOUMN15', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (108, null, '有功功耗', 'C_CLOUMN17', 2, null, null, null, null, null, 0, '0,0,0');
+values (108, null, '无功功耗', 'C_CLOUMN16', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (109, null, '无功功耗', 'C_CLOUMN18', 2, null, null, null, null, null, 0, '0,0,0');
+values (109, null, '有功功率', 'C_CLOUMN17', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (110, null, '有功功率', 'C_CLOUMN19', 2, null, null, null, null, null, 0, '0,0,0');
+values (110, null, '无功功率', 'C_CLOUMN18', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (111, null, '无功功率', 'C_CLOUMN20', 2, null, null, null, null, null, 0, '0,0,0');
+values (111, null, '反向功率', 'C_CLOUMN19', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (112, null, '反向功率', 'C_CLOUMN21', 2, null, null, null, null, null, 0, '0,0,0');
+values (112, null, '功率因数', 'C_CLOUMN20', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (113, null, '功率因数', 'C_CLOUMN22', 2, null, null, null, null, null, 0, '0,0,0');
+values (113, null, '变频设置频率', 'C_CLOUMN21', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (114, null, '变频设置频率', 'C_CLOUMN23', 2, null, null, null, null, null, 0, '0,0,0');
+values (114, null, '变频运行频率', 'C_CLOUMN22', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (115, null, '变频运行频率', 'C_CLOUMN24', 2, null, null, null, null, null, 0, '0,0,0');
+values (115, null, '螺杆泵转速', 'C_CLOUMN23', 2, null, null, null, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"3100ff"}', '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"0008ff"}', 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (116, null, '螺杆泵转速', 'C_CLOUMN147', 2, null, null, null, '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"3100ff"}', '{"sort":1,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"0008ff"}', 0, '0,0,0');
+values (116, null, '螺杆泵扭矩', 'C_CLOUMN24', 2, null, null, null, null, null, 0, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (117, null, '螺杆泵扭矩', 'C_CLOUMN148', 2, null, null, null, null, null, 0, '0,0,0');
+values (117, null, '在线时间', 'CommTime', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (118, null, '在线时间', 'CommTime', 2, null, null, null, null, null, 1, '0,0,0');
+values (118, null, '在线时率', 'CommTimeEfficiency', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (119, null, '在线时率', 'CommTimeEfficiency', 2, null, null, null, null, null, 1, '0,0,0');
+values (119, null, '在线区间', 'CommRange', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (120, null, '在线区间', 'CommRange', 2, null, null, null, null, null, 1, '0,0,0');
+values (120, null, '运行时间', 'RunTime', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (121, null, '运行时间', 'RunTime', 2, null, null, null, null, null, 1, '0,0,0');
+values (121, null, '运行时率', 'RunTimeEfficiency', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (122, null, '运行时率', 'RunTimeEfficiency', 2, null, null, null, null, null, 1, '0,0,0');
+values (122, null, '运行区间', 'RunRange', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (123, null, '运行区间', 'RunRange', 2, null, null, null, null, null, 1, '0,0,0');
+values (123, null, '理论排量', 'TheoreticalProduction', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (124, null, '理论排量', 'TheoreticalProduction', 2, null, null, null, null, null, 1, '0,0,0');
+values (124, null, '瞬时产液量', 'LiquidVolumetricProduction', 2, null, null, null, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"1fe4f8"}', '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"31d8e9"}', 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (125, null, '瞬时产液量', 'LiquidVolumetricProduction', 2, null, null, null, '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"1fe4f8"}', '{"sort":2,"lineWidth":2,"dashStyle":"Solid","yAxisOpposite":false,"color":"31d8e9"}', 1, '0,0,0');
+values (125, null, '瞬时产油量', 'OilVolumetricProduction', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (126, null, '瞬时产油量', 'OilVolumetricProduction', 2, null, null, null, null, null, 1, '0,0,0');
+values (126, null, '瞬时产水量', 'WaterVolumetricProduction', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (127, null, '瞬时产水量', 'WaterVolumetricProduction', 2, null, null, null, null, null, 1, '0,0,0');
+values (127, null, '日累计产液量', 'LiquidVolumetricProduction_l', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (128, null, '日累计产液量', 'LiquidVolumetricProduction_l', 2, null, null, null, null, null, 1, '0,0,0');
+values (128, null, '瞬时产液量', 'LiquidWeightProduction', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (129, null, '瞬时产液量', 'LiquidWeightProduction', 2, null, null, null, null, null, 1, '0,0,0');
+values (129, null, '瞬时产油量', 'OilWeightProduction', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (130, null, '瞬时产油量', 'OilWeightProduction', 2, null, null, null, null, null, 1, '0,0,0');
+values (130, null, '瞬时产水量', 'WaterWeightProduction', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (131, null, '瞬时产水量', 'WaterWeightProduction', 2, null, null, null, null, null, 1, '0,0,0');
+values (131, null, '日累计产液量', 'LiquidWeightProduction_l', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (132, null, '日累计产液量', 'LiquidWeightProduction_l', 2, null, null, null, null, null, 1, '0,0,0');
+values (132, null, '有功功率', 'AverageWatt', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (133, null, '有功功率', 'AverageWatt', 2, null, null, null, null, null, 1, '0,0,0');
+values (133, null, '水功率', 'WaterPower', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (134, null, '水功率', 'WaterPower', 2, null, null, null, null, null, 1, '0,0,0');
+values (134, null, '系统效率', 'SystemEfficiency', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (135, null, '系统效率', 'SystemEfficiency', 2, null, null, null, null, null, 1, '0,0,0');
+values (135, null, '冲程损失系数', 'PumpEff1', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (136, null, '冲程损失系数', 'PumpEff1', 2, null, null, null, null, null, 1, '0,0,0');
+values (136, null, '充满系数', 'PumpEff2', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (137, null, '充满系数', 'PumpEff2', 2, null, null, null, null, null, 1, '0,0,0');
+values (137, null, '总泵效', 'PumpEff', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (138, null, '总泵效', 'PumpEff', 2, null, null, null, null, null, 1, '0,0,0');
+values (138, null, '泵入口压力', 'PumpIntakeP', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (139, null, '泵入口压力', 'PumpIntakeP', 2, null, null, null, null, null, 1, '0,0,0');
+values (139, null, '泵入口温度', 'PumpIntakeT', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (140, null, '泵入口温度', 'PumpIntakeT', 2, null, null, null, null, null, 1, '0,0,0');
+values (140, null, '泵入口就地气液比', 'PumpIntakeGOL', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (141, null, '泵入口就地气液比', 'PumpIntakeGOL', 2, null, null, null, null, null, 1, '0,0,0');
+values (141, null, '泵入口粘度', 'PumpIntakeVisl', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (142, null, '泵入口粘度', 'PumpIntakeVisl', 2, null, null, null, null, null, 1, '0,0,0');
+values (142, null, '泵入口原油体积系数', 'PumpIntakeBo', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (143, null, '泵入口原油体积系数', 'PumpIntakeBo', 2, null, null, null, null, null, 1, '0,0,0');
+values (143, null, '泵出口压力', 'PumpOutletP', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (144, null, '泵出口压力', 'PumpOutletP', 2, null, null, null, null, null, 1, '0,0,0');
+values (144, null, '泵出口温度', 'PumpOutletT', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (145, null, '泵出口温度', 'PumpOutletT', 2, null, null, null, null, null, 1, '0,0,0');
+values (145, null, '泵出口就地气液比', 'PumpOutletGOL', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (146, null, '泵出口就地气液比', 'PumpOutletGOL', 2, null, null, null, null, null, 1, '0,0,0');
+values (146, null, '泵出口粘度', 'PumpOutletVisl', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (147, null, '泵出口粘度', 'PumpOutletVisl', 2, null, null, null, null, null, 1, '0,0,0');
+values (147, null, '泵出口原油体积系数', 'PumpOutletBo', 2, null, null, null, null, null, 1, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (148, null, '泵出口原油体积系数', 'PumpOutletBo', 2, null, null, null, null, null, 1, '0,0,0');
+values (148, null, '启停控制', 'C_CLOUMN6', 2, null, null, null, null, null, 2, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (149, null, '启停控制', 'C_CLOUMN6', 2, null, null, null, null, null, 2, '0,0,0');
+values (149, null, '变频设置频率', 'C_CLOUMN21', 2, null, null, null, null, null, 2, '0,0,0');
 
 insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
-values (150, null, '变频设置频率', 'C_CLOUMN23', 2, null, null, null, null, null, 2, '0,0,0');
+values (150, null, '冲次', 'C_CLOUMN30', 63, 17, null, null, null, null, 0, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (151, null, '冲程', 'C_CLOUMN31', 63, 14, null, null, null, null, 0, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (152, null, '在线时间', 'CommTime', 63, 1, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (153, null, '在线时率', 'CommTimeEfficiency', 63, 2, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (154, null, '在线区间', 'CommRange', 63, 3, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (155, null, '运行时间', 'RunTime', 63, 7, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (156, null, '运行时率', 'RunTimeEfficiency', 63, 8, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (157, null, '运行区间', 'RunRange', 63, 9, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (158, null, '工况', 'ResultName', 63, 10, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (159, null, '最大载荷', 'FMax', 63, 20, null, null, '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"f09728"}', '{"sort":1,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"eea618"}', 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (160, null, '最小载荷', 'FMin', 63, 23, null, null, '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"2dc8b0"}', '{"sort":2,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"40a9bc"}', 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (161, null, '柱塞冲程', 'PlungerStroke', 63, 15, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (162, null, '柱塞有效冲程', 'AvailablePlungerStroke', 63, 18, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (163, null, '抽空柱塞有效冲程', 'NoLiquidAvailablePlungerStroke', 63, 27, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (164, null, '充满系数', 'FullnessCoefficient', 63, 21, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (165, null, '抽空充满系数', 'NoLiquidFullnessCoefficient', 63, 24, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (166, null, '理论上载荷', 'UpperLoadLine', 63, 26, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (167, null, '理论下载荷', 'LowerLoadLine', 63, 29, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (168, null, '理论排量', 'TheoreticalProduction', 63, 25, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (169, null, '瞬时产液量', 'LiquidVolumetricProduction', 63, 13, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (170, null, '瞬时产油量', 'OilVolumetricProduction', 63, 16, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (171, null, '瞬时产水量', 'WaterVolumetricProduction', 63, 19, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (172, null, '柱塞有效冲程计算产量', 'AvailablePlungerStrokeProd_v', 63, 28, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (173, null, '泵间隙漏失量', 'PumpClearanceleakProd_v', 63, 30, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (174, null, '日累计产液量', 'LiquidVolumetricProduction_l', 63, 22, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (175, null, '上冲程最大电流', 'UpStrokeIMax', 63, null, null, null, '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"ff0000"}', '{"sort":3,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"ff0000"}', 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (176, null, '下冲程最大电流', 'DownStrokeIMax', 63, null, null, null, '{"sort":4,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":false,"color":"00ff45"}', '{"sort":4,"lineWidth":3,"dashStyle":"Solid","yAxisOpposite":true,"color":"00ff35"}', 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (177, null, '液面校正差值', 'LevelDifferenceValue', 63, null, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (178, null, '反演动液面', 'CalcProducingfluidLevel', 63, null, null, null, null, null, 1, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (179, null, '启停控制', 'C_CLOUMN6', 63, 1, null, null, null, null, 2, '0,0,0');
+
+insert into TBL_DISPLAY_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, BITINDEX, SHOWLEVEL, REALTIMECURVECONF, HISTORYCURVECONF, TYPE, MATRIX)
+values (180, null, '变频设置频率', 'C_CLOUMN21', 63, 2, null, null, null, null, 2, '0,0,0');
 
 /*==============================================================*/
 /* 初始化TBL_REPORT_UNIT_CONF数据                                          */
@@ -1010,7 +1100,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (24, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 25, null, null, null, null, null, 2, 0, '0,0,0', null, 0, '计算');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (25, null, '有功功耗', 'C_CLOUMN17', 1, 26, null, null, null, null, null, 2, 0, '0,0,0', null, 6, '采集');
+values (25, null, '有功功耗', 'C_CLOUMN15', 1, 26, null, null, null, null, null, 2, 0, '0,0,0', null, 6, '采集');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (26, null, '备注', 'Remark', 1, 27, null, null, null, null, null, 1, 0, '0,0,0', null, 0, '录入');
@@ -1091,7 +1181,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (51, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 26, null, 0, 0, null, null, 2, 1, '0,0,0', null, 0, '计算');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (52, null, '有功功耗', 'C_CLOUMN17', 1, 27, null, 1, 1, null, null, 2, 1, '0,0,0', null, 6, '采集');
+values (52, null, '有功功耗', 'C_CLOUMN15', 1, 27, null, 1, 1, null, null, 2, 1, '0,0,0', null, 6, '采集');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (53, null, '备注', 'Remark', 1, 28, null, 0, 0, null, null, 1, 1, '0,0,0', null, 0, '录入');
@@ -1178,7 +1268,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (80, null, '吨液百米耗电量', 'EnergyPer100mLift', 1, 28, null, null, null, null, null, 2, 2, '0,0,0', null, 0, '计算');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (81, null, '有功功耗', 'C_CLOUMN17', 1, 29, null, null, null, null, null, 2, 2, '0,0,0', null, 6, '采集');
+values (81, null, '有功功耗', 'C_CLOUMN15', 1, 29, null, null, null, null, null, 2, 2, '0,0,0', null, 6, '采集');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (82, null, '备注', 'Remark', 1, 30, null, null, null, null, null, 1, 2, '0,0,0', null, 0, '录入');
@@ -1235,7 +1325,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (99, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 18, null, null, null, null, null, 2, 0, '0,0,0', null, 0, '计算');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (100, null, '有功功耗', 'C_CLOUMN17', 2, 19, null, null, null, null, null, 2, 0, '0,0,0', null, 6, '采集');
+values (100, null, '有功功耗', 'C_CLOUMN15', 2, 19, null, null, null, null, null, 2, 0, '0,0,0', null, 6, '采集');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (101, null, '备注', 'Remark', 2, 20, null, null, null, null, null, 1, 0, '0,0,0', null, 0, '录入');
@@ -1295,7 +1385,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (119, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 19, null, 0, 0, null, null, 2, 1, '0,0,0', null, 0, '计算');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (120, null, '有功功耗', 'C_CLOUMN17', 2, 20, null, 1, 0, null, null, 2, 1, '0,0,0', null, 6, '采集');
+values (120, null, '有功功耗', 'C_CLOUMN15', 2, 20, null, 1, 0, null, null, 2, 1, '0,0,0', null, 6, '采集');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (121, null, '备注', 'Remark', 2, 21, null, 0, 0, null, null, 1, 1, '0,0,0', null, 0, '录入');
@@ -1361,7 +1451,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (141, null, '吨液百米耗电量', 'EnergyPer100mLift', 2, 21, null, null, null, null, null, 2, 2, '0,0,0', null, 0, '计算');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (142, null, '有功功耗', 'C_CLOUMN17', 2, 22, null, null, null, null, null, 2, 2, '0,0,0', null, 6, '采集');
+values (142, null, '有功功耗', 'C_CLOUMN15', 2, 22, null, null, null, null, null, 2, 2, '0,0,0', null, 6, '采集');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (143, null, '备注', 'Remark', 2, 23, null, null, null, null, null, 1, 2, '0,0,0', null, 0, '录入');

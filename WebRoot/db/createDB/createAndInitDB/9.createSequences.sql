@@ -162,7 +162,7 @@ cache 2;
 create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 151
+start with 200
 increment by 1
 cache 20;
 

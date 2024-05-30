@@ -62,69 +62,75 @@ begin
 end;
 /
 
-CREATE OR REPLACE PROCEDURE prd_reset_sequence (sequencename IN VARCHAR2) as
-  curr_val INTEGER;
-BEGIN
-  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' MINVALUE 0';
-  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' cache 20';
-  EXECUTE IMMEDIATE 'SELECT ' || sequencename || '.nextval FROM dual'
-    INTO curr_val;
-  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' increment by -' ||
-                    curr_val;
-  EXECUTE IMMEDIATE 'SELECT ' || sequencename || '.nextval FROM dual'
-    INTO curr_val;
-  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' increment by 1';
-END prd_reset_sequence;
-/
-
 CREATE OR REPLACE PROCEDURE prd_clear_data is
 begin
 --清空所有数据
+EXECUTE IMMEDIATE 'truncate table tbl_acqdata_latest';
+EXECUTE IMMEDIATE 'truncate table tbl_acqdata_hist';
+EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_latest';
+EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_hist';
+EXECUTE IMMEDIATE 'truncate table tbl_acqrawdata';
+
+EXECUTE IMMEDIATE 'truncate table tbl_dailytotalcalculate_latest';
+EXECUTE IMMEDIATE 'truncate table tbl_dailytotalcalculate_hist';
+EXECUTE IMMEDIATE 'truncate table tbl_dailycalculationdata';
+EXECUTE IMMEDIATE 'truncate table tbl_timingcalculationdata';
+
 EXECUTE IMMEDIATE 'truncate table tbl_rpcacqdata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_rpcacqdata_hist';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcalarminfo_latest';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcalarminfo_hist';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcacqrawdata';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcdeviceaddinfo';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcdevicegraphicset';
+EXECUTE IMMEDIATE 'truncate table tbl_rpcdailycalculationdata';
+EXECUTE IMMEDIATE 'truncate table tbl_rpctimingcalculationdata';
+
+
 EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_hist';
-EXECUTE IMMEDIATE 'truncate table tbl_pcpalarminfo_latest';
-EXECUTE IMMEDIATE 'truncate table tbl_pcppalarminfo_hist';
-EXECUTE IMMEDIATE 'truncate table tbl_pcpacqrawdata';
-EXECUTE IMMEDIATE 'truncate table tbl_pcpdeviceaddinfo';
-EXECUTE IMMEDIATE 'truncate table tbl_pcpdevicegraphicset';
+EXECUTE IMMEDIATE 'truncate table tbl_pcpdailycalculationdata';
+EXECUTE IMMEDIATE 'truncate table tbl_pcptimingcalculationdata';
+
+
+EXECUTE IMMEDIATE 'truncate table tbl_deviceaddinfo';
+EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
+EXECUTE IMMEDIATE 'truncate table tbl_devicegraphicset';
+
 EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
 EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
 EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
-EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
-EXECUTE IMMEDIATE 'truncate table tbl_auxiliarydevice';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcdevice';
-EXECUTE IMMEDIATE 'truncate table tbl_pcpdevice';
+
+EXECUTE IMMEDIATE 'truncate table tbl_device';
 EXECUTE IMMEDIATE 'truncate table tbl_smsdevice';
 
 --重置所有序列
+ prd_reset_sequence('seq_acqdata_latest');
+ prd_reset_sequence('seq_acqdata_hist');
+ prd_reset_sequence('seq_alarminfo_latest');
+ prd_reset_sequence('seq_alarminfo_hist');
+ prd_reset_sequence('seq_acqrawdata');
+
+ prd_reset_sequence('seq_dailytotalcalculate_latest');
+ prd_reset_sequence('seq_dailytotalcalculate_hist');
+ prd_reset_sequence('seq_dailycalculationdata');
+ prd_reset_sequence('seq_timingcalculationdata');
+
+
  prd_reset_sequence('seq_rpcacqdata_latest');
  prd_reset_sequence('seq_rpcacqdata_hist');
- prd_reset_sequence('seq_rpcalarminfo_latest');
- prd_reset_sequence('seq_rpcalarminfo_hist');
- prd_reset_sequence('seq_rpcacqrawdata');
- prd_reset_sequence('seq_rpcdeviceaddinfo');
- prd_reset_sequence('seq_rpcdevicegraphicset');
+ prd_reset_sequence('seq_rpcdailycalculationdata');
+ prd_reset_sequence('seq_rpctimingcalculationdata');
+ 
  prd_reset_sequence('seq_pcpacqdata_latest');
  prd_reset_sequence('seq_pcpacqdata_hist');
- prd_reset_sequence('seq_pcpalarminfo_latest');
- prd_reset_sequence('seq_pcpalarminfo_hist');
- prd_reset_sequence('seq_pcpacqrawdata');
- prd_reset_sequence('seq_pcpdeviceaddinfo');
- prd_reset_sequence('seq_pcpdevicegraphicset');
+ prd_reset_sequence('seq_pcpdailycalculationdata');
+ prd_reset_sequence('seq_pcptimingcalculationdata');
+
+ prd_reset_sequence('seq_deviceaddinfo');
+ prd_reset_sequence('seq_auxiliary2master');
+ prd_reset_sequence('seq_devicegraphicset');
+
  prd_reset_sequence('seq_deviceoperationlog');
  prd_reset_sequence('seq_systemlog');
  prd_reset_sequence('seq_resourcemonitoring');
- prd_reset_sequence('seq_auxiliary2master');
- prd_reset_sequence('seq_auxiliarydevice');
- prd_reset_sequence('seq_rpcdevice');
- prd_reset_sequence('seq_pcpdevice');
+
+ prd_reset_sequence('seq_device');
  prd_reset_sequence('seq_smsdevice');
 end prd_clear_data;
 /

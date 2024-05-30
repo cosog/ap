@@ -3315,6 +3315,19 @@ public class MemoryDataManagerTask {
 		return modbusProtocolConfig;
 	}
 	
+	public static ModbusProtocolConfig.Items getProtocolItem(ModbusProtocolConfig.Protocol protocol,String itemName){
+		ModbusProtocolConfig.Items rtnItem=null;
+		if(StringManagerUtils.isNotNull(itemName) && protocol!=null && protocol.getItems()!=null && protocol.getItems().size()>0){
+			for(ModbusProtocolConfig.Items item:protocol.getItems()){
+				if(itemName.equalsIgnoreCase(item.getTitle())){
+					rtnItem=item;
+					break;
+				}
+			}
+		}
+		return rtnItem;
+	}
+	
 	public static ModbusProtocolConfig.Protocol getProtocolByName(String protocolName){
 		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
 		ModbusProtocolConfig.Protocol protocol=null;

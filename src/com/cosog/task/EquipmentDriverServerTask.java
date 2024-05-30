@@ -845,9 +845,150 @@ public class EquipmentDriverServerTask {
 		return 0;
 	}
 	
-	
 	@SuppressWarnings("static-access")
 	public static int initInstanceConfig(List<String> instanceList,String method){
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
+		Gson gson = new Gson();
+		int result=0;
+		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
+		if(!StringManagerUtils.isNotNull(method)){
+			method="update";
+		}
+		
+		if("delete".equalsIgnoreCase(method)){
+			for(int i=0;instanceList!=null&&i<instanceList.size();i++){
+				InitInstance initInstance=new InitInstance();
+				initInstance.setInstanceName(instanceList.get(i));
+				initInstance.setMethod(method);
+				StringManagerUtils.printLog("删除实例："+gson.toJson(initInstance));
+				if(initEnable){
+					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
+				}
+			}
+		}else{
+			String instanceSql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
+					+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
+					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"
+					+ " t.packetsendinterval,"
+					+ " t3.name "
+					+ " from tbl_protocolinstance t "
+					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
+					+ " left outer join tbl_protocol t3 on t2.protocol=t3.name";
+			String sql="select t5.name as instanceName,t2.id as groupId,t2.group_name,t2.type,t2.grouptiminginterval,"
+					+ " t.itemname,t.itemcode, t6.name as protocolName "
+					+ " from tbl_acq_item2group_conf t,"
+					+ " tbl_acq_group_conf t2,"
+					+ " tbl_acq_group2unit_conf t3,"
+					+ " tbl_acq_unit_conf t4,"
+					+ " tbl_protocolinstance t5,"
+					+ " tbl_protocol t6 "
+					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t4.protocol=t6.name ";
+			
+			
+			if(StringManagerUtils.isNotNull(instances)){
+				sql+=" and t5.name in("+instances+")";
+				instanceSql+=" and t.name in("+instances+")";
+			}
+			sql+= " order by t5.sort,t.groupid,t.id";
+			instanceSql+=" order by t.sort";
+			
+			List<Object[]> instanceQueryList=OracleJdbcUtis.query(instanceSql);
+			List<Object[]> itemsQueryList=OracleJdbcUtis.query(sql);
+			
+			
+			
+			if(instanceQueryList!=null && instanceQueryList.size()>0){
+				Map<String,InitInstance> InstanceListMap=new LinkedHashMap<String,InitInstance>();
+				
+				
+				for(Object[] obj:instanceQueryList){
+					InitInstance initInstance=new InitInstance();
+					initInstance.setMethod(method);
+					initInstance.setInstanceName(obj[0]+"");
+					initInstance.setProtocolName(obj[11]+"");
+					initInstance.setAcqProtocolType(obj[1]+"");
+					initInstance.setCtrlProtocolType(obj[2]+"");
+					
+					initInstance.setSignInPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[3]+"")==1);
+					initInstance.setSignInPrefix((obj[4]+"").replaceAll("null", ""));
+					initInstance.setSignInSuffix((obj[5]+"").replaceAll("null", ""));
+					initInstance.setSignInIDHex(StringManagerUtils.stringToInteger(obj[6]+"")==1);
+					
+					initInstance.setHeartbeatPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[7]+"")==1);
+					initInstance.setHeartbeatPrefix((obj[8]+"").replaceAll("null", ""));
+					initInstance.setHeartbeatSuffix((obj[9]+"").replaceAll("null", ""));
+					
+					initInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(obj[10]+""));
+					
+					initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
+					initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
+					
+					InstanceListMap.put(initInstance.getInstanceName(), initInstance);
+				}
+				
+				for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
+					InitInstance initInstance=entry.getValue();
+					String key=entry.getKey();
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(initInstance.getProtocolName());
+					
+					for(Object[] obj:itemsQueryList){
+						String instanceName=obj[0]+"";
+						int groupId=StringManagerUtils.stringToInteger(obj[1]+"");
+						String groupName=obj[2]+"";
+						int groupType=StringManagerUtils.stringToInteger(obj[3]+"");
+						int groupTimingInterval=StringManagerUtils.stringToInteger(obj[4]+"");
+						
+						String itemName=obj[5]+"";
+						String protocolName=obj[7]+"";
+						if(instanceName.equalsIgnoreCase(initInstance.getInstanceName())){
+							if(!initInstance.containGroup(groupType, groupId)){
+								InitInstance.Group group=new InitInstance.Group();
+								group.setId(groupId);
+								group.setGroupTimingInterval(groupTimingInterval);
+								group.setAddr(new ArrayList<Integer>());
+								if(groupType==0){
+									initInstance.getAcqGroup().add(group);
+								}else if(groupType==1){
+									initInstance.getCtrlGroup().add(group);
+								}
+							}
+							InitInstance.Group group=initInstance.getGroup(groupType, groupId);
+							if(group!=null){
+								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, itemName);
+								if(item!=null && !StringManagerUtils.existOrNot(group.getAddr(), item.getAddr())){
+									group.getAddr().add(item.getAddr());
+								}
+							}
+						}
+					}
+				}
+				for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
+					InitInstance initInstance=entry.getValue();
+					String key=entry.getKey();
+					for(InitInstance.Group group:initInstance.getAcqGroup() ){
+						Collections.sort(group.getAddr());
+					}
+					for(InitInstance.Group group:initInstance.getCtrlGroup() ){
+						Collections.sort(group.getAddr());
+					}
+					
+					try {
+						StringManagerUtils.printLog("实例初始化："+gson.toJson(entry.getValue()));
+						if(initEnable){
+							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(entry.getValue()),"utf-8",0,0);
+						}
+					}catch (Exception e) {
+						continue;
+					}
+				}
+				
+			}
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("static-access")
+	public static int initInstanceConfig2(List<String> instanceList,String method){
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		Gson gson = new Gson();
 		int result=0;
@@ -964,7 +1105,7 @@ public class EquipmentDriverServerTask {
 							initInstance.getAcqGroup().add(group);
 						}
 					}
-					InstanceListMap.put(rs.getString(1), initInstance);
+					InstanceListMap.put(initInstance.getInstanceName(), initInstance);
 				}
 				result=InstanceListMap.size();
 				for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){

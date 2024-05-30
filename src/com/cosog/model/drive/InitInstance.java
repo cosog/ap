@@ -1,10 +1,23 @@
 package com.cosog.model.drive;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 
 
-public class InitInstance {
+public class InitInstance  implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String Method;
 	
 	private String InstanceName;
@@ -39,9 +52,13 @@ public class InitInstance {
 		super();
 	}
     
-    public static class Group
-	{
-	    private List<Integer> Addr;
+    public static class Group implements Serializable {
+
+    	private static final long serialVersionUID = 1L;
+    	
+	    private Integer Id;
+	    
+    	private List<Integer> Addr;
 
 	    private int GroupTimingInterval;
 
@@ -56,6 +73,12 @@ public class InitInstance {
 		}
 		public void setGroupTimingInterval(int groupTimingInterval) {
 			GroupTimingInterval = groupTimingInterval;
+		}
+		public Integer getId() {
+			return Id;
+		}
+		public void setId(Integer id) {
+			Id = id;
 		}
 	}
 
@@ -177,5 +200,84 @@ public class InitInstance {
 
 	public void setHeartbeatPrefixSuffixHex(boolean heartbeatPrefixSuffixHex) {
 		HeartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
+	}
+	
+	public String toString(){
+		Gson gson = new Gson();
+		String result="";
+		try {
+			result=gson.toJson(this);
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode jsonNodes;
+			jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
+	        while (iterator.hasNext()) {
+	            Entry<String, JsonNode> entry = iterator.next();
+	            if("AcqGroup".equalsIgnoreCase(entry.getKey())){
+	            	((ObjectNode)entry.getValue()).remove("Id");
+	            }else if("CtrlGroup".equalsIgnoreCase(entry.getKey())){
+	            	((ObjectNode)entry.getValue()).remove("Id");
+	            }
+	        }
+	        result = objectMapper.writeValueAsString(jsonNodes);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return result;
+	}
+	
+	public boolean containGroup(int type,int groupId){
+		boolean r=false;
+		if(type==0){//采集组
+			if(this.getAcqGroup()!=null && this.getAcqGroup().size()>0){
+				for(Group group:this.getAcqGroup()){
+					if(groupId==group.getId()){
+						r=true;
+						break;
+					}
+				}
+			}
+		}else if(type==1){//控制组
+			if(this.getCtrlGroup()!=null && this.getCtrlGroup().size()>0){
+				for(Group group:this.getCtrlGroup()){
+					if(groupId==group.getId()){
+						r=true;
+						break;
+					}
+				}
+			}
+		}
+		return r;
+	}
+	
+	public Group getGroup(int type,int groupId){
+		Group rtnGroup=null;
+		if(type==0){//采集组
+			if(this.getAcqGroup()!=null && this.getAcqGroup().size()>0){
+				for(Group group:this.getAcqGroup()){
+					if(groupId==group.getId()){
+						rtnGroup=group;
+						break;
+					}
+				}
+			}
+		}else if(type==1){//控制组
+			if(this.getCtrlGroup()!=null && this.getCtrlGroup().size()>0){
+				for(Group group:this.getCtrlGroup()){
+					if(groupId==group.getId()){
+						rtnGroup=group;
+						break;
+					}
+				}
+			}
+		}
+		return rtnGroup;
 	}
 }

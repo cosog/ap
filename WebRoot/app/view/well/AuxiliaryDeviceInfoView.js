@@ -10,7 +10,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoView", {
         var items=[];
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
-        		if(tabInfo.children[i].parentId==0){
+        		if(tabInfo.children[i].parentId==9999){
         			var panelItem={};
         			panelItem={
         					title: tabInfo.children[i].text,

@@ -4117,6 +4117,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("expectedNetTorque:\"\","); 
 	        dataSbf.append("polishrodV:\"\","); 
 	        dataSbf.append("polishrodA:\"\""); 
+	        dataSbf.append("}");
 		}
 		return dataSbf.toString().replaceAll("null", "");
 	}

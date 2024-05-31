@@ -98,10 +98,12 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         	var deviceName='';
         	var deviceId=0;
         	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+        	var calculateType=0;
         	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
         	if(selectRow>=0){
         		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
         	}
         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
         	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
@@ -118,6 +120,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
             		deviceType:deviceType,
             		deviceId:deviceId,
                     deviceName:deviceName,
+                    calculateType:calculateType,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
                 };

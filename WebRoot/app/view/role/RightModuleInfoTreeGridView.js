@@ -108,7 +108,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
 	                    }
             	    },
             	    afterrender: function( cell, eOpts){
-//            	    	cell.setDisabled(true);
+            	    	
             	    },
             	    add: function(cell, container, index, eOpts){
             	    	alert(index);

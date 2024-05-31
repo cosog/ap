@@ -47,7 +47,6 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
             listeners: {
                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                 	if(deviceHistoryQueryDataHandsontableHelper!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=undefined){
-//                		deviceHistoryQueryDataHandsontableHelper.hot.refreshDimensions();
                 		var newWidth=width;
                 		var newHeight=height;
                 		var header=thisPanel.getHeader();

@@ -206,6 +206,7 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -236,7 +237,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = historyQueryService.getDeviceHistoryData(orgId,deviceId,deviceName,deviceType,pager);
+		json = historyQueryService.getDeviceHistoryData(orgId,deviceId,deviceName,deviceType,calculateType,pager);
 		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

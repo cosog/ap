@@ -789,7 +789,7 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,un
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigEnumItemsHandsontableHelper==null || protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigEnumItemsHandsontableHelper = ProtocolAlarmUnitConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','值','含义','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['','序号','数值','含义','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'}," 
 					+"{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"

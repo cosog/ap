@@ -1995,6 +1995,7 @@ public class WellInformationManagerController extends BaseController {
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setDeviceInformation(deviceInformation);
 				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setDeviceType(deviceInformation.getDeviceType());
 				dataSynchronizationThread.setDeviceManagerService(deviceManagerService);
 				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
 						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
@@ -2002,139 +2003,6 @@ public class WellInformationManagerController extends BaseController {
 						TimeUnit.SECONDS, 
 						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				executor.execute(dataSynchronizationThread);
-				result = "{success:true,msg:true,resultCode:1}";
-			}else{
-				result = "{success:true,msg:true,resultCode:-66}";
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "{success:false,msg:false}";
-		}
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/doRPCDeviceAdd")
-	public String doRPCDeviceAdd(@ModelAttribute RpcDeviceInformation rpcDeviceInformation) throws IOException {
-		String result = "";
-		HttpSession session=request.getSession();
-		try {
-			User user = (User) session.getAttribute("userLogin");
-			if(rpcDeviceInformation.getOrgId()==null){
-				rpcDeviceInformation.setOrgId(user.getUserOrgid());
-			}
-			
-			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
-			int license=0;
-			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
-			if(acStatusProbeResonanceData!=null){
-				license=acStatusProbeResonanceData.getLicenseNumber();
-			}
-			if(deviceAmount<license){
-				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
-					String[] instanceCodeArr=this.rpcDeviceManagerService.getDefaultInstanceCode(0).split(";");
-					if(instanceCodeArr.length==4){
-						rpcDeviceInformation.setInstanceCode(instanceCodeArr[0].replaceAll(" ", ""));
-						rpcDeviceInformation.setDisplayInstanceCode(instanceCodeArr[1].replaceAll(" ", ""));
-						rpcDeviceInformation.setAlarmInstanceCode(instanceCodeArr[2].replaceAll(" ", ""));
-						rpcDeviceInformation.setReportInstanceCode(instanceCodeArr[3].replaceAll(" ", ""));
-						rpcDeviceInformation.setTcpType("TCP Client");
-						rpcDeviceInformation.setSignInId(rpcDeviceInformation.getWellName());
-						rpcDeviceInformation.setSlave("01");;
-					}
-				}
-				
-				this.rpcDeviceManagerService.doRPCDeviceAdd(rpcDeviceInformation);
-				List<String> wells=new ArrayList<String>();
-				wells.add(rpcDeviceInformation.getWellName());
-				
-				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(101);
-				dataSynchronizationThread.setInitWellList(wells);
-				dataSynchronizationThread.setUpdateList(null);
-				dataSynchronizationThread.setAddList(wells);
-				dataSynchronizationThread.setDeleteList(null);
-				dataSynchronizationThread.setCondition(1);
-				dataSynchronizationThread.setMethod("update");
-				dataSynchronizationThread.setRpcDeviceInformation(rpcDeviceInformation);
-				dataSynchronizationThread.setUser(user);
-				dataSynchronizationThread.setRpcDeviceManagerService(rpcDeviceManagerService);
-				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-						TimeUnit.SECONDS, 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-				executor.execute(dataSynchronizationThread);
-				result = "{success:true,msg:true,resultCode:1}";
-			}else{
-				result = "{success:true,msg:true,resultCode:-66}";
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "{success:false,msg:false}";
-		}
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/doPCPDeviceAdd")
-	public String doPCPDeviceAdd(@ModelAttribute PcpDeviceInformation pcpDeviceInformation) throws IOException {
-		String result = "";
-		HttpSession session=request.getSession();
-		try {
-			User user = (User) session.getAttribute("userLogin");
-			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
-			int license=0;
-			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
-			if(acStatusProbeResonanceData!=null){
-				license=acStatusProbeResonanceData.getLicenseNumber();
-			}
-			if(deviceAmount<license){
-				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
-					String[] instanceCodeArr=this.rpcDeviceManagerService.getDefaultInstanceCode(1).split(";");
-					if(instanceCodeArr.length==4){
-						pcpDeviceInformation.setInstanceCode(instanceCodeArr[0].replaceAll(" ", ""));
-						pcpDeviceInformation.setDisplayInstanceCode(instanceCodeArr[1].replaceAll(" ", ""));
-						pcpDeviceInformation.setAlarmInstanceCode(instanceCodeArr[2].replaceAll(" ", ""));
-						pcpDeviceInformation.setReportInstanceCode(instanceCodeArr[3].replaceAll(" ", ""));
-						pcpDeviceInformation.setTcpType("TCP Client");
-						pcpDeviceInformation.setSignInId(pcpDeviceInformation.getWellName());
-						pcpDeviceInformation.setSlave("01");;
-					}
-				}
-				this.pcpDeviceManagerService.doPCPDeviceAdd(pcpDeviceInformation);
-				
-				List<String> wells=new ArrayList<String>();
-				wells.add(pcpDeviceInformation.getWellName());
-				
-				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(201);
-				dataSynchronizationThread.setInitWellList(wells);
-				dataSynchronizationThread.setUpdateList(null);
-				dataSynchronizationThread.setAddList(wells);
-				dataSynchronizationThread.setDeleteList(null);
-				dataSynchronizationThread.setCondition(1);
-				dataSynchronizationThread.setMethod("update");
-				dataSynchronizationThread.setPcpDeviceInformation(pcpDeviceInformation);
-				dataSynchronizationThread.setUser(user);
-				dataSynchronizationThread.setPcpDeviceManagerService(pcpDeviceManagerService);
-				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-						TimeUnit.SECONDS, 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-				executor.execute(dataSynchronizationThread);
-				
 				result = "{success:true,msg:true,resultCode:1}";
 			}else{
 				result = "{success:true,msg:true,resultCode:-66}";
@@ -2163,7 +2031,7 @@ public class WellInformationManagerController extends BaseController {
 			List<String> addWellList=new ArrayList<String>();
 			addWellList.add(smsDeviceInformation.getDeviceName());
 			EquipmentDriverServerTask.initSMSDevice(addWellList,"update");
-			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, user);
+			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, user,300);
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);

@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.DeviceInformation;
-import com.cosog.model.PcpDeviceInformation;
-import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.User;
 import com.cosog.service.acqUnit.AcquisitionUnitManagerService;
 import com.cosog.service.back.WellInformationManagerService;
@@ -27,16 +25,13 @@ public class DataSynchronizationThread implements Runnable{
 	public String param1;
 	public int sign;
 	public User user;
+	public int deviceType;
 	
 	public AcquisitionUnitManagerService<AcquisitionUnit> acquisitionUnitManagerService;
 	
 	public DeviceInformation deviceInformation;
-	public RpcDeviceInformation rpcDeviceInformation;
-	public PcpDeviceInformation pcpDeviceInformation;
 	public WellInformationManagerService<?> wellInformationManagerService;
 	public WellInformationManagerService<DeviceInformation> deviceManagerService;
-	public WellInformationManagerService<RpcDeviceInformation> rpcDeviceManagerService;
-	public WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService;
 	public void run(){
 		try {
 			if(sign==001){//创建协议
@@ -147,29 +142,15 @@ public class DataSynchronizationThread implements Runnable{
 				if(deviceInformation.getStatus()==1){
 					EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
 				}
-				deviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, user);
+				deviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, user,deviceType);
 			}else if(sign==102){//删除抽油机井
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(deleteList,condition,method);
 				MemoryDataManagerTask.loadDeviceInfo(deleteList,condition,method);
-				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
+				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
 			}else if(sign==103){//修改抽油机井
 				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
-				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
-			}else if(sign==201){//添加螺杆泵井
-				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
-				if(pcpDeviceInformation.getStatus()==1){
-					EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
-				}
-				pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, user);
-			}else if(sign==202){//删除螺杆泵井
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(deleteList,condition,method);
-				MemoryDataManagerTask.loadDeviceInfo(deleteList,condition,method);
-				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
-			}else if(sign==203){//修改螺杆泵井
-				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
-				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user);
+				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -227,24 +208,6 @@ public class DataSynchronizationThread implements Runnable{
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public RpcDeviceInformation getRpcDeviceInformation() {
-		return rpcDeviceInformation;
-	}
-	public void setRpcDeviceInformation(RpcDeviceInformation rpcDeviceInformation) {
-		this.rpcDeviceInformation = rpcDeviceInformation;
-	}
-	public PcpDeviceInformation getPcpDeviceInformation() {
-		return pcpDeviceInformation;
-	}
-	public void setPcpDeviceInformation(PcpDeviceInformation pcpDeviceInformation) {
-		this.pcpDeviceInformation = pcpDeviceInformation;
-	}
-	public WellInformationManagerService<RpcDeviceInformation> getRpcDeviceManagerService() {
-		return rpcDeviceManagerService;
-	}
-	public void setRpcDeviceManagerService(WellInformationManagerService<RpcDeviceInformation> rpcDeviceManagerService) {
-		this.rpcDeviceManagerService = rpcDeviceManagerService;
-	}
 	public List<String> getInitWellList() {
 		return initWellList;
 	}
@@ -262,12 +225,6 @@ public class DataSynchronizationThread implements Runnable{
 	}
 	public void setWellInformationManagerService(WellInformationManagerService<?> wellInformationManagerService) {
 		this.wellInformationManagerService = wellInformationManagerService;
-	}
-	public WellInformationManagerService<PcpDeviceInformation> getPcpDeviceManagerService() {
-		return pcpDeviceManagerService;
-	}
-	public void setPcpDeviceManagerService(WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService) {
-		this.pcpDeviceManagerService = pcpDeviceManagerService;
 	}
 	public AcquisitionUnitManagerService<AcquisitionUnit> getAcquisitionUnitManagerService() {
 		return acquisitionUnitManagerService;
@@ -287,5 +244,11 @@ public class DataSynchronizationThread implements Runnable{
 	}
 	public void setDeviceManagerService(WellInformationManagerService<DeviceInformation> deviceManagerService) {
 		this.deviceManagerService = deviceManagerService;
+	}
+	public int getDeviceType() {
+		return deviceType;
+	}
+	public void setDeviceType(int deviceType) {
+		this.deviceType = deviceType;
 	}
 }

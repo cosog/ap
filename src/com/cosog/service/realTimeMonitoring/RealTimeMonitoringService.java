@@ -1306,10 +1306,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			
-			
-			
-			
-			
 			String columns = "[";
 			for(int i=1;i<=items;i++){
 				columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
@@ -1335,8 +1331,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				if(protocol!=null){
 					List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
-					List<CalItem> diaplayCalItemList=new ArrayList<CalItem>();
-					List<CalItem> diaplayInputItemList=new ArrayList<CalItem>();
+					List<CalItem> displayCalItemList=new ArrayList<CalItem>();
+					List<CalItem> displayInputItemList=new ArrayList<CalItem>();
 					Map<String,DisplayInstanceOwnItem.DisplayItem> dailyTotalCalItemMap=new HashMap<>();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					WorkType workType=null;
@@ -1364,7 +1360,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
-										diaplayCalItemList.add(calItem);
+										displayCalItemList.add(calItem);
 										break;
 									}
 								}
@@ -1398,7 +1394,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==3
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
-										diaplayInputItemList.add(calItem);
+										displayInputItemList.add(calItem);
 										break;
 									}
 								}
@@ -1417,21 +1413,21 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 
 					if(StringManagerUtils.stringToInteger(calculateType)>0){
-						for(int i=0;i<diaplayCalItemList.size();i++){
-							String column=diaplayCalItemList.get(i).getCode();
-							if("resultName".equalsIgnoreCase(diaplayCalItemList.get(i).getCode())){
+						for(int i=0;i<displayCalItemList.size();i++){
+							String column=displayCalItemList.get(i).getCode();
+							if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
 								column="resultCode";
 							}
 							sql+=",t3."+column;
 						}
-						if(diaplayInputItemList.size()>0){
+						if(displayInputItemList.size()>0){
 							sql+=",t3.productiondata";
 						}
 					}
 					
 					sql+= " from "+deviceTableName+" t "
 							+ " left outer join "+tableName+" t2 on t2.deviceid=t.id";
-					if(StringManagerUtils.isNotNull(calAndInputTableName)&&(diaplayCalItemList.size()>0 || inputItemList.size()>0)){
+					if(StringManagerUtils.isNotNull(calAndInputTableName)&&(displayCalItemList.size()>0 || inputItemList.size()>0)){
 						sql+=" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t.id";
 					}
 					
@@ -1440,24 +1436,24 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					if(list.size()>0){
 						int row=1;
 						Object[] obj=(Object[]) list.get(0);
-						if(diaplayInputItemList.size()>0){
+						if(displayInputItemList.size()>0){
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							if(StringManagerUtils.stringToInteger(calculateType)==1){
 								type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 								RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
-								for(int i=0;i<diaplayInputItemList.size();i++){
-									String columnName=diaplayInputItemList.get(i).getName();
+								for(int i=0;i<displayInputItemList.size();i++){
+									String columnName=displayInputItemList.get(i).getName();
 									String rawColumnName=columnName;
 									String value="";
 									String rawValue=value;
 									String addr="";
-									String column=diaplayInputItemList.get(i).getCode();
+									String column=displayInputItemList.get(i).getCode();
 									String columnDataType="";
 									String resolutionMode="";
 									String bitIndex="";
-									String unit=diaplayInputItemList.get(i).getUnit();
+									String unit=displayInputItemList.get(i).getUnit();
 									int sort=9999;
 									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 										if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
@@ -1516,17 +1512,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
-								for(int i=0;i<diaplayInputItemList.size();i++){
-									String columnName=diaplayInputItemList.get(i).getName();
+								for(int i=0;i<displayInputItemList.size();i++){
+									String columnName=displayInputItemList.get(i).getName();
 									String rawColumnName=columnName;
 									String value="";
 									String rawValue=value;
 									String addr="";
-									String column=diaplayInputItemList.get(i).getCode();
+									String column=displayInputItemList.get(i).getCode();
 									String columnDataType="";
 									String resolutionMode="";
 									String bitIndex="";
-									String unit=diaplayInputItemList.get(i).getUnit();
+									String unit=displayInputItemList.get(i).getUnit();
 									int sort=9999;
 									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 										if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
@@ -1581,10 +1577,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}
 						}
 						
-						for(int i=0;i<diaplayCalItemList.size();i++){
+						for(int i=0;i<displayCalItemList.size();i++){
 							int index=i+6+protocolItems.size();
 							if(index<obj.length){
-								String columnName=diaplayCalItemList.get(i).getName();
+								String columnName=displayCalItemList.get(i).getName();
 								String rawColumnName=columnName;
 								String value=obj[i+6+protocolItems.size()]+"";
 								if(obj[i+6+protocolItems.size()] instanceof CLOB || obj[i+6+protocolItems.size()] instanceof Clob){
@@ -1592,11 +1588,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}
 								String rawValue=value;
 								String addr="";
-								String column=diaplayCalItemList.get(i).getCode();
+								String column=displayCalItemList.get(i).getCode();
 								String columnDataType="";
 								String resolutionMode="";
 								String bitIndex="";
-								String unit=diaplayCalItemList.get(i).getUnit();
+								String unit=displayCalItemList.get(i).getUnit();
 								int sort=9999;
 								for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 									if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){

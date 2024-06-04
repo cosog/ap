@@ -2470,7 +2470,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
-			jedis.zadd("acqTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","DeviceName","",1,"录入","井名")));//1-字符串 2-数值 3-日期 4-日期时间
+			jedis.zadd("acqTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,"录入",Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd("acqTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,"计算","日期")));
 			
 			jedis.zadd("acqTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"计算","在线时间,通信计算所得")));
@@ -2502,7 +2502,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
-			jedis.zadd("rpcTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","DeviceName","",1,"录入","井名")));//1-字符串 2-数值 3-日期 4-日期时间
+			jedis.zadd("rpcTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,"录入",Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd("rpcTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,"计算","日期")));
 			
 			jedis.zadd("rpcTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"计算","在线时间,通信计算所得")));
@@ -2585,7 +2585,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
-			jedis.zadd("pcpTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","DeviceName","",1,"录入","井名")));
+			jedis.zadd("pcpTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,"录入",Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));
 			jedis.zadd("pcpTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,"计算","日期")));
 			
 			jedis.zadd("pcpTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"计算","在线时间,通信计算所得")));
@@ -2647,7 +2647,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
-			jedis.zadd("acqTimingTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","DeviceName","",1,"录入","井名")));//1-字符串 2-数值 3-日期 4-日期时间
+			jedis.zadd("acqTimingTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,"录入",Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd("acqTimingTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,"计算","时间")));
 			
 			jedis.zadd("acqTimingTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"计算","在线时间,通信计算所得")));
@@ -2681,7 +2681,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
-			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","DeviceName","",1,"录入","井名")));//1-字符串 2-数值 3-日期 4-日期时间
+			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,"录入",Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,"计算","时间")));
 			
 			jedis.zadd("rpcTimingTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"计算","在线时间,通信计算所得")));
@@ -2779,7 +2779,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
-			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("井名","DeviceName","",1,"录入","井名")));
+			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,"录入",Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,"计算","时间")));
 			
 			jedis.zadd("pcpTimingTotalCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"计算","在线时间,通信计算所得")));

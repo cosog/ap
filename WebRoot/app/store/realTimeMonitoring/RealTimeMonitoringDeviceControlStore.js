@@ -32,7 +32,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                     store: store,
                     scrollOffset: 0,
                     columns: [{
-                            header: '操作项',
+                            header: '控制项',
                             dataIndex: 'item',
                             align: 'left',
                             flex: 6,
@@ -43,7 +43,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                 }
                             }
 			        }, {
-                            header: '操作',
+                            header: '动作',
                             dataIndex: 'operation',
                             align: 'center',
                             flex: 2,

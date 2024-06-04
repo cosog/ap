@@ -4035,7 +4035,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String tableName="tbl_acqdata_latest";
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
+				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
 				+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",width:90,children:[] },"
 				+ "{ \"header\":\"注册包ID\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
 				+ "{ \"header\":\"设备从地址\",\"dataIndex\":\"slave\",flex:1,children:[] }"

@@ -44,10 +44,10 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
         
         var deviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '井名',
+                    fieldLabel: deviceShowName,
                     id: "DeviceOperationLogDeviceListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
+                    labelWidth: 8*deviceShowNameLength,
+                    width: (8*deviceShowNameLength+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,

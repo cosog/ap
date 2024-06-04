@@ -43,10 +43,10 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
         
         var rpcDeviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '井名',
+                    fieldLabel: deviceShowName,
                     id: "UpstreamAndDownstreamInteractionDeviceListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
+                    labelWidth: 8*deviceShowNameLength,
+                    width: (8*deviceShowNameLength+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,

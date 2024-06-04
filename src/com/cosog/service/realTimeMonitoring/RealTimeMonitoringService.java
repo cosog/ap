@@ -1125,11 +1125,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				result_json.append("\"deviceTypeName\":\""+obj[6]+"\",");
 				result_json.append("\"acqTime\":\""+obj[7]+"\",");
-				result_json.append("\"commStatus\":"+obj[8]+",");
+				result_json.append("\"commStatus\":\""+obj[8]+"\",");
 				result_json.append("\"commTime\":\""+obj[10]+"\",");
 				result_json.append("\"commTimeEfficiency\":\""+obj[11]+"\",");
 				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
-				result_json.append("\"runStatus\":"+obj[13]+",");
+				result_json.append("\"runStatus\":\""+obj[13]+"\",");
 				result_json.append("\"runTime\":\""+obj[15]+"\",");
 				result_json.append("\"runTimeEfficiency\":\""+obj[16]+"\",");
 				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[17])+"\"");
@@ -3883,7 +3883,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        String pumpFSDiagramData = pumpFSDiagramStrBuff.toString();
 	        
 	        dataSbf.append("{success:true,");
-	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 井名
+	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 设备名称
 	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("pointCount:\""+pointCount+"\","); 
 	        dataSbf.append("upperLoadLine:\""+obj[3]+"\",");         // 理论上载荷
@@ -4039,7 +4039,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 	        dataSbf.append("{success:true,");
-	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 井名
+	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 设备名称
 	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("upStrokeWattMax:\""+obj[2]+"\",");         
 	        dataSbf.append("downStrokeWattMax:\""+obj[3]+"\",");
@@ -4065,7 +4065,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        
 		}else{
 			dataSbf.append("{success:true,");
-	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 井名
+	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 设备名称
 	        dataSbf.append("acqTime:\"\",");         // 时间
 	        dataSbf.append("upStrokeWattMax:\"\",");         
 	        dataSbf.append("downStrokeWattMax:\"\",");

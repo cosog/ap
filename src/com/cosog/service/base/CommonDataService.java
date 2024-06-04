@@ -1803,7 +1803,7 @@ public class CommonDataService extends BaseService {
 
 					Object[] oo = (Object[]) obj;
 					String jh = oo[0] + "";
-					if (!this.currentWellExist(jh, wells)) {// 去掉上面已经有的井名信息
+					if (!this.currentWellExist(jh, wells)) {
 						count++;
 						for (int i = 0; i < columns.length; i++) {
 							String temp = columns[i];

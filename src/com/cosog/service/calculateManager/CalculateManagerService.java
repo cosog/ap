@@ -470,7 +470,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 		columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\",flex:3 ,children:[] },"
+				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\",flex:3 ,children:[] },"
 				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\",flex:3 ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
 				+ "]";
@@ -564,7 +564,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(finalSql);
 		
 		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\" ,children:[] },"
+				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
 				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
 				
@@ -668,7 +668,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"deviceName\" ,children:[] },"
+				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
 				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
 				

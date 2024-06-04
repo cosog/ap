@@ -327,7 +327,9 @@ public class ConfigFile {
 	
 	public static class Others
 	{
-	    private boolean cache;
+	    private String deviceShowName;
+		
+		private boolean cache;
 
 	    private String language;
 
@@ -478,6 +480,12 @@ public class ConfigFile {
 		}
 		public void setIot(boolean iot) {
 			this.iot = iot;
+		}
+		public String getDeviceShowName() {
+			return deviceShowName;
+		}
+		public void setDeviceShowName(String deviceShowName) {
+			this.deviceShowName = deviceShowName;
 		}
 	}
 	

@@ -44,12 +44,12 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
         });
         var wellListCombo = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.wellName,
+                fieldLabel: deviceShowName,
                 id: 'ProductionDailyReportPanelWellListCombo_Id',
                 hidden:true,
                 store: wellListCombStore,
-                labelWidth: 35,
-                width: 145,
+                labelWidth: 8*deviceShowNameLength,
+                width: (8*deviceShowNameLength+110),
                 queryMode: 'remote',
                 emptyText: cosog.string.all,
                 blankText: cosog.string.all,

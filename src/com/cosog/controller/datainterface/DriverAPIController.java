@@ -3773,7 +3773,7 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	/******
-	 * 获取井名信息
+	 * 获取设备信息
 	 * ***/
 	@RequestMapping("/read/oilWell/wellInformation")
 	public String getOilWellInformation() throws Exception {
@@ -3807,7 +3807,7 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	/******
-	 * 获取井名信息
+	 * 获取设备信息
 	 * ***/
 	@RequestMapping("/read/oilWell/pumpingModelInformation")
 	public String getPumpingModelInformation() throws Exception {

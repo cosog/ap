@@ -540,7 +540,7 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagra
 	var timestamp=new Date().getTime();
 	var key='exportDeviceRealTimeOverviewData'+deviceType+'_'+timestamp;
 	
-	var maskPanelId='RealTimeMonitoringInfoPanel_Id';
+	var maskPanelId='RealTimeMonitoringInfoDeviceListPanel_Id';
 	
 	var url = context + '/realTimeMonitoringController/exportDeviceRealTimeOverviewDataExcel';
     var fields = "";

@@ -223,7 +223,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		
 		String columns="["
 				+ "{\"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[]},"
-				+ "{\"header\":\"井名\",\"dataIndex\":\"deviceName\",flex:8,children:[]},"
+				+ "{\"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\",flex:8,children:[]},"
 				+ "{\"header\":\"报警时间\",\"dataIndex\":\"alarmTime\",flex:10,children:[]},"
 				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] }"
 				+ "]";

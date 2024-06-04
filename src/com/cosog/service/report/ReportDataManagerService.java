@@ -4871,7 +4871,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"设备名\",\"dataIndex\":\"deviceName\" ,children:[] }"
+				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\" ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");

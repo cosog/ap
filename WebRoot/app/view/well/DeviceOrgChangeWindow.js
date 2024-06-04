@@ -58,10 +58,10 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
 
         var deviceCombo = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.wellName,
+                fieldLabel: deviceShowName,
                 id: "DeviceOrgChangeDeviceListComb_Id",
-                labelWidth: 35,
-                width: 145,
+                labelWidth: 8*deviceShowNameLength,
+                width: (8*deviceShowNameLength+110),
                 labelAlign: 'left',
                 queryMode: 'remote',
                 typeAhead: true,

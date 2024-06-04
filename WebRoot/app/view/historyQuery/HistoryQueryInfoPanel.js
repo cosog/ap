@@ -298,10 +298,10 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
         
         var deviceListCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '井名',
+                    fieldLabel: deviceShowName,
                     id: "HistoryQueryDeviceListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
+                    labelWidth: 8*deviceShowNameLength,
+                    width: (8*deviceShowNameLength+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,
@@ -404,7 +404,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             	var commStatusStatValue=Ext.getCmp("HistoryQueryStatSelectCommStatus_Id").getValue();
                             	var runStatusStatValue=Ext.getCmp("HistoryQueryStatSelectRunStatus_Id").getValue();
                     			var deviceTypeStatValue=Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").getValue();
-                           	 	var deviceType=0;
+                           	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                            	 	var fileName='抽油机井历史数据设备列表';
                            	 	var title='抽油机井历史数据设备列表';
                            	 	var columnStr=Ext.getCmp("HistoryQueryWellListColumnStr_Id").getValue();
@@ -728,7 +728,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
                             
-                       	 	var deviceType=0;
+                       	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                        	 	var fileName='抽油机井'+deviceName+'功图叠加数据';
                        	 	var title='抽油机井'+deviceName+'功图叠加数据';
                        	 	var columnStr=Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").getValue();
@@ -792,7 +792,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
                             
-                       	 	var deviceType=0;
+                       	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                        	 	var fileName='抽油机井'+deviceName+'功图数据';
                        	 	var title='抽油机井'+deviceName+'功图数据';
                        	 	exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title);
@@ -945,7 +945,7 @@ loadSurfaceCardList = function (page) {
         method: "POST",
         params: {
         	orgId: orgId,
-    		deviceType:0,
+    		deviceType:getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
     		deviceId:deviceId,
             deviceName:deviceName,
             startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),

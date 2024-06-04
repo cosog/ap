@@ -513,10 +513,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
         
         var deviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '井名',
+                    fieldLabel: deviceShowName,
                     id: "RealTimeMonitoringDeviceListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
+                    labelWidth: 8*deviceShowNameLength,
+                    width: (8*deviceShowNameLength+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,
@@ -605,7 +605,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              	 var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
                              	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
                              	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
-                            	 var deviceType=0;
+                            	 var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
                             	 var fileName='抽油机井实时监控数据';
                             	 var title='抽油机井实时监控数据';
                             	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
@@ -1150,7 +1150,7 @@ function realTimeMonitoringCurve(item){
 			params: {
 				deviceName:deviceName,
 				item:item,
-				deviceType:0
+				deviceType:getDeviceTypeFromTabId("RealTimeMonitoringTabPanel")
 	        }
 		});
 	}

@@ -58,11 +58,11 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         });
         var wellListComb = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: cosog.string.wellName,
+                    fieldLabel: deviceShowName,
                     id: 'RPCCalculateMaintainingWellListComBox_Id',
                     store: wellListStore,
-                    labelWidth: 35,
-                    width: 125,
+                    labelWidth: 8*deviceShowNameLength,
+                    width: (8*deviceShowNameLength+110),
                     queryMode: 'remote',
                     emptyText: cosog.string.all,
                     blankText: cosog.string.all,
@@ -135,7 +135,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                     id: 'RPCCalculateMaintainingCalculateSignComBox_Id',
                     store: calculateSignStore,
                     labelWidth: 60,
-                    width: 200,
+                    width: 160,
                     queryMode: 'remote',
                     emptyText: cosog.string.all,
                     blankText: cosog.string.all,

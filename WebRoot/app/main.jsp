@@ -86,6 +86,9 @@
         
         var defaultComboxSize = ${configFile}.ap.others.defaultComboxSize;
         var defaultGraghSize = ${configFile}.ap.others.defaultGraghSize;
+        
+        var deviceShowName = ${configFile}.ap.others.deviceShowName; 
+        var deviceShowNameLength=getStringLength(deviceShowName);
 
 
         var userAccount = "${userLogin.userId}";

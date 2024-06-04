@@ -113,7 +113,7 @@ public class ItextManager {
                 leftTable.getDefaultCell().setBorderWidth(0); //不显示边框
                 leftTable.setWidthPercentage(100);//表格的宽度为100%
                 
-                leftCell = new PdfPCell(new Paragraph("井名："+obj[0]+"",font));
+                leftCell = new PdfPCell(new Paragraph("设备名称："+obj[0]+"",font));
                 leftCell.setHorizontalAlignment(Element.ALIGN_LEFT);
                 leftCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 leftCell.setBorder(0);
@@ -429,7 +429,7 @@ public class ItextManager {
 //                leftCell.setFixedHeight(lineHeight1);
 //                leftTable.addCell(leftCell);
                 
-                leftCell = new PdfPCell(new Paragraph("井名："+obj[0]+"",font));
+                leftCell = new PdfPCell(new Paragraph("设备名称："+obj[0]+"",font));
                 leftCell.setHorizontalAlignment(Element.ALIGN_LEFT);
                 leftCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 leftCell.setBorder(0);
@@ -637,7 +637,7 @@ public class ItextManager {
                 leftTable.getDefaultCell().setBorderWidth(0); //不显示边框
                 leftTable.setWidthPercentage(100);//表格的宽度为100%
                 
-                leftCell = new PdfPCell(new Paragraph("井名："+obj[0]+"",font));
+                leftCell = new PdfPCell(new Paragraph("设备名称："+obj[0]+"",font));
                 leftCell.setHorizontalAlignment(Element.ALIGN_LEFT);
                 leftCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 leftCell.setBorder(0);

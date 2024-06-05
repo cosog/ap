@@ -317,7 +317,7 @@ function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagra
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title,columnStr) {
+function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,startDate,endDate,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+deviceType+'_'+timestamp;
 	
@@ -361,6 +361,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startD
     + "&deviceType=" + deviceType 
     + "&deviceId=" + deviceId 
     + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&calculateType=" + calculateType 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&fileName=" + URLencode(URLencode(fileName)) 
@@ -370,7 +371,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startD
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title,columnStr) {
+function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,startDate,endDate,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+timestamp;
 	
@@ -415,6 +416,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     + "&deviceType=" + deviceType 
     + "&deviceId=" + deviceId 
     + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&calculateType=" + calculateType 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&fileName=" + URLencode(URLencode(fileName)) 

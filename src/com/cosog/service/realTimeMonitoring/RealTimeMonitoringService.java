@@ -1457,7 +1457,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									int sort=9999;
 									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 										if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-											sort=displayInstanceOwnItem.getItemList().get(l).getSort();
+											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 											break;
 										}
 									}
@@ -1526,7 +1526,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									int sort=9999;
 									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 										if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-											sort=displayInstanceOwnItem.getItemList().get(l).getSort();
+											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 											break;
 										}
 									}
@@ -1596,7 +1596,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								int sort=9999;
 								for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 									if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-										sort=displayInstanceOwnItem.getItemList().get(l).getSort();
+										sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 										//如果是工况
 										if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
 											if(jedis.hexists("RPCWorkType".getBytes(), value.getBytes())){
@@ -1633,7 +1633,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(protocolItems.get(j).getResolutionMode()==1||protocolItems.get(j).getResolutionMode()==2){//如果是枚举量
 								for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 									if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-										sort=displayInstanceOwnItem.getItemList().get(l).getSort();
+										sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 										break;
 									}
 								}
@@ -1661,7 +1661,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
 													&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==protocolItems.get(j).getMeaning().get(l).getValue()
 													){
-												sort=displayInstanceOwnItem.getItemList().get(n).getSort();
+												sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
 												isMatch=true;
 												break;
 											}
@@ -1696,7 +1696,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}else{
 											for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
 												if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(m).getBitIndex()==protocolItems.get(j).getMeaning().get(l).getValue() ){
-													sort=displayInstanceOwnItem.getItemList().get(m).getSort();
+													sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
 													break;
 												}
 											}
@@ -1710,7 +1710,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}else{
 									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 										if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
-											sort=displayInstanceOwnItem.getItemList().get(l).getSort();
+											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 											break;
 										}
 									}
@@ -1720,7 +1720,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}else{//如果是数据量
 								for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 									if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-										sort=displayInstanceOwnItem.getItemList().get(l).getSort();
+										sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 										break;
 									}
 								}
@@ -1766,7 +1766,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												"",
 												"",
 												unit,
-												displayItem.getSort());
+												displayItem.getRealtimeSort());
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 								}
@@ -3018,7 +3018,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " and t.id="+deviceId+" "
 					+ " and t4.realtimecurveconf is not null "
 					+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userNo+"' )"
-					+ " order by t4.sort,t4.id";
+					+ " order by t4.realtimeSort,t4.id";
 			List<?> protocolList = this.findCallSql(protocolSql);
 			List<?> curveItemList = this.findCallSql(curveItemsSql);
 			String protocolName="";
@@ -3490,7 +3490,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						+ " and t.id="+deviceId+" "
 						+ " and t4.realtimecurveconf is not null "
 						+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userNo+"' )"
-						+ " order by t4.sort,t4.id";
+						+ " order by t4.realtimeSort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
 				List<?> curveItemList = this.findCallSql(curveItemsSql);
 				String protocolName="";

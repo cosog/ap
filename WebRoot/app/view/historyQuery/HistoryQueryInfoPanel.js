@@ -289,7 +289,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
-                        wellName: deviceName
+                        deviceName: deviceName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }
@@ -720,10 +720,12 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                         	var deviceName='';
                         	var deviceId=0;
+                        	var calculateType=0;
                         	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
                         	if(selectRow>=0){
-                        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-                        		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.deviceName;
+                        		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.id;
+                        		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.calculateType;
                         	}
                         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
@@ -732,7 +734,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                        	 	var fileName='抽油机井'+deviceName+'功图叠加数据';
                        	 	var title='抽油机井'+deviceName+'功图叠加数据';
                        	 	var columnStr=Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").getValue();
-                       	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+                       	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                         }
                     }, {
                         xtype: 'button',
@@ -784,10 +786,12 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                         	var deviceName='';
                         	var deviceId=0;
+                        	var calculateType=0;
                         	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
                         	if(selectRow>=0){
-                        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-                        		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.deviceName;
+                        		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.id;
+                        		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.calculateType;
                         	}
                         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
@@ -847,10 +851,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                         	var deviceName='';
                         	var deviceId=0;
+                        	var calculateType=0;
                         	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
                         	if(selectRow>=0){
-                        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                         		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                        		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+                        		
                         	}
                         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
@@ -859,7 +866,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                        	 	var fileName='抽油机井'+deviceName+'历史数据';
                        	 	var title='抽油机井'+deviceName+'历史数据';
                        	 	var columnStr=Ext.getCmp("HistoryQueryDataColumnStr_Id").getValue();
-                       	 	exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+                       	 	exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                         }
                     },'->',{
                         id: 'SurfaceCardTotalCount_Id',
@@ -928,7 +935,7 @@ loadSurfaceCardList = function (page) {
 	var deviceId=0;
 	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
 	if(selectRow>=0){
-		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	}
 	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
@@ -1040,7 +1047,7 @@ function createHistoryQueryDiagramOverlayTableColumn(columnInfo) {
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:true";
         }
-        else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
+        else if (attr.dataIndex.toUpperCase()=='deviceName'.toUpperCase()) {
             myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
         }
         else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {

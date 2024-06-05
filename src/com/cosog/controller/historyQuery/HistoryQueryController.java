@@ -237,7 +237,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = historyQueryService.getDeviceHistoryData2(orgId,deviceId,deviceName,deviceType,calculateType,pager,user.getUserNo());
+		json = historyQueryService.getDeviceHistoryData(orgId,deviceId,deviceName,deviceType,calculateType,pager,user.getUserNo());
 		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -257,12 +257,13 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
 		
-		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
-		String fields = ParamUtils.getParameter(request, "fields");
+//		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
+//		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
@@ -272,11 +273,11 @@ public class HistoryQueryController extends BaseController  {
 			session.setAttribute(key, 0);
 		}
 		
-		DataDictionary ddic = null;
-		String ddicName="historyQuery_HistoryData";
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		heads=StringUtils.join(ddic.getHeaders(), ",");
-		fields=StringUtils.join(ddic.getFields(), ",");
+//		DataDictionary ddic = null;
+//		String ddicName="historyQuery_HistoryData";
+//		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+//		heads=StringUtils.join(ddic.getHeaders(), ",");
+//		fields=StringUtils.join(ddic.getFields(), ",");
 		
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
@@ -304,7 +305,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		bool = historyQueryService.exportDeviceHistoryData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
+		bool = historyQueryService.exportDeviceHistoryData(user,response,fileName,title,orgId,deviceId,deviceName,deviceType,calculateType,pager,user.getUserNo());
 		if(!bool){
 			json="{\"success\":true,\"flag\":false}";
 		}

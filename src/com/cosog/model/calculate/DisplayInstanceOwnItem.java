@@ -21,7 +21,7 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public int bitIndex;
 		public int unitId;
 		public int showLevel;
-		public int sort;
+		public int realtimeSort;
 		public String realtimeCurveConf;
 		public String historyCurveConf;
 		public int type;
@@ -63,11 +63,11 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public void setShowLevel(int showLevel) {
 			this.showLevel = showLevel;
 		}
-		public int getSort() {
-			return sort;
+		public int getRealtimeSort() {
+			return realtimeSort;
 		}
-		public void setSort(int sort) {
-			this.sort = sort;
+		public void setRealtimeSort(int realtimeSort) {
+			this.realtimeSort = realtimeSort;
 		}
 		
 		public String getRealtimeCurveConf() {
@@ -91,7 +91,7 @@ public class DisplayInstanceOwnItem implements Serializable {
 		}
 		@Override
 		public int compareTo(DisplayItem displayItem) {     //重写Comparable接口的compareTo方法
-			return this.sort-displayItem.getSort();   // 根据值或者位升序排列，降序修改相减顺序即可
+			return this.realtimeSort-displayItem.getRealtimeSort();   // 根据值或者位升序排列，降序修改相减顺序即可
 		}
 		public String getItemSourceName() {
 			return itemSourceName;

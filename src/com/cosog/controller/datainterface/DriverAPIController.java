@@ -1571,7 +1571,7 @@ public class DriverAPIController extends BaseController{
 				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 					if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) && displayInstanceOwnItem.getItemList().get(k).getType()!=2){
 						if(displayInstanceOwnItem.getItemList().get(k).getShowLevel()==0||displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
-							acquisitionItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getSort());
+							acquisitionItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getRealtimeSort());
 							userAcquisitionItemInfoList.add(acquisitionItemInfoList.get(j));
 						}
 						break;

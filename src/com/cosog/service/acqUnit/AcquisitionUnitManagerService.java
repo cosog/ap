@@ -1105,7 +1105,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> acqItemsBitIndexList=new ArrayList<String>();
 		
 		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
@@ -1115,10 +1115,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=0";
 			
-			String sql="select t.itemname,t.bitindex,t.sort,t.showlevel,t.realtimeCurveConf,historyCurveConf "
+			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel,t.realtimeCurveConf,historyCurveConf "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
-					+ " order by t.sort";
+					+ " order by t.realtimeSort";
 			List<?> acqItemList=this.findCallSql(acqUnitIiemsSql);
 			List<?> list=this.findCallSql(sql);
 			for(int i=0;i<acqItemList.size();i++){
@@ -1130,7 +1130,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
-				itemsSortList.add(obj[2]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 				
 				String realtimeCurveConf=obj[4]+"";
@@ -1163,7 +1163,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						if(sign){
 							boolean checked=false;
-							String sort="";
+							String realtimeSort="";
 							String showLevel="";
 							String realtimeCurveConf="\"\"";
 							String realtimeCurveConfShowValue="";
@@ -1189,7 +1189,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
 								for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
 									checked=false;
-									sort="";
+									realtimeSort="";
 									showLevel="";
 									realtimeCurveConf="\"\"";
 									realtimeCurveConfShowValue="";
@@ -1201,7 +1201,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 											){
 											checked=true;
-											sort=itemsSortList.get(m);
+											realtimeSort=itemsRealtimeSortList.get(m);
 											showLevel=itemsShowLevelList.get(m);
 											realtimeCurveConf=realtimeCurveConfList.get(m);
 											historyCurveConf=historyCurveConfList.get(m);
@@ -1238,7 +1238,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 											+ "\"resolutionMode\":\""+resolutionMode+"\","
 											+ "\"showLevel\":\""+showLevel+"\","
-											+ "\"sort\":\""+sort+"\","
+											+ "\"realtimeSort\":\""+realtimeSort+"\","
 											+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 											+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1251,7 +1251,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								if(checked){
 									for(int k=0;k<itemsList.size();k++){
 										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-											sort=itemsSortList.get(k);
+											realtimeSort=itemsRealtimeSortList.get(k);
 											showLevel=itemsShowLevelList.get(k);
 											
 											realtimeCurveConf=realtimeCurveConfList.get(k);
@@ -1287,7 +1287,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 										+ "\"resolutionMode\":\""+resolutionMode+"\","
 										+ "\"showLevel\":\""+showLevel+"\","
-										+ "\"sort\":\""+sort+"\","
+										+ "\"realtimeSort\":\""+realtimeSort+"\","
 										+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 										+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 										+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1329,17 +1329,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> acqItemsBitIndexList=new ArrayList<String>();
 		
 		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		if("2".equalsIgnoreCase(classes)){
 			String acqUnitIiemsSql="select distinct t.itemname,t.bitindex "
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=1";
-			String sql="select t.itemname,t.bitindex,t.sort,t.showlevel "
+			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=2"
-					+ " order by t.sort";
+					+ " order by t.realtimeSort";
 			List<?> acqItemList=this.findCallSql(acqUnitIiemsSql);
 			List<?> list=this.findCallSql(sql);
 			for(int i=0;i<acqItemList.size();i++){
@@ -1351,7 +1351,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
-				itemsSortList.add(obj[2]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 			}
 		}
@@ -1372,7 +1372,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						if(sign){
 							boolean checked=false;
-							String sort="";
+							String realtimeSort="";
 							String showLevel="";
 							String resolutionMode="数据量";
 							if(protocolConfig.getItems().get(j).getResolutionMode()==0){
@@ -1394,14 +1394,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
 								for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
 									checked=false;
-									sort="";
+									realtimeSort="";
 									showLevel="";
 									for(int m=0;m<itemsList.size();m++){
 										if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 												&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 											){
 											checked=true;
-											sort=itemsSortList.get(m);
+											realtimeSort=itemsRealtimeSortList.get(m);
 											showLevel=itemsShowLevelList.get(m);
 											break;
 										}
@@ -1416,7 +1416,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 											+ "\"resolutionMode\":\""+resolutionMode+"\","
 											+ "\"showLevel\":\""+showLevel+"\","
-											+ "\"sort\":\""+sort+"\""
+											+ "\"realtimeSort\":\""+realtimeSort+"\""
 											+ "},");
 									index++;
 								}
@@ -1425,7 +1425,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								if(checked){
 									for(int k=0;k<itemsList.size();k++){
 										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-											sort=itemsSortList.get(k);
+											realtimeSort=itemsRealtimeSortList.get(k);
 											showLevel=itemsShowLevelList.get(k);
 											break;
 										}
@@ -1439,7 +1439,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 										+ "\"resolutionMode\":\""+resolutionMode+"\","
 										+ "\"showLevel\":\""+showLevel+"\","
-										+ "\"sort\":\""+sort+"\""
+										+ "\"realtimeSort\":\""+realtimeSort+"\""
 										+ "},");
 								index++;
 							}
@@ -1491,7 +1491,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
@@ -1532,16 +1532,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		
 		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
-					+ " order by t.sort";
+					+ " order by t.realtimeSort";
 			List<?> list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsCodeList.add(obj[1]+"");
-				itemsSortList.add(obj[2]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 				String realtimeCurveConf=obj[4]+"";
 				if(!StringManagerUtils.isNotNull(obj[4]+"")){
@@ -1561,7 +1561,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 
 		for(CalItem calItem:calItemList){
 			boolean checked=false;
-			String sort="";
+			String realtimeSort="";
 			String showLevel="";
 			String realtimeCurveConf="\"\"";
 			String realtimeCurveConfShowValue="";
@@ -1572,7 +1572,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(checked){
 				for(int k=0;k<itemsList.size();k++){
 					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-						sort=itemsSortList.get(k);
+						realtimeSort=itemsRealtimeSortList.get(k);
 						showLevel=itemsShowLevelList.get(k);
 						realtimeCurveConf=realtimeCurveConfList.get(k);
 						historyCurveConf=historyCurveConfList.get(k);
@@ -1604,7 +1604,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"title\":\""+calItem.getName()+"\","
 					+ "\"unit\":\""+calItem.getUnit()+"\","
 					+ "\"showLevel\":\""+showLevel+"\","
-					+ "\"sort\":\""+sort+"\","
+					+ "\"realtimeSort\":\""+realtimeSort+"\","
 					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 					+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1666,21 +1666,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
-					+ " order by t.sort";
+					+ " order by t.realtimeSort";
 			List<?> list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsCodeList.add(obj[1]+"");
-				itemsSortList.add(obj[2]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 				String realtimeCurveConf=obj[4]+"";
 				if(!StringManagerUtils.isNotNull(obj[4]+"")){
@@ -1702,7 +1702,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
 				
 				boolean checked=false;
-				String sort="";
+				String realtimeSort="";
 				String showLevel="";
 				String realtimeCurveConf="\"\"";
 				String realtimeCurveConfShowValue="";
@@ -1713,7 +1713,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(checked){
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-							sort=itemsSortList.get(k);
+							realtimeSort=itemsRealtimeSortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConf=realtimeCurveConfList.get(k);
 							historyCurveConf=historyCurveConfList.get(k);
@@ -1745,7 +1745,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"title\":\""+calItem.getName()+"\","
 						+ "\"unit\":\""+calItem.getUnit()+"\","
 						+ "\"showLevel\":\""+showLevel+"\","
-						+ "\"sort\":\""+sort+"\","
+						+ "\"realtimeSort\":\""+realtimeSort+"\","
 						+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 						+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 						+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -3248,14 +3248,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		
 		String protocolSql="select t.protocol from tbl_display_unit_conf t,tbl_protocoldisplayinstance t2 where t.id=t2.displayunitid and t2.id="+id+"";
-		String sql="select t.itemname,t.bitindex,t.sort,t.showlevel,"
+		String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel,"
 				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=0 and t3.id= "+id
@@ -3269,7 +3269,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
-				itemsSortList.add(obj[2]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 				
 				String realtimeCurveConfShowValue="";
@@ -3305,7 +3305,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						int index=1;
 						for(int j=0;j<protocolConfig.getItems().size();j++){
 							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
-								String sort="";
+								String realtimeSort="";
 								String showLevel="";
 								
 								String realtimeCurveConfShowValue="";
@@ -3316,7 +3316,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										&&protocolConfig.getItems().get(j).getMeaning().size()>0){
 									Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
 									for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-										sort="";
+										realtimeSort="";
 										showLevel="";
 										realtimeCurveConfShowValue="";
 										historyCurveConfShowValue="";
@@ -3324,7 +3324,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 												){
-												sort=itemsSortList.get(m);
+												realtimeSort=itemsRealtimeSortList.get(m);
 												showLevel=itemsShowLevelList.get(m);
 												realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
 												historyCurveConfShowValue=historyCurveConfList.get(m);
@@ -3337,7 +3337,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 												+ "\"showLevel\":\""+showLevel+"\","
-												+ "\"sort\":\""+sort+"\","
+												+ "\"realtimeSort\":\""+realtimeSort+"\","
 												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 												+ "},");
@@ -3346,7 +3346,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								}else{
 									for(int k=0;k<itemsList.size();k++){
 										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-											sort=itemsSortList.get(k);
+											realtimeSort=itemsRealtimeSortList.get(k);
 											showLevel=itemsShowLevelList.get(k);
 											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 											historyCurveConfShowValue=realtimeCurveConfList.get(k);
@@ -3358,7 +3358,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 											+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 											+ "\"showLevel\":\""+showLevel+"\","
-											+ "\"sort\":\""+sort+"\","
+											+ "\"realtimeSort\":\""+realtimeSort+"\","
 											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 											+ "},");
@@ -3397,12 +3397,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		
 		String protocolSql="select t.protocol from tbl_display_unit_conf t,tbl_protocoldisplayinstance t2 where t.id=t2.displayunitid and t2.id="+id+"";
-		String sql="select t.itemname,t.bitindex,t.sort,t.showlevel"
+		String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel"
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=2 and t3.id= "+id
 				+ " order by t.id";
@@ -3414,7 +3414,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
-				itemsSortList.add(obj[2]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 			}
 			if(modbusProtocolConfig!=null){
@@ -3425,20 +3425,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						int index=1;
 						for(int j=0;j<protocolConfig.getItems().size();j++){
 							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
-								String sort="";
+								String realtimeSort="";
 								String showLevel="";
 								if(protocolConfig.getItems().get(j).getResolutionMode()==0
 										&&protocolConfig.getItems().get(j).getMeaning()!=null
 										&&protocolConfig.getItems().get(j).getMeaning().size()>0){
 									Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
 									for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-										sort="";
+										realtimeSort="";
 										showLevel="";
 										for(int m=0;m<itemsList.size();m++){
 											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 												){
-												sort=itemsSortList.get(m);
+												realtimeSort=itemsRealtimeSortList.get(m);
 												showLevel=itemsShowLevelList.get(m);
 												break;
 											}
@@ -3449,14 +3449,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 												+ "\"showLevel\":\""+showLevel+"\","
-												+ "\"sort\":\""+sort+"\""
+												+ "\"realtimeSort\":\""+realtimeSort+"\""
 												+ "},");
 										index++;
 									}
 								}else{
 									for(int k=0;k<itemsList.size();k++){
 										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-											sort=itemsSortList.get(k);
+											realtimeSort=itemsRealtimeSortList.get(k);
 											showLevel=itemsShowLevelList.get(k);
 											break;
 										}
@@ -3466,7 +3466,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 											+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 											+ "\"showLevel\":\""+showLevel+"\","
-											+ "\"sort\":\""+sort+"\""
+											+ "\"realtimeSort\":\""+realtimeSort+"\""
 											+ "},");
 									index++;
 								}
@@ -3521,7 +3521,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
@@ -3564,7 +3564,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		String sql="select t.itemname,t.itemcode,t.bitindex,t.sort,t.showlevel,"
+		String sql="select t.itemname,t.itemcode,t.bitindex,t.realtimeSort,t.showlevel,"
 				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
@@ -3576,7 +3576,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsList.add(obj[0]+"");
 				itemsCodeList.add(obj[1]+"");
 				itemsBitIndexList.add(obj[2]+"");
-				itemsSortList.add(obj[3]+"");
+				itemsRealtimeSortList.add(obj[3]+"");
 				itemsShowLevelList.add(obj[4]+"");
 				String realtimeCurveConfShowValue="";
 				String historyCurveConfShowValue="";
@@ -3606,14 +3606,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			int index=1;
 			for(CalItem calItem:calItemList){
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-					String sort="";
+					String realtimeSort="";
 					String showLevel="";
 					String realtimeCurveConfShowValue="";
 					String historyCurveConfShowValue="";
 
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-							sort=itemsSortList.get(k);
+							realtimeSort=itemsRealtimeSortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 							historyCurveConfShowValue=historyCurveConfList.get(k);
@@ -3625,7 +3625,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"title\":\""+calItem.getName()+"\","
 							+ "\"unit\":\""+calItem.getUnit()+"\","
 							+ "\"showLevel\":\""+showLevel+"\","
-							+ "\"sort\":\""+sort+"\","
+							+ "\"realtimeSort\":\""+realtimeSort+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 							+ "\"dataSource\":\""+calItem.getDataSource()+"\""
@@ -3687,13 +3687,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsSortList=new ArrayList<String>();
+		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		
-		String sql="select t.itemname,t.itemcode,t.bitindex,t.sort,t.showlevel,"
+		String sql="select t.itemname,t.itemcode,t.bitindex,t.realtimeSort,t.showlevel,"
 				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
@@ -3706,7 +3706,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsList.add(obj[0]+"");
 				itemsCodeList.add(obj[1]+"");
 				itemsBitIndexList.add(obj[2]+"");
-				itemsSortList.add(obj[3]+"");
+				itemsRealtimeSortList.add(obj[3]+"");
 				itemsShowLevelList.add(obj[4]+"");
 				String realtimeCurveConfShowValue="";
 				String historyCurveConfShowValue="";
@@ -3737,14 +3737,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(byte[] inputItemByteArr:inputItemSet){
 				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-					String sort="";
+					String realtimeSort="";
 					String showLevel="";
 					String realtimeCurveConfShowValue="";
 					String historyCurveConfShowValue="";
 
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-							sort=itemsSortList.get(k);
+							realtimeSort=itemsRealtimeSortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 							historyCurveConfShowValue=historyCurveConfList.get(k);
@@ -3756,7 +3756,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"title\":\""+calItem.getName()+"\","
 							+ "\"unit\":\""+calItem.getUnit()+"\","
 							+ "\"showLevel\":\""+showLevel+"\","
-							+ "\"sort\":\""+sort+"\","
+							+ "\"realtimeSort\":\""+realtimeSort+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 							+ "},");
@@ -6199,7 +6199,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
 									+ " where t.acqunitid=t2.id and t.id in ("+displayUnitStr+") and t2.id in("+acqUnitStr+") "
 									+ " order by t2.id,t.id";
-							String displayItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.sort,t.bitindex,t.showlevel,t.realtimecurveconf,t.historycurveconf,t.type,t.matrix,t.unitid "
+							String displayItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.realtimeSort,t.bitindex,t.showlevel,t.realtimecurveconf,t.historycurveconf,t.type,t.matrix,t.unitid "
 									+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2,tbl_acq_unit_conf t3 "
 									+ " where t.unitid=t2.id and t2.acqunitid=t3.id "
 									+ " and t2.id in ("+displayUnitStr+") and t3.id in("+acqUnitStr+") "
@@ -7730,7 +7730,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												displayUnitItem.setItemId(displayUnit.getDisplayItemList().get(j).getItemId()>0?displayUnit.getDisplayItemList().get(j).getItemId():null);
 												displayUnitItem.setItemName(displayUnit.getDisplayItemList().get(j).getItemName());
 												displayUnitItem.setItemCode(displayUnit.getDisplayItemList().get(j).getItemCode());
-												displayUnitItem.setSort(displayUnit.getDisplayItemList().get(j).getSort()>=0?displayUnit.getDisplayItemList().get(j).getSort():null);
+												displayUnitItem.setRealtimeSort(displayUnit.getDisplayItemList().get(j).getSort()>=0?displayUnit.getDisplayItemList().get(j).getSort():null);
 												displayUnitItem.setBitIndex(displayUnit.getDisplayItemList().get(j).getBitIndex()>=0?displayUnit.getDisplayItemList().get(j).getBitIndex():null);
 												displayUnitItem.setShowLevel(displayUnit.getDisplayItemList().get(j).getShowLevel()>=0?displayUnit.getDisplayItemList().get(j).getShowLevel():null);
 												displayUnitItem.setType(displayUnit.getDisplayItemList().get(j).getType());
@@ -8096,7 +8096,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																displayUnitItem.setItemName(displayUnit.getDisplayItemList().get(k).getItemName());
 																displayUnitItem.setItemCode(displayUnit.getDisplayItemList().get(k).getItemCode());
 																displayUnitItem.setType(displayUnit.getDisplayItemList().get(k).getType());
-																displayUnitItem.setSort(displayUnit.getDisplayItemList().get(k).getSort()>=0?displayUnit.getDisplayItemList().get(k).getSort():null);
+																displayUnitItem.setRealtimeSort(displayUnit.getDisplayItemList().get(k).getSort()>=0?displayUnit.getDisplayItemList().get(k).getSort():null);
 																displayUnitItem.setBitIndex(displayUnit.getDisplayItemList().get(k).getBitIndex()>=0?displayUnit.getDisplayItemList().get(k).getBitIndex():null);
 																displayUnitItem.setShowLevel(displayUnit.getDisplayItemList().get(k).getShowLevel()>=0?displayUnit.getDisplayItemList().get(k).getShowLevel():null);
 																displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(k).getRealtimeCurveConf());
@@ -8166,7 +8166,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																	displayUnitItem.setItemName(displayUnit.getDisplayItemList().get(k).getItemName());
 																	displayUnitItem.setItemCode(displayUnit.getDisplayItemList().get(k).getItemCode());
 																	displayUnitItem.setType(displayUnit.getDisplayItemList().get(k).getType());
-																	displayUnitItem.setSort(displayUnit.getDisplayItemList().get(k).getSort()>=0?displayUnit.getDisplayItemList().get(k).getSort():null);
+																	displayUnitItem.setRealtimeSort(displayUnit.getDisplayItemList().get(k).getSort()>=0?displayUnit.getDisplayItemList().get(k).getSort():null);
 																	displayUnitItem.setBitIndex(displayUnit.getDisplayItemList().get(k).getBitIndex()>=0?displayUnit.getDisplayItemList().get(k).getBitIndex():null);
 																	displayUnitItem.setShowLevel(displayUnit.getDisplayItemList().get(k).getShowLevel()>=0?displayUnit.getDisplayItemList().get(k).getShowLevel():null);
 																	displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(k).getRealtimeCurveConf());
@@ -8323,7 +8323,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																	displayUnitItem.setItemName(displayUnit.getDisplayItemList().get(k).getItemName());
 																	displayUnitItem.setItemCode(displayUnit.getDisplayItemList().get(k).getItemCode());
 																	displayUnitItem.setType(displayUnit.getDisplayItemList().get(k).getType());
-																	displayUnitItem.setSort(displayUnit.getDisplayItemList().get(k).getSort()>=0?displayUnit.getDisplayItemList().get(k).getSort():null);
+																	displayUnitItem.setRealtimeSort(displayUnit.getDisplayItemList().get(k).getSort()>=0?displayUnit.getDisplayItemList().get(k).getSort():null);
 																	displayUnitItem.setBitIndex(displayUnit.getDisplayItemList().get(k).getBitIndex()>=0?displayUnit.getDisplayItemList().get(k).getBitIndex():null);
 																	displayUnitItem.setShowLevel(displayUnit.getDisplayItemList().get(k).getShowLevel()>=0?displayUnit.getDisplayItemList().get(k).getShowLevel():null);
 																	displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(k).getRealtimeCurveConf());

@@ -222,14 +222,15 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName,classes,c
 			}
 			if(protocolDisplayUnitAcqItemsConfigHandsontableHelper==null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','','','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','实时数据顺序','历史数据顺序','实时曲线','历史曲线','','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
@@ -292,11 +293,11 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9,10,11,12],
+	                    columns: [9,10,11,12,13],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,60,85,85],
+	                colWidths: [25,50,140,80,60,85,85,85,85],
 	                columns:protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -323,7 +324,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex<=3) {
 		    							cellProperties.readOnly = true;
-		    		                }else if(visualColIndex==6||visualColIndex==7){
+		    		                }else if(visualColIndex==7||visualColIndex==8){
 		    		                	cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
 		    		                }
 		                		}
@@ -336,7 +337,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 	                },
 	                afterBeginEditing:function(row,column){
 	                	var row1=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==6||column==7)){
+	                	if(row1[0] && (column==7||column==8)){
 	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
 	                		if(ScadaDriverModbusConfigSelectRow!=''){
 	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -350,10 +351,10 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 	                				CurveConfigWindow.show();
 	                				
 	                				var curveConfig=null;
-	                				if(column==6 && isNotVal(row1[8])){
-	                					curveConfig=row1[8];
-	                				}else if(column==7 && isNotVal(row1[9])){
+	                				if(column==7 && isNotVal(row1[9])){
 	                					curveConfig=row1[9];
+	                				}else if(column==8 && isNotVal(row1[10])){
+	                					curveConfig=row1[10];
 	                				}
 	                				var value='ff0000';
 	                				
@@ -408,14 +409,15 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','','','','数据来源']";
+				var colHeaders="['','序号','名称','单位','显示级别','实时数据顺序','历史数据顺序','实时曲线','历史曲线','','','','数据来源']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
@@ -474,11 +476,11 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9,10],
+	                    columns: [9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,60,85,85,85,85,85,85],
+	                colWidths: [25,50,140,80,60,85,85,85,85,85,85,85,85],
 	                columns:protocolDisplayUnitCalItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -503,9 +505,9 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 		                		if(selectedItem.data.classes!=2){
 		                			cellProperties.readOnly = true;
 		                		}else{
-		                			if ((visualColIndex >=1 && visualColIndex<=3) || visualColIndex==11) {
+		                			if ((visualColIndex >=1 && visualColIndex<=3) || visualColIndex==12) {
 		    							cellProperties.readOnly = true;
-		    		                }else if(visualColIndex==6||visualColIndex==7){
+		    		                }else if(visualColIndex==7||visualColIndex==8){
 		    		                	cellProperties.renderer = protocolDisplayUnitCalItemsConfigHandsontableHelper.addCurveBg;
 		    		                }
 		                		}
@@ -518,7 +520,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                },
 	                afterBeginEditing:function(row,column){
 	                	var row1=protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==6||column==7)){
+	                	if(row1[0] && (column==7||column==8)){
 	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
 	                		if(ScadaDriverModbusConfigSelectRow!=''){
 	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -532,10 +534,10 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                				CurveConfigWindow.show();
 	                				
 	                				var curveConfig=null;
-	                				if(column==6 && isNotVal(row1[8])){
-	                					curveConfig=row1[8];
-	                				}else if(column==7 && isNotVal(row1[9])){
+	                				if(column==7 && isNotVal(row1[9])){
 	                					curveConfig=row1[9];
+	                				}else if(column==8 && isNotVal(row1[10])){
+	                					curveConfig=row1[10];
 	                				}
 	                				var value=row1[column];
 	                				if(value==null||value==''){
@@ -602,7 +604,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
 						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}},"
 						+"{data:'bitIndex'}"
@@ -723,14 +725,15 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			}
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序','实时曲线','历史曲线','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','实时数据顺序','历史数据顺序','实时曲线','历史曲线','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
@@ -788,11 +791,11 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [8,9,10],
+	                    columns: [9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,60,85,85],
+	                colWidths: [25,50,140,80,60,85,85,85,85],
 	                columns:protocolDisplayUnitInputItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -819,7 +822,7 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex<=3) {
 		    							cellProperties.readOnly = true;
-		    		                }else if(visualColIndex==6||visualColIndex==7){
+		    		                }else if(visualColIndex==7||visualColIndex==8){
 		    		                	cellProperties.renderer = protocolDisplayUnitInputItemsConfigHandsontableHelper.addCurveBg;
 		    		                }
 		                		}
@@ -832,7 +835,7 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                },
 	                afterBeginEditing:function(row,column){
 	                	var row1=protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==6||column==7)){
+	                	if(row1[0] && (column==7||column==8)){
 	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
 	                		if(ScadaDriverModbusConfigSelectRow!=''){
 	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -846,10 +849,10 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                				CurveConfigWindow.show();
 	                				
 	                				var curveConfig=null;
-	                				if(column==6 && isNotVal(row1[8])){
-	                					curveConfig=row1[8];
-	                				}else if(column==7 && isNotVal(row1[9])){
+	                				if(column==7 && isNotVal(row1[9])){
 	                					curveConfig=row1[9];
+	                				}else if(column==8 && isNotVal(row1[10])){
+	                					curveConfig=row1[10];
 	                				}
 	                				var value=row1[column];
 	                				if(value==null||value==''){

@@ -781,7 +781,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setItemName(itemName);
 						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-						displayUnitItem.setSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
+						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
 						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[3]:"");
@@ -871,7 +871,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setItemName(itemName);
 						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-						displayUnitItem.setSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
+						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						displayUnitItem.setMatrix(module_[6]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
@@ -933,7 +933,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemName(itemName);
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-					displayUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
+					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
 					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
 					displayUnitItem.setRealtimeCurveConf(module_[4]);
 					displayUnitItem.setHistoryCurveConf(module_[5]);
@@ -983,7 +983,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemName(itemName);
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-					displayUnitItem.setSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
+					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
 					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
 					displayUnitItem.setRealtimeCurveConf(module_[4]);
 					displayUnitItem.setHistoryCurveConf(module_[5]);

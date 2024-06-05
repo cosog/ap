@@ -19,7 +19,7 @@ public class DisplayUnitItem implements java.io.Serializable {
 	private String itemCode;
 	private String matrix;
 	private Integer showLevel;
-	private Integer sort;
+	private Integer realtimeSort;
 	private Integer bitIndex;
 	private String realtimeCurveConf;
 	private String historyCurveConf;
@@ -32,7 +32,7 @@ public class DisplayUnitItem implements java.io.Serializable {
 
 	/** full constructor */
 	public DisplayUnitItem(Integer id, Integer unitId, Integer itemId, String itemName, String itemCode,
-			String matrix, Integer showLevel, Integer sort, Integer bitIndex,  
+			String matrix, Integer showLevel, Integer realtimeSort, Integer bitIndex,  
 			String realtimeCurveConf, String historyCurveConf) {
 		super();
 		this.id = id;
@@ -42,7 +42,7 @@ public class DisplayUnitItem implements java.io.Serializable {
 		this.itemCode = itemCode;
 		this.matrix = matrix;
 		this.showLevel = showLevel;
-		this.sort = sort;
+		this.realtimeSort = realtimeSort;
 		this.bitIndex = bitIndex;
 		this.realtimeCurveConf = realtimeCurveConf;
 		this.historyCurveConf = historyCurveConf;
@@ -102,13 +102,13 @@ public class DisplayUnitItem implements java.io.Serializable {
 	public void setItemCode(String itemCode) {
 		this.itemCode = itemCode;
 	}
-	@Column(name = "sort")
-	public Integer getSort() {
-		return sort;
+	@Column(name = "realtimeSort")
+	public Integer getRealtimeSort() {
+		return realtimeSort;
 	}
 
-	public void setSort(Integer sort) {
-		this.sort = sort;
+	public void setRealtimeSort(Integer realtimeSort) {
+		this.realtimeSort = realtimeSort;
 	}
 
 	@Column(name = "bitIndex")

@@ -704,8 +704,8 @@ public class EquipmentDriverServerTask {
 			initAcquisitionItemDataBaseColumns();
 			loadAcquisitionItemColumns();
 			//同步数据字典
-			initDataDictionary("7f13446d19b4497986980fa16a750f95");//实时监控_设备概览字典
-			initDataDictionary("cd7b24562b924d19b556de31256e22a1");//历史查询_设备历史数据字典
+//			initDataDictionary("7f13446d19b4497986980fa16a750f95");//实时监控_设备概览字典
+//			initDataDictionary("cd7b24562b924d19b556de31256e22a1");//历史查询_设备历史数据字典
 		}
 	}
 	

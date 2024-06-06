@@ -22,6 +22,7 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public int unitId;
 		public int showLevel;
 		public int realtimeSort;
+		public int historySort;
 		public String realtimeCurveConf;
 		public String historyCurveConf;
 		public int type;
@@ -104,6 +105,12 @@ public class DisplayInstanceOwnItem implements Serializable {
 		}
 		public void setItemSourceCode(String itemSourceCode) {
 			this.itemSourceCode = itemSourceCode;
+		}
+		public int getHistorySort() {
+			return historySort;
+		}
+		public void setHistorySort(int historySort) {
+			this.historySort = historySort;
 		}
 	}
 	

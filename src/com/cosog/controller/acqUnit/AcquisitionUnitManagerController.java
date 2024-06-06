@@ -728,7 +728,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
 		int dataSaveMode=1;
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try {
@@ -737,13 +736,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String protocolName = ParamUtils.getParameter(request, "protocol");
 			String itemType = ParamUtils.getParameter(request, "itemType");
 			
-			ModbusProtocolConfig.Protocol protocol=null;
-			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(j);
-					break;
-				}
-			}
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
@@ -753,9 +746,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("##");
 						String itemName=module_[0];
-						int itemAddr=StringManagerUtils.stringTransferInteger(module_[6]);
-						String resolutionMode=module_[5];
-						String bitIndexStr=module_[7];
+						
+						String resolutionMode=module_[6];
+						int itemAddr=StringManagerUtils.stringTransferInteger(module_[7]);
+						String bitIndexStr=module_[8];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
 							for(int j=0;j<protocol.getItems().size();j++){
@@ -782,11 +776,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
+						displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
-						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[3]:"");
-						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[4]:"");
-						displayUnitItem.setMatrix(module_[8]);
+						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
+						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[4]:"");
+						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[5]:"");
+						displayUnitItem.setMatrix(module_[9]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
 					
@@ -890,7 +885,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 			dataSynchronizationThread.setParam1(unitId);
 			dataSynchronizationThread.setMethod("update");
 			executor.execute(dataSynchronizationThread);
-//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			
 			
 			result = "{success:true,msg:true}";
@@ -934,15 +928,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
-					displayUnitItem.setRealtimeCurveConf(module_[4]);
-					displayUnitItem.setHistoryCurveConf(module_[5]);
-					displayUnitItem.setMatrix(module_[6]);
+					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
+					
+					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringTransferInteger(module_[4]):null);
+					displayUnitItem.setRealtimeCurveConf(module_[5]);
+					displayUnitItem.setHistoryCurveConf(module_[6]);
+					displayUnitItem.setMatrix(module_[7]);
 					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 				}
 				
 			}
-//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -984,15 +979,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
-					displayUnitItem.setRealtimeCurveConf(module_[4]);
-					displayUnitItem.setHistoryCurveConf(module_[5]);
-					displayUnitItem.setMatrix(module_[6]);
+					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
+					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringTransferInteger(module_[4]):null);
+					displayUnitItem.setRealtimeCurveConf(module_[5]);
+					displayUnitItem.setHistoryCurveConf(module_[6]);
+					displayUnitItem.setMatrix(module_[7]);
 					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 				}
 				
 			}
-//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -2628,11 +2623,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setParam1(unitId);
 					dataSynchronizationThread.setMethod("update");
 					executor.execute(dataSynchronizationThread);
-					
-//					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(unitId, "update");
-//					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(unitId,"update");
-//					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
-					
 					if(user!=null){
 						this.service.saveSystemLog(user,2,"删除采控组");
 					}
@@ -2714,10 +2704,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
-					
-//					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(displayUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-//					this.displayUnitManagerService.doDisplayUnitBulkDelete(displayUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
-					
 					if(user!=null){
 						this.service.saveSystemLog(user,2,"删除显示单元");
 					}

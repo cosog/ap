@@ -190,7 +190,7 @@ function createHistoryQueryDeviceListColumn(columnInfo) {
         }
         myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
-            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:true";
         }
         else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
             myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";

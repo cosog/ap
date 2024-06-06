@@ -1106,6 +1106,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
+		List<String> itemsHistorySortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
@@ -1115,7 +1116,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=0";
 			
-			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel,t.realtimeCurveConf,historyCurveConf "
+			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.historySort,"
+					+ " t.showlevel,t.realtimeCurveConf,historyCurveConf "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
 					+ " order by t.realtimeSort";
@@ -1131,14 +1133,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
 				itemsRealtimeSortList.add(obj[2]+"");
-				itemsShowLevelList.add(obj[3]+"");
+				itemsHistorySortList.add(obj[3]+"");
 				
-				String realtimeCurveConf=obj[4]+"";
-				if(!StringManagerUtils.isNotNull(obj[4]+"")){
+				itemsShowLevelList.add(obj[4]+"");
+				
+				String realtimeCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
 					realtimeCurveConf="\"\"";
 				}
-				String historyCurveConf=obj[5]+"";
-				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+				String historyCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(obj[6]+"")){
 					historyCurveConf="\"\"";
 				}
 				
@@ -1164,6 +1168,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if(sign){
 							boolean checked=false;
 							String realtimeSort="";
+							String historySort="";
 							String showLevel="";
 							String realtimeCurveConf="\"\"";
 							String realtimeCurveConfShowValue="";
@@ -1190,6 +1195,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
 									checked=false;
 									realtimeSort="";
+									historySort="";
 									showLevel="";
 									realtimeCurveConf="\"\"";
 									realtimeCurveConfShowValue="";
@@ -1202,6 +1208,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											){
 											checked=true;
 											realtimeSort=itemsRealtimeSortList.get(m);
+											historySort=itemsHistorySortList.get(m);
 											showLevel=itemsShowLevelList.get(m);
 											realtimeCurveConf=realtimeCurveConfList.get(m);
 											historyCurveConf=historyCurveConfList.get(m);
@@ -1239,6 +1246,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"resolutionMode\":\""+resolutionMode+"\","
 											+ "\"showLevel\":\""+showLevel+"\","
 											+ "\"realtimeSort\":\""+realtimeSort+"\","
+											+ "\"historySort\":\""+historySort+"\","
 											+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 											+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1252,6 +1260,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									for(int k=0;k<itemsList.size();k++){
 										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
 											realtimeSort=itemsRealtimeSortList.get(k);
+											historySort=itemsHistorySortList.get(k);
 											showLevel=itemsShowLevelList.get(k);
 											
 											realtimeCurveConf=realtimeCurveConfList.get(k);
@@ -1288,6 +1297,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										+ "\"resolutionMode\":\""+resolutionMode+"\","
 										+ "\"showLevel\":\""+showLevel+"\","
 										+ "\"realtimeSort\":\""+realtimeSort+"\","
+										+ "\"historySort\":\""+historySort+"\","
 										+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 										+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 										+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1492,6 +1502,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
+		List<String> itemsHistorySortList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
@@ -1532,7 +1543,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		
 		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
 					+ " order by t.realtimeSort";
@@ -1542,13 +1554,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsList.add(obj[0]+"");
 				itemsCodeList.add(obj[1]+"");
 				itemsRealtimeSortList.add(obj[2]+"");
-				itemsShowLevelList.add(obj[3]+"");
-				String realtimeCurveConf=obj[4]+"";
-				if(!StringManagerUtils.isNotNull(obj[4]+"")){
+				itemsHistorySortList.add(obj[3]+"");
+				
+				itemsShowLevelList.add(obj[4]+"");
+				String realtimeCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
 					realtimeCurveConf="\"\"";
 				}
-				String historyCurveConf=obj[5]+"";
-				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+				String historyCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(obj[6]+"")){
 					historyCurveConf="\"\"";
 				}
 				
@@ -1562,6 +1576,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		for(CalItem calItem:calItemList){
 			boolean checked=false;
 			String realtimeSort="";
+			String historySort="";
 			String showLevel="";
 			String realtimeCurveConf="\"\"";
 			String realtimeCurveConfShowValue="";
@@ -1573,6 +1588,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				for(int k=0;k<itemsList.size();k++){
 					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 						realtimeSort=itemsRealtimeSortList.get(k);
+						historySort=itemsHistorySortList.get(k);
 						showLevel=itemsShowLevelList.get(k);
 						realtimeCurveConf=realtimeCurveConfList.get(k);
 						historyCurveConf=historyCurveConfList.get(k);
@@ -1605,6 +1621,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"unit\":\""+calItem.getUnit()+"\","
 					+ "\"showLevel\":\""+showLevel+"\","
 					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"historySort\":\""+historySort+"\","
 					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 					+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1667,11 +1684,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
+		List<String> itemsHistorySortList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
 					+ " order by t.realtimeSort";
@@ -1681,13 +1700,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsList.add(obj[0]+"");
 				itemsCodeList.add(obj[1]+"");
 				itemsRealtimeSortList.add(obj[2]+"");
-				itemsShowLevelList.add(obj[3]+"");
-				String realtimeCurveConf=obj[4]+"";
-				if(!StringManagerUtils.isNotNull(obj[4]+"")){
+				itemsHistorySortList.add(obj[3]+"");
+				itemsShowLevelList.add(obj[4]+"");
+				String realtimeCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
 					realtimeCurveConf="\"\"";
 				}
-				String historyCurveConf=obj[5]+"";
-				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+				String historyCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(obj[6]+"")){
 					historyCurveConf="\"\"";
 				}
 				
@@ -1703,6 +1723,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				boolean checked=false;
 				String realtimeSort="";
+				String historySort="";
 				String showLevel="";
 				String realtimeCurveConf="\"\"";
 				String realtimeCurveConfShowValue="";
@@ -1714,6 +1735,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 							realtimeSort=itemsRealtimeSortList.get(k);
+							historySort=itemsHistorySortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConf=realtimeCurveConfList.get(k);
 							historyCurveConf=historyCurveConfList.get(k);
@@ -1746,6 +1768,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"unit\":\""+calItem.getUnit()+"\","
 						+ "\"showLevel\":\""+showLevel+"\","
 						+ "\"realtimeSort\":\""+realtimeSort+"\","
+						+ "\"historySort\":\""+historySort+"\","
 						+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 						+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 						+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -3249,13 +3272,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
+		List<String> itemsHistorySortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		
 		String protocolSql="select t.protocol from tbl_display_unit_conf t,tbl_protocoldisplayinstance t2 where t.id=t2.displayunitid and t2.id="+id+"";
-		String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel,"
+		String sql="select t.itemname,t.bitindex,"
+				+ "t.realtimeSort,t.historySort,"
+				+ "t.showlevel,"
 				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=0 and t3.id= "+id
@@ -3270,21 +3296,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsList.add(obj[0]+"");
 				itemsBitIndexList.add(obj[1]+"");
 				itemsRealtimeSortList.add(obj[2]+"");
-				itemsShowLevelList.add(obj[3]+"");
+				itemsHistorySortList.add(obj[3]+"");
+				
+				itemsShowLevelList.add(obj[4]+"");
 				
 				String realtimeCurveConfShowValue="";
 				String historyCurveConfShowValue="";
 				
 				CurveConf realtimeCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[4]+"") && !"\"\"".equals(obj[4]+"")){
+				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
 					type = new TypeToken<CurveConf>() {}.getType();
-					realtimeCurveConfObj=gson.fromJson(obj[4]+"", type);
+					realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
 				}
 				
 				CurveConf historyCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
 					type = new TypeToken<CurveConf>() {}.getType();
-					historyCurveConfObj=gson.fromJson(obj[5]+"", type);
+					historyCurveConfObj=gson.fromJson(obj[6]+"", type);
 				}
 				
 				if(realtimeCurveConfObj!=null){
@@ -3306,6 +3334,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						for(int j=0;j<protocolConfig.getItems().size();j++){
 							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
 								String realtimeSort="";
+								String historySort="";
 								String showLevel="";
 								
 								String realtimeCurveConfShowValue="";
@@ -3317,6 +3346,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
 									for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
 										realtimeSort="";
+										historySort="";
 										showLevel="";
 										realtimeCurveConfShowValue="";
 										historyCurveConfShowValue="";
@@ -3325,6 +3355,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 												){
 												realtimeSort=itemsRealtimeSortList.get(m);
+												historySort=itemsHistorySortList.get(m);
 												showLevel=itemsShowLevelList.get(m);
 												realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
 												historyCurveConfShowValue=historyCurveConfList.get(m);
@@ -3338,6 +3369,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 												+ "\"showLevel\":\""+showLevel+"\","
 												+ "\"realtimeSort\":\""+realtimeSort+"\","
+												+ "\"historySort\":\""+historySort+"\","
 												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 												+ "},");
@@ -3347,6 +3379,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									for(int k=0;k<itemsList.size();k++){
 										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
 											realtimeSort=itemsRealtimeSortList.get(k);
+											historySort=itemsHistorySortList.get(k);
 											showLevel=itemsShowLevelList.get(k);
 											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 											historyCurveConfShowValue=realtimeCurveConfList.get(k);
@@ -3359,6 +3392,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 											+ "\"showLevel\":\""+showLevel+"\","
 											+ "\"realtimeSort\":\""+realtimeSort+"\","
+											+ "\"historySort\":\""+historySort+"\","
 											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 											+ "},");
@@ -3522,6 +3556,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
+		List<String> itemsHistorySortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
@@ -3564,7 +3599,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		String sql="select t.itemname,t.itemcode,t.bitindex,t.realtimeSort,t.showlevel,"
+		String sql="select t.itemname,t.itemcode,t.bitindex,"
+				+ "t.realtimeSort,t.historySort,"
+				+ "t.showlevel,"
 				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
@@ -3577,20 +3614,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsCodeList.add(obj[1]+"");
 				itemsBitIndexList.add(obj[2]+"");
 				itemsRealtimeSortList.add(obj[3]+"");
-				itemsShowLevelList.add(obj[4]+"");
+				itemsHistorySortList.add(obj[4]+"");
+				itemsShowLevelList.add(obj[5]+"");
 				String realtimeCurveConfShowValue="";
 				String historyCurveConfShowValue="";
 				
 				CurveConf realtimeCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
 					type = new TypeToken<CurveConf>() {}.getType();
-					realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
+					realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
 				}
 				
 				CurveConf historyCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
+				if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
 					type = new TypeToken<CurveConf>() {}.getType();
-					historyCurveConfObj=gson.fromJson(obj[6]+"", type);
+					historyCurveConfObj=gson.fromJson(obj[7]+"", type);
 				}
 				
 				if(realtimeCurveConfObj!=null){
@@ -3607,6 +3645,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(CalItem calItem:calItemList){
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
 					String realtimeSort="";
+					String historySort="";
 					String showLevel="";
 					String realtimeCurveConfShowValue="";
 					String historyCurveConfShowValue="";
@@ -3614,6 +3653,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 							realtimeSort=itemsRealtimeSortList.get(k);
+							historySort=itemsHistorySortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 							historyCurveConfShowValue=historyCurveConfList.get(k);
@@ -3626,6 +3666,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"unit\":\""+calItem.getUnit()+"\","
 							+ "\"showLevel\":\""+showLevel+"\","
 							+ "\"realtimeSort\":\""+realtimeSort+"\","
+							+ "\"historySort\":\""+historySort+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 							+ "\"dataSource\":\""+calItem.getDataSource()+"\""
@@ -3688,12 +3729,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
+		List<String> itemsHistorySortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		
-		String sql="select t.itemname,t.itemcode,t.bitindex,t.realtimeSort,t.showlevel,"
+		String sql="select t.itemname,t.itemcode,t.bitindex,"
+				+ "t.realtimeSort,t.historySort,"
+				+ "t.showlevel,"
 				+ " t.realtimeCurveConf,historyCurveConf "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
@@ -3707,20 +3751,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsCodeList.add(obj[1]+"");
 				itemsBitIndexList.add(obj[2]+"");
 				itemsRealtimeSortList.add(obj[3]+"");
-				itemsShowLevelList.add(obj[4]+"");
+				itemsHistorySortList.add(obj[4]+"");
+				itemsShowLevelList.add(obj[5]+"");
 				String realtimeCurveConfShowValue="";
 				String historyCurveConfShowValue="";
 				
 				CurveConf realtimeCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
 					type = new TypeToken<CurveConf>() {}.getType();
-					realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
+					realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
 				}
 				
 				CurveConf historyCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
+				if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
 					type = new TypeToken<CurveConf>() {}.getType();
-					historyCurveConfObj=gson.fromJson(obj[6]+"", type);
+					historyCurveConfObj=gson.fromJson(obj[7]+"", type);
 				}
 				
 				if(realtimeCurveConfObj!=null){
@@ -3738,6 +3783,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
 					String realtimeSort="";
+					String historySort="";
 					String showLevel="";
 					String realtimeCurveConfShowValue="";
 					String historyCurveConfShowValue="";
@@ -3745,6 +3791,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
 							realtimeSort=itemsRealtimeSortList.get(k);
+							historySort=itemsHistorySortList.get(k);
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 							historyCurveConfShowValue=historyCurveConfList.get(k);
@@ -3757,6 +3804,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"unit\":\""+calItem.getUnit()+"\","
 							+ "\"showLevel\":\""+showLevel+"\","
 							+ "\"realtimeSort\":\""+realtimeSort+"\","
+							+ "\"historySort\":\""+historySort+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 							+ "},");

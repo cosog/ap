@@ -222,7 +222,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName,classes,c
 			}
 			if(protocolDisplayUnitAcqItemsConfigHandsontableHelper==null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','实时数据顺序','历史数据顺序','实时曲线','历史曲线','','','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','','','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -409,7 +409,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','实时数据顺序','历史数据顺序','实时曲线','历史曲线','','','','数据来源']";
+				var colHeaders="['','序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','','','','数据来源']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -597,7 +597,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','数据顺序']";
+				var colHeaders="['','序号','名称','单位','显示级别','字段顺序']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -725,7 +725,7 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			}
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','实时数据顺序','历史数据顺序','实时曲线','历史曲线','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -1115,7 +1115,7 @@ var grantDisplayAcqItemsPermission = function () {
     var addUrl = context + '/acquisitionUnitManagerController/grantAcqItemsToDisplayUnitPermission'
     // 添加条件
     var addjson = [];
-    var addItemSort=[];
+    var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
@@ -1132,31 +1132,35 @@ var grantDisplayAcqItemsPermission = function () {
         	var itemName = acqItemsData[index][2];
         	
         	var itemShowLevel = acqItemsData[index][4];
-        	var itemSort = acqItemsData[index][5];
+        	var itemRealtimeSort = acqItemsData[index][5];
+        	var itemHistorySort = acqItemsData[index][6];
+        	
+        	
         	var realtimeCurveConfigStr="";
         	var historyCurveConfigStr="";
         	
         	var realtimeCurveConfig=null;
-			if(isNotVal(acqItemsData[index][6]) && isNotVal(acqItemsData[index][8])){
-				realtimeCurveConfig=acqItemsData[index][8];
+			if(isNotVal(acqItemsData[index][7]) && isNotVal(acqItemsData[index][9])){
+				realtimeCurveConfig=acqItemsData[index][9];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
 			
 			var historyCurveConfig=null;
-			if(isNotVal(acqItemsData[index][7]) && isNotVal(acqItemsData[index][9])){
-				historyCurveConfig=acqItemsData[index][9];
+			if(isNotVal(acqItemsData[index][8]) && isNotVal(acqItemsData[index][10])){
+				historyCurveConfig=acqItemsData[index][10];
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var resolutionMode = acqItemsData[index][10];
-        	var itemAddr = acqItemsData[index][11];
-        	var bitIndex=acqItemsData[index][12];
+        	var resolutionMode = acqItemsData[index][11];
+        	var itemAddr = acqItemsData[index][12];
+        	var bitIndex=acqItemsData[index][13];
         	
             addjson.push(itemName);
-            addItemSort.push(itemSort);
+            addItemRealtimeSort.push(itemRealtimeSort);
             var matrix_value = '0,0,0';
             matrixData += itemName + "##"
-            + itemSort+ "##"
+            + itemRealtimeSort+ "##"
+            + itemHistorySort+ "##"
             + itemShowLevel+ "##" 
             + realtimeCurveConfigStr+ "##" 
             + historyCurveConfigStr + "##" 
@@ -1170,17 +1174,14 @@ var grantDisplayAcqItemsPermission = function () {
 
     matrixData = matrixData.substring(0, matrixData.length - 1);
     var addparams = "" + addjson.join(",");
-    var addSortParams = "" + addItemSort.join(",");
+    var addRealtimeSortParams = "" + addItemRealtimeSort.join(",");
     var matrixCodes_ = "" + matrixData;
     Ext.Ajax.request({
         url: addUrl,
         method: "POST",
         async :  false,
         params: {
-            params: addparams,
-            sorts: addSortParams,
             protocol :protocol,
-            unitCode: unitCode,
             unitId:unitId,
             itemType:0,
             matrixCodes: matrixCodes_
@@ -1211,7 +1212,7 @@ var grantDisplayCalItemsPermission = function () {
     var addUrl = context + '/acquisitionUnitManagerController/grantCalItemsToDisplayUnitPermission'
     // 添加条件
     var addjson = [];
-    var addItemSort=[];
+    var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
@@ -1228,31 +1229,33 @@ var grantDisplayCalItemsPermission = function () {
         	var itemName = calItemsData[index][2];
         	
         	var itemShowLevel = calItemsData[index][4];
-        	var itemSort = calItemsData[index][5];
+        	var itemRealtimeSort = calItemsData[index][5];
+        	var itemHistorySort = calItemsData[index][6];
         	
         	var realtimeCurveConfigStr="";
         	var historyCurveConfigStr="";
 
         	var realtimeCurveConfig=null;
-			if(isNotVal(calItemsData[index][6]) && isNotVal(calItemsData[index][8])){
-				realtimeCurveConfig=calItemsData[index][8];
+			if(isNotVal(calItemsData[index][7]) && isNotVal(calItemsData[index][9])){
+				realtimeCurveConfig=calItemsData[index][9];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
 			
 			var historyCurveConfig=null;
-			if(isNotVal(calItemsData[index][7]) && isNotVal(calItemsData[index][9])){
-				historyCurveConfig=calItemsData[index][9];
+			if(isNotVal(calItemsData[index][8]) && isNotVal(calItemsData[index][10])){
+				historyCurveConfig=calItemsData[index][10];
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var itemCode = calItemsData[index][10];
+        	var itemCode = calItemsData[index][11];
         	
             addjson.push(itemCode);
-            addItemSort.push(itemSort);
+            addItemRealtimeSort.push(itemRealtimeSort);
             var matrix_value = '0,0,0';
             matrixData += itemName + "##"
             + itemCode+ "##"
-            + itemSort+ "##"
+            + itemRealtimeSort+ "##"
+            + itemHistorySort+ "##"
             + itemShowLevel+ "##" 
             + realtimeCurveConfigStr+ "##" 
             + historyCurveConfigStr + "##" 
@@ -1261,7 +1264,7 @@ var grantDisplayCalItemsPermission = function () {
     });
     matrixData = matrixData.substring(0, matrixData.length - 1);
     var addparams = "" + addjson.join(",");
-    var addSortParams = "" + addItemSort.join(",");
+    var addRealtimeSortParams = "" + addItemRealtimeSort.join(",");
     var matrixCodes_ = "" + matrixData;
     Ext.Ajax.request({
         url: addUrl,
@@ -1269,7 +1272,7 @@ var grantDisplayCalItemsPermission = function () {
         async :  false,
         params: {
             params: addparams,
-            sorts: addSortParams,
+            realtimeSorts: addRealtimeSortParams,
             protocol :protocol,
             unitCode: unitCode,
             unitId:unitId,
@@ -1302,7 +1305,7 @@ var grantDisplayCtrlItemsPermission = function () {
     var addUrl = context + '/acquisitionUnitManagerController/grantCtrlItemsToDisplayUnitPermission'
     // 添加条件
     var addjson = [];
-    var addItemSort=[];
+    var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
@@ -1319,17 +1322,17 @@ var grantDisplayCtrlItemsPermission = function () {
         	var itemName = ctrlItemsData[index][2];
         	
         	var itemShowLevel = ctrlItemsData[index][4];
-        	var itemSort = ctrlItemsData[index][5];
+        	var itemRealtimeSort = ctrlItemsData[index][5];
         	
         	var resolutionMode = ctrlItemsData[index][6];
         	var itemAddr = ctrlItemsData[index][7];
         	var bitIndex=ctrlItemsData[index][8];
             
             addjson.push(itemName);
-            addItemSort.push(itemSort);
+            addItemRealtimeSort.push(itemRealtimeSort);
             var matrix_value = '0,0,0';
             matrixData += itemName + ":"
-            + itemSort+ ":"
+            + itemRealtimeSort+ ":"
             + itemShowLevel+ ":" 
             
             + resolutionMode+ ":"
@@ -1342,7 +1345,7 @@ var grantDisplayCtrlItemsPermission = function () {
 
     matrixData = matrixData.substring(0, matrixData.length - 1);
     var addparams = "" + addjson.join(",");
-    var addSortParams = "" + addItemSort.join(",");
+    var addRealtimeSortParams = "" + addItemRealtimeSort.join(",");
     var matrixCodes_ = "" + matrixData;
     Ext.Ajax.request({
         url: addUrl,
@@ -1350,7 +1353,7 @@ var grantDisplayCtrlItemsPermission = function () {
         async :  false,
         params: {
             params: addparams,
-            sorts: addSortParams,
+            realtimeSorts: addRealtimeSortParams,
             protocol :protocol,
             unitCode: unitCode,
             unitId:unitId,
@@ -1384,7 +1387,7 @@ var grantDisplayInputItemsPermission = function () {
     var addUrl = context + '/acquisitionUnitManagerController/grantInputItemsToDisplayUnitPermission'
     // 添加条件
     var addjson = [];
-    var addItemSort=[];
+    var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
@@ -1401,31 +1404,33 @@ var grantDisplayInputItemsPermission = function () {
         	var itemName = inputItemsData[index][2];
         	
         	var itemShowLevel = inputItemsData[index][4];
-        	var itemSort = inputItemsData[index][5];
+        	var itemRealtimeSort = inputItemsData[index][5];
+        	var itemHistorySort = inputItemsData[index][6];
         	
         	var realtimeCurveConfigStr="";
         	var historyCurveConfigStr="";
 
         	var realtimeCurveConfig=null;
-			if(isNotVal(inputItemsData[index][6]) && isNotVal(inputItemsData[index][8])){
-				realtimeCurveConfig=inputItemsData[index][8];
+			if(isNotVal(inputItemsData[index][7]) && isNotVal(inputItemsData[index][9])){
+				realtimeCurveConfig=inputItemsData[index][9];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
 			
 			var historyCurveConfig=null;
-			if(isNotVal(inputItemsData[index][7]) && isNotVal(inputItemsData[index][9])){
-				historyCurveConfig=inputItemsData[index][9];
+			if(isNotVal(inputItemsData[index][8]) && isNotVal(inputItemsData[index][10])){
+				historyCurveConfig=inputItemsData[index][10];
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var itemCode = inputItemsData[index][10];
+        	var itemCode = inputItemsData[index][11];
         	
             addjson.push(itemCode);
-            addItemSort.push(itemSort);
+            addItemRealtimeSort.push(itemRealtimeSort);
             var matrix_value = '0,0,0';
             matrixData += itemName + "##"
             + itemCode+ "##"
-            + itemSort+ "##"
+            + itemRealtimeSort+ "##"
+            + itemHistorySort+ "##"
             + itemShowLevel+ "##" 
             + realtimeCurveConfigStr+ "##" 
             + historyCurveConfigStr + "##" 
@@ -1434,7 +1439,7 @@ var grantDisplayInputItemsPermission = function () {
     });
     matrixData = matrixData.substring(0, matrixData.length - 1);
     var addparams = "" + addjson.join(",");
-    var addSortParams = "" + addItemSort.join(",");
+    var addRealtimeSortParams = "" + addItemRealtimeSort.join(",");
     var matrixCodes_ = "" + matrixData;
     Ext.Ajax.request({
         url: addUrl,
@@ -1442,7 +1447,7 @@ var grantDisplayInputItemsPermission = function () {
         async :  false,
         params: {
             params: addparams,
-            sorts: addSortParams,
+            realtimeSorts: addRealtimeSortParams,
             protocol :protocol,
             unitCode: unitCode,
             unitId:unitId,

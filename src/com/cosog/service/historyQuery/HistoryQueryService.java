@@ -308,18 +308,24 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
 			String calTableName="tbl_rpcacqdata_latest";
+			String ddicName="realTimeMonitoring_Overview";
+			DataDictionary ddic = null;
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+			String columns = ddic.getTableHeader();
+//			String columns = "["
+//					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
+//					+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\",flex:9,children:[] },"
+//					+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] },"
+//					+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:11,children:[] },"
+//					+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",flex:5,children:[] },"
+//					+ "]";
 			
-			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\",flex:9,children:[] },"
-					+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] },"
-					+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:11,children:[] },"
-					+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",flex:5,children:[] },"
-					+ "]";
-			
-			String sql="select t.id,t.devicename,t2.commstatus,"
-					+ " decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.name as devicetypename,"
+			String sql="select t.id,t.devicename,c1.name as devicetypename,"
+					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
@@ -363,36 +369,49 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[]) list.get(i);
 				String deviceId=obj[0]+"";
-				String alarmInstanceCode="";
-				int commAlarmLevel=0;
-
-				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
-					alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
-				}
-			
+				String commStatusName=obj[5]+"";
+				String runStatusName=obj[10]+"";
 				
-				if(StringManagerUtils.isNotNull(alarmInstanceCode)){
-					AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-					if(jedis!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), alarmInstanceCode.getBytes())){
-						alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), alarmInstanceCode.getBytes()));
-						for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
-							if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[3]+"")){
-								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-								break;
-							}
+				DeviceInfo deviceInfo=null;
+				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+					deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+				}
+				String protocolName="";
+				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				if(acqInstanceOwnItem!=null){
+					protocolName=acqInstanceOwnItem.getProtocol();
+				}
+				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
+				
+				
+				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+				if(alarmInstanceOwnItem!=null){
+					for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+						if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
+							commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+						}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
+							runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 						}
 					}
 				}
 				
 				result_json.append("{\"id\":"+obj[0]+",");
 				result_json.append("\"deviceName\":\""+obj[1]+"\",");
-				result_json.append("\"commStatus\":"+obj[2]+",");
-				result_json.append("\"commStatusName\":\""+obj[3]+"\",");
+				result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
+				result_json.append("\"acqTime\":\""+obj[3]+"\",");
+				result_json.append("\"commStatus\":"+obj[4]+",");
+				result_json.append("\"commStatusName\":\""+commStatusName+"\",");
+				result_json.append("\"commTime\":\""+obj[6]+"\",");
+				result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
+				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
 				result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
-				result_json.append("\"acqTime\":\""+obj[4]+"\",");
-				result_json.append("\"deviceTypeName\":\""+obj[5]+"\",");
-				result_json.append("\"calculateType\":\""+obj[6]+"\"},");
+				result_json.append("\"runStatus\":"+obj[9]+",");
+				result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+				result_json.append("\"runTime\":\""+obj[11]+"\",");
+				result_json.append("\"runTimeEfficiency\":\""+obj[12]+"\",");
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[13])+"\",");
+				result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
+				result_json.append("\"calculateType\":"+obj[14]+"},");
 			}
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -906,7 +925,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String hisTableName="tbl_acqdata_hist";
 			String deviceTableName="tbl_device";
 			String calAndInputTableName="tbl_rpcacqdata_hist";
-			String ddicName="historyQuery_HistoryData";
 			
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -934,10 +952,38 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,t.calculateType";
 			if(displayInstanceOwnItem!=null&&userInfo!=null&&protocol!=null){
-				Collections.sort(displayInstanceOwnItem.getItemList());
-				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-					if(displayInstanceOwnItem.getItemList().get(k).getType()!=2&&displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
-						columns.append("{ \"header\":\""+displayInstanceOwnItem.getItemList().get(k).getItemName()+"\",\"dataIndex\":\""+displayInstanceOwnItem.getItemList().get(k).getItemCode()+"\"},");
+				String displayItemSql="select t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
+						+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,"
+						+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
+						+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
+						+ "t.realtimecurveconf,t.historycurveconf,"
+						+ "t.type "
+						+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
+						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
+						+ " and t.type<>2"
+						+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
+				displayItemSql+=" order by t.historySort,t.type,t.id";
+				List<?> displayItemQueryList = this.findCallSql(displayItemSql);
+				List<DisplayInstanceOwnItem.DisplayItem> displayItemList=new ArrayList<>();
+				for(int i=0;i<displayItemQueryList.size();i++){
+					Object[] obj=(Object[]) displayItemQueryList.get(i);
+					DisplayInstanceOwnItem.DisplayItem displayItem=new DisplayInstanceOwnItem.DisplayItem();
+					displayItem.setUnitId(StringManagerUtils.stringToInteger(obj[0]+""));
+    				displayItem.setItemId(StringManagerUtils.stringToInteger(obj[1]+""));
+    				displayItem.setItemName(obj[2]+"");
+    				displayItem.setItemCode(obj[3]+"");
+    				displayItem.setBitIndex(StringManagerUtils.stringToInteger(obj[4]+""));
+    				displayItem.setShowLevel(StringManagerUtils.stringToInteger(obj[5]+""));
+    				displayItem.setRealtimeSort(StringManagerUtils.stringToInteger(obj[6]+""));
+    				displayItem.setHistorySort(StringManagerUtils.stringToInteger(obj[7]+""));
+    				displayItem.setRealtimeCurveConf(obj[8]+"");
+    				displayItem.setHistoryCurveConf(obj[9]+"");
+    				displayItem.setType(StringManagerUtils.stringToInteger(obj[10]+""));
+    				displayItemList.add(displayItem);
+				}
+				for(int k=0;k<displayItemList.size();k++){
+					if(displayItemList.get(k).getType()!=2&&displayItemList.get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
+						columns.append("{ \"header\":\""+displayItemList.get(k).getItemName()+"\",\"dataIndex\":\""+displayItemList.get(k).getItemCode()+"\"},");
 					}
 				}
 				

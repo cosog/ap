@@ -605,15 +605,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				tableColumnsList.add(columnList.get(i).toString());
 			}
 			
-//			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
-//					+ "liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
-//					+ "availablePlungerStrokeProd_v,pumpClearanceleakProd_v,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_v,";
-//			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-//				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
-//						+ "liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
-//						+ "availablePlungerStrokeProd_w,pumpClearanceleakProd_w,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_w,";
-//			}
-			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
 					+ "c1.name as devicetypename,"//6
@@ -623,32 +614,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
 					+ "t.calculateType";//18
-//					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"//18~20
-//					+ "t2.TheoreticalProduction,"//21
-//					+ prodCol+""//22~32
-//					+ "t2.FMax,t2.FMin,"//33~34
-//					+ "t2.Stroke,t2.SPM,"//35~36
-//					+ "t2.fullnessCoefficient,t2.plungerStroke,t2.availablePlungerStroke,"//37~39
-//					+ "t2.UpperLoadLine,t2.LowerLoadLine,"//40~41
-//					+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"//42~44
-//					+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//45
-//					+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//46
-//					+ "t2.systemEfficiency*100 as systemEfficiency,t2.energyper100mlift,t2.Area,"//47~49
-//					+ "t2.RodFlexLength,t2.TubingFlexLength,t2.InertiaLength,"//50~52
-//					+ "t2.PumpEff1*100 as PumpEff1,"//53
-//					+ "t2.pumpEff2*100 as pumpEff2,"//54
-//					+ "t2.pumpEff3*100 as pumpEff3,"//55
-//					+ "t2.pumpEff4*100 as pumpEff4,"//56
-//					+ "t2.pumpEff*100 as pumpEff,"//57
-//					+ "t2.UpStrokeIMax,t2.DownStrokeIMax,t2.iDegreeBalance,"//58~60
-//					+ "t2.UpStrokeWattMax,t2.DownStrokeWattMax,t2.wattDegreeBalance,"//61~63
-//					+ "t2.deltaradius*100 as deltaradius,"//64
-//					+ "t2.levelDifferenceValue,t2.calcProducingfluidLevel,"//65~66
-//					+ "t2.submergence,"//67
-//					+ "t2.todayKWattH,"//68
-//					+ "t2.PumpIntakeP,t2.PumpIntakeT,t2.PumpIntakeGOL,t2.PumpIntakeVisl,t2.PumpIntakeBo,"//69~73
-//					+ "t2.PumpOutletP,t2.PumpOutletT,t2.PumpOutletGOL,t2.PumpOutletVisl,t2.PumpOutletBo,"//74~78
-//					+ "t2.productiondata";//79
 			String[] ddicColumns=ddic.getSql().split(",");
 			for(int i=0;i<ddicColumns.length;i++){
 				if(StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
@@ -697,33 +662,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String deviceId=obj[0]+"";
 				String commStatusName=obj[9]+"";
 				String runStatusName=obj[14]+"";
-//				String resultCode=obj[18]+"";
-//				String productionDataStr=obj[79]+"";
-				
-//				String tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",weightWaterCut="",
-//						productionGasOilRatio="",producingfluidLevel="",levelCorrectValue="",
-//						pumpSettingDepth="",pumpBoreDiameter="";
-						
-//				if(StringManagerUtils.isNotNull(productionDataStr)){
-//					type = new TypeToken<RPCProductionData>() {}.getType();
-//					RPCProductionData productionData=gson.fromJson(productionDataStr, type);
-//					if(productionData.getProduction()!=null){
-//						tubingPressure=productionData.getProduction().getTubingPressure()+"";
-//						casingPressure=productionData.getProduction().getCasingPressure()+"";
-//						wellHeadTemperature=productionData.getProduction().getWellHeadTemperature()+"";
-//						waterCut=productionData.getProduction().getWaterCut()+"";
-//						weightWaterCut=productionData.getProduction().getWeightWaterCut()+"";
-//						productionGasOilRatio=productionData.getProduction().getProductionGasOilRatio()+"";
-//						producingfluidLevel=productionData.getProduction().getProducingfluidLevel()+"";
-//						pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
-//					}
-//					if(productionData.getPump()!=null){
-//						pumpBoreDiameter=productionData.getPump().getPumpBoreDiameter()*1000+"";
-//					}
-//					if(productionData.getManualIntervention()!=null){
-//						levelCorrectValue=productionData.getManualIntervention().getLevelCorrectValue()+"";
-//					}
-//				}
 				
 				DeviceInfo deviceInfo=null;
 				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){

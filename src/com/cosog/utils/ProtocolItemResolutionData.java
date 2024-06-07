@@ -12,12 +12,13 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 	public String bitIndex="";
 	public String unit="";
 	public int sort;
+	public int type;
 	
 	public ProtocolItemResolutionData() {
 		super();
 	}
 	public ProtocolItemResolutionData(String rawColumnName,String columnName, String value,String rawValue, String addr, String column,
-			String columnDataType, String resolutionMode,String bitIndex,String unit,int sort) {
+			String columnDataType, String resolutionMode,String bitIndex,String unit,int sort,int type) {
 		super();
 		this.rawColumnName = rawColumnName;
 		this.columnName = columnName;
@@ -30,6 +31,7 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 		this.bitIndex = bitIndex;
 		this.unit=unit;
 		this.sort=sort;
+		this.type=type;
 	}
 	
 	public ProtocolItemResolutionData(String rawColumnName,String columnName, String value,String rawValue, String addr, String column,
@@ -135,5 +137,11 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 	}
 	public void setRawColumnName(String rawColumnName) {
 		this.rawColumnName = rawColumnName;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
 	}
 }

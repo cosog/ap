@@ -308,24 +308,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
 			String calTableName="tbl_rpcacqdata_latest";
-			String ddicName="realTimeMonitoring_Overview";
+			String ddicName="historyQuery_Overview";
 			DataDictionary ddic = null;
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			String columns = ddic.getTableHeader();
-//			String columns = "["
-//					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-//					+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\",flex:9,children:[] },"
-//					+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] },"
-//					+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:11,children:[] },"
-//					+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",flex:5,children:[] },"
-//					+ "]";
-			
 			String sql="select t.id,t.devicename,c1.name as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
+					+ " t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+					+ " t2.commtime,t2.commtimeefficiency,t2.commrange,"
+					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ " t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
@@ -1092,10 +1084,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			sql+= " where t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.id="+deviceId+""
-				+ "  order by t2.acqtime desc";
+				+ " order by t2.acqtime desc";
 			int maxvalue=pager.getLimit()+pager.getStart();
 			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-			
 			
 			List<?> list = this.findCallSql(finalSql);
 			String startTime=pager.getStart_date();
@@ -1149,7 +1140,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				StringBuffer alarmInfo = new StringBuffer();
-				int commAlarmLevel=0,runAlarmLevel=0;
+				int commAlarmLevel=0,runAlarmLevel=0,resultAlarmLevel=0;
 				if(alarmInstanceOwnItem!=null){
 					for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
 						if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
@@ -1241,7 +1232,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -1306,7 +1297,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}
@@ -1337,12 +1328,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value);
 									if(workType!=null){
 										value=workType.getResultName();
+										for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
+											if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+												resultAlarmLevel=alarmItem.getAlarmLevel();
+											}
+										}
+										
 									}
 								}
 								break;
 							}
 						}
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
 						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					}
 				}
@@ -1379,7 +1376,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}
 							}
 						}
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					}else if(protocolItems.get(j).getResolutionMode()==0){//如果是开关量
 						boolean isMatch=false;
@@ -1413,7 +1410,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}else{
 												value=valueArr[m];
 											}
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											match=true;
 											break;
@@ -1423,7 +1420,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										value="";
 										rawValue="";
 										bitIndex=protocolItems.get(j).getMeaning().get(l).getValue()+"";
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort);
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 								}else{
@@ -1436,7 +1433,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									value="";
 									rawValue="";
 									bitIndex=protocolItems.get(j).getMeaning().get(l).getValue()+"";
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort,0);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
@@ -1447,7 +1444,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									break;
 								}
 							}
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}else{//如果是数据量
@@ -1458,7 +1455,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 						
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					} 
 				}
@@ -1471,7 +1468,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
 							if(displayItem!=null){
 								String unit="";
-								
 								if(protocol!=null&&protocol.getItems()!=null){
 									for(ModbusProtocolConfig.Items item:protocol.getItems()){
 										if(displayItem.getItemSourceName().equalsIgnoreCase(item.getTitle())){
@@ -1480,8 +1476,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										}
 									}
 								}
-								
-								
 								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
 										dailyTotalDataObj[2]+"",
 										dailyTotalDataObj[2]+"",
@@ -1493,7 +1487,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										"",
 										"",
 										unit,
-										displayItem.getRealtimeSort());
+										displayItem.getRealtimeSort(),
+										1);
 								protocolItemResolutionDataList.add(protocolItemResolutionData);
 							}
 						}
@@ -1528,27 +1523,32 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					String rawValue=protocolItemResolutionDataList.get(j).getRawValue();
 					String value=rawValue;
 					ModbusProtocolConfig.Items item=null;
-					if(protocol!=null){
-						for(int k=0;k<protocol.getItems().size();k++){
-							String col="";
-							if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
-								col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
-							}
-							if(col!=null&&col.equalsIgnoreCase(protocolItemResolutionDataList.get(j).getColumn())){
-								item=protocol.getItems().get(k);
-								//显示转换
-								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
-									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
-										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
-											value=protocol.getItems().get(k).getMeaning().get(l).getMeaning();
-											break;
+					if(protocolItemResolutionDataList.get(j).getType()!=0){
+						value=protocolItemResolutionDataList.get(j).getValue();
+					}else{
+						if(protocol!=null){
+							for(int k=0;k<protocol.getItems().size();k++){
+								String col="";
+								if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+									col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
+								}
+								if(col!=null&&col.equalsIgnoreCase(protocolItemResolutionDataList.get(j).getColumn())){
+									item=protocol.getItems().get(k);
+									//显示转换
+									if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
+										for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
+											if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
+												value=protocol.getItems().get(k).getMeaning().get(l).getMeaning();
+												break;
+											}
 										}
 									}
+									break;
 								}
-								break;
 							}
 						}
 					}
+					
 					result_json.append("\""+protocolItemResolutionDataList.get(j).getColumn()+"\":\""+value+"\",");
 					//判断报警
 					if(item!=null&&alarmInstanceOwnItem!=null){
@@ -1590,7 +1590,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}
 					}
 				}
-				
+				result_json.append("\"resultAlarmLevel\":\""+resultAlarmLevel+"\",");
 				if(result_json.toString().endsWith(",")){
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
@@ -1599,15 +1599,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				alarmInfo.append("]");
 				result_json.append(",\"alarmInfo\":"+alarmInfo+"");
-				
 				result_json.append("},");
 			}
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
 			result_json.append("]");
-			
-			
 			result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1616,7 +1613,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				jedis.close();
 			}
 		}
-//		System.out.println(result_json.toString().replaceAll("\"null\"", "\"\""));
+		System.out.println(result_json.toString().replaceAll("\"null\"", "\"\""));
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -1965,7 +1962,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -2030,7 +2027,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}
@@ -2066,7 +2063,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								break;
 							}
 						}
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
 						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					}
 				}
@@ -2103,7 +2100,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}
 							}
 						}
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					}else if(protocolItems.get(j).getResolutionMode()==0){//如果是开关量
 						boolean isMatch=false;
@@ -2137,7 +2134,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											}else{
 												value=valueArr[m];
 											}
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											match=true;
 											break;
@@ -2147,7 +2144,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										value="";
 										rawValue="";
 										bitIndex=protocolItems.get(j).getMeaning().get(l).getValue()+"";
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort);
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 								}else{
@@ -2160,7 +2157,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									value="";
 									rawValue="";
 									bitIndex=protocolItems.get(j).getMeaning().get(l).getValue()+"";
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort,0);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
@@ -2171,7 +2168,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									break;
 								}
 							}
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}else{//如果是数据量
@@ -2182,7 +2179,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 						
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					} 
 				}
@@ -2217,7 +2214,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										"",
 										"",
 										unit,
-										displayItem.getRealtimeSort());
+										displayItem.getRealtimeSort(),
+										0);
 								protocolItemResolutionDataList.add(protocolItemResolutionData);
 							}
 						}
@@ -2771,7 +2769,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}
 									rawValue=value;
 									rawColumnName=columnName;
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -2836,7 +2834,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}
 									rawValue=value;
 									rawColumnName=columnName;
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
@@ -2874,7 +2872,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										break;
 									}
 								}
-								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
 								protocolItemResolutionDataList.add(protocolItemResolutionData);
 							}
 						}
@@ -2909,7 +2907,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										}
 									}
 								}
-								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 								protocolItemResolutionDataList.add(protocolItemResolutionData);
 							}else if(protocolItems.get(j).getResolutionMode()==0){//如果是开关量
 								boolean isMatch=false;
@@ -2943,7 +2941,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else{
 														value=valueArr[m];
 													}
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													match=true;
 													break;
@@ -2953,7 +2951,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												value="";
 												rawValue="";
 												bitIndex=protocolItems.get(j).getMeaning().get(l).getValue()+"";
-												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort);
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort,0);
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 											}
 										}else{
@@ -2966,7 +2964,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											value="";
 											rawValue="";
 											bitIndex=protocolItems.get(j).getMeaning().get(l).getValue()+"";
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,protocolItems.get(j).getMeaning().get(l).getValue()+"",unit,sort,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 										}
 									}
@@ -2977,7 +2975,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											break;
 										}
 									}
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}else{//如果是数据量
@@ -2988,7 +2986,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}
 								}
 								
-								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort);
+								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 								protocolItemResolutionDataList.add(protocolItemResolutionData);
 							} 
 						}
@@ -3030,7 +3028,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												"",
 												"",
 												unit,
-												displayItem.getRealtimeSort());
+												displayItem.getRealtimeSort(),
+												1);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
 								}

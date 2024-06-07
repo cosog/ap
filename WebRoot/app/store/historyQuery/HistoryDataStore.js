@@ -94,6 +94,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
             deviceHistoryQueryCurve(deviceType);
         },
         beforeload: function (store, options) {
+        	Ext.getCmp("HistoryQueryDataInfoPanel_Id").removeAll();
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceName='';
         	var deviceId=0;

@@ -273,11 +273,6 @@ public class HistoryQueryController extends BaseController  {
 			session.setAttribute(key, 0);
 		}
 		
-//		DataDictionary ddic = null;
-//		String ddicName="historyQuery_HistoryData";
-//		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-//		heads=StringUtils.join(ddic.getHeaders(), ",");
-//		fields=StringUtils.join(ddic.getFields(), ",");
 		
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");

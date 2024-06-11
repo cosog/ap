@@ -16,13 +16,15 @@ Ext.define("AP.view.reportOut.DailyReportPanel", {
         		border: false,
         		tabPosition: 'left',
         		items: [{
-    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">单井报表</div>',
+//    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">单井报表</div>',
+    				title: '单井报表',
     				id:'SingleWellDailyReportTabPanel_Id',
     				items: [SingleWellDailyReportPanel],
     				layout: "fit",
     				border: false
     			},{
-    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">区域报表</div>',
+//    				title: '<div style="color:#000000;font-size:11px;font-family:SimSun">区域报表</div>',
+    				title: '区域报表',
     				id:'ProductionDailyReportTabPanel_Id',
     				items: [ProductionDailyReportPanel],
     				layout: "fit",

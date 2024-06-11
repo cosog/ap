@@ -42,7 +42,8 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         			
         			for(var j=0;j<tabInfo.children[i].children.length;j++){
         				var secondTabPanel={
-        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+//        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+        						title:tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
         						id: 'DeviceManagerPanel_'+tabInfo.children[i].children[j].deviceTypeId,

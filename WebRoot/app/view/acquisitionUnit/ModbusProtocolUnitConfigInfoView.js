@@ -18,25 +18,29 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 border: false,
                 tabPosition: 'left',
                 items: [{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">采控单元</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">采控单元</div>',
+                	title:'采控单元',
                 	id:'ModbusProtocolAcqUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolAcqUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报警单元</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报警单元</div>',
+                	title:'报警单元',
                 	id:'ModbusProtocolAlarmUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolAlarmUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">显示单元</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">显示单元</div>',
+                	title:'显示单元',
                 	id:'ModbusProtocolDisplayUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolDisplayUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表单元</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表单元</div>',
+                	title:'报表单元',
                 	id:'ModbusProtocolReportUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolReportUnitConfigInfoView],
     				layout: "fit",

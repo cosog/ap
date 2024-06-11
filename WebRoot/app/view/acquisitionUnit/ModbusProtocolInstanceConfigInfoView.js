@@ -19,31 +19,36 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 border: false,
                 tabPosition: 'left',
                 items: [{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">采控实例</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">采控实例</div>',
+                	title:'采控实例',
                 	id:"ModbusProtocolAcqInstanceConfigTabPanel_Id",
                 	items: [ModbusProtocolAcqInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">显示实例</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">显示实例</div>',
+                	title:'显示实例',
                 	id:'ModbusProtocolDisplayInstanceConfigTabPanel_Id',
                 	items: [ModbusProtocolDisplayInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报警实例</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报警实例</div>',
+                	title:'报警实例',
                 	id:'ModbusProtocolAlarmInstanceConfigTabPanel_Id',
                 	items: [ModbusProtocolAlarmInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表实例</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表实例</div>',
+                	title:'报表实例',
                 	id:'ModbusProtocolReportInstanceConfigTabPanel_Id',
                 	items: [ModbusProtocolReportInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">短信实例</div>',
+//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">短信实例</div>',
+                	title:'短信实例',
                 	id:'ModbusProtocolSMSInstanceConfigTabPanel_Id',
                 	items: [ModbusProtocolSMSInstanceConfigInfoView],
     				layout: "fit",

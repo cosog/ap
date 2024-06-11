@@ -61,7 +61,8 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         			var allSecondIds='';
         			for(var j=0;j<tabInfo.children[i].children.length;j++){
         				var secondTabPanel={
-        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+//        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
+        						title: tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
         						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
@@ -78,7 +79,8 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         			}
         			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
-        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
+//        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
+        						title: '全部',
         						tpl:'全部',
         						layout: 'fit',
         						id: 'ProductionReportRootTabPanel_'+allSecondIds,

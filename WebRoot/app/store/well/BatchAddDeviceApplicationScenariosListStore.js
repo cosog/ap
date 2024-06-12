@@ -3,7 +3,7 @@ Ext.define('AP.store.well.BatchAddDeviceApplicationScenariosListStore', {
     alias: 'widget.batchAddDeviceApplicationScenariosListStore',
     fields: ['id','wellName'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: 100,
     proxy: {
         type: 'ajax',
         url: context + '/wellInformationManagerController/getApplicationScenariosList',

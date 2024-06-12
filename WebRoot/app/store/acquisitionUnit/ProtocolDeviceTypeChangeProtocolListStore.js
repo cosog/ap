@@ -3,7 +3,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore',
     alias: 'widget.protocolDeviceTypeChangeProtocolListStore',
     fields: ['id','name','deviceType'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: 100,
     proxy: {
         type: 'ajax',
         url: context + '/acquisitionUnitManagerController/getProtocolDeviceTypeChangeProtocolList',

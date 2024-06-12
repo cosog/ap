@@ -3,7 +3,7 @@ Ext.define('AP.store.well.WaterCutRawDataStore', {
     alias: 'widget.waterCutRawDataStore',
     fields: ['id','interval','waterCut','tubingPressure','position'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: 100,
     proxy: {
         type: 'ajax',
         url: context + '/wellInformationManagerController/getWaterCutRawData',

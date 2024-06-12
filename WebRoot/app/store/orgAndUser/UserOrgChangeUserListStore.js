@@ -3,7 +3,7 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
     alias: 'widget.userOrgChangeUserListStore',
     fields: ['id','wellName'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: 100,
     proxy: {
         type: 'ajax',
         url: context + '/userManagerController/getUserOrgChangeUserList',

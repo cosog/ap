@@ -3,7 +3,7 @@ Ext.define('AP.store.alarmQuery.RPCNumericValueAlarmStore', {
     alias: 'widget.RPCNumericValueAlarmStore',
     fields: ['id','deviceType','deviceTypeName','wellName','createTime','user_id','loginIp','action','actionName','remark'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: 100,
     proxy: {
         type: 'ajax',
         url: context + '/alarmQueryController/getAlarmData',

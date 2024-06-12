@@ -3,7 +3,7 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore', {
     alias: 'widget.rpcFESDiagramResultAlarmOverviewStore',
     fields: ['id','deviceType','deviceTypeName','wellName','alarmTime','user_id','loginIp','action','actionName','remark'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: 100,
     proxy: {
         type: 'ajax',
         url: context + '/alarmQueryController/getAlarmOverviewData',

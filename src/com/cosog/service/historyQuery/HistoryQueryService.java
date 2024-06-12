@@ -1613,7 +1613,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				jedis.close();
 			}
 		}
-		System.out.println(result_json.toString().replaceAll("\"null\"", "\"\""));
+//		System.out.println(result_json.toString().replaceAll("\"null\"", "\"\""));
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	

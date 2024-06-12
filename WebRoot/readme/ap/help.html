@@ -71,18 +71,58 @@
 <p>默认管理员账号：admin</p>
 <p>初始密码：123456</p>
 <h2 id="1-2-">1.2 页面布局</h2>
-<p><img src="media/299c8bab1ec5c59bf7281da10ffdea52.png" alt=""></p>
+<p><img src="media/f95ab437300faa0a8162b1633d01e9ed.png" alt=""></p>
 <h2 id="1-3-">1.3 页面操作</h2>
 <p>1、拖拽窗口或者点击界面中缝位置的图标<img src="media/31c6015dc83f2a40f02cd33a2419f5a9.png" alt="G:\\work\\github\\apmd\\Image\\PNG\\025.png">或<img src="media/74e5710c75eecf890973c56e5ba93a49.png" alt="G:\\work\\github\\apmd\\Image\\PNG\\026.png">可实现界面伸缩；</p>
 <p>2、点击饼图相应部分可对设备进行筛选；</p>
 <p>3、用户角色拥有报表编辑权限，才可以修改报表内容；</p>
 <p>4、历史曲线和报表曲线，每条曲线的纵坐标最大、最小值可配置。</p>
 <h2 id="1-4-oem-">1.4 OEM配置</h2>
-<p>配置完成后重启tomcat</p>
+<p>先停止tomcat，配置完成后再启动</p>
 <p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，修改oem部分，oem内容修改后，修改静态资源时间戳（首次部署不需要），无需清理浏览器缓存即可生效。</p>
-<p><img src="media/8ed4b34f8f1b14a50c2188ccc269e731.png" alt=""></p>
+<p><img src="media/988e27532f7ea2f1553f02a92bbab2b4.png" alt=""></p>
 <h2 id="1-5-">1.5 软件启停</h2>
-<h3 id="1-5-1-">1.5.1 开机自启动</h3>
+<h3 id="1-5-1-">1.5.1 手动启停</h3>
+<p>1、单井计算开发包ac</p>
+<p>启动：</p>
+<p>nohup /usr/local/ac -o file&amp;</p>
+<p>停止：</p>
+<p>1）查看进程</p>
+<p>ps –e</p>
+<p><img src="media/f53c7d36002dcfcadaa82e002652355d.png" alt=""></p>
+<p>2）杀掉ac进程</p>
+<p>kill -9 26630</p>
+<p>2、协议通ad</p>
+<p>启动：</p>
+<p>nohup /usr/local/ad -o file&amp;</p>
+<p>停止：</p>
+<p>1）查看进程</p>
+<p>ps –e</p>
+<p><img src="media/1118918a60727aeaf5e405b3143e6c86.png" alt=""></p>
+<p>2）杀掉ad进程</p>
+<p>kill -9 22030</p>
+<p>3、缓存数据库redis</p>
+<p>启动：</p>
+<p>nohup /opt/redis-7.0.9/src/redis-server /opt/redis-7.0.9/redis.conf&amp;</p>
+<p>停止：</p>
+<p>/opt/redis-7.0.9/src/redis-cli shutdown</p>
+<p>4、oracle数据库</p>
+<p>启动：</p>
+<p>1）启动oracle监听</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl start&quot;</p>
+<p>2）启动oracle服务</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbstart&quot;</p>
+<p>停止：</p>
+<p>1）停止oracle监听</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl stop&quot;</p>
+<p>2）停止oracle服务</p>
+<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbshut &quot;</p>
+<p>5、tomcat</p>
+<p>启动：</p>
+<p>/opt/apache-tomcat-9.0.73/bin/startup.sh</p>
+<p>停止：</p>
+<p>/opt/apache-tomcat-9.0.73/bin/shutdown.sh</p>
+<h3 id="1-5-2-">1.5.2 开机启动</h3>
 <p><strong>1、root用户修改/etc/rc.d/rc.local文件</strong></p>
 <p>su root</p>
 <p>vim /etc/rc.d/rc.local</p>
@@ -114,170 +154,219 @@
 <p>su - oracle</p>
 <p>cd \$ORACLE_HOME/bin</p>
 <p>vim dbstart</p>
-<p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
+<p>修改#ORACLE_HOME_LISTNER=\$为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
 <p>vim dbshut</p>
 <p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
-<h3 id="1-5-2-">1.5.2 手动启停</h3>
-<p><strong>1、单井计算开发包ac</strong></p>
-<p><strong>启动：</strong></p>
-<p>nohup /usr/local/ac -o close&amp;</p>
-<p><strong>停止：</strong></p>
-<p>1）查看进程</p>
-<p>ps –e</p>
-<p><img src="media/f53c7d36002dcfcadaa82e002652355d.png" alt=""></p>
-<p>2）杀掉ac进程</p>
-<p>kill -9 26630</p>
-<p><strong>2、协议通ad</strong></p>
-<p><strong>启动：</strong></p>
-<p>nohup /usr/local/ad -o close&amp;</p>
-<p><strong>停止：</strong></p>
-<p>1）查看进程</p>
-<p>ps –e</p>
-<p><img src="media/1118918a60727aeaf5e405b3143e6c86.png" alt=""></p>
-<p>2）杀掉ad进程</p>
-<p>kill -9 22030</p>
-<p><strong>3、缓存数据库redis</strong></p>
-<p><strong>启动：</strong></p>
-<p>nohup /opt/redis-7.0.9/src/redis-server /opt/redis-7.0.9/redis.conf&amp;</p>
-<p><strong>停止：</strong></p>
-<p>/opt/redis-7.0.9/src/redis-cli shutdown</p>
-<p><strong>4、oracle数据库</strong></p>
-<p>使用dbstart及dbshut文件启停数据库，需配置以下内容（仅需配置一次即可）：</p>
-<p>1）root用户修改 /etc/oratab文件, 将N改为Y</p>
+<p>全部配置成功后，reboot重启服务器</p>
 <p>su root</p>
-<p>vi /etc/oratab</p>
-<p>将N改成Y</p>
-<p>orcl:/data1/opt/oracle/app/oracle/product/19/dbhome_1:N</p>
-<p>2）oracle用户修改dbstart及dbshut文件</p>
-<p>su - oracle</p>
-<p>cd \$ORACLE_HOME/bin</p>
-<p>vim dbstart</p>
-<p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
-<p>vim dbshut</p>
-<p>修改#ORACLE_HOME_LISTNER=\$1为ORACLE_HOME_LISTNER=\$ORACLE_HOME</p>
-<p><strong>启动：</strong></p>
-<p>1）启动oracle监听</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl start&quot;</p>
-<p>2）启动oracle服务</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbstart&quot;</p>
-<p><strong>停止：</strong></p>
-<p>1）停止oracle监听</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/lsnrctl stop&quot;</p>
-<p>2）停止oracle服务</p>
-<p>su - oracle -lc &quot;/opt/oracle/product/19c/dbhome_1/bin/dbshut &quot;</p>
-<p><strong>5、tomcat</strong></p>
-<p><strong>启动：</strong></p>
-<p>/opt/apache-tomcat-9.0.73/bin/startup.sh</p>
-<p><strong>停止：</strong></p>
-<p>/opt/apache-tomcat-9.0.73/bin/shutdown.sh</p>
+<p>reboot</p>
 <h1 id="-2-">第2章 应用示例</h1>
 <h2 id="2-1-">2.1 驱动配置</h2>
 <p>包括协议配置、单元配置、实例配置。</p>
 <h3 id="2-1-1-">2.1.1 添加协议</h3>
-<p>如RTU2.0协议</p>
-<p>1、点击添加协议按钮，输入协议名称及排序序号</p>
-<p>2、选中协议，录入协议内容</p>
-<p><img src="media/1b122bba3071c2cb042e995e882669b8.png" alt=""></p>
-<p>说明：以井口套压为例</p>
-<p>下位机部分：起始地址为40404，RTU中存储数据类型为实型，且实型数量为1，读写类型为只读，采集模式为被动响应</p>
-<p>上位机部分：接口数据类型为float32且小数位数为3，换算比例为0.001，单位为MPa，解析模式为数据量，如RTU中存储的值为2429，软件平台最终显示值=2429*0.001，且结果保留三位小数，最终显示为2.429MPa。</p>
-<p>3、项含义编辑</p>
-<p>枚举量：如变频器状态字1值对应的含义配置</p>
-<p><img src="media/f49c693833fe1b16257e65673dfc8c74.png" alt=""></p>
+<p>如A11协议</p>
+<p>1、选中协议所属设备类型</p>
+<p>2、点击添加协议按钮，输入协议名称及排序序号</p>
+<p>3、选中协议，录入协议内容</p>
+<p><img src="media/d8c9de65bac30eafe23771cf2e110319.png" alt=""></p>
+<p>名称：项名称；</p>
+<p>起始地址：项起始地址，数组地址、modbus协议寄存器地址；</p>
+<p>存储数据类型：设备中存储该项数据的数据类型，包括：bit、byte、int16（有符号16位整型）、uint16（无符号16位整型）、float32（32位浮点）、bcd（bcd码，时间一般配置为该类型）；</p>
+<p>存储数据数量：存储数据类型的数量，如1个uint16，1个float32，24个bcd码；</p>
+<p>读写类型：只读、只写或者读写；</p>
+<p>响应模式：主动上传（设备主动上传）、被动响应（设备被动等待上位机读写）。</p>
+<p>接口数据类型：上位机要解析成的数据类型(界面显示的数据)，包括bool（布尔型）、int（整型）、float32（32位浮点）、float64（64位浮点）、string（字符串），位数组和开关量接口数据类型固定选择bool型；</p>
+<p>小数位数：保存数据小数位数；</p>
+<p>换算比例：存储数据*换算比例=接口数据（解析数据时，存储数据解析后乘以换算比例，得到界面显示的接口数据；控制设备时，界面输入的控制值为接口数据，除以换算比例，为最终写入到设备中的存储数据）；</p>
+<p>单位：上位机解析后的单位（和界面显示一致）；</p>
+<p>解析模式：数据量、枚举量、开关量；</p>
+<p>4、编辑项含义</p>
+<p>枚举量：如运行状态值对应的含义配置</p>
+<p><img src="media/956269390c8f286f72ae6f3cb6065842.png" alt=""></p>
 <p>开关量：如保护开关位数组，位所对应的开关状态</p>
 <p><img src="media/ed86ea7555ba2bfbbc1ae9c3d614bb18.png" alt=""></p>
 <p>数据量：如井口温度，将值-50设置为无效数据N/A</p>
-<p><img src="media/93f6354806059c33bafc94d9b79461c1.png" alt=""></p>
-<p>4、关联计算字段及运行状态配置</p>
+<p><img src="media/f634c6a3cda3b4e32cd1cb4b2e715611.png" alt=""></p>
+<p>5、关联计算字段及运行状态配置</p>
 <p>点击“存储字段表”按钮，查看根据协议自动生成的数据库字段表，相应项的内容存储到数据库表相应的字段中。</p>
 <p>关联计算字段配置：特殊含义的字段，需要设置关联计算字段供系统识别。</p>
-<p>运行状态配置：选择运行状态字段，并设置运行状态判断条件（数据量）或值（枚举量）。</p>
-<p><img src="media/c752b4c378769e2d0fc6d060b63914aa.png" alt=""></p>
-<p><img src="media/8d18a31b6e53382f4e3c6e831eab4643.png" alt=""></p>
+<p>运行状态配置：关联计算字段为运行状态的项，可以设定特定值（枚举量）或者范围（数据量）。</p>
+<p><img src="media/1072f45d7962b23640d97fbdf28961a0.png" alt=""></p>
 <h3 id="2-1-2-">2.1.2 添加采控单元</h3>
-<p>创建采控单元，并在单元下创建一个采集组和一个控制组，并勾选采集组和控制组包含的项。</p>
-<p><img src="media/3e0fa9d14b33fd144fe805aaffd1e3c7.png" alt=""></p>
+<p>在协议下面创建采控单元，每个采控单元下面可以创建一个采集组和一个控制组，并勾选采集组和控制组包含的项，以及配置哪些项需要进行日累计计算（如由有功功耗计算日用电量）。</p>
+<p><img src="media/e2df765c591a0176ed179f8851a99e41.png" alt=""></p>
 <h3 id="2-1-3-">2.1.3 添加显示单元</h3>
-<p>创建显示单元，并设置单元下包含的项及曲线。</p>
-<p><img src="media/98e383406d54a51b97524127b1ac32b1.png" alt=""></p>
+<p>在协议下面创建显示单元，并设置单元下包含的项及曲线。</p>
+<p><img src="media/d25e91282197b281a8b2676f1322f49a.png" alt=""></p>
+<p>1、采集项、计算项和录入项</p>
+<p>显示级别：采集项显示级别，用户只能查看显示级别小于自身数据显示级别的数据（见角色管理模块和用户管理模块，数字越大代表等级越小）；</p>
+<p>实时字段顺序：对应实时监控模块中实时数据表和历史查询模块中详细数据表中项的显示顺序（左到右、上到下顺序），未设置顺序的项将放在最后面显示；</p>
+<p>历史字段顺序：对应历史查询模块中历史数据表显示顺序，未设置顺序的项将放在最后面显示；</p>
+<p>实时曲线：实时曲线显示顺序、颜色、样式等，未设置则不显示曲线，双击单元格进行配置；</p>
+<p>历史曲线：历史曲线显示顺序、颜色、样式等，未设置则不显示曲线，双击单元格进行配置；</p>
+<p><img src="media/09f10ee5788f19e77364f7a72b724ae1.png" alt=""></p>
+<p>2、控制项</p>
+<p>显示级别：采集项显示级别，用户只能查看显示级别小于自身数据显示级别的数据（见角色管理模块和用户管理模块，数字越大代表等级越小）；</p>
+<p>字段顺序：对应实时监控模块中设备控制中的控制项显示顺序。</p>
 <h3 id="2-1-4-">2.1.4 添加报警单元</h3>
-<p>创建报警单元，并设置单元下包含的报警项及报警配置。</p>
-<p><img src="media/8dc64c5b74c54d4a7fd0617739216076.png" alt=""></p>
-<p>报警颜色配置</p>
+<p>1、在协议下面创建报警单元，并设置单元下包含的报警项及报警配置。</p>
+<p><img src="media/6d038b2b45ad3bc2a188839b23e23423.png" alt=""></p>
+<p>分别配置数据量、开关量、枚举量、工况诊断、运行状态、通信状态报警项，配置项如下：</p>
+<p>上限：报警上限；</p>
+<p>下限：报警下限；</p>
+<p>回差：值大于上限和回差的和或者小于下限和回差的差值则报警；</p>
+<p>延时：延时时间内不重复报警和推送；</p>
+<p>报警级别：正常、一级报警、二级报警、三级报警（一级为最紧急严重）；</p>
+<p>报警使能：使能或者失效（失效则一律不报警）；</p>
+<p>是否发送短信：报警发生时是否向用户发送短信（建议一级报警项设为是，其他为否，避免频繁发送）；</p>
+<p>是否发送邮件：报警发生时是否向用户发送邮件（建议一级报警项设为是，其他为否，避免频繁发送）；</p>
+<p>触发状态：开关量数据生效，开或者关触发报警；</p>
+<p>2、报警颜色配置</p>
 <p>点击“报警颜色配置”按钮，对通信状态、运行状态以及各级别报警的颜色进行配置。</p>
-<p><img src="media/bcd6a9a0f382e4d1b0dfa845ae83f742.png" alt=""></p>
+<p><img src="media/7645f723f5c00b9e8d9d56f86f1496ce.png" alt=""></p>
+<p>通信状态颜色：在线状态和离线状态报警颜色配置，生效范围：</p>
+<p>1）实时监控模块：设备概览表中通信状态列；</p>
+<p>2）实时监控模块：通信状态统计饼图颜色(在线、离线所设前景色)；</p>
+<p>3）历史查询模块：设备列表和历史数据表中通信状态列；</p>
+<p>4）历史查询模块：通信状态统计饼图颜色(在线、离线所设前景色)。</p>
+<p>运行状态颜色：运行状态和停抽状态报警颜色配置，生效范围：</p>
+<p>1）实时监控模块：设备概览表中运行状态列；</p>
+<p>2）实时监控模块：运行状态统计饼图颜色(在线、离线所设前景色)；</p>
+<p>3）历史查询模块：设备列表和历史数据表中运行状态列；</p>
+<p>4）历史查询模块：运行状态统计饼图颜色(在线、离线所设前景色)。</p>
+<p>报警等级颜色：数据报警等级颜色配置，生效范围：</p>
+<p>1）实时监控模块：设备概览表和实时数据表中采集数据报警颜色；</p>
+<p>2）历史查询模块：历史数据表和详细数据表中采集数据报警颜色。</p>
 <h3 id="2-1-5-">2.1.5 添加报表单元</h3>
-<p>添加报表单元并分别配置单井日报（包括班报表和日报表）、区域日报的报表模板及报表内容、曲线</p>
-<p><img src="media/6fe78f20351578e7dad706a58818ed0b.png" alt=""></p>
-<p>根据以上配置形成报表如下：</p>
-<p>单井班报表：</p>
-<p><img src="media/106a2897c782e80d8860226acb0e40cb.png" alt=""></p>
-<p>单井日报表：</p>
-<p><img src="media/4f61cdf83d6221d3f7b57f35c9bcea78.png" alt=""></p>
-<p>区域日报：</p>
-<p><img src="media/227f67e35ee5182c99597edaf7f1cc8f.png" alt=""></p>
-<h3 id="2-1-6-">2.1.6 添加采控实例</h3>
-<p>配置完采控单元后，还需配置采控实例（读写以及解析时具体的协议），实例和设备直接关联。</p>
-<p><img src="media/16bf81d5386ad6661c1137bf9569ad6a.png" alt=""></p>
-<p>默认采控示例设置：前缀CC01，后缀0C，注册包id为十六进制</p>
-<p>dtu可以设置为16进制例如：CC01000000010C，上位机注册包id设置为00000001即可。</p>
-<h3 id="2-1-7-">2.1.7 添加显示实例</h3>
-<p>配置完显示单元后，还需配置显示实例。</p>
-<p><img src="media/ad6a74c5aaa59d185f60fbb8cfa8b20b.png" alt=""></p>
-<h3 id="2-1-8-">2.1.8 添加报警实例</h3>
-<p>配置完报警单元后，还需配置报警实例。</p>
-<p><img src="media/a4340df1c09e4f9dcef4393445d077a0.png" alt=""></p>
-<h3 id="2-1-9-">2.1.9 添加报表实例</h3>
-<p>配置完报表单元后，还需配置报表实例。</p>
-<p><img src="media/39dff6785bf4c81035602fce8e344709.png" alt=""></p>
-<h3 id="2-1-10-">2.1.10 删除操作</h3>
+<p>添加报表单元并分别配置单井报表中的班报表和日报表、区域报表中日报表的报表模板及报表内容、曲线。</p>
+<p>1、单井报表/班报表配置：</p>
+<p><img src="media/c54cd128d43c819a7982c42a2a038a99.png" alt=""></p>
+<p>点击“配置”，弹出报表内容配置窗口</p>
+<p><img src="media/9768e81cb9191cd6b8c750ad55287d1b.png" alt=""></p>
+<p>统计方式：可选择最大值、最小值、平均值、最新值、最旧值、日累计值作为报表中显示的内容，为空则显示原始值；</p>
+<p>显示级别：用户只能查看显示级别小于自身数据显示级别的数据（见角色管理模块和用户管理模块，数字越大代表等级越小）；</p>
+<p>小数位数：报表中显示数据的小数位数；</p>
+<p>报表曲线：配置报表曲线内容，双击单元格进行配置，未设置则不显示曲线。</p>
+<p>2、单井报表/日报表配置：</p>
+<p><img src="media/345b794fd8ac819cf91f8e0fb2a957e6.png" alt=""></p>
+<p>点击“配置”，弹出报表内容配置窗口</p>
+<p><img src="media/0ce678aa67724ffeb5a03746ea14688a.png" alt=""></p>
+<p>统计方式：可选择最大值、最小值、平均值、最新值、最旧值、日累计值作为报表中显示的内容，为空则显示原始值；</p>
+<p>显示级别：用户只能查看显示级别小于自身数据显示级别的数据（见角色管理模块和用户管理模块，数字越大代表等级越小）；</p>
+<p>小数位数：报表中显示数据的小数位数；</p>
+<p>报表曲线：配置报表曲线内容，双击单元格进行配置，未设置则不显示曲线。</p>
+<p>3、区域报表/日报表配置：</p>
+<p><img src="media/5db10e9e3b1bf7b12d45e2fbefad3238.png" alt=""></p>
+<p>点击“配置”，弹出报表内容配置窗口</p>
+<p><img src="media/5a1078724f5670496ad078f16fe15bcd.png" alt=""></p>
+<p>统计方式：可选择最大值、最小值、平均值、最新值、最旧值、日累计值作为报表中显示的内容，为空则显示原始值；</p>
+<p>显示级别：用户只能查看显示级别小于自身数据显示级别的数据（见角色管理模块和用户管理模块，数字越大代表等级越小）；</p>
+<p>小数位数：报表中显示数据的小数位数；</p>
+<p>求和：是否在报表中显示该项的和；</p>
+<p>求平均：是否在报表中显示该项的平均值；</p>
+<p>报表曲线：配置报表曲线内容，双击单元格进行配置，未设置则不显示曲线；</p>
+<p>曲线统计类型：曲线数据是各设备该项数据的和还是平均值。</p>
+<h3 id="2-1-5-">2.1.5 添加采控实例</h3>
+<p>在采控单元中配置完采控单元后（确定采控项和地址配置），还需配置采控实例（读写以及解析时具体的协议），实例和设备直接关联。</p>
+<p>点击“添加实例”按钮，进行创建。</p>
+<p><img src="media/b10d7f2cfd8ba731041fccfd5a407565.png" alt=""></p>
+<p>实例名称：实例名称；</p>
+<p>采控单元：在下拉框中选择对应的采控单元；</p>
+<p>采集协议类型：数据采集及解析具体协议，如modbus-tcp；</p>
+<p>控制协议类型：设备控制具体协议，如modbus-tcp；</p>
+<p>注册包前后缀16进制：注册包前后缀为十六进制还是ASC；</p>
+<p>注册包前缀：注册包是设备上线时发送的信息，包含设备ID信息，如没有则不填写；</p>
+<p>注册包后缀：如没有注册包则不填写；</p>
+<p>注册包ID16进制：注册包内容为十六进制还是ASC；</p>
+<p>心跳包前后缀16进制：心跳包前后缀为十六进制还是ASC；</p>
+<p>心跳包前缀：心跳包用于判断设备连接状态，如没有则不填写；</p>
+<p>心跳包后缀：如没有心跳包则不填写；</p>
+<p>单包发送间隔(ms)：读取数据时，数据包发送间隔；</p>
+<p>排序：实例排序序号，对应树形列表中实例显示顺序。</p>
+<h3 id="2-1-6-">2.1.6 添加显示实例</h3>
+<p>在显示单元中配置完显示单元后，还需配置显示实例。</p>
+<p>点击“添加实例”按钮，进行创建。</p>
+<p><img src="media/ccf4193e2d8fbf00d252f80071b91ba4.png" alt=""></p>
+<p>实例名称：实例名称；</p>
+<p>显示单元：在下拉框中选择对应的显示单元；</p>
+<p>排序：实例排序序号，对应树形列表中实例显示顺序。</p>
+<h3 id="2-1-7-">2.1.7 添加报警实例</h3>
+<p>在报警单元中配置完报警单元后，还需配置报警实例。</p>
+<p>点击“添加实例”按钮，进行创建。</p>
+<p><img src="media/2aa72de91142dbf105518b6bc224055e.png" alt=""></p>
+<p>实例名称：实例名称；</p>
+<p>报警单元：在下拉框中选择对应的报警单元；</p>
+<p>排序：实例排序序号，对应树形列表中实例显示顺序。</p>
+<h3 id="2-1-8-">2.1.8 添加报表实例</h3>
+<p>在报表单元中配置完报表单元后，还需配置报表实例。</p>
+<p>点击“添加实例”按钮，进行创建。</p>
+<p><img src="media/9a33158828cb952c107ff62b1986c37d.png" alt=""></p>
+<p>实例名称：实例名称；</p>
+<p>报表单元：在下拉框中选择对应的报表单元；</p>
+<p>排序：实例排序序号，对应树形列表中实例显示顺序。</p>
+<h3 id="2-1-9-">2.1.9 删除操作</h3>
 <p>在相应的列表中选中要删除的项，右键→删除</p>
-<h3 id="2-1-11-">2.1.11 协议导入导出</h3>
-<p>导出：</p>
-<p>在协议配置界面点击“导出”按钮，在弹出的窗口中，选择要导出的协议及其相关内容，点击“导出”，即可导出协议json数据。</p>
-<p><img src="media/2012145e7a29fbe8c7a73619699f4ec1.png" alt=""></p>
-<p>导入：</p>
-<p>在协议配置界面点击“导入”按钮，在弹出的窗口中，选择要导入的协议及其相关内容的json文件，勾选要导入的协议相关内容，保存。</p>
-<p><img src="media/7a670520080bc32ec1a8698ffcdbe826.png" alt=""></p>
-<p>如果协议导入数据无冲突且验证无问题，直接保存成功，否则会弹出冲突和错误信息。</p>
-<p><img src="media/b2502bf99cedbeebcae68afcd30a5cd4.png" alt=""></p>
 <h2 id="2-2-">2.2 设备管理</h2>
 <h3 id="2-2-1-">2.2.1 井名信息</h3>
 <p>按照2.1节中添加好驱动相关的数据后，在该模块添加设备。</p>
 <h4 id="2-2-1-1-">2.2.1.1 添加设备</h4>
-<p>点击“添加设备”按钮，将在选中的单位下添加设备，同一单位下不能添加同名设备。</p>
-<p><img src="media/066415c1280878e2b9a826cd5ef5a0a2.png" alt=""></p>
+<p>点击“添加设备”按钮，将在选中的单位下添加设备，如没有选中单位，则在第一个单位下添加，同一单位下不能添加同名设备。</p>
+<p><img src="media/8cc0362b0f33c1488fd3046ba682a061.png" alt=""></p>
+<p>井名：同一单位下不能添加同名设备；</p>
+<p>采控实例：对应驱动配置/实例配置/采控实例中配置的实例；</p>
+<p>显示实例：对应驱动配置/实例配置/显示实例中配置的实例；</p>
+<p>报表实例：对应驱动配置/实例配置/报表实例中配置的实例；</p>
+<p>报警实例：对应驱动配置/实例配置/报警实例中配置的实例；</p>
+<p>下位机TCP类型：TCP Client或者TCP Server；</p>
+<p>注册包ID：下位机TCP Client模式需配置；</p>
+<p>下位机IP端口：下位机TCP Server模式需配置；</p>
+<p>设备从地址：如01、02；</p>
+<p>错峰延时：采集数据时延时采集时间，以免设备同时采集资源紧张；</p>
+<p>状态：设为失效后，将不再采集该设备的数据；</p>
+<p>排序编号：设备显示顺序；</p>
 <h4 id="2-2-1-2-">2.2.1.2 设备查看及修改</h4>
-<p>在设备列表处进行设备主要信息查看和修改：</p>
+<p><img src="media/e7f85d439cee052162829e539e112463.png" alt=""></p>
+<p>1、在设备列表处进行设备主要信息查看和修改：</p>
+<p>2、附加信息</p>
+<p><img src="media/cb6092ce10c9c1acedb9738835655653.png" alt=""></p>
+<p>3、辅件设备</p>
+<p>勾选设备的辅件设备信息（辅件设备维护见2.2.2节），指定类型为抽油机的辅件设备，只能单选。</p>
+<p><img src="media/5da8a47f58400647c770c3a4567bdf75.png" alt=""></p>
+<p>3、视频配置</p>
+<p>需要首先录入视频密钥信息，具备视频密钥编辑权限的用户，点击“编辑视频密钥”按钮，维护密钥信息</p>
+<p><img src="media/27a4021ef631d43ad0a0f84bb8dd157d.png" alt=""></p>
+<p><img src="media/fd093e82eed8782bbca8dcabb2169103.png" alt=""></p>
+<p>3、计算数据配置</p>
+<p>需要进行功图计算或者转速计产，配置计算所需的基础数据</p>
+<p><img src="media/8ccd4f31b436db1876b98c1d031921cd.png" alt=""></p>
+<p>特别说明：净毛比与净毛值</p>
+<p>净毛比与净毛值用于标定产量，标定方式为：y=ax+b，a-净毛比 b-净毛值 x-标定前产量
+y-标定后产量，净毛比默认为1，净毛值默认为0，则不进行标定。</p>
+<p>抽油机详情：首先在辅件设备标签页配置抽油机型号，在此页面配置抽油机冲程及平衡块信息（仅功图计算需要）。</p>
 <h4 id="2-2-1-3-">2.2.1.3 删除设备</h4>
 <p>在设备列表中选中删除的设备，点击“删除设备”按钮，进行删除操作。</p>
 <h4 id="2-2-1-4-">2.2.1.4 批量添加</h4>
 <p>点击“批量添加”按钮，在所选单位下进行设备批量添加。在弹出的窗口中编辑添加的设备信息（可在excel中编辑好，粘贴到表格中），点击“保存”按钮进行保存。校验无问题的数据直接保存，有问题的数据返回并显示异常数据处理窗口，在窗口中进行数据修改二次保存，或者放弃。无异常数据直接保存成功。</p>
-<p><img src="media/a15d16f25663a4c4f27e0655f13b27ac.png" alt=""></p>
+<p><img src="media/252168693a7fe01adb1b829bb2d998c8.png" alt=""></p>
 <p>保存后，如果有校验不通过的数据，会显示异常数据处理窗口。异常数据分为冲突数据(注册包ID、设备从地址和已有设备冲突)和已有数据（同一单位下已存在同名设备）。</p>
 <p>冲突数据修改注册包ID和设备从地址，直到无冲突时才可保存成功。</p>
 <p>已有数据继续保存的话，覆盖同名设备的信息，不会添加设备。</p>
-<p><img src="media/7a6c7b881afa968cc6d9e02a4ffe849a.png" alt=""></p>
-<h4 id="2-2-1-5-">2.2.1.5 视频配置</h4>
-<p>软件支持萤石云视频接入，选中设备，录入信息监控路径和视频密钥，如果密钥下拉框中无所需信息，点击“编辑视频密钥”按钮（需视频密钥编辑权限），在弹出的窗口中，添加或者编辑密钥信息后，再配置视频密钥。每个设备可录入两个视频。</p>
-<p><img src="media/c5dc95c08d532cd873ac53d6045cfd1a.png" alt=""></p>
+<p><img src="media/d84927f0ab7853f3c1fd0d7399387171.png" alt=""></p>
+<h3 id="2-2-2-">2.2.2 辅件设备</h3>
+<p><img src="media/8fad1f3f6adc821aad8941a13c4130c9.png" alt=""></p>
+<p>如果指定类型为抽油机，需录入抽油机一些特有参数。</p>
 <h1 id="-3-">第3章 其他配置</h1>
-<h2 id="3-1-">3.1 报表配置</h2>
-<p>配置单井日报偏移小时及间隔</p>
-<p>先停止tomcat，配置完成后再启动；</p>
-<p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，配置报表信息</p>
-<p><img src="media/efd5d412c5528a659e8bed2ae715b2ac.png" alt=""></p>
-<h2 id="3-2-">3.2 邮件发送账号配置</h2>
+<h2 id="3-1-">3.1 邮件发送账号配置</h2>
 <p>如需发送邮件（如报警邮件），参考本节内容配置邮件发送账号。</p>
 <p>先停止tomcat，配置完成后再启动；</p>
 <p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，配置邮箱信息</p>
 <p><img src="media/4e5bcf573fbf5d849e6021c6bcf6c571.png" alt=""></p>
-<h2 id="3-3-">3.3 其他项配置</h2>
+<h2 id="3-2-">3.2 其他项配置</h2>
 <p>软件的一些其他配置，一般情况下不用修改.</p>
 <p>先停止tomcat，配置完成后再启动。</p>
 <p>打开tomcat安装目录\webapps\ap\WEB-INF\classes\config\config.yml文件，配置项见下图：</p>
-<p><img src="media/3ad8e8835cf1c77b0e3599e3ae61640a.png" alt=""></p>
-<h2 id="3-4-oracle-">3.4 oracle常见问题</h2>
+<p><img src="media/402cc44ca4c8aad6385174fadf7d257b.png" alt=""></p>
+<h2 id="3-3-oracle-">3.3 oracle常见问题</h2>
 <p>1、关闭oracle监听日志</p>
 <p>随着系统的运行，oracle的日志文件会越来越大，当达到4G时，会影响到数据库的正常运行，可以选择关闭oracle日志文件的生成，操作方法如下。</p>
 <p>打开命令窗口，依次执行以下命令进行关闭oracle日志操作，centOS系统下，切换oracle用户执行</p>
@@ -321,69 +410,6 @@ immediate;”关闭oracle例程后，执行“startup”启动数据库。</p>
 <p>alter tablespace ap_data add datafile
 &#39;/opt/oracle/oradata/ORCLCDB/ORCLPDB1/ap_data02.DBF&#39; size 350M autoextend on
 next 50M Maxsize UNLIMITED;</p>
-<h2 id="3-5-oracle-">3.5 oracle内存管理</h2>
-<h3 id="3-5-1-oracle-">3.5.1 oracle内存管理模式</h3>
-<p>Oracle数据库的内存管理模式从自动管理化程度由高到低依次可以分为：</p>
-<p><strong>自动内存管理</strong>：完全由Oracle自动管理内存分配。DBA只需设置MEMORY_TARGET（以及可选初始化参数MEMORY_MAX_TARGET），Oracle就会在SGA和PGA之间自动分配内存。</p>
-<p><strong>自动共享内存管理</strong>：DBA只需设置SGA_TARGET和PGA_AGGREGATE_TARGET两个初始化参数。Oracle会分别在SGA和PGA中自动分配各组件的内存。</p>
-<p><strong>手动内存管理</strong>：由DBA为SGA和PGA中的所有组件逐一手动分配内存。</p>
-<p>在自动共享内存管理模式下，还可以手动为SGA中的某些重要组件指定最小的内存分配值，例如Shared
-Pool和Buffer Cache。</p>
-<h3 id="3-5-2-oracle-">3.5.2 查看oracle内存分配</h3>
-<p>检查各内存参数的TARGET配置：</p>
-<p><img src="media/5b4c134ba55082699f222636da2b76c4.png" alt=""></p>
-<p>其中memory_target和memory_max_target都为0，并且sga_target和pga_aggregate_target不为0，表示当前数据库使用的是自动共享内存管理模式。</p>
-<p>检查SGA和PGA相关参数的配置：</p>
-<p><img src="media/5e5377b4b72644d7b174826f380b5978.png" alt=""></p>
-<p>查看SGA中各组件的内存使用情况：</p>
-<p><img src="media/af6608fe9b025b6bd9170f6536394c9e.png" alt=""></p>
-<p>其中，Buffer Cache Size和Shared Pool Size是需要重点关注的内容。</p>
-<h3 id="3-5-3-oracle-">3.5.3 修改oracle内存分配</h3>
-<p>在自动共享内存管理模式下，一般按照如下原则配置内存：</p>
-<p>SGA_TARGET一般配置为物理内存的30%到70%之间；</p>
-<p>PGA_AGGREGATE_TARGET一般配置为物理内存的5%到25%之间；</p>
-<p>SGA_TARGET和PGA_AGGREGATE_TARGET之和不要超过物理内存的80%；</p>
-<p>Buffer Cache Size一般配置为SGA_TARGET的 20% 左右；</p>
-<p>Shared Pool Size一般配置为SGA_TARGET的 10% 左右。</p>
-<p>修改数据库内存配置：</p>
-<p>--禁用自动内存管理</p>
-<p>alter system set memory_target=0M scope=spfile;</p>
-<p>--设置SGA_TARGET</p>
-<p>alter system set sga_max_size=4G scope=spfile;</p>
-<p>alter system set sga_target=4G scope=spfile;</p>
-<p>--设置Buffer cache、共享池、Java池的最小值</p>
-<p>alter system set db_cache_size=1G scope=spfile;</p>
-<p>alter system set shared_pool_size=512m scope=spfile;</p>
-<p>alter system set java_pool_size=128m scope=spfile;</p>
-<p>--设置PGA_AGGREGATE_TARGET</p>
-<p>alter system set pga_aggregate_target=1G scope=spfile;</p>
-<p>然后重启数据库即可生效。</p>
-<h2 id="3-6-">3.6 数据库备份</h2>
-<p>使用exp命令备份数据库，命令如下：</p>
-<p>exp ap/ap123#@ORCLPDB file=d:/ap.dmp full=y;</p>
-<p>其中：</p>
-<p>ap/ap123#@ORCLPDB 是用户名/密码@数据库名</p>
-<p>file=d:/ap.dmp 是导出的路径</p>
-<p>full=y 是导出全库</p>
-<h2 id="3-7-centos-">3.7 CentOS系统内存管理</h2>
-<p>系统cached占用太高会导致内存不足，部分进程被kill。可以通过定期手动清理缓存或者持久化配置，对内存进行优化。</p>
-<h3 id="3-7-1-">3.7.1手工释放缓存</h3>
-<p>先用root用户执行sync同步一下然后再执行</p>
-<p>1、释放页缓存:</p>
-<p>echo 1 > /proc/sys/vm/drop_caches</p>
-<p>2、释放slab对象:</p>
-<p>echo 2 > /proc/sys/vm/drop_caches</p>
-<p>3、释放slab和页缓存:</p>
-<p>echo 3 > /proc/sys/vm/drop_caches</p>
-<h3 id="3-7-2-">3.7.2持久化配置</h3>
-<p>手工释放缓存后，cached占用会很快回升，可以通过调整min_free_kbytes并持久化配置。</p>
-<p>编辑sysctl.conf文件</p>
-<p>vim /etc/sysctl.conf</p>
-<p>添加：</p>
-<p>vm.min_free_kbytes=200000</p>
-<p>保存退出后执行：</p>
-<p>sysctl –p</p>
-<p>使配置立即生效</p>
 
           	</article>
         </div>

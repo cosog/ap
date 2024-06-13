@@ -467,11 +467,11 @@ values (36, 2, null, '离线', 'offline', 0, 0.000, null, null, null, 60, 100, 1, 
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_UNIT_CONF数据                                */
 /*==============================================================*/
-insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK)
-values (1, 'unit1', '抽油机A11显示单元', 'A11协议', 1, '抽油机A11显示单元');
+insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, CALCULATETYPE, REMARK)
+values (1, 'unit1', '抽油机A11显示单元', 'A11协议', 1, 1, '抽油机A11显示单元');
 
-insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK)
-values (2, 'unit2', '螺杆泵A11显示单元', 'A11协议', 2, '螺杆泵A11显示单元');
+insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, CALCULATETYPE, REMARK)
+values (2, 'unit2', '螺杆泵A11显示单元', 'A11协议', 2, 2, '螺杆泵A11显示单元');
 
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_ITEMS2UNIT_CONF数据                                          */

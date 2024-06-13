@@ -3,7 +3,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
     alias: 'widget.deviceOrgChangeDeviceListStore',
     fields: ['id','wellName','orgName','deviceTypeName'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/wellInformationManagerController/getDeviceOrgChangeDeviceList',

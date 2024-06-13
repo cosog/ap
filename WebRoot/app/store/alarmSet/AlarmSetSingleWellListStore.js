@@ -6,7 +6,7 @@ Ext.define('AP.store.alarmSet.AlarmSetSingleWellListStore', {
     autoLoad: true, // 自动加载数据
     autoSync: true, // 同步更新
     loadMask: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/alarmSetManagerController/getAlarmSetSingleWellList',

@@ -509,6 +509,7 @@ create table TBL_DISPLAY_UNIT_CONF
   unit_name VARCHAR2(50),
   protocol  VARCHAR2(50),
   acqunitid NUMBER(10),
+  calculatetype NUMBER(2) default 0,
   remark    VARCHAR2(2000)
 )
 tablespace AP_DATA

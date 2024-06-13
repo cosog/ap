@@ -2,7 +2,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.RealTimeMonitoringDeviceControlStore',
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/realTimeMonitoringController/getDeviceControlData',

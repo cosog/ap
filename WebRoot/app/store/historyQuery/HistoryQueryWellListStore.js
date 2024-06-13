@@ -3,7 +3,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
     alias: 'widget.historyQueryWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
     autoLoad: false,
-    pageSize: 50,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/historyQueryController/getHistoryQueryDeviceList',

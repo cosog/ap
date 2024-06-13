@@ -3,7 +3,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
     alias: 'widget.historyDataStore',
     fields: ['id','commStatus','commStatusName','wellName'],
     autoLoad: true,
-    pageSize: 50,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/historyQueryController/getDeviceHistoryData',

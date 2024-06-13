@@ -2,7 +2,7 @@ Ext.define('AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.resourceProbeHistoryCurveStore',
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/realTimeMonitoringController/getResourceProbeHistoryCurveData',

@@ -3,7 +3,7 @@ Ext.define('AP.store.well.ExportDeviceInfoApplicationScenariosListStore', {
     alias: 'widget.exportDeviceInfoApplicationScenariosListStore',
     fields: ['id','wellName'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/wellInformationManagerController/getApplicationScenariosList',

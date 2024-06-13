@@ -394,7 +394,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,unitId,unitName){
+function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
 	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -439,7 +439,8 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 		params: {
 			deviceType:deviceType,
 			classes:classes,
-			unitId:unitId
+			unitId:unitId,
+			calculateType:calculateType
         }
 	});
 };
@@ -710,7 +711,7 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,unitId,unitName){
+function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
 	Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -754,7 +755,8 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 		params: {
 			deviceType:deviceType,
 			classes:classes,
-			unitId:unitId
+			unitId:unitId,
+			calculateType:calculateType
         }
 	});
 };
@@ -923,12 +925,19 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 		item2.title='采控单元';
 		item2.value=data.acqUnitName;
 		root.push(item2);
-		
+
 		var item3={};
 		item3.id=3;
-		item3.title='备注';
-		item3.value=data.remark;
+		item3.title='计算类型';
+		item3.value=data.calculateTypeName;
 		root.push(item3);
+		
+		
+		var item4={};
+		item4.id=4;
+		item4.title='备注';
+		item4.value=data.remark;
+		root.push(item4);
 	}
 	
 	if(protocolDisplayUnitPropertiesHandsontableHelper==null || protocolDisplayUnitPropertiesHandsontableHelper.hot==undefined){
@@ -1002,7 +1011,12 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolDisplayUnitPropertiesHandsontableHelper);
 			                    	}
-			                    }
+			                    } else if (visualColIndex === 2 && visualRowIndex === 2) {
+	                                this.type = 'dropdown';
+	                                this.source = ['无', '功图计算', '转速计产'];
+	                                this.strict = true;
+	                                this.allowInvalid = false;
+	                            }
 			                }
 	                    }else{
 	                    	cellProperties.readOnly = true;
@@ -1038,7 +1052,15 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
 			displayUnitProperties.unitName=propertiesData[0][2];
 			displayUnitProperties.acqUnitId=selectedItem.data.acqUnitId;
 			displayUnitProperties.acqUnitName=propertiesData[1][2];
-			displayUnitProperties.remark=propertiesData[2][2];
+			
+			displayUnitProperties.calculateType = 0;
+            if (propertiesData[2][2] == "功图计算") {
+            	displayUnitProperties.calculateType = 1;
+            } else if (propertiesData[2][2] == "转速计产") {
+            	displayUnitProperties.calculateType = 2;
+            }
+            
+			displayUnitProperties.remark=propertiesData[3][2];
 		}
 		if(selectedItem.data.classes==2){//保存单元
 			var displayUnitSaveData={};

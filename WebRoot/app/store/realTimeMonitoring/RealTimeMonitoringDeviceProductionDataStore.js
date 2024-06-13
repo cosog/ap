@@ -2,7 +2,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataSt
     extend: 'Ext.data.Store',
     alias: 'widget.RealTimeMonitoringDeviceProductionDataStore',
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/realTimeMonitoringController/getDeviceInfoData',

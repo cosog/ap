@@ -3,7 +3,7 @@ Ext.define('AP.store.alarmSet.BalanceStatusAlarmSetStore', {
     alias: 'widget.balanceStatusAlarmSetStore',
     model: 'AP.model.alarmSet.BalanceStatusAlarmSetModel',
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/alarmSetManagerController/getBalanceAlarmStatusData',

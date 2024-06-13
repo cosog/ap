@@ -3,7 +3,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
     alias: 'widget.realTimeMonitoringWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
     autoLoad: false,
-    pageSize: 50,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/realTimeMonitoringController/getDeviceRealTimeOverview',

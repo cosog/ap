@@ -3,7 +3,7 @@ Ext.define('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore', {
     alias: 'widget.rpcCommunicationAlarmOverviewStore',
     fields: ['id','wellName','alarmTime'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/alarmQueryController/getAlarmOverviewData',

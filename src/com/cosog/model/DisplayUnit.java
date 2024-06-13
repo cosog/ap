@@ -24,6 +24,7 @@ public class DisplayUnit implements java.io.Serializable {
 	private String unitName;
 	private String protocol;
 	private Integer acqUnitId;
+	private Integer calculateType;
 	private String remark;
 
 	// Constructors
@@ -33,7 +34,7 @@ public class DisplayUnit implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DisplayUnit(Integer id, String unitCode, String unitName, String protocol, Integer acqUnitId,
+	public DisplayUnit(Integer id, String unitCode, String unitName, String protocol, Integer acqUnitId,Integer calculateType,
 			String remark) {
 		super();
 		this.id = id;
@@ -41,6 +42,7 @@ public class DisplayUnit implements java.io.Serializable {
 		this.unitName = unitName;
 		this.protocol = protocol;
 		this.acqUnitId = acqUnitId;
+		this.calculateType = calculateType;
 		this.remark = remark;
 	}
 
@@ -98,6 +100,15 @@ public class DisplayUnit implements java.io.Serializable {
 
 	public void setAcqUnitId(Integer acqUnitId) {
 		this.acqUnitId = acqUnitId;
+	}
+
+	@Column(name = "calculateType")
+	public Integer getCalculateType() {
+		return calculateType;
+	}
+
+	public void setCalculateType(Integer calculateType) {
+		this.calculateType = calculateType;
 	}
 
 }

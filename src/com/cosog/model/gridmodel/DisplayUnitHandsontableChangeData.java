@@ -40,6 +40,8 @@ public class DisplayUnitHandsontableChangeData {
 	    private String acqUnitId;
 	    
 	    private String acqUnitName;
+	    
+	    private String calculateType;
 
 	    private String remark;
 
@@ -78,6 +80,12 @@ public class DisplayUnitHandsontableChangeData {
 		}
 		public void setAcqUnitName(String acqUnitName) {
 			this.acqUnitName = acqUnitName;
+		}
+		public String getCalculateType() {
+			return calculateType;
+		}
+		public void setCalculateType(String calculateType) {
+			this.calculateType = calculateType;
 		}
 	}
 }

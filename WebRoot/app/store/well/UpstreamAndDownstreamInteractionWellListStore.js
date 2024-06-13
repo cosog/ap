@@ -3,7 +3,7 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
     alias: 'widget.rpcHistoryQueryWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/wellInformationManagerController/getUpstreamAndDownstreamInteractionDeviceList',

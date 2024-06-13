@@ -3,7 +3,7 @@ Ext.define('AP.store.reportOut.SingleWellDailyReportWellListStore', {
     alias: 'widget.SingleWellDailyReportWellListStore',
     fields: ['id','deviceName'],
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/reportDataMamagerController/getDeviceList',

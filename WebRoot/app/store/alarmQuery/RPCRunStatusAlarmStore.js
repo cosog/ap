@@ -3,7 +3,7 @@ Ext.define('AP.store.alarmQuery.RPCRunStatusAlarmStore', {
     alias: 'widget.RPCRunStatusAlarmStore',
     fields: ['id','deviceType','deviceTypeName','wellName','createTime','user_id','loginIp','action','actionName','remark'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/alarmQueryController/getAlarmData',

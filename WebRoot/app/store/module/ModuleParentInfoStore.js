@@ -3,7 +3,7 @@ Ext.define('AP.store.module.ModuleParentInfoStore', {
     alias: 'widget.moduleParentInfoStore',
     model: 'AP.model.module.ModuleParentInfoModel',
     autoLoad: true,
-    pageSize: 100000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/moduleManagerController/queryModules?actionType=moduleParent&n=' + new Date().getTime() + '',

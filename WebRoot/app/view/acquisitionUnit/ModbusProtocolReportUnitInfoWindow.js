@@ -84,8 +84,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择设备类型',
-				blankText : '请选择设备类型',
+				emptyText : '请选择计算类型',
+				blankText : '请选择计算类型',
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("modbusProtocolReportUnitCalculateType_Id").setValue(this.value);

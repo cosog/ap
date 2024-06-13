@@ -3,7 +3,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSMSInstanceStore', {
     alias: 'widget.modbusProtocolSMSInstanceStore',
     fields: ['id','name','code','acqProtocolType','acqProtocolType','acqProtocolTypeName','ctrlProtocolType','ctrlProtocolTypeName','sort'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/acquisitionUnitManagerController/getSMSInstanceList',

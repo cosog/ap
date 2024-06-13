@@ -91,6 +91,8 @@
         var deviceShowNameLength=getStringLength(deviceShowName);
 
 
+        var defaultPageSize = ${configFile}.ap.others.pageSize;
+        
         var userAccount = "${userLogin.userId}";
 
         var loginUserRoleLevel = "${userLogin.roleLevel}";
@@ -179,7 +181,7 @@
             userParentOrg_Ids = "${userLogin.userParentOrgids}";
             userSyncOrAsync = "${userLogin.syncOrAsync}";
             pic_url = "${userLogin.picUrl}"; //动态监测功图查询时，需要的图形URL地址
-            defaultPageSize = "${userLogin.pageSize}";
+            
             _clientWidth = document.body.clientWidth;
         });
 

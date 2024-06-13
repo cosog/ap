@@ -3,7 +3,7 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
     alias: 'widget.alarmOverviewStore',
     fields: ['id','deviceType','deviceTypeName','wellName','alarmTime','user_id','loginIp','action','actionName','remark'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/alarmQueryController/getAlarmOverviewData',

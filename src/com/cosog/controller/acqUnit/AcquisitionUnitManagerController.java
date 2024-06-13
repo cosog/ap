@@ -1463,8 +1463,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String unitId = ParamUtils.getParameter(request, "unitId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(deviceType,classes,unitId);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(deviceType,classes,unitId,calculateType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1479,8 +1480,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String unitId = ParamUtils.getParameter(request, "unitId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitInputItemsConfigData(deviceType,classes,unitId);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitInputItemsConfigData(deviceType,classes,unitId,calculateType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2715,6 +2717,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnit.setId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getId()));
 					displayUnit.setUnitCode(displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitCode());
 					displayUnit.setUnitName(displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
+					displayUnit.setCalculateType(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getCalculateType()));
 					displayUnit.setRemark(displayUnitHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					displayUnit.setProtocol(protocol);
 					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitId()));

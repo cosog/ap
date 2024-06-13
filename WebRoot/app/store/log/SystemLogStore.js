@@ -3,7 +3,7 @@ Ext.define('AP.store.log.SystemLogStore', {
     alias: 'widget.systemLogStore',
     fields: ['id','createTime','user_id','loginIp','action','actionName','remark'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/logQueryController/getSystemLogData',

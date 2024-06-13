@@ -3,7 +3,7 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
     alias: 'widget.PCPCalculateMaintainingWellListStore',
     fields: ['id','wellName'],
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/calculateManagerController/getWellList',

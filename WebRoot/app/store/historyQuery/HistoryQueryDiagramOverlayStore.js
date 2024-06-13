@@ -3,7 +3,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.historyQueryDiagramOverlayStore',
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/historyQueryController/getFESDiagramOverlayData',

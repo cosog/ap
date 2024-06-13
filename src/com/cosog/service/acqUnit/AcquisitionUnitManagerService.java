@@ -1467,20 +1467,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitCalItemsConfigData(String deviceType,String classes,String unitId){
+	public String getProtocolDisplayUnitCalItemsConfigData(String deviceType,String classes,String unitId,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="rpcCalItemList";
-		if("1".equalsIgnoreCase(deviceType)){
-			key="pcpCalItemList";
-		}
 		List<CalItem> calItemList=new ArrayList<>();
 		try{
-			if("1".equalsIgnoreCase(deviceType)){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-			}else{
+			if("1".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			}else if("2".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1641,32 +1637,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitInputItemsConfigData(String deviceType,String classes,String unitId){
+	public String getProtocolDisplayUnitInputItemsConfigData(String deviceType,String classes,String unitId,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="rpcInputItemList";
-		if("1".equalsIgnoreCase(deviceType)){
-			key="pcpInputItemList";
-		}
-		Jedis jedis=null;
-		List<byte[]> inputItemSet=null;
+		
+		List<CalItem> inputItemList=new ArrayList<>();
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists(key.getBytes())){
-				if("1".equalsIgnoreCase(deviceType)){
-					MemoryDataManagerTask.loadPCPInputItem();
-				}else{
-					MemoryDataManagerTask.loadRPCInputItem();
-				}
+			if("1".equalsIgnoreCase(calculateType)){
+				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+			}else if("2".equalsIgnoreCase(calculateType)){
+				inputItemList=MemoryDataManagerTask.getPCPInputItem();
 			}
-			inputItemSet= jedis.zrange(key.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -1717,68 +1701,66 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		
 		int index=1;
-		if(inputItemSet!=null){
-			for(byte[] rpcCalItemByteArr:inputItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
-				
-				boolean checked=false;
-				String realtimeSort="";
-				String historySort="";
-				String showLevel="";
-				String realtimeCurveConf="\"\"";
-				String realtimeCurveConfShowValue="";
-				String historyCurveConf="\"\"";
-				String historyCurveConfShowValue="";
 
-				checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-				if(checked){
-					for(int k=0;k<itemsList.size();k++){
-						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-							realtimeSort=itemsRealtimeSortList.get(k);
-							historySort=itemsHistorySortList.get(k);
-							showLevel=itemsShowLevelList.get(k);
-							realtimeCurveConf=realtimeCurveConfList.get(k);
-							historyCurveConf=historyCurveConfList.get(k);
-							
-							CurveConf realtimeCurveConfObj=null;
-							if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
-								type = new TypeToken<CurveConf>() {}.getType();
-								realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
-							}
-							
-							CurveConf historyCurveConfObj=null;
-							if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
-								type = new TypeToken<CurveConf>() {}.getType();
-								historyCurveConfObj=gson.fromJson(historyCurveConf, type);
-							}
-							
-							if(realtimeCurveConfObj!=null){
-								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
-							}
-							if(historyCurveConfObj!=null){
-								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
-							}
-							break;
+		for(CalItem calItem:inputItemList){
+			boolean checked=false;
+			String realtimeSort="";
+			String historySort="";
+			String showLevel="";
+			String realtimeCurveConf="\"\"";
+			String realtimeCurveConfShowValue="";
+			String historyCurveConf="\"\"";
+			String historyCurveConfShowValue="";
+
+			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
+			if(checked){
+				for(int k=0;k<itemsList.size();k++){
+					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+						realtimeSort=itemsRealtimeSortList.get(k);
+						historySort=itemsHistorySortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						realtimeCurveConf=realtimeCurveConfList.get(k);
+						historyCurveConf=historyCurveConfList.get(k);
+						
+						CurveConf realtimeCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
 						}
+						
+						CurveConf historyCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
+						}
+						
+						if(realtimeCurveConfObj!=null){
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+						}
+						if(historyCurveConfObj!=null){
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+						}
+						break;
 					}
 				}
-				result_json.append("{\"checked\":"+checked+","
-						+ "\"id\":"+(index)+","
-						+ "\"title\":\""+calItem.getName()+"\","
-						+ "\"unit\":\""+calItem.getUnit()+"\","
-						+ "\"showLevel\":\""+showLevel+"\","
-						+ "\"realtimeSort\":\""+realtimeSort+"\","
-						+ "\"historySort\":\""+historySort+"\","
-						+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
-						+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-						+ "\"historyCurveConf\":"+historyCurveConf+","
-						+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-						+ "\"code\":\""+calItem.getCode()+"\""
-						+ "},");
-				index++;
-			
 			}
+			result_json.append("{\"checked\":"+checked+","
+					+ "\"id\":"+(index)+","
+					+ "\"title\":\""+calItem.getName()+"\","
+					+ "\"unit\":\""+calItem.getUnit()+"\","
+					+ "\"showLevel\":\""+showLevel+"\","
+					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"historySort\":\""+historySort+"\","
+					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
+					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+					+ "\"historyCurveConf\":"+historyCurveConf+","
+					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+					+ "\"code\":\""+calItem.getCode()+"\""
+					+ "},");
+			index++;
+		
 		}
+	
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
@@ -4487,7 +4469,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
-			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname "
+			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname,"
+					+ " t.calculateType, "
+					+ " decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName"
 					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -4520,6 +4504,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
 							tree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
 							tree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
+							tree_json.append("\"calculateType\":\""+unitObj[7]+"\",");
+							tree_json.append("\"calculateTypeName\":\""+unitObj[8]+"\",");
 							tree_json.append("\"iconCls\": \"acqUnit\",");
 							tree_json.append("\"leaf\": true");
 							tree_json.append("},");

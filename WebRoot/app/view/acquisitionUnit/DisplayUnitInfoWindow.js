@@ -199,6 +199,37 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                 hidden:true,
                 anchor: '100%',
                 value: ''
+            },{
+				xtype : "hidden",
+				id : 'formDisplayUnitCalculateType_Id',
+				value: 0,
+				name : "displayUnit.calculateType"
+			},{
+            	xtype : "combobox",
+				fieldLabel : '计算类型<font color=red>*</font>',
+				id : 'formDisplayUnitCalculateTypeComb_Id',
+				anchor : '100%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:0,
+			    allowBlank: false,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [[0, '无'],[1, '功图计算'],[2, '转速计产']]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : '请选择计算类型',
+				blankText : '请选择计算类型',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("formDisplayUnitCalculateType_Id").setValue(this.value);
+						
+					}
+				}
             }, {
             	id: 'displayUnitRemark_Id',
             	name: "displayUnit.remark",

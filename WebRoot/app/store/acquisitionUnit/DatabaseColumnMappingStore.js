@@ -3,7 +3,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
     alias: 'widget.databaseColumnMappingStore',
     fields: ['id','itemName','itemColumn'],
     autoLoad: true,
-    pageSize: 100,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/acquisitionUnitManagerController/getDatabaseColumnMappingTable',

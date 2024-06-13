@@ -3,7 +3,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitEnumItemsStore', {
     alias: 'widget.modbusProtocolAlarmUnitEnumItemsStore',
     fields: ['id','title','code','itemAddr'],
     autoLoad: true,
-    pageSize: 10000,
+    pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
         url: context + '/acquisitionUnitManagerController/getProtocolEnumOrSwitchItemsConfigData',

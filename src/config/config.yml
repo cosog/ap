@@ -162,7 +162,7 @@ ad:                                                          #AD程序配置
             idOnlineStatusPushURL: http://127.0.0.1:16100/ap/api/acq/id/online       #ID在线状态推送URL
             idAcqGroupDataPushURL: http://127.0.0.1:16100/ap/api/acq/id/group       #ID采集组数据推送URL
             ipPortOnlineStatusPushURL: http://127.0.0.1:16100/ap/api/acq/ipport/online       #IPPort在线状态推送URL
-            ipPortAcqGroupDataPushURL: http://127.0.0.1:16100/ap/api/acq/ipport/group       #IPPort采集组数据推送URL
+            ipPortAcqGroupDataPushURL: http://127.0.0.1:16100/ap/api/acq/ipport/group        #IPPort采集组数据推送URL
       protocol: http://118.178.195.118:19200/api/init/protocol                            #协议初始化
       instance: http://118.178.195.118:19200/api/init/instance                            #实例初始化
       id: http://118.178.195.118:19200/api/init/id                                        #id初始化 下位机为tcp client模式

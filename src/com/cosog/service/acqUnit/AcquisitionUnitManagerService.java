@@ -1536,8 +1536,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		
-		
 		if("2".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
 					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf "

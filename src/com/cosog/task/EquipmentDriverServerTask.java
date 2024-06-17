@@ -149,6 +149,94 @@ public class EquipmentDriverServerTask {
 		}
 	}
 	
+	
+	public void adProbeAndInit(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
+		
+		initWellCommStatus();
+		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
+		}
+		initWellDaliyData();
+		MemoryDataManagerTask.loadMemoryData();
+		
+		ThreadPool executor=null;
+		try {
+			executor = adInit();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+			boolean sendMsg=false;
+			exampleDataManage();
+			do{
+				DriverProbeResponse driverProbeResponse=adInitProbe();
+				String Ver="";
+				if(driverProbeResponse!=null){
+					sendMsg=false;
+					if(!driverProbeResponse.getHttpServerInitStatus()){
+						try {
+							initServerConfig();
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
+						driverProbeResponse=adInitProbe();
+					}
+					if(!driverProbeResponse.getProtocolInitStatus()){
+						initProtocolConfig("","");
+						driverProbeResponse=adInitProbe();
+					}
+					if(!driverProbeResponse.getInstanceInitStatus()){
+						if(!driverProbeResponse.getProtocolInitStatus()){
+							initProtocolConfig("","");
+							driverProbeResponse=adInitProbe();
+						}
+						initInstanceConfig(null,"");
+						initSMSInstanceConfig(null,"");
+						driverProbeResponse=adInitProbe();
+					}
+					if(!driverProbeResponse.getSMSInitStatus()){
+//						initSMSDevice(null,"");
+					}
+					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+						if(!driverProbeResponse.getInstanceInitStatus()){
+							if(!driverProbeResponse.getProtocolInitStatus()){
+								initProtocolConfig("","");
+								driverProbeResponse=adInitProbe();
+							}
+							initInstanceConfig(null,"");
+							initSMSInstanceConfig(null,"");
+							driverProbeResponse=adInitProbe();
+						}
+						
+						if(executor!=null && executor.isCompletedByTaskCount()){
+							//清空内存
+							AdInitMap.cleanData();
+							initDriverAcquisitionInfoConfig(null,0,"");
+						}
+					}
+					Ver=driverProbeResponse.getVer();
+				}else{
+					if(!sendMsg){
+						StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+						sendMsg=true;
+					}
+				}
+				try {
+					Thread.sleep(1000*1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}while(true);
+		}
+	}
+	
 	public static ThreadPool adInit() throws MalformedURLException, InterruptedException{
 		initServerConfig();
 		initProtocolConfig("","");

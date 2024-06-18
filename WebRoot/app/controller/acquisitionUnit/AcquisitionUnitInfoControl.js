@@ -537,36 +537,37 @@ var grantAcquisitionItemsPermission = function (groupType) {
                 + dailyTotalCalculate+ "|";
             }
         });
-        if (addjson.length > 0) {
-            matrixData = matrixData.substring(0, matrixData.length - 1);
-            var addparams = "" + addjson.join(",");
-            var matrixCodes_ = "" + matrixData;
-            Ext.Ajax.request({
-                url: addUrl,
-                method: "POST",
-                async :  false,
-                params: {
-                    params: addparams,
-                    protocol :protocol,
-                    groupCode: groupCode,
-                    matrixCodes: matrixCodes_
-                },
-                success: function (response) {
-                    var result = Ext.JSON.decode(response.responseText);
-                    if (result.msg == true) {
-                        Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控项' + "。");
-                    }
-                    if (result.msg == false) {
-                        Ext.Msg.alert('info', "<font color=red>SORRY！" + '采控项安排失败' + "。</font>");
-                    }
-                },
-                failure: function () {
-                    Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
-                }
-            });
-        } else {
-            Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采控项!' + '！</font>');
+        
+        if(matrixData!=""){
+        	matrixData = matrixData.substring(0, matrixData.length - 1);
         }
+        
+        var addparams = "" + addjson.join(",");
+        var matrixCodes_ = "" + matrixData;
+        Ext.Ajax.request({
+            url: addUrl,
+            method: "POST",
+            async :  false,
+            params: {
+                params: addparams,
+                protocol :protocol,
+                groupCode: groupCode,
+                matrixCodes: matrixCodes_
+            },
+            success: function (response) {
+                var result = Ext.JSON.decode(response.responseText);
+                if (result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控项' + "。");
+                }
+                if (result.msg == false) {
+                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '采控项安排失败' + "。</font>");
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    
     } else {
         Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采控项!' + '！</font>');
     }

@@ -611,9 +611,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			
-			if (paramsArr.length > 0 && StringManagerUtils.isNotNull(groupId) && protocol!=null) {
+			if (StringManagerUtils.isNotNull(groupId) && protocol!=null) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
-				if (matrixCodes != "" || matrixCodes != null) {
+				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					List<String> itemsList=new ArrayList<String>();
 					for (int i = 0; i < module_matrix.length; i++) {
@@ -642,6 +642,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionGroupItem.setGroupId(Integer.parseInt(groupId));
 						log.debug("groupCode==" + groupCode);
 						acquisitionGroupItem.setItemName(itemName);
+						if(bitIndex!=-99){
+							acquisitionGroupItem.setBitIndex(bitIndex);
+						}
+						
 						acquisitionGroupItem.setMatrix(module_[4]);
 						acquisitionGroupItem.setDailyTotalCalculateName(module_[5]);
 						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringTransferInteger(module_[6]));
@@ -691,7 +695,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String groupIds[] = StringManagerUtils.split(paramsIds, ",");
 			if (groupIds.length > 0 && unitId != null) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionUnitOwnGroups(unitId);
-				if (matrixCodes != "" || matrixCodes != null) {
+				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");

@@ -99,38 +99,92 @@ public class EquipmentDriverServerTask {
 							e.printStackTrace();
 						}
 						driverProbeResponse=adInitProbe();
+						if(driverProbeResponse==null){
+							break;
+						}
 					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
 						initProtocolConfig("","");
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getInstanceInitStatus()){
-						if(!driverProbeResponse.getProtocolInitStatus()){
-							initProtocolConfig("","");
-							driverProbeResponse=adInitProbe();
-						}
 						initInstanceConfig(null,"");
 						initSMSInstanceConfig(null,"");
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getSMSInitStatus()){
-//						initSMSDevice(null,"");
-					}
-					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-						if(!driverProbeResponse.getInstanceInitStatus()){
-							if(!driverProbeResponse.getProtocolInitStatus()){
-								initProtocolConfig("","");
-								driverProbeResponse=adInitProbe();
-							}
-							initInstanceConfig(null,"");
-							initSMSInstanceConfig(null,"");
-							driverProbeResponse=adInitProbe();
-						}
-						
 						if(executor!=null && executor.isCompletedByTaskCount()){
 							//清空内存
 							AdInitMap.cleanData();
 							initDriverAcquisitionInfoConfig(null,0,"");
+						}
+						driverProbeResponse=adInitProbe();
+						if(driverProbeResponse==null){
+							break;
+						}
+					}
+					
+					if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
+						while(driverProbeResponse!=null && ( (!driverProbeResponse.getProtocolInitStatus())||(!driverProbeResponse.getInstanceInitStatus()) )){
+							if(!driverProbeResponse.getProtocolInitStatus()){
+								initProtocolConfig("","");
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+						}
+					}
+					
+					if(driverProbeResponse!=null && !driverProbeResponse.getSMSInitStatus()){
+//						initSMSDevice(null,"");
+					}
+					
+					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+						while(driverProbeResponse!=null 
+								&& ( 
+										(!driverProbeResponse.getProtocolInitStatus())
+										||(!driverProbeResponse.getInstanceInitStatus()) 
+										||(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() ))
+									)
+								){
+							if(!driverProbeResponse.getProtocolInitStatus()){
+								initProtocolConfig("","");
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+							if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
 						}
 					}
 					Ver=driverProbeResponse.getVer();
@@ -961,7 +1015,8 @@ public class EquipmentDriverServerTask {
 					+ " t3.name "
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
-					+ " left outer join tbl_protocol t3 on t2.protocol=t3.name";
+					+ " left outer join tbl_protocol t3 on t2.protocol=t3.name"
+					+ " where 1=1";
 			String sql="select t5.name as instanceName,t2.id as groupId,t2.group_name,t2.type,t2.grouptiminginterval,"
 					+ " t.itemname,t.itemcode, t6.name as protocolName "
 					+ " from tbl_acq_item2group_conf t,"

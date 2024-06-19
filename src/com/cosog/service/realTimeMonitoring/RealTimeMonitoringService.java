@@ -890,7 +890,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		int items=3;
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
-		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		AcqInstanceOwnItem acqInstanceOwnItem=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
@@ -901,7 +900,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String tableName="tbl_acqdata_latest";
 		String calAndInputTableName="";
 		String deviceTableName="tbl_device";
-		String deviceInfoKey="DeviceInfo";
 		String acqInstanceCode="";
 		String displayInstanceCode="";
 		String alarmInstanceCode="";
@@ -917,60 +915,36 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+		
+		
 		try{
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-
-				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
-					deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-					displayInstanceCode=deviceInfo.getDisplayInstanceCode();
-					alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
-					acqInstanceCode=deviceInfo.getInstanceCode();
-				}
+			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
+			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
+			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
+			if(deviceInfo!=null){
+				displayInstanceCode=deviceInfo.getDisplayInstanceCode();
+				alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
+				acqInstanceCode=deviceInfo.getInstanceCode();
+			}
 			
-				
-				if(!jedis.exists("AlarmShowStyle".getBytes())){
-					MemoryDataManagerTask.initAlarmStyle();
-				}
-				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-				
-				if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-				}
-				
-				acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(acqInstanceCode);
-				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
-				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
-				ModbusProtocolConfig.Protocol protocol=null;
-				if(acqInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
-				}
-				
-				
-				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-					inputItemList=MemoryDataManagerTask.getRPCInputItem();
-				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-					inputItemList=MemoryDataManagerTask.getPCPInputItem();
-				}
-				
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				
-				if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
-					userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
-				}
-				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-			}catch(Exception e){
-				e.printStackTrace();
+			acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(acqInstanceCode);
+			displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
+			alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
+			ModbusProtocolConfig.Protocol protocol=null;
+			if(displayInstanceOwnItem!=null){
+				protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+			}
+			
+			
+			if(StringManagerUtils.stringToInteger(calculateType)==1){
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+			}else{
+				calItemList=new ArrayList<>();
+				inputItemList=new ArrayList<>();
 			}
 			
 			String columns = "[";
@@ -992,9 +966,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				for(int i=0;i<columnList.size();i++){
 					tableColumnsList.add(columnList.get(i).toString());
 				}
-				
-				String protocolCode=displayInstanceOwnItem.getProtocol();
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolCode);
 				
 				if(protocol!=null){
 					List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
@@ -1266,9 +1237,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 										//如果是工况
 										if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-											if(jedis.hexists("RPCWorkType".getBytes(), value.getBytes())){
-												workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), value.getBytes()));
-											}
+											workType=MemoryDataManagerTask.getWorkTypeByCode(value);
 											if(workType!=null){
 												value=workType.getResultName();
 											}
@@ -1584,10 +1553,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("}");
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 		}
 		return result_json.toString().replaceAll("null", "");
 	}

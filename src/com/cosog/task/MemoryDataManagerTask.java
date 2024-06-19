@@ -1835,7 +1835,10 @@ public class MemoryDataManagerTask {
     				displayItem.setType(rs.getInt(13));
     				int index=-1;
     				for(int i=0;i<displayInstanceOwnItem.getItemList().size();i++){
-    					if(displayItem.getItemCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemCode()) && displayItem.getType()==displayInstanceOwnItem.getItemList().get(i).getType()){
+    					if(displayItem.getItemCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemCode()) 
+    							&& displayItem.getType()==displayInstanceOwnItem.getItemList().get(i).getType()
+    							&& displayItem.getBitIndex()==displayInstanceOwnItem.getItemList().get(i).getBitIndex()
+    							){
     						index=i;
     						break;
     					}

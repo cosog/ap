@@ -3238,7 +3238,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
@@ -3271,6 +3270,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<?> protocolList=this.findCallSql(protocolSql);
 		if(protocolList.size()>0){
 			String protocolName=protocolList.get(0)+"";
+			
+			ModbusProtocolConfig.Protocol protocolConfig =MemoryDataManagerTask.getProtocolByName(protocolName);
+			
 			List<?> list=this.findCallSql(sql);
 			
 			for(int i=0;i<list.size();i++){
@@ -3307,43 +3309,37 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
 				historyCurveConfList.add(historyCurveConfShowValue);
 			}
-			if(modbusProtocolConfig!=null){
-				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					ModbusProtocolConfig.Protocol protocolConfig=modbusProtocolConfig.getProtocol().get(i);
-					if(protocolName.equalsIgnoreCase(protocolConfig.getName())){
-						Collections.sort(protocolConfig.getItems());
-						int index=1;
-						for(int j=0;j<protocolConfig.getItems().size();j++){
-							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
-								String realtimeSort="";
-								String historySort="";
-								String showLevel="";
-								
-								String realtimeCurveConfShowValue="";
-								String historyCurveConfShowValue="";
-								
-								if(protocolConfig.getItems().get(j).getResolutionMode()==0
-										&&protocolConfig.getItems().get(j).getMeaning()!=null
-										&&protocolConfig.getItems().get(j).getMeaning().size()>0){
-									Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
-									for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-										realtimeSort="";
-										historySort="";
-										showLevel="";
-										realtimeCurveConfShowValue="";
-										historyCurveConfShowValue="";
-										for(int m=0;m<itemsList.size();m++){
-											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
-													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
-												){
-												realtimeSort=itemsRealtimeSortList.get(m);
-												historySort=itemsHistorySortList.get(m);
-												showLevel=itemsShowLevelList.get(m);
-												realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
-												historyCurveConfShowValue=historyCurveConfList.get(m);
-												break;
-											}
-										}
+			if(protocolConfig!=null){
+				Collections.sort(protocolConfig.getItems());
+				int index=1;
+				for(int j=0;j<protocolConfig.getItems().size();j++){
+					if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
+						String realtimeSort="";
+						String historySort="";
+						String showLevel="";
+						
+						String realtimeCurveConfShowValue="";
+						String historyCurveConfShowValue="";
+						
+						if(protocolConfig.getItems().get(j).getResolutionMode()==0
+								&&protocolConfig.getItems().get(j).getMeaning()!=null
+								&&protocolConfig.getItems().get(j).getMeaning().size()>0){
+							Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
+							for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+								realtimeSort="";
+								historySort="";
+								showLevel="";
+								realtimeCurveConfShowValue="";
+								historyCurveConfShowValue="";
+								for(int m=0;m<itemsList.size();m++){
+									if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
+										){
+										realtimeSort=itemsRealtimeSortList.get(m);
+										historySort=itemsHistorySortList.get(m);
+										showLevel=itemsShowLevelList.get(m);
+										realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
+										historyCurveConfShowValue=historyCurveConfList.get(m);
 										
 										result_json.append("{"
 												+ "\"id\":"+(index)+","
@@ -3356,33 +3352,33 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 												+ "},");
 										index++;
+										break;
 									}
-								}else{
-									for(int k=0;k<itemsList.size();k++){
-										if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-											realtimeSort=itemsRealtimeSortList.get(k);
-											historySort=itemsHistorySortList.get(k);
-											showLevel=itemsShowLevelList.get(k);
-											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-											historyCurveConfShowValue=realtimeCurveConfList.get(k);
-											break;
-										}
-									}
-									result_json.append("{"
-											+ "\"id\":"+(index)+","
-											+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-											+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-											+ "\"showLevel\":\""+showLevel+"\","
-											+ "\"realtimeSort\":\""+realtimeSort+"\","
-											+ "\"historySort\":\""+historySort+"\","
-											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
-											+ "},");
-									index++;
 								}
 							}
+						}else{
+							for(int k=0;k<itemsList.size();k++){
+								if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
+									realtimeSort=itemsRealtimeSortList.get(k);
+									historySort=itemsHistorySortList.get(k);
+									showLevel=itemsShowLevelList.get(k);
+									realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+									historyCurveConfShowValue=realtimeCurveConfList.get(k);
+									break;
+								}
+							}
+							result_json.append("{"
+									+ "\"id\":"+(index)+","
+									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+									+ "\"showLevel\":\""+showLevel+"\","
+									+ "\"realtimeSort\":\""+realtimeSort+"\","
+									+ "\"historySort\":\""+historySort+"\","
+									+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+									+ "},");
+							index++;
 						}
-						break;
 					}
 				}
 			}

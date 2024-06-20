@@ -1,4 +1,4 @@
-var videoPlayrHelper={rpc:{},pcp:{}};
+var videoPlayrHelper={};
 var accessTokenInfo=null;
 var demoAccessTokenInfo=null;
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
@@ -230,11 +230,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
 
 function realTimeDataRefresh(){
 	
-	if(videoPlayrHelper!=null && videoPlayrHelper.rpc!=null && videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-		videoPlayrHelper.rpc.player1.stop();
+	if(videoPlayrHelper!=null && videoPlayrHelper!=null && videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+		videoPlayrHelper.player1.stop();
 	}
-	if(videoPlayrHelper!=null && videoPlayrHelper.rpc!=null && videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-		videoPlayrHelper.rpc.player2.stop();
+	if(videoPlayrHelper!=null && videoPlayrHelper!=null && videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+		videoPlayrHelper.player2.stop();
 	}
 	
 	
@@ -1484,11 +1484,11 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 function clearVideo(deviceType){
 	var panelId1='RealTimeMonitoringRightVideoPanel1';
 	var panelId2='RealTimeMonitoringRightVideoPanel2';
-	if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-		videoPlayrHelper.rpc.player1.stop();
+	if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+		videoPlayrHelper.player1.stop();
 	}
-	if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-		videoPlayrHelper.rpc.player2.stop();
+	if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+		videoPlayrHelper.player2.stop();
 	}
 	
 	var videoPanel1=Ext.getCmp(panelId1);
@@ -1507,41 +1507,41 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 		if(videoPanel.isHidden() ){
 			videoPanel.show();
 		}
-		if(deviceType==0 && videoNo==1){
+		if(videoNo==1){
 			if(isNew){
-				if(videoPlayrHelper.rpc.player1!=null){
-					if(videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-						videoPlayrHelper.rpc.player1.stop();
+				if(videoPlayrHelper.player1!=null){
+					if(videoPlayrHelper.player1.pluginStatus.state.play){
+						videoPlayrHelper.player1.stop();
 					}
-					$("#"+videoPlayrHelper.rpc.player1.id).html('');
+					$("#"+videoPlayrHelper.player1.id).html('');
 					videoPanel.setHtml('');
-					videoPlayrHelper.rpc.player1=null;
+					videoPlayrHelper.player1=null;
 				}
 			}
 			
 			
-			if(videoPlayrHelper.rpc.player1!=null){
-				if(videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-					videoPlayrHelper.rpc.player1.stop()
+			if(videoPlayrHelper.player1!=null){
+				if(videoPlayrHelper.player1.pluginStatus.state.play){
+					videoPlayrHelper.player1.stop()
 					.then(()=>{
-						if(videoPlayrHelper.rpc.player1.accessToken==accessToken){
-							videoPlayrHelper.rpc.player1.play(videoUrl);
+						if(videoPlayrHelper.player1.accessToken==accessToken){
+							videoPlayrHelper.player1.play(videoUrl);
 						}else{
-							videoPlayrHelper.rpc.player1.play({url:videoUrl,accessToken: accessToken});
+							videoPlayrHelper.player1.play({url:videoUrl,accessToken: accessToken});
 						}
 					});
 				}else{
-					if(videoPlayrHelper.rpc.player1.accessToken==accessToken){
-						videoPlayrHelper.rpc.player1.play(videoUrl);
+					if(videoPlayrHelper.player1.accessToken==accessToken){
+						videoPlayrHelper.player1.play(videoUrl);
 					}else{
-						videoPlayrHelper.rpc.player1.play({url:videoUrl,accessToken: accessToken});
+						videoPlayrHelper.player1.play({url:videoUrl,accessToken: accessToken});
 					}
 				}
 			}else{
 				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
 				var videoWidth=$("#"+divId).width();
 				var videoHeight=$("#"+divId).height();
-				videoPlayrHelper.rpc.player1 = new EZUIKit.EZUIKitPlayer({
+				videoPlayrHelper.player1 = new EZUIKit.EZUIKitPlayer({
 		        	id: divId, // 视频容器ID
 		        	accessToken: accessToken,
 		            url: videoUrl,
@@ -1552,125 +1552,39 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 		            height: videoHeight
 		        });
 			}
-		}else if(deviceType==0 && videoNo==2){
+		}else if(videoNo==2){
 			if(isNew){
-				if(videoPlayrHelper.rpc.player2!=null){
-					if(videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-						videoPlayrHelper.rpc.player2.stop();
+				if(videoPlayrHelper.player2!=null){
+					if(videoPlayrHelper.player2.pluginStatus.state.play){
+						videoPlayrHelper.player2.stop();
 					}
-					$("#"+videoPlayrHelper.rpc.player2.id).html('');
+					$("#"+videoPlayrHelper.player2.id).html('');
 					videoPanel.setHtml('');
-					videoPlayrHelper.rpc.player2=null;
+					videoPlayrHelper.player2=null;
 				}
 			}
-			if(videoPlayrHelper.rpc.player2!=null){
-				if(videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-					videoPlayrHelper.rpc.player2.stop()
+			if(videoPlayrHelper.player2!=null){
+				if(videoPlayrHelper.player2.pluginStatus.state.play){
+					videoPlayrHelper.player2.stop()
 					.then(()=>{
-						if(videoPlayrHelper.rpc.player2.accessToken==accessToken){
-							videoPlayrHelper.rpc.player2.play(videoUrl);
+						if(videoPlayrHelper.player2.accessToken==accessToken){
+							videoPlayrHelper.player2.play(videoUrl);
 						}else{
-							videoPlayrHelper.rpc.player2.play({url:videoUrl,accessToken: accessToken});
+							videoPlayrHelper.player2.play({url:videoUrl,accessToken: accessToken});
 						}
 					});
 				}else{
-					if(videoPlayrHelper.rpc.player2.accessToken==accessToken){
-						videoPlayrHelper.rpc.player2.play(videoUrl);
+					if(videoPlayrHelper.player2.accessToken==accessToken){
+						videoPlayrHelper.player2.play(videoUrl);
 					}else{
-						videoPlayrHelper.rpc.player2.play({url:videoUrl,accessToken: accessToken});
+						videoPlayrHelper.player2.play({url:videoUrl,accessToken: accessToken});
 					}
 				}
 			}else{
 				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
 				var videoWidth=$("#"+divId).width();
 				var videoHeight=$("#"+divId).height();
-				videoPlayrHelper.rpc.player2 = new EZUIKit.EZUIKitPlayer({
-		        	id: divId, // 视频容器ID
-		        	accessToken: accessToken,
-		            url: videoUrl,
-		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
-		            plugin: ['talk'],                       // 加载插件，talk-对讲
-		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
-		            width: videoWidth,
-		            height: videoHeight
-		        });
-			}
-		}else if(deviceType==1 && videoNo==1){
-			if(isNew){
-				if(videoPlayrHelper.pcp.player1!=null){
-					if(videoPlayrHelper.pcp.player1.pluginStatus.state.play){
-						videoPlayrHelper.pcp.player1.stop();
-					}
-					$("#"+videoPlayrHelper.pcp.player1.id).html('');
-					videoPanel.setHtml('');
-					videoPlayrHelper.pcp.player1=null;
-				}
-			}
-			if(videoPlayrHelper.pcp.player1!=null){
-				if(videoPlayrHelper.pcp.player1.pluginStatus.state.play){
-					videoPlayrHelper.pcp.player1.stop()
-					.then(()=>{
-						if(videoPlayrHelper.pcp.player1.accessToken==accessToken){
-							videoPlayrHelper.pcp.player1.play(videoUrl);
-						}else{
-							videoPlayrHelper.pcp.player1.play({url:videoUrl,accessToken: accessToken});
-						}
-					});
-				}else{
-					if(videoPlayrHelper.pcp.player1.accessToken==accessToken){
-						videoPlayrHelper.pcp.player1.play(videoUrl);
-					}else{
-						videoPlayrHelper.pcp.player1.play({url:videoUrl,accessToken: accessToken});
-					}
-				}
-			}else{
-				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
-				var videoWidth=$("#"+divId).width();
-				var videoHeight=$("#"+divId).height();
-				videoPlayrHelper.pcp.player1 = new EZUIKit.EZUIKitPlayer({
-		        	id: divId, // 视频容器ID
-		        	accessToken: accessToken,
-		            url: videoUrl,
-		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
-		            plugin: ['talk'],                       // 加载插件，talk-对讲
-		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
-		            width: videoWidth,
-		            height: videoHeight
-		        });
-			}
-		}else if(deviceType==1 && videoNo==2){
-			if(isNew){
-				if(videoPlayrHelper.pcp.player2!=null){
-					if(videoPlayrHelper.pcp.player2.pluginStatus.state.play){
-						videoPlayrHelper.pcp.player2.stop();
-					}
-					$("#"+videoPlayrHelper.pcp.player2.id).html('');
-					videoPanel.setHtml('');
-					videoPlayrHelper.pcp.player2=null;
-				}
-			}
-			if(videoPlayrHelper.pcp.player2!=null){
-				if(videoPlayrHelper.pcp.player2.pluginStatus.state.play){
-					videoPlayrHelper.pcp.player2.stop()
-					.then(()=>{
-						if(videoPlayrHelper.pcp.player2.accessToken==accessToken){
-							videoPlayrHelper.pcp.player2.play(videoUrl);
-						}else{
-							videoPlayrHelper.pcp.player2.play({url:videoUrl,accessToken: accessToken});
-						}
-					});
-				}else{
-					if(videoPlayrHelper.pcp.player2.accessToken==accessToken){
-						videoPlayrHelper.pcp.player2.play(videoUrl);
-					}else{
-						videoPlayrHelper.pcp.player2.play({url:videoUrl,accessToken: accessToken});
-					}
-				}
-			}else{
-				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
-				var videoWidth=$("#"+divId).width();
-				var videoHeight=$("#"+divId).height();
-				videoPlayrHelper.pcp.player2 = new EZUIKit.EZUIKitPlayer({
+				videoPlayrHelper.player2 = new EZUIKit.EZUIKitPlayer({
 		        	id: divId, // 视频容器ID
 		        	accessToken: accessToken,
 		            url: videoUrl,
@@ -1683,30 +1597,16 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 			}
 		}
 	}else{
-		if(deviceType==0 && videoNo==1){
-			if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-				videoPlayrHelper.rpc.player1.stop();
+		if(videoNo==1){
+			if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+				videoPlayrHelper.player1.stop();
 			}
 			if(!videoPanel.isHidden() ){
 				videoPanel.hide();
 			}
-		}else if(deviceType==0 && videoNo==2){
-			if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-				videoPlayrHelper.rpc.player2.stop();
-			}
-			if(!videoPanel.isHidden() ){
-				videoPanel.hide();
-			}
-		}else if(deviceType==1 && videoNo==1){
-			if(videoPlayrHelper.pcp.player1!=null && videoPlayrHelper.pcp.player1.pluginStatus.state.play){
-				videoPlayrHelper.pcp.player1.stop();
-			}
-			if(!videoPanel.isHidden() ){
-				videoPanel.hide();
-			}
-		}else if(deviceType==1 && videoNo==2){
-			if(videoPlayrHelper.pcp.player2!=null && videoPlayrHelper.pcp.player2.pluginStatus.state.play){
-				videoPlayrHelper.pcp.player2.stop();
+		}else if(videoNo==2){
+			if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+				videoPlayrHelper.player2.stop();
 			}
 			if(!videoPanel.isHidden() ){
 				videoPanel.hide();
@@ -1813,4 +1713,36 @@ function getDeviceRealTimeOverviewDataPage(deviceId,deviceType,limit){
         }
 	});
 	return dataPage;
+}
+
+function getDeviceAddInfoAndControlInfo(deviceId,deviceType){
+	var deviceInfo={};
+	deviceInfo.videoNum=0;
+	deviceInfo.controlItemNum=0;
+	deviceInfo.addInfoNum=0;
+	deviceInfo.auxiliaryDeviceNum=0;
+	Ext.Ajax.request({
+		method:'POST',
+		async: false,
+		url:context + '/realTimeMonitoringController/getDeviceAddInfoAndControlInfo',
+		success:function(response) {
+			deviceInfo = Ext.JSON.decode(response.responseText);
+		},
+		failure:function(){
+		},
+		params: {
+            deviceType:deviceType,
+            deviceId:deviceId
+        }
+	});
+	return deviceInfo;
+}
+
+function cleanDeviceAddInfoAndControlInfo(){
+	clearVideo();
+	
+	Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
+	
+	Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel").removeAll();
+	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
 }

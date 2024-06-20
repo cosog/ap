@@ -57,10 +57,15 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
+                    		
                     		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
                     		var deviceName=record.data.deviceName;
                     		var deviceId=record.data.id;
                     		var calculateType=record.data.calculateType;
+                    		
+                    		var deviceInfo=getDeviceAddInfoAndControlInfo(deviceId,deviceType);
+                    		
+                    		
                     		var combDeviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
                     		if(combDeviceName!=''){
                         		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
@@ -92,40 +97,54 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
         						}
         					}
                     		
-                    		
-                    		
-                    		
-                    		var removeRightCalculateDataPanel=false;
                     		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
-                    		var getTabId = rightTabPanel.getComponent("RealTimeMonitoringRightCalculateDataPanel");
                     		
-                    		if(calculateType>0 && getTabId==undefined){
-                    			rightTabPanel.insert(2,RealTimeMonitoringRightTabPanelItems[2]);
-                       	 	}else if(calculateType==0 && getTabId!=undefined){
-                       	 		rightTabPanel.remove("RealTimeMonitoringRightCalculateDataPanel");
-                       	 		removeRightCalculateDataPanel=true;
-                       	 	}
-                    		
-                    		if(!(rightTabPanel.getActiveTab().id=="RealTimeMonitoringRightCalculateDataPanel" && removeRightCalculateDataPanel)){
-                    			if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightControlAndVideoPanel'){
-                        			createVideo(deviceType,record.data);
-                        			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
-                        			if(isNotVal(controlGridPanel)){
-                        				controlGridPanel.getStore().load();
-                        			}else{
-                        				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore');
-                        			}
-                        		}else if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightDeviceInfoPanel'){
-                        			Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
-                        		}else if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightCalculateDataPanel'){
-                        			if(calculateType==1 || calculateType==2){
-                    					var deviceProductionGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
-                            			if(isNotVal(deviceProductionGridPanel)){
-                            				deviceProductionGridPanel.getStore().load();
+                    		if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0 && deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
+                    			cleanDeviceAddInfoAndControlInfo();
+                    			Ext.getCmp("RealTimeMonitoringRightTabPanel").hide();
+                    		}else if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightControlAndVideoPanel' && deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0){
+                    			Ext.getCmp("RealTimeMonitoringRightTabPanel").show();
+                    			cleanDeviceAddInfoAndControlInfo();
+                    			Ext.getCmp("RealTimeMonitoringRightControlAndVideoPanel").hide();
+                    			rightTabPanel.setActiveTab("RealTimeMonitoringRightDeviceInfoPanel");
+                    		}else if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightDeviceInfoPanel' && deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
+                    			Ext.getCmp("RealTimeMonitoringRightTabPanel").show();
+                    			Ext.getCmp("RealTimeMonitoringRightDeviceInfoPanel").hide();
+                    			rightTabPanel.setActiveTab("RealTimeMonitoringRightControlAndVideoPanel");
+                    		}else{
+                    			Ext.getCmp("RealTimeMonitoringRightTabPanel").show();
+                    			
+                        		var removeRightCalculateDataPanel=false;
+                        		var getTabId = rightTabPanel.getComponent("RealTimeMonitoringRightCalculateDataPanel");
+                        		
+                        		if(calculateType>0 && getTabId==undefined){
+                        			rightTabPanel.insert(2,RealTimeMonitoringRightTabPanelItems[2]);
+                           	 	}else if(calculateType==0 && getTabId!=undefined){
+                           	 		rightTabPanel.remove("RealTimeMonitoringRightCalculateDataPanel");
+                           	 		removeRightCalculateDataPanel=true;
+                           	 	}
+                        		
+                        		if(!(rightTabPanel.getActiveTab().id=="RealTimeMonitoringRightCalculateDataPanel" && removeRightCalculateDataPanel)){
+                        			if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightControlAndVideoPanel'){
+                            			createVideo(deviceType,record.data);
+                            			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
+                            			if(isNotVal(controlGridPanel)){
+                            				controlGridPanel.getStore().load();
                             			}else{
-                            				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
+                            				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore');
                             			}
-                    				}
+                            		}else if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightDeviceInfoPanel'){
+                            			Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
+                            		}else if(rightTabPanel.getActiveTab().id=='RealTimeMonitoringRightCalculateDataPanel'){
+                            			if(calculateType==1 || calculateType==2){
+                        					var deviceProductionGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
+                                			if(isNotVal(deviceProductionGridPanel)){
+                                				deviceProductionGridPanel.getStore().load();
+                                			}else{
+                                				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
+                                			}
+                        				}
+                            		}
                         		}
                     		}
                     	},
@@ -177,27 +196,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                 	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
             	}
             	
-            	
-            	
-//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
-//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');
-//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").html('');
-//            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").html('');
-//            	
-//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").html('');
-//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").html('');
-//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").html('');
-//            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").html('');
-            	
-            	
-            	
-            	clearVideo(0);
-            	Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
-            	Ext.getCmp("RealTimeMonitoringRightCalculateDataPanel").removeAll();
-            	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
-            	
-            	
-            	
+            	cleanDeviceAddInfoAndControlInfo();
             }
         },
         beforeload: function (store, options) {

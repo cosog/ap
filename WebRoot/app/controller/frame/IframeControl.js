@@ -431,17 +431,11 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}
 	if(module_Code != "DeviceRealTimeMonitoring"){
-		if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-			videoPlayrHelper.rpc.player1.stop();
+		if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+			videoPlayrHelper.player1.stop();
 		}
-		if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-			videoPlayrHelper.rpc.player2.stop();
-		}
-		if(videoPlayrHelper.pcp.player1!=null && videoPlayrHelper.pcp.player1.pluginStatus.state.play){
-			videoPlayrHelper.pcp.player1.stop();
-		}
-		if(videoPlayrHelper.pcp.player2!=null && videoPlayrHelper.pcp.player2.pluginStatus.state.play){
-			videoPlayrHelper.pcp.player2.stop();
+		if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+			videoPlayrHelper.player2.stop();
 		}
 	}
 	

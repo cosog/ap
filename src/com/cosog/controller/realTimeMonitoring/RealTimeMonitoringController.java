@@ -738,6 +738,21 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceAddInfoAndControlInfo")
+	public String getDeviceAddInfoAndControlInfo() throws Exception {
+		String json = "";
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		json = realTimeMonitoringService.getDeviceAddInfoAndControlInfo(deviceId,deviceType);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String getLimit() {
 		return limit;
 	}

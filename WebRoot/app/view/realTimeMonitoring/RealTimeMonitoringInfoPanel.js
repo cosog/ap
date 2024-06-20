@@ -372,27 +372,6 @@ var realtimeCurveAndTableTabPanelItems=[{
 }];
 
 var RealTimeMonitoringRightTabPanelItems=[{
-	title:'设备信息',
-	layout: 'border',
-	id:'RealTimeMonitoringRightDeviceInfoPanel',
-	items:[{
-		region: 'center',
-		id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
-		title:'附加信息',
-        border: false,
-        layout: 'fit'
-	},{
-		region: 'south',
-		id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
-		title:'辅件设备',
-		height: '50%',
-		border: false,
-        layout: 'fit',
-        split: true,
-        hidden: false,
-        collapsible: true
-	}]
-},{
 	title:'设备控制',
 	border: false,
 	hidden: onlyFESDiagramCal,
@@ -413,7 +392,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
         listeners: {
         	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         		if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-        			if(videoPlayrHelper.rpc.player1!=null){
+        			if(videoPlayrHelper.player1!=null){
                 		var isFullScreen = isBrowserFullScreen();
                 		if(!isFullScreen){
             				var recordData=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
@@ -440,7 +419,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
             listeners: {
             	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
             		if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-            			if(videoPlayrHelper.rpc.player2!=null){
+            			if(videoPlayrHelper.player2!=null){
                     		var isFullScreen = isBrowserFullScreen();
                     		if(!isFullScreen){
                 				var recordData=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
@@ -459,6 +438,27 @@ var RealTimeMonitoringRightTabPanelItems=[{
             scrollable: true
     	}]
     }]
+},{
+	title:'设备信息',
+	layout: 'border',
+	id:'RealTimeMonitoringRightDeviceInfoPanel',
+	items:[{
+		region: 'center',
+		id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
+		title:'附加信息',
+        border: false,
+        layout: 'fit'
+	},{
+		region: 'south',
+		id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
+		title:'辅件设备',
+		height: '50%',
+		border: false,
+        layout: 'fit',
+        split: true,
+        hidden: false,
+        collapsible: true
+	}]
 },{
 	title:'计算数据',
 	id: 'RealTimeMonitoringRightCalculateDataPanel',
@@ -713,22 +713,22 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                                 	}else{
                                 		var videoPanel1=Ext.getCmp("RealTimeMonitoringRightVideoPanel1");
                                 		var videoPanel2=Ext.getCmp("RealTimeMonitoringRightVideoPanel2");
-                                		if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-                                			videoPlayrHelper.rpc.player1.stop();
+                                		if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+                                			videoPlayrHelper.player1.stop();
                                 		}
-                                		if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-                                			videoPlayrHelper.rpc.player2.stop();
+                                		if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+                                			videoPlayrHelper.player2.stop();
                                 		}
                                 		videoPanel1.hide();
                                 		videoPanel2.hide();
                                 		Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
                                 	}
                         		}else{
-                        			if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
-                        				videoPlayrHelper.rpc.player1.stop();
+                        			if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+                        				videoPlayrHelper.player1.stop();
                         			}
-                        			if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
-                        				videoPlayrHelper.rpc.player2.stop();
+                        			if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+                        				videoPlayrHelper.player2.stop();
                         			}
                         			
                         			if(newCard.id=="RealTimeMonitoringRightDeviceInfoPanel"){

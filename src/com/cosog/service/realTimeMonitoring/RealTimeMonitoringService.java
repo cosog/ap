@@ -3800,4 +3800,53 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String json="{\"success\":true,\"deviceCount\":"+deviceCount+"}";
 		return json;
 	}
+	
+	public String getDeviceAddInfoAndControlInfo(String deviceId,String deviceType){
+		int videoNum=0;
+		int controlItemNum=0;
+		int addInfoNum=0;
+		int auxiliaryDeviceNum=0;
+		
+		String videoSql="select t.videourl1,t.videourl2 "
+				+ " from TBL_DEVICE t "
+				+ " where t.id="+deviceId;
+		String controlItemSql="select t4.itemname "
+				+ " from TBL_DEVICE t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
+				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=2 "
+				+ " and t.id="+deviceId;
+		String addInfoSql="select t2.itemname "
+				+ " from tbl_device t,tbl_deviceaddinfo t2 "
+				+ " where t.id=t2.deviceid "
+				+ " and t.id="+deviceId;
+		String auxiliaryDeviceSql="select t3.name,t3.manufacturer,t3.model "
+				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
+				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id "
+				+ " and t.id="+deviceId;
+		
+		List<?> videoList = this.findCallSql(videoSql);
+		List<?> controlItemList = this.findCallSql(controlItemSql);
+		List<?> addInfoList = this.findCallSql(addInfoSql);
+		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
+		
+		if(videoList.size()>0){
+			Object[] obj=(Object[])videoList.get(0);
+			if(StringManagerUtils.isNotNull(obj[0]+"")){
+				videoNum+=1;
+			}
+			if(StringManagerUtils.isNotNull(obj[1]+"")){
+				videoNum+=1;
+			}
+		}
+		controlItemNum=controlItemList.size();
+		addInfoNum=addInfoList.size();
+		auxiliaryDeviceNum=auxiliaryDeviceList.size();
+		
+		String json="{"
+				+ "\"videoNum\":"+videoNum+","
+				+ "\"controlItemNum\":"+controlItemNum+","
+				+ "\"addInfoNum\":"+addInfoNum+","
+				+ "\"auxiliaryDeviceNum\":"+auxiliaryDeviceNum
+				+ "}";
+		return json;
+	}
 }

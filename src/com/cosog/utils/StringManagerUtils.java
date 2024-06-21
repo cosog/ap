@@ -1868,7 +1868,6 @@ public class StringManagerUtils {
                 while ((line = in .readLine()) != null) {
                     result += line;
                 }
-                return result;
             } else if (conn.getResponseCode() >= 400) {
                 String errorInfo = "";
                 is = new InputStreamReader(conn.getInputStream(), encoding); in = new BufferedReader(is);
@@ -1905,7 +1904,7 @@ public class StringManagerUtils {
                 ex.printStackTrace();
             }
         }
-        return "";
+        return result;
     }
 
     public static String sendPostMethod2(String url, String param, String encoding, int connectTimeout, int readTimeout) {

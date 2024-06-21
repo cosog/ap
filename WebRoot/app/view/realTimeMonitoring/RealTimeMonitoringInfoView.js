@@ -1493,10 +1493,10 @@ function clearVideo(deviceType){
 	
 	var videoPanel1=Ext.getCmp(panelId1);
 	var videoPanel2=Ext.getCmp(panelId2);
-	if(!videoPanel1.isHidden() ){
+	if(isNotVal(videoPanel1) && !videoPanel1.isHidden() ){
 		videoPanel1.hide();
 	}
-	if(!videoPanel2.isHidden() ){
+	if(isNotVal(videoPanel2) && !videoPanel2.isHidden() ){
 		videoPanel2.hide();
 	}
 }
@@ -1740,9 +1740,13 @@ function getDeviceAddInfoAndControlInfo(deviceId,deviceType){
 
 function cleanDeviceAddInfoAndControlInfo(){
 	clearVideo();
-	
-	Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
-	
-	Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel").removeAll();
-	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
+	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightControlPanel"))){
+		Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
+	}
+	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel"))){
+		Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel").removeAll();
+	}
+	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel"))){
+		Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
+	}
 }

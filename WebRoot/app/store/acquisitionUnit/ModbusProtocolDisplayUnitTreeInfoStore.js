@@ -74,12 +74,16 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
                         			CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
+                        			CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
+                            		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
                         		}else{
                         			CreateProtocolDisplayUnitAcqItemsConfigInfoTable('',1,'');
                         			CreateProtocolDisplayUnitCtrlItemsConfigInfoTable('',1,'');
+                        			
+                        			CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.data.deviceType,1);
+                            		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.data.deviceType,1);
                             	}
-                        		CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
-                        		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
+                        		
                         	}else if(record.data.classes==1){
                         		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);

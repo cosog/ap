@@ -1883,58 +1883,55 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> controlColumns=new ArrayList<String>();
 			List<Integer> controlItemResolutionMode=new ArrayList<Integer>();
 			List<String> controlItemMeaningList=new ArrayList<String>();
+			List<ModbusProtocolConfig.Items> controlItemList=new ArrayList<>();
 			StringBuffer deviceControlList=new StringBuffer();
 			deviceControlList.append("[");
 			
 			if(displayInstanceOwnItem!=null){
-				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
-								if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
-									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-										if(displayInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-											if("rw".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())
-													||"w".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())){
-												String title=modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle();
-												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-													title+="("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")";
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				if(protocol!=null){
+					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
+						if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+							for(int k=0;k<protocol.getItems().size();k++){
+								if(displayInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(protocol.getItems().get(k).getTitle())){
+									if("rw".equalsIgnoreCase(protocol.getItems().get(k).getRWType())
+											||"w".equalsIgnoreCase(protocol.getItems().get(k).getRWType())){
+										String title=protocol.getItems().get(k).getTitle();
+										if(StringManagerUtils.isNotNull(protocol.getItems().get(k).getUnit())){
+											title+="("+protocol.getItems().get(k).getUnit()+")";
+										}
+										controlItems.add(title);
+										controlItemList.add(protocol.getItems().get(k));
+										String col="";
+										if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+											col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
+										}
+										controlColumns.add(col);
+										controlItemResolutionMode.add(protocol.getItems().get(k).getResolutionMode());
+										if(protocol.getItems().get(k).getResolutionMode()==2){//数据量
+											controlItemMeaningList.add("[]");
+										}else if(protocol.getItems().get(k).getResolutionMode()==1){//枚举量
+											if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
+												StringBuffer itemMeaning_buff = new StringBuffer();
+												itemMeaning_buff.append("[");
+												for(int n=0;n<protocol.getItems().get(k).getMeaning().size();n++){
+													itemMeaning_buff.append("["+protocol.getItems().get(k).getMeaning().get(n).getValue()+",'"+protocol.getItems().get(k).getMeaning().get(n).getMeaning()+"'],");
 												}
-												controlItems.add(title);
-												String col="";
-												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
+												if(itemMeaning_buff.toString().endsWith(",")){
+													itemMeaning_buff.deleteCharAt(itemMeaning_buff.length() - 1);
 												}
-												controlColumns.add(col);
-												controlItemResolutionMode.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode());
-												if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode()==2){//数据量
-													controlItemMeaningList.add("[]");
-												}else if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode()==1){//枚举量
-													if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size()>0){
-														StringBuffer itemMeaning_buff = new StringBuffer();
-														itemMeaning_buff.append("[");
-														for(int n=0;n<modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size();n++){
-															itemMeaning_buff.append("["+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().get(n).getValue()+",'"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().get(n).getMeaning()+"'],");
-														}
-														if(itemMeaning_buff.toString().endsWith(",")){
-															itemMeaning_buff.deleteCharAt(itemMeaning_buff.length() - 1);
-														}
-														itemMeaning_buff.append("]");
-														controlItemMeaningList.add(itemMeaning_buff.toString());
-													}else{
-														controlItemMeaningList.add("[]");
-													}
-												}else{
-													controlItemMeaningList.add("[['true','开'],['false','关']]");
-												}
+												itemMeaning_buff.append("]");
+												controlItemMeaningList.add(itemMeaning_buff.toString());
+											}else{
+												controlItemMeaningList.add("[]");
 											}
-											break;
+										}else{
+											controlItemMeaningList.add("[['true','开'],['false','关']]");
 										}
 									}
+									break;
 								}
 							}
-							break;
 						}
 					}
 				}
@@ -1954,8 +1951,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(controlColumns.size()>0){
 				for(int i=0;i<controlColumns.size();i++){
 					deviceControlList.append("{\"item\":\""+controlItems.get(i)+"\","
+							+ "\"itemName\":\""+controlItemList.get(i).getTitle()+"\","
 							+ "\"itemcode\":\""+controlColumns.get(i)+"\","
 							+ "\"resolutionMode\":"+controlItemResolutionMode.get(i)+","
+							
+							+ "\"storeDataType\":\""+controlItemList.get(i).getStoreDataType()+"\","
+							+ "\"unit\":\""+controlItemList.get(i).getUnit()+"\","
+							+ "\"quantity\":\""+controlItemList.get(i).getQuantity()+"\","
+							
 							+ "\"value\":\"\","
 							+ "\"operation\":"+true+","
 							+ "\"isControl\":"+isControl+","

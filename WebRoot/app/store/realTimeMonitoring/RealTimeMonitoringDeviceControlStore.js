@@ -88,14 +88,14 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                             tooltip: itemMeaning[0][1],
                                             handler: function () {
                                                 all_loading.show();
-                                                var wellName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                                var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                                                 var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                                                 Ext.Ajax.request({
                                                     url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                     method: "POST",
                                                     params: {
                                                         deviceId: deviceId,
-                                                        wellName: wellName,
+                                                        deviceName: deviceName,
                                                         deviceType: 0,
                                                         controlType: itemcode,
                                                         controlValue: itemMeaning[0][0]
@@ -149,14 +149,14 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                 tooltip: itemMeaning[0][1],
                                                 handler: function () {
                                                     all_loading.show();
-                                                    var wellName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                                    var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                                                     var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
                                                         params: {
                                                             deviceId: deviceId,
-                                                            wellName: wellName,
+                                                            deviceName: deviceName,
                                                             deviceType: 0,
                                                             controlType: itemcode,
                                                             controlValue: itemMeaning[0][0]
@@ -198,14 +198,14 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                 tooltip: itemMeaning[1][1],
                                                 handler: function () {
                                                     all_loading.show();
-                                                    var wellName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                                    var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                                                     var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
                                                         params: {
                                                             deviceId: deviceId,
-                                                            wellName: wellName,
+                                                            deviceName: deviceName,
                                                             deviceType: 0,
                                                             controlType: itemcode,
                                                             controlValue: itemMeaning[1][0]
@@ -258,14 +258,14 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                 tooltip: '开',
                                                 handler: function () {
                                                     all_loading.show();
-                                                    var wellName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                                    var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                                                     var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
                                                         params: {
                                                             deviceId: deviceId,
-                                                            wellName: wellName,
+                                                            deviceName: deviceName,
                                                             deviceType: 0,
                                                             controlType: itemcode,
                                                             controlValue: 1
@@ -306,14 +306,14 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                 tooltip: '关',
                                                 handler: function () {
                                                     all_loading.show();
-                                                    var wellName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                                    var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                                                     var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                                                     Ext.Ajax.request({
                                                         url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                                                         method: "POST",
                                                         params: {
                                                             deviceId: deviceId,
-                                                            wellName: wellName,
+                                                            deviceName: deviceName,
                                                             deviceType: 0,
                                                             controlType: itemcode,
                                                             controlValue: 0
@@ -371,31 +371,40 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                     win_Obj.destroy();
                                                 }
                                                 var DeviceControlCheckPassWindow = Ext.create("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
-                                                    title: '控制'
+                                                    title: "设备控制"
                                                 });
-                                                var wellName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                                
+                                                var showInfo='名称:<font color=red>'+o.data.itemName+'</font>'
+                                                	+",存储数据类型:<font color=red>"+o.data.storeDataType+'</font>'
+                                                	+",存储数据数量:<font color=red>"+o.data.quantity+'</font>'
+                                                	+",单位:<font color=red>"+o.data.unit+'</font>'
+                                                
+                                                Ext.getCmp("DeviceControlItemName_Id").setHtml(showInfo);
+                                                
+                                                
+                                                var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                                                 var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-                                                Ext.getCmp("DeviceControlWellName_Id").setValue(wellName);
+                                                Ext.getCmp("DeviceControlDeviceName_Id").setValue(deviceName);
                                                 Ext.getCmp("DeviceControlDeviceId_Id").setValue(deviceId);
-                                                Ext.getCmp("DeviceControlDeviceType_Id").setValue(0);
+                                                Ext.getCmp("DeviceControlDeviceType_Id").setValue(getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"));
 
                                                 Ext.getCmp("DeviceControlType_Id").setValue(o.data.itemcode);
                                                 Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
 
-                                                Ext.getCmp("DeviceControlValue_Id").setValue("");
+//                                                Ext.getCmp("DeviceControlValue_Id").setValue("");
 
                                                 Ext.getCmp("DeviceControlShowType_Id").setValue(2);
-                                                Ext.getCmp("DeviceControlValue_Id").show();
-                                                Ext.getCmp("DeviceControlValueCombo_Id").hide();
-                                                Ext.getCmp("DeviceControlValue_Id").setFieldLabel(o.data.item);
-                                                Ext.getCmp("DeviceControlValue_Id").setValue(o.data.value);
+//                                                Ext.getCmp("DeviceControlValue_Id").show();
+//                                                Ext.getCmp("DeviceControlValueCombo_Id").hide();
+//                                                Ext.getCmp("DeviceControlValue_Id").setFieldLabel(o.data.item);
+//                                                Ext.getCmp("DeviceControlValue_Id").setValue(o.data.value);
 
                                                 if (resolutionMode == 0) { //开关量
 
                                                 } else if (resolutionMode == 1 && itemMeaning.length > 0) { //枚举量
-                                                    Ext.getCmp("DeviceControlValue_Id").hide();
+//                                                    Ext.getCmp("DeviceControlValue_Id").hide();
                                                     Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
-                                                    Ext.getCmp("DeviceControlValueCombo_Id").setFieldLabel(o.data.item);
+//                                                    Ext.getCmp("DeviceControlValueCombo_Id").setFieldLabel(o.data.item);
                                                     var data = [];
                                                     for (var k = 0; k < itemMeaning.length; k++) {
                                                         data.push(itemMeaning[k]);
@@ -405,13 +414,13 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                         fields: ['boxkey', 'boxval'],
                                                         data: data
                                                     });
-                                                    Ext.getCmp("DeviceControlValueCombo_Id").setStore(controlTypeStore);
-                                                    Ext.getCmp("DeviceControlValueCombo_Id").show();
+//                                                    Ext.getCmp("DeviceControlValueCombo_Id").setStore(controlTypeStore);
+//                                                    Ext.getCmp("DeviceControlValueCombo_Id").show();
                                                 } else {
 
                                                 }
                                                 DeviceControlCheckPassWindow.show();
-                                                Ext.getCmp("DeviceControlValue_Id").setValue("");
+//                                                Ext.getCmp("DeviceControlValue_Id").setValue("");
                                             }
                                         });
                                     }, 50);
@@ -442,12 +451,12 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
             }
         },
         beforeload: function (store, options) {
-            var wellName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+            var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
             var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
             var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
             var new_params = {
                 deviceId: deviceId,
-                wellName: wellName,
+                deviceName: deviceName,
                 deviceType: deviceType
             };
             Ext.apply(store.proxy.extraParams, new_params);

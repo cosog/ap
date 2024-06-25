@@ -477,11 +477,33 @@ public class RealTimeMonitoringController extends BaseController {
 				url=Config.getInstance().configFile.getAd().getRw().getWriteAddr_ipPort();
 				readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr_ipPort();
 			}
-			String writeValue=controlValue+"";
-			if(quantity==1){
-				writeValue=StringManagerUtils.objectToString(controlValue, dataType)+"";
-			}
+			String writeValue="";
 			
+			if(dataType.equalsIgnoreCase("bcd") || dataType.equalsIgnoreCase("string") ){
+				if(quantity==1){
+					writeValue="\""+controlValue+"\"";
+				}else if(quantity>1){
+					String [] writeValueArr=controlValue.split(",");
+					for(int i=0;i<writeValueArr.length;i++){
+						writeValue+="\""+writeValueArr[i]+"\"";
+						if(i!=writeValueArr.length-1){
+							writeValue+=",";
+						}
+					}
+				}
+			}else{
+				if(quantity==1){
+					writeValue=StringManagerUtils.objectToString(controlValue, dataType)+"";
+				}else if(quantity>1){
+					String [] writeValueArr=controlValue.split(",");
+					for(int i=0;i<writeValueArr.length;i++){
+						writeValue+=StringManagerUtils.objectToString(writeValueArr[i], dataType)+"";
+						if(i!=writeValueArr.length-1){
+							writeValue+=",";
+						}
+					}
+				}
+			}
 			
 			if(StringManagerUtils.isNotNull(title) && addr!=-99){
 				String ctrlJson="{"
@@ -495,7 +517,7 @@ public class RealTimeMonitoringController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
-				System.out.println(ctrlJson);
+//				System.out.println(ctrlJson);
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
 				if(StringManagerUtils.isNotNull(responseStr)){
@@ -589,6 +611,8 @@ public class RealTimeMonitoringController extends BaseController {
 		String deviceType = request.getParameter("deviceType");
 		String controlType = request.getParameter("controlType");
 		String controlValue = request.getParameter("controlValue");
+		String storeDataType = request.getParameter("storeDataType");
+		String quantity = request.getParameter("quantity");
 		String jsonLogin = "";
 		String clientIP=StringManagerUtils.getIpAddr(request);
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
@@ -596,7 +620,11 @@ public class RealTimeMonitoringController extends BaseController {
 		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
-			if (StringManagerUtils.isNumber(controlValue)) {
+			if (storeDataType.equalsIgnoreCase("bcd") 
+					|| storeDataType.equalsIgnoreCase("string") 
+					|| (!StringManagerUtils.isNotNull(controlValue)) 
+					|| StringManagerUtils.isNumber(controlValue)
+					|| StringManagerUtils.stringToInteger(quantity)>1 ) {
 				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.id="+deviceId;

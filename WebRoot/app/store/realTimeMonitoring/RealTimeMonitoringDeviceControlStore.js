@@ -390,6 +390,8 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
 
                                                 Ext.getCmp("DeviceControlType_Id").setValue(o.data.itemcode);
                                                 Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
+                                                Ext.getCmp("DeviceControlStoreDataType_Id").setValue(o.data.storeDataType);
+                                                Ext.getCmp("DeviceControlQuantity_Id").setValue(o.data.quantity);
 
 //                                                Ext.getCmp("DeviceControlValue_Id").setValue("");
 

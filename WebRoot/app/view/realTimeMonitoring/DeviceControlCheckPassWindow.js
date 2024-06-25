@@ -14,9 +14,9 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 450,
+    width: 500,
     minWidth: 500,
-    height: 600,
+    height: 310,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     padding:0,
@@ -50,6 +50,16 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 value: 0,
                 hidden: true
             },{
+                id: 'DeviceControlStoreDataType_Id',//存储数据类型
+                xtype: 'textfield',
+                value: '',
+                hidden: true
+            },{
+                id: 'DeviceControlQuantity_Id',//存储数据类型
+                xtype: 'textfield',
+                value: 0,
+                hidden: true
+            },{
                 id: 'DeviceControlType_Id',//控制项
                 xtype: 'textfield',
                 value: '',
@@ -65,54 +75,78 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                     });
                 	all_loading.show();
                 	
+                	var isValid=true;
                 	var controlValue='';
+                	var storeDataType= Ext.getCmp('DeviceControlStoreDataType_Id').getValue();
+                	var quantity= Ext.getCmp('DeviceControlQuantity_Id').getValue();
                 	if(deviceControlValueHandsontableHelper!=null && deviceControlValueHandsontableHelper.hot!=null){
                 		var controlValueData=deviceControlValueHandsontableHelper.hot.getData();
                 		for(var i=0;i<controlValueData.length;i++){
-                			controlValue+=controlValueData[i][1];
+                			
+                			if(isNotVal(controlValueData[i][1])){
+                				controlValue+=controlValueData[i][1];
+                			}else{
+                				controlValue+=" ";
+                			}
+                			
                 			if(i<controlValueData.length-1){
                 				controlValue+=',';
                 			}
+                			if( !(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING') ){
+                				if( isNotVal(controlValueData[i][1]) && (!isNumber(controlValueData[i][1])) ){
+                					isValid=false;
+                				}
+                			}
                 		}
+                	}else{
+                		isValid=false;
+                	}
+                	if(isValid){
+                		Ext.Ajax.request({
+                            url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+                            method: "POST",
+                            params: {
+                            	deviceId: Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
+                            	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
+                            	deviceType: Ext.getCmp('DeviceControlDeviceType_Id').getValue(),
+                                controlType: Ext.getCmp('DeviceControlType_Id').getValue(),
+                                controlValue: controlValue,
+                                storeDataType: storeDataType,
+                                quantity: quantity
+                            },
+                            success: function (response, action) {
+                            	all_loading.hide();
+                            	var result =  Ext.JSON.decode(response.responseText);
+                            	
+                            	if (result.flag == false) {
+                            		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                                    Ext.MessageBox.show({
+                                        title: cosog.string.ts,
+                                        msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                        icon: Ext.MessageBox.INFO,
+                                        buttons: Ext.Msg.OK,
+                                        fn: function () {
+                                            window.location.href = context + "/login/toLogin";
+                                        }
+                                    });
+                                } else if (result.flag == true && result.error == false) {
+                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + result.msg + "</font>");
+                                }  else if (result.flag == true && result.error == true) {
+                                	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + result.msg + "</font>");
+                                } 
+                            },
+                            failure: function () {
+                            	all_loading.hide();
+                            	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                            }
+                        });
+                	}else{
+                		all_loading.hide();
+                		Ext.Msg.alert(cosog.string.ts, "<font color=red>数据格式有误，请检查！</font>");
                 	}
                 	
-                	Ext.Ajax.request({
-                        url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
-                        method: "POST",
-                        params: {
-                        	deviceId:Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
-                        	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
-                        	deviceType: Ext.getCmp('DeviceControlDeviceType_Id').getValue(),
-                            controlType:Ext.getCmp('DeviceControlType_Id').getValue(),
-                            controlValue:controlValue
-                        },
-                        success: function (response, action) {
-                        	all_loading.hide();
-                        	if (action.result.flag == false) {
-                        		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                                Ext.MessageBox.show({
-                                    title: cosog.string.ts,
-                                    msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
-                                    icon: Ext.MessageBox.INFO,
-                                    buttons: Ext.Msg.OK,
-                                    fn: function () {
-                                        window.location.href = context + "/login/toLogin";
-                                    }
-                                });
-
-                            } else if (action.result.flag == true && action.result.error == false) {
-                                Ext.Msg.alert(cosog.string.ts, "<font color=red>" + action.result.msg + "</font>");
-                            }  else if (action.result.flag == true && action.result.error == true) {
-                            	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                                Ext.Msg.alert(cosog.string.ts, "<font color=red>" + action.result.msg + "</font>");
-                            } 
-                        },
-                        failure: function () {
-                        	all_loading.hide();
-                        	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
-                        }
-                    });
             	}
             }, {
                 text: cosog.string.cancel,
@@ -168,6 +202,7 @@ function CreateDeviceControlValueTable(){
 	var deviceName= Ext.getCmp('DeviceControlDeviceName_Id').getValue();
 	var deviceType= Ext.getCmp('DeviceControlDeviceType_Id').getValue();
 	var controlType= Ext.getCmp('DeviceControlType_Id').getValue();
+	var storeDataType= Ext.getCmp('DeviceControlStoreDataType_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getDeviceControlValueList',
@@ -177,9 +212,13 @@ function CreateDeviceControlValueTable(){
 				deviceControlValueHandsontableHelper = DeviceControlValueHandsontableHelper.createNew("DeviceControlValueTableDiv_Id");
 				var colHeaders="['序号','数值']";
 				var columns="[" 
-						+"{data:'index'}," 
-						+"{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,deviceControlValueHandsontableHelper);}}" 
-						+"]";
+						+"{data:'index'}," ;
+				if(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING'){
+					columns+="{data:'value'}";
+				}else{
+					columns+="{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceControlValueHandsontableHelper);}}" 
+				}
+				columns+="]";
 				deviceControlValueHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceControlValueHandsontableHelper.columns=Ext.JSON.decode(columns);
 				deviceControlValueHandsontableHelper.createTable(result.totalRoot);

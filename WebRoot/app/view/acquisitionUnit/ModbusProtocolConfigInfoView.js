@@ -630,6 +630,16 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 						item.IFDataType=driverConfigItemsData[i][7];
 						item.Prec=item.IFDataType.toLowerCase().indexOf('float')>=0?(driverConfigItemsData[i][8]==''?0:driverConfigItemsData[i][8]):0;
 						item.Ratio=parseFloat(driverConfigItemsData[i][9]);
+						
+						if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.1){
+							item.Prec=1;
+						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.01){
+							item.Prec=2;
+						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.001){
+							item.Prec=3;
+						}
+						
+						
 						item.Unit=driverConfigItemsData[i][10];
 						item.ResolutionMode=driverConfigItemsData[i][11];
 						if(i==AddrMappingItemsSelectRow){

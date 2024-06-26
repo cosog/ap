@@ -48,8 +48,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         					border: false
         				};
             			if(j==0){
-            				secondTabPanel.items=[];
-            				secondTabPanel.items.push(HistoryQueryInfoPanel);
+            				if(i==0){
+            					secondTabPanel.items=[];
+                				secondTabPanel.items.push(HistoryQueryInfoPanel);
+            				}
+            				
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);

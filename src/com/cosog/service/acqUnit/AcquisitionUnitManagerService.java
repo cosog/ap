@@ -3040,7 +3040,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec,"
 				+ "t.dataSource, decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计','') as totalType"
 				+ " from tbl_report_items2unit_conf t "
-				+ " where t.unitid="+unitId+" and t.reportType="+reportType
+				+ " where t.unitid="+StringManagerUtils.stringToInteger(unitId)+" and t.reportType="+reportType
 				+ " order by t.sort";
 		
 		List<?> list=this.findCallSql(sql);

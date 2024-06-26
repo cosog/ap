@@ -50,8 +50,10 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         						border: false
         				};
             			if(j==0){
-            				secondTabPanel.items=[];
-            				secondTabPanel.items.push(DeviceInfoPanel);
+            				if(i==0){
+            					secondTabPanel.items=[];
+                				secondTabPanel.items.push(DeviceInfoPanel);
+            				}
                 		}
             			panelItem.items.push(secondTabPanel);
         			}

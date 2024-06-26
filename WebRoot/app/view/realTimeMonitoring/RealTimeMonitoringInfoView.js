@@ -50,8 +50,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         						border: false
         				};
             			if(j==0){
-            				secondTabPanel.items=[];
-            				secondTabPanel.items.push(RealTimeMonitoringInfoPanel);
+            				if(i==0){
+            					secondTabPanel.items=[];
+                				secondTabPanel.items.push(RealTimeMonitoringInfoPanel);
+            				}
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
@@ -922,18 +924,26 @@ function loadAndInitRunStatusStat(all){
 		deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
 	}
 
-	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	if(isNotVal(Ext.getCmp(panelId))){
+		Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	}
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
+			
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initRealTimeMonitoringRunStatusStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

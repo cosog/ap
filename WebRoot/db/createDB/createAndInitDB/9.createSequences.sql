@@ -26,6 +26,20 @@ start with 3261
 increment by 1
 cache 20;
 
+create sequence SEQ_ALARMINFO_LATEST
+minvalue 1
+maxvalue 999999999999999999999999
+start with 81
+increment by 1
+cache 20;
+
+create sequence SEQ_ALARMINFO_HIST
+minvalue 1
+maxvalue 999999999999999999999999
+start with 81
+increment by 1
+cache 20;
+
 create sequence SEQ_ACQUISITIONGROUP
 minvalue 1
 maxvalue 9999999999999999999999999

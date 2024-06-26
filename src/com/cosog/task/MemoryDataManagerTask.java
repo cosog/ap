@@ -626,7 +626,9 @@ public class MemoryDataManagerTask {
 			if(!jedis.exists("DeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 			}
-			deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+			if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
+				deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{

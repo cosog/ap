@@ -665,6 +665,9 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"添加字段:"+addColumnName);
 						} catch (SQLException e) {
 							e.printStackTrace();
+						} finally{
+							if(pstmt!=null)
+		                		pstmt.close();  
 						}
 					}
 				}

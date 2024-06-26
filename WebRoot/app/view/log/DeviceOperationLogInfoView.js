@@ -53,8 +53,10 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         						border: false
         				};
             			if(j==0){
-            				secondTabPanel.items=[];
-            				secondTabPanel.items.push(DeviceOperationLogInfoPanel);
+            				if(i==0){
+            					secondTabPanel.items=[];
+                				secondTabPanel.items.push(DeviceOperationLogInfoPanel);
+            				}
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);

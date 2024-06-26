@@ -47,8 +47,10 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         					border: false
         				};
             			if(j==0){
-            				secondTabPanel.items=[];
-            				secondTabPanel.items.push(AlarmQueryInfoPanel);
+            				if(i==0){
+                				secondTabPanel.items=[];
+                				secondTabPanel.items.push(AlarmQueryInfoPanel);
+            				}
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);

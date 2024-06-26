@@ -69,8 +69,10 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         						border: false
         				};
             			if(j==0){
-            				secondTabPanel.items=[];
-            				secondTabPanel.items.push(DailyReportPanel);
+            				if(i==0){
+            					secondTabPanel.items=[];
+                				secondTabPanel.items.push(DailyReportPanel);
+            				}
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);

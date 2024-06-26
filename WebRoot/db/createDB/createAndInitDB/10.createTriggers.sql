@@ -1,4 +1,5 @@
 CREATE OR REPLACE TRIGGER BEF_HIBERNATE_SEQUENCE_INSERT
+CREATE OR REPLACE TRIGGER BEF_HIBERNATE_SEQUENCE_INSERT
 BEFORE INSERT ON TBL_DIST_ITEM
 FOR EACH ROW
 BEGIN
@@ -21,6 +22,18 @@ end;
 CREATE OR REPLACE TRIGGER trg_b_acqrawdata_i   before  insert on tbl_acqrawdata FOR EACH ROW
 BEGIN
   SELECT seq_acqrawdata.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_alarminfo_latest_i   before  insert on tbl_alarminfo_latest FOR EACH ROW
+BEGIN
+  SELECT seq_alarminfo_latest.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_alarminfo_hist_i   before  insert on tbl_alarminfo_hist FOR EACH ROW
+BEGIN
+  SELECT seq_alarminfo_hist.nextval INTO :new.id FROM dual;
 end;
 /
 

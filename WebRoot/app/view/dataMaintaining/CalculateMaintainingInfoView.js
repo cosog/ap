@@ -53,8 +53,10 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         						border: false
         				};
             			if(j==0){
-            				secondTabPanel.items=[];
-            				secondTabPanel.items.push(CalculateMaintainingInfoPanel);
+            				if(i==0){
+            					secondTabPanel.items=[];
+                				secondTabPanel.items.push(CalculateMaintainingInfoPanel);
+            				}
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);

@@ -227,7 +227,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 					 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}," 
 						+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
-						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
+						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
 						+"{data:'unit'}," 
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
 						+"]";
@@ -374,19 +374,19 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    	if (visualColIndex ==0) {
 								cellProperties.readOnly = true;
 			                }else if(visualColIndex==8){
-			                	var IFDataType='';
-			                	if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-			                		IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
-			                	}else{
-			                		if(protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType!=undefined   ){
-			                			IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType;
-			                		}
-			                	}
-			                	if(IFDataType==null || IFDataType.toUpperCase().indexOf('FLOAT')<0){
-			                		cellProperties.readOnly = true;
-			                	}else{
-			                		cellProperties.readOnly = false;
-			                	}
+//			                	var IFDataType='';
+//			                	if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
+//			                		IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
+//			                	}else{
+//			                		if(protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType!=undefined   ){
+//			                			IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType;
+//			                		}
+//			                	}
+//			                	if(IFDataType==null || IFDataType.toUpperCase().indexOf('FLOAT')<0){
+//			                		cellProperties.readOnly = true;
+//			                	}else{
+//			                		cellProperties.readOnly = false;
+//			                	}
 			                }
 	                    }else{
 	                    	cellProperties.readOnly = true;
@@ -628,16 +628,16 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 						item.RWType=driverConfigItemsData[i][5];
 						item.AcqMode=driverConfigItemsData[i][6];
 						item.IFDataType=driverConfigItemsData[i][7];
-						item.Prec=item.IFDataType.toLowerCase().indexOf('float')>=0?(driverConfigItemsData[i][8]==''?0:driverConfigItemsData[i][8]):0;
+						item.Prec=(item.IFDataType!=null && item.IFDataType.toLowerCase().indexOf('float')>=0)?(driverConfigItemsData[i][8]==''?0:driverConfigItemsData[i][8]):0;
 						item.Ratio=parseFloat(driverConfigItemsData[i][9]);
 						
-						if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.1){
-							item.Prec=1;
-						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.01){
-							item.Prec=2;
-						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.001){
-							item.Prec=3;
-						}
+//						if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.1){
+//							item.Prec=1;
+//						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.01){
+//							item.Prec=2;
+//						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.001){
+//							item.Prec=3;
+//						}
 						
 						
 						item.Unit=driverConfigItemsData[i][10];

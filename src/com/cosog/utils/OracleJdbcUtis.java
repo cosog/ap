@@ -216,6 +216,7 @@ public class OracleJdbcUtis {
 			pstmt = conn.prepareStatement(sql);
 			r = pstmt.executeUpdate();
 		} catch (SQLException e) {
+			r=-1;
 			e.printStackTrace();
 		}finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt);

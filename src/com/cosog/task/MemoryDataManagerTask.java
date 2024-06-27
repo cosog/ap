@@ -187,6 +187,7 @@ public class MemoryDataManagerTask {
 		try {
 			StringBuffer protocolBuff=null;
 			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype from TBL_PROTOCOL t where 1=1 ";
+//			sql+=" and t.devicetype<>2";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				sql+=" and t.name='"+protocolName+"'";
 			}	
@@ -3380,6 +3381,20 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return rtnItem;
+	}
+	
+	public static ModbusProtocolConfig.Protocol getProtocolByCode(String protocolCode){
+		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
+		ModbusProtocolConfig.Protocol protocol=null;
+		if(StringManagerUtils.isNotNull(protocolCode)){
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+					protocol=modbusProtocolConfig.getProtocol().get(i);
+					break;
+				}
+			}
+		}
+		return protocol;
 	}
 	
 	public static ModbusProtocolConfig.Protocol getProtocolByName(String protocolName){

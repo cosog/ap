@@ -591,6 +591,94 @@ public class EquipmentDriverServerTask {
 		return result;
 	}
 	
+	@SuppressWarnings({ "resource" })
+	public static int syncDataMappingTable2(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> acquisitionItemNameList=MemoryDataManagerTask.getAcquisitionItemNameList();
+		int result=0;
+		try {
+			//删除重复映射
+			try {
+				int delCount=0;
+				String queryDelItemSql="select count(1) from  (select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn) v where v.cn>1";
+				List<Object[]> queryDelItemList=OracleJdbcUtis.query(queryDelItemSql);
+				
+				if(queryDelItemList!=null && queryDelItemList.size()>0){
+					delCount=StringManagerUtils.stringToInteger(queryDelItemList.get(0)+"");
+				}
+				if(delCount>0){
+					String delSql="delete from TBL_DATAMAPPING t where t.id in ( select v2.id from"
+							+ " (select max(t1.id) as id,t1.mappingcolumn from TBL_DATAMAPPING t1 "
+							+ " where t1.mappingcolumn in ( select v.mappingcolumn from  "
+							+ " (select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn) v "
+							+ " where v.cn>1 )"
+							+ " group by t1.mappingcolumn) v2"
+							+ " )";
+					result=OracleJdbcUtis.executeSqlUpdate(delSql);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			//删除不存在的协议项映射
+			try {
+				String delSql="";
+				List<String> itemNameList=new ArrayList<>();
+				String queryItemSql="select t.name from TBL_DATAMAPPING t";
+				
+				List<Object[]> queryItemList=OracleJdbcUtis.query(queryItemSql);
+				for(int i=0;i<queryItemList.size();i++){
+					itemNameList.add(queryItemList.get(i)+"");
+				}
+				
+				for(String itemName:itemNameList){
+					if(!StringManagerUtils.existOrNot(acquisitionItemNameList, itemName, false)){
+						delSql="delete from tbl_datamapping t where t.name='"+itemName+"'";
+						result=OracleJdbcUtis.executeSqlUpdate(delSql);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			//添加映射
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+			MemoryDataManagerTask.loadProtocolMappingColumn();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			
+			for(int i=0;i<acquisitionItemNameList.size();i++){
+				if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnByTitleMap, acquisitionItemNameList.get(i),false)){
+					String addMappingColumn="";
+					int index=1;
+					while(true){
+						if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, addMappingColumn+index,false)){
+							addMappingColumn=addMappingColumn+index;
+							DataMapping dataMapping=new DataMapping();
+							dataMapping.setName(acquisitionItemNameList.get(i));
+							dataMapping.setMappingColumn(addMappingColumn);
+							loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
+							loadProtocolMappingColumnByTitleMap.put(dataMapping.getName(), dataMapping);
+							break;
+						}
+						index++;
+					}
+					
+					if(StringManagerUtils.isNotNull(addMappingColumn)){
+						String addSql="insert into tbl_datamapping(name,mappingcolumn) values('"+acquisitionItemNameList.get(i)+"','"+addMappingColumn+"')";
+						result=OracleJdbcUtis.executeSqlUpdate(addSql);
+					}
+					
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		MemoryDataManagerTask.loadProtocolMappingColumn();
+		return result;
+	}
+	
 	public static int syncProtocolRunStatusConfig(){
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		if(modbusProtocolConfig==null){

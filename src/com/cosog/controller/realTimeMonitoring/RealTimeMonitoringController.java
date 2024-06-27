@@ -441,15 +441,7 @@ public class RealTimeMonitoringController extends BaseController {
 			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
 			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();
 			
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			
-			ModbusProtocolConfig.Protocol protocol=null;
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(i);
-					break;
-				}
-			}
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 			int addr=-99;
 			String dataType="";
 			String title="";

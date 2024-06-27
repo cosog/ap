@@ -585,7 +585,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		AcquisitionGroupItem acquisitionGroupItem = null;
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		try {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
@@ -603,14 +602,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				groupName=obj[1]+"";
 			}
 			
-			ModbusProtocolConfig.Protocol protocol=null;
-			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(j);
-					break;
-				}
-			}
-			
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 			if (StringManagerUtils.isNotNull(groupId) && protocol!=null) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
@@ -814,7 +806,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
 		int dataSaveMode=1;
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try {
@@ -826,13 +817,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			log.debug("grantAcquisitionItemsPermission params==" + params);
 			String paramsArr[] = StringManagerUtils.split(params, ",");
 			
-			ModbusProtocolConfig.Protocol protocol=null;
-			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(j);
-					break;
-				}
-			}
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);

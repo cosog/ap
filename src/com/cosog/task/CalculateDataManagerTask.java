@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +19,16 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.cosog.model.KeyValue;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.DeviceInfo;
+import com.cosog.model.calculate.DeviceInfo.DailyTotalItem;
 import com.cosog.utils.Config;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Component("calculateDataManagerTast")  
 public class CalculateDataManagerTask {
@@ -296,215 +302,283 @@ public class CalculateDataManagerTask {
         }), initDelay, interval, TimeUnit.MILLISECONDS);
     }
 	
-	public static void acquisitionDataTotalCalculate(String deviceId,String date){
-		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_acqdata_hist");
-		List<String> totalTableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_dailycalculationdata");
+	public static void acquisitionDataTotalCalculate(String deviceIdStr,String date){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,Config.getInstance().configFile.getAp().getReport().getOffsetHour());
+		String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
+		String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
+				+ " from tbl_dailytotalcalculate_hist t,"
+				+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  "
+				+ "  from tbl_dailytotalcalculate_hist "
+				+ "  where acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ "  group by deviceid,itemcolumn) v "
+				+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
+				+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
+		sql+=" from tbl_acqdata_hist t "
+			+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
+		if(StringManagerUtils.isNotNull(deviceIdStr)){
+			sql+=" and t.deviceid="+deviceIdStr;
+			newestDailyTotalDataSql+=" and t.deviceid="+deviceIdStr;
+		}
+		sql+="order by t.deviceid,t.acqTime";
+		newestDailyTotalDataSql+=" order by t.deviceid";
 		
-		List<String> columnList=new ArrayList<>();
-		for(int i=0;i<tableColumnList.size();i++){
-			if(StringManagerUtils.existOrNot(totalTableColumnList, tableColumnList.get(i), false)){
-				columnList.add(tableColumnList.get(i));
+		List<Object[]> totalList=OracleJdbcUtis.query(sql);
+		List<Object[]> newestDailyTotalDataList=OracleJdbcUtis.query(newestDailyTotalDataSql);
+		
+		Map< Integer,Map<String,List<KeyValue>> > acqDataMap=new LinkedHashMap<>();
+		
+		for(int i=0;i<totalList.size();i++){
+			Object[] obj=totalList.get(i);
+			int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+			String acqTime=obj[1]+"";
+			String acqData=StringManagerUtils.CLOBObjectToString(obj[2]);
+			
+			type = new TypeToken<List<KeyValue>>() {}.getType();
+			List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+			
+			if(acqDataMap.containsKey(deviceId)){
+				Map<String,List<KeyValue>> deviceAcqDataMap=acqDataMap.get(deviceId);
+				deviceAcqDataMap.put(acqTime, acqDataList);
+				acqDataMap.put(deviceId, deviceAcqDataMap);
+			}else{
+				Map<String,List<KeyValue>> deviceAcqDataMap=new LinkedHashMap<>();
+				deviceAcqDataMap.put(acqTime, acqDataList);
+				acqDataMap.put(deviceId, deviceAcqDataMap);
 			}
 		}
-		if(columnList.size()>0){
-			String sql="select deviceid";
-			String newestDataSql="select deviceid";
-			String oldestDataSql="select deviceid";
-			String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
-					+ " from tbl_dailytotalcalculate_hist t,"
-					+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  "
-					+ "  from tbl_dailytotalcalculate_hist "
-					+ "  where acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ "  group by deviceid,itemcolumn) v "
-					+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
-					+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
-			for(int i=0;i<columnList.size();i++){
-				String column=columnList.get(i);
-				sql+=",max(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
-						+ "'||min(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
-						+ "'||round(avg(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END),2) as "+column+"";
-				newestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
-				oldestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
-			}
-			
-			sql+=" from tbl_acqdata_hist t "
-				+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
-			newestDataSql+=" from tbl_acqdata_hist t"
-					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
-			oldestDataSql+=" from tbl_acqdata_hist t"
-					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
-			if(StringManagerUtils.isNotNull(deviceId)){
-				sql+=" and t.deviceid="+deviceId;
-				newestDataSql+=" and t.deviceid="+deviceId;
-				oldestDataSql+=" and t.deviceid="+deviceId;
-				
-				newestDailyTotalDataSql+=" and t.deviceid="+deviceId;
-			}else{
-				newestDataSql+=" and t.acqtime=(select min(t2.acqtime) from tbl_acqdata_hist t2 "
-						+ " where t2.deviceid=t.deviceid"
-						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
-						+ " )";
-				oldestDataSql+=" and t.acqtime=(select max(t2.acqtime) from tbl_acqdata_hist t2 "
-						+ " where t2.deviceid=t.deviceid"
-						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
-						+ " )";
-			}
-			
-			
-			if(StringManagerUtils.isNotNull(deviceId)){
-				newestDataSql+=" order by t.acqtime";
-				newestDataSql="select * from("+newestDataSql+") where rownum=1";
-				oldestDataSql+=" order by t.acqtime";
-				oldestDataSql="select * from("+oldestDataSql+") where rownum=1";
-			}
-			
-			
-			sql+="group by t.deviceid";
-			newestDailyTotalDataSql+=" order by t.deviceid";
-			
-			List<Object[]> totalList=OracleJdbcUtis.query(sql);
-			List<Object[]> newestValueList=OracleJdbcUtis.query(newestDataSql);
-			List<Object[]> oldestValueList=OracleJdbcUtis.query(oldestDataSql);
-			List<Object[]> newestDailyTotalDataList=OracleJdbcUtis.query(newestDailyTotalDataSql);
-			
-			for(int i=0;i<totalList.size();i++){
-				Object[] obj=totalList.get(i);
-				String deviceIdStr=obj[0]+"";
-				
-				Object[] newestValueObj=null;
-				Object[]oldestValueObj=null;
-				for(int j=0;j<newestValueList.size();j++){
-					if(deviceIdStr.equalsIgnoreCase(newestValueList.get(j)[0]+"")){
-						newestValueObj=newestValueList.get(j);
-						break;
-					}
-				}
-				for(int j=0;j<oldestValueList.size();j++){
-					if(deviceIdStr.equalsIgnoreCase(oldestValueList.get(j)[0]+"")){
-						oldestValueObj=oldestValueList.get(j);
-						break;
-					}
-				}
-				String updatesql="update tbl_dailycalculationdata t set t.deviceid="+deviceIdStr+"";
-				for(int j=1;j<obj.length;j++){
-					String oldestValue=oldestValueObj==null?" ":(oldestValueObj[j]+"");
-					String newestValue=oldestValueObj==null?" ":(newestValueObj[j]+"");
-					String dailyTotalValue=" ";
-					
-					String colnum=columnList.get(j-1);
-					String totalColumn=(colnum+"_total").toUpperCase();
-					
-					for(Object[] newestDailyTotalDataObj:newestDailyTotalDataList){
-						if(deviceIdStr.equalsIgnoreCase(newestDailyTotalDataObj[1]+"") && totalColumn.equalsIgnoreCase(newestDailyTotalDataObj[3]+"")){
+		
+		Iterator<Map.Entry< Integer,Map<String,List<KeyValue>> >> iterator = acqDataMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+			 Map.Entry< Integer,Map<String,List<KeyValue>> > entry = iterator.next();
+			 int deviceId = entry.getKey();
+			 Map<String,List<KeyValue>> deviceAcqDataMap = entry.getValue();
+			 
+			 List<KeyValue> deviceTotalDataList=new ArrayList<>();
+			 
+			 Map<String,List<String>> itemDataMap=new LinkedHashMap<>();
+			 
+			 Iterator<Map.Entry<String,List<KeyValue>>> deviceAcqDataIterator = deviceAcqDataMap.entrySet().iterator();
+			 while (deviceAcqDataIterator.hasNext()) {
+				 Map.Entry<String,List<KeyValue>> deviceAcqDataEntry = deviceAcqDataIterator.next();
+				 String acqTime=deviceAcqDataEntry.getKey();
+				 List<KeyValue> deviceAcqDataList=deviceAcqDataEntry.getValue();
+				 
+				 if(deviceAcqDataList!=null){
+					 for(KeyValue keyValue:deviceAcqDataList){
+						 if(itemDataMap.containsKey(keyValue.getKey())){
+							 List<String> itemDataList=itemDataMap.get(keyValue.getKey());
+							 itemDataList.add(keyValue.getValue());
+							 itemDataMap.put(keyValue.getKey(), itemDataList);
+						 }else{
+							 List<String> itemDataList=new ArrayList<>();
+							 itemDataList.add(keyValue.getValue());
+							 itemDataMap.put(keyValue.getKey(), itemDataList);
+						 }
+					 }
+				 }
+			 }
+			 
+			 if(itemDataMap.size()>0){
+				 Iterator<Map.Entry<String,List<String>>> itemDataMapIterator = itemDataMap.entrySet().iterator();
+				 while (itemDataMapIterator.hasNext()) {
+					 Map.Entry<String,List<String>> itemDataEntry = itemDataMapIterator.next();
+					 String itemCode=itemDataEntry.getKey();
+					 List<String> itemDataList=itemDataEntry.getValue();
+					 String maxValue=" ",minValue=" ",avgValue=" ",newestValue=" ",oldestValue=" ",dailyTotalValue=" ";
+					 
+					 if(itemDataList!=null && itemDataList.size()>0 ){
+						 oldestValue=itemDataList.get(0);
+						 newestValue=itemDataList.get(itemDataList.size()-1);
+						 
+						 maxValue=itemDataList.get(0);
+						 minValue=itemDataList.get(0);
+						 
+						 float sumValue=0;
+						 int count=0;
+						 for(String itemDataStr:itemDataList){
+							 if(StringManagerUtils.isNotNull(itemDataStr)){
+								 float itemData=StringManagerUtils.stringToFloat(itemDataStr);
+								 sumValue+=itemData;
+								 count++;
+								 if(StringManagerUtils.stringToFloat(maxValue)<itemData){
+									 maxValue=itemDataStr;
+								 }
+								 if(StringManagerUtils.stringToFloat(minValue)>itemData){
+									 minValue=itemDataStr;
+								 }
+							 }
+						 }
+						 if(count>0){
+							 avgValue=StringManagerUtils.stringToFloat((sumValue/count)+"",3)+"";
+						 }
+					 }
+					 
+					 
+					 String totalColumn=(itemCode+"_total").toUpperCase();
+					 for(Object[] newestDailyTotalDataObj:newestDailyTotalDataList){
+						if(deviceId==StringManagerUtils.stringToInteger(newestDailyTotalDataObj[1]+"") && totalColumn.equalsIgnoreCase(newestDailyTotalDataObj[3]+"")){
 							dailyTotalValue=newestDailyTotalDataObj[6]+"";
 							break;
 						}
 					}
-					
-					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
-					updatesql+=",t."+colnum+"='"+tatalValue+"'";
+					 
+					String tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					 
+					KeyValue keyValue=new KeyValue(itemCode,tatalValue);
+					deviceTotalDataList.add(keyValue);
 				}
-				updatesql+=" where t.deviceid="+deviceIdStr+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
-				OracleJdbcUtis.executeSqlUpdate(updatesql);
+			 }
+			 
+			 String updatesql="update tbl_dailycalculationdata t set t.calData=?  where t.deviceid="+deviceId+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+			 List<String> totalDataClobCont=new ArrayList<String>();
+			 totalDataClobCont.add(new Gson().toJson(deviceTotalDataList));
+			 try {
+				OracleJdbcUtis.executeSqlUpdateClob(updatesql, totalDataClobCont);
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
+	
 	}
 	
-	public static void acquisitionDataTimingTotalCalculate(String deviceId,String timeStr){
-		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_acqdata_hist");
-		List<String> totalTableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_dailycalculationdata");
-		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
-		int interval = Config.getInstance().configFile.getAp().getReport().getInterval();
+	public static void acquisitionDataTimingTotalCalculate(String deviceIdStr,String timeStr){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		String date=timeStr.split(" ")[0];
-		if(!StringManagerUtils.timeMatchDate(timeStr, date, offsetHour)){
-			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
-		}
-		CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,offsetHour);
-		
-		List<String> columnList=new ArrayList<>();
-		for(int i=0;i<tableColumnList.size();i++){
-			if(StringManagerUtils.existOrNot(totalTableColumnList, tableColumnList.get(i), false)){
-				columnList.add(tableColumnList.get(i));
-			}
-		}
-		if(columnList.size()>0){
-			String sql="select deviceid";
-			String newestDataSql="select deviceid";
-			String oldestDataSql="select deviceid";
-			for(int i=0;i<columnList.size();i++){
-				String column=columnList.get(i);
-				sql+=",max(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
-						+ "'||min(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END)||';"
-						+ "'||round(avg(CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END),2) as "+column+"";
-				newestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
-				oldestDataSql+=",CASE WHEN REGEXP_LIKE(t."+column+", '^(-)*[[:digit:]]+(\\.[[:digit:]]+)*([Ee][+-]?[[:digit:]]+)*$') THEN t."+column+" ELSE null END as "+column;
-			}
-			
-			sql+=" from tbl_acqdata_hist t "
+		CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,Config.getInstance().configFile.getAp().getReport().getOffsetHour());
+		String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
+		String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
+				+ " from tbl_dailytotalcalculate_hist t,"
+				+ " (select deviceid,max(acqtime) as acqtime,itemcolumn  "
+				+ "  from tbl_dailytotalcalculate_hist "
+				+ "  where acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+				+ "  group by deviceid,itemcolumn) v "
+				+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
+				+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+		sql+=" from tbl_acqdata_hist t "
 				+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
-			newestDataSql+=" from tbl_acqdata_hist t"
-					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
-			oldestDataSql+=" from tbl_acqdata_hist t"
-					+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
-			if(StringManagerUtils.isNotNull(deviceId)){
-				sql+=" and t.deviceid="+deviceId;
-				newestDataSql+=" and t.deviceid="+deviceId;
-				oldestDataSql+=" and t.deviceid="+deviceId;
+		if(StringManagerUtils.isNotNull(deviceIdStr)){
+			sql+=" and t.deviceid="+deviceIdStr;
+			newestDailyTotalDataSql+=" and t.deviceid="+deviceIdStr;
+		}
+		sql+="order by t.deviceid,t.acqTime";
+		newestDailyTotalDataSql+=" order by t.deviceid";
+		
+		List<Object[]> totalList=OracleJdbcUtis.query(sql);
+		List<Object[]> newestDailyTotalDataList=OracleJdbcUtis.query(newestDailyTotalDataSql);
+		
+		Map< Integer,Map<String,List<KeyValue>> > acqDataMap=new LinkedHashMap<>();
+		
+		for(int i=0;i<totalList.size();i++){
+			Object[] obj=totalList.get(i);
+			int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+			String acqTime=obj[1]+"";
+			String acqData=StringManagerUtils.CLOBObjectToString(obj[2]);
+			
+			type = new TypeToken<List<KeyValue>>() {}.getType();
+			List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+			
+			if(acqDataMap.containsKey(deviceId)){
+				Map<String,List<KeyValue>> deviceAcqDataMap=acqDataMap.get(deviceId);
+				deviceAcqDataMap.put(acqTime, acqDataList);
+				acqDataMap.put(deviceId, deviceAcqDataMap);
 			}else{
-				newestDataSql+=" and t.acqtime=(select min(t2.acqtime) from tbl_acqdata_hist t2 "
-						+ " where t2.deviceid=t.deviceid"
-						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-						+ " )";
-				oldestDataSql+=" and t.acqtime=(select max(t2.acqtime) from tbl_acqdata_hist t2 "
-						+ " where t2.deviceid=t.deviceid"
-						+ " and t2.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
-						+ " )";
+				Map<String,List<KeyValue>> deviceAcqDataMap=new LinkedHashMap<>();
+				deviceAcqDataMap.put(acqTime, acqDataList);
+				acqDataMap.put(deviceId, deviceAcqDataMap);
 			}
-			
-			
-			if(StringManagerUtils.isNotNull(deviceId)){
-				newestDataSql+=" order by t.acqtime";
-				newestDataSql="select * from("+newestDataSql+") where rownum=1";
-				oldestDataSql+=" order by t.acqtime";
-				oldestDataSql="select * from("+oldestDataSql+") where rownum=1";
-			}
-			
-			
-			sql+="group by t.deviceid";
-			
-			
-			List<Object[]> totalList=OracleJdbcUtis.query(sql);
-			List<Object[]> newestValueList=OracleJdbcUtis.query(newestDataSql);
-			List<Object[]> oldestValueList=OracleJdbcUtis.query(oldestDataSql);
-			
-			for(int i=0;i<totalList.size();i++){
-				Object[] obj=totalList.get(i);
-				String deviceIdStr=obj[0]+"";
-				Object[] newestValueObj=null;
-				Object[]oldestValueObj=null;
-				for(int j=0;j<newestValueList.size();j++){
-					if(deviceIdStr.equalsIgnoreCase(newestValueList.get(j)[0]+"")){
-						newestValueObj=newestValueList.get(j);
-						break;
+		}
+		
+		Iterator<Map.Entry< Integer,Map<String,List<KeyValue>> >> iterator = acqDataMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+			 Map.Entry< Integer,Map<String,List<KeyValue>> > entry = iterator.next();
+			 int deviceId = entry.getKey();
+			 Map<String,List<KeyValue>> deviceAcqDataMap = entry.getValue();
+			 
+			 List<KeyValue> deviceTotalDataList=new ArrayList<>();
+			 
+			 Map<String,List<String>> itemDataMap=new LinkedHashMap<>();
+			 
+			 Iterator<Map.Entry<String,List<KeyValue>>> deviceAcqDataIterator = deviceAcqDataMap.entrySet().iterator();
+			 while (deviceAcqDataIterator.hasNext()) {
+				 Map.Entry<String,List<KeyValue>> deviceAcqDataEntry = deviceAcqDataIterator.next();
+				 String acqTime=deviceAcqDataEntry.getKey();
+				 List<KeyValue> deviceAcqDataList=deviceAcqDataEntry.getValue();
+				 
+				 if(deviceAcqDataList!=null){
+					 for(KeyValue keyValue:deviceAcqDataList){
+						 if(itemDataMap.containsKey(keyValue.getKey())){
+							 List<String> itemDataList=itemDataMap.get(keyValue.getKey());
+							 itemDataList.add(keyValue.getValue());
+							 itemDataMap.put(keyValue.getKey(), itemDataList);
+						 }else{
+							 List<String> itemDataList=new ArrayList<>();
+							 itemDataList.add(keyValue.getValue());
+							 itemDataMap.put(keyValue.getKey(), itemDataList);
+						 }
+					 }
+				 }
+			 }
+			 
+			 if(itemDataMap.size()>0){
+				 Iterator<Map.Entry<String,List<String>>> itemDataMapIterator = itemDataMap.entrySet().iterator();
+				 while (itemDataMapIterator.hasNext()) {
+					 Map.Entry<String,List<String>> itemDataEntry = itemDataMapIterator.next();
+					 String itemCode=itemDataEntry.getKey();
+					 List<String> itemDataList=itemDataEntry.getValue();
+					 String maxValue=" ",minValue=" ",avgValue=" ",newestValue=" ",oldestValue=" ",dailyTotalValue=" ";
+					 
+					 if(itemDataList!=null && itemDataList.size()>0 ){
+						 oldestValue=itemDataList.get(0);
+						 newestValue=itemDataList.get(itemDataList.size()-1);
+						 
+						 maxValue=itemDataList.get(0);
+						 minValue=itemDataList.get(0);
+						 
+						 float sumValue=0;
+						 int count=0;
+						 for(String itemDataStr:itemDataList){
+							 if(StringManagerUtils.isNotNull(itemDataStr)){
+								 float itemData=StringManagerUtils.stringToFloat(itemDataStr);
+								 sumValue+=itemData;
+								 count++;
+								 if(StringManagerUtils.stringToFloat(maxValue)<itemData){
+									 maxValue=itemDataStr;
+								 }
+								 if(StringManagerUtils.stringToFloat(minValue)>itemData){
+									 minValue=itemDataStr;
+								 }
+							 }
+						 }
+						 if(count>0){
+							 avgValue=StringManagerUtils.stringToFloat((sumValue/count)+"",3)+"";
+						 }
+					 }
+					 
+					 String totalColumn=(itemCode+"_total").toUpperCase();
+					 for(Object[] newestDailyTotalDataObj:newestDailyTotalDataList){
+						if(deviceId==StringManagerUtils.stringToInteger(newestDailyTotalDataObj[1]+"") && totalColumn.equalsIgnoreCase(newestDailyTotalDataObj[3]+"")){
+							dailyTotalValue=newestDailyTotalDataObj[6]+"";
+							break;
+						}
 					}
+					 
+					String tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					 
+					KeyValue keyValue=new KeyValue(itemCode,tatalValue);
+					deviceTotalDataList.add(keyValue);
 				}
-				for(int j=0;j<oldestValueList.size();j++){
-					if(deviceIdStr.equalsIgnoreCase(oldestValueList.get(j)[0]+"")){
-						oldestValueObj=oldestValueList.get(j);
-						break;
-					}
-				}
-				String updatesql="update tbl_dailycalculationdata set t.deviceid="+deviceIdStr+"";
-				for(int j=1;j<obj.length;j++){
-					String oldestValue=oldestValueObj==null?"":(oldestValueObj[j]+"");
-					String newestValue=oldestValueObj==null?"":(newestValueObj[j]+"");
-					String tatalValue=(obj[j]+";"+oldestValue+";"+newestValue).replaceAll("null", "");
-					String colnum=columnList.get(j-1);
-					updatesql+=",t."+colnum+"='"+tatalValue+"'";
-				}
-				updatesql+=" where t.deviceid="+deviceIdStr+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
-				OracleJdbcUtis.executeSqlUpdate(updatesql);
+			 }
+			 
+			 String updatesql="update tbl_timingcalculationdata t set t.calData=?  where t.deviceid="+deviceId+" and t.caltime=to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+			 List<String> totalDataClobCont=new ArrayList<String>();
+			 totalDataClobCont.add(new Gson().toJson(deviceTotalDataList));
+			 try {
+				OracleJdbcUtis.executeSqlUpdateClob(updatesql, totalDataClobCont);
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 	}

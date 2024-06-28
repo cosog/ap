@@ -194,16 +194,24 @@ public class OracleJdbcUtis {
         }  
     }
 	
-	public static int executeSqlUpdateClob(Connection conn,PreparedStatement ps,String sql,List<String> values) throws SQLException {
+	public static int executeSqlUpdateClob(String sql,List<String> values) throws SQLException {
 		int n = 0;
-		for(int i=0;i<values.size();i++){
-			CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
-			clob.putString(1,  values.get(i)); 
-			ps.setClob(i+1, clob);  
+		Connection conn=null;
+		PreparedStatement ps = null;
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			ps=conn.prepareStatement(sql);
+			for(int i=0;i<values.size();i++){
+				CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
+				clob.putString(1,  values.get(i)); 
+				ps.setClob(i+1, clob);  
+			}
+			n=ps.executeUpdate();  
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, ps);
 		}
-		n=ps.executeUpdate();  
-//		ps.close();  
-//		conn.commit(); 
 		return n;
 	}
 	

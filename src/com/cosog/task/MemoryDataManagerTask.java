@@ -24,6 +24,7 @@ import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DataSourceConfig;
 import com.cosog.model.DataWriteBackConfig;
+import com.cosog.model.KeyValue;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.VideoKey;
@@ -261,75 +262,75 @@ public class MemoryDataManagerTask {
 		StringManagerUtils.printLog("驱动加载结束");
 	}
 	
-	public static List<String> getAcqTableColumn(String tableName){
-		List<String> tableColumnList=new ArrayList<>();
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		String sql="select t.COLUMN_NAME from user_tab_cols t "
-				+ " where t.TABLE_NAME=UPPER('"+tableName+"') "
-				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
-				+ " order by t.COLUMN_ID";
-		try {
-			conn=OracleJdbcUtis.getConnection();
-			if(conn!=null){
-	        	pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
-					String columnName=rs.getString(1);
-					tableColumnList.add(columnName);
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		return tableColumnList;
-	}
+//	public static List<String> getAcqTableColumn(String tableName){
+//		List<String> tableColumnList=new ArrayList<>();
+//		Connection conn = null;   
+//		PreparedStatement pstmt = null;   
+//		ResultSet rs = null;
+//		String sql="select t.COLUMN_NAME from user_tab_cols t "
+//				+ " where t.TABLE_NAME=UPPER('"+tableName+"') "
+//				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
+//				+ " order by t.COLUMN_ID";
+//		try {
+//			conn=OracleJdbcUtis.getConnection();
+//			if(conn!=null){
+//	        	pstmt = conn.prepareStatement(sql);
+//				rs=pstmt.executeQuery();
+//				while(rs.next()){
+//					String columnName=rs.getString(1);
+//					tableColumnList.add(columnName);
+//				}
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally{
+//			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+//		}
+//		return tableColumnList;
+//	}
 	
-	public static int loadAcqTableColumn(){
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		List<String> tableColumnList=new ArrayList<>();
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		int result=0;
-		String sql="select t.COLUMN_NAME from user_tab_cols t "
-				+ " where t.TABLE_NAME=UPPER('TBL_ACQDATA_LATEST') "
-				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
-				+ " order by t.COLUMN_ID";
-		try {
-			conn=OracleJdbcUtis.getConnection();
-			if(conn==null){
-				result= -1;
-	        }else{
-	        	pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
-					String columnName=rs.getString(1);
-					tableColumnList.add(columnName);
-				}
-	        }
-		} catch (SQLException e) {
-			result= -1;
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		dataModelMap.put("acqTableColumnList", tableColumnList);
-		return result;
-	}
+//	public static int loadAcqTableColumn(){
+//		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+//		List<String> tableColumnList=new ArrayList<>();
+//		Connection conn = null;   
+//		PreparedStatement pstmt = null;   
+//		ResultSet rs = null;
+//		int result=0;
+//		String sql="select t.COLUMN_NAME from user_tab_cols t "
+//				+ " where t.TABLE_NAME=UPPER('TBL_ACQDATA_LATEST') "
+//				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
+//				+ " order by t.COLUMN_ID";
+//		try {
+//			conn=OracleJdbcUtis.getConnection();
+//			if(conn==null){
+//				result= -1;
+//	        }else{
+//	        	pstmt = conn.prepareStatement(sql);
+//				rs=pstmt.executeQuery();
+//				while(rs.next()){
+//					String columnName=rs.getString(1);
+//					tableColumnList.add(columnName);
+//				}
+//	        }
+//		} catch (SQLException e) {
+//			result= -1;
+//			e.printStackTrace();
+//		} finally{
+//			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+//		}
+//		dataModelMap.put("acqTableColumnList", tableColumnList);
+//		return result;
+//	}
 	
-	public static List<String> getAcqTableColumn(){
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		List<String> tableColumnList=new ArrayList<>();
-		if(!dataModelMap.containsKey("acqTableColumnList") || dataModelMap.get("acqTableColumnList")==null){
-			loadAcqTableColumn();
-		}
-		tableColumnList=(List<String>) dataModelMap.get("acqTableColumnList");
-		return tableColumnList;
-	}
+//	public static List<String> getAcqTableColumn(){
+//		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+//		List<String> tableColumnList=new ArrayList<>();
+//		if(!dataModelMap.containsKey("acqTableColumnList") || dataModelMap.get("acqTableColumnList")==null){
+//			loadAcqTableColumn();
+//		}
+//		tableColumnList=(List<String>) dataModelMap.get("acqTableColumnList");
+//		return tableColumnList;
+//	}
 	
 	public static void loadAcquisitionItemNameList(){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
@@ -635,6 +636,20 @@ public class MemoryDataManagerTask {
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
 				jedis.close();
+			}
+		}
+		return deviceInfo;
+	}
+	
+	public static DeviceInfo getDeviceInfo(String signInId,int slave){
+		List<DeviceInfo> deviceInfoList=getDeviceInfo();
+		DeviceInfo deviceInfo=null;
+		if(deviceInfoList!=null){
+			for(int i=0;i<deviceInfoList.size();i++){
+				if(signInId.equalsIgnoreCase(deviceInfoList.get(i).getSignInId()) && slave==StringManagerUtils.stringToInteger(deviceInfoList.get(i).getSlave())){
+					deviceInfo=deviceInfoList.get(i);
+					break;
+				}
 			}
 		}
 		return deviceInfo;
@@ -979,48 +994,15 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceRealtimeAcqData(List<String> deviceIdList){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		Jedis jedis=null;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Jedis jedis=null;
 		try {
-			conn=OracleJdbcUtis.getConnection();
-			if(conn==null){
-	        	return;
-	        }
+			
 			jedis = RedisUtil.jedisPool.getResource();
 			
-			if(!jedis.exists("rpcCalItemList".getBytes())){
-				MemoryDataManagerTask.loadRPCCalculateItem();
-			}
-			if(!jedis.exists("pcpCalItemList".getBytes())){
-				MemoryDataManagerTask.loadPCPCalculateItem();
-			}
-			
-			
-			List<byte[]> rpcCalItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
-			List<CalItem> rpcCalItemList=new ArrayList<>();
-			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
-				if(calItem.getDataType()==2){
-					if(!"TodayKWattH".equalsIgnoreCase(calItem.getCode())){
-						rpcCalItemList.add(calItem);
-					}
-				}
-			}
-			
-			List<byte[]> pcpCalItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
-			List<CalItem> pcpCalItemList=new ArrayList<>();
-			for(byte[] pcpCalItemByteArr:pcpCalItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(pcpCalItemByteArr);
-				if(calItem.getDataType()==2){
-					if(!"TodayKWattH".equalsIgnoreCase(calItem.getCode())){
-						pcpCalItemList.add(calItem);
-					}
-				}
-			}
+			List<CalItem> rpcCalItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
 			
 			String date=StringManagerUtils.getCurrentTime();
 			
@@ -1050,48 +1032,50 @@ public class MemoryDataManagerTask {
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
 			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
-			List<String> queryAcqColumns=new ArrayList<>();
-			List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn("tbl_acqdata_hist");
-			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime";
-			for(String column:tableColumnList){
-				if(loadProtocolMappingColumnMap.containsKey(column)){
-					sql+=",t."+column;
-					queryAcqColumns.add(column);
-				}
-			}
+			
+			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
+			
 			sql+=" from tbl_acqdata_hist t "
 				+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
 				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
 			}
 			sql+=" order by t.deviceId,t.acqTime";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				int deviceId=rs.getInt(1);
-				String acqTime=rs.getString(2);
+			
+			List<Object[]> queryDataList=OracleJdbcUtis.query(sql);
+			
+			for(Object[] obj:queryDataList){
+				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+				String acqTime=obj[1]+"";
+				String acqData=StringManagerUtils.CLOBObjectToString(obj[2]);
+				
+				type = new TypeToken<List<KeyValue>>() {}.getType();
+				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+				
 				String key=deviceId+"";
 				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
 					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					
-					for(int i=0;i<queryAcqColumns.size();i++){
-						everyDataMap.put(queryAcqColumns.get(i).toUpperCase(), rs.getString(i+3));
+					if(acqDataList!=null){
+						for(int i=0;i<acqDataList.size();i++){
+							everyDataMap.put(acqDataList.get(i).getKey().toUpperCase(), acqDataList.get(i).getValue());
+						}
 					}
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
 					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}else{
 					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
-					for(int i=0;i<queryAcqColumns.size();i++){
-						everyDataMap.put(queryAcqColumns.get(i).toUpperCase(), rs.getString(i+3));
+					if(acqDataList!=null){
+						for(int i=0;i<acqDataList.size();i++){
+							everyDataMap.put(acqDataList.get(i).getKey().toUpperCase(), acqDataList.get(i).getValue());
+						}
 					}
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
 					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}
 			}
-			rs.close();
-			pstmt.close();
 			
 			//加载功图计算数据
 			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";
@@ -1104,13 +1088,13 @@ public class MemoryDataManagerTask {
 				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
 			}
 			sql+=" order by t.deviceId,t.acqTime";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				int deviceId=rs.getInt(1);
-				String acqTime=rs.getString(2);
+			
+			List<Object[]> queryRPCCalDataList=OracleJdbcUtis.query(sql);
+			for(Object[] obj:queryRPCCalDataList){
+				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+				String acqTime=obj[1]+"";
 				String key=deviceId+"";
-				String productionDataStr=rs.getString(3);
+				String productionDataStr=obj[2]+"";
 				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 				Map<String,String> productionDataMap=new LinkedHashMap<>();
@@ -1148,7 +1132,7 @@ public class MemoryDataManagerTask {
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					
 					for(int i=0;i<rpcCalItemList.size();i++){
-						everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
+						everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
 					}
 
 					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
@@ -1164,7 +1148,7 @@ public class MemoryDataManagerTask {
 					Map<String,String> everyDataMap =realtimeDataTimeMap.get(acqTime);
 					if(everyDataMap!=null){
 						for(int i=0;i<rpcCalItemList.size();i++){
-							everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
+							everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
 						}
 						
 						Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
@@ -1178,8 +1162,6 @@ public class MemoryDataManagerTask {
 					}
 				}
 			}
-			rs.close();
-			pstmt.close();
 			
 			//加载转速计产数据
 			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";
@@ -1192,14 +1174,13 @@ public class MemoryDataManagerTask {
 				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
 			}
 			sql+=" order by t.deviceId,t.acqTime";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				int deviceId=rs.getInt(1);
-				String acqTime=rs.getString(2);
+			
+			List<Object[]> queryPCPCalDataList=OracleJdbcUtis.query(sql);
+			for(Object[] obj:queryPCPCalDataList){
+				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+				String acqTime=obj[1]+"";
 				String key=deviceId+"";
-				
-				String productionDataStr=rs.getString(3);
+				String productionDataStr=obj[2]+"";
 				type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 				PCPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 				Map<String,String> productionDataMap=new LinkedHashMap<>();
@@ -1231,7 +1212,7 @@ public class MemoryDataManagerTask {
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					
 					for(int i=0;i<pcpCalItemList.size();i++){
-						everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
+						everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), obj[3]+"");
 					}
 					
 					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
@@ -1247,7 +1228,7 @@ public class MemoryDataManagerTask {
 					Map<String,String> everyDataMap =realtimeDataTimeMap.get(acqTime);
 					if(everyDataMap!=null){
 						for(int i=0;i<pcpCalItemList.size();i++){
-							everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), rs.getString(i+4));
+							everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), obj[3]+"");
 						}
 						
 						Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
@@ -1261,11 +1242,9 @@ public class MemoryDataManagerTask {
 					}
 				}
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
 				jedis.close();
 			}

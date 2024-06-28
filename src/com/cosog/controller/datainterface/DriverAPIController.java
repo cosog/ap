@@ -27,6 +27,7 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DataWriteBackConfig;
+import com.cosog.model.KeyValue;
 import com.cosog.model.Org;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.User;
@@ -690,21 +691,7 @@ public class DriverAPIController extends BaseController{
 			AcqGroup acqGroup=gson.fromJson(data, type);
 			if(acqGroup!=null){
 				jedis = RedisUtil.jedisPool.getResource();
-				DeviceInfo deviceInfo=null;
-				if(!jedis.exists("DeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-				for(int i=0;i<deviceInfoByteList.size();i++){
-					Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-					if (obj instanceof DeviceInfo) {
-						DeviceInfo memDeviceInfo=(DeviceInfo)obj;
-						if(acqGroup.getID().equalsIgnoreCase(memDeviceInfo.getSignInId()) && acqGroup.getSlave()==StringManagerUtils.stringToInteger(memDeviceInfo.getSlave())){
-							deviceInfo=memDeviceInfo;
-							break;
-						}
-					}
-				}
+				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(acqGroup.getID(), acqGroup.getSlave());
 				if(deviceInfo!=null){
 					this.DataProcessing(deviceInfo,acqGroup);
 				}else{
@@ -1073,7 +1060,8 @@ public class DriverAPIController extends BaseController{
 	
 	public List<ProtocolItemResolutionData> DataProcessing(DeviceInfo deviceInfo,String acqTime,AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,
 			AcqInstanceOwnItem acqInstanceOwnItem,
-			List<ProtocolItemResolutionData> calItemResolutionDataList){
+			List<ProtocolItemResolutionData> calItemResolutionDataList,
+			List<KeyValue> acqDataList){
 		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
@@ -1103,10 +1091,8 @@ public class DriverAPIController extends BaseController{
 						String unit=protocol.getItems().get(j).getUnit();
 						int sort=9999;
 						
-						String saveValue=rawValue;
-						if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
-							saveValue=rawValue.substring(0, 50);
-						}
+						KeyValue keyValue=new KeyValue(columnName,rawValue);
+						acqDataList.add(keyValue);
 						
 						if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 							AcqInstanceOwnItem.AcqItem thisAcqItem=null;
@@ -1693,6 +1679,7 @@ public class DriverAPIController extends BaseController{
 			String functionCode="deviceRealTimeMonitoringData";
 			if(acqGroup!=null){
 				String protocolName="";
+				List<KeyValue> acqDataList=new ArrayList<>();
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				if(acqInstanceOwnItem!=null){
 					protocolName=acqInstanceOwnItem.getProtocol();
@@ -1747,21 +1734,22 @@ public class DriverAPIController extends BaseController{
 					List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					
-					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList);
+					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList,acqDataList);
+										
 					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
 					
 					
-					Map<String,String> saveDataMap=DataProcessing(acqGroup,protocol);
+//					Map<String,String> saveDataMap=DataProcessing(acqGroup,protocol);
 					
-					Iterator<Map.Entry<String, String>> iterator = saveDataMap.entrySet().iterator();
-					while (iterator.hasNext()) {
-					    Map.Entry<String, String> entry = iterator.next();
-					    String key = entry.getKey();
-					    String value = entry.getValue();
-					    updateRealtimeData+=",t."+key+"='"+value+"'";
-						insertHistColumns+=","+key;
-						insertHistValue+=",'"+value+"'";
-					}
+//					Iterator<Map.Entry<String, String>> iterator = saveDataMap.entrySet().iterator();
+//					while (iterator.hasNext()) {
+//					    Map.Entry<String, String> entry = iterator.next();
+//					    String key = entry.getKey();
+//					    String value = entry.getValue();
+//					    updateRealtimeData+=",t."+key+"='"+value+"'";
+//						insertHistColumns+=","+key;
+//						insertHistValue+=",'"+value+"'";
+//					}
 					
 					
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
@@ -1940,6 +1928,15 @@ public class DriverAPIController extends BaseController{
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}
+						
+						//更新采集数据
+						List<String> acqDataClobCont=new ArrayList<String>();
+						acqDataClobCont.add(new Gson().toJson(acqDataList));
+						String updateRealAcqDataClobSql="update "+realtimeTable+" t set t.acqdata=? where t.deviceid="+deviceInfo.getId();
+						String updateHisAcqDataClobSql="update "+historyTable+" t set t.acqdata=? where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateRealAcqDataClobSql,acqDataClobCont);
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateHisAcqDataClobSql,acqDataClobCont);
+						
 						//保存日汇总数据
 						saveDailyTotalData(deviceInfo);
 						//统计

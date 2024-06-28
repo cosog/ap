@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.cosog.model.Params;
+import com.cosog.model.KeyValue;
 
 public class TestArray {
 	public static void main(String[] args) {
@@ -46,7 +46,7 @@ public class TestArray {
 		//StringManagerUtils.printLog(map);// 打印结果
 	}
 
-	public static Map<String, List<Params>> getMapData() {
+	public static Map<String, List<KeyValue>> getMapData() {
 		List<String> dataList = new ArrayList<String>();
 		dataList.add("a");
 		dataList.add("b");
@@ -57,21 +57,21 @@ public class TestArray {
 		dataList.add("b");
 		dataList.add("b");
 		dataList.add("b");
-		Params params = null;
-		Map<String, List<Params>> map = new HashMap<String, List<Params>>();
-		List<Params> resutlList = null;
+		KeyValue params = null;
+		Map<String, List<KeyValue>> map = new HashMap<String, List<KeyValue>>();
+		List<KeyValue> resutlList = null;
 		for (String s : dataList) {
 			if (map.containsKey(s)) {
-				params = new Params();
-				params.setFields(s);
+				params = new KeyValue();
+				params.setValue(s);
 				resutlList = map.get(s);
 				resutlList.add(params);
 				map.remove(s);
 				map.put(s, resutlList);
 			} else {
-				resutlList = new ArrayList<Params>();
-				params = new Params();
-				params.setFields(s);
+				resutlList = new ArrayList<KeyValue>();
+				params = new KeyValue();
+				params.setValue(s);
 				resutlList.add(params);
 				map.put(s, resutlList);
 			}

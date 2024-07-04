@@ -173,7 +173,7 @@ public class CalculateDataController extends BaseController{
 	@RequestMapping("/AcquisitionDataDailyCalculation")
 	public String AcquisitionDataDailyCalculation() throws ParseException, SQLException, IOException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
-		String wellId=ParamUtils.getParameter(request, "wellId");
+		String deviceId=ParamUtils.getParameter(request, "deviceId");
 		
 		String date="";
 		if(!StringManagerUtils.isNotNull(tatalDate)){
@@ -182,7 +182,7 @@ public class CalculateDataController extends BaseController{
 			date=tatalDate;
 		}
 		
-		calculateDataService.AcquisitionDataDailyCalculation(tatalDate,wellId);
+		calculateDataService.AcquisitionDataDailyCalculation(tatalDate,deviceId);
 		
 		System.out.println("抽油机井曲线数据汇总完成");
 		

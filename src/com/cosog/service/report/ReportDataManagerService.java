@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import com.cosog.model.CellEditData;
 import com.cosog.model.CurveConf;
 import com.cosog.model.DataMapping;
+import com.cosog.model.KeyValue;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
 import com.cosog.model.User;
@@ -68,6 +69,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
+		java.lang.reflect.Type type=null;
 		String reportTemplateCode="";
 		String reportUnitId="";
 		int reportUnitCalculateType=0;
@@ -164,8 +166,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " and t.sort<="+columnCount
 					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
-			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-			List<String> reportItemPrecList=new ArrayList<>();
+			List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+			List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
+			
 			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 			for(int i=0;i<reportItemQuertList.size();i++){
 				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -174,38 +177,46 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setItemCode(reportItemObj[1]+"");
 				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+				if(StringManagerUtils.isNumber(precStr)){
+					reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+				}else{
+					reportUnitItem.setPrec(-1);
+				}
 				reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 				reportUnitItem.setDataSource(reportItemObj[6]+"");
-				reportItemList.add(reportUnitItem);
-				reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
+				
+				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+					reportAcqItemList.add(reportUnitItem);
+				}else{
+					reportOtherItemList.add(reportUnitItem);
+				}
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
-			sqlBuff.append("select t.id,t.caldata");
-			for(int i=0;i<reportItemList.size();i++){
-				a
-				
-				
+			sqlBuff.append("select t.id");
+			if(reportAcqItemList.size()>0){
+				sqlBuff.append(",t.caldata");
+			}
+			for(int i=0;i<reportOtherItemList.size();i++){
 				String tableAlias="t";
 				if(reportUnitCalculateType>0){
-					if("计算".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(i).getItemCode())){
+					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+						if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
 							tableAlias="t";
 						}else{
 							tableAlias="t2";
 						}
 					}
 				}
-				if(!"采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-					if(reportItemList.get(i).getDataType()==3){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
-					}else if(reportItemList.get(i).getDataType()==4){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
-					}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
-						sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
-					}else{
-						sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
-					}
+				if(reportOtherItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+				}else if(reportOtherItemList.get(i).getDataType()==4){
+					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+				}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+					sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
+				}else{
+					sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
 				}
 			}
 			sqlBuff.append(" from "+viewName+" t ");
@@ -232,46 +243,58 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportDataList.size();i++){
 				Object[] reportDataObj=(Object[]) reportDataList.get(i);
 				String recordId=reportDataObj[0]+"";
-				String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
-				
-				
-				
 				List<String> everyDaya=new ArrayList<String>();
 				for(int j=0;j<columnCount;j++){
 					everyDaya.add("");
 				}
 				everyDaya.set(0, (i+1)+"");
 				everyDaya.add(recordId);
-				for(int j=0;j<reportItemList.size();j++){
-					if(reportItemList.get(j).getSort()>=1){
+				
+				int startIndex=1;
+				if(reportAcqItemList.size()>0){
+					startIndex=2;
+					String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+					type = new TypeToken<List<KeyValue>>() {}.getType();
+					List<KeyValue> calDataList=gson.fromJson(calData, type);
+					
+					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
-						if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+						for(KeyValue keyValue:calDataList){
+							if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+								addValue=keyValue.getValue();
+								break;
+							}
+						}
+						if(StringManagerUtils.isNotNull(addValue)){
+							String[] totalValueArr=addValue.split(";");
+							addValue="";
+							if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+								addValue=totalValueArr[0];
+							}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+								addValue=totalValueArr[1];
+							}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+								addValue=totalValueArr[2];
+							}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+								addValue=totalValueArr[3];
+							}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+								addValue=totalValueArr[4];
+							}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+								addValue=totalValueArr[5];
+							}
+						}
+						everyDaya.set(reportUnitItem.getSort()-1, addValue);
+					}
+				}
+				
+				for(int j=0;j<reportOtherItemList.size();j++){
+					if(reportOtherItemList.get(j).getSort()>=1){
+						String addValue="";
+						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 						}else{
 							addValue=reportDataObj[j+1]+"";
 						}
-						
-						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-							if(StringManagerUtils.isNotNull(addValue)){
-								String[] totalValueArr=addValue.split(";");
-								addValue="";
-								if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-									addValue=totalValueArr[0];
-								}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-									addValue=totalValueArr[1];
-								}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-									addValue=totalValueArr[2];
-								}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-									addValue=totalValueArr[3];
-								}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-									addValue=totalValueArr[4];
-								}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-									addValue=totalValueArr[5];
-								}
-							}
-						}
-						
-						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 					}
 				}
 				dataList.add(everyDaya);
@@ -281,9 +304,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						allColList.add("\"\"");
 					}
 					allColList.add("\"recordId\"");
-					for(int j=0;j<reportItemList.size();j++){
-						if(reportItemList.get(j).getSort()>=1){
-							allColList.set(reportItemList.get(j).getSort()-1, "\""+reportItemList.get(j).getItemCode()+"\"");
+					for(int j=0;j<reportAcqItemList.size();j++){
+						if(reportAcqItemList.get(j).getSort()>=1){
+							allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
+						}
+					}
+					for(int j=0;j<reportOtherItemList.size();j++){
+						if(reportOtherItemList.get(j).getSort()>=1){
+							allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
 						}
 					}
 				}
@@ -307,11 +335,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
 			String reportTemplateCode="";
 			String reportUnitId="";
 			int reportUnitCalculateType=0;
 			String deviceTableName="tbl_device";
-			String tableName="TBL_DAILYCALCULATIONDATA";
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			int headerRowCount=0;
@@ -361,9 +389,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(template.getHeader().size()>0){
 					String labelInfoStr="";
 					String[] labelInfoArr=null;
-					String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+					String labelInfoSql="select t.headerlabelinfo from TBL_DAILYCALCULATIONDATA t "
 							+ " where t.deviceId="+deviceId+" "
-							+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.deviceId="+deviceId+")";
+							+ " and t.caldate=( select max(t2.caldate) from TBL_DAILYCALCULATIONDATA t2 where t2.headerLabelInfo is not null and t2.deviceId="+deviceId+")";
 					List<?> labelInfoList = this.findCallSql(labelInfoSql);
 					if(labelInfoList.size()>0){
 						labelInfoStr=labelInfoList.get(0).toString();
@@ -418,8 +446,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						+ " and t.sort<="+columnCount
 						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 						+ " order by t.sort";
-				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-				List<String> reportItemPrecList=new ArrayList<>();
+				List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+				List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
+				
 				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 				for(int i=0;i<reportItemQuertList.size();i++){
 					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -428,54 +457,57 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setItemCode(reportItemObj[1]+"");
 					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+					String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+					if(StringManagerUtils.isNumber(precStr)){
+						reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+					}else{
+						reportUnitItem.setPrec(-1);
+					}
 					reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 					reportUnitItem.setDataSource(reportItemObj[6]+"");
-					reportItemList.add(reportUnitItem);
-					reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
+					
+					if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+						reportAcqItemList.add(reportUnitItem);
+					}else{
+						reportOtherItemList.add(reportUnitItem);
+					}
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
 				sqlBuff.append("select t.id");
-				
-				for(int i=0;i<reportItemList.size();i++){
-					
+				if(reportAcqItemList.size()>0){
+					sqlBuff.append(",t.caldata");
+				}
+				for(int i=0;i<reportOtherItemList.size();i++){
 					String tableAlias="t";
 					if(reportUnitCalculateType>0){
-						if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-							tableAlias="t2";
-						}else if("计算".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-							if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(i).getItemCode())){
+						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+							if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
 								tableAlias="t";
 							}else{
-								tableAlias="t3";
+								tableAlias="t2";
 							}
 						}
 					}
-					
-					if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
+					if(reportOtherItemList.get(i).getDataType()==3){
+						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+					}else if(reportOtherItemList.get(i).getDataType()==4){
+						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+					}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+						sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
 					}else{
-						if(reportItemList.get(i).getDataType()==3){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
-						}else if(reportItemList.get(i).getDataType()==4){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
-						}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
-							sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
-						}else{
-							sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
-						}
+						sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
 					}
 				}
-				
-				sqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+				sqlBuff.append(" from "+viewName+" t ");
 				if(reportUnitCalculateType>0){
-					sqlBuff.append(","+calTotalTableName+" t3");
+					sqlBuff.append(","+calTotalTableName+" t2");
 					
 				}
-				sqlBuff.append(" where t.id=t2.id");
+				sqlBuff.append(" where 1=1");
 				
 				if(reportUnitCalculateType>0){
-					sqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
+					sqlBuff.append(" and t.deviceId=t2.deviceId and t.calDate=t2.calDate");
 				}
 				
 				sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
@@ -491,35 +523,52 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						everyDaya.add("");
 					}
 					everyDaya.set(0, (i+1)+"");
-					for(int j=0;j<reportItemList.size();j++){
-						if(reportItemList.get(j).getSort()>=1){
+					
+					int startIndex=1;
+					if(reportAcqItemList.size()>0){
+						startIndex=2;
+						String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+						type = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> calDataList=gson.fromJson(calData, type);
+						
+						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
-							if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+							for(KeyValue keyValue:calDataList){
+								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
+								}
+							}
+							if(StringManagerUtils.isNotNull(addValue)){
+								String[] totalValueArr=addValue.split(";");
+								addValue="";
+								if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+									addValue=totalValueArr[0];
+								}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+									addValue=totalValueArr[1];
+								}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+									addValue=totalValueArr[2];
+								}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+									addValue=totalValueArr[3];
+								}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+									addValue=totalValueArr[4];
+								}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+									addValue=totalValueArr[5];
+								}
+							}
+							everyDaya.set(reportUnitItem.getSort()-1, addValue);
+						}
+					}
+					
+					for(int j=0;j<reportOtherItemList.size();j++){
+						if(reportOtherItemList.get(j).getSort()>=1){
+							String addValue="";
+							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 							}else{
 								addValue=reportDataObj[j+1]+"";
 							}
-							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								if(StringManagerUtils.isNotNull(addValue)){
-									String[] totalValueArr=addValue.split(";");
-									
-									addValue="";
-									if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-										addValue=totalValueArr[0];
-									}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-										addValue=totalValueArr[1];
-									}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-										addValue=totalValueArr[2];
-									}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-										addValue=totalValueArr[3];
-									}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-										addValue=totalValueArr[4];
-									}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-										addValue=totalValueArr[5];
-									}
-								}
-							}
-							everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 						}
 					}
 					dataList.add(everyDaya);
@@ -584,6 +633,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<String> titleList =new ArrayList<>();
 			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
 			
+			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
 			
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
@@ -620,7 +671,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String sheetName=deviceName+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
-				String tableName="TBL_DAILYCALCULATIONDATA";
 				String viewName="VIW_DAILYCALCULATIONDATA";
 				calTotalTableName="";
 				if(reportUnitCalculateType==1){
@@ -658,9 +708,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(template.getHeader().size()>0){
 						String labelInfoStr="";
 						String[] labelInfoArr=null;
-						String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+						String labelInfoSql="select t.headerlabelinfo from TBL_DAILYCALCULATIONDATA t "
 								+ " where t.deviceId="+deviceId+" "
-								+ " and t.caldate=( select max(t2.caldate) from "+tableName+" t2 where t2.headerLabelInfo is not null and t2.deviceId="+deviceId+")";
+								+ " and t.caldate=( select max(t2.caldate) from TBL_DAILYCALCULATIONDATA t2 where t2.headerLabelInfo is not null and t2.deviceId="+deviceId+")";
 						List<?> labelInfoList = this.findCallSql(labelInfoSql);
 						if(labelInfoList.size()>0){
 							labelInfoStr=labelInfoList.get(0).toString();
@@ -711,8 +761,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							+ " and t.sort<="+columnCount
 							+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 							+ " order by t.sort";
-					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-					List<String> reportItemPrecList=new ArrayList<>();
+					List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+					List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 					for(int j=0;j<reportItemQuertList.size();j++){
 						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
@@ -721,54 +771,57 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						reportUnitItem.setItemCode(reportItemObj[1]+"");
 						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+						String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+						if(StringManagerUtils.isNumber(precStr)){
+							reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+						}else{
+							reportUnitItem.setPrec(-1);
+						}
 						reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 						reportUnitItem.setDataSource(reportItemObj[6]+"");
-						reportItemList.add(reportUnitItem);
-						reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
+						
+						if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+							reportAcqItemList.add(reportUnitItem);
+						}else{
+							reportOtherItemList.add(reportUnitItem);
+						}
 					}
 					
 					StringBuffer sqlBuff = new StringBuffer();
 					sqlBuff.append("select t.id");
-					
-					for(int j=0;j<reportItemList.size();j++){
-						
+					if(reportAcqItemList.size()>0){
+						sqlBuff.append(",t.caldata");
+					}
+					for(ReportUnitItem reportUnitItem:reportOtherItemList){
 						String tableAlias="t";
 						if(reportUnitCalculateType>0){
-							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								tableAlias="t2";
-							}else if("计算".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(j).getItemCode())){
+							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
+								if(StringManagerUtils.generalCalColumnFiter(reportUnitItem.getItemCode())){
 									tableAlias="t";
 								}else{
-									tableAlias="t3";
+									tableAlias="t2";
 								}
 							}
 						}
-						
-						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-							sqlBuff.append(","+tableAlias+"."+reportItemList.get(j).getItemCode()+"");
+						if(reportUnitItem.getDataType()==3){
+							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'yyyy-mm-dd') as "+reportUnitItem.getItemCode()+"");
+						}else if(reportUnitItem.getDataType()==4){
+							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'hh24:mi') as "+reportUnitItem.getItemCode()+"");
+						}else if(reportUnitItem.getDataType()==2 && reportUnitItem.getPrec()>=0){
+							sqlBuff.append(",round("+tableAlias+"."+reportUnitItem.getItemCode()+","+reportUnitItem.getPrec()+")");
 						}else{
-							if(reportItemList.get(j).getDataType()==3){
-								sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(j).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(j).getItemCode()+"");
-							}else if(reportItemList.get(j).getDataType()==4){
-								sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(j).getItemCode()+"@'hh24:mi') as "+reportItemList.get(j).getItemCode()+"");
-							}else if(reportItemList.get(j).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(j))){
-								sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(j).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(j))+")");
-							}else{
-								sqlBuff.append(","+tableAlias+"."+reportItemList.get(j).getItemCode()+"");
-							}
+							sqlBuff.append(","+tableAlias+"."+reportUnitItem.getItemCode()+"");
 						}
 					}
-					
-					sqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+					sqlBuff.append(" from "+viewName+" t ");
 					if(reportUnitCalculateType>0){
-						sqlBuff.append(","+calTotalTableName+" t3");
+						sqlBuff.append(","+calTotalTableName+" t2");
 						
 					}
-					sqlBuff.append(" where t.id=t2.id");
+					sqlBuff.append(" where 1=1");
 					
 					if(reportUnitCalculateType>0){
-						sqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
+						sqlBuff.append(" and t.deviceId=t2.deviceId and t.calDate=t2.calDate");
 					}
 					
 					sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
@@ -784,34 +837,52 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							everyDaya.add("");
 						}
 						everyDaya.set(0, (k+1)+"");
-						for(int j=0;j<reportItemList.size();j++){
-							if(reportItemList.get(j).getSort()>=1){
+						
+						int startIndex=1;
+						if(reportAcqItemList.size()>0){
+							startIndex=2;
+							String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+							type = new TypeToken<List<KeyValue>>() {}.getType();
+							List<KeyValue> calDataList=gson.fromJson(calData, type);
+							
+							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
-								if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
+								for(KeyValue keyValue:calDataList){
+									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
+									}
+								}
+								if(StringManagerUtils.isNotNull(addValue)){
+									String[] totalValueArr=addValue.split(";");
+									addValue="";
+									if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+										addValue=totalValueArr[0];
+									}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+										addValue=totalValueArr[1];
+									}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+										addValue=totalValueArr[2];
+									}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+										addValue=totalValueArr[3];
+									}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+										addValue=totalValueArr[4];
+									}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+										addValue=totalValueArr[5];
+									}
+								}
+								everyDaya.set(reportUnitItem.getSort()-1, addValue);
+							}
+						}
+						
+						for(int j=0;j<reportOtherItemList.size();j++){
+							if(reportOtherItemList.get(j).getSort()>=1){
+								String addValue="";
+								if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 								}else{
 									addValue=reportDataObj[j+1]+"";
 								}
-								if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-									if(StringManagerUtils.isNotNull(addValue)){
-										String[] totalValueArr=addValue.split(";");
-										addValue="";
-										if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-											addValue=totalValueArr[0];
-										}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-											addValue=totalValueArr[1];
-										}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-											addValue=totalValueArr[2];
-										}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-											addValue=totalValueArr[3];
-										}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-											addValue=totalValueArr[4];
-										}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-											addValue=totalValueArr[5];
-										}
-									}
-								}
-								everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+								everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 							}
 						}
 						dataList.add(everyDaya);
@@ -877,11 +948,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		Gson gson =new Gson();
+		java.lang.reflect.Type type=null;
 		String reportTemplateCode="";
 		String reportUnitId="";
 		int reportUnitCalculateType=0;
 		String deviceTableName="tbl_device";
-		String tableName="TBL_TIMINGCALCULATIONDATA";
 		String viewName="VIW_TIMINGCALCULATIONDATA";
 		String calTotalTableName="";
 		
@@ -927,9 +998,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			if(template.getHeader().size()>0){
 				String labelInfoStr="";
 				String[] labelInfoArr=null;
-				String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+				String labelInfoSql="select t.headerlabelinfo from TBL_TIMINGCALCULATIONDATA t "
 						+ " where t.deviceId="+deviceId+" "
-						+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
+						+ " and t.caltime=( select max(t2.caltime) from TBL_TIMINGCALCULATIONDATA t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
 				List<?> labelInfoList = this.findCallSql(labelInfoSql);
 				if(labelInfoList.size()>0){
 					labelInfoStr=labelInfoList.get(0).toString();
@@ -972,10 +1043,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " and t.sort<="+columnCount
 					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
-			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-			List<String> reportItemPrecList=new ArrayList<>();
+			List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+			List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
-			boolean calSign=false;
 			for(int i=0;i<reportItemQuertList.size();i++){
 				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
 				ReportUnitItem reportUnitItem=new ReportUnitItem();
@@ -983,62 +1053,62 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setItemCode(reportItemObj[1]+"");
 				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+				if(StringManagerUtils.isNumber(precStr)){
+					reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+				}else{
+					reportUnitItem.setPrec(-1);
+				}
 				reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 				reportUnitItem.setDataSource(reportItemObj[6]+"");
-				reportItemList.add(reportUnitItem);
-				reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
-				if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
-					calSign=true;
+				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+					reportAcqItemList.add(reportUnitItem);
+				}else{
+					reportOtherItemList.add(reportUnitItem);
 				}
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
 			sqlBuff.append("select t.id,to_char(t.calTime@'yyyy-mm-dd hh24:mi:ss')");
 			
-			for(int i=0;i<reportItemList.size();i++){
+			if(reportAcqItemList.size()>0){
+				sqlBuff.append(",t.caldata");
+			}
+			
+			for(int i=0;i<reportOtherItemList.size();i++){
 				String tableAlias="t";
 				if(reportUnitCalculateType>0){
-					if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						tableAlias="t2";
-					}else if("计算".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(i).getItemCode())){
+					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+						if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
 							tableAlias="t";
 						}else{
-							tableAlias="t3";
+							tableAlias="t2";
 						}
 					}
+				}
+				if(reportOtherItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+				}else if(reportOtherItemList.get(i).getDataType()==4){
+					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+				}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+					sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
 				}else{
-					if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						tableAlias="t2";
-					}
+					sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
 				}
 				
-				if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-					sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
-				}else{
-					if(reportItemList.get(i).getDataType()==3){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
-					}else if(reportItemList.get(i).getDataType()==4){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
-					}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
-						sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
-					}else{
-						sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
-					}
+				if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+					timeColIndex=reportOtherItemList.get(i).getSort()-1;
 				}
 				
-				if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
-					timeColIndex=reportItemList.get(i).getSort()-1;
-				}
-				
-				if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
-					deviceNameColIndex=reportItemList.get(i).getSort()-1;
+				if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+					deviceNameColIndex=reportOtherItemList.get(i).getSort()-1;
 				}
 			}
+			
+			
 			sqlBuff.append(" from "+viewName+" t ");
-			sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 			if(reportUnitCalculateType>0){
-				sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calTime=t3.calTime ");
+				sqlBuff.append(" left outer join "+calTotalTableName+" t2 on t.deviceId=t2.deviceId and t.calTime=t2.calTime ");
 			}
 			sqlBuff.append(" where 1=1");
 			sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
@@ -1049,8 +1119,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			sqlBuff.append(" order by t.calTime");
-			
-			List<String> colList=StringManagerUtils.getColumnListFromSql(sqlBuff.toString());
 			
 			List<String> allColList=new ArrayList<String>();
 			
@@ -1068,46 +1136,70 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				everyDaya.set(0, (i+1)+"");
 				everyDaya.add(recordId);
-				for(int j=0;j<reportItemList.size();j++){
-					if(reportItemList.get(j).getSort()>=1){
+				
+				int startIndex=2;
+				if(reportAcqItemList.size()>0){
+					startIndex=3;
+					String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[2]);
+					type = new TypeToken<List<KeyValue>>() {}.getType();
+					List<KeyValue> calDataList=gson.fromJson(calData, type);
+					
+					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
-						if(reportDataObj[j+2] instanceof CLOB || reportDataObj[j+2] instanceof Clob){
-							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+2]);
-						}else{
-							addValue=reportDataObj[j+2]+"";
-						}
-						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-							if(StringManagerUtils.isNotNull(addValue)){
-								String[] totalValueArr=addValue.split(";");
-								addValue="";
-								if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-									addValue=totalValueArr[0];
-								}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-									addValue=totalValueArr[1];
-								}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-									addValue=totalValueArr[2];
-								}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-									addValue=totalValueArr[3];
-								}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-									addValue=totalValueArr[4];
-								}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-									addValue=totalValueArr[5];
-								}
+						for(KeyValue keyValue:calDataList){
+							if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+								addValue=keyValue.getValue();
+								break;
 							}
 						}
-						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+						if(StringManagerUtils.isNotNull(addValue)){
+							String[] totalValueArr=addValue.split(";");
+							addValue="";
+							if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+								addValue=totalValueArr[0];
+							}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+								addValue=totalValueArr[1];
+							}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+								addValue=totalValueArr[2];
+							}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+								addValue=totalValueArr[3];
+							}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+								addValue=totalValueArr[4];
+							}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+								addValue=totalValueArr[5];
+							}
+						}
+						everyDaya.set(reportUnitItem.getSort()-1, addValue);
+					}
+				}
+				
+				for(int j=0;j<reportOtherItemList.size();j++){
+					if(reportOtherItemList.get(j).getSort()>=1){
+						String addValue="";
+						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+						}else{
+							addValue=reportDataObj[j+1]+"";
+						}
+						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 					}
 				}
 				dataList.add(everyDaya);
+				
 				
 				if(allColList.size()==0){
 					for(int j=0;j<columnCount;j++){
 						allColList.add("\"\"");
 					}
 					allColList.add("\"recordId\"");
-					for(int j=0;j<reportItemList.size();j++){
-						if(reportItemList.get(j).getSort()>=1){
-							allColList.set(reportItemList.get(j).getSort()-1, "\""+reportItemList.get(j).getItemCode()+"\"");
+					for(int j=0;j<reportAcqItemList.size();j++){
+						if(reportAcqItemList.get(j).getSort()>=1){
+							allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
+						}
+					}
+					for(int j=0;j<reportOtherItemList.size();j++){
+						if(reportOtherItemList.get(j).getSort()>=1){
+							allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
 						}
 					}
 				}
@@ -1163,11 +1255,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String title=deviceName+"单日生产报表";
 			String fileName=deviceName+"单日生产报表";
 			
+			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
+			
 			String reportTemplateCode="";
 			String reportUnitId="";
 			int reportUnitCalculateType=0;
 			String deviceTableName="tbl_device";
-			String tableName="TBL_TIMINGCALCULATIONDATA";
 			String viewName="VIW_TIMINGCALCULATIONDATA";
 			String calTotalTableName="";
 			
@@ -1213,9 +1307,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(template.getHeader().size()>0){
 					String labelInfoStr="";
 					String[] labelInfoArr=null;
-					String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+					String labelInfoSql="select t.headerlabelinfo from TBL_TIMINGCALCULATIONDATA t "
 							+ " where t.deviceId="+deviceId+" "
-							+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
+							+ " and t.caltime=( select max(t2.caltime) from TBL_TIMINGCALCULATIONDATA t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
 					List<?> labelInfoList = this.findCallSql(labelInfoSql);
 					if(labelInfoList.size()>0){
 						labelInfoStr=labelInfoList.get(0).toString();
@@ -1267,10 +1361,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						+ " and t.sort<="+columnCount
 						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 						+ " order by t.sort";
-				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-				List<String> reportItemPrecList=new ArrayList<>();
+				List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+				List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
-				boolean calSign=false;
 				for(int i=0;i<reportItemQuertList.size();i++){
 					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
 					ReportUnitItem reportUnitItem=new ReportUnitItem();
@@ -1278,57 +1371,62 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setItemCode(reportItemObj[1]+"");
 					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+					String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+					if(StringManagerUtils.isNumber(precStr)){
+						reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+					}else{
+						reportUnitItem.setPrec(-1);
+					}
 					reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 					reportUnitItem.setDataSource(reportItemObj[6]+"");
-					reportItemList.add(reportUnitItem);
-					reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
-					if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
-						calSign=true;
+					if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+						reportAcqItemList.add(reportUnitItem);
+					}else{
+						reportOtherItemList.add(reportUnitItem);
 					}
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
 				sqlBuff.append("select t.id,to_char(t.calTime@'yyyy-mm-dd hh24:mi:ss')");
 				
-				for(int i=0;i<reportItemList.size();i++){
+				if(reportAcqItemList.size()>0){
+					sqlBuff.append(",t.caldata");
+				}
+				
+				for(int i=0;i<reportOtherItemList.size();i++){
 					String tableAlias="t";
 					if(reportUnitCalculateType>0){
-						if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-							tableAlias="t2";
-						}else if("计算".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-							if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(i).getItemCode())){
+						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+							if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
 								tableAlias="t";
 							}else{
-								tableAlias="t3";
+								tableAlias="t2";
 							}
 						}
 					}
-					if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
+					if(reportOtherItemList.get(i).getDataType()==3){
+						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+					}else if(reportOtherItemList.get(i).getDataType()==4){
+						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+					}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+						sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
 					}else{
-						if(reportItemList.get(i).getDataType()==3){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
-						}else if(reportItemList.get(i).getDataType()==4){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
-						}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
-							sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
-						}else{
-							sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
-						}
+						sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
 					}
 					
-					if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
-						timeColIndex=reportItemList.get(i).getSort()-1;
+					if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+						timeColIndex=reportOtherItemList.get(i).getSort()-1;
 					}
 					
-					if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportItemList.get(i).getItemCode())){
-						deviceNameColIndex=reportItemList.get(i).getSort()-1;
+					if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+						deviceNameColIndex=reportOtherItemList.get(i).getSort()-1;
 					}
 				}
+				
+				
 				sqlBuff.append(" from "+viewName+" t ");
-				sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 				if(reportUnitCalculateType>0){
-					sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calTime=t3.calTime ");
+					sqlBuff.append(" left outer join "+calTotalTableName+" t2 on t.deviceId=t2.deviceId and t.calTime=t2.calTime ");
 				}
 				sqlBuff.append(" where 1=1");
 				sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
@@ -1337,6 +1435,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.stringToInteger(reportInterval)>1){
 					sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
 				}
+				
 				sqlBuff.append(" order by t.calTime");
 				
 				List<?> reportDataList = this.findCallSql(sqlBuff.toString().replaceAll("@", ","));
@@ -1350,34 +1449,51 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						everyDaya.add("");
 					}
 					everyDaya.set(0, (i+1)+"");
-					for(int j=0;j<reportItemList.size();j++){
-						if(reportItemList.get(j).getSort()>=1){
+					int startIndex=2;
+					if(reportAcqItemList.size()>0){
+						startIndex=3;
+						String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[2]);
+						type = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> calDataList=gson.fromJson(calData, type);
+						
+						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
-							if(reportDataObj[j+2] instanceof CLOB || reportDataObj[j+2] instanceof Clob){
-								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+2]);
-							}else{
-								addValue=reportDataObj[j+2]+"";
-							}
-							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								if(StringManagerUtils.isNotNull(addValue)){
-									String[] totalValueArr=addValue.split(";");
-									addValue="";
-									if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-										addValue=totalValueArr[0];
-									}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-										addValue=totalValueArr[1];
-									}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-										addValue=totalValueArr[2];
-									}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-										addValue=totalValueArr[3];
-									}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-										addValue=totalValueArr[4];
-									}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-										addValue=totalValueArr[5];
-									}
+							for(KeyValue keyValue:calDataList){
+								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
 								}
 							}
-							everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+							if(StringManagerUtils.isNotNull(addValue)){
+								String[] totalValueArr=addValue.split(";");
+								addValue="";
+								if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+									addValue=totalValueArr[0];
+								}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+									addValue=totalValueArr[1];
+								}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+									addValue=totalValueArr[2];
+								}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+									addValue=totalValueArr[3];
+								}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+									addValue=totalValueArr[4];
+								}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+									addValue=totalValueArr[5];
+								}
+							}
+							everyDaya.set(reportUnitItem.getSort()-1, addValue);
+						}
+					}
+					
+					for(int j=0;j<reportOtherItemList.size();j++){
+						if(reportOtherItemList.get(j).getSort()>=1){
+							String addValue="";
+							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+							}else{
+								addValue=reportDataObj[j+1]+"";
+							}
+							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 						}
 					}
 					dataList.add(everyDaya);
@@ -1469,6 +1585,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<String> titleList =new ArrayList<>();
 			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
 			
+			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
 			
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
@@ -1505,7 +1623,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				int reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[5]+"");
 				int calculateType=StringManagerUtils.stringToInteger(obj[4]+"");
 				
-				String tableName="TBL_TIMINGCALCULATIONDATA";
 				String viewName="VIW_TIMINGCALCULATIONDATA";
 				calTotalTableName="";
 				if(reportUnitCalculateType==1){
@@ -1549,9 +1666,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(template.getHeader().size()>0){
 						String labelInfoStr="";
 						String[] labelInfoArr=null;
-						String labelInfoSql="select t.headerlabelinfo from "+tableName+" t "
+						String labelInfoSql="select t.headerlabelinfo from TBL_TIMINGCALCULATIONDATA t "
 								+ " where t.deviceId="+deviceId+" "
-								+ " and t.caltime=( select max(t2.caltime) from "+tableName+" t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
+								+ " and t.caltime=( select max(t2.caltime) from TBL_TIMINGCALCULATIONDATA t2 where t2.deviceId=t.deviceId and t2.headerLabelInfo is not null)";
 						List<?> labelInfoList = this.findCallSql(labelInfoSql);
 						if(labelInfoList.size()>0){
 							labelInfoStr=labelInfoList.get(0).toString();
@@ -1601,69 +1718,72 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							+ " and t.sort<="+columnCount
 							+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 							+ " order by t.sort";
-					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-					List<String> reportItemPrecList=new ArrayList<>();
+					List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+					List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
-					boolean calSign=false;
 					for(int j=0;j<reportItemQuertList.size();j++){
-						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
 						ReportUnitItem reportUnitItem=new ReportUnitItem();
 						reportUnitItem.setItemName(reportItemObj[0]+"");
 						reportUnitItem.setItemCode(reportItemObj[1]+"");
 						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+						String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+						if(StringManagerUtils.isNumber(precStr)){
+							reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+						}else{
+							reportUnitItem.setPrec(-1);
+						}
 						reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 						reportUnitItem.setDataSource(reportItemObj[6]+"");
-						reportItemList.add(reportUnitItem);
-						reportItemPrecList.add((reportItemObj[4]+"").replaceAll("null", ""));
-						if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
-							calSign=true;
+						if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+							reportAcqItemList.add(reportUnitItem);
+						}else{
+							reportOtherItemList.add(reportUnitItem);
 						}
 					}
 					
 					StringBuffer sqlBuff = new StringBuffer();
 					sqlBuff.append("select t.id,to_char(t.calTime@'yyyy-mm-dd hh24:mi:ss')");
 					
-					for(int j=0;j<reportItemList.size();j++){
+					if(reportAcqItemList.size()>0){
+						sqlBuff.append(",t.caldata");
+					}
+					
+					for(ReportUnitItem reportUnitItem:reportOtherItemList){
 						String tableAlias="t";
 						if(reportUnitCalculateType>0){
-							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								tableAlias="t2";
-							}else if("计算".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(j).getItemCode())){
+							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
+								if(StringManagerUtils.generalCalColumnFiter(reportUnitItem.getItemCode())){
 									tableAlias="t";
 								}else{
-									tableAlias="t3";
+									tableAlias="t2";
 								}
 							}
 						}
-						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-							sqlBuff.append(","+tableAlias+"."+reportItemList.get(j).getItemCode()+"");
+						if(reportUnitItem.getDataType()==3){
+							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'yyyy-mm-dd') as "+reportUnitItem.getItemCode()+"");
+						}else if(reportUnitItem.getDataType()==4){
+							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'hh24:mi') as "+reportUnitItem.getItemCode()+"");
+						}else if(reportUnitItem.getDataType()==2 && reportUnitItem.getPrec()>=0){
+							sqlBuff.append(",round("+tableAlias+"."+reportUnitItem.getItemCode()+","+reportUnitItem.getPrec()+")");
 						}else{
-							if(reportItemList.get(j).getDataType()==3){
-								sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(j).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(j).getItemCode()+"");
-							}else if(reportItemList.get(j).getDataType()==4){
-								sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(j).getItemCode()+"@'hh24:mi') as "+reportItemList.get(j).getItemCode()+"");
-							}else if(reportItemList.get(j).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(j))){
-								sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(j).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(j))+")");
-							}else{
-								sqlBuff.append(","+tableAlias+"."+reportItemList.get(j).getItemCode()+"");
-							}
+							sqlBuff.append(","+tableAlias+"."+reportUnitItem.getItemCode()+"");
 						}
 						
-						if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportItemList.get(j).getItemCode())){
-							timeColIndex=reportItemList.get(j).getSort()-1;
+						if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportUnitItem.getItemCode())){
+							timeColIndex=reportUnitItem.getSort()-1;
 						}
 						
-						if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportItemList.get(j).getItemCode())){
-							deviceNameColIndex=reportItemList.get(j).getSort()-1;
+						if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportUnitItem.getItemCode())){
+							deviceNameColIndex=reportUnitItem.getSort()-1;
 						}
 					}
+					
+					
 					sqlBuff.append(" from "+viewName+" t ");
-					sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 					if(reportUnitCalculateType>0){
-						sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calTime=t3.calTime ");
-						
+						sqlBuff.append(" left outer join "+calTotalTableName+" t2 on t.deviceId=t2.deviceId and t.calTime=t2.calTime ");
 					}
 					sqlBuff.append(" where 1=1");
 					sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
@@ -1686,35 +1806,52 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							everyDaya.add("");
 						}
 						everyDaya.set(0, (k+1)+"");
-						for(int j=0;j<reportItemList.size();j++){
-							if(reportItemList.get(j).getSort()>=1){
+						
+						int startIndex=2;
+						if(reportAcqItemList.size()>0){
+							startIndex=3;
+							String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[2]);
+							type = new TypeToken<List<KeyValue>>() {}.getType();
+							List<KeyValue> calDataList=gson.fromJson(calData, type);
+							
+							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
-								if(reportDataObj[j+2] instanceof CLOB || reportDataObj[j+2] instanceof Clob){
-									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+2]);
-								}else{
-									addValue=reportDataObj[j+2]+"";
-								}
-								
-								if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-									if(StringManagerUtils.isNotNull(addValue)){
-										String[] totalValueArr=addValue.split(";");
-										addValue="";
-										if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-											addValue=totalValueArr[0];
-										}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-											addValue=totalValueArr[1];
-										}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-											addValue=totalValueArr[2];
-										}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-											addValue=totalValueArr[3];
-										}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-											addValue=totalValueArr[4];
-										}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-											addValue=totalValueArr[5];
-										}
+								for(KeyValue keyValue:calDataList){
+									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
 									}
 								}
-								everyDaya.set(reportItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+								if(StringManagerUtils.isNotNull(addValue)){
+									String[] totalValueArr=addValue.split(";");
+									addValue="";
+									if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+										addValue=totalValueArr[0];
+									}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+										addValue=totalValueArr[1];
+									}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+										addValue=totalValueArr[2];
+									}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+										addValue=totalValueArr[3];
+									}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+										addValue=totalValueArr[4];
+									}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+										addValue=totalValueArr[5];
+									}
+								}
+								everyDaya.set(reportUnitItem.getSort()-1, addValue);
+							}
+						}
+						
+						for(int j=0;j<reportOtherItemList.size();j++){
+							if(reportOtherItemList.get(j).getSort()>=1){
+								String addValue="";
+								if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+								}else{
+									addValue=reportDataObj[j+1]+"";
+								}
+								everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 							}
 						}
 						dataList.add(everyDaya);
@@ -1801,11 +1938,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String instanceCode,String unitId,String deviceName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
+		java.lang.reflect.Type type=null;
 		String reportUnitId="";
 		String reportTemplateCode="";
 		int reportUnitCalculateType=0;
 		String deviceTableName="tbl_device";
-		String tableName="TBL_DAILYCALCULATIONDATA";
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
 		
@@ -1880,8 +2017,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					+ " and t.sort<="+columnCount
 					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 					+ " order by t.sort";
-			List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-			List<String> reportItemPrecList=new ArrayList<>();
+			List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+			List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 			for(int i=0;i<reportItemQuertList.size();i++){
 				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -1894,47 +2031,54 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
 				reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
 				
+				
+				String precStr=(reportItemObj[6]+"").replaceAll("null", "");
+				if(StringManagerUtils.isNumber(precStr)){
+					reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+				}else{
+					reportUnitItem.setPrec(-1);
+				}
+				
 				reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[7]+""));
 				reportUnitItem.setDataSource(reportItemObj[8]+"");
 				
-				reportItemList.add(reportUnitItem);
-				reportItemPrecList.add((reportItemObj[6]+"").replaceAll("null", ""));
+				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+					reportAcqItemList.add(reportUnitItem);
+				}else{
+					reportOtherItemList.add(reportUnitItem);
+				}
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
-			
 			sqlBuff.append("select t.id");
-			for(int i=0;i<reportItemList.size();i++){
+			
+			if(reportAcqItemList.size()>0){
+				sqlBuff.append(",t.caldata");
+			}
+			for(int i=0;i<reportOtherItemList.size();i++){
 				String tableAlias="t";
 				if(reportUnitCalculateType>0){
-					if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						tableAlias="t2";
-					}else if("计算".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(i).getItemCode())){
+					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+						if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
 							tableAlias="t";
 						}else{
-							tableAlias="t3";
+							tableAlias="t2";
 						}
 					}
 				}
-				if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-					sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
+				if(reportOtherItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+				}else if(reportOtherItemList.get(i).getDataType()==4){
+					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+				}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+					sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
 				}else{
-					if(reportItemList.get(i).getDataType()==3){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
-					}else if(reportItemList.get(i).getDataType()==4){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
-					}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
-						sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
-					}else{
-						sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
-					}
+					sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
 				}
 			}
 			sqlBuff.append(" from "+viewName+" t");
-			sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 			if(reportUnitCalculateType>0){
-				sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calDate=t3.calDate");
+				sqlBuff.append(" left outer join "+calTotalTableName+" t2 on t.deviceId=t2.deviceId and t.calDate=t2.calDate");
 			}
 			sqlBuff.append(" where t.org_id in ("+orgId+")");
 			if(StringManagerUtils.isNum(deviceType)){
@@ -1958,85 +2102,140 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				everyDaya.set(0, (i+1)+"");
 				everyDaya.add(recordId);
-				for(int j=0;j<reportItemList.size();j++){
-					if(reportItemList.get(j).getSort()>=1){
+				
+				
+				int startIndex=1;
+				if(reportAcqItemList.size()>0){
+					startIndex=2;
+					String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+					type = new TypeToken<List<KeyValue>>() {}.getType();
+					List<KeyValue> calDataList=gson.fromJson(calData, type);
+					
+					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
-						if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
-						}else{
-							addValue=reportDataObj[j+1]+"";
-						}
-						
-						if(reportItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
-							if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
-								addValue="";
-							}
-						}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-							if(StringManagerUtils.isNotNull(addValue)){
-								String[] totalValueArr=addValue.split(";");
-								addValue="";
-								if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-									addValue=totalValueArr[0];
-								}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-									addValue=totalValueArr[1];
-								}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-									addValue=totalValueArr[2];
-								}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-									addValue=totalValueArr[3];
-								}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-									addValue=totalValueArr[4];
-								}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-									addValue=totalValueArr[5];
-								}
+						for(KeyValue keyValue:calDataList){
+							if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+								addValue=keyValue.getValue();
+								break;
 							}
 						}
-						
-						everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+						if(StringManagerUtils.isNotNull(addValue)){
+							String[] totalValueArr=addValue.split(";");
+							addValue="";
+							if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+								addValue=totalValueArr[0];
+							}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+								addValue=totalValueArr[1];
+							}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+								addValue=totalValueArr[2];
+							}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+								addValue=totalValueArr[3];
+							}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+								addValue=totalValueArr[4];
+							}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+								addValue=totalValueArr[5];
+							}
+						}
+						everyDaya.set(reportUnitItem.getSort()-1, addValue);
 						
 						//求和
 						if(StringManagerUtils.isNumber(addValue)){
-							avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
-							String currentSum=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+							avgRecordsList.set(reportUnitItem.getSort()-1, avgRecordsList.get(reportUnitItem.getSort()-1)+1);
+							String currentSum=statDataList.get(0).get(reportUnitItem.getSort()-1);
 							if(StringManagerUtils.isNumber(currentSum)){
-								statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+								statDataList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
 							}else{
-								statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+								statDataList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
 							}
 							
-							if(reportItemList.get(j).getSumSign()!=null && reportItemList.get(j).getSumSign()==1){
+							if(reportUnitItem.getSumSign()!=null && reportUnitItem.getSumSign()==1){
 								if(StringManagerUtils.isNumber(currentSum)){
-									statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+									statDataShowValueList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
 								}else{
-									statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+									statDataShowValueList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
 								}
 							}
 						}
 					
 						//求平均						
-						if(reportItemList.get(j).getAverageSign()!=null && reportItemList.get(j).getAverageSign()==1){
-							String sumStr=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
-							int avgRecordCount=avgRecordsList.get(reportItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportItemList.get(j).getSort()-1);
+						if(reportUnitItem.getAverageSign()!=null && reportUnitItem.getAverageSign()==1){
+							String sumStr=statDataList.get(0).get(reportUnitItem.getSort()-1);
+							int avgRecordCount=avgRecordsList.get(reportUnitItem.getSort()-1)==0?1:avgRecordsList.get(reportUnitItem.getSort()-1);
 							float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
-							statDataList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
-							statDataShowValueList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+							statDataList.get(1).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+							statDataShowValueList.get(1).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+						}
+						
+					}
+				}
+				
+				
+				
+				for(int j=0;j<reportOtherItemList.size();j++){
+					if(reportOtherItemList.get(j).getSort()>=1){
+						String addValue="";
+						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+						}else{
+							addValue=reportDataObj[j+startIndex]+"";
+						}
+						
+						if(reportOtherItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
+							if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
+								addValue="";
+							}
+						}
+						
+						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
+						
+						//求和
+						if(StringManagerUtils.isNumber(addValue)){
+							avgRecordsList.set(reportOtherItemList.get(j).getSort()-1, avgRecordsList.get(reportOtherItemList.get(j).getSort()-1)+1);
+							String currentSum=statDataList.get(0).get(reportOtherItemList.get(j).getSort()-1);
+							if(StringManagerUtils.isNumber(currentSum)){
+								statDataList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+							}else{
+								statDataList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+							}
+							
+							if(reportOtherItemList.get(j).getSumSign()!=null && reportOtherItemList.get(j).getSumSign()==1){
+								if(StringManagerUtils.isNumber(currentSum)){
+									statDataShowValueList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+								}else{
+									statDataShowValueList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+								}
+							}
+						}
+					
+						//求平均						
+						if(reportOtherItemList.get(j).getAverageSign()!=null && reportOtherItemList.get(j).getAverageSign()==1){
+							String sumStr=statDataList.get(0).get(reportOtherItemList.get(j).getSort()-1);
+							int avgRecordCount=avgRecordsList.get(reportOtherItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportOtherItemList.get(j).getSort()-1);
+							float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
+							statDataList.get(1).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+							statDataShowValueList.get(1).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
 						}
 					}
 				}
 				dataList.add(everyDaya);
-				
-				if(allColList.size()==0){
-					for(int j=0;j<columnCount;j++){
-						allColList.add("\"\"");
+			}
+			
+			if(allColList.size()==0){
+				for(int j=0;j<columnCount;j++){
+					allColList.add("\"\"");
+				}
+				allColList.add("\"recordId\"");
+				for(int j=0;j<reportAcqItemList.size();j++){
+					if(reportAcqItemList.get(j).getSort()>=1){
+						allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
 					}
-					allColList.add("\"recordId\"");
-					for(int j=0;j<reportItemList.size();j++){
-						if(reportItemList.get(j).getSort()>=1){
-							allColList.set(reportItemList.get(j).getSort()-1, "\""+reportItemList.get(j).getItemCode()+"\"");
-						}
+				}
+				for(int j=0;j<reportOtherItemList.size();j++){
+					if(reportOtherItemList.get(j).getSort()>=1){
+						allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
 					}
 				}
 			}
-			
 			result_json.append("\"data\":"+gson.toJson(dataList)+",\"statData\":"+gson.toJson(statDataShowValueList)+",\"columns\":"+allColList.toString());
 		}else{
 			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"statData\":[],\"columns\":[]");
@@ -2057,6 +2256,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
 			String title=selectedOrgName+"日报表";
 			String fileName=selectedOrgName+"日报表";
 			int headerRowCount=0;
@@ -2065,7 +2265,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCode="";
 			int reportUnitCalculateType=0;
 			String deviceTableName="tbl_device";
-			String tableName="TBL_DAILYCALCULATIONDATA";
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
@@ -2147,8 +2346,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						+ " and t.sort<="+columnCount
 						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 						+ " order by t.sort";
-				List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-				List<String> reportItemPrecList=new ArrayList<>();
+				List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+				List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 				for(int i=0;i<reportItemQuertList.size();i++){
 					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
@@ -2161,47 +2360,54 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
 					reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
 					
+					
+					String precStr=(reportItemObj[6]+"").replaceAll("null", "");
+					if(StringManagerUtils.isNumber(precStr)){
+						reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+					}else{
+						reportUnitItem.setPrec(-1);
+					}
+					
 					reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[7]+""));
 					reportUnitItem.setDataSource(reportItemObj[8]+"");
 					
-					reportItemList.add(reportUnitItem);
-					reportItemPrecList.add((reportItemObj[6]+"").replaceAll("null", ""));
+					if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+						reportAcqItemList.add(reportUnitItem);
+					}else{
+						reportOtherItemList.add(reportUnitItem);
+					}
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
-				
 				sqlBuff.append("select t.id");
-				for(int i=0;i<reportItemList.size();i++){
+				
+				if(reportAcqItemList.size()>0){
+					sqlBuff.append(",t.caldata");
+				}
+				for(int i=0;i<reportOtherItemList.size();i++){
 					String tableAlias="t";
 					if(reportUnitCalculateType>0){
-						if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-							tableAlias="t2";
-						}else if("计算".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-							if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(i).getItemCode())){
+						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+							if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
 								tableAlias="t";
 							}else{
-								tableAlias="t3";
+								tableAlias="t2";
 							}
 						}
 					}
-					if("采集".equalsIgnoreCase(reportItemList.get(i).getDataSource())){
-						sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
+					if(reportOtherItemList.get(i).getDataType()==3){
+						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+					}else if(reportOtherItemList.get(i).getDataType()==4){
+						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+					}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+						sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
 					}else{
-						if(reportItemList.get(i).getDataType()==3){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(i).getItemCode()+"");
-						}else if(reportItemList.get(i).getDataType()==4){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportItemList.get(i).getItemCode()+"");
-						}else if(reportItemList.get(i).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(i))){
-							sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(i).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(i))+")");
-						}else{
-							sqlBuff.append(","+tableAlias+"."+reportItemList.get(i).getItemCode()+"");
-						}
+						sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
 					}
 				}
 				sqlBuff.append(" from "+viewName+" t");
-				sqlBuff.append(" left outer join "+tableName+" t2 on t.id=t2.id");
 				if(reportUnitCalculateType>0){
-					sqlBuff.append(" left outer join "+calTotalTableName+" t3 on t.deviceId=t3.deviceId and t.calDate=t3.calDate");
+					sqlBuff.append(" left outer join "+calTotalTableName+" t2 on t.deviceId=t2.deviceId and t.calDate=t2.calDate");
 				}
 				sqlBuff.append(" where t.org_id in ("+orgId+")");
 				if(StringManagerUtils.isNum(deviceType)){
@@ -2210,6 +2416,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append("and t.deviceType in("+deviceType+")");
 				}
 				sqlBuff.append(" and t.reportinstancecode='"+instanceCode+"' ");
+				
 				sqlBuff.append(" and t.calDate = to_date('"+reportDate+"','yyyy-mm-dd')");
 				sqlBuff.append(" order by t.sortnum");
 				
@@ -2222,67 +2429,119 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						everyDaya.add("");
 					}
 					everyDaya.set(0, (i+1)+"");
-					for(int j=0;j<reportItemList.size();j++){
-						if(reportItemList.get(j).getSort()>=1){
+					everyDaya.add(recordId);
+					
+					
+					int startIndex=1;
+					if(reportAcqItemList.size()>0){
+						startIndex=2;
+						String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+						type = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> calDataList=gson.fromJson(calData, type);
+						
+						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
-							if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
-							}else{
-								addValue=reportDataObj[j+1]+"";
-							}
-							
-							if(reportItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
-								if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
-									addValue="";
-								}
-							}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								if(StringManagerUtils.isNotNull(addValue)){
-									String[] totalValueArr=addValue.split(";");
-									addValue="";
-									if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-										addValue=totalValueArr[0];
-									}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-										addValue=totalValueArr[1];
-									}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-										addValue=totalValueArr[2];
-									}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-										addValue=totalValueArr[3];
-									}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-										addValue=totalValueArr[4];
-									}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-										addValue=totalValueArr[5];
-									}
+							for(KeyValue keyValue:calDataList){
+								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
 								}
 							}
-							addValue=addValue.replaceAll("null", "");
-							everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+							if(StringManagerUtils.isNotNull(addValue)){
+								String[] totalValueArr=addValue.split(";");
+								addValue="";
+								if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+									addValue=totalValueArr[0];
+								}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+									addValue=totalValueArr[1];
+								}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+									addValue=totalValueArr[2];
+								}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+									addValue=totalValueArr[3];
+								}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+									addValue=totalValueArr[4];
+								}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+									addValue=totalValueArr[5];
+								}
+							}
+							everyDaya.set(reportUnitItem.getSort()-1, addValue);
 							
 							//求和
 							if(StringManagerUtils.isNumber(addValue)){
-								avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
-								String currentSum=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+								avgRecordsList.set(reportUnitItem.getSort()-1, avgRecordsList.get(reportUnitItem.getSort()-1)+1);
+								String currentSum=statDataList.get(0).get(reportUnitItem.getSort()-1);
 								if(StringManagerUtils.isNumber(currentSum)){
-									statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+									statDataList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
 								}else{
-									statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+									statDataList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
 								}
 								
-								if(reportItemList.get(j).getSumSign()!=null && reportItemList.get(j).getSumSign()==1){
+								if(reportUnitItem.getSumSign()!=null && reportUnitItem.getSumSign()==1){
 									if(StringManagerUtils.isNumber(currentSum)){
-										statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+										statDataShowValueList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
 									}else{
-										statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+										statDataShowValueList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
 									}
 								}
 							}
 						
 							//求平均						
-							if(reportItemList.get(j).getAverageSign()!=null && reportItemList.get(j).getAverageSign()==1){
-								String sumStr=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
-								int avgRecordCount=avgRecordsList.get(reportItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportItemList.get(j).getSort()-1);
+							if(reportUnitItem.getAverageSign()!=null && reportUnitItem.getAverageSign()==1){
+								String sumStr=statDataList.get(0).get(reportUnitItem.getSort()-1);
+								int avgRecordCount=avgRecordsList.get(reportUnitItem.getSort()-1)==0?1:avgRecordsList.get(reportUnitItem.getSort()-1);
 								float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
-								statDataList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
-								statDataShowValueList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+								statDataList.get(1).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+								statDataShowValueList.get(1).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+							}
+							
+						}
+					}
+					
+					
+					
+					for(int j=0;j<reportOtherItemList.size();j++){
+						if(reportOtherItemList.get(j).getSort()>=1){
+							String addValue="";
+							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+							}else{
+								addValue=reportDataObj[j+startIndex]+"";
+							}
+							
+							if(reportOtherItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
+								if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
+									addValue="";
+								}
+							}
+							
+							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
+							
+							//求和
+							if(StringManagerUtils.isNumber(addValue)){
+								avgRecordsList.set(reportOtherItemList.get(j).getSort()-1, avgRecordsList.get(reportOtherItemList.get(j).getSort()-1)+1);
+								String currentSum=statDataList.get(0).get(reportOtherItemList.get(j).getSort()-1);
+								if(StringManagerUtils.isNumber(currentSum)){
+									statDataList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+								}else{
+									statDataList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+								}
+								
+								if(reportOtherItemList.get(j).getSumSign()!=null && reportOtherItemList.get(j).getSumSign()==1){
+									if(StringManagerUtils.isNumber(currentSum)){
+										statDataShowValueList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+									}else{
+										statDataShowValueList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+									}
+								}
+							}
+						
+							//求平均						
+							if(reportOtherItemList.get(j).getAverageSign()!=null && reportOtherItemList.get(j).getAverageSign()==1){
+								String sumStr=statDataList.get(0).get(reportOtherItemList.get(j).getSort()-1);
+								int avgRecordCount=avgRecordsList.get(reportOtherItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportOtherItemList.get(j).getSort()-1);
+								float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
+								statDataList.get(1).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+								statDataShowValueList.get(1).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
 							}
 						}
 					}
@@ -2354,8 +2613,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
 			String fileName=selectedOrgName+"日报表-"+reportDate;
 			
+			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
+			
 			String deviceTableName="tbl_device";
-			String tableName="TBL_DAILYCALCULATIONDATA";
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
@@ -2448,11 +2709,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							+ " and t.sort<="+columnCount
 							+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
 							+ " order by t.sort";
-					List<ReportUnitItem> reportItemList=new ArrayList<ReportUnitItem>();
-					List<String> reportItemPrecList=new ArrayList<>();
+					List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+					List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 					for(int j=0;j<reportItemQuertList.size();j++){
-						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
 						ReportUnitItem reportUnitItem=new ReportUnitItem();
 						reportUnitItem.setItemName(reportItemObj[0]+"");
 						reportUnitItem.setItemCode(reportItemObj[1]+"");
@@ -2462,52 +2723,62 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
 						reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
 						
+						
+						String precStr=(reportItemObj[6]+"").replaceAll("null", "");
+						if(StringManagerUtils.isNumber(precStr)){
+							reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+						}else{
+							reportUnitItem.setPrec(-1);
+						}
+						
 						reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[7]+""));
 						reportUnitItem.setDataSource(reportItemObj[8]+"");
 						
-						reportItemList.add(reportUnitItem);
-						reportItemPrecList.add((reportItemObj[6]+"").replaceAll("null", ""));
+						if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+							reportAcqItemList.add(reportUnitItem);
+						}else{
+							reportOtherItemList.add(reportUnitItem);
+						}
 					}
 					
 					StringBuffer sqlBuff = new StringBuffer();
 					
 					sqlBuff.append("select t.id");
-					for(int j=0;j<reportItemList.size();j++){
+					
+					if(reportAcqItemList.size()>0){
+						sqlBuff.append(",t.caldata");
+					}
+					
+					for(ReportUnitItem reportUnitItem:reportOtherItemList){
 						String tableAlias="t";
 						if(reportUnitCalculateType>0){
-							if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								tableAlias="t2";
-							}else if("计算".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-								if(StringManagerUtils.generalCalColumnFiter(reportItemList.get(j).getItemCode())){
+							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
+								if(StringManagerUtils.generalCalColumnFiter(reportUnitItem.getItemCode())){
 									tableAlias="t";
 								}else{
-									tableAlias="t3";
+									tableAlias="t2";
 								}
 							}
 						}
-						if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-							sqlBuff.append(","+tableAlias+"."+reportItemList.get(j).getItemCode()+"");
+						if(reportUnitItem.getDataType()==3){
+							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'yyyy-mm-dd') as "+reportUnitItem.getItemCode()+"");
+						}else if(reportUnitItem.getDataType()==4){
+							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'hh24:mi') as "+reportUnitItem.getItemCode()+"");
+						}else if(reportUnitItem.getDataType()==2 && reportUnitItem.getPrec()>=0){
+							sqlBuff.append(",round("+tableAlias+"."+reportUnitItem.getItemCode()+","+reportUnitItem.getPrec()+")");
 						}else{
-							if(reportItemList.get(j).getDataType()==3){
-								sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(j).getItemCode()+"@'yyyy-mm-dd') as "+reportItemList.get(j).getItemCode()+"");
-							}else if(reportItemList.get(j).getDataType()==4){
-								sqlBuff.append(",to_char("+tableAlias+"."+reportItemList.get(j).getItemCode()+"@'hh24:mi') as "+reportItemList.get(j).getItemCode()+"");
-							}else if(reportItemList.get(j).getDataType()==2 && StringManagerUtils.isNumber(reportItemPrecList.get(j))){
-								sqlBuff.append(",round("+tableAlias+"."+reportItemList.get(j).getItemCode()+","+StringManagerUtils.stringToInteger(reportItemPrecList.get(j))+")");
-							}else{
-								sqlBuff.append(","+tableAlias+"."+reportItemList.get(j).getItemCode()+"");
-							}
+							sqlBuff.append(","+tableAlias+"."+reportUnitItem.getItemCode()+"");
 						}
 					}
-					sqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
+					sqlBuff.append(" from "+viewName+" t");
 					if(reportUnitCalculateType>0){
-						sqlBuff.append(","+calTotalTableName+" t3");
+						sqlBuff.append(","+calTotalTableName+" t2");
 						
 					}
-					sqlBuff.append(" where t.id=t2.id");
+					sqlBuff.append(" where 1=1");
 					
 					if(reportUnitCalculateType>0){
-						sqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
+						sqlBuff.append(" and t.deviceId=t2.deviceId and t.calDate=t2.calDate");
 					}
 					
 					sqlBuff.append(" and t.org_id in ("+orgId+")");
@@ -2530,67 +2801,117 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							everyDaya.add("");
 						}
 						everyDaya.set(0, (i+1)+"");
-						for(int j=0;j<reportItemList.size();j++){
-							if(reportItemList.get(j).getSort()>=1){
+						
+						int startIndex=1;
+						if(reportAcqItemList.size()>0){
+							startIndex=2;
+							String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+							type = new TypeToken<List<KeyValue>>() {}.getType();
+							List<KeyValue> calDataList=gson.fromJson(calData, type);
+							
+							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
-								if(reportDataObj[j+1] instanceof CLOB || reportDataObj[j+1] instanceof Clob){
-									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+1]);
-								}else{
-									addValue=reportDataObj[j+1]+"";
-								}
-								
-								if(reportItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
-									if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
-										addValue="";
-									}
-								}else if("采集".equalsIgnoreCase(reportItemList.get(j).getDataSource())){
-									if(StringManagerUtils.isNotNull(addValue)){
-										String[] totalValueArr=addValue.split(";");
-										addValue="";
-										if(reportItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-											addValue=totalValueArr[0];
-										}else if(reportItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-											addValue=totalValueArr[1];
-										}else if(reportItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-											addValue=totalValueArr[2];
-										}else if(reportItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-											addValue=totalValueArr[3];
-										}else if(reportItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-											addValue=totalValueArr[4];
-										}else if(reportItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-											addValue=totalValueArr[5];
-										}
+								for(KeyValue keyValue:calDataList){
+									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
 									}
 								}
-								addValue=addValue.replaceAll("null", "");
-								everyDaya.set(reportItemList.get(j).getSort()-1, addValue);
+								if(StringManagerUtils.isNotNull(addValue)){
+									String[] totalValueArr=addValue.split(";");
+									addValue="";
+									if(reportUnitItem.getTotalType()==1 && totalValueArr.length>=1){
+										addValue=totalValueArr[0];
+									}else if(reportUnitItem.getTotalType()==2 && totalValueArr.length>=2){
+										addValue=totalValueArr[1];
+									}else if(reportUnitItem.getTotalType()==3 && totalValueArr.length>=3){
+										addValue=totalValueArr[2];
+									}else if(reportUnitItem.getTotalType()==4 && totalValueArr.length>=4){
+										addValue=totalValueArr[3];
+									}else if(reportUnitItem.getTotalType()==5 && totalValueArr.length>=5){
+										addValue=totalValueArr[4];
+									}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
+										addValue=totalValueArr[5];
+									}
+								}
+								everyDaya.set(reportUnitItem.getSort()-1, addValue);
 								
 								//求和
 								if(StringManagerUtils.isNumber(addValue)){
-									avgRecordsList.set(reportItemList.get(j).getSort()-1, avgRecordsList.get(reportItemList.get(j).getSort()-1)+1);
-									String currentSum=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
+									avgRecordsList.set(reportUnitItem.getSort()-1, avgRecordsList.get(reportUnitItem.getSort()-1)+1);
+									String currentSum=statDataList.get(0).get(reportUnitItem.getSort()-1);
 									if(StringManagerUtils.isNumber(currentSum)){
-										statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+										statDataList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
 									}else{
-										statDataList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+										statDataList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
 									}
 									
-									if(reportItemList.get(j).getSumSign()!=null && reportItemList.get(j).getSumSign()==1){
+									if(reportUnitItem.getSumSign()!=null && reportUnitItem.getSumSign()==1){
 										if(StringManagerUtils.isNumber(currentSum)){
-											statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+											statDataShowValueList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
 										}else{
-											statDataShowValueList.get(0).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+											statDataShowValueList.get(0).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
 										}
 									}
 								}
 							
 								//求平均						
-								if(reportItemList.get(j).getAverageSign()!=null && reportItemList.get(j).getAverageSign()==1){
-									String sumStr=statDataList.get(0).get(reportItemList.get(j).getSort()-1);
-									int avgRecordCount=avgRecordsList.get(reportItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportItemList.get(j).getSort()-1);
+								if(reportUnitItem.getAverageSign()!=null && reportUnitItem.getAverageSign()==1){
+									String sumStr=statDataList.get(0).get(reportUnitItem.getSort()-1);
+									int avgRecordCount=avgRecordsList.get(reportUnitItem.getSort()-1)==0?1:avgRecordsList.get(reportUnitItem.getSort()-1);
 									float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
-									statDataList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
-									statDataShowValueList.get(1).set(reportItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+									statDataList.get(1).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+									statDataShowValueList.get(1).set(reportUnitItem.getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+								}
+								
+							}
+						}
+						
+						
+						
+						for(int j=0;j<reportOtherItemList.size();j++){
+							if(reportOtherItemList.get(j).getSort()>=1){
+								String addValue="";
+								if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+								}else{
+									addValue=reportDataObj[j+startIndex]+"";
+								}
+								
+								if(reportOtherItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
+									if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
+										addValue="";
+									}
+								}
+								
+								everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
+								
+								//求和
+								if(StringManagerUtils.isNumber(addValue)){
+									avgRecordsList.set(reportOtherItemList.get(j).getSort()-1, avgRecordsList.get(reportOtherItemList.get(j).getSort()-1)+1);
+									String currentSum=statDataList.get(0).get(reportOtherItemList.get(j).getSort()-1);
+									if(StringManagerUtils.isNumber(currentSum)){
+										statDataList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+									}else{
+										statDataList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+									}
+									
+									if(reportOtherItemList.get(j).getSumSign()!=null && reportOtherItemList.get(j).getSumSign()==1){
+										if(StringManagerUtils.isNumber(currentSum)){
+											statDataShowValueList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat((StringManagerUtils.stringToFloat(addValue)+StringManagerUtils.stringToFloat(currentSum))+"", 2)+"" );
+										}else{
+											statDataShowValueList.get(0).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(StringManagerUtils.stringToFloat(addValue)+"",2)+"");
+										}
+									}
+								}
+							
+								//求平均						
+								if(reportOtherItemList.get(j).getAverageSign()!=null && reportOtherItemList.get(j).getAverageSign()==1){
+									String sumStr=statDataList.get(0).get(reportOtherItemList.get(j).getSort()-1);
+									int avgRecordCount=avgRecordsList.get(reportOtherItemList.get(j).getSort()-1)==0?1:avgRecordsList.get(reportOtherItemList.get(j).getSort()-1);
+									float avg=StringManagerUtils.stringToFloat(sumStr)/avgRecordCount;
+									statDataList.get(1).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
+									statDataShowValueList.get(1).set(reportOtherItemList.get(j).getSort()-1, StringManagerUtils.stringToFloat(avg+"",2)+"");
 								}
 							}
 						}

@@ -573,25 +573,6 @@ function deviceHistoryQueryCurve(deviceType){
 		        }
 		        
 		        
-//		    	series += "{\"name\":\"" + legendName[i] + "\",type:'spline',lineWidth:"+curveConf[i].lineWidth+",dashStyle:'"+curveConf[i].dashStyle+"',marker:{enabled: false},"+"\"yAxis\":"+i+",";
-//		        series += "\"data\":[";
-//		        for (var j = 0; j < data.length; j++) {
-//		        	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
-//		            if (j != data.length - 1) {
-//		                series += ",";
-//		            }
-//		            if(parseFloat(data[j].data[i])<0){
-//		            	allPositive=false;
-//		            }else if(parseFloat(data[j].data[i])>=0){
-//		            	allNegative=false;
-//		            }
-//		        }
-//		        series += "]}";
-//		        if (i != legendName.length - 1) {
-//		            series += ",";
-//		        }
-		        
-		        
 		        
 		        var opposite=curveConf[i].yAxisOpposite;
 		        if(allNegative){
@@ -635,10 +616,8 @@ function deviceHistoryQueryCurve(deviceType){
 		        }else{
 		        	yAxis_l.push(singleAxis);
 		        }
-//		        yAxis.push(singleAxis);
 		        
 		    }
-//		    series += "]";
 		    
 		    for(var i=yAxis_l.length-1;i>=0;i--){
 		    	yAxis.push(yAxis_l[i]);
@@ -662,8 +641,6 @@ function deviceHistoryQueryCurve(deviceType){
 		    for(var i=0;i<color_r.length;i++){
 		    	color_all.push(color_r[i]);
 		    }
-		    
-//		    var ser = Ext.JSON.decode(series);
 		   
 		    initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, '', '', yAxis, color_all,true,timeFormat);
 		},

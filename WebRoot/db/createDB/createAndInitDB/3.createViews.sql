@@ -60,7 +60,7 @@ t2.recoverytime,t.orgid
 /*==============================================================*/
 /* View: viw_dailycalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_dailycalculationdata as
+create or replace view viw_dailycalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calDate,
@@ -70,7 +70,7 @@ select
            decode(t.runstatus,1,'运行','停抽')
       else '离线' end as runStatusName,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,
- t.headerLabelInfo,
+ t.headerLabelInfo,t.caldata,
  device.reportinstancecode,
  device.sortnum,org.org_code,org.org_id,t.remark as remark
 from
@@ -432,7 +432,7 @@ and t.action=t3.itemvalue and upper(t3.itemcode)=upper('systemAction');
 /*==============================================================*/
 /* View: viw_timingcalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_timingcalculationdata as
+create or replace view viw_timingcalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calTime,
@@ -442,10 +442,9 @@ select
            decode(t.runstatus,1,'运行','停抽')
       else '离线' end as runStatusName,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,
- t.headerLabelInfo,
+ t.headerLabelInfo,t.caldata,
  device.reportinstancecode,
- device.sortnum,org.org_code,org.org_id,t.remark as remark,
- t.reservedcol1,t.reservedcol2,t.reservedcol3,t.reservedcol4,t.reservedcol5
+ device.sortnum,org.org_code,org.org_id,t.remark as remark
 from
 tbl_device device,tbl_org org,tbl_timingcalculationdata t
 where  device.orgid=org.org_id and t.deviceid=device.id;

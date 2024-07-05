@@ -2138,10 +2138,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
-		Jedis jedis=null;
 		UserInfo userInfo=null;
-		List<byte[]> calItemSet=null;
-		List<byte[]> inputItemSet=null;
+		List<CalItem> calItemList=null;
+		List<CalItem> inputItemList=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		DeviceInfo deviceInfo=null;
 		int dataSaveMode=1;
@@ -2158,52 +2157,26 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try{
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-				}
-				if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
-					userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
-				}
-				
-
-				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
+				deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 				if(deviceInfo!=null){
-					displayInstanceCode=deviceInfo.getDisplayInstanceCode();
+					displayInstanceCode=deviceInfo.getDisplayInstanceCode()+"";
 				}
 				
-				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes())){
-					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes()));
+				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
+				if(displayInstanceOwnItem!=null){
 					Collections.sort(displayInstanceOwnItem.getItemList());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					if(!jedis.exists(rpcCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCCalculateItem();
-					}
-					calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(rpcInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCInputItem();
-					}
-					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
-				}
-				if(StringManagerUtils.stringToInteger(calculateType)==2){
-					if(!jedis.exists(pcpCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPCalculateItem();
-					}
-					calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(pcpInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPInputItem();
-					}
-					inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
+					calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+					inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+					inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				}else{
+					calItemList=new ArrayList<>();
+					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -2289,9 +2262,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									}else if("1".equalsIgnoreCase(type)){
 										calItemColumnList.add(itemcode);
 										String itemName=itemname;
-										if(calItemSet!=null){
-											for(byte[] calItemByteArr:calItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+										if(calItemList!=null && calItemList.size()>0){
+											for(CalItem calItem:calItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
@@ -2306,9 +2278,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
-										if(inputItemSet!=null){
-											for(byte[] inputItemByteArr:inputItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
+										if(inputItemList!=null && inputItemList.size()>0){
+											for(CalItem calItem:inputItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
@@ -2553,10 +2524,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("]}");
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
 		}
 		return result_json.toString();
 	}
@@ -2566,66 +2533,39 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
-		Jedis jedis=null;
 		UserInfo userInfo=null;
-		List<byte[]> calItemSet=null;
-		List<byte[]> inputItemSet=null;
+		List<CalItem> calItemList=null;
+		List<CalItem> inputItemList=null;
 		DeviceInfo deviceInfo=null;
-		int dataSaveMode=1;
+		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		String displayInstanceCode="";
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
-		String rpcCalItemsKey="rpcCalItemList";
-		String rpcInputItemsKey="rpcInputItemList";
-		String pcpCalItemsKey="pcpCalItemList";
-		String pcpInputItemsKey="pcpInputItemList";
-		String deviceInfoKey="DeviceInfo";
 		
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try{
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-				}
-				if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
-					userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
+				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
+				deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
+				if(deviceInfo!=null){
+					displayInstanceCode=deviceInfo.getDisplayInstanceCode()+"";
 				}
 				
-
-				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-				if(deviceInfo!=null){
-					displayInstanceCode=deviceInfo.getDisplayInstanceCode();
+				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
+				if(displayInstanceOwnItem!=null){
+					Collections.sort(displayInstanceOwnItem.getItemList());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					if(!jedis.exists(rpcCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCCalculateItem();
-					}
-					calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(rpcInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCInputItem();
-					}
-					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
-				}
-				if(StringManagerUtils.stringToInteger(calculateType)==2){
-					if(!jedis.exists(pcpCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPCalculateItem();
-					}
-					calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(pcpInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPInputItem();
-					}
-					inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
+					calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+					inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+					inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				}else{
+					calItemList=new ArrayList<>();
+					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -2690,9 +2630,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}else if("1".equalsIgnoreCase(type)){
 									calItemColumnList.add(itemcode);
 									String itemName=itemname;
-									if(calItemSet!=null){
-										for(byte[] calItemByteArr:calItemSet){
-											CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+									if(calItemList!=null && calItemList.size()>0){
+										for(CalItem calItem:calItemList){
 											if(itemcode.equalsIgnoreCase(calItem.getCode())){
 												if(StringManagerUtils.isNotNull(calItem.getUnit())){
 													itemName=itemName+"("+calItem.getUnit()+")";
@@ -2708,9 +2647,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}else if("3".equalsIgnoreCase(type)){
 									inputItemColumnList.add(itemcode);
 									String itemName=itemname;
-									if(inputItemSet!=null){
-										for(byte[] inputItemByteArr:inputItemSet){
-											CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
+									if(inputItemList!=null && inputItemList.size()>0){
+										for(CalItem calItem:inputItemList){
 											if(itemcode.equalsIgnoreCase(calItem.getCode())){
 												if(StringManagerUtils.isNotNull(calItem.getUnit())){
 													itemName=itemName+"("+calItem.getUnit()+")";
@@ -2775,8 +2713,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					calAndInputDataTable="tbl_pcpacqdata_hist";
 				}
-				for(int i=0;i<itemColumnList.size();i++){
-					columns+=",t."+itemColumnList.get(i);
+				if(itemColumnList.size()>0){
+					columns+=",t.acqdata";
 				}
 				if(StringManagerUtils.stringToInteger(calculateType)>0){
 					for(int i=0;i<calItemColumnList.size();i++){
@@ -2807,11 +2745,27 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
 					result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
-					for(int j=1;j<=itemColumnList.size();j++){
-						result_json.append(obj[j]+",");
+					int startIndex=1;
+					if(itemColumnList.size()>0){
+						startIndex=2;
+						Gson gson = new Gson();
+						java.lang.reflect.Type type=null;
+						String acqData=StringManagerUtils.CLOBObjectToString(obj[1]);
+						type = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+						
+						for(String itemColumn:itemColumnList){
+							String value="";
+							for(KeyValue keyValue:acqDataList){
+								if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+									value=keyValue.getValue();
+									break;
+								}
+							}
+							result_json.append(value+",");
+						}
 					}
-					
-					for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
+					for(int j=startIndex;j<startIndex+calItemColumnList.size();j++){
 						result_json.append(obj[j]+",");
 					}
 					if(inputItemColumnList.size()>0){
@@ -2911,486 +2865,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("]}");
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
-		}
-		return result_json.toString();
-	}
-	
-	public String getRealTimeMonitoringCurveData(String deviceId,String deviceName,String deviceType,String calculateType,int userNo)throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		StringBuffer itemsBuff = new StringBuffer();
-		StringBuffer curveConfBuff = new StringBuffer();
-		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
-		Jedis jedis=null;
-		UserInfo userInfo=null;
-		List<byte[]> calItemSet=null;
-		List<byte[]> inputItemSet=null;
-		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		DeviceInfo deviceInfo=null;
-		int dataSaveMode=1;
-		String displayInstanceCode="";
-		String tableName="tbl_acqdata_hist";
-		String deviceTableName="tbl_device";
-		String rpcCalItemsKey="rpcCalItemList";
-		String rpcInputItemsKey="rpcInputItemList";
-		String pcpCalItemsKey="pcpCalItemList";
-		String pcpInputItemsKey="pcpInputItemList";
-		String deviceInfoKey="DeviceInfo";
-		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-		try{
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-				}
-				if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
-					userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
-				}
-				
-
-				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-				if(deviceInfo!=null){
-					displayInstanceCode=deviceInfo.getDisplayInstanceCode();
-				}
-				
-				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes())){
-					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes()));
-					Collections.sort(displayInstanceOwnItem.getItemList());
-				}
-				
-				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					if(!jedis.exists(rpcCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCCalculateItem();
-					}
-					calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(rpcInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCInputItem();
-					}
-					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
-				}
-				if(StringManagerUtils.stringToInteger(calculateType)==2){
-					if(!jedis.exists(pcpCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPCalculateItem();
-					}
-					calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(pcpInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPInputItem();
-					}
-					inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			List<String> itemNameList=new ArrayList<String>();
-			List<String> itemColumnList=new ArrayList<String>();
-			List<String> curveConfList=new ArrayList<String>();
-			
-			List<String> calItemNameList=new ArrayList<String>();
-			List<String> calItemColumnList=new ArrayList<String>();
-			List<String> calItemCurveConfList=new ArrayList<String>();
-			
-			List<String> inputItemNameList=new ArrayList<String>();
-			List<String> inputItemColumnList=new ArrayList<String>();
-			List<String> inputItemCurveConfList=new ArrayList<String>();
-			
-			if(displayInstanceOwnItem!=null){
-				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
-					@Override
-					public int compare(DisplayInstanceOwnItem.DisplayItem item1,DisplayInstanceOwnItem.DisplayItem item2){
-						Gson gson = new Gson();
-						java.lang.reflect.Type type=null;
-						int sort1=0;
-						int sort2=0;
-						type = new TypeToken<CurveConf>() {}.getType();
-						CurveConf curveConfObj1=gson.fromJson(item1.getRealtimeCurveConf(), type);
-						
-						type = new TypeToken<CurveConf>() {}.getType();
-						CurveConf curveConfObj2=gson.fromJson(item2.getRealtimeCurveConf(), type);
-						
-						if(curveConfObj1!=null){
-							sort1=curveConfObj1.getSort();
-						}
-						
-						if(curveConfObj2!=null){
-							sort2=curveConfObj2.getSort();
-						}
-						
-						int diff=sort1-sort2;
-						if(diff>0){
-							return 1;
-						}else if(diff<0){
-							return -1;
-						}
-						return 0;
-					}
-				});
-				String protocolName=displayInstanceOwnItem.getProtocol();
-				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
-								Gson gson = new Gson();
-								java.lang.reflect.Type reflectType=new TypeToken<CurveConf>() {}.getType();
-								CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf(), reflectType);
-								
-								if(curveConfObj!=null && curveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
-									String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
-									String bitindex=displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"";
-									String realtimecurveconf=displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf();
-									String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
-									String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
-									
-									if("0".equalsIgnoreCase(type)){
-										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
-												String col="";
-												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
-												}
-												itemColumnList.add(col);
-												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
-												}else{
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
-												}
-												curveConfList.add(realtimecurveconf.replaceAll("null", ""));
-												break;
-											}
-										}
-									}else if("1".equalsIgnoreCase(type)){
-										calItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(calItemSet!=null){
-											for(byte[] calItemByteArr:calItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-											}
-										}
-										
-										calItemNameList.add(itemName);
-										calItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
-									}else if("3".equalsIgnoreCase(type)){
-										inputItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(inputItemSet!=null){
-											for(byte[] inputItemByteArr:inputItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
-										}
-										
-										inputItemNameList.add(itemName);
-										inputItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
-									}
-								
-								}
-							}
-							break;
-						}
-					}
-				}
-			}else{
-				String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and  t.id="+deviceId;
-				String curveItemsSql="select t4.itemname,t4.bitindex,t4.realtimecurveconf,t4.itemcode,t4.type "
-						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
-						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
-						+ " and t.id="+deviceId+" "
-						+ " and t4.realtimecurveconf is not null "
-						+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userNo+"' )"
-						+ " order by t4.realtimeSort,t4.id";
-				List<?> protocolList = this.findCallSql(protocolSql);
-				List<?> curveItemList = this.findCallSql(curveItemsSql);
-				String protocolName="";
-				String unit="";
-				String dataType="";
-				int resolutionMode=0;
-				
-				if(protocolList.size()>0){
-					protocolName=protocolList.get(0)+"";
-					ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-					if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-							if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-								for(int j=0;j<curveItemList.size();j++){
-									Object[] itemObj=(Object[]) curveItemList.get(j);
-									String itemname=itemObj[0]+"";
-									String bitindex=itemObj[1]+"";
-									String realtimecurveconf=itemObj[2]+"";
-									String itemcode=itemObj[3]+"";
-									String type=itemObj[4]+"";
-									if("0".equalsIgnoreCase(type)){
-										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
-												String col="";
-												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
-												}
-												itemColumnList.add(col);
-												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
-												}else{
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
-												}
-												curveConfList.add(realtimecurveconf.replaceAll("null", ""));
-												break;
-											}
-										}
-									}else if("1".equalsIgnoreCase(type)){
-										calItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(calItemSet!=null){
-											for(byte[] calItemByteArr:calItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
-										}
-										
-										calItemNameList.add(itemName);
-										calItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
-									}else if("3".equalsIgnoreCase(type)){
-										inputItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(inputItemSet!=null){
-											for(byte[] inputItemByteArr:inputItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
-										}
-										
-										inputItemNameList.add(itemName);
-										inputItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
-									}
-								}
-								break;
-							}
-						}
-					}
-				}
-			}
-			
-			itemsBuff.append("[");
-			for(int i=0;i<itemNameList.size();i++){
-				itemsBuff.append("\""+itemNameList.get(i)+"\",");
-			}
-			for(int i=0;i<calItemNameList.size();i++){
-				itemsBuff.append("\""+calItemNameList.get(i)+"\",");
-			}
-			for(int i=0;i<inputItemNameList.size();i++){
-				itemsBuff.append("\""+inputItemNameList.get(i)+"\",");
-			}
-			if (itemsBuff.toString().endsWith(",")) {
-				itemsBuff.deleteCharAt(itemsBuff.length() - 1);
-			}
-			itemsBuff.append("]");
-			
-			curveConfBuff.append("[");
-			for(int i=0;i<curveConfList.size();i++){
-				curveConfBuff.append(""+curveConfList.get(i)+",");
-			}
-			for(int i=0;i<calItemCurveConfList.size();i++){
-				curveConfBuff.append(""+calItemCurveConfList.get(i)+",");
-			}
-			for(int i=0;i<inputItemCurveConfList.size();i++){
-				curveConfBuff.append(""+inputItemCurveConfList.get(i)+",");
-			}
-			if (curveConfBuff.toString().endsWith(",")) {
-				curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
-			}
-			curveConfBuff.append("]");
-			
-			result_json.append("{\"deviceName\":\""+deviceName+"\","
-					+ "\"curveCount\":"+(itemNameList.size()+calItemNameList.size()+inputItemNameList.size())+","
-					+ "\"curveItems\":"+itemsBuff+","
-					+ "\"curveConf\":"+curveConfBuff+","
-					+ "\"list\":[");
-			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
-				String columns="";
-				String calAndInputColumn="";
-				String calAndInputDataTable="";
-				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calAndInputDataTable="tbl_rpcacqdata_hist";
-				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-					calAndInputDataTable="tbl_pcpacqdata_hist";
-				}
-				for(int i=0;i<itemColumnList.size();i++){
-					columns+=",t."+itemColumnList.get(i);
-				}
-				if(StringManagerUtils.stringToInteger(calculateType)>0){
-					for(int i=0;i<calItemColumnList.size();i++){
-						calAndInputColumn+=",t3."+calItemColumnList.get(i);
-					}
-					if(inputItemColumnList.size()>0){
-						calAndInputColumn+=",t3.productiondata";
-					}
-				}
-				
-				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
-						+ " from "+tableName +" t"
-						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id";
-				if(StringManagerUtils.stringToInteger(calculateType)>0){
-					sql+= " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime";
-				}	
-				sql+= " where t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
-						+ " and t2.id="+deviceId;
-				int total=this.getTotalCountRows(sql);
-				int rarefy=total/vacuateThreshold+1;
-				sql+= " order by t.acqtime";
-				
-				String finalSql=sql;
-				if(rarefy>1){
-					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
-				}
-				List<?> list = this.findCallSql(finalSql);
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[]) list.get(i);
-					result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
-					for(int j=1;j<=itemColumnList.size();j++){
-						result_json.append(obj[j]+",");
-					}
-					
-					for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
-						result_json.append(obj[j]+",");
-					}
-					if(inputItemColumnList.size()>0){
-						String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
-						Gson gson = new Gson();
-						java.lang.reflect.Type type=null;
-						if(StringManagerUtils.stringToInteger(calculateType)==1){
-							type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-							RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
-							for(int j=0;j<inputItemColumnList.size();j++){
-								String inputItemValue="";
-								String column=inputItemColumnList.get(j);
-								if(rpcProductionData!=null){
-									if("CrudeOilDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getCrudeOilDensity()+"";
-									}else if("WaterDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getWaterDensity()+"";
-									}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-									}else if("SaturationPressure".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
-									}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-										inputItemValue=rpcProductionData.getReservoir().getDepth()+"";
-									}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-										inputItemValue=rpcProductionData.getReservoir().getTemperature()+"";
-									}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getTubingPressure()+"";
-									}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getCasingPressure()+"";
-									}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getWellHeadTemperature()+"";
-									}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getWaterCut()+"";
-									}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getProductionGasOilRatio()+"";
-									}else if("ProducingfluidLevel".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getProducingfluidLevel()+"";
-									}else if("PumpSettingDepth".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getPumpSettingDepth()+"";
-									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && rpcProductionData.getPump()!=null ){
-										inputItemValue=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
-									}else if("LevelCorrectValue".equalsIgnoreCase(column) && rpcProductionData.getManualIntervention()!=null ){
-										inputItemValue=rpcProductionData.getManualIntervention().getLevelCorrectValue()+"";
-									}
-								}
-								result_json.append(inputItemValue+",");
-							}
-						}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-							type = new TypeToken<PCPCalculateRequestData>() {}.getType();
-							PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
-							for(int j=0;j<inputItemColumnList.size();j++){
-								String inputItemValue="";
-								String column=inputItemColumnList.get(j);
-								if(pcpProductionData!=null){
-									if("CrudeOilDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getCrudeOilDensity()+"";
-									}else if("WaterDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getWaterDensity()+"";
-									}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-									}else if("SaturationPressure".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
-										inputItemValue=pcpProductionData.getFluidPVT().getSaturationPressure()+"";
-									}else if("ReservoirDepth".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
-										inputItemValue=pcpProductionData.getReservoir().getDepth()+"";
-									}else if("ReservoirTemperature".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
-										inputItemValue=pcpProductionData.getReservoir().getTemperature()+"";
-									}else if("TubingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getTubingPressure()+"";
-									}else if("CasingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getCasingPressure()+"";
-									}else if("WellHeadTemperature".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getWellHeadTemperature()+"";
-									}else if("WaterCut".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getWaterCut()+"";
-									}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getProductionGasOilRatio()+"";
-									}else if("ProducingfluidLevel".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getProducingfluidLevel()+"";
-									}else if("PumpSettingDepth".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
-										inputItemValue=pcpProductionData.getProduction().getPumpSettingDepth()+"";
-									}
-								}
-								result_json.append(inputItemValue+",");
-							}
-						}
-					}
-					
-					if (result_json.toString().endsWith(",")) {
-						result_json.deleteCharAt(result_json.length() - 1);
-					}
-					result_json.append("]},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]}");
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
 		}
 		return result_json.toString();
 	}

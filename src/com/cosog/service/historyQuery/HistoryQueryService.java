@@ -2934,10 +2934,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer itemsCodeBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
-		Jedis jedis=null;
 		UserInfo userInfo=null;
-		List<byte[]> calItemSet=null;
-		List<byte[]> inputItemSet=null;
+		List<CalItem> calItemList=null;
+		List<CalItem> inputItemList=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		int dataSaveMode=1;
 		String displayInstanceCode="";
@@ -2954,50 +2953,26 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		try{
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-				}
-				if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
-					userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
-				}
-
-				if(!jedis.exists(deviceInfoKey.getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
-					DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
+				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
+				if(deviceInfo!=null){
 					displayInstanceCode=deviceInfo.getDisplayInstanceCode()+"";
 				}
 				
-				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes())){
-					displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes()));
+				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
+				if(displayInstanceOwnItem!=null){
 					Collections.sort(displayInstanceOwnItem.getItemList());
 				}
+				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					if(!jedis.exists(rpcCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCCalculateItem();
-					}
-					calItemSet= jedis.zrange(rpcCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(rpcInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadRPCInputItem();
-					}
-					inputItemSet= jedis.zrange(rpcInputItemsKey.getBytes(), 0, -1);
-				}
-				if(StringManagerUtils.stringToInteger(calculateType)==2){
-					if(!jedis.exists(pcpCalItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPCalculateItem();
-					}
-					calItemSet= jedis.zrange(pcpCalItemsKey.getBytes(), 0, -1);
-					
-					if(!jedis.exists(pcpInputItemsKey.getBytes())){
-						MemoryDataManagerTask.loadPCPInputItem();
-					}
-					inputItemSet= jedis.zrange(pcpInputItemsKey.getBytes(), 0, -1);
+					calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+					inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+					inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				}else{
+					calItemList=new ArrayList<>();
+					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -3091,9 +3066,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if("1".equalsIgnoreCase(type)){
 										calItemColumnList.add(itemcode);
 										String itemName=itemname;
-										if(calItemSet!=null){
-											for(byte[] calItemByteArr:calItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+										if(calItemList!=null && calItemList.size()>0){
+											for(CalItem calItem:calItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
@@ -3109,9 +3083,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
-										if(inputItemSet!=null){
-											for(byte[] inputItemByteArr:inputItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
+										if(inputItemList!=null && inputItemList.size()>0){
+											for(CalItem calItem:inputItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
@@ -3178,9 +3151,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if("1".equalsIgnoreCase(type)){
 										calItemColumnList.add(itemcode);
 										String itemName=itemname;
-										if(calItemSet!=null){
-											for(byte[] calItemByteArr:calItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+										if(calItemList!=null && calItemList.size()>0){
+											for(CalItem calItem:calItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
@@ -3196,9 +3168,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
-										if(inputItemSet!=null){
-											for(byte[] inputItemByteArr:inputItemSet){
-												CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
+										if(inputItemList!=null && inputItemList.size()>0){
+											for(CalItem calItem:inputItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
@@ -3291,8 +3262,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					calAndInputDataTable="tbl_pcpacqdata_hist";
 				}
-				for(int i=0;i<itemColumnList.size();i++){
-					columns+=",t."+itemColumnList.get(i);
+				if(itemColumnList.size()>0){
+					columns+=",t.acqdata";
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)>0){
@@ -3324,11 +3295,29 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
 					result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
-					for(int j=1;j<=itemColumnList.size();j++){
-						result_json.append(obj[j]+",");
+					
+					int startIndex=1;
+					if(itemColumnList.size()>0){
+						startIndex=2;
+						Gson gson = new Gson();
+						java.lang.reflect.Type type=null;
+						String acqData=StringManagerUtils.CLOBObjectToString(obj[1]);
+						type = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+						
+						for(String itemColumn:itemColumnList){
+							String value="";
+							for(KeyValue keyValue:acqDataList){
+								if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+									value=keyValue.getValue();
+									break;
+								}
+							}
+							result_json.append(value+",");
+						}
 					}
 					
-					for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
+					for(int j=startIndex;j<startIndex+calItemColumnList.size();j++){
 						result_json.append(obj[j]+",");
 					}
 					
@@ -3435,10 +3424,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 		}
 		return result_json.toString();
 	}

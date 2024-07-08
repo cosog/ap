@@ -914,6 +914,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		}
+		if(!dataModelMap.containsKey("ProtocolMappingColumn")){
+			MemoryDataManagerTask.loadProtocolMappingColumn();
+		}
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 		Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
 		
@@ -1034,7 +1040,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 					
-					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,t2.acqdata ";
+					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), "
+							+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"
+							+ "t2.acqdata ";
 
 					if(StringManagerUtils.stringToInteger(calculateType)>0){
 						for(int i=0;i<displayCalItemList.size();i++){
@@ -1207,9 +1215,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(index<obj.length){
 								String columnName=displayCalItemList.get(i).getName();
 								String rawColumnName=columnName;
-								String value=obj[i+6+protocolItems.size()]+"";
-								if(obj[i+6+protocolItems.size()] instanceof CLOB || obj[i+6+protocolItems.size()] instanceof Clob){
-									value=StringManagerUtils.CLOBObjectToString(obj[i+6+protocolItems.size()]);
+								String value=obj[index]+"";
+								if(obj[index] instanceof CLOB || obj[index] instanceof Clob){
+									value=StringManagerUtils.CLOBObjectToString(obj[index]);
 								}
 								String rawValue=value;
 								String addr="";

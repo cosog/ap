@@ -359,6 +359,19 @@ public class MemoryDataManagerTask {
 		return acquisitionItemNameList;
 	}
 	
+	public static Map<String,DataMapping> getProtocolMappingColumn(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolMappingColumn")){
+			MemoryDataManagerTask.loadProtocolMappingColumn();
+		}
+		Map<String,DataMapping> loadProtocolMappingColumnMap=null;
+		if(dataModelMap.containsKey("ProtocolMappingColumn")){
+			loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+		}	
+				
+		return loadProtocolMappingColumnMap;
+	}
+	
 	public static void loadProtocolMappingColumn(){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -410,6 +423,20 @@ public class MemoryDataManagerTask {
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
+	}
+	
+	
+	public static Map<String,DataMapping> getProtocolMappingColumnByTitle(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		}
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=null;
+		if(dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
+			loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		}	
+				
+		return loadProtocolMappingColumnByTitleMap;
 	}
 	
 	public static void loadProtocolMappingColumnByTitle(){
@@ -1047,7 +1074,7 @@ public class MemoryDataManagerTask {
 			for(Object[] obj:queryDataList){
 				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
 				String acqTime=obj[1]+"";
-				String acqData=StringManagerUtils.CLOBObjectToString(obj[2]);
+				String acqData=obj[2]+"";
 				
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);

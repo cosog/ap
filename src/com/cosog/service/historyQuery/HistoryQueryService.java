@@ -2579,9 +2579,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(index<obj.length){
 								String columnName=displayCalItemList.get(i).getName();
 								String rawColumnName=columnName;
-								String value=obj[i+6+protocolItems.size()]+"";
-								if(obj[i+6+protocolItems.size()] instanceof CLOB || obj[i+6+protocolItems.size()] instanceof Clob){
-									value=StringManagerUtils.CLOBObjectToString(obj[i+6+protocolItems.size()]);
+								String value=obj[index]+"";
+								if(obj[index] instanceof CLOB || obj[index] instanceof Clob){
+									value=StringManagerUtils.CLOBObjectToString(index);
 								}
 								String rawValue=value;
 								String addr="";

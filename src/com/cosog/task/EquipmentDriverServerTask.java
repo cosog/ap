@@ -649,7 +649,7 @@ public class EquipmentDriverServerTask {
 			
 			for(int i=0;i<acquisitionItemNameList.size();i++){
 				if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnByTitleMap, acquisitionItemNameList.get(i),false)){
-					String addMappingColumn="";
+					String addMappingColumn="C_CLOUMN";
 					int index=1;
 					while(true){
 						if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, addMappingColumn+index,false)){

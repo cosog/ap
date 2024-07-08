@@ -1,5 +1,6 @@
 package com.cosog.utils;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -248,7 +249,16 @@ public class OracleJdbcUtis {
 			{
 				Object[] objs=new Object[columnCount];
 				for(int i=0;i<columnCount;i++){
-					objs[i]=rs.getObject(i+1);
+					if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
+						try {
+							objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+						} catch (IOException e) {
+							objs[i]="";
+							e.printStackTrace();
+						}
+					}else{
+						objs[i]=rs.getObject(i+1);
+					}
 				}
 				list.add(objs);
 			}
@@ -257,8 +267,31 @@ public class OracleJdbcUtis {
 			System.out.println(sql);
 		}finally{
 			OracleJdbcUtis.closeDBConnection(conn, ps, rs);
-		}  
+		}
+		return list;
+	}
+	
+	public static List<Object[]> query(Connection conn,PreparedStatement ps,ResultSet rs,String sql) {
+		ResultSetMetaData rsmd=null;
+		List<Object[]> list=new ArrayList<Object[]>();
 		
+		try {
+			ps = conn.prepareStatement(sql);
+			rs=ps.executeQuery();
+			rsmd=rs.getMetaData();  
+			int columnCount=rsmd.getColumnCount();  
+			while(rs.next())
+			{
+				Object[] objs=new Object[columnCount];
+				for(int i=0;i<columnCount;i++){
+					objs[i]=rs.getObject(i+1);
+				}
+				list.add(objs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(sql);
+		}
 		return list;
 	}
 }

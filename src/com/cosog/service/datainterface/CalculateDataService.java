@@ -25,10 +25,13 @@ import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.DataMapping;
 import com.cosog.model.KeyValue;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
+import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.CommResponseData;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
@@ -38,6 +41,7 @@ import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.drive.AcquisitionGroupResolutionData;
 import com.cosog.model.drive.AcquisitionItemInfo;
+import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.task.MemoryDataManagerTask;
@@ -328,6 +332,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String date="";
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 		if(!StringManagerUtils.isNotNull(tatalDate)){
 			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd")),-1);
 		}else{
@@ -431,6 +437,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 		while (iterator.hasNext()) {
 			 Map.Entry< Integer,Map<String,List<KeyValue>> > entry = iterator.next();
 			 int deviceId = entry.getKey();
+			 
+			 DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
+			 AcqInstanceOwnItem acqInstanceOwnItem=null;
+			 ModbusProtocolConfig.Protocol protocol=null;
+			 if(deviceInfo!=null){
+				 acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				 if(acqInstanceOwnItem!=null){
+					 protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+				 }
+			 }
+			 
+			 
+			 
 			 Map<String,List<KeyValue>> deviceAcqDataMap = entry.getValue();
 			 List<KeyValue> deviceTotalDataList=new ArrayList<>();
 			 Map<String,List<String>> itemDataMap=new LinkedHashMap<>();
@@ -563,8 +582,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 				 while (itemDataMapIterator.hasNext()) {
 					 Map.Entry<String,List<String>> itemDataEntry = itemDataMapIterator.next();
 					 String itemCode=itemDataEntry.getKey();
+					 
+					 ModbusProtocolConfig.Items item=null;
+					 DataMapping dataMapping=null;
+					 if(loadProtocolMappingColumnMap!=null){
+						 dataMapping=loadProtocolMappingColumnMap.get(itemCode);
+						 if(dataMapping!=null){
+							 item=MemoryDataManagerTask.getProtocolItem(protocol,  dataMapping.getName());
+						 }
+					 }
+					 
 					 List<String> itemDataList=itemDataEntry.getValue();
 					 String maxValue=" ",minValue=" ",avgValue=" ",newestValue=" ",oldestValue=" ",dailyTotalValue=" ";
+					 String tatalValue="";
 					 
 					 if(itemDataList!=null && itemDataList.size()>0 ){
 						 oldestValue=itemDataList.get(0);
@@ -603,7 +633,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 						}
 					}
 					 
-					String tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					if(item!=null && item.getQuantity()==1 
+								&& ("int".equalsIgnoreCase(item.getIFDataType()) || "float".equalsIgnoreCase(item.getIFDataType()) || "float32".equalsIgnoreCase(item.getIFDataType()) || "float64".equalsIgnoreCase(item.getIFDataType())  )
+								){
+						tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					}else{
+						tatalValue=newestValue;
+					}
 					 
 					KeyValue keyValue=new KeyValue(itemCode,tatalValue);
 					deviceTotalDataList.add(keyValue);

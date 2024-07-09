@@ -10,16 +10,20 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cosog.model.DataMapping;
 import com.cosog.model.KeyValue;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
+import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.CommResponseData;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
+import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.CalculateUtils;
@@ -948,7 +952,20 @@ public class TimingTotalCalculateThread extends Thread {
                 }
             }
         } else {
-            String labelInfoSql = "select t.deviceId, t.headerlabelinfo from tbl_timingcalculationdata t " +
+        	Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+    		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+    		
+    		DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
+			 AcqInstanceOwnItem acqInstanceOwnItem=null;
+			 ModbusProtocolConfig.Protocol protocol=null;
+			 if(deviceInfo!=null){
+				 acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				 if(acqInstanceOwnItem!=null){
+					 protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+				 }
+			 }
+    		
+        	String labelInfoSql = "select t.deviceId, t.headerlabelinfo from tbl_timingcalculationdata t " +
                 " where t.id=(" +
                 " select v2.id from " +
                 " ( select v.id,rownum r from " +
@@ -1195,9 +1212,10 @@ public class TimingTotalCalculateThread extends Thread {
                 String acqData = StringManagerUtils.CLOBObjectToString(obj[2]);
 
                 type = new TypeToken < List < KeyValue >> () {}.getType();
-                List < KeyValue > acqDataList = gson.fromJson(acqData, type);
-
-                deviceAcqDataMap.put(acqTime, acqDataList);
+                List <KeyValue> acqDataList = gson.fromJson(acqData, type);
+                if(acqDataList!=null){
+                	deviceAcqDataMap.put(acqTime, acqDataList);
+                }
             }
 
             List < KeyValue > deviceTotalDataList = new ArrayList < > ();
@@ -1229,8 +1247,21 @@ public class TimingTotalCalculateThread extends Thread {
                 while (itemDataMapIterator.hasNext()) {
                     Map.Entry < String, List < String >> itemDataEntry = itemDataMapIterator.next();
                     String itemCode = itemDataEntry.getKey();
+                    
+                    ModbusProtocolConfig.Items item=null;
+					 DataMapping dataMapping=null;
+					 if(loadProtocolMappingColumnMap!=null){
+						 dataMapping=loadProtocolMappingColumnMap.get(itemCode);
+						 if(dataMapping!=null){
+							 item=MemoryDataManagerTask.getProtocolItem(protocol,  dataMapping.getName());
+						 }
+					 }
+                    
+                    
+                    
                     List < String > itemDataList = itemDataEntry.getValue();
                     String maxValue = " ", minValue = " ", avgValue = " ", newestValue = " ", oldestValue = " ", dailyTotalValue = " ";
+                    String tatalValue="";
 
                     if (itemDataList != null && itemDataList.size() > 0) {
                         oldestValue = itemDataList.get(0);
@@ -1268,7 +1299,13 @@ public class TimingTotalCalculateThread extends Thread {
                         }
                     }
 
-                    String tatalValue = (maxValue + ";" + minValue + ";" + avgValue + ";" + oldestValue + ";" + newestValue + ";" + dailyTotalValue).replaceAll("null", "");
+                    if(item!=null && item.getQuantity()==1 
+							&& ("int".equalsIgnoreCase(item.getIFDataType()) || "float".equalsIgnoreCase(item.getIFDataType()) || "float32".equalsIgnoreCase(item.getIFDataType()) || "float64".equalsIgnoreCase(item.getIFDataType())  )
+							){
+						tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					}else{
+						tatalValue=newestValue;
+					}
 
                     KeyValue keyValue = new KeyValue(itemCode, tatalValue);
                     deviceTotalDataList.add(keyValue);

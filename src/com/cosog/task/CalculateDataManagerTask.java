@@ -307,6 +307,8 @@ public class CalculateDataManagerTask {
 	public static void acquisitionDataTotalCalculate(String deviceIdStr,String date){
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 		CommResponseData.Range dateTimeRange= StringManagerUtils.getTimeRange(date,Config.getInstance().configFile.getAp().getReport().getOffsetHour());
 		String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
 		String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
@@ -339,22 +341,35 @@ public class CalculateDataManagerTask {
 			
 			type = new TypeToken<List<KeyValue>>() {}.getType();
 			List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-			
-			if(acqDataMap.containsKey(deviceId)){
-				Map<String,List<KeyValue>> deviceAcqDataMap=acqDataMap.get(deviceId);
-				deviceAcqDataMap.put(acqTime, acqDataList);
-				acqDataMap.put(deviceId, deviceAcqDataMap);
-			}else{
-				Map<String,List<KeyValue>> deviceAcqDataMap=new LinkedHashMap<>();
-				deviceAcqDataMap.put(acqTime, acqDataList);
-				acqDataMap.put(deviceId, deviceAcqDataMap);
+			if(acqDataList!=null){
+				if(acqDataMap.containsKey(deviceId)){
+					Map<String,List<KeyValue>> deviceAcqDataMap=acqDataMap.get(deviceId);
+					deviceAcqDataMap.put(acqTime, acqDataList);
+					acqDataMap.put(deviceId, deviceAcqDataMap);
+				}else{
+					Map<String,List<KeyValue>> deviceAcqDataMap=new LinkedHashMap<>();
+					deviceAcqDataMap.put(acqTime, acqDataList);
+					acqDataMap.put(deviceId, deviceAcqDataMap);
+				}
 			}
+			
 		}
 		
 		Iterator<Map.Entry< Integer,Map<String,List<KeyValue>> >> iterator = acqDataMap.entrySet().iterator();
 		while (iterator.hasNext()) {
 			 Map.Entry< Integer,Map<String,List<KeyValue>> > entry = iterator.next();
 			 int deviceId = entry.getKey();
+			 
+			 DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
+			 AcqInstanceOwnItem acqInstanceOwnItem=null;
+			 ModbusProtocolConfig.Protocol protocol=null;
+			 if(deviceInfo!=null){
+				 acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				 if(acqInstanceOwnItem!=null){
+					 protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+				 }
+			 }
+			 
 			 Map<String,List<KeyValue>> deviceAcqDataMap = entry.getValue();
 			 
 			 List<KeyValue> deviceTotalDataList=new ArrayList<>();
@@ -387,8 +402,19 @@ public class CalculateDataManagerTask {
 				 while (itemDataMapIterator.hasNext()) {
 					 Map.Entry<String,List<String>> itemDataEntry = itemDataMapIterator.next();
 					 String itemCode=itemDataEntry.getKey();
+					 
+					 ModbusProtocolConfig.Items item=null;
+					 DataMapping dataMapping=null;
+					 if(loadProtocolMappingColumnMap!=null){
+						 dataMapping=loadProtocolMappingColumnMap.get(itemCode);
+						 if(dataMapping!=null){
+							 item=MemoryDataManagerTask.getProtocolItem(protocol,  dataMapping.getName());
+						 }
+					 }
+					 
 					 List<String> itemDataList=itemDataEntry.getValue();
 					 String maxValue=" ",minValue=" ",avgValue=" ",newestValue=" ",oldestValue=" ",dailyTotalValue=" ";
+					 String tatalValue="";
 					 
 					 if(itemDataList!=null && itemDataList.size()>0 ){
 						 oldestValue=itemDataList.get(0);
@@ -426,7 +452,13 @@ public class CalculateDataManagerTask {
 						}
 					}
 					 
-					String tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					 if(item!=null && item.getQuantity()==1 
+								&& ("int".equalsIgnoreCase(item.getIFDataType()) || "float".equalsIgnoreCase(item.getIFDataType()) || "float32".equalsIgnoreCase(item.getIFDataType()) || "float64".equalsIgnoreCase(item.getIFDataType())  )
+								){
+						tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					}else{
+						tatalValue=newestValue;
+					}
 					 
 					KeyValue keyValue=new KeyValue(itemCode,tatalValue);
 					deviceTotalDataList.add(keyValue);
@@ -485,16 +517,18 @@ public class CalculateDataManagerTask {
 			
 			type = new TypeToken<List<KeyValue>>() {}.getType();
 			List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-			
-			if(acqDataMap.containsKey(deviceId)){
-				Map<String,List<KeyValue>> deviceAcqDataMap=acqDataMap.get(deviceId);
-				deviceAcqDataMap.put(acqTime, acqDataList);
-				acqDataMap.put(deviceId, deviceAcqDataMap);
-			}else{
-				Map<String,List<KeyValue>> deviceAcqDataMap=new LinkedHashMap<>();
-				deviceAcqDataMap.put(acqTime, acqDataList);
-				acqDataMap.put(deviceId, deviceAcqDataMap);
+			if(acqDataList!=null){
+				if(acqDataMap.containsKey(deviceId)){
+					Map<String,List<KeyValue>> deviceAcqDataMap=acqDataMap.get(deviceId);
+					deviceAcqDataMap.put(acqTime, acqDataList);
+					acqDataMap.put(deviceId, deviceAcqDataMap);
+				}else{
+					Map<String,List<KeyValue>> deviceAcqDataMap=new LinkedHashMap<>();
+					deviceAcqDataMap.put(acqTime, acqDataList);
+					acqDataMap.put(deviceId, deviceAcqDataMap);
+				}
 			}
+			
 		}
 		
 		Iterator<Map.Entry< Integer,Map<String,List<KeyValue>> >> iterator = acqDataMap.entrySet().iterator();
@@ -594,9 +628,9 @@ public class CalculateDataManagerTask {
 					if(item!=null && item.getQuantity()==1 
 							&& ("int".equalsIgnoreCase(item.getIFDataType()) || "float".equalsIgnoreCase(item.getIFDataType()) || "float32".equalsIgnoreCase(item.getIFDataType()) || "float64".equalsIgnoreCase(item.getIFDataType())  )
 							){
-						tatalValue=newestValue;
-					}else{
 						tatalValue=(maxValue+";"+minValue+";"+avgValue+";"+oldestValue+";"+newestValue+";"+dailyTotalValue).replaceAll("null", "");
+					}else{
+						tatalValue=newestValue;
 					}
 					 
 					KeyValue keyValue=new KeyValue(itemCode,tatalValue);

@@ -1342,124 +1342,127 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(protocolItems.size()>0){
 					type = new TypeToken<List<KeyValue>>() {}.getType();
 					List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-					for(KeyValue keyValue:acqDataList){
-						for(ModbusProtocolConfig.Items item: protocolItems){
-							String column=loadProtocolMappingColumnByTitleMap.get(item.getTitle()).getMappingColumn();
-							if(StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
-								String columnName=item.getTitle();
-								String rawColumnName=columnName;
-								String value=keyValue.getValue();
-								String rawValue=value;
-								String addr=item.getAddr()+"";
-								String columnDataType=item.getIFDataType();
-								String resolutionMode=item.getResolutionMode()+"";
-								String bitIndex="";
-								String unit=item.getUnit();
-								int sort=9999;
-								
-								if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
-									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-										if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-											break;
-										}
-									}
+					if(acqDataList!=null){
+						for(KeyValue keyValue:acqDataList){
+							for(ModbusProtocolConfig.Items item: protocolItems){
+								String column=loadProtocolMappingColumnByTitleMap.get(item.getTitle()).getMappingColumn();
+								if(StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
+									String columnName=item.getTitle();
+									String rawColumnName=columnName;
+									String value=keyValue.getValue();
+									String rawValue=value;
+									String addr=item.getAddr()+"";
+									String columnDataType=item.getIFDataType();
+									String resolutionMode=item.getResolutionMode()+"";
+									String bitIndex="";
+									String unit=item.getUnit();
+									int sort=9999;
 									
-									if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
-										for(int l=0;l<item.getMeaning().size();l++){
-											if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
-												value=item.getMeaning().get(l).getMeaning();
+									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
+										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
+												sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 												break;
 											}
 										}
-									}
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-									protocolItemResolutionDataList.add(protocolItemResolutionData);
-								}else if(item.getResolutionMode()==0){//如果是开关量
-									boolean isMatch=false;
-									if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-										String[] valueArr=value.split(",");
-										for(int l=0;l<item.getMeaning().size();l++){
-											isMatch=false;
-											columnName=item.getMeaning().get(l).getMeaning();
-											sort=9999;
-											
-											for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
-												if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
-														&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
-														){
-													sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
-													isMatch=true;
+										
+										if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
+											for(int l=0;l<item.getMeaning().size();l++){
+												if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
+													value=item.getMeaning().get(l).getMeaning();
 													break;
 												}
 											}
-											if(!isMatch){
-												continue;
-											}
-											if(StringManagerUtils.isNotNull(value)){
-												boolean match=false;
-												for(int m=0;valueArr!=null&&m<valueArr.length;m++){
-													if(m==item.getMeaning().get(l).getValue()){
-														bitIndex=m+"";
-														if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-															value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
-															rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
-														}else{
-															value=valueArr[m];
-														}
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-														match=true;
+										}
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									}else if(item.getResolutionMode()==0){//如果是开关量
+										boolean isMatch=false;
+										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
+											String[] valueArr=value.split(",");
+											for(int l=0;l<item.getMeaning().size();l++){
+												isMatch=false;
+												columnName=item.getMeaning().get(l).getMeaning();
+												sort=9999;
+												
+												for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
+													if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
+															&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
+															){
+														sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
+														isMatch=true;
 														break;
 													}
 												}
-												if(!match){
+												if(!isMatch){
+													continue;
+												}
+												if(StringManagerUtils.isNotNull(value)){
+													boolean match=false;
+													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
+														if(m==item.getMeaning().get(l).getValue()){
+															bitIndex=m+"";
+															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+															}else{
+																value=valueArr[m];
+															}
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															protocolItemResolutionDataList.add(protocolItemResolutionData);
+															match=true;
+															break;
+														}
+													}
+													if(!match){
+														value="";
+														rawValue="";
+														bitIndex=item.getMeaning().get(l).getValue()+"";
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+														protocolItemResolutionDataList.add(protocolItemResolutionData);
+													}
+												}else{
+													for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
+														if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) 
+																&& displayInstanceOwnItem.getItemList().get(m).getBitIndex()==item.getMeaning().get(l).getValue() ){
+															sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
+															break;
+														}
+													}
 													value="";
 													rawValue="";
 													bitIndex=item.getMeaning().get(l).getValue()+"";
 													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 												}
-											}else{
-												for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
-													if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) 
-															&& displayInstanceOwnItem.getItemList().get(m).getBitIndex()==item.getMeaning().get(l).getValue() ){
-														sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
-														break;
-													}
-												}
-												value="";
-												rawValue="";
-												bitIndex=item.getMeaning().get(l).getValue()+"";
-												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-												protocolItemResolutionDataList.add(protocolItemResolutionData);
 											}
+										}else{
+											for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+												if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
+													sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
+													break;
+												}
+											}
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											protocolItemResolutionDataList.add(protocolItemResolutionData);
 										}
-									}else{
+									}else{//如果是数据量
 										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
+											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
 												sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 												break;
 											}
 										}
+										
 										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
-									}
-								}else{//如果是数据量
-									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-										if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-											break;
-										}
-									}
-									
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-									protocolItemResolutionDataList.add(protocolItemResolutionData);
-								} 
-								break;
+									} 
+									break;
+								}
 							}
 						}
 					}
+					
 				}
 				
 				//获取日汇总计算数据
@@ -2049,123 +2052,126 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(protocolItems.size()>0){
 					type = new TypeToken<List<KeyValue>>() {}.getType();
 					List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-					for(KeyValue keyValue:acqDataList){
-						for(ModbusProtocolConfig.Items item: protocolItems){
-							String column=loadProtocolMappingColumnByTitleMap.get(item.getTitle()).getMappingColumn();
-							if(StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
-								String columnName=item.getTitle();
-								String rawColumnName=columnName;
-								String value=keyValue.getValue();
-								String rawValue=value;
-								String addr=item.getAddr()+"";
-								String columnDataType=item.getIFDataType();
-								String resolutionMode=item.getResolutionMode()+"";
-								String bitIndex="";
-								String unit=item.getUnit();
-								int sort=9999;
-								
-								if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
-									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-										if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-											break;
-										}
-									}
+					if(acqDataList!=null){
+						for(KeyValue keyValue:acqDataList){
+							for(ModbusProtocolConfig.Items item: protocolItems){
+								String column=loadProtocolMappingColumnByTitleMap.get(item.getTitle()).getMappingColumn();
+								if(StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
+									String columnName=item.getTitle();
+									String rawColumnName=columnName;
+									String value=keyValue.getValue();
+									String rawValue=value;
+									String addr=item.getAddr()+"";
+									String columnDataType=item.getIFDataType();
+									String resolutionMode=item.getResolutionMode()+"";
+									String bitIndex="";
+									String unit=item.getUnit();
+									int sort=9999;
 									
-									if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
-										for(int l=0;l<item.getMeaning().size();l++){
-											if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
-												value=item.getMeaning().get(l).getMeaning();
+									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
+										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
+												sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 												break;
 											}
 										}
-									}
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-									protocolItemResolutionDataList.add(protocolItemResolutionData);
-								}else if(item.getResolutionMode()==0){//如果是开关量
-									boolean isMatch=false;
-									if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-										String[] valueArr=value.split(",");
-										for(int l=0;l<item.getMeaning().size();l++){
-											isMatch=false;
-											columnName=item.getMeaning().get(l).getMeaning();
-											sort=9999;
-											
-											for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
-												if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
-														&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
-														){
-													sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
-													isMatch=true;
+										
+										if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
+											for(int l=0;l<item.getMeaning().size();l++){
+												if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
+													value=item.getMeaning().get(l).getMeaning();
 													break;
 												}
 											}
-											if(!isMatch){
-												continue;
-											}
-											if(StringManagerUtils.isNotNull(value)){
-												boolean match=false;
-												for(int m=0;valueArr!=null&&m<valueArr.length;m++){
-													if(m==item.getMeaning().get(l).getValue()){
-														bitIndex=m+"";
-														if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-															value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
-															rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
-														}else{
-															value=valueArr[m];
-														}
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-														match=true;
+										}
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									}else if(item.getResolutionMode()==0){//如果是开关量
+										boolean isMatch=false;
+										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
+											String[] valueArr=value.split(",");
+											for(int l=0;l<item.getMeaning().size();l++){
+												isMatch=false;
+												columnName=item.getMeaning().get(l).getMeaning();
+												sort=9999;
+												
+												for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
+													if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
+															&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
+															){
+														sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
+														isMatch=true;
 														break;
 													}
 												}
-												if(!match){
+												if(!isMatch){
+													continue;
+												}
+												if(StringManagerUtils.isNotNull(value)){
+													boolean match=false;
+													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
+														if(m==item.getMeaning().get(l).getValue()){
+															bitIndex=m+"";
+															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+															}else{
+																value=valueArr[m];
+															}
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															protocolItemResolutionDataList.add(protocolItemResolutionData);
+															match=true;
+															break;
+														}
+													}
+													if(!match){
+														value="";
+														rawValue="";
+														bitIndex=item.getMeaning().get(l).getValue()+"";
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+														protocolItemResolutionDataList.add(protocolItemResolutionData);
+													}
+												}else{
+													for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
+														if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(m).getBitIndex()==item.getMeaning().get(l).getValue() ){
+															sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
+															break;
+														}
+													}
 													value="";
 													rawValue="";
 													bitIndex=item.getMeaning().get(l).getValue()+"";
 													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 												}
-											}else{
-												for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
-													if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(m).getBitIndex()==item.getMeaning().get(l).getValue() ){
-														sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
-														break;
-													}
-												}
-												value="";
-												rawValue="";
-												bitIndex=item.getMeaning().get(l).getValue()+"";
-												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-												protocolItemResolutionDataList.add(protocolItemResolutionData);
 											}
+										}else{
+											for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+												if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
+													sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
+													break;
+												}
+											}
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											protocolItemResolutionDataList.add(protocolItemResolutionData);
 										}
-									}else{
+									}else{//如果是数据量
 										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
+											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
 												sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 												break;
 											}
 										}
+										
 										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}
-								}else{//如果是数据量
-									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-										if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-											break;
-										}
-									}
-									
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-									protocolItemResolutionDataList.add(protocolItemResolutionData);
+									break;
 								}
-								break;
 							}
 						}
 					}
+					
 				}
 				
 				//获取日汇总计算数据
@@ -2614,127 +2620,126 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							java.lang.reflect.Type type=null;
 							type = new TypeToken<List<KeyValue>>() {}.getType();
 							List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-							for(KeyValue keyValue:acqDataList){
-								for(ModbusProtocolConfig.Items item: protocolItems){
-									String column=loadProtocolMappingColumnByTitleMap.get(item.getTitle()).getMappingColumn();
-									if(StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
-										String columnName=item.getTitle();
-										String rawColumnName=columnName;
-										String value=keyValue.getValue();
-										String rawValue=value;
-										String addr=item.getAddr()+"";
-										
-										String columnDataType=item.getIFDataType();
-										String resolutionMode=item.getResolutionMode()+"";
-										String bitIndex="";
-										String unit=item.getUnit();
-										int sort=9999;
-										
-										if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
-											for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-												if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-													sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-													break;
-												}
-											}
+							if(acqDataList!=null){
+								for(KeyValue keyValue:acqDataList){
+									for(ModbusProtocolConfig.Items item: protocolItems){
+										String column=loadProtocolMappingColumnByTitleMap.get(item.getTitle()).getMappingColumn();
+										if(StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
+											String columnName=item.getTitle();
+											String rawColumnName=columnName;
+											String value=keyValue.getValue();
+											String rawValue=value;
+											String addr=item.getAddr()+"";
 											
-											if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
-												for(int l=0;l<item.getMeaning().size();l++){
-													if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
-														value=item.getMeaning().get(l).getMeaning();
-														break;
-													}
-												}
-											}
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-											protocolItemResolutionDataList.add(protocolItemResolutionData);
-										}else if(item.getResolutionMode()==0){//如果是开关量
-											boolean isMatch=false;
-											if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-												String[] valueArr=value.split(",");
-												for(int l=0;l<item.getMeaning().size();l++){
-													isMatch=false;
-													columnName=item.getMeaning().get(l).getMeaning();
-													sort=9999;
-													
-													for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
-														if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
-																&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
-																){
-															sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
-															isMatch=true;
-															break;
-														}
-													}
-													if(!isMatch){
-														continue;
-													}
-													if(StringManagerUtils.isNotNull(value)){
-														boolean match=false;
-														for(int m=0;valueArr!=null&&m<valueArr.length;m++){
-															if(m==item.getMeaning().get(l).getValue()){
-																bitIndex=m+"";
-																if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																	value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
-																	rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
-																}else{
-																	value=valueArr[m];
-																}
-																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-																protocolItemResolutionDataList.add(protocolItemResolutionData);
-																match=true;
-																break;
-															}
-														}
-														if(!match){
-															value="";
-															rawValue="";
-															bitIndex=item.getMeaning().get(l).getValue()+"";
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-															protocolItemResolutionDataList.add(protocolItemResolutionData);
-														}
-													}else{
-														for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
-															if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(m).getBitIndex()==item.getMeaning().get(l).getValue() ){
-																sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
-																break;
-															}
-														}
-														value="";
-														rawValue="";
-														bitIndex=item.getMeaning().get(l).getValue()+"";
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-													}
-												}
-											}else{
+											String columnDataType=item.getIFDataType();
+											String resolutionMode=item.getResolutionMode()+"";
+											String bitIndex="";
+											String unit=item.getUnit();
+											int sort=9999;
+											
+											if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
 												for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 													if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
 														sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 														break;
 													}
 												}
+												
+												if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
+													for(int l=0;l<item.getMeaning().size();l++){
+														if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
+															value=item.getMeaning().get(l).getMeaning();
+															break;
+														}
+													}
+												}
 												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
-											}
-										}else{//如果是数据量
-											for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-												if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
-													sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-													break;
+											}else if(item.getResolutionMode()==0){//如果是开关量
+												boolean isMatch=false;
+												if(item.getMeaning()!=null&&item.getMeaning().size()>0){
+													String[] valueArr=value.split(",");
+													for(int l=0;l<item.getMeaning().size();l++){
+														isMatch=false;
+														columnName=item.getMeaning().get(l).getMeaning();
+														sort=9999;
+														
+														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
+															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
+																	&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
+																	){
+																sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
+																isMatch=true;
+																break;
+															}
+														}
+														if(!isMatch){
+															continue;
+														}
+														if(StringManagerUtils.isNotNull(value)){
+															boolean match=false;
+															for(int m=0;valueArr!=null&&m<valueArr.length;m++){
+																if(m==item.getMeaning().get(l).getValue()){
+																	bitIndex=m+"";
+																	if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
+																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																	}else{
+																		value=valueArr[m];
+																	}
+																	ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+																	protocolItemResolutionDataList.add(protocolItemResolutionData);
+																	match=true;
+																	break;
+																}
+															}
+															if(!match){
+																value="";
+																rawValue="";
+																bitIndex=item.getMeaning().get(l).getValue()+"";
+																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+																protocolItemResolutionDataList.add(protocolItemResolutionData);
+															}
+														}else{
+															for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
+																if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(m).getBitIndex()==item.getMeaning().get(l).getValue() ){
+																	sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
+																	break;
+																}
+															}
+															value="";
+															rawValue="";
+															bitIndex=item.getMeaning().get(l).getValue()+"";
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+															protocolItemResolutionDataList.add(protocolItemResolutionData);
+														}
+													}
+												}else{
+													for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+														if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
+															sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
+															break;
+														}
+													}
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+													protocolItemResolutionDataList.add(protocolItemResolutionData);
 												}
-											}
-											
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-											protocolItemResolutionDataList.add(protocolItemResolutionData);
-										} 
-										break;
+											}else{//如果是数据量
+												for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+													if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
+														sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
+														break;
+													}
+												}
+												
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+												protocolItemResolutionDataList.add(protocolItemResolutionData);
+											} 
+											break;
+										}
 									}
 								}
 							}
-							
-							
-							
 						}
 						
 						//获取日汇总计算数据
@@ -3307,12 +3312,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 						for(String itemColumn:itemColumnList){
 							String value="";
-							for(KeyValue keyValue:acqDataList){
-								if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
-									value=keyValue.getValue();
-									break;
+							if(acqDataList!=null){
+								for(KeyValue keyValue:acqDataList){
+									if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+										value=keyValue.getValue();
+										break;
+									}
 								}
 							}
+							
 							result_json.append(value+",");
 						}
 					}

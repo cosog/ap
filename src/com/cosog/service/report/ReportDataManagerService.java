@@ -259,12 +259,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
-						for(KeyValue keyValue:calDataList){
-							if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-								addValue=keyValue.getValue();
-								break;
+						if(calDataList!=null){
+							for(KeyValue keyValue:calDataList){
+								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
+								}
 							}
 						}
+						
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
 							addValue="";
@@ -292,7 +295,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 						}else{
-							addValue=reportDataObj[j+1]+"";
+							addValue=reportDataObj[j+startIndex]+"";
 						}
 						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 					}
@@ -533,12 +536,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
-							for(KeyValue keyValue:calDataList){
-								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-									addValue=keyValue.getValue();
-									break;
+							if(calDataList!=null){
+								for(KeyValue keyValue:calDataList){
+									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
+									}
 								}
 							}
+							
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
 								addValue="";
@@ -566,7 +572,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 							}else{
-								addValue=reportDataObj[j+1]+"";
+								addValue=reportDataObj[j+startIndex]+"";
 							}
 							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 						}
@@ -847,12 +853,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
-								for(KeyValue keyValue:calDataList){
-									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-										addValue=keyValue.getValue();
-										break;
+								if(calDataList!=null){
+									for(KeyValue keyValue:calDataList){
+										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+											addValue=keyValue.getValue();
+											break;
+										}
 									}
 								}
+								
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
 									addValue="";
@@ -880,7 +889,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 								}else{
-									addValue=reportDataObj[j+1]+"";
+									addValue=reportDataObj[j+startIndex]+"";
 								}
 								everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 							}
@@ -1146,12 +1155,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
-						for(KeyValue keyValue:calDataList){
-							if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-								addValue=keyValue.getValue();
-								break;
+						if(calDataList!=null){
+							for(KeyValue keyValue:calDataList){
+								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
+								}
 							}
 						}
+						
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
 							addValue="";
@@ -1179,7 +1191,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 						}else{
-							addValue=reportDataObj[j+1]+"";
+							addValue=reportDataObj[j+startIndex]+"";
 						}
 						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 					}
@@ -1458,12 +1470,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
-							for(KeyValue keyValue:calDataList){
-								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-									addValue=keyValue.getValue();
-									break;
+							if(calDataList!=null){
+								for(KeyValue keyValue:calDataList){
+									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
+									}
 								}
 							}
+							
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
 								addValue="";
@@ -1491,7 +1506,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 							}else{
-								addValue=reportDataObj[j+1]+"";
+								addValue=reportDataObj[j+startIndex]+"";
 							}
 							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 						}
@@ -1816,12 +1831,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
-								for(KeyValue keyValue:calDataList){
-									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-										addValue=keyValue.getValue();
-										break;
+								if(calDataList!=null){
+									for(KeyValue keyValue:calDataList){
+										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+											addValue=keyValue.getValue();
+											break;
+										}
 									}
 								}
+								
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
 									addValue="";
@@ -1849,7 +1867,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 								}else{
-									addValue=reportDataObj[j+1]+"";
+									addValue=reportDataObj[j+startIndex]+"";
 								}
 								everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue);
 							}
@@ -2113,12 +2131,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
-						for(KeyValue keyValue:calDataList){
-							if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-								addValue=keyValue.getValue();
-								break;
+						if(calDataList!=null){
+							for(KeyValue keyValue:calDataList){
+								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
+								}
 							}
 						}
+						
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
 							addValue="";
@@ -2441,12 +2462,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
-							for(KeyValue keyValue:calDataList){
-								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-									addValue=keyValue.getValue();
-									break;
+							if(calDataList!=null){
+								for(KeyValue keyValue:calDataList){
+									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
+									}
 								}
 							}
+							
 							if(StringManagerUtils.isNotNull(addValue)){
 								String[] totalValueArr=addValue.split(";");
 								addValue="";
@@ -2811,12 +2835,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
-								for(KeyValue keyValue:calDataList){
-									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
-										addValue=keyValue.getValue();
-										break;
+								if(calDataList!=null){
+									for(KeyValue keyValue:calDataList){
+										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+											addValue=keyValue.getValue();
+											break;
+										}
 									}
 								}
+								
 								if(StringManagerUtils.isNotNull(addValue)){
 									String[] totalValueArr=addValue.split(";");
 									addValue="";

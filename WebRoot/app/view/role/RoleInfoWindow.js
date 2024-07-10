@@ -23,60 +23,6 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         var tabStore = Ext.create("AP.store.role.RightTabTreeInfoStore");
         
-//        var RoleTypeCombox = new Ext.form.ComboBox({
-//            id: 'roleFlagComboxfield_Id',
-//            value: 0,
-//            fieldLabel: '设备控制权限<font color=red>*</font>',
-//            labelWidth: 110,
-//            typeAhead : true,
-//            allowBlank: false,
-//            autoSelect:true,
-//            editable:false,
-//            anchor: '100%',
-//            emptyText: '--请选择--',
-//            triggerAction: 'all',
-//            store: new Ext.data.SimpleStore({
-//            	autoLoad : false,
-//                fields: ['roleFlag', 'roleFlagName'],
-//                data: [['0', '否'], ['1', '是']]
-//            }),
-//            displayField: 'roleFlagName',
-//            valueField: 'roleFlag',
-//            queryMode : 'local',
-//            listeners: {
-//            	select: function (v,o) {
-//					Ext.getCmp("roleFlag_Id").setValue(this.value);
-//                }
-//            }
-//        });
-        
-//        var RoleReportEditCombox = new Ext.form.ComboBox({
-//            id: 'roleReportEditComboxfield_Id',
-//            value: 0,
-//            fieldLabel: '报表编辑权限<font color=red>*</font>',
-//            labelWidth: 110,
-//            typeAhead : true,
-//            allowBlank: false,
-//            autoSelect:true,
-//            editable:false,
-//            anchor: '100%',
-//            emptyText: '--请选择--',
-//            triggerAction: 'all',
-//            store: new Ext.data.SimpleStore({
-//            	autoLoad : false,
-//                fields: ['roleReportEdit', 'roleReportEditName'],
-//                data: [['0', '否'], ['1', '是']]
-//            }),
-//            displayField: 'roleReportEditName',
-//            valueField: 'roleReportEdit',
-//            queryMode : 'local',
-//            listeners: {
-//            	select: function (v,o) {
-//					Ext.getCmp("roleReportEdit_Id").setValue(this.value);
-//                }
-//            }
-//        });
-        
         var RoleVideoKeyEditCombox = new Ext.form.ComboBox({
             id: 'roleVideoKeyEditComboxfield_Id',
             value: 0,
@@ -113,20 +59,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 id: 'role_Id',
                 anchor: '100%',
                 name: "role.roleId"
-            }
-//            , {
-//                xtype: "hidden",
-//                name: 'role.roleFlag',
-//                id: 'roleFlag_Id',
-//                value: 0
-//            }, 
-//            {
-//                xtype: "hidden",
-//                name: 'role.roleReportEdit',
-//                id: 'roleReportEdit_Id',
-//                value: 0
-//            }
-            , {
+            }, {
                 xtype: "hidden",
                 name: 'role.roleVideoKeyEdit',
                 id: 'roleVideoKeyEdit_Id',
@@ -181,9 +114,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'
-            },
-//            RoleTypeCombox,RoleReportEditCombox,
-            RoleVideoKeyEditCombox, {
+            },RoleVideoKeyEditCombox, {
                 fieldLabel: '角色描述',
                 labelWidth: 110,
                 id: 'roleRemark_Id',
@@ -247,6 +178,9 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                     forceFit: true,
                     id: "RoleInfoWindowRightModuleTreeInfoGridPanel_Id", // 模块编码加id，定义的命名规则moduleCode是从库里取的值对应
                     store: moduleStore,
+                    viewConfig: {　　
+                    	markDirty: false//编辑不显示红色三角标志
+                    },
                     columns: [{
                     	xtype: 'treecolumn',
                     	text: '模块列表',
@@ -270,24 +204,23 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
                         },
-                    	listeners: {
-                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	if(!record.isLeaf()){
-                    	    		return false;
-                    	    	}else{
-                    	    		var rn=true
-                    	    		for(var i=0;i<loginUserRoleModules.length;i++){
-                    	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
-                    	    				if(loginUserRoleModules[i].viewFlag!=1){
-                    	    					rn= false;
-                    	    				}
-                    	    				break;
-                    	    			}
-                    	    		}
-                    	    		return rn;
-                    	    	}
-                    	    }
-                    	}
+                        renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
+                            var rn=true
+                            var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+                            if(RoleManagerModuleEditFlag==1){
+                	    		for(var i=0;i<loginUserRoleModules.length;i++){
+                	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
+                	    				if(loginUserRoleModules[i].viewFlag!=1){
+                	    					rn= false;
+                	    				}
+                	    				break;
+                	    			}
+                	    		}
+                            }else{
+                            	rn= false;
+                            }
+                            return rn ? this.defaultRenderer(value, metaData):'';
+                        }
                     }, {
                         header: '编辑',
                         xtype: 'checkcolumn',
@@ -301,12 +234,14 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
                         },
-                    	listeners: {
-                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	if(!record.isLeaf()){
-                    	    		return false;
+                        renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
+                            var rn=true
+                	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+                            if(RoleManagerModuleEditFlag==1){
+                            	if(!record.isLeaf()){
+                            		rn= false;
                     	    	}else{
-                    	    		var rn=true
+                    	    		rn=true
                     	    		for(var i=0;i<loginUserRoleModules.length;i++){
                     	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
                     	    				if(loginUserRoleModules[i].editFlag!=1){
@@ -315,16 +250,12 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                     	    				break;
                     	    			}
                     	    		}
-                    	    		return rn;
                     	    	}
-                    	    },
-                    	    afterrender: function( cell, eOpts){
-//                    	    	cell.setDisabled(true);
-                    	    },
-                    	    add: function(cell, container, index, eOpts){
-                    	    	alert(index);
-                    	    }
-                    	}
+                            }else{
+                            	rn= false;
+                            }
+                            return rn ? this.defaultRenderer(value, metaData):'';
+                        }
                     }, {
                         header: '控制',
                         xtype: 'checkcolumn',
@@ -338,14 +269,14 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
                         },
-                    	listeners: {
-                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	if(!record.isLeaf()){
-                    	    		return false;
-                    	    	}else if(record.data.mdCode.toUpperCase()!='DeviceRealTimeMonitoring'.toUpperCase()){
-                    	    		return false;
+                        renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
+                            var rn=true
+                            var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+                            if(RoleManagerModuleEditFlag==1){
+                            	if(record.data.mdCode.toUpperCase()!='DeviceRealTimeMonitoring'.toUpperCase()){
+                            		rn= false;
                     	    	}else{
-                    	    		var rn=true
+                    	    		rn=true
                     	    		for(var i=0;i<loginUserRoleModules.length;i++){
                     	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
                     	    				if(loginUserRoleModules[i].controlFlag!=1){
@@ -354,10 +285,12 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                     	    				break;
                     	    			}
                     	    		}
-                    	    		return rn;
                     	    	}
-                    	    }
-                    	}
+                            }else{
+                            	rn= false;
+                            }
+                            return rn ? this.defaultRenderer(value, metaData):'';
+                        }
                     }],
                     listeners: {
                         checkchange: function (node, checked) {

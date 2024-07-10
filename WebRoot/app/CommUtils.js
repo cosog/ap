@@ -577,7 +577,6 @@ var callBackHistoryData = function(recordId,deviceId,deviceName,calculateType) {
 }
 
 function openExcelWindow(url) {
-	// window.navigate(url);
 	document.location.href = url;
 }
 function exportExcelWindow(url) {

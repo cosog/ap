@@ -2002,6 +2002,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportProtocolTreeData")
+	public String exportProtocolTreeData() throws IOException {
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.exportProtocolTreeData(deviceTypeIds);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/modbusProtocolAndAcqUnitTreeData")
 	public String modbusProtocolAndAcqUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
@@ -3950,6 +3963,119 @@ public class AcquisitionUnitManagerController extends BaseController {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	/**
+	 * <p>
+	 * 描述：导出协议配置数据
+	 * </p>
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/exportProtocolData")
+	public String exportProtocolData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String protocolListStr=ParamUtils.getParameter(request, "protocolList");
+		String key = ParamUtils.getParameter(request, "key");
+		String json=acquisitionUnitManagerService.getProtocolExportData(protocolListStr);
+		String fileName="";
+		if(!fileName.endsWith("协议")){
+			fileName+="协议";
+		}
+		
+		fileName+="导出数据"+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		HttpSession session=request.getSession();
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			User user = null;
+			if(session!=null){
+				session.removeAttribute(key);
+				session.setAttribute(key, 0);
+				user = (User) session.getAttribute("userLogin");
+			}
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出协议数据");
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolInitData")
+	public String exportProtocolInitData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String protocolListStr=ParamUtils.getParameter(request, "protocolList");
+		String key = ParamUtils.getParameter(request, "key");
+		String json=acquisitionUnitManagerService.exportProtocolInitData(protocolListStr);
+		String fileName="协议初始化";
+		fileName+="导出数据"+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		
+		HttpSession session=request.getSession();
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			User user = null;
+			if(session!=null){
+				session.removeAttribute(key);
+				session.setAttribute(key, 0);
+				user = (User) session.getAttribute("userLogin");
+			}
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出协议初始化数据");
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
         }
 		StringManagerUtils.deleteFile(path);
 		return null;

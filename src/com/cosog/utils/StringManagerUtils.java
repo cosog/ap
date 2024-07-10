@@ -2261,6 +2261,8 @@ public class StringManagerUtils {
         // 拼接文件完整路径
         String fullPath = filePath;
         File file = null;
+        FileOutputStream fos = null;
+        Writer write = null;
         // 生成json格式文件
         try {
             // 保证创建一个新文件
@@ -2295,15 +2297,96 @@ public class StringManagerUtils {
             jsonString = toPrettyFormat(jsonString);
 
             // 将格式化后的字符串写入文件
-            FileOutputStream fos = new FileOutputStream(file);
-            Writer write = new OutputStreamWriter(fos, "UTF-8");
+            fos = new FileOutputStream(file);
+            write = new OutputStreamWriter(fos, "UTF-8");
             write.write(jsonString);
             write.flush();
-            fos.close();
-            write.close();
         } catch (Exception e) {
             flag = false;
             e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            }
+            if (write != null) {
+            	try {
+					write.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            }
+        }
+
+        // 返回是否成功的标记
+        return file;
+    }
+    
+    public static File createJsonFileWithoutFormat(String jsonString, String filePath) {
+        // 标记文件生成是否成功
+        boolean flag = true;
+
+        // 拼接文件完整路径
+        String fullPath = filePath;
+        File file = null;
+        FileOutputStream fos = null;
+        Writer write = null;
+        // 生成json格式文件
+        try {
+            // 保证创建一个新文件
+            file = new File(fullPath);
+            if (!file.getParentFile().exists()) { // 如果父目录不存在，创建父目录
+                file.getParentFile().mkdirs();
+            }
+            if (file.exists()) { // 如果已存在,删除旧文件
+                file.delete();
+            }
+            file.createNewFile();
+
+            if (jsonString.indexOf("'") != -1) {
+                //将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
+                jsonString = jsonString.replaceAll("'", "\\'");
+            }
+            if (jsonString.indexOf("\"") != -1) {
+                //将双引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
+                jsonString = jsonString.replaceAll("\"", "\\\"");
+            }
+
+            if (jsonString.indexOf("\r\n") != -1) {
+                //将回车换行转换一下，因为JSON串中字符串不能出现显式的回车换行  
+                jsonString = jsonString.replaceAll("\r\n", "\\u000d\\u000a");
+            }
+            if (jsonString.indexOf("\n") != -1) {
+                //将换行转换一下，因为JSON串中字符串不能出现显式的换行  
+                jsonString = jsonString.replaceAll("\n", "\\u000a");
+            }
+
+            // 将格式化后的字符串写入文件
+            fos = new FileOutputStream(file);
+            write = new OutputStreamWriter(fos, "UTF-8");
+            write.write(jsonString);
+            write.flush();
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            }
+            if (write != null) {
+            	try {
+					write.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            }
         }
 
         // 返回是否成功的标记

@@ -7,7 +7,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolTreeInfoStore', {
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData',
+        url: context + '/acquisitionUnitManagerController/exportProtocolTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -18,6 +18,15 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
+        	var deviceTypeIds='';
+        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+        	if(tabTreeGridPanelSelection.length>0){
+        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+        	}
+        	var new_params = {
+        			deviceTypeIds: deviceTypeIds
+                };
+           Ext.apply(store.proxy.extraParams, new_params);
         },
         load: function (store, options, eOpts) {
         	var treeGridPanel = Ext.getCmp("ExportProtocolTreeGridPanel_Id");
@@ -60,52 +69,6 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolTreeInfoStore', {
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-                        	if(record.data.classes==1){
-                        		Ext.getCmp('ExportProtocolWindowExportBtn_Id').enable();
-                        	}else{
-                        		Ext.getCmp('ExportProtocolWindowExportBtn_Id').disable();
-                        	}
-                        	var exportProtocolAcqUnitTreeGridPanel = Ext.getCmp("ExportProtocolAcqUnitTreeGridPanel_Id");
-                        	if (isNotVal(exportProtocolAcqUnitTreeGridPanel)) {
-                        		exportProtocolAcqUnitTreeGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.ExportProtocolAcqUnitTreeInfoStore');
-                        	}
-                        	
-                        	var exportProtocolDisplayUnitTreeGridPanel = Ext.getCmp("ExportProtocolDisplayUnitTreeGridPanel_Id");
-                        	if (isNotVal(exportProtocolDisplayUnitTreeGridPanel)) {
-                        		exportProtocolDisplayUnitTreeGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.ExportProtocolDisplayUnitTreeInfoStore');
-                        	}
-                        	
-                        	var exportProtocolAlarmUnitTreeGridPanel = Ext.getCmp("ExportProtocolAlarmUnitTreeGridPanel_Id");
-                        	if (isNotVal(exportProtocolAlarmUnitTreeGridPanel)) {
-                        		exportProtocolAlarmUnitTreeGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.ExportProtocolAlarmUnitTreeInfoStore');
-                        	}
-                        	
-                        	var exportProtocolAcqInstanceTreeGridPanel = Ext.getCmp("ExportProtocolAcqInstanceTreeGridPanel_Id");
-                        	if (isNotVal(exportProtocolAcqInstanceTreeGridPanel)) {
-                        		exportProtocolAcqInstanceTreeGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.ExportProtocolAcqInstanceTreeInfoStore');
-                        	}
-                        	
-                        	var exportProtocolDisplayInstanceTreeGridPanel = Ext.getCmp("ExportProtocolDisplayInstanceTreeGridPanel_Id");
-                        	if (isNotVal(exportProtocolDisplayInstanceTreeGridPanel)) {
-                        		exportProtocolDisplayInstanceTreeGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.ExportProtocolDisplayInstanceTreeInfoStore');
-                        	}
-                        	
-                        	var exportProtocolAlarmInstanceTreeGridPanel = Ext.getCmp("ExportProtocolAlarmInstanceTreeGridPanel_Id");
-                        	if (isNotVal(exportProtocolAlarmInstanceTreeGridPanel)) {
-                        		exportProtocolAlarmInstanceTreeGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.ExportProtocolAlarmInstanceTreeInfoStore');
-                        	}
                         	
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
@@ -116,16 +79,6 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolTreeInfoStore', {
                 var panel = Ext.getCmp("ExportPootocolTreePanel_Id");
                 panel.add(treeGridPanel);
             }
-            
-            var selectRow=0;
-            for(var i=0;i<store.data.items.length;i++){
-    			if(store.data.items[i].data.classes==1){
-    				selectRow=i;
-    				break;
-    			}
-    		}
-            treeGridPanel.getSelectionModel().deselectAll(true);
-            treeGridPanel.getSelectionModel().select(selectRow, true);
         }
     }
 });

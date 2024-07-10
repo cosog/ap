@@ -37,6 +37,7 @@ import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ImportProtocolContent;
+import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
@@ -4548,6 +4549,42 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String exportProtocolTreeData(String deviceTypeIds){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		
+		tree_json.append("[");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
+		if(modbusProtocolConfig!=null){
+			//排序
+			Collections.sort(modbusProtocolConfig.getProtocol());
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+					tree_json.append("{\"classes\":1,");
+					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+					tree_json.append("\"iconCls\": \"protocol\",");
+					tree_json.append("\"checked\": false,");
+					tree_json.append("\"leaf\": true");
+					tree_json.append("},");
+				}
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"协议列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
 	public String modbusProtocolAndAcqUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
@@ -6419,6 +6456,36 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
+	
+	public String getProtocolExportData(String protocolListStr){
+		Gson gson=new Gson();
+		List<ModbusProtocolConfig.Protocol> protocolList=new ArrayList<>();
+		String[] protocolArr=protocolListStr.split(",");
+		for(int i=0;i<protocolArr.length;i++){
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolArr[i]);
+			if(protocol!=null){
+				protocolList.add(protocol);
+			}
+		}
+		return gson.toJson(protocolList);
+	}
+	
+	public String exportProtocolInitData(String protocolListStr){
+		Gson gson=new Gson();
+		List<InitProtocol> initProtocolList=new ArrayList<>();
+		String[] protocolArr=protocolListStr.split(",");
+		for(int i=0;i<protocolArr.length;i++){
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolArr[i]);
+			if(protocol!=null){
+				InitProtocol initProtocol=new InitProtocol(protocol);
+				if(initProtocol!=null){
+					
+				}
+				initProtocolList.add(initProtocol);
+			}
+		}
+		return gson.toJson(initProtocolList);
+	}
 	
 	public String getImportProtocolContentData(String id,String classes,String type){
 		StringBuffer result_json = new StringBuffer();

@@ -4355,62 +4355,96 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportAcqUnitTreeData(String deviceType,String protocolName,String protocolCode){
+	public String exportAcqUnitTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
-		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
-				+ "from tbl_acq_unit_conf t "
-				+ " where t.protocol='"+protocolName+"'"
-				+ " order by t.protocol,t.id";
-		String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t3.protocol,t3.type,t2.id as unitId "
-				+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3 "
-				+ " where t.unitid=t2.id and t.groupid=t3.id "
-				+ " and t2.protocol='"+protocolName+"'"
-				+ " order by t3.protocol,t2.unit_code,t3.type,t3.id";
-		List<?> unitList=this.findCallSql(unitSql);
-		List<?> groupList=this.findCallSql(groupSql);
+		StringBuffer tree_json = new StringBuffer();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
+		tree_json.append("[");
 		
-		result_json.append("[");
-		for(int j=0;j<unitList.size();j++){
-			Object[] unitObj = (Object[]) unitList.get(j);
-
-			result_json.append("{\"classes\":2,");
-			result_json.append("\"id\":"+unitObj[0]+",");
-			result_json.append("\"code\":\""+unitObj[1]+"\",");
-			result_json.append("\"text\":\""+unitObj[2]+"\",");
-			result_json.append("\"remark\":\""+unitObj[3]+"\",");
-			result_json.append("\"protocol\":\""+unitObj[4]+"\",");
-			result_json.append("\"iconCls\": \"acqUnit\",");
-			result_json.append("\"expanded\": true,");
-			result_json.append("\"children\": [");
-			for(int k=0;k<groupList.size();k++){
-				Object[] groupObj = (Object[]) groupList.get(k);
-				if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
-					result_json.append("{\"classes\":3,");
-					result_json.append("\"id\":"+groupObj[0]+",");
-					result_json.append("\"code\":\""+groupObj[1]+"\",");
-					result_json.append("\"text\":\""+groupObj[2]+"\",");
-					result_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
-					result_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
-					result_json.append("\"remark\":\""+groupObj[5]+"\",");
-					result_json.append("\"protocol\":\""+groupObj[6]+"\",");
-					result_json.append("\"type\":"+groupObj[7]+",");
-					result_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
-					result_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
-					result_json.append("\"iconCls\": \"acqGroup\",");
-					result_json.append("\"leaf\": true");
-					result_json.append("},");
+		if(modbusProtocolConfig!=null){
+			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
+					+ " from tbl_acq_unit_conf t,tbl_protocol t2"
+					+ " where t.protocol=t2.name";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				unitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
+			}else{
+				unitSql+=" and 1=2 ";
+			}
+			unitSql+= " order by t.protocol,t.id";
+			String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t3.protocol,t3.type,t2.id as unitId "
+					+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3 "
+					+ " where t.unitid=t2.id and t.groupid=t3.id "
+					+ " order by t3.protocol,t2.unit_code,t3.type,t3.id";
+			List<?> unitList=this.findCallSql(unitSql);
+			List<?> groupList=this.findCallSql(groupSql);
+			//排序
+			Collections.sort(modbusProtocolConfig.getProtocol());
+			
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+					tree_json.append("{\"classes\":1,");
+					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+					tree_json.append("\"iconCls\": \"protocol\",");
+					tree_json.append("\"expanded\": true,");
+					tree_json.append("\"children\": [");
+					for(int j=0;j<unitList.size();j++){
+						Object[] unitObj = (Object[]) unitList.get(j);
+						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+							tree_json.append("{\"classes\":2,");
+							tree_json.append("\"id\":"+unitObj[0]+",");
+							tree_json.append("\"code\":\""+unitObj[1]+"\",");
+							tree_json.append("\"text\":\""+unitObj[2]+"\",");
+							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+							tree_json.append("\"iconCls\": \"acqUnit\",");
+							tree_json.append("\"expanded\": true,");
+							tree_json.append("\"checked\": false,");
+							tree_json.append("\"children\": [");
+							for(int k=0;k<groupList.size();k++){
+								Object[] groupObj = (Object[]) groupList.get(k);
+								if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
+									tree_json.append("{\"classes\":3,");
+									tree_json.append("\"id\":"+groupObj[0]+",");
+									tree_json.append("\"code\":\""+groupObj[1]+"\",");
+									tree_json.append("\"text\":\""+groupObj[2]+"\",");
+									tree_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
+									tree_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
+									tree_json.append("\"remark\":\""+groupObj[5]+"\",");
+									tree_json.append("\"protocol\":\""+groupObj[6]+"\",");
+									tree_json.append("\"type\":"+groupObj[7]+",");
+									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
+									tree_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
+									tree_json.append("\"iconCls\": \"acqGroup\",");
+									tree_json.append("\"leaf\": true");
+									tree_json.append("},");
+								}
+							}
+							if(tree_json.toString().endsWith(",")){
+								tree_json.deleteCharAt(tree_json.length() - 1);
+							}
+							
+							tree_json.append("]},");
+						}
+					}
+					if(tree_json.toString().endsWith(",")){
+						tree_json.deleteCharAt(tree_json.length() - 1);
+					}
+					tree_json.append("]},");
 				}
 			}
-			if(result_json.toString().endsWith(",")){
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-			result_json.append("]},");
 		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
 		
 		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4461,6 +4495,76 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							tree_json.append("\"calculateType\":\""+unitObj[7]+"\",");
 							tree_json.append("\"calculateTypeName\":\""+unitObj[8]+"\",");
 							tree_json.append("\"iconCls\": \"acqUnit\",");
+							tree_json.append("\"leaf\": true");
+							tree_json.append("},");
+						}
+					}
+					if(tree_json.toString().endsWith(",")){
+						tree_json.deleteCharAt(tree_json.length() - 1);
+					}
+					tree_json.append("]},");
+				}
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String exportDisplayUnitTreeData(String deviceTypeIds){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
+		tree_json.append("[");
+		
+		if(modbusProtocolConfig!=null){
+			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname,"
+					+ " t.calculateType, "
+					+ " decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName"
+					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				unitSql+=" and t3.devicetype in ("+deviceTypeIds+")";
+			}else{
+				unitSql+=" and 1=2 ";
+			}
+			unitSql+= " order by t.protocol,t.id";
+			List<?> unitList=this.findCallSql(unitSql);
+			//排序
+			Collections.sort(modbusProtocolConfig.getProtocol());
+			
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+					tree_json.append("{\"classes\":1,");
+					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+					tree_json.append("\"iconCls\": \"protocol\",");
+					tree_json.append("\"expanded\": true,");
+					tree_json.append("\"children\": [");
+					for(int j=0;j<unitList.size();j++){
+						Object[] unitObj = (Object[]) unitList.get(j);
+						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[4]+"")){
+							tree_json.append("{\"classes\":2,");
+							tree_json.append("\"id\":"+unitObj[0]+",");
+							tree_json.append("\"code\":\""+unitObj[1]+"\",");
+							tree_json.append("\"text\":\""+unitObj[2]+"\",");
+							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+							tree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
+							tree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
+							tree_json.append("\"calculateType\":\""+unitObj[7]+"\",");
+							tree_json.append("\"calculateTypeName\":\""+unitObj[8]+"\",");
+							tree_json.append("\"iconCls\": \"acqUnit\",");
+							tree_json.append("\"checked\": false,");
 							tree_json.append("\"leaf\": true");
 							tree_json.append("},");
 						}
@@ -4791,6 +4895,52 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String exportReportUnitTreeData(){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		
+		tree_json.append("[");
+		String unitSql="select t.id,t.unit_code,t.unit_name,"
+				+ "t.calculateType,"
+				+ "decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName,"
+				+ "t.singleWellRangeReportTemplate,t.singleWellDailyReportTemplate,t.productionreporttemplate,"
+				+ "t.sort "
+				+ " from tbl_report_unit_conf t "
+				+ " order by t.sort";
+		List<?> unitList=this.findCallSql(unitSql);
+		for(int i=0;i<unitList.size();i++){
+			Object[] obj = (Object[]) unitList.get(i);
+
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":"+obj[0]+",");
+			tree_json.append("\"code\":\""+obj[1]+"\",");
+			tree_json.append("\"text\":\""+obj[2]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[3]+"\",");
+			tree_json.append("\"calculateTypeName\":\""+obj[4]+"\",");
+			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[5]+"\",");
+			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[6]+"\",");
+			tree_json.append("\"productionReportTemplate\":\""+obj[7]+"\",");
+			tree_json.append("\"sort\":\""+obj[8]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"checked\": false,");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
+		
+		}
+		
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getReportDataTemplateList(String reportType){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
@@ -4894,6 +5044,72 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
 							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
 							tree_json.append("\"iconCls\": \"acqGroup\",");
+							tree_json.append("\"leaf\": true");
+							tree_json.append("},");
+						}
+					}
+					if(tree_json.toString().endsWith(",")){
+						tree_json.deleteCharAt(tree_json.length() - 1);
+					}
+					tree_json.append("]},");
+				}
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String exportAlarmUnitTreeData(String deviceTypeIds){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
+		tree_json.append("[");
+		
+		if(modbusProtocolConfig!=null){
+			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol"
+					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
+					+ " where t.protocol=t2.name ";
+			if(StringManagerUtils.isNotNull(deviceTypeIds)){
+				unitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
+			}else{
+				unitSql+=" and 1=2 ";
+			}
+			unitSql+= " order by t.protocol,t.unit_code";
+			List<?> unitList=this.findCallSql(unitSql);
+			//排序
+			Collections.sort(modbusProtocolConfig.getProtocol());
+			
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+					tree_json.append("{\"classes\":1,");
+					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+					tree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
+					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+					tree_json.append("\"iconCls\": \"protocol\",");
+					tree_json.append("\"expanded\": true,");
+					tree_json.append("\"children\": [");
+					for(int j=0;j<unitList.size();j++){
+						Object[] unitObj = (Object[]) unitList.get(j);
+						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+							tree_json.append("{\"classes\":3,");
+							tree_json.append("\"id\":"+unitObj[0]+",");
+							tree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
+							tree_json.append("\"code\":\""+unitObj[1]+"\",");
+							tree_json.append("\"text\":\""+unitObj[2]+"\",");
+							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+							tree_json.append("\"iconCls\": \"acqGroup\",");
+							tree_json.append("\"checked\": false,");
 							tree_json.append("\"leaf\": true");
 							tree_json.append("},");
 						}
@@ -9261,6 +9477,294 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 			}
 		}
+	}
+	
+	public String getProtocolAcqUnitExportData(String unitListStr){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String acqUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark from TBL_ACQ_UNIT_CONF t where t.id in ("+unitListStr+") order by t.id";
+		List<?> acqUnitQueryList = this.findCallSql(acqUnitSql);
+		
+		for(int i=0;i<acqUnitQueryList.size();i++){
+			result_json.append("{");
+			Object[] acqUnitObj=(Object[])acqUnitQueryList.get(i);
+			result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(acqUnitObj[0]+"")+",");
+			result_json.append("\"UnitCode\":\""+acqUnitObj[1]+"\",");
+			result_json.append("\"UnitName\":\""+acqUnitObj[2]+"\",");
+			result_json.append("\"Protocol\":\""+acqUnitObj[3]+"\",");
+			result_json.append("\"Remark\":\""+acqUnitObj[4]+"\",");
+			
+			
+			String acqGroupSql="select t.id,t.group_code,t.group_name,t.grouptiminginterval,t.groupsavinginterval,t.protocol,t.type,t.remark,t3.id as unitid "
+					+ " from tbl_acq_group_conf t,tbl_acq_group2unit_conf t2,tbl_acq_unit_conf t3 "
+					+ " where t.id=t2.groupid and t2.unitid=t3.id "
+					+ " and t3.id ="+StringManagerUtils.stringToInteger(acqUnitObj[0]+"")
+					+ " order by t3.id,t.id";
+			String acqItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.groupid,t.bitindex,t.matrix,t.dailytotalcalculate,t.dailytotalcalculatename "
+					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
+					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id "
+					+ " and t4.id = "+StringManagerUtils.stringToInteger(acqUnitObj[0]+"")
+					+ " order by t4.id,t2.id,t.id";
+			List<?> acqGroupQueryList = this.findCallSql(acqGroupSql);
+			List<?> acqItemQueryList = this.findCallSql(acqItemSql);
+			
+			result_json.append("\"GroupList\":[");
+			for(int j=0;j<acqGroupQueryList.size();j++){
+				Object[] acqGroupObj=(Object[])acqGroupQueryList.get(j);
+				int groupId=StringManagerUtils.stringToInteger(acqGroupObj[0]+"");
+				result_json.append("{");
+				result_json.append("\"Id\":"+groupId+",");
+				result_json.append("\"GroupCode\":\""+acqGroupObj[1]+"\",");
+				result_json.append("\"GroupName\":\""+acqGroupObj[2]+"\",");
+				result_json.append("\"GroupTimingInterval\":"+StringManagerUtils.stringToInteger(acqGroupObj[3]+"")+",");
+				result_json.append("\"GroupSavingInterval\":"+StringManagerUtils.stringToInteger(acqGroupObj[4]+"")+",");
+				result_json.append("\"Protocol\":\""+acqGroupObj[5]+"\",");
+				result_json.append("\"Type\":"+StringManagerUtils.stringToInteger(acqGroupObj[6]+"")+",");
+				result_json.append("\"Remark\":\""+((acqGroupObj[7]+"").replaceAll("null", ""))+"\",");
+				result_json.append("\"ItemList\":[");
+				for(int k=0;k<acqItemQueryList.size();k++){
+					Object[] acqItemObj=(Object[])acqItemQueryList.get(k);
+					if(StringManagerUtils.stringToInteger(acqItemObj[4]+"")==groupId){
+						result_json.append("{");
+						result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(acqItemObj[0]+"")+",");
+						result_json.append("\"ItemId\":"+StringManagerUtils.stringToInteger(acqItemObj[1]+"")+",");
+						result_json.append("\"ItemName\":\""+((acqItemObj[2]+"").replaceAll("null", ""))+"\",");
+						result_json.append("\"ItemCode\":\""+((acqItemObj[3]+"").replaceAll("null", ""))+"\",");
+						if(StringManagerUtils.isInteger(acqItemObj[5]+"")){
+							result_json.append("\"BitIndex\":"+StringManagerUtils.stringToInteger(acqItemObj[5]+"")+",");
+						}else{
+							result_json.append("\"BitIndex\":-99,");
+						}
+						result_json.append("\"Matrix\":\""+((acqItemObj[6]+"").replaceAll("null", ""))+"\",");
+						result_json.append("\"DailyTotalCalculate\":"+StringManagerUtils.stringToInteger(acqItemObj[7]+"")+",");
+						result_json.append("\"DailyTotalCalculateName\":\""+((acqItemObj[8]+"").replaceAll("null", ""))+"\"");
+						result_json.append("},");
+					}
+				}
+				
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]");
+				result_json.append("},");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("},");
+		}
+		
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getProtocolAlarmUnitExportData(String unitListStr){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark from TBL_ALARM_UNIT_CONF t where t.id in("+unitListStr+")";
+		String alarmItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.itemaddr,t.value,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+				+ " t.alarmlevel,t.alarmsign,t.type,t.bitindex,t.issendmessage,t.issendmail,t.unitid "
+				+ " from tbl_alarm_item2unit_conf t,  TBL_ALARM_UNIT_CONF t2 "
+				+ " where t.unitid=t2.id "
+				+ " and t2.id in("+unitListStr+") "
+				+ " order by t2.id,t.id";
+		List<?> alarmUnitQueryList = this.findCallSql(alarmUnitSql);
+		List<?> alarmItemQueryList = this.findCallSql(alarmItemSql);
+		
+		for(int i=0;i<alarmUnitQueryList.size();i++){
+			Object[] alarmUnitObj=(Object[])alarmUnitQueryList.get(i);
+			int unitId=StringManagerUtils.stringToInteger(alarmUnitObj[0]+"");
+			result_json.append("{");
+			result_json.append("\"Id\":"+unitId+",");
+			result_json.append("\"UnitCode\":\""+alarmUnitObj[1]+"\",");
+			result_json.append("\"UnitName\":\""+alarmUnitObj[2]+"\",");
+			result_json.append("\"Protocol\":\""+alarmUnitObj[3]+"\",");
+			result_json.append("\"Remark\":\""+alarmUnitObj[4]+"\",");
+			result_json.append("\"ItemList\":[");
+			for(int j=0;j<alarmItemQueryList.size();j++){
+				Object[] alarmItemObj=(Object[])alarmItemQueryList.get(j);
+				if(StringManagerUtils.stringToInteger(alarmItemObj[16]+"")==unitId){
+					result_json.append("{");
+					result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(alarmItemObj[0]+"")+",");
+					result_json.append("\"ItemId\":\""+(StringManagerUtils.isInteger(alarmItemObj[1]+"")?StringManagerUtils.stringToInteger(alarmItemObj[1]+""):"")+"\",");
+					result_json.append("\"ItemName\":\""+alarmItemObj[2]+"\",");
+					result_json.append("\"ItemCode\":\""+alarmItemObj[3]+"\",");
+					result_json.append("\"ItemAddr\":\""+(StringManagerUtils.isInteger(alarmItemObj[4]+"")?StringManagerUtils.stringToInteger(alarmItemObj[4]+""):"")+"\",");
+					result_json.append("\"Value\":"+StringManagerUtils.stringToFloat(alarmItemObj[5]+"")+",");
+					
+					result_json.append("\"UpperLimit\":\""+(StringManagerUtils.isInteger(alarmItemObj[6]+"")?StringManagerUtils.stringToInteger(alarmItemObj[6]+""):"")+"\",");
+					result_json.append("\"LowerLimit\":\""+(StringManagerUtils.isInteger(alarmItemObj[7]+"")?StringManagerUtils.stringToInteger(alarmItemObj[7]+""):"")+"\",");
+					result_json.append("\"Hystersis\":\""+(StringManagerUtils.isInteger(alarmItemObj[8]+"")?StringManagerUtils.stringToInteger(alarmItemObj[8]+""):"")+"\",");
+					
+					result_json.append("\"Delay\":"+StringManagerUtils.stringToInteger(alarmItemObj[9]+"")+",");
+					
+					result_json.append("\"AlarmLevel\":"+StringManagerUtils.stringToInteger(alarmItemObj[10]+"")+",");
+					result_json.append("\"AlarmSign\":"+StringManagerUtils.stringToInteger(alarmItemObj[11]+"")+",");
+					result_json.append("\"Type\":"+StringManagerUtils.stringToInteger(alarmItemObj[12]+"")+",");
+					
+					result_json.append("\"BitIndex\":\""+(StringManagerUtils.isInteger(alarmItemObj[13]+"")?StringManagerUtils.stringToInteger(alarmItemObj[13]+""):"")+"\",");
+					
+					result_json.append("\"SendMessage\":"+StringManagerUtils.stringToInteger(alarmItemObj[14]+"")+",");
+					result_json.append("\"SendMail\":"+StringManagerUtils.stringToInteger(alarmItemObj[15]+"")+"");
+					result_json.append("},");
+				}
+			}
+			
+			
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("},");
+		}
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getProtocolDisplayUnitExportData(String unitListStr){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String displayUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.acqunitid,t.remark,t.calculatetype "
+				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
+				+ " where t.acqunitid=t2.id and t.id in ("+unitListStr+") "
+				+ " order by t2.id,t.id";
+		String displayItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.realtimeSort,t.bitindex,t.showlevel,t.realtimecurveconf,t.historycurveconf,t.type,t.matrix,t.historysort,"
+				+ "t.unitid "
+				+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2 "
+				+ " where t.unitid=t2.id "
+				+ " and t2.id in ("+unitListStr+")"
+				+ " order by t2.id,t.type,t.id";
+		List<?> displayUnitQueryList = this.findCallSql(displayUnitSql);
+		List<?> displayItemQueryList = this.findCallSql(displayItemSql);
+		
+		for(int i=0;i<displayUnitQueryList.size();i++){
+			Object[] displayUnitObj=(Object[])displayUnitQueryList.get(i);
+			int unitId=StringManagerUtils.stringToInteger(displayUnitObj[0]+"");
+			result_json.append("{");
+			result_json.append("\"Id\":"+unitId+",");
+			result_json.append("\"UnitCode\":\""+displayUnitObj[1]+"\",");
+			result_json.append("\"UnitName\":\""+displayUnitObj[2]+"\",");
+			result_json.append("\"Protocol\":\""+displayUnitObj[3]+"\",");
+			result_json.append("\"AcqUnitId\":"+StringManagerUtils.stringToInteger(displayUnitObj[4]+"")+",");
+			result_json.append("\"Remark\":\""+displayUnitObj[5]+"\",");
+			result_json.append("\"CalculateType\":"+StringManagerUtils.stringToInteger(displayUnitObj[6]+"")+",");
+			result_json.append("\"ItemList\":[");
+			for(int j=0;j<displayItemQueryList.size();j++){
+				Object[] displayItemObj=(Object[])displayItemQueryList.get(j);
+				if(StringManagerUtils.stringToInteger(displayItemObj[12]+"")==unitId){
+					result_json.append("{");
+					result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(displayItemObj[0]+"")+",");
+					result_json.append("\"ItemId\":\""+(StringManagerUtils.isInteger(displayItemObj[1]+"")?StringManagerUtils.stringToInteger(displayItemObj[1]+""):"")+"\",");
+					result_json.append("\"ItemName\":\""+displayItemObj[2]+"\",");
+					result_json.append("\"ItemCode\":\""+displayItemObj[3]+"\",");
+					result_json.append("\"RealtimeSort\":"+(StringManagerUtils.isInteger(displayItemObj[4]+"")?StringManagerUtils.stringToInteger(displayItemObj[4]+""):-99)+",");
+					result_json.append("\"BitIndex\":"+(StringManagerUtils.isInteger(displayItemObj[5]+"")?StringManagerUtils.stringToInteger(displayItemObj[5]+""):-99)+",");
+					result_json.append("\"ShowLevel\":"+(StringManagerUtils.isInteger(displayItemObj[6]+"")?StringManagerUtils.stringToInteger(displayItemObj[6]+""):-99)+",");
+					result_json.append("\"RealtimeCurveConf\":"+(displayItemObj[7]!=null?(displayItemObj[7]+"").replaceAll("null", ""):"{}")+",");
+					result_json.append("\"HistoryCurveConf\":"+(displayItemObj[8]!=null?(displayItemObj[8]+"").replaceAll("null", ""):"{}")+",");
+					result_json.append("\"Type\":"+StringManagerUtils.stringToInteger(displayItemObj[9]+"")+",");
+					result_json.append("\"Matrix\":\""+((displayItemObj[10]+"").replaceAll("null", ""))+"\",");
+					result_json.append("\"HistorySort\":"+(StringManagerUtils.isInteger(displayItemObj[11]+"")?StringManagerUtils.stringToInteger(displayItemObj[11]+""):-99)+"");
+					result_json.append("},");
+				}
+			}
+			
+			
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("},");
+		}
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getProtocolReportUnitExportData(String unitListStr){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String reportUnitSql="select t.id,t.unit_code,t.unit_name,t.calculatetype,"
+				+ "t.singlewelldailyreporttemplate,t.singlewellrangereporttemplate,t.productionreporttemplate,"
+				+ "t.sort "
+				+ "from tbl_report_unit_conf t"
+				+ " where t.id in("+unitListStr+")"
+				+ " order by t.sort";
+		String reportItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.showlevel,"
+				+ "t.sumsign,t.averagesign,"
+				+ "t.reportcurveconf,t.curvestattype,"
+				+ "t.datatype,t.reporttype,"
+				+ "t.prec,t.totaltype,t.datasource,"
+				+ "t.sort,t.matrix,"
+				+ "t.unitid "
+				+ "from tbl_report_items2unit_conf t,tbl_report_unit_conf t2  "
+				+ "where t.unitid=t2.id and t2.id in("+unitListStr+")"
+				+ "order by t2.sort,t.reporttype,t.sort";
+		List<?> reportUnitQueryList = this.findCallSql(reportUnitSql);
+		List<?> reportItemQueryList = this.findCallSql(reportItemSql);
+		
+		for(int i=0;i<reportUnitQueryList.size();i++){
+			Object[] reportUnitObj=(Object[])reportUnitQueryList.get(i);
+			int unitId=StringManagerUtils.stringToInteger(reportUnitObj[0]+"");
+			result_json.append("{");
+			result_json.append("\"Id\":"+unitId+",");
+			result_json.append("\"UnitCode\":\""+reportUnitObj[1]+"\",");
+			result_json.append("\"UnitName\":\""+reportUnitObj[2]+"\",");
+			result_json.append("\"CalculateType\":"+reportUnitObj[3]+",");
+			result_json.append("\"SingleWellDailyReportTemplate\":\""+reportUnitObj[4]+"\",");
+			result_json.append("\"SingleWellRangeReportTemplate\":\""+reportUnitObj[5]+"\",");
+			result_json.append("\"ProductionReportTemplate\":\""+reportUnitObj[6]+"\",");
+			result_json.append("\"Sort\":\""+reportUnitObj[7]+"\",");
+			result_json.append("\"ItemList\":[");
+			for(int j=0;j<reportItemQueryList.size();j++){
+				Object[] reportItemObj=(Object[])reportItemQueryList.get(j);
+				if(StringManagerUtils.stringToInteger(reportItemObj[reportItemObj.length-1]+"")==unitId){
+					result_json.append("{");
+					result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(reportItemObj[0]+"")+",");
+					result_json.append("\"ItemId\":\""+(StringManagerUtils.isInteger(reportItemObj[1]+"")?StringManagerUtils.stringToInteger(reportItemObj[1]+""):"")+"\",");
+					result_json.append("\"ItemName\":\""+reportItemObj[2]+"\",");
+					result_json.append("\"ItemCode\":\""+reportItemObj[3]+"\",");
+					result_json.append("\"ShowLevel\":\""+(StringManagerUtils.isInteger(reportItemObj[4]+"")?StringManagerUtils.stringToInteger(reportItemObj[4]+""):"")+"\",");
+					result_json.append("\"SumSign\":\""+(StringManagerUtils.isInteger(reportItemObj[5]+"")?StringManagerUtils.stringToInteger(reportItemObj[5]+""):"")+"\",");
+					result_json.append("\"AverageSign\":\""+(StringManagerUtils.isInteger(reportItemObj[6]+"")?StringManagerUtils.stringToInteger(reportItemObj[6]+""):"")+"\",");
+					result_json.append("\"ReportCurveConf\":"+(reportItemObj[7]!=null?(reportItemObj[7]+"").replaceAll("null", ""):"{}")+",");
+					result_json.append("\"CurveStatType\":\""+(reportItemObj[8]+"").replaceAll("null", "")+"\",");
+					result_json.append("\"DataType\":\""+(reportItemObj[9]+"").replaceAll("null", "")+"\",");
+					result_json.append("\"ReportType\":\""+(reportItemObj[10]+"").replaceAll("null", "")+"\",");
+					result_json.append("\"Prec\":\""+(reportItemObj[11]+"").replaceAll("null", "")+"\",");
+					result_json.append("\"TotalType\":\""+(reportItemObj[12]+"").replaceAll("null", "")+"\",");
+					result_json.append("\"DataSource\":\""+(reportItemObj[13]+"").replaceAll("null", "")+"\",");
+					result_json.append("\"Sort\":\""+(reportItemObj[14]+"").replaceAll("null", "")+"\",");
+					result_json.append("\"Matrix\":\""+(reportItemObj[15]+"").replaceAll("null", "")+"\"");
+					result_json.append("},");
+				}
+			}
+			
+			
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("},");
+		}
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
 	}
 	
 	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {

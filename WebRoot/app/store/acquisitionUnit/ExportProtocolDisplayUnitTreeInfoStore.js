@@ -18,21 +18,15 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolDisplayUnitTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceType=0;
-        	var protocolName="";
-        	var protocolCode="";
-        	var exportProtocolTreeGridPanelSelection=Ext.getCmp("ExportProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
-        	if(exportProtocolTreeGridPanelSelection.length>0 && exportProtocolTreeGridPanelSelection[0].data.classes==1){
-        		deviceType=exportProtocolTreeGridPanelSelection[0].data.deviceType;
-        		protocolName=exportProtocolTreeGridPanelSelection[0].data.text;
-        		protocolCode=exportProtocolTreeGridPanelSelection[0].data.code;
+        	var deviceTypeIds='';
+        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+        	if(tabTreeGridPanelSelection.length>0){
+        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
         	}
         	var new_params = {
-        			deviceType: deviceType,
-        			protocolName: protocolName,
-        			protocolCode: protocolCode
+        			deviceTypeIds: deviceTypeIds
                 };
-            Ext.apply(store.proxy.extraParams, new_params);
+           Ext.apply(store.proxy.extraParams, new_params);
         },
         load: function (store, options, eOpts) {
         	var gridPanel = Ext.getCmp("ExportProtocolDisplayUnitTreeGridPanel_Id");
@@ -47,11 +41,6 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolDisplayUnitTreeInfoStore', {
                     rootVisible: false,
                     autoScroll: true,
                     forceFit: true,
-                    selType: 'checkboxmodel',
-                    viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
-                        forceFit: true
-                    },
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
@@ -86,8 +75,6 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolDisplayUnitTreeInfoStore', {
                 var panel = Ext.getCmp("ProtocolExportDisplayUnitPanel_Id");
                 panel.add(gridPanel);
             }
-            gridPanel.getSelectionModel().deselectAll(true);
-            gridPanel.getSelectionModel().selectAll(true);
         }
     }
 });

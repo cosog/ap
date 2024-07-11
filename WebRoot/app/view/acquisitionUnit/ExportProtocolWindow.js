@@ -1,8 +1,8 @@
 
-Ext.define("AP.view.acquisitionUnit.ProtocolExportWindow", {
+Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
     extend: 'Ext.window.Window',
-    alias: 'widget.protocolExportWindow',
-    id: 'ProtocolExportWindow_Id',
+    alias: 'widget.ExportProtocolWindow',
+    id: 'ExportProtocolWindow_Id',
     layout: 'fit',
     title:'协议导出',
     border: false,
@@ -32,8 +32,8 @@ Ext.define("AP.view.acquisitionUnit.ProtocolExportWindow", {
                 cls: 'x-check-group-alt',
                 name: 'type',
                 items: [
-                    {boxLabel: '协议内容',width: 70, inputValue: 1, checked: true},
-                    {boxLabel: '初始化数据',width: 80, inputValue: 2}
+                    {boxLabel: '协议格式',width: 70, inputValue: 1, checked: true},
+                    {boxLabel: 'ad初始化格式',width: 90, inputValue: 2}
                 ],
                 listeners: {
                	 	change: function (radiogroup, newValue, oldValue, eOpts) {
@@ -63,7 +63,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocolExportWindow", {
     					
     					var timestamp=new Date().getTime();
     					var key='exportProtocolData'+'_'+timestamp;
-    					var maskPanelId='ProtocolExportWindow_Id';
+    					var maskPanelId='ExportProtocolWindow_Id';
     					
     	        		var url=context + '/acquisitionUnitManagerController/exportProtocolData?key='+key+'&protocolList='+exportProtocolList.join(",");
     	        		if(type==2){

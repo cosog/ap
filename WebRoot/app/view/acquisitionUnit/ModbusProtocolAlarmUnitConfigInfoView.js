@@ -73,6 +73,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
         			    window.show();
         			    getAlarmLevelSetColor();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导出',
+        			iconCls: 'export',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolAlarmUnitWindow");
+                        window.show();
+        			}
                 }],
                 layout: "border",
                 items: [{

@@ -65,7 +65,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			text: '导出',
         			iconCls: 'export',
         			handler: function (v, o) {
-        				var window = Ext.create("AP.view.acquisitionUnit.ProtocolExportWindow");
+        				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolWindow");
                         window.show();
         			}
                 },"-",{

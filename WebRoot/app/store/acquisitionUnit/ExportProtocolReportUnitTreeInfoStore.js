@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.ExportProtocolAlarmUnitTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ExportProtocolReportUnitTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.exportProtocolAlarmUnitTreeInfoStore',
+    alias: 'widget.exportProtocolReportUnitTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/exportAlarmUnitTreeData',
+        url: context + '/acquisitionUnitManagerController/exportReportUnitTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -18,21 +18,13 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolAlarmUnitTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceTypeIds='';
-        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
-        	if(tabTreeGridPanelSelection.length>0){
-        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
-        	}
-        	var new_params = {
-        			deviceTypeIds: deviceTypeIds
-                };
-           Ext.apply(store.proxy.extraParams, new_params);
+        	
         },
         load: function (store, options, eOpts) {
-        	var gridPanel = Ext.getCmp("ExportProtocolAlarmUnitTreeGridPanel_Id");
+        	var gridPanel = Ext.getCmp("ExportProtocolReportUnitTreeGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 gridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ExportProtocolAlarmUnitTreeGridPanel_Id",
+                    id: "ExportProtocolReportUnitTreeGridPanel_Id",
 //                    layout: "fit",
                     border: false,
                     animate: true,
@@ -72,7 +64,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolAlarmUnitTreeInfoStore', {
                     }
 
                 });
-                var panel = Ext.getCmp("ProtocolExportAlarmUnitPanel_Id");
+                var panel = Ext.getCmp("ProtocolExportReportUnitPanel_Id");
                 panel.add(gridPanel);
             }
         }

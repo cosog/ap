@@ -74,7 +74,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'import',
         			handler: function (v, o) {
-        				var window = Ext.create("AP.view.acquisitionUnit.ProtocolImportWindow");
+        				var window = Ext.create("AP.view.acquisitionUnit.ImportProtocolWindow");
                         window.show();
         			}
                 },'-', {

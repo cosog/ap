@@ -26,14 +26,14 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
             layout: "border",
             tbar:[{
                 xtype: 'radiogroup',
-                fieldLabel: '数据',
-                labelWidth: 30,
+//                fieldLabel: '格式',
+//                labelWidth: 30,
                 id: 'ExportProtocolWindowDataType_Id',
                 cls: 'x-check-group-alt',
                 name: 'type',
                 items: [
-                    {boxLabel: '协议格式',width: 70, inputValue: 1, checked: true},
-                    {boxLabel: 'ad初始化格式',width: 90, inputValue: 2}
+                    {boxLabel: '界面导入导出格式',width: 120, inputValue: 1, checked: true},
+                    {boxLabel: '协议通格式',width: 90, inputValue: 2}
                 ],
                 listeners: {
                	 	change: function (radiogroup, newValue, oldValue, eOpts) {

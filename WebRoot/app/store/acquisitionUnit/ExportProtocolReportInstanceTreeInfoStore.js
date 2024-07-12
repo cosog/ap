@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.ExportProtocolAcqInstanceTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ExportProtocolReportInstanceTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.exportProtocolAcqInstanceTreeInfoStore',
+    alias: 'widget.exportProtocolReportInstanceTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/exportProtocolAcqInstanceTreeData',
+        url: context + '/acquisitionUnitManagerController/exportProtocolReportInstanceTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -18,21 +18,13 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolAcqInstanceTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceTypeIds='';
-        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
-        	if(tabTreeGridPanelSelection.length>0){
-        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
-        	}
-        	var new_params = {
-        			deviceTypeIds: deviceTypeIds
-                };
-           Ext.apply(store.proxy.extraParams, new_params);
+        	
         },
         load: function (store, options, eOpts) {
-        	var treeGridPanel = Ext.getCmp("ExportProtocolAcqInstanceTreeGridPanel_Id");
+        	var treeGridPanel = Ext.getCmp("ExportProtocolReportInstanceTreeGridPanel_Id");
             if (!isNotVal(treeGridPanel)) {
                 treeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ExportProtocolAcqInstanceTreeGridPanel_Id",
+                    id: "ExportProtocolReportInstanceTreeGridPanel_Id",
 //                    layout: "fit",
                     border: false,
                     animate: true,
@@ -44,7 +36,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolAcqInstanceTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '采控实例列表',
+                    	text: '报警实例列表',
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',
@@ -71,7 +63,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolAcqInstanceTreeInfoStore', {
                         }
                     }
                 });
-                var panel = Ext.getCmp("ProtocolExportAcqInstancePanel_Id");
+                var panel = Ext.getCmp("ProtocolExportReportInstancePanel_Id");
                 panel.add(treeGridPanel);
             }
         }

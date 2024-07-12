@@ -44,6 +44,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
         			handler: function (v, o) {
         				SaveModbusProtocolInstanceConfigTreeData();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导出',
+        			iconCls: 'export',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow");
+                        window.show();
+        			}
                 }],
                 layout: "border",
                 items: [{

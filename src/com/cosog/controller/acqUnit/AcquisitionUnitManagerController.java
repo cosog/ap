@@ -71,6 +71,7 @@ import com.cosog.model.drive.ModbusProtocolAlarmInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.model.drive.ModbusProtocolConfig.ItemsMeaning;
+import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
 import com.cosog.model.drive.ModbusProtocolDisplayInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolReportInstanceSaveData;
@@ -2128,10 +2129,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/exportProtocolAcqInstanceTreeData")
 	public String exportProtocolAcqInstanceTreeData() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
-		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
-		String json = acquisitionUnitItemManagerService.exportProtocolAcqInstanceTreeData(deviceType,protocolName,protocolCode);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.exportProtocolAcqInstanceTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2180,10 +2179,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/exportProtocolDisplayInstanceTreeData")
 	public String exportProtocolDisplayInstanceTreeData() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
-		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
-		String json = acquisitionUnitItemManagerService.exportProtocolDisplayInstanceTreeData(deviceType,protocolName,protocolCode);
+		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.exportProtocolDisplayInstanceTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2205,10 +2202,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportProtocolReportInstanceTreeData")
+	public String exportProtocolReportInstanceTreeData() throws IOException {
+		String json = protocolReportInstanceManagerService.getExportProtocolReportInstanceTreeData();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/modbusAlarmInstanceConfigTreeData")
 	public String modbusAlarmInstanceConfigTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.getModbusAlarmProtocolInstanceConfigTreeData(deviceTypeIds);
+		String json = acquisitionUnitItemManagerService.getModbusProtocolAlarmInstanceConfigTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2220,10 +2229,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/exportProtocolAlarmInstanceTreeData")
 	public String exportProtocolAlarmInstanceTreeData() throws IOException {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
-		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
-		String json = acquisitionUnitItemManagerService.exportProtocolAlarmInstanceTreeData(deviceType,protocolName,protocolCode);
+		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String json = acquisitionUnitItemManagerService.exportProtocolAlarmInstanceTreeData(deviceTypeIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4602,6 +4609,342 @@ public class AcquisitionUnitManagerController extends BaseController {
     		}
         }
 		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolAcqInstanceData")
+	public String exportProtocolAcqInstanceData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String instanceList=ParamUtils.getParameter(request, "instanceList");
+		String key = ParamUtils.getParameter(request, "key");
+		String json=acquisitionUnitManagerService.getProtocolAcqInstanceExportData(instanceList);
+		String fileName="采控实例导出数据"+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		HttpSession session=request.getSession();
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			User user = null;
+			if(session!=null){
+				session.removeAttribute(key);
+				session.setAttribute(key, 0);
+				user = (User) session.getAttribute("userLogin");
+			}
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出采控实例数据");
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolAcqInstanceInitData")
+	public String exportProtocolAcqInstanceInitData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String instanceList=ParamUtils.getParameter(request, "instanceList");
+		String key = ParamUtils.getParameter(request, "key");
+		String json=acquisitionUnitManagerService.getProtocolAcqInstanceInitExportData(instanceList);
+		String fileName="采控实例初始化导出数据"+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		HttpSession session=request.getSession();
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			User user = null;
+			if(session!=null){
+				session.removeAttribute(key);
+				session.setAttribute(key, 0);
+				user = (User) session.getAttribute("userLogin");
+			}
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出采控实例初始化数据");
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolDisplayInstanceData")
+	public String exportProtocolDisplayInstanceData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String instanceList=ParamUtils.getParameter(request, "instanceList");
+		String key = ParamUtils.getParameter(request, "key");
+		String json=acquisitionUnitManagerService.getProtocolDisplayInstanceExportData(instanceList);
+		String fileName="显示实例导出数据"+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		HttpSession session=request.getSession();
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			User user = null;
+			if(session!=null){
+				session.removeAttribute(key);
+				session.setAttribute(key, 0);
+				user = (User) session.getAttribute("userLogin");
+			}
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出显示实例数据");
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolAlarmInstanceData")
+	public String exportProtocolAlarmInstanceData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String instanceList=ParamUtils.getParameter(request, "instanceList");
+		String key = ParamUtils.getParameter(request, "key");
+		String json=acquisitionUnitManagerService.getProtocolAlarmInstanceExportData(instanceList);
+		String fileName="报警实例导出数据"+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		HttpSession session=request.getSession();
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			User user = null;
+			if(session!=null){
+				session.removeAttribute(key);
+				session.setAttribute(key, 0);
+				user = (User) session.getAttribute("userLogin");
+			}
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出报警实例数据");
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/exportProtocolReportInstanceData")
+	public String exportProtocolReportInstanceData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String instanceList=ParamUtils.getParameter(request, "instanceList");
+		String key = ParamUtils.getParameter(request, "key");
+		String json=acquisitionUnitManagerService.getProtocolReportInstanceExportData(instanceList);
+		String fileName="报表实例导出数据"+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		HttpSession session=request.getSession();
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			User user = null;
+			if(session!=null){
+				session.removeAttribute(key);
+				session.setAttribute(key, 0);
+				user = (User) session.getAttribute("userLogin");
+			}
+			if(user!=null){
+				this.service.saveSystemLog(user,2,"导出报表实例数据");
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
+	@RequestMapping("/uploadImportedProtocolFile")
+	public String uploadImportedProtocolFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String protocolName="";
+		
+		HttpSession session=request.getSession();
+		session.removeAttribute("uploadProtocolFile");
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		System.out.println(fileContent);
+		
+		type = new TypeToken<List<ModbusProtocolConfig.Protocol>>() {}.getType();
+		List<ModbusProtocolConfig.Protocol> protocolList=gson.fromJson(fileContent, type);
+		if(protocolList!=null && protocolList.size()>0){
+			flag=true;
+			session.setAttribute("uploadProtocolFile", protocolList);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedProtocolTreeData")
+	public String getUploadedProtocolTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		try{
+			if(session.getAttribute("uploadProtocolFile")!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		
+		String json = acquisitionUnitItemManagerService.getUploadedProtocolTreeData(protocolList);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedProtocolItemsConfigData")
+	public String getUploadedProtocolItemsConfigData() throws Exception {
+		HttpSession session=request.getSession();
+		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		try{
+			if(session.getAttribute("uploadProtocolFile")!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String code = ParamUtils.getParameter(request, "code");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getUploadedProtocolItemsConfigData(protocolName,classes,code,protocolList);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 	

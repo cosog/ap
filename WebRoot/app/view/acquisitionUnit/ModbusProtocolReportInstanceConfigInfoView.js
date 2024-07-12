@@ -52,6 +52,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
         			handler: function (v, o) {
         				SaveReportInstanceData();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导出',
+        			iconCls: 'export',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolReportInstanceWindow");
+                        window.show();
+        			}
                 }],
                 layout: "border",
                 items: [{

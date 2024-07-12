@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ImportProtocolContent;
+import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
@@ -49,6 +52,7 @@ import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.Page;
 import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
@@ -2202,302 +2206,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
 	}
-	
-//	public String getReportUnitTimingTotalCalItemsConfigData(String calculateType,String reportType,String unitId,String classes){
-//		StringBuffer result_json = new StringBuffer();
-//		Gson gson = new Gson();
-//		java.lang.reflect.Type type=null;
-//		String key="acqTimingTotalCalItemList";
-//		if("1".equalsIgnoreCase(calculateType)){
-//			key="rpcTimingTotalCalItemList";
-//		}else if("2".equalsIgnoreCase(calculateType)){
-//			key="pcpTimingTotalCalItemList";
-//		}
-//		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-//		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-//			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-//		}
-//		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-//		Jedis jedis=null;
-//		List<byte[]> rpcCalItemSet=null;
-//		try{
-//			jedis = RedisUtil.jedisPool.getResource();
-//			if(!jedis.exists(key.getBytes())){
-//				if("1".equalsIgnoreCase(calculateType)){
-//					MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
-//				}else if("2".equalsIgnoreCase(calculateType)){
-//					MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
-//				}else{
-//					MemoryDataManagerTask.loadAcqTimingTotalCalculateItem();
-//				}
-//			}
-//			rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}finally{
-//			if(jedis!=null){
-//				jedis.close();
-//			}
-//		}
-//		String columns = "["
-//				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-//				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-//				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-//				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-//				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-//				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-//				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
-//				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
-//				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-//				+ "{ \"header\":\"报曲线统计类型\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
-//				+ "]";
-//		
-//		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-//		result_json.append("\"totalRoot\":[");
-//		
-//		List<String> itemsList=new ArrayList<String>();
-//		List<String> itemsCodeList=new ArrayList<String>();
-//		List<String> itemsSortList=new ArrayList<String>();
-//		List<String> itemsPrecList=new ArrayList<String>();
-//		List<String> itemsShowLevelList=new ArrayList<String>();
-//		
-//		List<String> sumSignList=new ArrayList<String>();
-//		List<String> averageSignList=new ArrayList<String>();
-//		
-//		List<String> reportCurveConfList=new ArrayList<String>();
-//		
-//		List<String> curveStatTypeList=new ArrayList<String>();
-//		
-//		List<String> itemsTotalTypeList=new ArrayList<String>();
-//		if("1".equalsIgnoreCase(classes)){
-//			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
-//					+ " decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计','') "
-//					+ " from tbl_report_items2unit_conf t "
-//					+ " where t.unitid="+unitId+" and t.reportType="+reportType
-//					+ " order by t.sort";
-//			List<?> list=this.findCallSql(sql);
-//			for(int i=0;i<list.size();i++){
-//				Object[] obj=(Object[])list.get(i);
-//				itemsList.add(obj[0]+"");
-//				itemsCodeList.add(obj[1]+"");
-//				itemsSortList.add(obj[2]+"");
-//				itemsShowLevelList.add(obj[3]+"");
-//				
-//				sumSignList.add(obj[4]+"");
-//				averageSignList.add(obj[5]+"");
-//				
-//				String reportCurveConf=obj[6]+"";
-//				if(!StringManagerUtils.isNotNull(reportCurveConf)){
-//					reportCurveConf="\"\"";
-//				}
-//				reportCurveConfList.add(reportCurveConf);
-//				curveStatTypeList.add(obj[7]+"");
-//				itemsPrecList.add(obj[8]+"");
-//				itemsTotalTypeList.add(obj[9]+"");
-//			}
-//		}
-//		
-//		int index=1;
-//		if(rpcCalItemSet!=null){
-//			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
-//				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
-//				
-//				boolean checked=false;
-//				String sort="";
-//				String showLevel="";
-//				String prec="";
-//				
-//				boolean sumSign=false;
-//				boolean averageSign=false;
-//				
-//				String reportCurveConf="\"\"";
-//				String reportCurveConfShowValue="";
-//				
-//				String curveStatType="";
-//				
-//				String totalType="";
-//
-//				checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-//				if(checked){
-//					for(int k=0;k<itemsList.size();k++){
-//						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-//							sort=itemsSortList.get(k);
-//							showLevel=itemsShowLevelList.get(k);
-//							prec=itemsPrecList.get(k);
-//							totalType=itemsTotalTypeList.get(k);
-//							if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
-//								if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
-//									sumSign=true;
-//								}else{
-//									sumSign=false;
-//								}
-//							}
-//							
-//							if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
-//								if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
-//									averageSign=true;
-//								}else{
-//									averageSign=false;
-//								}
-//							}
-//							
-//							reportCurveConf=reportCurveConfList.get(k);
-//							
-//							CurveConf reportCurveConfObj=null;
-//							if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
-//								type = new TypeToken<CurveConf>() {}.getType();
-//								reportCurveConfObj=gson.fromJson(reportCurveConf, type);
-//							}
-//							
-//							if(reportCurveConfObj!=null){
-//								reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
-//							}
-//							
-//							
-//							String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
-//							if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
-//								if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-//									curveStatType="合计";
-//								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-//									curveStatType="平均";
-//								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-//									curveStatType="最大值";
-//								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-//									curveStatType="最小值";
-//								}
-//							}
-//							break;
-//						}
-//					}
-//				}
-//				result_json.append("{\"checked\":"+checked+","
-//						+ "\"id\":"+(index)+","
-//						+ "\"title\":\""+calItem.getName()+"\","
-//						+ "\"unit\":\""+calItem.getUnit()+"\","
-//						+ "\"totalType\":\""+totalType+"\","
-//						+ "\"dataSource\":\""+calItem.getDataSource()+"\","
-//						+ "\"showLevel\":\""+showLevel+"\","
-//						+ "\"sort\":\""+sort+"\","
-//						+ "\"prec\":\""+prec+"\","
-//						+ "\"sumSign\":"+sumSign+","
-//						+ "\"averageSign\":"+averageSign+","
-//						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
-//						+ "\"reportCurveConf\":"+reportCurveConf+","
-//						+ "\"curveStatType\":\""+curveStatType+"\","
-//						+ "\"dataType\":"+calItem.getDataType()+","
-//						+ "\"code\":\""+calItem.getCode()+"\","
-//						+ "\"remark\":\""+calItem.getRemark()+"\""
-//						+ "},");
-//				index++;
-//			
-//			}
-//		}
-//		
-//		Iterator<Map.Entry<String, DataMapping>> iterator = loadProtocolMappingColumnByTitleMap.entrySet().iterator();
-//		while (iterator.hasNext()) {
-//		    Map.Entry<String, DataMapping> entry = iterator.next();
-//		    DataMapping dataMappingColumn = entry.getValue();
-//		    
-//		    boolean checked=false;
-//			String sort="";
-//			String showLevel="";
-//			String prec="";
-//			
-//			boolean sumSign=false;
-//			boolean averageSign=false;
-//			
-//			String reportCurveConf="\"\"";
-//			String reportCurveConfShowValue="";
-//			
-//			String curveStatType="";
-//			
-//			String totalType="";
-//
-//			checked=StringManagerUtils.existOrNot(itemsCodeList, dataMappingColumn.getMappingColumn(),false);
-//			if(checked){
-//				for(int k=0;k<itemsList.size();k++){
-//					if(itemsCodeList.get(k).equalsIgnoreCase(dataMappingColumn.getMappingColumn())){
-//						sort=itemsSortList.get(k);
-//						showLevel=itemsShowLevelList.get(k);
-//						prec=itemsPrecList.get(k);
-//						totalType=itemsTotalTypeList.get(k);
-//						if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
-//							if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
-//								sumSign=true;
-//							}else{
-//								sumSign=false;
-//							}
-//						}
-//						
-//						if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
-//							if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
-//								averageSign=true;
-//							}else{
-//								averageSign=false;
-//							}
-//						}
-//						
-//						reportCurveConf=reportCurveConfList.get(k);
-//						
-//						CurveConf reportCurveConfObj=null;
-//						if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
-//							type = new TypeToken<CurveConf>() {}.getType();
-//							reportCurveConfObj=gson.fromJson(reportCurveConf, type);
-//						}
-//						
-//						if(reportCurveConfObj!=null){
-//							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
-//						}
-//						
-//						
-//						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
-//						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
-//							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-//								curveStatType="合计";
-//							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-//								curveStatType="平均";
-//							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-//								curveStatType="最大值";
-//							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-//								curveStatType="最小值";
-//							}
-//						}
-//						break;
-//					}
-//				}
-//			}
-//		    
-//		    
-//		    
-//			result_json.append("{\"checked\":"+checked+","
-//					+ "\"id\":"+(index)+","
-//					+ "\"title\":\""+dataMappingColumn.getName()+"\","
-//					+ "\"unit\":\"\","
-//					+ "\"totalType\":\""+totalType+"\","
-//					+ "\"dataSource\":\"采集\","
-//					+ "\"showLevel\":\""+showLevel+"\","
-//					+ "\"sort\":\""+sort+"\","
-//					+ "\"prec\":\""+prec+"\","
-//					+ "\"sumSign\":"+sumSign+","
-//					+ "\"averageSign\":"+averageSign+","
-//					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
-//					+ "\"reportCurveConf\":"+reportCurveConf+","
-//					+ "\"curveStatType\":\""+curveStatType+"\","
-//					+ "\"dataType\":2,"
-//					+ "\"code\":\""+dataMappingColumn.getMappingColumn()+"\","
-//					+ "\"remark\":\"\""
-//					+ "},");
-//			index++;
-//		}
-//		
-//		
-//		if(result_json.toString().endsWith(",")){
-//			result_json.deleteCharAt(result_json.length() - 1);
-//		}
-//		result_json.append("]");
-//		result_json.append("}");
-//		return result_json.toString().replaceAll("null", "");
-//	}
 	
 	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort){
 		StringBuffer result_json = new StringBuffer();
@@ -5315,50 +5023,65 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportProtocolAcqInstanceTreeData(String deviceType,String protocolName,String protocolCode){
+	public String exportProtocolAcqInstanceTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
 				+ " t.packetsendinterval,"//12
 				+ " t.sort,t.unitid,t2.unit_name "//13~15
-				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2 "
-				+ " where t.unitid=t2.id and t2.protocol='"+protocolName+"'"
-				+ " order by t.sort";
-		
+				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.name";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
+		}else{
+			sql+=" and 1=2 ";
+		}	
+		sql+= " order by t.sort";
 		List<?> list=this.findCallSql(sql);
 		
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 
-			result_json.append("{\"classes\":1,");
-			result_json.append("\"id\":\""+obj[0]+"\",");
-			result_json.append("\"text\":\""+obj[1]+"\",");
-			result_json.append("\"code\":\""+obj[2]+"\",");
-			result_json.append("\"acqProtocolType\":\""+obj[3]+"\",");
-			result_json.append("\"ctrlProtocolType\":\""+obj[4]+"\",");
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":\""+obj[0]+"\",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"acqProtocolType\":\""+obj[3]+"\",");
+			tree_json.append("\"ctrlProtocolType\":\""+obj[4]+"\",");
 			
-			result_json.append("\"signInPrefixSuffixHex\":\""+obj[5]+"\",");
-			result_json.append("\"signInPrefix\":\""+obj[6]+"\",");
-			result_json.append("\"signInSuffix\":\""+obj[7]+"\",");
-			result_json.append("\"signInIDHex\":\""+obj[8]+"\",");
+			tree_json.append("\"signInPrefixSuffixHex\":\""+obj[5]+"\",");
+			tree_json.append("\"signInPrefix\":\""+obj[6]+"\",");
+			tree_json.append("\"signInSuffix\":\""+obj[7]+"\",");
+			tree_json.append("\"signInIDHex\":\""+obj[8]+"\",");
 			
-			result_json.append("\"heartbeatPrefixSuffixHex\":\""+obj[9]+"\",");
-			result_json.append("\"heartbeatPrefix\":\""+obj[10]+"\",");
-			result_json.append("\"heartbeatSuffix\":\""+obj[11]+"\",");
+			tree_json.append("\"heartbeatPrefixSuffixHex\":\""+obj[9]+"\",");
+			tree_json.append("\"heartbeatPrefix\":\""+obj[10]+"\",");
+			tree_json.append("\"heartbeatSuffix\":\""+obj[11]+"\",");
 			
-			result_json.append("\"packetSendInterval\":\""+obj[12]+"\",");
-			result_json.append("\"sort\":\""+obj[13]+"\",");
-			result_json.append("\"iconCls\": \"protocol\",");
-			result_json.append("\"leaf\": true},");
+			
+			tree_json.append("\"packetSendInterval\":\""+obj[12]+"\",");
+			
+			tree_json.append("\"sort\":\""+obj[13]+"\",");
+			tree_json.append("\"unitId\":"+obj[14]+",");
+			tree_json.append("\"unitName\":\""+obj[15]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"checked\": false,");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
 		}
 		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
-		
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -5412,31 +5135,45 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportProtocolDisplayInstanceTreeData(String deviceType,String protocolName,String protocolCode){
+	public String exportProtocolDisplayInstanceTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
+		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort   "
-				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2 "
-				+ " where t.displayUnitId=t2.id "
-				+ " and t2.protocol='"+protocolName+"'"
-				+ " order by t.sort";
+				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+=" and t4.devicetype in ("+deviceTypeIds+")";
+		}else{
+			sql+=" and 1=2 ";
+		}
+		sql+= " order by t.sort";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			result_json.append("{\"classes\":1,");
-			result_json.append("\"id\":\""+obj[0]+"\",");
-			result_json.append("\"text\":\""+obj[1]+"\",");
-			result_json.append("\"code\":\""+obj[2]+"\",");
-			result_json.append("\"displayUnitId\":"+obj[3]+",");
-			result_json.append("\"displayUnitName\":\""+obj[4]+"\",");
-			result_json.append("\"sort\":\""+obj[5]+"\",");
-			result_json.append("\"iconCls\": \"protocol\",");
-			result_json.append("\"leaf\": true},");
+
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":\""+obj[0]+"\",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"displayUnitId\":"+obj[3]+",");
+			tree_json.append("\"displayUnitName\":\""+obj[4]+"\",");
+			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"checked\": false,");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
 		}
 		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -5495,7 +5232,50 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusAlarmProtocolInstanceConfigTreeData(String deviceTypeIds){
+	public String getExportProtocolReportInstanceTreeData(){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
+		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort,"
+				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate,"
+				+ " t2.calculateType "
+				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
+				+ " where t.unitid=t2.id "
+				+ " order by t.sort,t.id";
+		List<?> list=this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":"+obj[0]+",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"unitId\":"+obj[3]+",");
+			tree_json.append("\"unitName\":\""+obj[4]+"\",");
+			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
+			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
+			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"expanded\": true,");
+			tree_json.append("\"checked\": false,");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
+		}
+		
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getModbusProtocolAlarmInstanceConfigTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
@@ -5545,33 +5325,41 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportProtocolAlarmInstanceTreeData(String deviceType,String protocolName,String protocolCode){
+	public String exportProtocolAlarmInstanceTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
-				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2 "
-				+ " where t.alarmunitid=t2.id and t2.protocol='"+protocolName+"'"
-				+ " order by t.sort";
+				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name";
+		if(StringManagerUtils.isNotNull(deviceTypeIds)){
+			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
+		}else{
+			sql+=" and 1=2 ";
+		}
+		sql+= " order by t.sort";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			result_json.append("{\"classes\":1,");
-			result_json.append("\"id\":\""+obj[0]+"\",");
-			result_json.append("\"text\":\""+obj[1]+"\",");
-			result_json.append("\"code\":\""+obj[2]+"\",");
-			result_json.append("\"alarmUnitId\":"+obj[3]+",");
-			result_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
-			result_json.append("\"sort\":\""+obj[5]+"\",");
-			result_json.append("\"iconCls\": \"protocol\",");
-			result_json.append("\"leaf\": true},");
-		
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"id\":\""+obj[0]+"\",");
+			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"alarmUnitId\":"+obj[3]+",");
+			tree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
+			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"checked\": false,");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
 		}
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
+		tree_json.append("]");
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
 		result_json.append("]");
-		
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -6695,9 +6483,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(protocol!=null){
 				InitProtocol initProtocol=new InitProtocol(protocol);
 				if(initProtocol!=null){
-					
+					initProtocol.setMethod("update");
+					initProtocolList.add(initProtocol);
 				}
-				initProtocolList.add(initProtocol);
 			}
 		}
 		return gson.toJson(initProtocolList);
@@ -9765,6 +9553,349 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		return result_json.toString();
+	}
+	
+	public String getProtocolAcqInstanceExportData(String instanceList){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
+				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
+				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
+				+ " t.packetsendinterval,"//12
+				+ " t.sort,t.unitid,t2.unit_name "//13~15
+				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2 "
+				+ " where t.unitid=t2.id ";
+		if(StringManagerUtils.isNotNull(instanceList)){
+			sql+=" and t.id in ("+instanceList+")";
+		}else{
+			sql+=" and 1=2 ";
+		}	
+		sql+= " order by t.sort";
+		List<?> instanceQueryList = this.findCallSql(sql);
+		for(int i=0;i<instanceQueryList.size();i++){
+			Object[] obj=(Object[])instanceQueryList.get(i);
+			result_json.append("{");
+			result_json.append("\"Id\":"+obj[0]+",");
+			result_json.append("\"Name\":\""+obj[1]+"\",");
+			result_json.append("\"Code\":\""+obj[2]+"\",");
+			result_json.append("\"AcqProtocolType\":\""+obj[3]+"\",");
+			result_json.append("\"CtrlProtocolType\":\""+obj[4]+"\",");
+			result_json.append("\"SignInPrefixSuffixHex\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
+			result_json.append("\"SignInPrefix\":\""+((obj[6]+"").replaceAll("null", ""))+"\",");
+			result_json.append("\"SignInIDHex\":\""+((obj[6]+"").replaceAll("null", ""))+"\",");
+			result_json.append("\"SignInIDHex\":"+StringManagerUtils.stringToInteger(obj[8]+"")+",");
+			
+			result_json.append("\"HeartbeatPrefixSuffixHex\":"+StringManagerUtils.stringToInteger(obj[9]+"")+",");
+			result_json.append("\"HeartbeatPrefix\":\""+((obj[10]+"").replaceAll("null", ""))+"\",");
+			result_json.append("\"HeartbeatSuffix\":\""+((obj[11]+"").replaceAll("null", ""))+"\",");
+			
+			
+			result_json.append("\"PacketSendInterval\":"+StringManagerUtils.stringToInteger(obj[12]+"")+",");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[13]+"")+",");
+			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(obj[14]+"")+",");
+			result_json.append("\"UnitName\":\""+obj[15]+"\"");
+
+			result_json.append("},");
+		}
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getProtocolAcqInstanceInitExportData(String instanceList){
+		Gson gson=new Gson();
+		List<InitInstance> initInstanceList=new ArrayList<>();
+		
+		String instanceSql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
+				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
+				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"
+				+ " t.packetsendinterval,"
+				+ " t3.name "
+				+ " from tbl_protocolinstance t "
+				+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
+				+ " left outer join tbl_protocol t3 on t2.protocol=t3.name"
+				+ " where 1=1";
+		String sql="select t5.name as instanceName,t2.id as groupId,t2.group_name,t2.type,t2.grouptiminginterval,"
+				+ " t.itemname,t.itemcode, t6.name as protocolName "
+				+ " from tbl_acq_item2group_conf t,"
+				+ " tbl_acq_group_conf t2,"
+				+ " tbl_acq_group2unit_conf t3,"
+				+ " tbl_acq_unit_conf t4,"
+				+ " tbl_protocolinstance t5,"
+				+ " tbl_protocol t6 "
+				+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t4.protocol=t6.name ";
+		
+		
+		if(StringManagerUtils.isNotNull(instanceList)){
+			sql+=" and t5.id in("+instanceList+")";
+			instanceSql+=" and t.id in("+instanceList+")";
+		}
+		sql+= " order by t5.sort,t.groupid,t.id";
+		instanceSql+=" order by t.sort";
+		
+		List<Object[]> instanceQueryList=OracleJdbcUtis.query(instanceSql);
+		List<Object[]> itemsQueryList=OracleJdbcUtis.query(sql);
+		
+		
+		
+		if(instanceQueryList!=null && instanceQueryList.size()>0){
+			Map<String,InitInstance> InstanceListMap=new LinkedHashMap<String,InitInstance>();
+			for(Object[] obj:instanceQueryList){
+				InitInstance initInstance=new InitInstance();
+				initInstance.setMethod("update");
+				initInstance.setInstanceName(obj[0]+"");
+				initInstance.setProtocolName(obj[11]+"");
+				initInstance.setAcqProtocolType(obj[1]+"");
+				initInstance.setCtrlProtocolType(obj[2]+"");
+				
+				initInstance.setSignInPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[3]+"")==1);
+				initInstance.setSignInPrefix((obj[4]+"").replaceAll("null", ""));
+				initInstance.setSignInSuffix((obj[5]+"").replaceAll("null", ""));
+				initInstance.setSignInIDHex(StringManagerUtils.stringToInteger(obj[6]+"")==1);
+				
+				initInstance.setHeartbeatPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[7]+"")==1);
+				initInstance.setHeartbeatPrefix((obj[8]+"").replaceAll("null", ""));
+				initInstance.setHeartbeatSuffix((obj[9]+"").replaceAll("null", ""));
+				
+				initInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(obj[10]+""));
+				
+				initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
+				initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
+				
+				InstanceListMap.put(initInstance.getInstanceName(), initInstance);
+			}
+			
+			for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
+				InitInstance initInstance=entry.getValue();
+				String key=entry.getKey();
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(initInstance.getProtocolName());
+				
+				for(Object[] obj:itemsQueryList){
+					String instanceName=obj[0]+"";
+					int groupId=StringManagerUtils.stringToInteger(obj[1]+"");
+					String groupName=obj[2]+"";
+					int groupType=StringManagerUtils.stringToInteger(obj[3]+"");
+					int groupTimingInterval=StringManagerUtils.stringToInteger(obj[4]+"");
+					
+					String itemName=obj[5]+"";
+					String protocolName=obj[7]+"";
+					if(instanceName.equalsIgnoreCase(initInstance.getInstanceName())){
+						if(!initInstance.containGroup(groupType, groupId)){
+							InitInstance.Group group=new InitInstance.Group();
+							group.setId(groupId);
+							group.setGroupTimingInterval(groupTimingInterval);
+							group.setAddr(new ArrayList<Integer>());
+							if(groupType==0){
+								initInstance.getAcqGroup().add(group);
+							}else if(groupType==1){
+								initInstance.getCtrlGroup().add(group);
+							}
+						}
+						InitInstance.Group group=initInstance.getGroup(groupType, groupId);
+						if(group!=null){
+							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, itemName);
+							if(item!=null && !StringManagerUtils.existOrNot(group.getAddr(), item.getAddr())){
+								group.getAddr().add(item.getAddr());
+							}
+						}
+					}
+				}
+			}
+			for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
+				InitInstance initInstance=entry.getValue();
+				String key=entry.getKey();
+				for(InitInstance.Group group:initInstance.getAcqGroup() ){
+					Collections.sort(group.getAddr());
+				}
+				for(InitInstance.Group group:initInstance.getCtrlGroup() ){
+					Collections.sort(group.getAddr());
+				}
+				
+				initInstanceList.add(entry.getValue());
+			}
+		}
+		return gson.toJson(initInstanceList);
+	}
+	
+	public String getProtocolDisplayInstanceExportData(String instanceList){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort "
+				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2"
+				+ " where t.displayunitid=t2.id and t.id in("+instanceList+")"
+				+ " order by t.displayunitid,t.id";
+		List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
+		for(int i=0;i<displayInstanceQueryList.size();i++){
+			Object[] displayInstanceObj=(Object[])displayInstanceQueryList.get(i);
+			result_json.append("{");
+			result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(displayInstanceObj[0]+"")+",");
+			result_json.append("\"Name\":\""+displayInstanceObj[1]+"\",");
+			result_json.append("\"Code\":\""+displayInstanceObj[2]+"\",");
+			result_json.append("\"DisplayUnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
+			result_json.append("\"DisplayUnitName\":\""+displayInstanceObj[4]+"\",");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+"");
+			result_json.append("},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getProtocolAlarmInstanceExportData(String instanceList){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort "
+				+ " from TBL_PROTOCOLALARMINSTANCE t ,tbl_alarm_unit_conf t2"
+				+ " where t.alarmunitid=t2.id and t.id in("+instanceList+")"
+				+ " order by t.alarmunitid,t.id";
+		List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
+		for(int i=0;i<displayInstanceQueryList.size();i++){
+			Object[] displayInstanceObj=(Object[])displayInstanceQueryList.get(i);
+			result_json.append("{");
+			result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(displayInstanceObj[0]+"")+",");
+			result_json.append("\"Name\":\""+displayInstanceObj[1]+"\",");
+			result_json.append("\"Code\":\""+displayInstanceObj[2]+"\",");
+			result_json.append("\"AlarmUnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
+			result_json.append("\"AlarmUnitName\":\""+displayInstanceObj[4]+"\",");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+"");
+			result_json.append("},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getProtocolReportInstanceExportData(String instanceList){
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		String displayInstanceSql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort "
+				+ " from TBL_PROTOCOLREPORTINSTANCE t,tbl_report_unit_conf t2 "
+				+ " where t.unitid=t2.id and t.id in("+instanceList+")"
+				+ " order by t.unitid,t.id";
+		List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
+		for(int i=0;i<displayInstanceQueryList.size();i++){
+			Object[] displayInstanceObj=(Object[])displayInstanceQueryList.get(i);
+			result_json.append("{");
+			result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(displayInstanceObj[0]+"")+",");
+			result_json.append("\"Name\":\""+displayInstanceObj[1]+"\",");
+			result_json.append("\"Code\":\""+displayInstanceObj[2]+"\",");
+			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
+			result_json.append("\"UnitName\":\""+displayInstanceObj[4]+"\",");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+"");
+			result_json.append("},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
+	public String getUploadedProtocolTreeData(List<ModbusProtocolConfig.Protocol> protocolList){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		tree_json.append("[");
+		if(protocolList!=null && protocolList.size()>0){
+			for(int i=0;i<protocolList.size();i++){
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+protocolList.get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+protocolList.get(i).getCode()+"\",");
+				tree_json.append("\"sort\":\""+protocolList.get(i).getSort()+"\",");
+				tree_json.append("\"iconCls\": \"protocol\",");
+				tree_json.append("\"leaf\": true");
+				tree_json.append("},");
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"协议列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
+	public String getUploadedProtocolItemsConfigData(String protocolName,String classes,String code,List<ModbusProtocolConfig.Protocol> protocolList){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+//				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"解析模式\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		ModbusProtocolConfig.Protocol protocolConfig=null;
+		if(protocolList!=null){
+			for(ModbusProtocolConfig.Protocol protocol:protocolList){
+				if(protocolName.equalsIgnoreCase(protocol.getName())){
+					protocolConfig=protocol;
+				}
+			}
+		}
+		if(protocolConfig!=null){
+			Collections.sort(protocolConfig.getItems());
+			for(int j=0;j<protocolConfig.getItems().size();j++){
+				String resolutionMode="数据量";
+				if(protocolConfig.getItems().get(j).getResolutionMode()==0){
+					resolutionMode="开关量";
+				}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
+					resolutionMode="枚举量";
+				}
+				String RWType="只读";
+				if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+					RWType="只读";
+				}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+					RWType="只写";
+				}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+					RWType="读写";
+				}
+				result_json.append("{"
+						+ "\"id\":"+(j+1)+","
+						+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+						+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+						+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
+						+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
+						+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
+						+ "\"prec\":"+(protocolConfig.getItems().get(j).getIFDataType().toUpperCase().indexOf("FLOAT")>=0?protocolConfig.getItems().get(j).getPrec():"\"\"")+","
+						+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
+						+ "\"RWType\":\""+RWType+"\","
+						+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+						+ "\"resolutionMode\":\""+resolutionMode+"\","
+						+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\""
+						+ "},");
+				
+			}
+		}
+	
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {

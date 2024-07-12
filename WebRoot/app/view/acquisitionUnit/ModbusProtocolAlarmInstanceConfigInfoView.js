@@ -52,6 +52,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
         			handler: function (v, o) {
         				SaveModbusProtocolAlarmInstanceConfigTreeData();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导出',
+        			iconCls: 'export',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolAlarmInstanceWindow");
+                        window.show();
+        			}
                 }],
                 layout: "border",
                 items: [{

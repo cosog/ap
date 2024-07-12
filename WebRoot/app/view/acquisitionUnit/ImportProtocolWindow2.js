@@ -12,10 +12,10 @@ var importProtocolAlarmUnitAndInstanceConfigFESDiagramResultItemsHandsontableHel
 var importProtocolAlarmUnitAndInstanceConfigRunStatusItemsHandsontableHelper=null;
 var importProtocolAlarmUnitAndInstanceConfigCommStatusItemsHandsontableHelper=null;
 
-Ext.define("AP.view.acquisitionUnit.ProtocolImportWindow", {
+Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
     extend: 'Ext.window.Window',
-    id:'ProtocolImportWindow_Id',
-    alias: 'widget.protocolImportWindow',
+    id:'ImportProtocolWindow_Id',
+    alias: 'widget.ImportProtocolWindow',
     layout: 'fit',
     title:'协议导入',
     border: false,

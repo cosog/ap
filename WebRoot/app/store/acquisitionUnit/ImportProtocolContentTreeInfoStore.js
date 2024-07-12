@@ -7,7 +7,7 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/getImportedProtocolContentTreeData',
+        url: context + '/acquisitionUnitManagerController/getUploadedProtocolTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -61,25 +61,7 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     }],
                     listeners: {
                     	rowclick: function( grid, record, element, index, e, eOpts) {
-                    		if(record.data.classes>0){
-                    			var selectedType=parseInt(Ext.getCmp("ImportProtocolSelectItemType_Id").getValue());
-                    			var typeChange=false;
-                    			var type=-99;
-                    			if(record.data.classes==1){
-                    				type=record.parentNode.data.type;
-                    			}else if(record.data.classes==2){
-                    				type=record.parentNode.parentNode.data.type;
-                    			}
-                    			typeChange=(selectedType==type);
-//                    			typeChange=!(selectedType==type || (selectedType+type)==3  );
-                    			Ext.getCmp("ImportProtocolSelectItemType_Id").setValue(type);
-                    			Ext.getCmp("ImportProtocolSelectItemId_Id").setValue(record.data.id);
-                    			CreateImportProtocolContentInfoTable(record.data.id,record.data.classes,type,typeChange);
-                    		}else{
-                    			Ext.getCmp("ImportProtocolSelectItemType_Id").setValue(-99);
-                    			Ext.getCmp("ImportProtocolSelectItemId_Id").setValue(-99);
-                    			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").removeAll();
-                    		}
+                    		
                     	},
                     	checkchange: function (node, checked) {
                     		
@@ -88,7 +70,21 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         	
                         },
                         select( v, record, index, eOpts ){
-                        	
+                        	if(record.data.classes==0){
+                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+                        			CreateUploadedProtocolContentInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
+                        		}else{
+                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
+                        			if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
+                        				importProtocolContentHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+                        			}
+//                        			if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null && protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined){
+//                        				protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+//                        			}
+                        		}
+                        	}else if(record.data.classes==1){
+                        		CreateUploadedProtocolContentInfoTable(record.data.text,record.data.classes,record.data.code);
+                        	}
                         },
                         beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
@@ -102,12 +98,14 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                 var panel = Ext.getCmp("importPootocolTreePanel_Id");
                 panel.add(treeGridPanel);
             }
-    		var getNode = store.root.childNodes;
-    		importProtocolContentTreeSelectAll(getNode);
             
+            treeGridPanel.getSelectionModel().deselectAll(true);
+            if(store.data.length>1){
+            	treeGridPanel.getSelectionModel().select(1, true);
+            }else{
+            	treeGridPanel.getSelectionModel().select(0, true);
+            }
             
-//            treeGridPanel.getSelectionModel().deselectAll(true);
-//            treeGridPanel.getSelectionModel().selectAll(true);
         }
     }
 });

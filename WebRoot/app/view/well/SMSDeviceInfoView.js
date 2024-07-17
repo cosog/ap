@@ -363,7 +363,7 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
             Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {
-            wellInformationName: deviceName,
+        	deviceName: deviceName,
             deviceType: 300,
             recordCount: 50,
             orgId: leftOrg_Id,

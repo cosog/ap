@@ -604,7 +604,7 @@ public class EquipmentDriverServerTask {
 				List<Object[]> queryDelItemList=OracleJdbcUtis.query(queryDelItemSql);
 				
 				if(queryDelItemList!=null && queryDelItemList.size()>0){
-					delCount=StringManagerUtils.stringToInteger(queryDelItemList.get(0)+"");
+					delCount=StringManagerUtils.stringToInteger(queryDelItemList.get(0)[0]+"");
 				}
 				if(delCount>0){
 					String delSql="delete from TBL_DATAMAPPING t where t.id in ( select v2.id from"
@@ -628,7 +628,7 @@ public class EquipmentDriverServerTask {
 				
 				List<Object[]> queryItemList=OracleJdbcUtis.query(queryItemSql);
 				for(int i=0;i<queryItemList.size();i++){
-					itemNameList.add(queryItemList.get(i)+"");
+					itemNameList.add(queryItemList.get(i)[0]+"");
 				}
 				
 				for(String itemName:itemNameList){

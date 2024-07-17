@@ -163,6 +163,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "SMSDeviceManagement"
 		&& module_Code != "PumpingModelManagement"
 		&& module_Code != "AuxiliaryDeviceManager"
+		&& module_Code != "SMSDeviceManager"
 		&& module_Code != "DeviceRealTimeMonitoring"
 		&& module_Code != "DeviceHistoryQuery"
 		&& module_Code != "DailyReport"
@@ -297,6 +298,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		CreateAndLoadPumpingModelInfoTable(true);
 	}else if(module_Code == "AuxiliaryDeviceManager"){
 		CreateAndLoadAuxiliaryDeviceInfoTable(true);
+	}else if(module_Code == "SMSDeviceManager"){
+		CreateAndLoadSMSDeviceInfoTable(true);
 	}else if(module_Code == "DeviceRealTimeMonitoring"){
 		var tabChange=false;
 		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();

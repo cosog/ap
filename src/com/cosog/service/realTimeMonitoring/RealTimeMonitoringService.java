@@ -2394,8 +2394,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 						calAndInputDataTable="tbl_pcpacqdata_hist";
 					}
-					for(int i=0;i<itemColumnList.size();i++){
-						columns+=",t."+itemColumnList.get(i);
+					if(itemColumnList.size()>0){
+						columns+=",t.acqdata";
 					}
 					if(StringManagerUtils.stringToInteger(calculateType)>0){
 						for(int i=0;i<calItemColumnList.size();i++){
@@ -2420,21 +2420,47 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					
 					String finalSql=sql;
 					if(rarefy>1){
-						finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+						finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 					}
 					List<?> list = this.findCallSql(finalSql);
 					for(int i=0;i<list.size();i++){
 						Object[] obj=(Object[]) list.get(i);
 						result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
-						for(int j=1;j<=itemColumnList.size();j++){
-							result_json.append(obj[j]+",");
+						
+						int startIndex=1;
+						if(itemColumnList.size()>0){
+							startIndex=2;
+							Gson gson = new Gson();
+							java.lang.reflect.Type type=null;
+							String acqData=StringManagerUtils.CLOBObjectToString(obj[1]);
+							type = new TypeToken<List<KeyValue>>() {}.getType();
+							List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+							
+							for(String itemColumn:itemColumnList){
+								String value="";
+								if(acqDataList!=null){
+									for(KeyValue keyValue:acqDataList){
+										if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+											value=keyValue.getValue();
+											break;
+										}
+									}
+								}
+								
+								result_json.append(value+",");
+							}
 						}
 						
-						for(int j=1+itemColumnList.size();j<1+itemColumnList.size()+calItemColumnList.size();j++){
+						
+						for(int j=startIndex;j<startIndex+calItemColumnList.size();j++){
 							result_json.append(obj[j]+",");
 						}
 						if(inputItemColumnList.size()>0){
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
+							if(rarefy>1){
+								productionData=(obj[obj.length-2]+"").replaceAll("null", "");
+							}
+							
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							if(StringManagerUtils.stringToInteger(calculateType)==1){

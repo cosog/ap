@@ -159,6 +159,8 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                 		region: 'east',
                 		width:'50%',
                 		layout: "border",
+                		split: true,
+                        collapsible: true,
                 		items: [{
                 			region: 'center',
                 			layout: 'fit',

@@ -94,7 +94,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
 				initId.setPeakDelay(peakDelay);
-				StringManagerUtils.printLog("抽油机井ID初始化："+initUrl+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+initUrl+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
@@ -114,7 +114,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
 				initId.setPeakDelay(peakDelay);
-				StringManagerUtils.printLog("抽油机井ID初始化："+initIPPortUrl+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+initIPPortUrl+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
@@ -143,7 +143,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave((byte) slave);
 				initId.setInstanceName(instanceName);
 				initId.setPeakDelay(peakDelay);
-				StringManagerUtils.printLog("抽油机井ID初始化："+url+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
@@ -175,7 +175,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					initId.setSlave(initialized.getSlave());
 					initId.setInstanceName(initialized.getInstanceName());
 					initId.setPeakDelay(peakDelay);
-					StringManagerUtils.printLog("抽油机井ID初始化："+url+","+gson.toJson(initId));
+					StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId));
 					String response="";
 					if(initEnable){
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
@@ -214,7 +214,7 @@ public class InitIdAndIPPortThread implements Runnable{
 						initId.setSlave(initialized.getSlave());
 						initId.setInstanceName(initialized.getInstanceName());
 						initId.setPeakDelay(peakDelay);
-						StringManagerUtils.printLog("抽油机井ID初始化："+url+","+gson.toJson(initId));
+						StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId));
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 						}
@@ -230,7 +230,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					initId.setSlave((byte) slave);
 					initId.setInstanceName(instanceName);
 					initId.setPeakDelay(peakDelay);
-					StringManagerUtils.printLog("抽油机井ID初始化："+url+","+gson.toJson(initId));
+					StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId));
 					String response="";
 					if(initEnable){
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
@@ -258,7 +258,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave(initialized.getSlave());
 				initId.setInstanceName(initialized.getInstanceName());
 				initId.setPeakDelay(peakDelay);
-				StringManagerUtils.printLog("抽油机井ID初始化："+url+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);

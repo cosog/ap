@@ -3294,7 +3294,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				String finalSql=sql;
 				if(rarefy>1){
-					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+					finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 				}
 				List<?> list = this.findCallSql(finalSql);
 				for(int i=0;i<list.size();i++){
@@ -3331,6 +3331,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					
 					if(inputItemColumnList.size()>0){
 						String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
+						if(rarefy>1){
+							productionData=(obj[obj.length-2]+"").replaceAll("null", "");
+						}
 						Gson gson = new Gson();
 						java.lang.reflect.Type type=null;
 						if(StringManagerUtils.stringToInteger(calculateType)==1){

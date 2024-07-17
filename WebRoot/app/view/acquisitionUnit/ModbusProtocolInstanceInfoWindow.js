@@ -5,7 +5,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
     iframe: true,
     id: 'modbusProtocolInstanceInfoWindow_Id',
     closeAction: 'destroy',
-    width: 330,
+    width: 400,
     shadow: 'sides',
     resizable: false,
     collapsible: true,

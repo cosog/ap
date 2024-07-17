@@ -93,15 +93,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " from  "+tableName+" t  ,tbl_org  g "
 				+ " where t.orgId=g.org_id  "
 				+ " and g.org_id in ("+ orgId + ")";
-		if (StringManagerUtils.isNotNull(deviceTypeStr)) {
-			if(StringManagerUtils.isNum(deviceTypeStr)){
-				sql+= " and t.devicetype="+deviceTypeStr;
-			}else{
-				sql+= " and t.devicetype in ("+deviceTypeStr+")";
+		if(!"tbl_smsdevice".equalsIgnoreCase(tableName)){
+			if (StringManagerUtils.isNotNull(deviceTypeStr)) {
+				if(StringManagerUtils.isNum(deviceTypeStr)){
+					sql+= " and t.devicetype="+deviceTypeStr;
+				}else{
+					sql+= " and t.devicetype in ("+deviceTypeStr+")";
+				}
 			}
-		}
-		if (StringManagerUtils.isNotNull(calculateTypeStr)) {
-			sql += " and t.calculateType="+calculateTypeStr;
+			if (StringManagerUtils.isNotNull(calculateTypeStr)) {
+				sql += " and t.calculateType="+calculateTypeStr;
+			}
 		}
 		if (StringManagerUtils.isNotNull(deviceName)) {
 			sql += " and t.deviceName like '%" + deviceName + "%'";
@@ -1745,12 +1747,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
 		String ddicName="deviceInfo_DeviceManager";
 		String tableName="viw_device";
-		String wellInformationName = (String) map.get("wellInformationName");
+		String deviceName = (String) map.get("deviceName");
 		int deviceType=StringManagerUtils.stringToInteger((String) map.get("deviceType"));
 		String orgId = (String) map.get("orgId");
 		String WellInformation_Str = "";
-		if (StringManagerUtils.isNotNull(wellInformationName)) {
-			WellInformation_Str = " and t.devicename like '%" + wellInformationName+ "%'";
+		if (StringManagerUtils.isNotNull(deviceName)) {
+			WellInformation_Str = " and t.devicename like '%" + deviceName+ "%'";
 		}
 		
 		String columns=service.showTableHeadersColumns(ddicName);
@@ -2696,23 +2698,23 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer SMSInstanceDropdownData = new StringBuffer();
-		String ddicName="SMSDevice_SMSDeviceManager";
+		String ddicName="deviceInfo_SMSDeviceManager";
 		String tableName="viw_smsdevice";
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-		String wellInformationName = (String) map.get("wellInformationName");
+		String deviceName = (String) map.get("deviceName");
 		String orgId = (String) map.get("orgId");
 		String WellInformation_Str = "";
-		if (StringManagerUtils.isNotNull(wellInformationName)) {
-			WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
+		if (StringManagerUtils.isNotNull(deviceName)) {
+			WellInformation_Str = " and t.deviceName like '%" + deviceName+ "%'";
 		}
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select id,orgName,wellName,instanceName,signInId,sortNum"
+		String sql = "select id,orgName,deviceName,instanceName,signInId,sortNum"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
 		sql+= " and t.orgid in ("+orgId+" )  ";		
 		
-		sql+= " order by t.sortnum,t.wellname ";
+		sql+= " order by t.sortnum,t.deviceName ";
 		String SMSInstanceSql="select t.name from tbl_protocolsmsinstance t order by t.sort";
 
 		SMSInstanceDropdownData.append("[");
@@ -2742,7 +2744,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"orgName\":\""+obj[1]+"\",");
-			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"instanceName\":\""+obj[3]+"\",");
 			result_json.append("\"signInId\":\""+obj[4]+"\",");
 			result_json.append("\"sortNum\":\""+obj[5]+"\"},");

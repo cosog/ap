@@ -332,7 +332,7 @@ create table TBL_RUNSTATUSCONFIG
   stopvalue         VARCHAR2(50),
   runcondition      VARCHAR2(50),
   stopcondition     VARCHAR2(50),
-  protocoltype      NUMBER(1) not null
+  protocoltype      NUMBER(1)
 )
 tablespace AP_DATA
   storage

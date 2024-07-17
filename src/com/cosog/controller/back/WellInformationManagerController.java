@@ -462,7 +462,7 @@ public class WellInformationManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
-		wellInformationName = ParamUtils.getParameter(request, "wellInformationName");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
 		User user=null;
@@ -479,7 +479,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
-		map.put("wellInformationName", wellInformationName);
+		map.put("deviceName", deviceName);
 		map.put("deviceType", deviceType);
 		map.put("orgCode", orgCode);
 		map.put("resCode", resCode);

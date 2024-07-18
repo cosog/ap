@@ -61,11 +61,11 @@ Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
             }else{
             	Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(-1);
             	if(productionDailyReportHelper!=null){
-    				if(productionDailyReportHelper.hot!=undefined){
-    					productionDailyReportHelper.hot.destroy();
-    				}
-    				productionDailyReportHelper=null;
-    			}
+        			if(productionDailyReportHelper.hot!=undefined){
+        				productionDailyReportHelper.hot.destroy();
+        			}
+        			productionDailyReportHelper=null;
+        		}
             	$("#ProductionDailyReportDiv_id").html('');
                 $("#ProductionDailyReportCurveDiv_Id").html('');
             }

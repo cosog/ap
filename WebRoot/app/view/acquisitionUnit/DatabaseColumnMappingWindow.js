@@ -113,11 +113,11 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             listeners: {
                 beforeclose: function ( panel, eOpts) {
                 	if(databaseColumnMappingHandsontableHelper!=null){
-    					if(databaseColumnMappingHandsontableHelper.hot!=undefined){
-    						databaseColumnMappingHandsontableHelper.hot.destroy();
-    					}
-    					databaseColumnMappingHandsontableHelper=null;
-    				}
+                		if(databaseColumnMappingHandsontableHelper.hot!=undefined){
+                			databaseColumnMappingHandsontableHelper.hot.destroy();
+                		}
+                		databaseColumnMappingHandsontableHelper=null;
+                	}
                 },
                 minimize: function (win, opts) {
                     win.collapse();

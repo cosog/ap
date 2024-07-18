@@ -225,11 +225,11 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                 	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
                 	
                 	if(deviceRealTimeMonitoringDataHandsontableHelper!=null){
-    					if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
-    						deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
-    					}
-    					deviceRealTimeMonitoringDataHandsontableHelper=null;
-    				}
+            			if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
+            				deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
+            			}
+            			deviceRealTimeMonitoringDataHandsontableHelper=null;
+            		}
             	}else{
             		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
                 	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));

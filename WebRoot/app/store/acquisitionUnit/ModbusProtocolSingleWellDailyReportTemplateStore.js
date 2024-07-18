@@ -99,11 +99,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
 				}
             	if(!selected){
             		if(singleWellDailyReportTemplateHandsontableHelper!=null){
-    					if(singleWellDailyReportTemplateHandsontableHelper.hot!=undefined){
-    						singleWellDailyReportTemplateHandsontableHelper.hot.destroy();
-    					}
-    					singleWellDailyReportTemplateHandsontableHelper=null;
-    				}
+            			if(singleWellDailyReportTemplateHandsontableHelper.hot!=undefined){
+            				singleWellDailyReportTemplateHandsontableHelper.hot.destroy();
+            			}
+            			singleWellDailyReportTemplateHandsontableHelper=null;
+            		}
             		Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle('单井班报表模板：');
             	}
         	}

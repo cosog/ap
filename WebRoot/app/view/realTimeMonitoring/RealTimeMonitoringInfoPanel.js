@@ -792,6 +792,13 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
 });
 
 function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,calculateType){
+	if(deviceRealTimeMonitoringDataHandsontableHelper!=null){
+		if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
+			deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
+		}
+		deviceRealTimeMonitoringDataHandsontableHelper=null;
+	}
+	
 	Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',

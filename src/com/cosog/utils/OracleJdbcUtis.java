@@ -118,6 +118,18 @@ public class OracleJdbcUtis {
         }  
     }
 	
+	public static Connection getConnection(String driver,String url,String username,String password){  
+        try{
+            Class.forName(driver).newInstance();  
+            Connection conn = DriverManager.getConnection(url, username, password);  
+            return conn;  
+        }  
+        catch (Exception e){  
+            StringManagerUtils.printLog(e.getMessage());  
+            return null;  
+        }  
+    }
+	
 	public static void closeDBConnection(Connection conn,PreparedStatement pstmt){  
         if(conn != null){  
             try{           
@@ -261,6 +273,45 @@ public class OracleJdbcUtis {
 					}
 				}
 				list.add(objs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(sql);
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, ps, rs);
+		}
+		return list;
+	}
+	
+	public static List<Object[]> query(String sql,String driver,String url,String username,String password) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		ResultSetMetaData rsmd=null;
+		List<Object[]> list=new ArrayList<Object[]>();
+		Connection conn=OracleJdbcUtis.getConnection(driver, url, username, password);
+		try {
+			if(conn!=null){
+				ps = conn.prepareStatement(sql);
+				rs=ps.executeQuery();
+				rsmd=rs.getMetaData();  
+				int columnCount=rsmd.getColumnCount();  
+				while(rs.next())
+				{
+					Object[] objs=new Object[columnCount];
+					for(int i=0;i<columnCount;i++){
+						if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
+							try {
+								objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+							} catch (IOException e) {
+								objs[i]="";
+								e.printStackTrace();
+							}
+						}else{
+							objs[i]=rs.getObject(i+1);
+						}
+					}
+					list.add(objs);
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

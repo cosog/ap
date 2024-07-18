@@ -98,18 +98,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
 					}
 				}
             	if(!selected){
-            		if(singleWellRangeReportTemplateHandsontableHelper!=null){
-    					if(singleWellRangeReportTemplateHandsontableHelper.hot!=undefined){
-    						singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
-    					}
-    					singleWellRangeReportTemplateHandsontableHelper=null;
-    				}
             		if(singleWellRangeReportTemplateContentHandsontableHelper!=null){
-    					if(singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
-    						singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
-    					}
-    					singleWellRangeReportTemplateContentHandsontableHelper=null;
-    				}
+            			if(singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
+            				singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
+            			}
+            			singleWellRangeReportTemplateContentHandsontableHelper=null;
+            		}
             		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井日报表模板：');
             	}
         	}

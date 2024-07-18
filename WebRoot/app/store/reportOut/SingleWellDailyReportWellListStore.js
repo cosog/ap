@@ -79,20 +79,20 @@ Ext.define('AP.store.reportOut.SingleWellDailyReportWellListStore', {
             	var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
             	if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
             		if(singleWellDailyReportHelper!=null){
-        				if(singleWellDailyReportHelper.hot!=undefined){
-        					singleWellDailyReportHelper.hot.destroy();
-        				}
-        				singleWellDailyReportHelper=null;
-        			}
+            			if(singleWellDailyReportHelper.hot!=undefined){
+            				singleWellDailyReportHelper.hot.destroy();
+            			}
+            			singleWellDailyReportHelper=null;
+            		}
                 	$("#SingleWellDailyReportDiv_id").html('');
                     $("#SingleWellDailyReportCurveDiv_Id").html('');
             	}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
             		if(singleWellRangeReportHelper!=null){
-        				if(singleWellRangeReportHelper.hot!=undefined){
-        					singleWellRangeReportHelper.hot.destroy();
-        				}
-        				singleWellRangeReportHelper=null;
-        			}
+            			if(singleWellRangeReportHelper.hot!=undefined){
+            				singleWellRangeReportHelper.hot.destroy();
+            			}
+            			singleWellRangeReportHelper=null;
+            		}
                 	$("#SingleWellRangeReportDiv_id").html('');
                     $("#SingleWellRangeReportCurveDiv_Id").html('');
             	}

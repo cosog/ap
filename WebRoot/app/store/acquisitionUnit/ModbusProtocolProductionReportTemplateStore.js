@@ -99,11 +99,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
 				}
             	if(!selected){
             		if(productionReportTemplateHandsontableHelper!=null){
-    					if(productionReportTemplateHandsontableHelper.hot!=undefined){
-    						productionReportTemplateHandsontableHelper.hot.destroy();
-    					}
-    					productionReportTemplateHandsontableHelper=null;
-    				}
+            			if(productionReportTemplateHandsontableHelper.hot!=undefined){
+            				productionReportTemplateHandsontableHelper.hot.destroy();
+            			}
+            			productionReportTemplateHandsontableHelper=null;
+            		}
             		Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区域报表模板：');
             	}
         	}

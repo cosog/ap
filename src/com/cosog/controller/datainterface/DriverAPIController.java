@@ -1651,6 +1651,24 @@ public class DriverAPIController extends BaseController{
 		return webSocketSendData.toString();
 	}
 	
+	public boolean acqGroupDataCheck(ModbusProtocolConfig.Protocol protocol,AcqGroup acqGroup){
+		boolean r=true;
+		if(acqGroup.getAddr().size()!=acqGroup.getValue().size()){
+			return false;
+		}
+		for(int i=0;i<acqGroup.getAddr().size();i++){
+			for(int j=0;j<protocol.getItems().size();j++){
+				if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
+					if(acqGroup.getValue().get(i).size()!=protocol.getItems().get(j).getQuantity()){
+						r=false;
+					}
+					break;
+				}
+			}
+		}
+		return r;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
 		List<String> websocketClientUserList=new ArrayList<>();
@@ -1720,13 +1738,14 @@ public class DriverAPIController extends BaseController{
 					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
 					int runStatus=2;
+					int checkSign=acqGroupDataCheck(protocol,acqGroup)?1:0;
 					
 					//进行通信计算
 					commResponseData=commEffCalaulate(deviceInfo,acqTime,1);
 					
 					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1";
-					String insertHistColumns="deviceid,acqTime,CommStatus";
-					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),1";
+					String insertHistColumns="deviceid,acqTime,checkSign,CommStatus";
+					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),"+checkSign+",1";
 					String insertHistSql="";
 					
 					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1";

@@ -320,7 +320,8 @@ public class CalculateDataManagerTask {
 				+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
 				+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
 		sql+=" from tbl_acqdata_hist t "
-			+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') ";
+			+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+dateTimeRange.getEndTime()+"','yyyy-mm-dd hh24:mi:ss') "
+			+ " and t.checksign=1";
 		if(StringManagerUtils.isNotNull(deviceIdStr)){
 			sql+=" and t.deviceid="+deviceIdStr;
 			newestDailyTotalDataSql+=" and t.deviceid="+deviceIdStr;
@@ -494,9 +495,11 @@ public class CalculateDataManagerTask {
 				+ "  where acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
 				+ "  group by deviceid,itemcolumn) v "
 				+ " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn"
-				+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+				+ " and t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " ";
 		sql+=" from tbl_acqdata_hist t "
-				+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') ";
+				+ " where t.acqtime between to_date('"+dateTimeRange.getStartTime()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.checksign=1";
 		if(StringManagerUtils.isNotNull(deviceIdStr)){
 			sql+=" and t.deviceid="+deviceIdStr;
 			newestDailyTotalDataSql+=" and t.deviceid="+deviceIdStr;

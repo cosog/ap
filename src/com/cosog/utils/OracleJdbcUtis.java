@@ -215,9 +215,11 @@ public class OracleJdbcUtis {
 			conn=OracleJdbcUtis.getConnection();
 			ps=conn.prepareStatement(sql);
 			for(int i=0;i<values.size();i++){
-				CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
-				clob.putString(1,  values.get(i)); 
-				ps.setClob(i+1, clob);  
+//				CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
+//				clob.putString(1,  values.get(i)); 
+//				ps.setClob(i+1, clob);  
+				
+				ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
 			}
 			n=ps.executeUpdate();  
 		} catch (SQLException e) {
@@ -301,7 +303,11 @@ public class OracleJdbcUtis {
 					for(int i=0;i<columnCount;i++){
 						if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
 							try {
-								objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+								if(rs.getClob(i+1)!=null){
+									objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+								}else{
+									objs[i]="";
+								}
 							} catch (IOException e) {
 								objs[i]="";
 								e.printStackTrace();

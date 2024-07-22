@@ -979,7 +979,7 @@ public class TimingTotalCalculateThread extends Thread {
                 " and t.id=(" +
                 " select max(t3.id) from  tbl_acqdata_hist t3  " +
                 " where t3.acqtime between to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')-1 and to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')" +
-                " and t3.deviceId=" + deviceId +
+                " and t3.deviceId=" + deviceId + " and t3.checksign=1 "+
                 " )";
 
             String historyRunStatusSql = "select t.id,t.deviceId,t2.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime," +
@@ -990,7 +990,7 @@ public class TimingTotalCalculateThread extends Thread {
                 " select max(t3.id) from  tbl_acqdata_hist t3  " +
                 " where t3.commstatus=1 and t3.runstatus in (0,1) " +
                 " and t3.acqtime between to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')-1 and to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') " +
-                " and t3.deviceId=" + deviceId +
+                " and t3.deviceId=" + deviceId +" and t3.checksign=1 "+
                 " )";
 
             TimeEffResponseData timeEffResponseData = null;
@@ -1192,7 +1192,8 @@ public class TimingTotalCalculateThread extends Thread {
                 " where t.deviceid=v.deviceid and t.acqtime=v.acqtime and t.itemcolumn=v.itemcolumn" +
                 " and t.acqtime between to_date('" + range.getStartTime() + "','yyyy-mm-dd hh24:mi:ss') and to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') ";
             sql += " from tbl_acqdata_hist t " +
-                " where t.acqtime between to_date('" + range.getStartTime() + "','yyyy-mm-dd hh24:mi:ss') and to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') ";
+                " where t.acqtime between to_date('" + range.getStartTime() + "','yyyy-mm-dd hh24:mi:ss') and to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') "
+                + "  and t.checksign=1";
             if (StringManagerUtils.isNotNull(deviceId + "")) {
                 sql += " and t.deviceid=" + deviceId;
                 newestDailyTotalDataSql += " and t.deviceid=" + deviceId;

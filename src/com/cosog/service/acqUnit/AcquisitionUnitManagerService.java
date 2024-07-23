@@ -48,6 +48,7 @@ import com.cosog.model.gridmodel.DatabaseMappingProHandsontableChangedData;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
+import com.cosog.service.right.TabInfoManagerService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
@@ -76,6 +77,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	private CommonDataService service;
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
+	@Autowired
+	private TabInfoManagerService<?> tabInfoManagerService;
 
 	public String getAcquisitionUnitList(Map map,Page pager) {
 		String protocolName = (String) map.get("protocolName");
@@ -9798,16 +9801,67 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getUploadedProtocolTreeData(List<ModbusProtocolConfig.Protocol> protocolList){
+	public String getUploadedProtocolTreeData(List<ModbusProtocolConfig.Protocol> protocolList,String deviceType,User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		
+		String overlayProtoolSql="select t.name, substr(v.path||'/'||t.name,2) as allpath  from tbl_protocol t, "
+				+ " (select t2.id, sys_connect_by_path(t2.name,'/') as path"
+				+ " from tbl_devicetypeinfo t2"
+				+ " start with t2.parentid=0"
+				+ " connect by   t2.parentid= prior t2.id) v"
+				+ " where t.devicetype=v.id"
+				+ " and t.devicetype in ("+allDeviceIds+")";
+//				+ " and t.devicetype in (select id from tbl_devicetypeinfo start with id="+deviceType+" connect by prior  id=parentid)";
+		
+		String collisionProtoolSql="select t.name, substr(v.path||'/'||t.name,2) as allpath  from tbl_protocol t, "
+				+ " (select t2.id, sys_connect_by_path(t2.name,'/') as path"
+				+ " from tbl_devicetypeinfo t2"
+				+ " start with t2.parentid=0"
+				+ " connect by   t2.parentid= prior t2.id) v"
+				+ " where t.devicetype=v.id"
+				+ " and t.devicetype not in ("+allDeviceIds+")";
+//				+ " and t.devicetype not in (select id from tbl_devicetypeinfo start with id="+deviceType+" connect by prior  id=parentid)";
+		
+		List<?> overlayProtoolList = this.findCallSql(overlayProtoolSql);
+		List<?> collisionProtoolList = this.findCallSql(collisionProtoolSql);
+		int overlayCount=0;
+		int collisionCount=0;
 		tree_json.append("[");
 		if(protocolList!=null && protocolList.size()>0){
 			for(int i=0;i<protocolList.size();i++){
+				String msg="";
+				int saveSign=0;//无冲突覆盖
+				if(overlayProtoolList.size()>0){
+					for(int j=0;j<overlayProtoolList.size();j++){
+						Object[] obj=(Object[])overlayProtoolList.get(j);
+						if((obj[0]+"").equalsIgnoreCase(protocolList.get(i).getName())){
+							saveSign=1;//覆盖
+							overlayCount++;
+							msg=obj[1]+"已存在，继续保存将覆盖";
+							break;
+						}
+					}
+				}
+				
+				if(collisionProtoolList.size()>0){
+					for(int j=0;j<collisionProtoolList.size();j++){
+						Object[] obj=(Object[])collisionProtoolList.get(i);
+						if((obj[0]+"").equalsIgnoreCase(protocolList.get(i).getName())){
+							saveSign=2;//冲突
+							collisionCount++;
+							msg=obj[1]+"已存在，无权限进行修改";
+							break;
+						}
+					}
+				}
 				tree_json.append("{\"classes\":1,");
 				tree_json.append("\"text\":\""+protocolList.get(i).getName()+"\",");
 				tree_json.append("\"code\":\""+protocolList.get(i).getCode()+"\",");
 				tree_json.append("\"sort\":\""+protocolList.get(i).getSort()+"\",");
+				tree_json.append("\"msg\":\""+msg+"\",");
+				tree_json.append("\"saveSign\":\""+saveSign+"\",");
 				tree_json.append("\"iconCls\": \"protocol\",");
 				tree_json.append("\"leaf\": true");
 				tree_json.append("},");
@@ -9896,6 +9950,37 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int updateProtocol(ModbusProtocolConfig.Protocol protocol,User user){
+		int r=0;
+		if(protocol!=null){
+			Gson gson = new Gson();
+			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			String updateSql="update TBL_PROTOCOL t set t.sort="+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+",t.deviceType="+protocol.getDeviceType()+",t.items=?"
+					+" where t.name='"+protocol.getName()+"'";
+			List<String> clobCont=new ArrayList<String>();
+			clobCont.add(gson.toJson(protocol.getItems()));
+			r=service.getBaseDao().executeSqlUpdateClob(updateSql,clobCont);
+			if(r==0){
+				String insertSql="insert into TBL_PROTOCOL (name,sort,deviceType,items) values ('"+protocol.getName()+"',"+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+","+protocol.getDeviceType()+",?)";
+				clobCont=new ArrayList<String>();
+				clobCont.add(gson.toJson(protocol.getItems()));
+				r=service.getBaseDao().executeSqlUpdateClob(insertSql,clobCont);
+			}
+			
+			if(r>0){
+				MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
+				if(user!=null){
+					try {
+						this.service.saveSystemLog(user,2,"导入协议:"+protocol.getName());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return r;
 	}
 	
 	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {

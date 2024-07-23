@@ -57,12 +57,52 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
                     value: '-99',
                     hidden: true
                 }]
-    		},'->',{
+    		},{
+            	xtype: 'label',
+            	id: 'ImportProtocolWinTabLabel_Id',
+            	hidden:true,
+            	html: ''
+            },{
+				xtype : "hidden",
+				id : 'ImportProtocolWinDeviceType_Id',
+				value:'0'
+			},'->',{
     	    	xtype: 'button',
-                text: cosog.string.save,
+                text: '全部保存',
                 iconCls: 'save',
                 handler: function (v, o) {
-                	
+                	var treeStore = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore();
+                	var count=treeStore.getCount();
+                	var overlayCount=0;
+            		var collisionCount=0; 
+                	for(var i=0;i<count;i++){
+                		if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign==1){
+                			overlayCount++;
+                		}else if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign==2){
+                			collisionCount++;
+                		}
+                	}
+                	if(overlayCount>0 || collisionCount>0){
+                		var info="";
+                		if(overlayCount>0){
+                			info+=overlayCount+"个协议已存在";
+                			if(collisionCount>0){
+                				info+="，";
+                			}
+                		}
+                		if(collisionCount>0){
+                			info+=overlayCount+"个协议无权限修改";
+                		}
+                		info+="！是否执行全部保存？";
+                		
+                		Ext.Msg.confirm('提示', info, function (btn) {
+                            if (btn == "yes") {
+                            	saveAllImportedProtocol();
+                            }
+                        });
+                	}else{
+                		saveAllImportedProtocol();
+                	}
                 }
     	    }],
             layout: 'border',
@@ -176,7 +216,7 @@ function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
 	Ext.getCmp("importedProtocolItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getProtocolItemsConfigData',
+		url:context + '/acquisitionUnitManagerController/getUploadedProtocolItemsConfigData',
 		success:function(response) {
 			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
 			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").setTitle(protocolName);
@@ -218,8 +258,7 @@ function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
 				}
 			}
 			if(result.totalRoot.length==0){
-//				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
-//				CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','',true);
+				
 			}else{
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
 				var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
@@ -231,10 +270,6 @@ function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
             		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
             			protocolCode=selectedProtocol.data.children[0].code;
             		}
-            		
-//            		var row1=importProtocolContentHandsontableHelper.hot.getDataAtRow(0);
-//            		var itemAddr=row1[2];
-//            		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
         		}
 			}
 		},
@@ -301,22 +336,7 @@ var ImportProtocolContentHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
-//	                	if(row==row2 && column==column2){
-//	                		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(row);
-//	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
-//	                		var protocolCode="";
-//	                		if(ScadaDriverModbusConfigSelectRow!=''){
-//	                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
-//	                    		if(selectedProtocol.data.classes==1){//选中的是协议
-//	                    			protocolCode=selectedProtocol.data.code;
-//	                    		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
-//	                    			protocolCode=selectedProtocol.data.children[0].code;
-//	                    		}
-//	                    		var row1=importProtocolContentHandsontableHelper.hot.getDataAtRow(row);
-//	                    		var itemAddr=row1[2];
-//	                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
-//	                		}
-//	                	}
+	                	
 	                }
 	        	});
 	        }
@@ -327,3 +347,83 @@ var ImportProtocolContentHandsontableHelper = {
 	        return importProtocolContentHandsontableHelper;
 	    }
 };
+
+adviceDataInfoColor = function(val,o,p,e) {
+	var saveSign=p.data.saveSign;
+	var tipval=val;
+	var backgroundColor='#FFFFFF';
+ 	var color='#DC2828';
+ 	if(saveSign==0){
+ 		color='#000000';
+ 	}
+ 	var opacity=0;
+ 	var rgba=color16ToRgba(backgroundColor,opacity);
+ 	o.style='background-color:'+rgba+';color:'+color+';';
+ 	if(isNotVal(tipval)){
+ 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+ 	}
+}
+
+function saveSingelImportedProtocol(record){
+	var protocolName=record.data.text;
+	var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
+	Ext.Ajax.request({
+		url : context + '/acquisitionUnitManagerController/saveSingelImportedProtocol',
+		method : "POST",
+		params : {
+			protocolName : protocolName,
+			deviceType : deviceType
+		},
+		success : function(response) {
+			var result = Ext.JSON.decode(response.responseText);
+			if (result.success==true) {
+				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+			}else{
+				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+			}
+			Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
+		},
+		failure : function() {
+			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+		}
+	});
+}
+
+function saveAllImportedProtocol(){
+	var protocolNameList=[];
+	
+	
+	var treeStore = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore();
+	var count=treeStore.getCount();
+	for(var i=0;i<count;i++){
+		if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign!=2){
+			protocolNameList.push(treeStore.getAt(i).data.text);
+		}
+	}
+	if(protocolNameList.length>0){
+		var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveAllImportedProtocol',
+			method : "POST",
+			params : {
+				protocolName : protocolNameList.join(","),
+				deviceType : deviceType
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				}else{
+					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				}
+				Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
+			},
+			failure : function() {
+				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			}
+		});
+	}else{
+		Ext.Msg.alert('提示', "<font color=blue>没有可保存的协议。</font>");
+	}
+	
+}

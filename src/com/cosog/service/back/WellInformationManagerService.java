@@ -674,7 +674,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String batchAddDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,
 			String orgId,int deviceType,String isCheckout,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer  collisionBuff = new StringBuffer();
+		StringBuffer collisionBuff = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
 		StringBuffer instanceDropdownData = new StringBuffer();
 		StringBuffer displayInstanceDropdownData = new StringBuffer();

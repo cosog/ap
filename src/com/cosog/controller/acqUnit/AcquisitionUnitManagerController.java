@@ -4902,6 +4902,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getUploadedProtocolTreeData() throws IOException {
 		HttpSession session=request.getSession();
 		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		User user = (User) session.getAttribute("userLogin");
 		try{
 			if(session.getAttribute("uploadProtocolFile")!=null){
 				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
@@ -4910,8 +4912,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 			
 		}
-		
-		String json = acquisitionUnitItemManagerService.getUploadedProtocolTreeData(protocolList);
+		String json = acquisitionUnitItemManagerService.getUploadedProtocolTreeData(protocolList,deviceType,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4939,6 +4940,84 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
 		json = acquisitionUnitItemManagerService.getUploadedProtocolItemsConfigData(protocolName,classes,code,protocolList);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveSingelImportedProtocol")
+	public String saveSingelImportedProtocol() throws Exception {
+		HttpSession session=request.getSession();
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		User user = (User) session.getAttribute("userLogin");
+		
+		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		try{
+			if(session.getAttribute("uploadProtocolFile")!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+				if(protocolList!=null && protocolList.size()>0){
+					Iterator<ModbusProtocolConfig.Protocol> it = protocolList.iterator();
+					while(it.hasNext()){
+						boolean isDel=true;
+						ModbusProtocolConfig.Protocol protocol=(ModbusProtocolConfig.Protocol)it.next();
+						if(protocolName.equalsIgnoreCase(protocol.getName())){
+							protocol.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
+							acquisitionUnitItemManagerService.updateProtocol(protocol,user);
+							it.remove();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAllImportedProtocol")
+	public String saveAllImportedProtocol() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String[] protocolNameList=protocolName.split(",");
+		
+		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		try{
+			if(session.getAttribute("uploadProtocolFile")!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+				if(protocolList!=null && protocolList.size()>0){
+					Iterator<ModbusProtocolConfig.Protocol> it = protocolList.iterator();
+					while(it.hasNext()){
+						boolean isDel=true;
+						ModbusProtocolConfig.Protocol protocol=(ModbusProtocolConfig.Protocol)it.next();
+						if(StringManagerUtils.existOrNot(protocolNameList, protocol.getName(), false)){
+							protocol.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
+							acquisitionUnitItemManagerService.updateProtocol(protocol,user);
+							it.remove();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

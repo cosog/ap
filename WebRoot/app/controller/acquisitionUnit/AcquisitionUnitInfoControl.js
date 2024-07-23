@@ -24,9 +24,9 @@ function addModbusProtocolAddrMappingConfigData() {
 		selectedDeviceTypeId=tabTreeSelection[0].data.deviceTypeId;
 	} else {
 		if(count>0){
-			rec=orgTreeStore.getAt(0);
-			selectedDeviceTypeName=orgTreeStore.getAt(0).data.text;
-			selectedDeviceTypeId=orgTreeStore.getAt(0).data.deviceTypeId;
+			rec=tabTreeStore.getAt(0);
+			selectedDeviceTypeName=tabTreeStore.getAt(0).data.text;
+			selectedDeviceTypeId=tabTreeStore.getAt(0).data.deviceTypeId;
 		}
 	}
 	

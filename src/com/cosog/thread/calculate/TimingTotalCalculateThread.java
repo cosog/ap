@@ -1250,15 +1250,13 @@ public class TimingTotalCalculateThread extends Thread {
                     String itemCode = itemDataEntry.getKey();
                     
                     ModbusProtocolConfig.Items item=null;
-					 DataMapping dataMapping=null;
-					 if(loadProtocolMappingColumnMap!=null){
-						 dataMapping=loadProtocolMappingColumnMap.get(itemCode);
-						 if(dataMapping!=null){
-							 item=MemoryDataManagerTask.getProtocolItem(protocol,  dataMapping.getName());
-						 }
-					 }
-                    
-                    
+					DataMapping dataMapping=null;
+					if(loadProtocolMappingColumnMap!=null){
+						dataMapping=loadProtocolMappingColumnMap.get(itemCode);
+						if(dataMapping!=null){
+							item=MemoryDataManagerTask.getProtocolItem(protocol,  dataMapping.getName());
+						}
+					}
                     
                     List < String > itemDataList = itemDataEntry.getValue();
                     String maxValue = " ", minValue = " ", avgValue = " ", newestValue = " ", oldestValue = " ", dailyTotalValue = " ";

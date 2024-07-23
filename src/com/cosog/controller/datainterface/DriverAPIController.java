@@ -1850,13 +1850,15 @@ public class DriverAPIController extends BaseController{
 					if(deviceInfo.getCalculateType()==1){
 						rpcCalculateRequestData=new RPCCalculateRequestData();
 						rpcCalculateRequestData.init();
-						rpcCalculateResponseData=RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus,rpcCalculateRequestData,save);
+						rpcCalculateResponseData=RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
+								acqTime,calItemResolutionDataList,runStatus,rpcCalculateRequestData,save,checkSign);
 						inputItemItemResolutionDataList=getRPCInputItemData(deviceInfo);
 						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
 						}
 					}else if(deviceInfo.getCalculateType()==2){
-						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,acqTime,calItemResolutionDataList,runStatus,save);
+						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
+								acqTime,calItemResolutionDataList,runStatus,save,checkSign);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 					}
 					
@@ -2054,7 +2056,7 @@ public class DriverAPIController extends BaseController{
 	
 	public RPCCalculateResponseData RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
 			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,RPCCalculateRequestData rpcCalculateRequestData,
-			boolean save){
+			boolean save,int checkSign){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -2495,7 +2497,7 @@ public class DriverAPIController extends BaseController{
 					boolean fesDiagramEnabled=false;
 					
 					//如果采集了计算数据
-					if(isAcqCalResultData){
+					if(isAcqCalResultData && checkSign==1){
 						fesDiagramEnabled=true;
 						
 						rpcCalculateResponseData=new RPCCalculateResponseData();
@@ -2577,7 +2579,7 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					
-					if(FESDiagramCalculate){
+					if(FESDiagramCalculate && checkSign==1){
 						fesDiagramEnabled=true;
 						if(FESDiagramAcqCount>0){
 							if(rpcCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
@@ -2626,9 +2628,8 @@ public class DriverAPIController extends BaseController{
 							rpcCalculateResponseData.setRPM(acqRPM);
 						}
 					}
-					
 					//计算结果回写
-					if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && rpcCalculateResponseData!=null){
+					if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && rpcCalculateResponseData!=null && checkSign==1){
 						ThreadPool executor = new ThreadPool("DiagramDataWriteBack",
 								Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getCorePoolSize(), 
 								Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getMaximumPoolSize(), 
@@ -2788,7 +2789,7 @@ public class DriverAPIController extends BaseController{
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
-					if(save){
+					if(save && checkSign==1){
 						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 						if(result==0){
 							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
@@ -2845,7 +2846,7 @@ public class DriverAPIController extends BaseController{
 	
 	public PCPCalculateResponseData PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
 			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,
-			boolean save){
+			boolean save,int checkSign){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		Jedis jedis=null;
@@ -3036,7 +3037,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					//进行转速计算
-					if(isAcqRPM){
+					if(isAcqRPM && checkSign==1){
 						if(pcpCalculateRequestData.getProduction()!=null && pcpCalculateRequestData.getFluidPVT()!=null){
 							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(pcpCalculateRequestData.getProduction().getWaterCut(), pcpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), pcpCalculateRequestData.getFluidPVT().getWaterDensity());
 							pcpCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
@@ -3150,7 +3151,7 @@ public class DriverAPIController extends BaseController{
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
-					if(save){
+					if(save && checkSign==1){
 						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 						if(result==0){
 							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);

@@ -109,11 +109,6 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType = Ext.getCmp('batchAddDeviceType_Id').getValue();
     
-//    var applicationScenarios=0;
-//    var gridPanel = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id");
-//    if (isNotVal(gridPanel)) {
-//    	applicationScenarios = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
-//    }
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/getBatchAddDeviceTableInfo',

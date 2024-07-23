@@ -50,24 +50,6 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                     cls: 'x-grid-checkheader-editor',
                 	allowBlank: false
                 },
-//            	renderer: function(value, metaData, record, rowIdx, colIdx, store, view) {
-//            		metaData.tdCls = 'x-grid-checkheader-editor'; // 添加自定义样式
-//            		if (record.data.viewFlagName) {
-//                        metaData.tdCls = 'x-grid-checkheader-editor'; // 添加自定义样式
-//                        return {
-//                            disabled: true, // 禁用checkbox
-//                            metaData: metaData
-//                        };
-//                    }
-//                    return value;
-//            	},
-//                renderer: function(value, metaData, record, rowIdx, colIdx, store, view) {
-//                    if (rowIdx === 1) { // 禁用第二行的checkbox
-//                        metaData.tdCls = 'x-item-disabled';
-//                        return '';
-//                    }
-//                    return value;
-//                },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
                     var rn=true
                     var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
@@ -86,30 +68,9 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                     return rn ? this.defaultRenderer(value, metaData):'';
                 },
             	listeners: {
-//            		afterrender: function ( Component, eOpts ) {
-//            			
-//            		},
             		beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-//            	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
-//	                    if(RoleManagerModuleEditFlag==1){
-//	                    	if(!record.isLeaf()){
-//	            	    		return false;
-//	            	    	}else{
-//	            	    		var rn=true
-//	            	    		for(var i=0;i<loginUserRoleModules.length;i++){
-//	            	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
-//	            	    				if(loginUserRoleModules[i].viewFlag!=1){
-//	            	    					rn= false;
-//	            	    				}
-//	            	    				break;
-//	            	    			}
-//	            	    		}
-//	            	    		return rn;
-//	            	    	}
-//	                    }else{
-//	                    	return false;
-//	                    }
-            	    }
+            			
+            		}
             	}
             }, {
                 header: '编辑',

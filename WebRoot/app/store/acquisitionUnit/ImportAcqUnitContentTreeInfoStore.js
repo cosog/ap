@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.importProtocolContentTreeInfoStore',
+    alias: 'widget.importAcqUnitContentTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/getUploadedProtocolTreeData',
+        url: context + '/acquisitionUnitManagerController/getUploadedAcqUnitTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -18,17 +18,17 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
+        	var deviceType=Ext.getCmp("ImportAcqUnitWinDeviceType_Id").getValue();
         	var new_params = {
         			deviceType: deviceType
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },
         load: function (store, options, eOpts) {
-        	var treeGridPanel = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id");
+        	var treeGridPanel = Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id");
             if (!isNotVal(treeGridPanel)) {
             	treeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ImportProtocolContentTreeGridPanel_Id",
+                    id: "ImportAcqUnitContentTreeGridPanel_Id",
 //                    layout: "fit",
                     border: false,
                     animate: true,
@@ -75,42 +75,14 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         header: 'id',
                         hidden: true,
                         dataIndex: 'id'
-                    },
-//                    {
-//                    	header: '保存',
-//                    	xtype: 'actioncolumn',
-//                    	width: 40,
-//                        align: 'center',
-//                        sortable: false,
-//                        menuDisabled: true,
-//                        renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-//                            var rn=false
-//                            if( !(record.data.classes==1 && record.data.saveSign!=2) ){
-//                            	rn= true;
-//                            }
-//                            return rn ? this.defaultRenderer(value, metaData):'';
-//                        },
-//                        items: [{
-//                            iconCls: 'save',
-//                            text: '保存',
-//                            tooltip: '保存',
-//                            handler: function (view, recIndex, cellIndex, item, e, record) {
-//                            	if( record.data.classes==1 && record.data.saveSign!=2 ){
-//                            		var protocolName=record.data.text;
-//                            		var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
-//                            		saveSingelImportedProtocol(protocolName,deviceType);
-//                            	}
-//                            }
-//                        }]
-//                    },
-                    {
+                    },{
                 		text: '保存', 
                 		dataIndex: 'action',
 //                		locked:true,
                 		align:'center',
                 		width:50,
                 		renderer :function(value,e,o){
-                			return iconImportSingleProtocolAction(value,e,o)
+                			return iconImportSingleAcqUnitAction(value,e,o)
                 		} 
                     }],
                     listeners: {
@@ -126,15 +98,23 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         select( v, record, index, eOpts ){
                         	if(record.data.classes==0){
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateUploadedProtocolContentInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
+                        			CreateUploadedAcqUnitContentInfoTable(
+                        					record.data.children[0].protocol,
+                        					record.data.children[0].classes,
+                        					record.data.children[0].text
+                        					);
                         		}else{
-                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
-                        			if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
-                        				importProtocolContentHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-                        			}
+                        			CreateUploadedAcqUnitContentInfoTable('',1,'');
                         		}
-                        	}else if(record.data.classes==1){
-                        		CreateUploadedProtocolContentInfoTable(record.data.text,record.data.classes,record.data.code);
+                        	}if(record.data.classes==1){
+                        		CreateUploadedAcqUnitContentInfoTable(record.data.protocol,record.data.classes,record.data.text);
+                        	}else if(record.data.classes==2){
+                        		CreateUploadedAcqUnitContentInfoTable(
+                        				record.data.protocol,
+                        				record.data.classes,
+                        				record.parentNode.data.text,
+                        				record.data.text,
+                        				record.data.type);
                         	}
                         },
                         beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
@@ -146,17 +126,22 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     }
 
                 });
-                var panel = Ext.getCmp("importProtocolTreePanel_Id");
+                var panel = Ext.getCmp("importAcqUnitTreePanel_Id");
                 panel.add(treeGridPanel);
             }
             
             treeGridPanel.getSelectionModel().deselectAll(true);
+            var selectedRow=0;
             if(store.data.length>1){
-            	treeGridPanel.getSelectionModel().select(1, true);
-            }else{
-            	treeGridPanel.getSelectionModel().select(0, true);
+            	selectedRow=1;
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.classes==2){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
             }
-            
+            treeGridPanel.getSelectionModel().select(selectedRow, true);
         }
     }
 });

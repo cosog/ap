@@ -64,6 +64,7 @@ import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.RPCProductionData;
+import com.cosog.model.drive.ExportAcqUnitData;
 import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
@@ -4117,7 +4118,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				e.printStackTrace();
 			}
 		}
-//		System.out.println(fileContent);
 		
 		type = new TypeToken<ExportProtocolConfig>() {}.getType();
 		exportProtocolConfig=gson.fromJson(fileContent, type);
@@ -4878,7 +4878,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(fileContent);
 		
 		type = new TypeToken<List<ModbusProtocolConfig.Protocol>>() {}.getType();
 		List<ModbusProtocolConfig.Protocol> protocolList=gson.fromJson(fileContent, type);
@@ -5018,6 +5017,101 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/uploadImportedAcqUnitFile")
+	public String uploadImportedAcqUnitFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		
+		HttpSession session=request.getSession();
+		session.removeAttribute("uploadAcqUnitFile");
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		type = new TypeToken<List<ExportAcqUnitData>>() {}.getType();
+		List<ExportAcqUnitData> uploadAcqUnitList=gson.fromJson(fileContent, type);
+		if(uploadAcqUnitList!=null){
+			flag=true;
+			session.setAttribute("uploadAcqUnitFile", uploadAcqUnitList);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	
+	@RequestMapping("/getUploadedAcqUnitTreeData")
+	public String getUploadedAcqUnitTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportAcqUnitData> uploadAcqUnitList=null;
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		User user = (User) session.getAttribute("userLogin");
+		try{
+			if(session.getAttribute("uploadAcqUnitFile")!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getUploadedAcqUnitTreeData(uploadAcqUnitList,deviceType,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	
+	@RequestMapping("/getUploadedAcqUnitItemsConfigData")
+	public String getUploadedAcqUnitItemsConfigData() throws Exception {
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String unitName = ParamUtils.getParameter(request, "unitName");
+		String groupName = ParamUtils.getParameter(request, "groupName");
+		String groupType = ParamUtils.getParameter(request, "groupType");
+		String json = "";
+		
+		HttpSession session=request.getSession();
+		List<ExportAcqUnitData> uploadAcqUnitList=null;
+		try{
+			if(session.getAttribute("uploadAcqUnitFile")!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		
+		json = acquisitionUnitItemManagerService.getUploadedAcqUnitItemsConfigData(protocolName,classes,unitName,groupName,groupType,uploadAcqUnitList);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

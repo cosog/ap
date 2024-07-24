@@ -1,10 +1,10 @@
-var importProtocolContentHandsontableHelper=null;
-Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
+var importReportUnitContentHandsontableHelper=null;
+Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
     extend: 'Ext.window.Window',
-    id:'ImportProtocolWindow_Id',
-    alias: 'widget.ImportProtocolWindow',
+    id:'ImportReportUnitWindow_Id',
+    alias: 'widget.ImportReportUnitWindow',
     layout: 'fit',
-    title:'协议导入',
+    title:'采控单元导入',
     border: false,
     hidden: false,
     collapsible: true,
@@ -24,13 +24,13 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
         Ext.apply(me, {
         	tbar: [{
         		xtype:'form',
-        		id:'ProtocolImportForm_Id',
+        		id:'ReportUnitImportForm_Id',
         		width: 300,
         	    bodyPadding: 0,
         	    frame: true,
         	    items: [{
         	    	xtype: 'filefield',
-                	id:'ProtocolImportFilefield_Id',
+                	id:'ReportUnitImportFilefield_Id',
                     name: 'file',
                     fieldLabel: '上传文件',
                     labelWidth: 60,
@@ -43,35 +43,35 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
                     accept:'.json',
                     listeners:{
                         change:function(cmp){
-                        	submitImportedProtocolFile();
+                        	submitImportedReportUnitFile();
                         }
                     }
         	    },{
-                    id: 'ImportProtocolSelectItemType_Id', 
+                    id: 'ImportReportUnitSelectItemType_Id', 
                     xtype: 'textfield',
                     value: '-99',
                     hidden: true
                 },{
-                    id: 'ImportProtocolSelectItemId_Id', 
+                    id: 'ImportReportUnitSelectItemId_Id', 
                     xtype: 'textfield',
                     value: '-99',
                     hidden: true
                 }]
     		},{
             	xtype: 'label',
-            	id: 'ImportProtocolWinTabLabel_Id',
+            	id: 'ImportReportUnitWinTabLabel_Id',
             	hidden:true,
             	html: ''
             },{
 				xtype : "hidden",
-				id : 'ImportProtocolWinDeviceType_Id',
+				id : 'ImportReportUnitWinDeviceType_Id',
 				value:'0'
 			},'->',{
     	    	xtype: 'button',
                 text: '全部保存',
                 iconCls: 'save',
                 handler: function (v, o) {
-                	var treeStore = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore();
+                	var treeStore = Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore();
                 	var count=treeStore.getCount();
                 	var overlayCount=0;
             		var collisionCount=0; 
@@ -85,23 +85,23 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
                 	if(overlayCount>0 || collisionCount>0){
                 		var info="";
                 		if(overlayCount>0){
-                			info+=overlayCount+"个协议已存在";
+                			info+=overlayCount+"个单元已存在";
                 			if(collisionCount>0){
                 				info+="，";
                 			}
                 		}
                 		if(collisionCount>0){
-                			info+=overlayCount+"个协议无权限修改";
+                			info+=overlayCount+"个单元无权限修改";
                 		}
                 		info+="！是否执行全部保存？";
                 		
                 		Ext.Msg.confirm('提示', info, function (btn) {
                             if (btn == "yes") {
-                            	saveAllImportedProtocol();
+                            	saveAllImportedReportUnit();
                             }
                         });
                 	}else{
-                		saveAllImportedProtocol();
+                		saveAllImportedReportUnit();
                 	}
                 }
     	    }],
@@ -109,27 +109,27 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
             items: [{
             	region: 'west',
             	width:'25%',
-            	title:'上传协议列表',
+            	title:'上传单元列表',
             	layout: 'fit',
             	split: true,
                 collapsible: true,
-            	id:"importProtocolTreePanel_Id"
+            	id:"importReportUnitTreePanel_Id"
             },{
             	region: 'center',
-            	id:"importedProtocolItemInfoTablePanel_Id",
+            	id:"importedReportUnitItemInfoTablePanel_Id",
             	title:'采控项',
             	layout: "fit",
-            	html:'<div class="ModbusProtocolAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedProtocolItemInfoTableDiv_Id"></div></div>',
+            	html:'<div class="ModbusReportUnitAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedReportUnitItemInfoTableDiv_Id"></div></div>',
                 listeners: {
                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
+                    	if(importReportUnitContentHandsontableHelper!=null && importReportUnitContentHandsontableHelper.hot!=undefined){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
                     		if(header){
                     			newHeight=newHeight-header.lastBox.height-2;
                     		}
-                    		importProtocolContentHandsontableHelper.hot.updateSettings({
+                    		importReportUnitContentHandsontableHelper.hot.updateSettings({
                     			width:newWidth,
                     			height:newHeight
                     		});
@@ -139,7 +139,7 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
             }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
-                	clearImportProtocolHandsontable();
+                	clearImportReportUnitHandsontable();
                 },
                 minimize: function (win, opts) {
                     win.collapse();
@@ -150,41 +150,41 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
     }
 });
 
-function clearImportProtocolHandsontable(){
-	if(importProtocolContentHandsontableHelper!=null){
-		if(importProtocolContentHandsontableHelper.hot!=undefined){
-			importProtocolContentHandsontableHelper.hot.destroy();
+function clearImportReportUnitHandsontable(){
+	if(importReportUnitContentHandsontableHelper!=null){
+		if(importReportUnitContentHandsontableHelper.hot!=undefined){
+			importReportUnitContentHandsontableHelper.hot.destroy();
 		}
-		importProtocolContentHandsontableHelper=null;
+		importReportUnitContentHandsontableHelper=null;
 	}
 }
 
-function importProtocolContentTreeSelectClear(node){
+function importReportUnitContentTreeSelectClear(node){
 	var chlidArray = node;
 	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
 		childArrNode.set('checked', false);
 		if (childArrNode.childNodes != null) {
-			importProtocolContentTreeSelectClear(childArrNode.childNodes);
+			importReportUnitContentTreeSelectClear(childArrNode.childNodes);
         }
 	});
 }
 
-function importProtocolContentTreeSelectAll(node){
+function importReportUnitContentTreeSelectAll(node){
 	var chlidArray = node;
 	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
 		childArrNode.set('checked', true);
 		if (childArrNode.childNodes != null) {
-			importProtocolContentTreeSelectAll(childArrNode.childNodes);
+			importReportUnitContentTreeSelectAll(childArrNode.childNodes);
         }
 	});
 }
 
-function submitImportedProtocolFile() {
-	clearImportProtocolHandsontable();
-	var form = Ext.getCmp("ProtocolImportForm_Id");
+function submitImportedReportUnitFile() {
+	clearImportReportUnitHandsontable();
+	var form = Ext.getCmp("ReportUnitImportForm_Id");
     if(form.isValid()) {
         form.submit({
-            url: context + '/acquisitionUnitManagerController/uploadImportedProtocolFile',
+            url: context + '/acquisitionUnitManagerController/uploadImportedReportUnitFile',
             timeout: 1000*60*10,
             method:'post',
             waitMsg: '文件上传中...',
@@ -197,11 +197,11 @@ function submitImportedProtocolFile() {
             	}
             	
             	
-            	var importProtocolContentTreeGridPanel = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id");
-            	if (isNotVal(importProtocolContentTreeGridPanel)) {
-            		importProtocolContentTreeGridPanel.getStore().load();
+            	var importReportUnitContentTreeGridPanel = Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id");
+            	if (isNotVal(importReportUnitContentTreeGridPanel)) {
+            		importReportUnitContentTreeGridPanel.getStore().load();
             	}else{
-            		Ext.create('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore');
+            		Ext.create('AP.store.acquisitionUnit.ImportReportUnitContentTreeInfoStore');
             	}
             },
             failure : function() {
@@ -212,97 +212,100 @@ function submitImportedProtocolFile() {
     return false;
 };
 
-function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
-	Ext.getCmp("importedProtocolItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
+function CreateUploadedReportUnitContentInfoTable(protocolName,classes,unitName,groupName,groupType){
+	clearImportReportUnitHandsontable();
+	Ext.getCmp("importedReportUnitItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getUploadedProtocolItemsConfigData',
+		url:context + '/acquisitionUnitManagerController/getUploadedReportUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
-			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").setTitle(protocolName);
+			Ext.getCmp("importedReportUnitItemInfoTablePanel_Id").getEl().unmask();
+			Ext.getCmp("importedReportUnitItemInfoTablePanel_Id").setTitle(unitName);
 			var result =  Ext.JSON.decode(response.responseText);
-			if(importProtocolContentHandsontableHelper==null || importProtocolContentHandsontableHelper.hot==undefined){
-				importProtocolContentHandsontableHelper = ImportProtocolContentHandsontableHelper.createNew("importedProtocolItemInfoTableDiv_Id");
-				var colHeaders="[" 
-					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
-					+"['序号','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
-					+"]";
-				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importProtocolContentHandsontableHelper);}},"
-					 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
-					 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importProtocolContentHandsontableHelper);}}," 
-					 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '只写', '读写']}," 
-					 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}," 
-						+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
-						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importProtocolContentHandsontableHelper);}}," 
-						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importProtocolContentHandsontableHelper);}}," 
-						+"{data:'unit'}," 
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
+			if(importReportUnitContentHandsontableHelper==null || importReportUnitContentHandsontableHelper.hot==undefined){
+				importReportUnitContentHandsontableHelper = ImportReportUnitContentHandsontableHelper.createNew("importedReportUnitItemInfoTableDiv_Id");
+				var colHeaders=['序号','名称','起始地址','读写类型','单位','解析模式','','日累计计算','日累计字段名称'];
+				var columns="[" 
+						+"{data:'id'}," 
+						+"{data:'title'},"
+					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importReportUnitContentHandsontableHelper);}},"
+						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
+						+"{data:'unit'},"
+						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
+						+"{data:'bitIndex'}," 
+						+"{data:'dailyTotalCalculate',type:'checkbox'},"
+						+"{data:'dailyTotalCalculateName'}"
 						+"]";
-				importProtocolContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				importProtocolContentHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					importProtocolContentHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-					importProtocolContentHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				importReportUnitContentHandsontableHelper.colHeaders=colHeaders;
+				importReportUnitContentHandsontableHelper.columns=Ext.JSON.decode(columns);
+				
+				if(classes==2 && groupType==0){
+					importReportUnitContentHandsontableHelper.hiddenColumns=[6];
 				}else{
-					importProtocolContentHandsontableHelper.Data=result.totalRoot;
-					importProtocolContentHandsontableHelper.createTable(result.totalRoot);
+					importReportUnitContentHandsontableHelper.hiddenColumns=[6,7,8];
 				}
-			}else{
+				
 				if(result.totalRoot.length==0){
-					importProtocolContentHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-					importProtocolContentHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					importReportUnitContentHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+					importReportUnitContentHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
-					importProtocolContentHandsontableHelper.Data=result.totalRoot;
-					importProtocolContentHandsontableHelper.hot.loadData(result.totalRoot);
+					importReportUnitContentHandsontableHelper.Data=result.totalRoot;
+					importReportUnitContentHandsontableHelper.createTable(result.totalRoot);
 				}
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
+			Ext.getCmp("importedReportUnitItemInfoTablePanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
 			protocolName:protocolName,
 			classes:classes,
-			code:code
+			unitName:unitName,
+			groupName:groupName,
+			groupType:groupType
         }
 	});
 };
 
-var ImportProtocolContentHandsontableHelper = {
+var ImportReportUnitContentHandsontableHelper = {
 		createNew: function (divid) {
-	        var importProtocolContentHandsontableHelper = {};
-	        importProtocolContentHandsontableHelper.hot1 = '';
-	        importProtocolContentHandsontableHelper.divid = divid;
-	        importProtocolContentHandsontableHelper.validresult=true;//数据校验
-	        importProtocolContentHandsontableHelper.colHeaders=[];
-	        importProtocolContentHandsontableHelper.columns=[];
-	        importProtocolContentHandsontableHelper.AllData=[];
-	        importProtocolContentHandsontableHelper.Data=[];
+	        var importReportUnitContentHandsontableHelper = {};
+	        importReportUnitContentHandsontableHelper.hot1 = '';
+	        importReportUnitContentHandsontableHelper.divid = divid;
+	        importReportUnitContentHandsontableHelper.validresult=true;//数据校验
+	        importReportUnitContentHandsontableHelper.colHeaders=[];
+	        importReportUnitContentHandsontableHelper.columns=[];
+	        importReportUnitContentHandsontableHelper.AllData=[];
+	        importReportUnitContentHandsontableHelper.Data=[];
 	        
-	        importProtocolContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        importReportUnitContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
 	        }
 	        
-	        importProtocolContentHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        importReportUnitContentHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
-	        importProtocolContentHandsontableHelper.createTable = function (data) {
-	        	$('#'+importProtocolContentHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+importProtocolContentHandsontableHelper.divid);
-	        	importProtocolContentHandsontableHelper.hot = new Handsontable(hotElement, {
+	        importReportUnitContentHandsontableHelper.createTable = function (data) {
+	        	$('#'+importReportUnitContentHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importReportUnitContentHandsontableHelper.divid);
+	        	importReportUnitContentHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,130,80,90,90,80,80,90,80,80,80,80],
-	                columns:importProtocolContentHandsontableHelper.columns,
+	        		hiddenColumns: {
+	                    columns: importReportUnitContentHandsontableHelper.hiddenColumns,
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	        		colWidths: [50,140,60,80,80,80,80,80,80],
+	                columns:importReportUnitContentHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                nestedHeaders:importProtocolContentHandsontableHelper.colHeaders,//显示列头
+	                colHeaders:importReportUnitContentHandsontableHelper.colHeaders,//显示列头
 	                nestedRows:true,
 	                columnHeaderHeight: 28,
 	                columnSorting: true,//允许排序
@@ -325,11 +328,11 @@ var ImportProtocolContentHandsontableHelper = {
 	                }
 	        	});
 	        }
-	        importProtocolContentHandsontableHelper.saveData = function () {}
-	        importProtocolContentHandsontableHelper.clearContainer = function () {
-	        	importProtocolContentHandsontableHelper.AllData = [];
+	        importReportUnitContentHandsontableHelper.saveData = function () {}
+	        importReportUnitContentHandsontableHelper.clearContainer = function () {
+	        	importReportUnitContentHandsontableHelper.AllData = [];
 	        }
-	        return importProtocolContentHandsontableHelper;
+	        return importReportUnitContentHandsontableHelper;
 	    }
 };
 
@@ -349,9 +352,9 @@ adviceDataInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedProtocol(protocolName,deviceType){
+function saveSingelImportedReportUnit(protocolName,deviceType){
 	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedProtocol',
+		url : context + '/acquisitionUnitManagerController/saveSingelImportedReportUnit',
 		method : "POST",
 		params : {
 			protocolName : protocolName,
@@ -364,8 +367,8 @@ function saveSingelImportedProtocol(protocolName,deviceType){
 			}else{
 				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
 			}
-			Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
-			Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
+			Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
+			Ext.getCmp("ModbusReportUnitAddrMappingConfigTreeGridPanel_Id").getStore().load();
 		},
 		failure : function() {
 			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
@@ -373,11 +376,11 @@ function saveSingelImportedProtocol(protocolName,deviceType){
 	});
 }
 
-function saveAllImportedProtocol(){
+function saveAllImportedReportUnit(){
 	var protocolNameList=[];
 	
 	
-	var treeStore = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore();
+	var treeStore = Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore();
 	var count=treeStore.getCount();
 	for(var i=0;i<count;i++){
 		if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign!=2){
@@ -385,9 +388,9 @@ function saveAllImportedProtocol(){
 		}
 	}
 	if(protocolNameList.length>0){
-		var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
+		var deviceType=Ext.getCmp("ImportReportUnitWinDeviceType_Id").getValue();
 		Ext.Ajax.request({
-			url : context + '/acquisitionUnitManagerController/saveAllImportedProtocol',
+			url : context + '/acquisitionUnitManagerController/saveAllImportedReportUnit',
 			method : "POST",
 			params : {
 				protocolName : protocolNameList.join(","),
@@ -400,26 +403,26 @@ function saveAllImportedProtocol(){
 				}else{
 					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
 				}
-				Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
-				Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
+				Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
+				Ext.getCmp("ModbusReportUnitAddrMappingConfigTreeGridPanel_Id").getStore().load();
 			},
 			failure : function() {
 				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
 			}
 		});
 	}else{
-		Ext.Msg.alert('提示', "<font color=blue>没有可保存的协议。</font>");
+		Ext.Msg.alert('提示', "<font color=blue>没有可保存的单元。</font>");
 	}
 	
 }
 
-iconImportSingleProtocolAction = function(value, e, record) {
+iconImportSingleReportUnitAction = function(value, e, record) {
 	var resultstring='';
 	var protocolName=record.data.text;
-	var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
+	var deviceType=Ext.getCmp("ImportReportUnitWinDeviceType_Id").getValue();
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedProtocol(\""+protocolName+"\",\""+deviceType+"\")>保存...</a>";
+		"onclick=saveSingelImportedReportUnit(\""+protocolName+"\",\""+deviceType+"\")>保存...</a>";
 	}
 	
 	

@@ -37,6 +37,7 @@ import com.cosog.model.User;
 import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
+import com.cosog.model.drive.ExportAcqUnitData;
 import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ImportProtocolContent;
 import com.cosog.model.drive.InitInstance;
@@ -350,7 +351,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"RWType\":\""+RWType+"\","
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 									+ "\"resolutionMode\":\""+resolutionMode+"\","
-									+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\""
+									+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\","
+											+ "\"dailyTotalCalculate\":"+dailyTotalCalculate+","
+											+ "\"dailyTotalCalculateName\":\""+dailyTotalCalculateName+"\""
 									+ "},");
 							index++;
 						}
@@ -9863,6 +9866,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				tree_json.append("\"msg\":\""+msg+"\",");
 				tree_json.append("\"saveSign\":\""+saveSign+"\",");
 				tree_json.append("\"iconCls\": \"protocol\",");
+				tree_json.append("\"action\": \"\",");
 				tree_json.append("\"leaf\": true");
 				tree_json.append("},");
 			}
@@ -9981,6 +9985,218 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		return r;
+	}
+	
+	
+	public String getUploadedAcqUnitTreeData(List<ExportAcqUnitData> uploadAcqUnitList,String deviceType,User user){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		
+		List<String> protoolList=new ArrayList<>();
+		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
+		List<?> protoolQueryList = this.findCallSql(protocolSql);
+		for(int i=0;i<protoolQueryList.size();i++){
+			protoolList.add(protoolQueryList.get(i)+"");
+		}
+		
+		String unitSql="select t.unit_name,t.protocol from tbl_acq_unit_conf t, tbl_protocol t2 where t.protocol=t2.name and t2.deviceType in("+allDeviceIds+")";
+		List<?> unitQueryList = this.findCallSql(unitSql);
+		
+		
+		tree_json.append("[");
+		if(uploadAcqUnitList!=null && uploadAcqUnitList.size()>0){
+			for(int i=0;i<uploadAcqUnitList.size();i++){
+				String msg="";
+				int saveSign=0;//无冲突覆盖
+				
+				if(StringManagerUtils.existOrNot(protoolList, uploadAcqUnitList.get(i).getProtocol(), false)){
+					if(unitQueryList.size()>0){
+						for(int j=0;j<unitQueryList.size();j++){
+							Object[] obj=(Object[])unitQueryList.get(j);
+							if((obj[0]+"").equalsIgnoreCase(uploadAcqUnitList.get(i).getUnitName()) && (obj[1]+"").equalsIgnoreCase(uploadAcqUnitList.get(i).getProtocol())){
+								saveSign=1;//覆盖
+								msg=obj[0]+"已存在，继续保存将覆盖";
+								break;
+							}
+						}
+					}
+				}else{
+					saveSign=2;
+					msg="单元所属协议"+uploadAcqUnitList.get(i).getProtocol()+"不存在，请先添加对应协议";
+				}
+				
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+uploadAcqUnitList.get(i).getUnitName()+"\",");
+				tree_json.append("\"code\":\""+uploadAcqUnitList.get(i).getUnitCode()+"\",");
+				tree_json.append("\"protocol\":\""+uploadAcqUnitList.get(i).getProtocol()+"\",");
+				tree_json.append("\"msg\":\""+msg+"\",");
+				tree_json.append("\"saveSign\":\""+saveSign+"\",");
+				tree_json.append("\"iconCls\": \"acqUnit\",");
+				tree_json.append("\"action\": \"\",");
+				if(uploadAcqUnitList.get(i).getGroupList()!=null && uploadAcqUnitList.get(i).getGroupList().size()>0){
+					tree_json.append("\"expanded\": true,");
+					tree_json.append("\"children\": [");
+					for(int k=0;k<uploadAcqUnitList.get(i).getGroupList().size();k++){
+						tree_json.append("{\"classes\":2,");
+						tree_json.append("\"id\":"+uploadAcqUnitList.get(i).getGroupList().get(k).getId()+",");
+						tree_json.append("\"code\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getGroupCode()+"\",");
+						tree_json.append("\"text\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getGroupName()+"\",");
+						tree_json.append("\"groupTimingInterval\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getGroupTimingInterval()+"\",");
+						tree_json.append("\"groupSavingInterval\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getGroupSavingInterval()+"\",");
+						tree_json.append("\"remark\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getRemark()+"\",");
+						tree_json.append("\"protocol\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getProtocol()+"\",");
+						tree_json.append("\"type\":"+uploadAcqUnitList.get(i).getGroupList().get(k).getType()+",");
+						tree_json.append("\"typeName\":\""+(uploadAcqUnitList.get(i).getGroupList().get(k).getType()==0?"采集组":"控制组")+"\",");
+						tree_json.append("\"iconCls\": \"acqGroup\",");
+						tree_json.append("\"leaf\": true");
+						tree_json.append("},");
+					}
+					if(tree_json.toString().endsWith(",")){
+						tree_json.deleteCharAt(tree_json.length() - 1);
+					}
+					
+					tree_json.append("]");
+				}else{
+					tree_json.append("\"leaf\": true");
+				}
+				
+				
+				
+				
+				tree_json.append("},");
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
+	
+	public String getUploadedAcqUnitItemsConfigData(String protocolName,String classes,String unitName,String groupName,String groupType,List<ExportAcqUnitData> uploadAcqUnitList){
+
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		int index=1;
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		if(protocolConfig!=null && uploadAcqUnitList!=null){
+			Collections.sort(protocolConfig.getItems());
+			
+			List<String> itemsList=new ArrayList<String>();
+			Map<String,ExportAcqUnitData.AcqItem> itemsMap=new HashMap<>();
+			
+			for(int i=0;i<uploadAcqUnitList.size();i++){
+				if(unitName.equalsIgnoreCase(uploadAcqUnitList.get(i).getUnitName()) && protocolName.equalsIgnoreCase(uploadAcqUnitList.get(i).getProtocol()) ){
+					if("1".equalsIgnoreCase(classes)){
+						if(uploadAcqUnitList.get(i).getGroupList()!=null && uploadAcqUnitList.get(i).getGroupList().size()>0){
+							for(ExportAcqUnitData.AcqGroup group:uploadAcqUnitList.get(i).getGroupList()){
+								for(ExportAcqUnitData.AcqItem acqItem:group.getItemList()){
+									if(!StringManagerUtils.existOrNot(itemsList, acqItem.getItemName(), false)){
+										itemsList.add(acqItem.getItemName());
+										itemsMap.put(acqItem.getItemName(), acqItem);
+									}
+								}
+							}
+						}
+					}else if("2".equalsIgnoreCase(classes)){
+						if(uploadAcqUnitList.get(i).getGroupList()!=null && uploadAcqUnitList.get(i).getGroupList().size()>0){
+							for(ExportAcqUnitData.AcqGroup group:uploadAcqUnitList.get(i).getGroupList()){
+								if(groupName.equalsIgnoreCase(group.getGroupName()) && StringManagerUtils.stringToInteger(groupType)== group.getType()){
+									for(ExportAcqUnitData.AcqItem acqItem:group.getItemList()){
+										if(!StringManagerUtils.existOrNot(itemsList, acqItem.getItemName(), false)){
+											itemsList.add(acqItem.getItemName());
+											itemsMap.put(acqItem.getItemName(), acqItem);
+										}
+									}
+									break;
+								}
+							}
+						}
+					}
+					break;
+				}
+			}
+			
+			for(int j=0;j<protocolConfig.getItems().size();j++){
+				if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
+					String RWTypeName="只读";
+					if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+						RWTypeName="只读";
+					}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+						RWTypeName="只写";
+					}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
+						RWTypeName="读写";
+					}
+					
+					String resolutionMode="数据量";
+					if(protocolConfig.getItems().get(j).getResolutionMode()==0){
+						resolutionMode="开关量";
+					}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
+						resolutionMode="枚举量";
+					}
+					
+					ExportAcqUnitData.AcqItem acqItem=itemsMap.get(protocolConfig.getItems().get(j).getTitle());
+					boolean dailyTotalCalculate=false;
+					String dailyTotalCalculateName="";
+					if(acqItem!=null){
+						dailyTotalCalculate=acqItem.getDailyTotalCalculate()==1;
+						if(dailyTotalCalculate){
+							dailyTotalCalculateName=acqItem.getDailyTotalCalculateName();
+						}
+					}
+					
+					result_json.append("{"
+							+ "\"id\":"+(index)+","
+							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+							+ "\"bitIndex\":\"\","
+							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+							+ "\"quantity\":"+1+","
+							+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
+							+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
+							+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
+							+ "\"RWType\":\""+RWTypeName+"\","
+							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+							+ "\"resolutionMode\":\""+resolutionMode+"\","
+							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\","
+							+ "\"dailyTotalCalculate\":"+dailyTotalCalculate+","
+							+ "\"dailyTotalCalculateName\":\""+dailyTotalCalculateName+"\""
+							+ "},");
+					index++;
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString();
+	
 	}
 	
 	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {

@@ -85,7 +85,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
             	layout: 'fit',
             	split: true,
                 collapsible: false,
-            	id:"ExportPootocolTreePanel_Id"
+            	id:"ExportProtocolTreePanel_Id"
             }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {

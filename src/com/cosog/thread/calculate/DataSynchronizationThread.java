@@ -61,7 +61,7 @@ public class DataSynchronizationThread implements Runnable{
 			}
 			else if(sign==021){//采控组 项授权
 				EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(param1,method);
-				EquipmentDriverServerTask.initPumpDriverAcquisitionInfoConfigByAcqGroupId(param1,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqGroupId(param1,method);
 				acquisitionUnitManagerService.doAcquisitionGroupOwnItemChange(param1);
 				MemoryDataManagerTask.loadAcqInstanceOwnItemByGroupId(param1,method);
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqGroupId(param1,method);

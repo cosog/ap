@@ -1,15 +1,14 @@
-var importAlarmUnitContentHandsontableHelper=null;
 Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
     extend: 'Ext.window.Window',
-    id:'ImportAlarmUnitWindow_Id',
+    id: 'ImportAlarmUnitWindow_Id',
     alias: 'widget.ImportAlarmUnitWindow',
     layout: 'fit',
-    title:'采控单元导入',
+    title: '报警单元导入',
     border: false,
     hidden: false,
     collapsible: true,
-    constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
-//    constrain: true,
+    constrainHeader: true, //True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
+    //    constrain: true,
     closable: 'sides',
     closeAction: 'destroy',
     maximizable: true,
@@ -22,123 +21,374 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
-        	tbar: [{
-        		xtype:'form',
-        		id:'AlarmUnitImportForm_Id',
-        		width: 300,
-        	    bodyPadding: 0,
-        	    frame: true,
-        	    items: [{
-        	    	xtype: 'filefield',
-                	id:'AlarmUnitImportFilefield_Id',
+            tbar: [{
+                xtype: 'form',
+                id: 'AlarmUnitImportForm_Id',
+                width: 300,
+                bodyPadding: 0,
+                frame: true,
+                items: [{
+                    xtype: 'filefield',
+                    id: 'AlarmUnitImportFilefield_Id',
                     name: 'file',
                     fieldLabel: '上传文件',
                     labelWidth: 60,
-                    width:'100%',
+                    width: '100%',
                     msgTarget: 'side',
                     allowBlank: true,
                     anchor: '100%',
-                    draggable:true,
+                    draggable: true,
                     buttonText: '请选择上传文件',
-                    accept:'.json',
-                    listeners:{
-                        change:function(cmp){
-                        	submitImportedAlarmUnitFile();
+                    accept: '.json',
+                    listeners: {
+                        change: function (cmp) {
+                            submitImportedAlarmUnitFile();
                         }
                     }
-        	    },{
-                    id: 'ImportAlarmUnitSelectItemType_Id', 
+        	    }, {
+                    id: 'ImportAlarmUnitSelectItemType_Id',
                     xtype: 'textfield',
                     value: '-99',
                     hidden: true
-                },{
-                    id: 'ImportAlarmUnitSelectItemId_Id', 
+                }, {
+                    id: 'ImportAlarmUnitSelectItemId_Id',
                     xtype: 'textfield',
                     value: '-99',
                     hidden: true
                 }]
-    		},{
-            	xtype: 'label',
-            	id: 'ImportAlarmUnitWinTabLabel_Id',
-            	hidden:true,
-            	html: ''
-            },{
-				xtype : "hidden",
-				id : 'ImportAlarmUnitWinDeviceType_Id',
-				value:'0'
-			},'->',{
-    	    	xtype: 'button',
+    		}, {
+                xtype: 'label',
+                id: 'ImportAlarmUnitWinTabLabel_Id',
+                hidden: true,
+                html: ''
+            }, {
+                xtype: "hidden",
+                id: 'ImportAlarmUnitWinDeviceType_Id',
+                value: '0'
+			}, '->', {
+                xtype: 'button',
                 text: '全部保存',
                 iconCls: 'save',
                 handler: function (v, o) {
-                	var treeStore = Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore();
-                	var count=treeStore.getCount();
-                	var overlayCount=0;
-            		var collisionCount=0; 
-                	for(var i=0;i<count;i++){
-                		if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign==1){
-                			overlayCount++;
-                		}else if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign==2){
-                			collisionCount++;
-                		}
-                	}
-                	if(overlayCount>0 || collisionCount>0){
-                		var info="";
-                		if(overlayCount>0){
-                			info+=overlayCount+"个单元已存在";
-                			if(collisionCount>0){
-                				info+="，";
-                			}
-                		}
-                		if(collisionCount>0){
-                			info+=overlayCount+"个单元无权限修改";
-                		}
-                		info+="！是否执行全部保存？";
-                		
-                		Ext.Msg.confirm('提示', info, function (btn) {
+                    var treeStore = Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore();
+                    var count = treeStore.getCount();
+                    var overlayCount = 0;
+                    var collisionCount = 0;
+                    for (var i = 0; i < count; i++) {
+                        if (treeStore.getAt(i).data.classes == 1 && treeStore.getAt(i).data.saveSign == 1) {
+                            overlayCount++;
+                        } else if (treeStore.getAt(i).data.classes == 1 && treeStore.getAt(i).data.saveSign == 2) {
+                            collisionCount++;
+                        }
+                    }
+                    if (overlayCount > 0 || collisionCount > 0) {
+                        var info = "";
+                        if (overlayCount > 0) {
+                            info += overlayCount + "个单元已存在";
+                            if (collisionCount > 0) {
+                                info += "，";
+                            }
+                        }
+                        if (collisionCount > 0) {
+                            info += overlayCount + "个单元无权限修改";
+                        }
+                        info += "！是否执行全部保存？";
+
+                        Ext.Msg.confirm('提示', info, function (btn) {
                             if (btn == "yes") {
-                            	saveAllImportedAlarmUnit();
+                                saveAllImportedAlarmUnit();
                             }
                         });
-                	}else{
-                		saveAllImportedAlarmUnit();
-                	}
+                    } else {
+                        saveAllImportedAlarmUnit();
+                    }
                 }
     	    }],
             layout: 'border',
             items: [{
-            	region: 'west',
-            	width:'25%',
-            	title:'上传单元列表',
-            	layout: 'fit',
-            	split: true,
+                region: 'west',
+                width: '25%',
+                title: '上传单元列表',
+                layout: 'fit',
+                split: true,
                 collapsible: true,
-            	id:"importAlarmUnitTreePanel_Id"
-            },{
-            	region: 'center',
-            	id:"importedAlarmUnitItemInfoTablePanel_Id",
-            	title:'采控项',
-            	layout: "fit",
-            	html:'<div class="ModbusAlarmUnitAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAlarmUnitItemInfoTableDiv_Id"></div></div>',
+                id: "importAlarmUnitTreePanel_Id"
+            }, {
+                border: true,
+                region: 'center',
+                title: '报警项',
+                xtype: 'tabpanel',
+                id: "importAlarmUnitItemsConfigTabPanel_Id",
+                activeTab: 0,
+                border: false,
+                tabPosition: 'top',
+                items: [{
+                    title: '数据量',
+                    region: 'center',
+                    layout: "border",
+                    id: "importAlarmUnitNumItemsConfigTableInfoPanel_Id",
+                    items: [{
+                        region: 'center',
+                        title: '采集项配置',
+                        layout: 'fit',
+                        id: 'importAlarmUnitItemsConfigTableInfoPanel_id',
+                        html: '<div class="importAlarmUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                if (protocolAlarmUnitConfigNumItemsHandsontableHelper != null && protocolAlarmUnitConfigNumItemsHandsontableHelper.hot != undefined) {
+                                    //                          		protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.refreshDimensions();
+                                    var newWidth = width;
+                                    var newHeight = height;
+                                    var header = thisPanel.getHeader();
+                                    if (header) {
+                                        newHeight = newHeight - header.lastBox.height - 2;
+                                    }
+                                    protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.updateSettings({
+                                        width: newWidth,
+                                        height: newHeight
+                                    });
+                                }
+                            }
+                        }
+              	}, {
+                        region: 'south',
+                        height: '50%',
+                        title: '计算项配置',
+                        collapsible: true,
+                        split: true,
+                        layout: 'fit',
+                        id: 'importAlarmUnitCalNumItemsConfigTableInfoPanel_id',
+                        html: '<div class="importAlarmUnitCalNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCalNumItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                if (protocolAlarmUnitConfigCalNumItemsHandsontableHelper != null && protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot != undefined) {
+                                    //                          		protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.refreshDimensions();
+                                    var newWidth = width;
+                                    var newHeight = height;
+                                    var header = thisPanel.getHeader();
+                                    if (header) {
+                                        newHeight = newHeight - header.lastBox.height - 2;
+                                    }
+                                    protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.updateSettings({
+                                        width: newWidth,
+                                        height: newHeight
+                                    });
+                                }
+                            }
+                        }
+              	}]
+              }, {
+                    title: '开关量',
+                    id: "importAlarmUnitSwitchItemsConfigTableInfoPanel_Id",
+                    layout: "border",
+                    border: true,
+                    items: [{
+                        region: 'west',
+                        width: '25%',
+                        collapsible: true,
+                        split: true,
+                        id: 'importAlarmUnitSwitchItemsPanel_Id',
+                        title: '开关量列表'
+                  }, {
+                        region: 'center',
+                        title: '开关量报警项配置',
+                        layout: 'fit',
+                        id: 'importAlarmUnitSwitchItemsConfigHandsontablePanel_id',
+                        html: '<div class="importAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                if (protocolAlarmUnitConfigSwitchItemsHandsontableHelper != null && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot != undefined) {
+                                    //                          		protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.refreshDimensions();
+                                    var newWidth = width;
+                                    var newHeight = height;
+                                    var header = thisPanel.getHeader();
+                                    if (header) {
+                                        newHeight = newHeight - header.lastBox.height - 2;
+                                    }
+                                    protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.updateSettings({
+                                        width: newWidth,
+                                        height: newHeight
+                                    });
+                                }
+                            }
+                        }
+                  }]
+              }, {
+                    title: '枚举量',
+                    id: "importAlarmUnitEnumItemsConfigTableInfoPanel_Id",
+                    layout: "border",
+                    border: true,
+                    items: [{
+                        region: 'west',
+                        width: '25%',
+                        collapsible: true,
+                        split: true,
+                        id: 'importAlarmUnitEnumItemsPanel_Id',
+                        title: '枚举量列表'
+                  }, {
+                        region: 'center',
+                        title: '枚举量报警项配置',
+                        layout: 'fit',
+                        id: 'importAlarmUnitEnumItemsConfigHandsontablePanel_id',
+                        html: '<div class="importAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                if (protocolAlarmUnitConfigEnumItemsHandsontableHelper != null && protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot != undefined) {
+                                    //                          		protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.refreshDimensions();
+                                    var newWidth = width;
+                                    var newHeight = height;
+                                    var header = thisPanel.getHeader();
+                                    if (header) {
+                                        newHeight = newHeight - header.lastBox.height - 2;
+                                    }
+                                    protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.updateSettings({
+                                        width: newWidth,
+                                        height: newHeight
+                                    });
+                                }
+                            }
+                        }
+                  }]
+              }, {
+                    title: '工况诊断',
+                    id: "importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id",
+                    layout: 'fit',
+                    html: '<div class="importAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            if (protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper != null && protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot != undefined) {
+                                //                      		protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.refreshDimensions();
+                                var newWidth = width;
+                                var newHeight = height;
+                                var header = thisPanel.getHeader();
+                                if (header) {
+                                    newHeight = newHeight - header.lastBox.height - 2;
+                                }
+                                protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.updateSettings({
+                                    width: newWidth,
+                                    height: newHeight
+                                });
+                            }
+                        }
+                    }
+              }, {
+                    title: '运行状态',
+                    id: "importAlarmUnitRunStatusConfigTableInfoPanel_Id",
+                    layout: 'fit',
+                    html: '<div class="importAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            if (protocolAlarmUnitConfigRunStatusItemsHandsontableHelper != null && protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot != undefined) {
+                                //                      		protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.refreshDimensions();
+                                var newWidth = width;
+                                var newHeight = height;
+                                var header = thisPanel.getHeader();
+                                if (header) {
+                                    newHeight = newHeight - header.lastBox.height - 2;
+                                }
+                                protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.updateSettings({
+                                    width: newWidth,
+                                    height: newHeight
+                                });
+                            }
+                        }
+                    }
+              }, {
+                    title: '通信状态',
+                    id: "importAlarmUnitCommStatusConfigTableInfoPanel_Id",
+                    layout: 'fit',
+                    html: '<div class="importAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            if (protocolAlarmUnitConfigCommStatusItemsHandsontableHelper != null && protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot != undefined) {
+                                //                      		protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.refreshDimensions();
+                                var newWidth = width;
+                                var newHeight = height;
+                                var header = thisPanel.getHeader();
+                                if (header) {
+                                    newHeight = newHeight - header.lastBox.height - 2;
+                                }
+                                protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.updateSettings({
+                                    width: newWidth,
+                                    height: newHeight
+                                });
+                            }
+                        }
+                    }
+              }],
                 listeners: {
-                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(importAlarmUnitContentHandsontableHelper!=null && importAlarmUnitContentHandsontableHelper.hot!=undefined){
-                    		var newWidth=width;
-                    		var newHeight=height;
-                    		var header=thisPanel.getHeader();
-                    		if(header){
-                    			newHeight=newHeight-header.lastBox.height-2;
-                    		}
-                    		importAlarmUnitContentHandsontableHelper.hot.updateSettings({
-                    			width:newWidth,
-                    			height:newHeight
-                    		});
-                    	}
+                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        if (newCard.id == "importAlarmUnitNumItemsConfigTableInfoPanel_Id") {
+//                            var selectRow = Ext.getCmp("importAlarmUnitConfigSelectRow_Id").getValue();
+//                            var selectedItem = Ext.getCmp("importAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
+//                            if (selectedItem.data.classes == 0) {
+//                                if (isNotVal(selectedItem.data.children) && selectedItem.data.children.length > 0) {
+//                                    CreateProtocolAlarmUnitNumItemsConfigInfoTable(selectedItem.data.children[0].text, selectedItem.data.children[0].classes, selectedItem.data.children[0].code);
+//                                    CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(selectedItem.data.deviceType, selectedItem.data.children[0].classes, selectedItem.data.children[0].code);
+//                                }
+//                            } else if (selectedItem.data.classes == 1) {
+//                                CreateProtocolAlarmUnitNumItemsConfigInfoTable(selectedItem.data.text, selectedItem.data.classes, selectedItem.data.code);
+//                                CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(selectedItem.data.deviceType, selectedItem.data.classes, selectedItem.data.code);
+//                            } else if (selectedItem.data.classes == 2 || selectedItem.data.classes == 3) {
+//                                CreateProtocolAlarmUnitNumItemsConfigInfoTable(selectedItem.data.protocol, selectedItem.data.classes, selectedItem.data.code);
+//                                CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(selectedItem.data.deviceType, selectedItem.data.classes, selectedItem.data.code);
+//                            }
+                        } else if (newCard.id == "importAlarmUnitSwitchItemsConfigTableInfoPanel_Id") {
+//                            var treePanel = Ext.getCmp("importAlarmUnitSwitchItemsGridPanel_Id");
+//                            if (isNotVal(treePanel)) {
+//                                treePanel.getStore().load();
+//                            } else {
+//                                Ext.create('AP.store.acquisitionUnit.importAlarmUnitSwitchItemsStore');
+//                            }
+                        } else if (newCard.id == "importAlarmUnitEnumItemsConfigTableInfoPanel_Id") {
+//                            var gridPanel = Ext.getCmp("importAlarmUnitEnumItemsGridPanel_Id");
+//                            if (isNotVal(gridPanel)) {
+//                                gridPanel.getStore().load();
+//                            } else {
+//                                Ext.create('AP.store.acquisitionUnit.importAlarmUnitEnumItemsStore');
+//                            }
+                        } else if (newCard.id == "importAlarmUnitCommStatusConfigTableInfoPanel_Id") {
+//                            var selectRow = Ext.getCmp("importAlarmUnitConfigSelectRow_Id").getValue();
+//                            var selectedItem = Ext.getCmp("importAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
+//                            if (selectedItem.data.classes == 0) {
+//                                if (isNotVal(selectedItem.data.children) && selectedItem.data.children.length > 0) {
+//                                    CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(selectedItem.data.children[0].text, selectedItem.data.children[0].classes, selectedItem.data.children[0].code);
+//                                }
+//                            } else if (selectedItem.data.classes == 1) {
+//                                CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(selectedItem.data.text, selectedItem.data.classes, selectedItem.data.code);
+//                            } else if (selectedItem.data.classes == 2 || selectedItem.data.classes == 3) {
+//                                CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(selectedItem.data.protocol, selectedItem.data.classes, selectedItem.data.code);
+//                            }
+                        } else if (newCard.id == "importAlarmUnitRunStatusConfigTableInfoPanel_Id") {
+//                            var selectRow = Ext.getCmp("importAlarmUnitConfigSelectRow_Id").getValue();
+//                            var selectedItem = Ext.getCmp("importAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
+//                            if (selectedItem.data.classes == 0) {
+//                                if (isNotVal(selectedItem.data.children) && selectedItem.data.children.length > 0) {
+//                                    CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(selectedItem.data.children[0].text, selectedItem.data.children[0].classes, selectedItem.data.children[0].code);
+//                                }
+//                            } else if (selectedItem.data.classes == 1) {
+//                                CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(selectedItem.data.text, selectedItem.data.classes, selectedItem.data.code);
+//                            } else if (selectedItem.data.classes == 2 || selectedItem.data.classes == 3) {
+//                                CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(selectedItem.data.protocol, selectedItem.data.classes, selectedItem.data.code);
+//                            }
+                        } else if (newCard.id == "importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id") {
+//                            var selectRow = Ext.getCmp("importAlarmUnitConfigSelectRow_Id").getValue();
+//                            var selectedItem = Ext.getCmp("importAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
+//                            if (selectedItem.data.classes == 0) {
+//                                if (isNotVal(selectedItem.data.children) && selectedItem.data.children.length > 0) {
+//                                    CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(selectedItem.data.children[0].text, selectedItem.data.children[0].classes, selectedItem.data.children[0].code);
+//                                }
+//                            } else if (selectedItem.data.classes == 1) {
+//                                CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(selectedItem.data.text, selectedItem.data.classes, selectedItem.data.code);
+//                            } else if (selectedItem.data.classes == 2 || selectedItem.data.classes == 3) {
+//                                CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(selectedItem.data.protocol, selectedItem.data.classes, selectedItem.data.code);
+//                            }
+                        }
                     }
                 }
             }],
             listeners: {
-                beforeclose: function ( panel, eOpts) {
+                beforeclose: function (panel, eOpts) {
                 	clearImportAlarmUnitHandsontable();
                 },
                 minimize: function (win, opts) {
@@ -151,32 +401,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
 });
 
 function clearImportAlarmUnitHandsontable(){
-	if(importAlarmUnitContentHandsontableHelper!=null){
-		if(importAlarmUnitContentHandsontableHelper.hot!=undefined){
-			importAlarmUnitContentHandsontableHelper.hot.destroy();
-		}
-		importAlarmUnitContentHandsontableHelper=null;
-	}
-}
-
-function importAlarmUnitContentTreeSelectClear(node){
-	var chlidArray = node;
-	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
-		childArrNode.set('checked', false);
-		if (childArrNode.childNodes != null) {
-			importAlarmUnitContentTreeSelectClear(childArrNode.childNodes);
-        }
-	});
-}
-
-function importAlarmUnitContentTreeSelectAll(node){
-	var chlidArray = node;
-	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
-		childArrNode.set('checked', true);
-		if (childArrNode.childNodes != null) {
-			importAlarmUnitContentTreeSelectAll(childArrNode.childNodes);
-        }
-	});
+	
 }
 
 function submitImportedAlarmUnitFile() {
@@ -212,131 +437,8 @@ function submitImportedAlarmUnitFile() {
     return false;
 };
 
-function CreateUploadedAlarmUnitContentInfoTable(protocolName,classes,unitName,groupName,groupType){
-	clearImportAlarmUnitHandsontable();
-	Ext.getCmp("importedAlarmUnitItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getUploadedAlarmUnitItemsConfigData',
-		success:function(response) {
-			Ext.getCmp("importedAlarmUnitItemInfoTablePanel_Id").getEl().unmask();
-			Ext.getCmp("importedAlarmUnitItemInfoTablePanel_Id").setTitle(unitName);
-			var result =  Ext.JSON.decode(response.responseText);
-			if(importAlarmUnitContentHandsontableHelper==null || importAlarmUnitContentHandsontableHelper.hot==undefined){
-				importAlarmUnitContentHandsontableHelper = ImportAlarmUnitContentHandsontableHelper.createNew("importedAlarmUnitItemInfoTableDiv_Id");
-				var colHeaders=['序号','名称','起始地址','读写类型','单位','解析模式','','日累计计算','日累计字段名称'];
-				var columns="[" 
-						+"{data:'id'}," 
-						+"{data:'title'},"
-					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importAlarmUnitContentHandsontableHelper);}},"
-						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
-						+"{data:'unit'},"
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
-						+"{data:'bitIndex'}," 
-						+"{data:'dailyTotalCalculate',type:'checkbox'},"
-						+"{data:'dailyTotalCalculateName'}"
-						+"]";
-				importAlarmUnitContentHandsontableHelper.colHeaders=colHeaders;
-				importAlarmUnitContentHandsontableHelper.columns=Ext.JSON.decode(columns);
-				
-				if(classes==2 && groupType==0){
-					importAlarmUnitContentHandsontableHelper.hiddenColumns=[6];
-				}else{
-					importAlarmUnitContentHandsontableHelper.hiddenColumns=[6,7,8];
-				}
-				
-				if(result.totalRoot.length==0){
-					importAlarmUnitContentHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-					importAlarmUnitContentHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importAlarmUnitContentHandsontableHelper.Data=result.totalRoot;
-					importAlarmUnitContentHandsontableHelper.createTable(result.totalRoot);
-				}
-			}
-		},
-		failure:function(){
-			Ext.getCmp("importedAlarmUnitItemInfoTablePanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-		},
-		params: {
-			protocolName:protocolName,
-			classes:classes,
-			unitName:unitName,
-			groupName:groupName,
-			groupType:groupType
-        }
-	});
-};
 
-var ImportAlarmUnitContentHandsontableHelper = {
-		createNew: function (divid) {
-	        var importAlarmUnitContentHandsontableHelper = {};
-	        importAlarmUnitContentHandsontableHelper.hot1 = '';
-	        importAlarmUnitContentHandsontableHelper.divid = divid;
-	        importAlarmUnitContentHandsontableHelper.validresult=true;//数据校验
-	        importAlarmUnitContentHandsontableHelper.colHeaders=[];
-	        importAlarmUnitContentHandsontableHelper.columns=[];
-	        importAlarmUnitContentHandsontableHelper.AllData=[];
-	        importAlarmUnitContentHandsontableHelper.Data=[];
-	        
-	        importAlarmUnitContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        importAlarmUnitContentHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        }
-	        
-	        importAlarmUnitContentHandsontableHelper.createTable = function (data) {
-	        	$('#'+importAlarmUnitContentHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+importAlarmUnitContentHandsontableHelper.divid);
-	        	importAlarmUnitContentHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		hiddenColumns: {
-	                    columns: importAlarmUnitContentHandsontableHelper.hiddenColumns,
-	                    indicators: false,
-	                    copyPasteEnabled: false
-	                },
-	        		colWidths: [50,140,60,80,80,80,80,80,80],
-	                columns:importAlarmUnitContentHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-	                colHeaders:importAlarmUnitContentHandsontableHelper.colHeaders,//显示列头
-	                nestedRows:true,
-	                columnHeaderHeight: 28,
-	                columnSorting: true,//允许排序
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                outsideClickDeselects:false,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
-	                    return cellProperties;
-	                },
-	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
-	                	
-	                }
-	        	});
-	        }
-	        importAlarmUnitContentHandsontableHelper.saveData = function () {}
-	        importAlarmUnitContentHandsontableHelper.clearContainer = function () {
-	        	importAlarmUnitContentHandsontableHelper.AllData = [];
-	        }
-	        return importAlarmUnitContentHandsontableHelper;
-	    }
-};
-
-adviceDataInfoColor = function(val,o,p,e) {
+adviceImportAlarmUnitCollisionInfoColor = function(val,o,p,e) {
 	var saveSign=p.data.saveSign;
 	var tipval=val;
 	var backgroundColor='#FFFFFF';
@@ -352,13 +454,25 @@ adviceDataInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedAlarmUnit(protocolName,deviceType){
+iconImportSingleAlarmUnitAction = function(value, e, record) {
+	var resultstring='';
+	var unitName=record.data.text;
+	var protocolName=record.data.protocol;
+
+	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
+		"onclick=saveSingelImportedAlarmUnit(\""+unitName+"\",\""+protocolName+"\")>保存...</a>";
+	}
+	return resultstring;
+}
+
+function saveSingelImportedAlarmUnit(unitName,protocolName){
 	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedAlarmUnit',
+		url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqUnit',
 		method : "POST",
 		params : {
-			protocolName : protocolName,
-			deviceType : deviceType
+			unitName : unitName,
+			protocolName : protocolName
 		},
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
@@ -368,7 +482,13 @@ function saveSingelImportedAlarmUnit(protocolName,deviceType){
 				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
 			}
 			Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore().load();
-			Ext.getCmp("ModbusAlarmUnitAddrMappingConfigTreeGridPanel_Id").getStore().load();
+
+			var treeGridPanel = Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
+            if (isNotVal(treeGridPanel)) {
+            	treeGridPanel.getStore().load();
+            }else{
+            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore');
+            }
 		},
 		failure : function() {
 			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
@@ -377,54 +497,38 @@ function saveSingelImportedAlarmUnit(protocolName,deviceType){
 }
 
 function saveAllImportedAlarmUnit(){
-	var protocolNameList=[];
-	
-	
+	var unitNameList=[];
 	var treeStore = Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore();
 	var count=treeStore.getCount();
 	for(var i=0;i<count;i++){
 		if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign!=2){
-			protocolNameList.push(treeStore.getAt(i).data.text);
+			unitNameList.push(treeStore.getAt(i).data.text);
 		}
 	}
-	if(protocolNameList.length>0){
-		var deviceType=Ext.getCmp("ImportAlarmUnitWinDeviceType_Id").getValue();
-		Ext.Ajax.request({
-			url : context + '/acquisitionUnitManagerController/saveAllImportedAlarmUnit',
-			method : "POST",
-			params : {
-				protocolName : protocolNameList.join(","),
-				deviceType : deviceType
-			},
-			success : function(response) {
-				var result = Ext.JSON.decode(response.responseText);
-				if (result.success==true) {
-					Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
-				}else{
-					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
-				}
-				Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore().load();
-				Ext.getCmp("ModbusAlarmUnitAddrMappingConfigTreeGridPanel_Id").getStore().load();
-			},
-			failure : function() {
-				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+	Ext.Ajax.request({
+		url : context + '/acquisitionUnitManagerController/saveAllImportedAlarmUnit',
+		method : "POST",
+		params : {
+			unitName : unitNameList.join(",")
+		},
+		success : function(response) {
+			var result = Ext.JSON.decode(response.responseText);
+			if (result.success==true) {
+				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+			}else{
+				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
 			}
-		});
-	}else{
-		Ext.Msg.alert('提示', "<font color=blue>没有可保存的单元。</font>");
-	}
-	
-}
+			Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore().load();
 
-iconImportSingleAlarmUnitAction = function(value, e, record) {
-	var resultstring='';
-	var protocolName=record.data.text;
-	var deviceType=Ext.getCmp("ImportAlarmUnitWinDeviceType_Id").getValue();
-	if( record.data.classes==1 && record.data.saveSign!=2 ){
-		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAlarmUnit(\""+protocolName+"\",\""+deviceType+"\")>保存...</a>";
-	}
-	
-	
-	return resultstring;
+			var treeGridPanel = Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
+            if (isNotVal(treeGridPanel)) {
+            	treeGridPanel.getStore().load();
+            }else{
+            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore');
+            }
+		},
+		failure : function() {
+			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+		}
+	});
 }

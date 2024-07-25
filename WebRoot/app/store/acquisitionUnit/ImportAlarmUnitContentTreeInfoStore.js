@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ImportAlarmUnitContentTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.importAcqUnitContentTreeInfoStore',
+    alias: 'widget.importAlarmUnitContentTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/getUploadedAcqUnitTreeData',
+        url: context + '/acquisitionUnitManagerController/getUploadedAlarmUnitTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -18,17 +18,17 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceType=Ext.getCmp("ImportAcqUnitWinDeviceType_Id").getValue();
+        	var deviceType=Ext.getCmp("ImportAlarmUnitWinDeviceType_Id").getValue();
         	var new_params = {
         			deviceType: deviceType
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },
         load: function (store, options, eOpts) {
-        	var treeGridPanel = Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id");
+        	var treeGridPanel = Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id");
             if (!isNotVal(treeGridPanel)) {
             	treeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ImportAcqUnitContentTreeGridPanel_Id",
+                    id: "ImportAlarmUnitContentTreeGridPanel_Id",
 //                    layout: "fit",
                     border: false,
                     animate: true,
@@ -63,7 +63,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
                     	flex: 12,
                     	dataIndex: 'msg',
                     	renderer:function(value,o,p,e){
-                    		return adviceImportAcqUnitCollisionInfoColor(value,o,p,e);
+                    		return adviceImportAlarmUnitCollisionInfoColor(value,o,p,e);
                     	}
                     },{
                         header: 'id',
@@ -76,7 +76,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
                 		align:'center',
                 		width:50,
                 		renderer :function(value,e,o){
-                			return iconImportSingleAcqUnitAction(value,e,o)
+                			return iconImportSingleAlarmUnitAction(value,e,o)
                 		} 
                     }],
                     listeners: {
@@ -90,37 +90,37 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
                         	
                         },
                         select( v, record, index, eOpts ){
-                        	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateUploadedAcqUnitContentInfoTable(
-                        					record.data.children[0].protocol,
-                        					record.data.children[0].classes,
-                        					record.data.children[0].text
-                        					);
-                        		}else{
-                        			CreateUploadedAcqUnitContentInfoTable('',1,'');
-                        		}
-                        	}if(record.data.classes==1){
-                        		CreateUploadedAcqUnitContentInfoTable(record.data.protocol,record.data.classes,record.data.text);
-                        	}else if(record.data.classes==2){
-                        		CreateUploadedAcqUnitContentInfoTable(
-                        				record.data.protocol,
-                        				record.data.classes,
-                        				record.parentNode.data.text,
-                        				record.data.text,
-                        				record.data.type);
-                        	}
+//                        	if(record.data.classes==0){
+//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                        			CreateUploadedAlarmUnitContentInfoTable(
+//                        					record.data.children[0].protocol,
+//                        					record.data.children[0].classes,
+//                        					record.data.children[0].text
+//                        					);
+//                        		}else{
+//                        			CreateUploadedAlarmUnitContentInfoTable('',1,'');
+//                        		}
+//                        	}if(record.data.classes==1){
+//                        		CreateUploadedAlarmUnitContentInfoTable(record.data.protocol,record.data.classes,record.data.text);
+//                        	}else if(record.data.classes==2){
+//                        		CreateUploadedAlarmUnitContentInfoTable(
+//                        				record.data.protocol,
+//                        				record.data.classes,
+//                        				record.parentNode.data.text,
+//                        				record.data.text,
+//                        				record.data.type);
+//                        	}
                         },
                         beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
                         },
                         checkchange: function (node, checked) {
-                            listenerCheck(node, checked);
+                        	
                         }
                     }
 
                 });
-                var panel = Ext.getCmp("importAcqUnitTreePanel_Id");
+                var panel = Ext.getCmp("importAlarmUnitTreePanel_Id");
                 panel.add(treeGridPanel);
             }
             
@@ -129,7 +129,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
             if(store.data.length>1){
             	selectedRow=1;
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes==2){
+            		if(store.getAt(i).data.classes==1){
             			selectedRow=i;
             			break;
             		}

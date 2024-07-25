@@ -65,6 +65,7 @@ import com.cosog.model.WorkType;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.drive.ExportAcqUnitData;
+import com.cosog.model.drive.ExportAlarmUnitData;
 import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
@@ -5002,7 +5003,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				if(protocolList!=null && protocolList.size()>0){
 					Iterator<ModbusProtocolConfig.Protocol> it = protocolList.iterator();
 					while(it.hasNext()){
-						boolean isDel=true;
 						ModbusProtocolConfig.Protocol protocol=(ModbusProtocolConfig.Protocol)it.next();
 						if(StringManagerUtils.existOrNot(protocolNameList, protocol.getName(), false)){
 							protocol.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
@@ -5112,6 +5112,216 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		json = acquisitionUnitItemManagerService.getUploadedAcqUnitItemsConfigData(protocolName,classes,unitName,groupName,groupType,uploadAcqUnitList);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveSingelImportedAcqUnit")
+	public String saveSingelImportedAcqUnit() throws Exception {
+		HttpSession session=request.getSession();
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		User user = (User) session.getAttribute("userLogin");
+		
+		List<ExportAcqUnitData> uploadAcqUnitList=null;
+		try{
+			if(session.getAttribute("uploadAcqUnitFile")!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+				if(uploadAcqUnitList!=null && uploadAcqUnitList.size()>0){
+					Iterator<ExportAcqUnitData> it = uploadAcqUnitList.iterator();
+					while(it.hasNext()){
+						boolean isDel=true;
+						ExportAcqUnitData exportAcqUnitData=(ExportAcqUnitData)it.next();
+						if(protocolName.equalsIgnoreCase(exportAcqUnitData.getProtocol()) && unitName.equalsIgnoreCase(exportAcqUnitData.getUnitName())){
+							acquisitionUnitItemManagerService.importAcqUnit(exportAcqUnitData,user);
+							it.remove();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAllImportedAcqUnit")
+	public String saveAllImportedAcqUnit() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String[] unitNameList=unitName.split(",");
+		
+		List<ExportAcqUnitData> uploadAcqUnitList=null;
+		try{
+			if(session.getAttribute("uploadAcqUnitFile")!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+				if(uploadAcqUnitList!=null && uploadAcqUnitList.size()>0){
+					Iterator<ExportAcqUnitData> it = uploadAcqUnitList.iterator();
+					while(it.hasNext()){
+						boolean isDel=true;
+						ExportAcqUnitData exportAcqUnitData=(ExportAcqUnitData)it.next();
+						acquisitionUnitItemManagerService.importAcqUnit(exportAcqUnitData,user);
+						it.remove();
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/uploadImportedAlarmUnitFile")
+	public String uploadImportedAlarmUnitFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		
+		HttpSession session=request.getSession();
+		session.removeAttribute("uploadAlarmUnitFile");
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		type = new TypeToken<List<ExportAlarmUnitData>>() {}.getType();
+		List<ExportAlarmUnitData> uploadUnitList=gson.fromJson(fileContent, type);
+		if(uploadUnitList!=null){
+			flag=true;
+			session.setAttribute("uploadAlarmUnitFile", uploadUnitList);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedAlarmUnitTreeData")
+	public String getUploadedAlarmUnitTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportAlarmUnitData> uploadUnitList=null;
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		User user = (User) session.getAttribute("userLogin");
+		try{
+			if(session.getAttribute("uploadAlarmUnitFile")!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getUploadedAlarmUnitTreeData(uploadUnitList,deviceType,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveSingelImportedAlarmUnit")
+	public String saveSingelImportedAlarmUnit() throws Exception {
+		HttpSession session=request.getSession();
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		User user = (User) session.getAttribute("userLogin");
+		
+		List<ExportAlarmUnitData> uploadUnitList=null;
+		try{
+			if(session.getAttribute("uploadAlarmUnitFile")!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+				if(uploadUnitList!=null && uploadUnitList.size()>0){
+					Iterator<ExportAlarmUnitData> it = uploadUnitList.iterator();
+					while(it.hasNext()){
+						boolean isDel=true;
+						ExportAlarmUnitData exportAlarmUnitData=(ExportAlarmUnitData)it.next();
+						if(protocolName.equalsIgnoreCase(exportAlarmUnitData.getProtocol()) && unitName.equalsIgnoreCase(exportAlarmUnitData.getUnitName())){
+							acquisitionUnitItemManagerService.importAlarmUnit(exportAlarmUnitData,user);
+							it.remove();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAllImportedAlarmUnit")
+	public String saveAllImportedAlarmUnit() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String[] unitNameList=unitName.split(",");
+		
+		List<ExportAlarmUnitData> uploadUnitList=null;
+		try{
+			if(session.getAttribute("uploadAlarmUnitFile")!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+				if(uploadUnitList!=null && uploadUnitList.size()>0){
+					Iterator<ExportAlarmUnitData> it = uploadUnitList.iterator();
+					while(it.hasNext()){
+						boolean isDel=true;
+						ExportAlarmUnitData exportAlarmUnitData=(ExportAlarmUnitData)it.next();
+						acquisitionUnitItemManagerService.importAlarmUnit(exportAlarmUnitData,user);
+						it.remove();
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

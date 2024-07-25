@@ -86,7 +86,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
         				var window = Ext.create("AP.view.acquisitionUnit.ImportAcqUnitWindow");
                         window.show();
         				Ext.getCmp("ImportAcqUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
-//        			    Ext.getCmp("ImportProtocolWinTabLabel_Id").show();
+//        			    Ext.getCmp("ImportAcqUnitWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportAcqUnitWinDeviceType_Id').setValue(selectedDeviceTypeId);
         				

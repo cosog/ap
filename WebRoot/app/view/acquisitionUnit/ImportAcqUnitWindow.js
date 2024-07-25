@@ -336,7 +336,7 @@ var ImportAcqUnitContentHandsontableHelper = {
 	    }
 };
 
-adviceDataInfoColor = function(val,o,p,e) {
+adviceImportAcqUnitCollisionInfoColor = function(val,o,p,e) {
 	var saveSign=p.data.saveSign;
 	var tipval=val;
 	var backgroundColor='#FFFFFF';
@@ -352,13 +352,13 @@ adviceDataInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedAcqUnit(protocolName,deviceType){
+function saveSingelImportedAcqUnit(unitName,protocolName){
 	Ext.Ajax.request({
 		url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqUnit',
 		method : "POST",
 		params : {
-			protocolName : protocolName,
-			deviceType : deviceType
+			unitName : unitName,
+			protocolName : protocolName
 		},
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
@@ -368,7 +368,13 @@ function saveSingelImportedAcqUnit(protocolName,deviceType){
 				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
 			}
 			Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
-			Ext.getCmp("ModbusAcqUnitAddrMappingConfigTreeGridPanel_Id").getStore().load();
+
+			var treeGridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+            if (isNotVal(treeGridPanel)) {
+            	treeGridPanel.getStore().load();
+            }else{
+            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
+            }
 		},
 		failure : function() {
 			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
@@ -377,24 +383,20 @@ function saveSingelImportedAcqUnit(protocolName,deviceType){
 }
 
 function saveAllImportedAcqUnit(){
-	var protocolNameList=[];
-	
-	
+	var unitNameList=[];
 	var treeStore = Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore();
 	var count=treeStore.getCount();
 	for(var i=0;i<count;i++){
 		if(treeStore.getAt(i).data.classes==1 && treeStore.getAt(i).data.saveSign!=2){
-			protocolNameList.push(treeStore.getAt(i).data.text);
+			unitNameList.push(treeStore.getAt(i).data.text);
 		}
 	}
-	if(protocolNameList.length>0){
-		var deviceType=Ext.getCmp("ImportAcqUnitWinDeviceType_Id").getValue();
+	if(unitNameList.length>0){
 		Ext.Ajax.request({
 			url : context + '/acquisitionUnitManagerController/saveAllImportedAcqUnit',
 			method : "POST",
 			params : {
-				protocolName : protocolNameList.join(","),
-				deviceType : deviceType
+				unitName : unitNameList.join(",")
 			},
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
@@ -404,7 +406,12 @@ function saveAllImportedAcqUnit(){
 					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
 				}
 				Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
-				Ext.getCmp("ModbusAcqUnitAddrMappingConfigTreeGridPanel_Id").getStore().load();
+				var treeGridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+	            if (isNotVal(treeGridPanel)) {
+	            	treeGridPanel.getStore().load();
+	            }else{
+	            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
+	            }
 			},
 			failure : function() {
 				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
@@ -413,18 +420,16 @@ function saveAllImportedAcqUnit(){
 	}else{
 		Ext.Msg.alert('提示', "<font color=blue>没有可保存的单元。</font>");
 	}
-	
 }
 
 iconImportSingleAcqUnitAction = function(value, e, record) {
 	var resultstring='';
-	var protocolName=record.data.text;
-	var deviceType=Ext.getCmp("ImportAcqUnitWinDeviceType_Id").getValue();
+	var unitName=record.data.text;
+	var protocolName=record.data.protocol;
+
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqUnit(\""+protocolName+"\",\""+deviceType+"\")>保存...</a>";
+		"onclick=saveSingelImportedAcqUnit(\""+unitName+"\",\""+protocolName+"\")>保存...</a>";
 	}
-	
-	
 	return resultstring;
 }

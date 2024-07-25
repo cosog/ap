@@ -1582,7 +1582,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings("resource")
-	public static int initPumpDriverAcquisitionInfoConfigByAcqGroupId(String groupId,String method){
+	public static int initDriverAcquisitionInfoConfigByAcqGroupId(String groupId,String method){
 		List<String> wellList=new ArrayList<String>();
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   

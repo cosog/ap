@@ -38,6 +38,7 @@ import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.drive.ExportAcqUnitData;
+import com.cosog.model.drive.ExportAlarmUnitData;
 import com.cosog.model.drive.ExportProtocolConfig;
 import com.cosog.model.drive.ImportProtocolContent;
 import com.cosog.model.drive.InitInstance;
@@ -8929,7 +8930,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().addObject(protocolModel);
 	}
 	
-	public void doAcquisitionUnitAdd(T acquisitionUnit) throws Exception {
+	public void doAcquisitionUnitAdd(AcquisitionUnit acquisitionUnit) throws Exception {
 		getBaseDao().addObject(acquisitionUnit);
 	}
 	
@@ -9043,7 +9044,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
-	public void grantAcquisitionItemsPermission(T acquisitionUnitItem) throws Exception {
+	public void grantAcquisitionItemsPermission(AcquisitionGroupItem acquisitionUnitItem) throws Exception {
 		getBaseDao().saveOrUpdateObject(acquisitionUnitItem);
 	}
 	
@@ -9154,7 +9155,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
-	public void grantAlarmItemsPermission(T alarmUnitItem) throws Exception {
+	public void grantAlarmItemsPermission(AlarmUnitItem alarmUnitItem) throws Exception {
 		getBaseDao().addObject(alarmUnitItem);
 	}
 	
@@ -10196,7 +10197,278 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append("}");
 		return result_json.toString();
+	}
 	
+	public void importAcqUnit(ExportAcqUnitData exportAcqUnitData,User user){
+		String unitsql="select t.id,t.unit_code from tbl_acq_unit_conf t,tbl_protocol t2 "
+				+ " where t.protocol=t2.name "
+				+ " and t.unit_name='"+exportAcqUnitData.getUnitName()+"' and t2.name='"+exportAcqUnitData.getProtocol()+"'"
+				+ " order by t.id desc";
+		List<?> unitList = this.findCallSql(unitsql);
+		String unitId="";
+		String unitCode="";
+		int r=0;
+		if(unitList.size()>0){
+			Object[] obj=(Object[]) unitList.get(0);
+			unitId=obj[0]+"";
+			unitCode=obj[1]+"";
+			String delItemSql="delete from tbl_acq_item2group_conf t4 where t4.id in( select t.id from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3 where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid="+unitId+")";
+			r=this.getBaseDao().updateOrDeleteBySql(delItemSql);
+			String delGroupSql="delete from tbl_acq_group_conf t3 where t3.id in( select t.id from tbl_acq_group_conf t,tbl_acq_group2unit_conf t2 where t.id=t2.groupid and t2.unitid="+unitId+")";
+			r=this.getBaseDao().updateOrDeleteBySql(delGroupSql);
+			String delGroupUnitsql="delete from tbl_acq_group2unit_conf t where t.unitid="+unitId+"";
+			r=this.getBaseDao().updateOrDeleteBySql(delGroupSql);
+
+			String updateUnitSql="update tbl_acq_unit_conf t set t.remark='"+exportAcqUnitData.getRemark()+"' "
+					+ " where t.id="+unitId;
+			r=this.getBaseDao().updateOrDeleteBySql(updateUnitSql);
+		}else{
+			try {
+				String insertUnitSql="insert into tbl_acq_unit_conf (unit_code,unit_name,protocol,remark) values ('"+exportAcqUnitData.getUnitName()+"','"+exportAcqUnitData.getUnitName()+"','"+exportAcqUnitData.getProtocol()+"','"+exportAcqUnitData.getRemark()+"')";
+				r=this.getBaseDao().updateOrDeleteBySql(insertUnitSql);
+				unitsql="select t.id,t.unit_code from tbl_acq_unit_conf t,tbl_protocol t2 "
+						+ " where t.protocol=t2.name "
+						+ " and t.unit_name='"+exportAcqUnitData.getUnitName()+"' and t2.name='"+exportAcqUnitData.getProtocol()+"'"
+						+ " order by t.id desc";
+				unitList = this.findCallSql(unitsql);
+				unitId="";
+				unitCode="";
+				if(unitList.size()>0){
+					Object[] obj=(Object[]) unitList.get(0);
+					unitId=obj[0]+"";
+					unitCode=obj[1]+"";
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if(StringManagerUtils.isNotNull(unitId) && exportAcqUnitData.getGroupList()!=null && exportAcqUnitData.getGroupList().size()>0){
+			for(int i=0;i<exportAcqUnitData.getGroupList().size();i++){
+//				AcquisitionGroup acquisitionGroup=new AcquisitionGroup();
+//				acquisitionGroup.setGroupName(exportAcqUnitData.getGroupList().get(i).getGroupName());
+//				acquisitionGroup.setGroupCode(exportAcqUnitData.getGroupList().get(i).getGroupName());
+//				acquisitionGroup.setProtocol(exportAcqUnitData.getGroupList().get(i).getProtocol());
+//				acquisitionGroup.setType(exportAcqUnitData.getGroupList().get(i).getType());
+//				acquisitionGroup.setGroupTimingInterval(exportAcqUnitData.getGroupList().get(i).getGroupTimingInterval());
+//				acquisitionGroup.setGroupSavingInterval(exportAcqUnitData.getGroupList().get(i).getGroupSavingInterval());
+//				acquisitionGroup.setRemark(exportAcqUnitData.getGroupList().get(i).getRemark());
+				
+				try {
+					String insertGroupSql="insert into TBL_ACQ_GROUP_CONF (group_code,group_name,grouptiminginterval,groupsavinginterval,protocol,type,remark )"
+							+ " values('"+exportAcqUnitData.getGroupList().get(i).getGroupName()+"','"+exportAcqUnitData.getGroupList().get(i).getGroupName()+"',"
+							+ ""+exportAcqUnitData.getGroupList().get(i).getGroupTimingInterval()+","+exportAcqUnitData.getGroupList().get(i).getGroupSavingInterval()+","
+							+ "'"+exportAcqUnitData.getGroupList().get(i).getProtocol()+"',"+exportAcqUnitData.getGroupList().get(i).getType()+",'"+exportAcqUnitData.getGroupList().get(i).getRemark()+"')";
+					r=this.getBaseDao().updateOrDeleteBySql(insertGroupSql);
+					
+//					this.doAcquisitionGroupAdd(acquisitionGroup);
+					
+					String addGroupSql="select t.id from TBL_ACQ_GROUP_CONF t "
+							+ " where t.group_name='"+exportAcqUnitData.getGroupList().get(i).getGroupName()
+							+"' and t.protocol='"+exportAcqUnitData.getGroupList().get(i).getProtocol()+"'"
+							+ " order by t.id desc";
+					String groupId="";
+					List list = this.service.findCallSql(addGroupSql);
+					if(list.size()>0){
+						groupId=list.get(0).toString();
+						AcquisitionUnitGroup acquisitionUnitGroup = new AcquisitionUnitGroup();
+						acquisitionUnitGroup.setUnitId(StringManagerUtils.stringTransferInteger(unitId));
+						acquisitionUnitGroup.setGroupId(StringManagerUtils.stringTransferInteger(groupId));
+						acquisitionUnitGroup.setMatrix("0,0,0");
+						try {
+							this.grantAcquisitionGroupsPermission(acquisitionUnitGroup);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					if(exportAcqUnitData.getGroupList().get(i).getItemList()!=null){
+						for(int j=0;j<exportAcqUnitData.getGroupList().get(i).getItemList().size();j++){
+							AcquisitionGroupItem acquisitionGroupItem = new AcquisitionGroupItem();
+							acquisitionGroupItem.setGroupId(Integer.parseInt(groupId));
+							
+							acquisitionGroupItem.setItemName(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getItemName());
+							acquisitionGroupItem.setBitIndex(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getBitIndex());
+							
+							acquisitionGroupItem.setMatrix(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getMatrix());
+							acquisitionGroupItem.setDailyTotalCalculateName(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getDailyTotalCalculateName());
+							acquisitionGroupItem.setDailyTotalCalculate(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getDailyTotalCalculate());
+							try {
+								this.grantAcquisitionItemsPermission(acquisitionGroupItem);
+							} catch (Exception e) {
+								e.printStackTrace();
+								continue;
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+		
+		if(StringManagerUtils.isNotNull(unitId)){
+			EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(unitId, "update");
+			EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(unitId, "update");
+			MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(unitId, "update");
+			MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqUnitId(unitId, "update");
+			
+			if(user!=null){
+				try {
+					this.service.saveSystemLog(user,2,"导入采控单元:"+exportAcqUnitData.getUnitName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public String getUploadedAlarmUnitTreeData(List<ExportAlarmUnitData> uploadUnitList,String deviceType,User user){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		
+		List<String> protoolList=new ArrayList<>();
+		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
+		List<?> protoolQueryList = this.findCallSql(protocolSql);
+		for(int i=0;i<protoolQueryList.size();i++){
+			protoolList.add(protoolQueryList.get(i)+"");
+		}
+		
+		String unitSql="select t.unit_name,t.protocol from TBL_ALARM_UNIT_CONF t, tbl_protocol t2 where t.protocol=t2.name and t2.deviceType in("+allDeviceIds+")";
+		List<?> unitQueryList = this.findCallSql(unitSql);
+		
+		
+		tree_json.append("[");
+		if(uploadUnitList!=null && uploadUnitList.size()>0){
+			for(int i=0;i<uploadUnitList.size();i++){
+				String msg="";
+				int saveSign=0;//无冲突覆盖
+				
+				if(StringManagerUtils.existOrNot(protoolList, uploadUnitList.get(i).getProtocol(), false)){
+					if(unitQueryList.size()>0){
+						for(int j=0;j<unitQueryList.size();j++){
+							Object[] obj=(Object[])unitQueryList.get(j);
+							if((obj[0]+"").equalsIgnoreCase(uploadUnitList.get(i).getUnitName()) && (obj[1]+"").equalsIgnoreCase(uploadUnitList.get(i).getProtocol())){
+								saveSign=1;//覆盖
+								msg=obj[0]+"已存在，继续保存将覆盖";
+								break;
+							}
+						}
+					}
+				}else{
+					saveSign=2;
+					msg="单元所属协议"+uploadUnitList.get(i).getProtocol()+"不存在，请先添加对应协议";
+				}
+				
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+uploadUnitList.get(i).getUnitName()+"\",");
+				tree_json.append("\"code\":\""+uploadUnitList.get(i).getUnitCode()+"\",");
+				tree_json.append("\"protocol\":\""+uploadUnitList.get(i).getProtocol()+"\",");
+				tree_json.append("\"msg\":\""+msg+"\",");
+				tree_json.append("\"saveSign\":\""+saveSign+"\",");
+				tree_json.append("\"iconCls\": \"acqUnit\",");
+				tree_json.append("\"action\": \"\",");
+				tree_json.append("\"leaf\": true");
+				tree_json.append("},");
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
+	public void importAlarmUnit(ExportAlarmUnitData exportAlarmUnitData,User user){
+		String unitsql="select t.id,t.unit_code from tbl_alarm_unit_conf t,tbl_protocol t2 "
+				+ " where t.protocol=t2.name "
+				+ " and t.unit_name='"+exportAlarmUnitData.getUnitName()+"' and t2.name='"+exportAlarmUnitData.getProtocol()+"'"
+				+ " order by t.id desc";
+		List<?> unitList = this.findCallSql(unitsql);
+		String unitId="";
+		String unitCode="";
+		int r=0;
+		if(unitList.size()>0){
+			Object[] obj=(Object[]) unitList.get(0);
+			unitId=obj[0]+"";
+			unitCode=obj[1]+"";
+			String delItemSql="delete from tbl_alarm_item2unit_conf t where t.unitid="+unitId+")";
+			r=this.getBaseDao().updateOrDeleteBySql(delItemSql);
+			String updateUnitSql="update tbl_alarm_unit_conf t set t.remark='"+exportAlarmUnitData.getRemark()+"' "
+					+ " where t.id="+unitId;
+			r=this.getBaseDao().updateOrDeleteBySql(updateUnitSql);
+		}else{
+			try {
+				String insertUnitSql="insert into tbl_alarm_unit_conf (unit_code,unit_name,protocol,remark) values ('"+exportAlarmUnitData.getUnitName()+"','"+exportAlarmUnitData.getUnitName()+"','"+exportAlarmUnitData.getProtocol()+"','"+exportAlarmUnitData.getRemark()+"')";
+				r=this.getBaseDao().updateOrDeleteBySql(insertUnitSql);
+				unitsql="select t.id,t.unit_code from tbl_alarm_unit_conf t,tbl_protocol t2 "
+						+ " where t.protocol=t2.name "
+						+ " and t.unit_name='"+exportAlarmUnitData.getUnitName()+"' and t2.name='"+exportAlarmUnitData.getProtocol()+"'"
+						+ " order by t.id desc";
+				unitList = this.findCallSql(unitsql);
+				unitId="";
+				unitCode="";
+				if(unitList.size()>0){
+					Object[] obj=(Object[]) unitList.get(0);
+					unitId=obj[0]+"";
+					unitCode=obj[1]+"";
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if(StringManagerUtils.isNotNull(unitId) && exportAlarmUnitData.getItemList()!=null && exportAlarmUnitData.getItemList().size()>0){
+			for(int i=0;i<exportAlarmUnitData.getItemList().size();i++){
+				try {
+					AlarmUnitItem alarmUnitItem=new AlarmUnitItem();
+					alarmUnitItem.setUnitId(exportAlarmUnitData.getItemList().get(i).getId());
+					alarmUnitItem.setItemName(exportAlarmUnitData.getItemList().get(i).getItemName());
+					alarmUnitItem.setItemCode(exportAlarmUnitData.getItemList().get(i).getItemCode());
+					alarmUnitItem.setItemAddr(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getItemAddr())?StringManagerUtils.stringTransferInteger(exportAlarmUnitData.getItemList().get(i).getItemAddr()):null  );
+					alarmUnitItem.setType(exportAlarmUnitData.getItemList().get(i).getType());
+					
+					alarmUnitItem.setBitIndex(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getBitIndex())?StringManagerUtils.stringTransferInteger(exportAlarmUnitData.getItemList().get(i).getBitIndex()):null  );
+					alarmUnitItem.setValue(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getValue())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getValue()):null  );
+					
+					alarmUnitItem.setUpperLimit(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getUpperLimit())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getUpperLimit()):null  );
+					alarmUnitItem.setLowerLimit(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getLowerLimit())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getLowerLimit()):null  );
+					alarmUnitItem.setHystersis(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getHystersis())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getHystersis()):null  );
+				
+					alarmUnitItem.setDelay(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getDelay())?StringManagerUtils.stringTransferInteger(exportAlarmUnitData.getItemList().get(i).getDelay()):null  );
+					
+					alarmUnitItem.setAlarmLevel(exportAlarmUnitData.getItemList().get(i).getAlarmLevel());
+					alarmUnitItem.setAlarmSign(exportAlarmUnitData.getItemList().get(i).getAlarmSign());
+					
+					alarmUnitItem.setIsSendMessage(exportAlarmUnitData.getItemList().get(i).getSendMessage());
+					alarmUnitItem.setIsSendMail(exportAlarmUnitData.getItemList().get(i).getSendMail());
+					
+					this.grantAlarmItemsPermission(alarmUnitItem);
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+		
+		if(StringManagerUtils.isNotNull(unitId)){
+			MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(unitId, "update");
+			if(user!=null){
+				try {
+					this.service.saveSystemLog(user,2,"导入报警单元:"+exportAlarmUnitData.getUnitName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {

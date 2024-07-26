@@ -1,5 +1,4 @@
 var AlarmQuerySecondTabPanelItems=[{
-//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">工况诊断报警</div>',
 	title: '工况诊断报警',
 	id:'FESDiagramResultAlarmInfoTabPanel_Id',
 	hidden:onlyMonitor,

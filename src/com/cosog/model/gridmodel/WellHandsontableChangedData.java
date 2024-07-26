@@ -36,6 +36,8 @@ public class WellHandsontableChangedData {
 	    private String orgName="";
 
 	    private String deviceName="";
+	    
+	    private String applicationScenariosName="";
 
 	    private String instanceName="";
 	    
@@ -779,6 +781,14 @@ public class WellHandsontableChangedData {
 
 		public void setDeviceName(String deviceName) {
 			this.deviceName = deviceName;
+		}
+
+		public String getApplicationScenariosName() {
+			return applicationScenariosName;
+		}
+
+		public void setApplicationScenariosName(String applicationScenariosName) {
+			this.applicationScenariosName = applicationScenariosName;
 		}
 	    
 	}

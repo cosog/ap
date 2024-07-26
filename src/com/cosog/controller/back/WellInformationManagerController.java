@@ -299,6 +299,19 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getApplicationScenariosComb")
+	public String getApplicationScenariosComb() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String json = this.wellInformationManagerService.getApplicationScenariosComb();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/changeDeviceOrg")
 	public String changeDeviceOrg() throws Exception {
 		this.pager=new Page("pageForm",request);

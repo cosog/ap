@@ -118,12 +118,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-//                	var window = Ext.create("AP.view.well.ExportDeviceInfoWindow");
-//                    Ext.getCmp("ExportDeviceInfoDeviceType_Id").setValue(getDeviceTypeFromTabId("DeviceManagerTabPanel"));
-//                    window.show();
-
                 	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
-                	
                     var fields = "";
                     var heads = "";
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
@@ -430,7 +425,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	},{
             		title:'视频配置',
             		id:'DeviceVideoInfoPanel_Id',
-                	hidden: !IoTConfig,
+                	hidden: !showVideoConfig,
                 	tbar:['->',{
                         xtype: 'button',
                         text: '编辑视频密钥',
@@ -481,6 +476,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         	change: function (radiogroup, newValue, oldValue, eOpts) {
                 				var deviceId=0;
                 				var deviceName='';
+                				var applicationScenarios=0;
                 				var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
                 				if(isNotVal(DeviceSelectRow)){
                 					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
@@ -488,43 +484,63 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     	        		var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
                     	        		deviceId=rowdata[0];
                     	        		deviceName=rowdata[1];
+                    	        		
+                    	        		
+                    	        		var applicationScenariosindex=-1;
+                    	            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
+                    	                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
+                    	                    	applicationScenariosindex=i;
+                    	                    	break;
+                    	                    }
+                    	                }
+                    	        		if(applicationScenariosindex>=0){
+                    	        			if(rowdata[applicationScenariosindex]=='油井'){
+                    	        				applicationScenarios=1;
+                    	        			} 
+                    	        		}
                     	        	}
                 				}
-                				CreateAndLoadProductionDataTable(deviceId,deviceName,true);
-                				CreateAndLoadPumpingInfoTable(deviceId,deviceName,true);
+                				
+                				
+                				
+                				CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,true);
+                				CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,true);
                           	}
                         }
-                    },'->',{
-                        xtype: 'radiogroup',
-                        fieldLabel: '应用场景',
-                        labelWidth: 60,
-                        id: 'DeviceApplicationScenariosType_Id',
-                        cls: 'x-check-group-alt',
-                        items: [
-                            {boxLabel: '油井',name: 'deviceApplicationScenariosType',width: 50, inputValue: 1},
-                            {boxLabel: '煤层气井',name: 'deviceApplicationScenariosType',width: 70, inputValue: 0}
-                        ],
-                        listeners: {
-                        	change: function (radiogroup, newValue, oldValue, eOpts) {
-                        		if(productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined){
-                        			const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
-                                	var hiddenRows=[0,3,9,10];
-                                	if(newValue.deviceApplicationScenariosType==0){
-                                		plugin.hideRows(hiddenRows);
-                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
-                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
-                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
-                                	}else{
-                                		plugin.showRows(hiddenRows);
-                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
-                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
-                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
-                                	}
-                                	productionHandsontableHelper.hot.render();
-                        		}
-                        	}
-                        }
-                    }],
+                    }
+//            		,'->',{
+//                        xtype: 'radiogroup',
+//                        fieldLabel: '应用场景',
+//                        labelWidth: 60,
+//                        id: 'DeviceApplicationScenariosType_Id',
+//                        cls: 'x-check-group-alt',
+//                        items: [
+//                            {boxLabel: '油井',name: 'deviceApplicationScenariosType',width: 50, inputValue: 1},
+//                            {boxLabel: '煤层气井',name: 'deviceApplicationScenariosType',width: 70, inputValue: 0}
+//                        ],
+//                        listeners: {
+//                        	change: function (radiogroup, newValue, oldValue, eOpts) {
+//                        		if(productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined){
+//                        			const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
+//                                	var hiddenRows=[0,3,9,10];
+//                                	if(newValue.deviceApplicationScenariosType==0){
+//                                		plugin.hideRows(hiddenRows);
+//                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
+//                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+//                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
+//                                	}else{
+//                                		plugin.showRows(hiddenRows);
+//                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
+//                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+//                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
+//                                	}
+//                                	productionHandsontableHelper.hot.render();
+//                        		}
+//                        	}
+//                        }
+//                    }
+            		
+            		],
             		items: [{
                       	region: 'center',
                 		title:'生产数据',
@@ -591,6 +607,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				var deviceId=0;
         				var deviceName='';
+        				var applicationScenarios=0;
         				var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
         				if(isNotVal(DeviceSelectRow)){
         					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
@@ -598,9 +615,22 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	        		var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
             	        		deviceId=rowdata[0];
             	        		deviceName=rowdata[1];
+            	        		
+            	        		var applicationScenariosindex=-1;
+            	            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
+            	                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
+            	                    	applicationScenariosindex=i;
+            	                    	break;
+            	                    }
+            	                }
+            	        		if(applicationScenariosindex>=0){
+            	        			if(rowdata[applicationScenariosindex]=='油井'){
+            	        				applicationScenarios=1;
+            	        			} 
+            	        		}
             	        	}
         				}
-        				CreateDeviceAdditionalInformationTable(deviceId,deviceName);
+        				CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios);
         			},
         			afterrender: function (panel, eOpts) {
         				
@@ -617,7 +647,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     }
 });
 
-function CreateDeviceAdditionalInformationTable(deviceId,deviceName,isNew){
+function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios,isNew){
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationRabpanel_Id");
 	var activeId=tabPanel.getActiveTab().id;
 	if(activeId=='DeviceAdditionalInfoPanel_Id'){
@@ -632,8 +662,8 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,isNew){
 		if(calculateType!=deviceCalculateDataType){
 			Ext.getCmp('DeviceCalculateDataType_Id').setValue({deviceCalculateDataType:calculateType});
 		}else{
-			CreateAndLoadProductionDataTable(deviceId,deviceName,isNew);
-			CreateAndLoadPumpingInfoTable(deviceId,deviceName,isNew);
+			CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,isNew);
+			CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew);
 		}
 	}
 }
@@ -821,7 +851,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             	Ext.getCmp("DeviceSelectRow_Id").setValue('');
             	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
             	
-            	CreateDeviceAdditionalInformationTable(0,'');
+            	CreateDeviceAdditionalInformationTable(0,'',0);
             }else{
             	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
             	var selectRow=0;
@@ -839,7 +869,23 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             		Ext.getCmp("selectedDeviceId_global").setValue(rowdata[0]);
         		}
         		
-        		CreateDeviceAdditionalInformationTable(rowdata[0],rowdata[1]);
+        		var applicationScenarios=0;
+        		var applicationScenariosindex=-1;
+            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
+                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
+                    	applicationScenariosindex=i;
+                    	break;
+                    }
+                }
+        		if(applicationScenariosindex>=0){
+        			if(rowdata[applicationScenariosindex]=='油井'){
+        				applicationScenarios=1;
+        			} 
+        		}
+        		
+        		
+        		
+        		CreateDeviceAdditionalInformationTable(rowdata[0],rowdata[1],applicationScenarios);
             }
             Ext.getCmp("DeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -968,7 +1014,7 @@ var DeviceInfoHandsontableHelper = {
                 		Ext.getCmp("DeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
                     	
-                    	CreateDeviceAdditionalInformationTable(0,'');
+                    	CreateDeviceAdditionalInformationTable(0,'',0);
                 	}else{
                 		if(row<0){
                     		row=0;
@@ -999,7 +1045,22 @@ var DeviceInfoHandsontableHelper = {
                         		deviceName=row1[1];
                         	}
                         	
-                        	CreateDeviceAdditionalInformationTable(recordId,deviceName);
+                        	var applicationScenariosindex=-1;
+                        	var applicationScenarios=0;
+        	            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
+        	                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
+        	                    	applicationScenariosindex=i;
+        	                    	break;
+        	                    }
+        	                }
+        	        		if(applicationScenariosindex>=0){
+        	        			if(row1[applicationScenariosindex]=='油井'){
+        	        				applicationScenarios=1;
+        	        			} 
+        	        		}
+                        	
+                        	
+                        	CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios);
                         	
                         	Ext.getCmp("selectedDeviceId_global").setValue(recordId);
                     	}else{
@@ -1048,20 +1109,23 @@ var DeviceInfoHandsontableHelper = {
                                 deviceInfoHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
                                 
                                 if(params[1] == "applicationScenariosName"){
-                                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
-                                	var hiddenRows=[0,3,9,10];
-                                	if(sceneConfig=='cbm' || (sceneConfig=='all'&& params[3] == "煤层气井") ){
-                                		plugin.hideRows(hiddenRows);
-                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
-                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
-                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
-                                	}else{
-                                		plugin.showRows(hiddenRows);
-                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
-                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
-                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
-                                	}
-                                	productionHandsontableHelper.hot.render();
+                                	if(productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined){
+                            			const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
+                                    	var hiddenRows=[0,3,9,10];
+                                    	if(params[3] == "煤层气井"){
+                                    		plugin.hideRows(hiddenRows);
+                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
+                                    	}else{
+                                    		plugin.showRows(hiddenRows);
+                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
+                                    	}
+                                    	productionHandsontableHelper.hot.render();
+                            		}
+                                	
                                 }
                             }
                         }
@@ -1109,6 +1173,21 @@ var DeviceInfoHandsontableHelper = {
                 var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
                 var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
             	var deviceId=rowdata[0];
+            	
+            	var applicationScenariosindex=-1;
+            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
+                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
+                    	applicationScenariosindex=i;
+                    	break;
+                    }
+                }
+            	
+            	var applicationScenarios=0;
+        		if(applicationScenariosindex>=0){
+        			if(rowdata[applicationScenariosindex]=='油井'){
+        				applicationScenarios=1;
+        			} 
+        		}
             	
             	
             	var deviceAdditionalInformationData={};
@@ -1168,7 +1247,10 @@ var DeviceInfoHandsontableHelper = {
                     deviceAdditionalInformationData.data=JSON.stringify(videoInfoList);
             	}else if(additionalInformationType==3){
             		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
-            		var applicationScenarios=Ext.getCmp("DeviceApplicationScenariosType_Id").getValue().deviceApplicationScenariosType;
+            		
+            		
+            		
+//            		var applicationScenarios=Ext.getCmp("DeviceApplicationScenariosType_Id").getValue().deviceApplicationScenariosType;
             		
             		if(deviceCalculateDataType==1){//指定为功图计算
             			//生产数据
@@ -1788,7 +1870,7 @@ var DeviceInfoHandsontableHelper = {
     }
 };
 
-function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
+function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,isNew){
 	var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	
 	if(productionHandsontableHelper!=null){
@@ -1806,9 +1888,13 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
 			success:function(response) {
 				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
 				var result =  Ext.JSON.decode(response.responseText);
-				var applicationScenarios=result.applicationScenarios;
 				
-				Ext.getCmp("DeviceApplicationScenariosType_Id").setValue({deviceApplicationScenariosType:applicationScenarios});
+				
+				
+				
+//				var applicationScenarios=result.applicationScenarios;
+				
+//				Ext.getCmp("DeviceApplicationScenariosType_Id").setValue({deviceApplicationScenariosType:applicationScenarios});
 				
 				var panelTitle='生产数据';
 				if(isNotVal(deviceName)){
@@ -1840,12 +1926,22 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,isNew){
 					}
 				}
 				
-				var hiddenRows=[];
-				if(applicationScenarios==0){
-					hiddenRows=[0,3,9,10];
-				}
+				var hiddenRows=[0,3,9,10];
 				const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
-	        	plugin.hideRows(hiddenRows);
+				if(applicationScenarios==0){
+					
+				}
+				if(applicationScenarios==0){
+            		plugin.hideRows(hiddenRows);
+            		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
+            		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
+            		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
+            	}else if(applicationScenarios==1){
+            		plugin.showRows(hiddenRows);
+            		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
+            		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
+            		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
+            	}
 	        	productionHandsontableHelper.hot.render();
 			},
 			failure:function(){
@@ -1988,7 +2084,7 @@ var ProductionHandsontableHelper = {
 	    }
 	};
 
-function CreateAndLoadPumpingInfoTable(deviceId,deviceName,isNew){
+function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew){
 	var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	if(pumpingInfoHandsontableHelper!=null){
 		if(pumpingInfoHandsontableHelper.hot!=undefined){

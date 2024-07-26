@@ -171,11 +171,6 @@ var historyQueryCenterTabPanelItems=[{
 	id:"HistoryDiagramOverlayTabPanel",
 	hidden:onlyMonitor,
 	layout: 'border',
-//    layout: {
-//        type: 'hbox',
-//        pack: 'start',
-//        align: 'stretch'
-//    },
     items: [
         {
         	region: 'west',

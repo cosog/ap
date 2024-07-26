@@ -692,7 +692,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     	width: '31%',
                     	xtype: 'tabpanel',
                     	id:"RealTimeMonitoringRightTabPanel",
-                		activeTab: onlyMonitor?1:0,
+                		activeTab: onlyFESDiagramCal?1:0,
                 		border: false,
                 		split: true,
                         collapsible: true,

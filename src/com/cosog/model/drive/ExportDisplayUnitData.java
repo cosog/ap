@@ -12,7 +12,7 @@ public class ExportDisplayUnitData {
 
     private String Protocol;
 
-    private int AcqUnitId;
+    private String AcqUnit;
 
     private String Remark;
 
@@ -43,12 +43,6 @@ public class ExportDisplayUnitData {
     }
     public String getProtocol(){
         return this.Protocol;
-    }
-    public void setAcqUnitId(int AcqUnitId){
-        this.AcqUnitId = AcqUnitId;
-    }
-    public int getAcqUnitId(){
-        return this.AcqUnitId;
     }
     public void setRemark(String Remark){
         this.Remark = Remark;
@@ -216,5 +210,12 @@ public class ExportDisplayUnitData {
 	    public int getHistorySort(){
 	        return this.HistorySort;
 	    }
+	}
+
+	public String getAcqUnit() {
+		return AcqUnit;
+	}
+	public void setAcqUnit(String acqUnit) {
+		AcqUnit = acqUnit;
 	}
 }

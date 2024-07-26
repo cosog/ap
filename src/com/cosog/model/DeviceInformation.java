@@ -23,6 +23,7 @@ public class DeviceInformation implements java.io.Serializable {
 	private Integer orgId;
 	private String deviceName;
 	private Integer deviceType;
+	private Integer applicationScenarios;
 	private String instanceCode;
 	private String displayInstanceCode;
 	private String reportInstanceCode;
@@ -197,5 +198,14 @@ public class DeviceInformation implements java.io.Serializable {
 
 	public void setReportInstanceCode(String reportInstanceCode) {
 		this.reportInstanceCode = reportInstanceCode;
+	}
+
+	@Column(name = "applicationScenarios", precision = 22, scale = 0)
+	public Integer getApplicationScenarios() {
+		return applicationScenarios;
+	}
+
+	public void setApplicationScenarios(Integer applicationScenarios) {
+		this.applicationScenarios = applicationScenarios;
 	}
 }

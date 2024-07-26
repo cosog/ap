@@ -60,6 +60,37 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolReportUnitWindow");
                         window.show();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导入',
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+        			iconCls: 'import',
+        			handler: function (v, o) {
+        				var selectedDeviceTypeName="";
+        				var selectedDeviceTypeId="";
+        				var tabTreeStore = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getStore();
+        				var count=tabTreeStore.getCount();
+        				var tabTreeSelection = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+        				var rec=null;
+        				if (tabTreeSelection.length > 0) {
+        					rec=tabTreeSelection[0];
+        					selectedDeviceTypeName=foreachAndSearchTabAbsolutePath(tabTreeStore.data.items,tabTreeSelection[0].data.deviceTypeId);
+        					selectedDeviceTypeId=tabTreeSelection[0].data.deviceTypeId;
+        				} else {
+        					if(count>0){
+        						rec=orgTreeStore.getAt(0);
+        						selectedDeviceTypeName=orgTreeStore.getAt(0).data.text;
+        						selectedDeviceTypeId=orgTreeStore.getAt(0).data.deviceTypeId;
+        					}
+        				}
+        				var window = Ext.create("AP.view.acquisitionUnit.ImportReportUnitWindow");
+                        window.show();
+        				Ext.getCmp("ImportReportUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+//        			    Ext.getCmp("ImportAlarmUnitWinTabLabel_Id").show();
+        			    
+        			    Ext.getCmp('ImportReportUnitWinDeviceType_Id').setValue(selectedDeviceTypeId);
+        				
+        			}
                 }],
                 layout: "border",
                 items: [{

@@ -17,6 +17,65 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        
+        var applicationScenariosStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/getApplicationScenariosComb',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var applicationScenariosComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  '应用场景',
+					emptyText : '请选择应用场景',
+					blankText : '请选择应用场景',
+					id : 'deviceApplicationScenariosComb_Id',
+					anchor : '95%',
+					store: applicationScenariosStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : true,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (v,o) {
+							if(o.data.boxkey==''){
+								v.setValue('');
+								v.setRawValue(' ');
+							}
+							Ext.getCmp("deviceApplicationScenarios_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
         /**采控实例*/
         var acqInstanceStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -314,6 +373,12 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                         }
                     }
                 }
+            },applicationScenariosComb,{
+            	xtype: "hidden",
+                fieldLabel: '应用场景',
+                id: 'deviceApplicationScenarios_Id',
+                value: '',
+                name: "deviceInformation.applicationScenarios"
             },deviceAcqInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '采控实例编码',

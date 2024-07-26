@@ -135,19 +135,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                         html: '<div class="importAlarmUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                if (protocolAlarmUnitConfigNumItemsHandsontableHelper != null && protocolAlarmUnitConfigNumItemsHandsontableHelper.hot != undefined) {
-                                    //                          		protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.refreshDimensions();
-                                    var newWidth = width;
-                                    var newHeight = height;
-                                    var header = thisPanel.getHeader();
-                                    if (header) {
-                                        newHeight = newHeight - header.lastBox.height - 2;
-                                    }
-                                    protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.updateSettings({
-                                        width: newWidth,
-                                        height: newHeight
-                                    });
-                                }
+                            	
                             }
                         }
               	}, {
@@ -161,19 +149,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                         html: '<div class="importAlarmUnitCalNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCalNumItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                if (protocolAlarmUnitConfigCalNumItemsHandsontableHelper != null && protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot != undefined) {
-                                    //                          		protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.refreshDimensions();
-                                    var newWidth = width;
-                                    var newHeight = height;
-                                    var header = thisPanel.getHeader();
-                                    if (header) {
-                                        newHeight = newHeight - header.lastBox.height - 2;
-                                    }
-                                    protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.updateSettings({
-                                        width: newWidth,
-                                        height: newHeight
-                                    });
-                                }
+                            	
                             }
                         }
               	}]
@@ -197,19 +173,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                         html: '<div class="importAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                if (protocolAlarmUnitConfigSwitchItemsHandsontableHelper != null && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot != undefined) {
-                                    //                          		protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.refreshDimensions();
-                                    var newWidth = width;
-                                    var newHeight = height;
-                                    var header = thisPanel.getHeader();
-                                    if (header) {
-                                        newHeight = newHeight - header.lastBox.height - 2;
-                                    }
-                                    protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.updateSettings({
-                                        width: newWidth,
-                                        height: newHeight
-                                    });
-                                }
+                            	
                             }
                         }
                   }]
@@ -233,19 +197,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                         html: '<div class="importAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                if (protocolAlarmUnitConfigEnumItemsHandsontableHelper != null && protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot != undefined) {
-                                    //                          		protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.refreshDimensions();
-                                    var newWidth = width;
-                                    var newHeight = height;
-                                    var header = thisPanel.getHeader();
-                                    if (header) {
-                                        newHeight = newHeight - header.lastBox.height - 2;
-                                    }
-                                    protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.updateSettings({
-                                        width: newWidth,
-                                        height: newHeight
-                                    });
-                                }
+                            	
                             }
                         }
                   }]
@@ -256,19 +208,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                     html: '<div class="importAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            if (protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper != null && protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot != undefined) {
-                                //                      		protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.refreshDimensions();
-                                var newWidth = width;
-                                var newHeight = height;
-                                var header = thisPanel.getHeader();
-                                if (header) {
-                                    newHeight = newHeight - header.lastBox.height - 2;
-                                }
-                                protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.updateSettings({
-                                    width: newWidth,
-                                    height: newHeight
-                                });
-                            }
+                        	
                         }
                     }
               }, {
@@ -278,19 +218,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                     html: '<div class="importAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            if (protocolAlarmUnitConfigRunStatusItemsHandsontableHelper != null && protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot != undefined) {
-                                //                      		protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.refreshDimensions();
-                                var newWidth = width;
-                                var newHeight = height;
-                                var header = thisPanel.getHeader();
-                                if (header) {
-                                    newHeight = newHeight - header.lastBox.height - 2;
-                                }
-                                protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.updateSettings({
-                                    width: newWidth,
-                                    height: newHeight
-                                });
-                            }
+                        	
                         }
                     }
               }, {
@@ -300,19 +228,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                     html: '<div class="importAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            if (protocolAlarmUnitConfigCommStatusItemsHandsontableHelper != null && protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot != undefined) {
-                                //                      		protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.refreshDimensions();
-                                var newWidth = width;
-                                var newHeight = height;
-                                var header = thisPanel.getHeader();
-                                if (header) {
-                                    newHeight = newHeight - header.lastBox.height - 2;
-                                }
-                                protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.updateSettings({
-                                    width: newWidth,
-                                    height: newHeight
-                                });
-                            }
+                        	
                         }
                     }
               }],
@@ -468,7 +384,7 @@ iconImportSingleAlarmUnitAction = function(value, e, record) {
 
 function saveSingelImportedAlarmUnit(unitName,protocolName){
 	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqUnit',
+		url : context + '/acquisitionUnitManagerController/saveSingelImportedAlarmUnit',
 		method : "POST",
 		params : {
 			unitName : unitName,

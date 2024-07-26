@@ -193,9 +193,10 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
             	title:'详细信息',
         		id:'AuxiliaryDeviceDetailsPanel_Id',
         		html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
-        		tbar:[{
+        		tbar:onlyMonitor?null:[{
                     xtype: 'radiogroup',
                     fieldLabel: '指定类型',
+                    hidden: onlyMonitor,
                     labelWidth: 60,
                     id: 'AuxiliaryDeviceSpecificType_Id',
                     cls: 'x-check-group-alt',
@@ -351,6 +352,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
+//                outsideClickDeselects:false,
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -479,7 +481,11 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
         	var auxiliaryDeviceInfoHandsontableData=auxiliaryDeviceInfoHandsontableHelper.hot.getData();
         	if(auxiliaryDeviceInfoHandsontableData.length>0){
         		auxiliaryDeviceInfoHandsontableHelper.insertExpressCount();
-                var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+        		var auxiliaryDeviceSpecificType=0;
+        		if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
+        			auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+        		}
+                
                 var DeviceSelectRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
                 var rowdata = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
             	var deviceId=rowdata[0];
@@ -648,9 +654,14 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
 };
 
 function CreateAndLoadAuxiliaryDeviceDetailsTable(deviceId,specificType){
-	var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	var auxiliaryDeviceSpecificType=0;
+	if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
+		auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	}
 	if(specificType!=auxiliaryDeviceSpecificType){
-		Ext.getCmp('AuxiliaryDeviceSpecificType_Id').setValue({auxiliaryDeviceSpecificType:specificType});
+		if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
+			Ext.getCmp('AuxiliaryDeviceSpecificType_Id').setValue({auxiliaryDeviceSpecificType:specificType});
+		}
 	}else{
 		CreateAuxiliaryDeviceDetailsTable(deviceId,specificType);
 	}
@@ -663,7 +674,11 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType){
 		}
 		auxiliaryDeviceDetailsHandsontableHelper=null;
 	}
-	var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	
+	var auxiliaryDeviceSpecificType=0;
+	if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
+		auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	}
 
 	Ext.Ajax.request({
 		method:'POST',
@@ -785,7 +800,10 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    if(AuxiliaryDeviceManagerModuleEditFlag!=1){
 	                    	cellProperties.readOnly = true;
 	                    }else{
-	                    	var auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	                    	var auxiliaryDeviceSpecificType=0;
+	                    	if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
+	                    		auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	                    	}
 	                    	if(auxiliaryDeviceSpecificType==1){
 	                    		if(visualColIndex!=2){
 	                    			cellProperties.readOnly = true;

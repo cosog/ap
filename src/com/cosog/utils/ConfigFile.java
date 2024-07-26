@@ -352,6 +352,8 @@ public class ConfigFile {
 	    private String scene;
 	    
 	    private String module;
+	    
+	    private boolean showVideo;
 
 	    private boolean showLogo;
 
@@ -486,6 +488,12 @@ public class ConfigFile {
 		}
 		public void setDeviceShowName(String deviceShowName) {
 			this.deviceShowName = deviceShowName;
+		}
+		public boolean isShowVideo() {
+			return showVideo;
+		}
+		public void setShowVideo(boolean showVideo) {
+			this.showVideo = showVideo;
 		}
 	}
 	

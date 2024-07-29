@@ -18,11 +18,14 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         					xtype: 'tabpanel',
         	        		id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].deviceTypeId,
         	        		activeTab: 0,
+        	        		iconCls: i==0?'check1':null,
         	        		border: false,
         	        		tabPosition: 'left',
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				oldCard.setIconCls(null);
+        	        				newCard.setIconCls('check2');
         	        				oldCard.removeAll();
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
@@ -50,6 +53,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
         						id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
+        						iconCls: j==0?'check2':null,
         						border: false
         				};
             			if(j==0){
@@ -80,6 +84,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].deviceTypeId,
+    						iconCls: i==0?'check1':null,
     						border: false
         			};
         			if(i==0){
@@ -101,6 +106,8 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+    					oldCard.setIconCls(null);
+        				newCard.setIconCls('check1');
         				if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{

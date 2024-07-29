@@ -178,6 +178,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 items: [{
                 	id:'SingleWellDailyReportTabPanel_id',
                 	title:'班报表',
+                	iconCls: 'check3',
                 	layout:'border',
                 	border: false,
                 	items:[{
@@ -413,7 +414,11 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 	}]
                 }],
                 listeners: {
-                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check3');
+        			},
+        			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id=='SingleWellDailyReportTabPanel_id'){
                         	Ext.getCmp("SingleWellDailyReportDate_Id").setValue("");
                         	Ext.getCmp("SingleWellDailyReportDate_Id").setRawValue("");

@@ -170,6 +170,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 items: [{
                 	id:'ProductionRangeReportTabPanel_id',
                 	title:'日报表',
+                	iconCls: 'check3',
                 	layout:'border',
                 	border: false,
                 	items:[{
@@ -397,7 +398,11 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 	}]
                 }],
                 listeners: {
-                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check3');
+        			},
+        			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	
                     }
                 }

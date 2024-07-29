@@ -6,6 +6,7 @@ var realtimeStatTabItems=[{
 	closeAction:'hide',
 	id:'RealTimeMonitoringFESdiagramResultStatGraphPanel_Id',
 	hidden: onlyMonitor,
+	iconCls: onlyMonitor?null:'check3',
 	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -29,6 +30,7 @@ var realtimeStatTabItems=[{
 	title:'运行状态',
 	layout: 'fit',
 	closable:false,
+	iconCls: onlyMonitor?'check3':null,
 	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
 	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
@@ -108,6 +110,7 @@ var realtimeCurveAndTableTabPanelItems=[{
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
     hidden: onlyMonitor,
+    iconCls: onlyMonitor?null:'check3',
     layout: {
         type: 'vbox',
         pack: 'start',
@@ -316,6 +319,7 @@ var realtimeCurveAndTableTabPanelItems=[{
 	title:'趋势曲线',
 	id:"RealTimeMonitoringCurveTabPanel_Id",
 	layout: 'border',
+	iconCls: onlyMonitor?'check3':null,
 	items: [{
 		region: 'center',
 		layout: 'fit',
@@ -375,6 +379,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
 	title:'设备控制',
 	border: false,
 	hidden: onlyFESDiagramCal,
+	iconCls: onlyFESDiagramCal?null:'check3',
     layout: 'border',
     hideMode:'offsets',
     id:'RealTimeMonitoringRightControlAndVideoPanel',
@@ -442,6 +447,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
 	title:'设备信息',
 	layout: 'border',
 	id:'RealTimeMonitoringRightDeviceInfoPanel',
+	iconCls: onlyFESDiagramCal?'check3':null,
 	items:[{
 		region: 'center',
 		id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
@@ -638,7 +644,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		tabPosition: 'top',
                 		items: realtimeStatTabItems,
                 		listeners: {
-            				tabchange: function (tabPanel, newCard,oldCard, obj) {
+                			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard,oldCard, obj) {
             					if(newCard.id=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
             						loadAndInitFESdiagramResultStat(true);
             					}else if(newCard.id=="RealTimeMonitoringStatGraphPanel_Id"){
@@ -672,7 +682,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		tabPosition: 'top',
                 		items: realtimeCurveAndTableTabPanelItems,
                 		listeners: {
-            				tabchange: function (tabPanel, newCard,oldCard, obj) {
+                			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard,oldCard, obj) {
             					var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
             					var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
             					if(isNotVal(gridPanel)&&selectRow>=0){
@@ -700,7 +714,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		tabPosition: 'top',
                 		items: RealTimeMonitoringRightTabPanelItems,
                 		listeners: {
-                        	tabchange: function (tabPanel, newCard, oldCard,obj) {
+                			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard,obj) {
                         		if(newCard.id=="RealTimeMonitoringRightControlAndVideoPanel"){
                                 	if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
                                 		createVideo(0,Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);

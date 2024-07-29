@@ -20,9 +20,12 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         	        		activeTab: 0,
         	        		border: false,
         	        		tabPosition: 'left',
+        	        		iconCls: i==0?'check1':null,
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				oldCard.setIconCls(null);
+        	        				newCard.setIconCls('check2');
         	        				oldCard.removeAll();
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
@@ -46,6 +49,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         						title:tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
+        						iconCls: j==0?'check2':null,
         						id: 'DeviceManagerPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
@@ -63,6 +67,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'DeviceManagerPanel_'+tabInfo.children[i].deviceTypeId,
+    						iconCls: i==0?'check1':null,
     						border: false
         			};
         			if(i==0){
@@ -101,6 +106,8 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         		items:items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check1');
         				if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{

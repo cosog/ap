@@ -649,6 +649,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
         			title: '单条记录',
     				layout: "fit",
     				id:'PCPCalculateMaintainingPanel',
+    				iconCls: 'check3',
     				border: false,
     				bbar: bbar,
     				html:'<div class=PCPCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="PCPCalculateMaintainingDiv_id"></div></div>',
@@ -683,7 +684,11 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                     }
         		}],
         		listeners: {
-    				tabchange: function (tabPanel, newCard,oldCard, obj) {
+        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check3');
+        			},
+        			tabchange: function (tabPanel, newCard,oldCard, obj) {
     					if(newCard.id=="PCPCalculateMaintainingPanel"){
     						Ext.getCmp("PCPCalculateMaintainingUpdateDataBtn").show();
     						Ext.getCmp("PCPCalculateMaintainingLinkedDataBtn").show();

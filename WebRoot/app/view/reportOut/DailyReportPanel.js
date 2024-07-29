@@ -20,6 +20,7 @@ Ext.define("AP.view.reportOut.DailyReportPanel", {
     				title: '单井报表',
     				id:'SingleWellDailyReportTabPanel_Id',
     				items: [SingleWellDailyReportPanel],
+    				iconCls: 'check3',
     				layout: "fit",
     				border: false
     			},{
@@ -31,6 +32,10 @@ Ext.define("AP.view.reportOut.DailyReportPanel", {
     				border: false
     			}],
         		listeners: {
+        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check3');
+        			},
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         				if(newCard.id=="SingleWellDailyReportTabPanel_Id"){

@@ -119,7 +119,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqUnitWindow", {
             	id:"importedAcqUnitItemInfoTablePanel_Id",
             	title:'采控项',
             	layout: "fit",
-            	html:'<div class="ModbusAcqUnitAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAcqUnitItemInfoTableDiv_Id"></div></div>',
+            	html:'<div class="importedAcqUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAcqUnitItemInfoTableDiv_Id"></div></div>',
                 listeners: {
                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                     	if(importAcqUnitContentHandsontableHelper!=null && importAcqUnitContentHandsontableHelper.hot!=undefined){

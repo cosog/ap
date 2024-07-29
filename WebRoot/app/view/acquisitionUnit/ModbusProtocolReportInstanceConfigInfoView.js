@@ -60,6 +60,37 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolReportInstanceWindow");
                         window.show();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导入',
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+        			iconCls: 'import',
+        			handler: function (v, o) {
+        				var selectedDeviceTypeName="";
+        				var selectedDeviceTypeId="";
+        				var tabTreeStore = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getStore();
+        				var count=tabTreeStore.getCount();
+        				var tabTreeSelection = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+        				var rec=null;
+        				if (tabTreeSelection.length > 0) {
+        					rec=tabTreeSelection[0];
+        					selectedDeviceTypeName=foreachAndSearchTabAbsolutePath(tabTreeStore.data.items,tabTreeSelection[0].data.deviceTypeId);
+        					selectedDeviceTypeId=tabTreeSelection[0].data.deviceTypeId;
+        				} else {
+        					if(count>0){
+        						rec=orgTreeStore.getAt(0);
+        						selectedDeviceTypeName=orgTreeStore.getAt(0).data.text;
+        						selectedDeviceTypeId=orgTreeStore.getAt(0).data.deviceTypeId;
+        					}
+        				}
+        				var window = Ext.create("AP.view.acquisitionUnit.ImportReportInstanceWindow");
+                        window.show();
+        				Ext.getCmp("ImportReportInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+//        			    Ext.getCmp("ImportReportInstanceWinTabLabel_Id").show();
+        			    
+        			    Ext.getCmp('ImportReportInstanceWinDeviceType_Id').setValue(selectedDeviceTypeId);
+        				
+        			}
                 }],
                 layout: "border",
                 items: [{
@@ -114,6 +145,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     tabPosition: 'top',
                     items: [{
                     	title:'单井报表',
+                    	iconCls: 'check3',
                     	id:'ModbusProtocolReportInstanceSingleWellReportTemplatePanel_Id',
                     	xtype: 'tabpanel',
                     	activeTab: 0,
@@ -122,6 +154,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         items: [{
                         	id:'ModbusProtocolReportInstanceSingleWellDailyReportTemplatePanel_Id',
                         	title:'班报表',
+                        	iconCls: 'check3',
                         	border: false,
                         	region: 'center',
                         	layout: "border",
@@ -243,7 +276,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         	}]
                         }],
                         listeners: {
-                            tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard, obj) {
                             	var reportType=0;
                             	var selectedUnitId='';
                             	var selectedTemplateCode='';
@@ -305,6 +342,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         items: [{
                         	id:'ModbusProtocolReportInstanceProductionRangeReportTemplatePanel_Id',
                         	title:'日报表',
+                        	iconCls: 'check3',
                         	border: false,
                     		layout: "border",
                     		items: [{
@@ -360,13 +398,21 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         	}]
                         }],
                         listeners: {
-                        	tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard, obj) {
                         		
                         	}
                         }
                     }],
                     listeners: {
-                        tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				oldCard.setIconCls(null);
+            				newCard.setIconCls('check3');
+            			},
+            			tabchange: function (tabPanel, newCard, oldCard, obj) {
                         	var reportType=0;
                         	var selectedUnitId='';
                         	var selectedTemplateCode='';

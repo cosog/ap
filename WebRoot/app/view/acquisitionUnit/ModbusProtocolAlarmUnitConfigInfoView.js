@@ -171,6 +171,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     	region: 'center',
                 		layout: "border",
                 		id:"ModbusProtocolAlarmUnitNumItemsConfigTableInfoPanel_Id",
+                		iconCls: 'check3',
                 		items: [{
                     		region: 'center',
                     		title:'采集项配置',
@@ -361,7 +362,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                         }
                     }],
                     listeners: {
-                    	tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				oldCard.setIconCls(null);
+            				newCard.setIconCls('check3');
+            			},
+            			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     		if(newCard.id=="ModbusProtocolAlarmUnitNumItemsConfigTableInfoPanel_Id"){
                     			var selectRow= Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue();
                     			var selectedItem=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);

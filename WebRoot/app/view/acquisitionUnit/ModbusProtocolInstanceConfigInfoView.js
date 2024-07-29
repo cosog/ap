@@ -23,6 +23,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 	title:'采控实例',
                 	id:"ModbusProtocolAcqInstanceConfigTabPanel_Id",
                 	items: [ModbusProtocolAcqInstanceConfigInfoView],
+                	iconCls: 'check2',
     				layout: "fit",
     				border: false
                 },{
@@ -55,7 +56,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
     				border: false
                 }],
                 listeners: {
-                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check2');
+        			},
+        			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
                     		Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(0);
                     		var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");

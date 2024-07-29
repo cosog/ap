@@ -2,6 +2,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	title: '工况诊断报警',
 	id:'FESDiagramResultAlarmInfoTabPanel_Id',
 	hidden:onlyMonitor,
+	iconCls: onlyMonitor?null:'check3',
 	layout: 'border',
 	items: [{
     	region: 'west',
@@ -25,6 +26,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	title: '运行状态报警',
 	id:'RunStatusAlarmInfoTabPanel_Id',
 	layout: "border",
+	iconCls: onlyMonitor?'check3':null,
 	items: [{
 		region: 'west',
     	width: '30%',
@@ -599,6 +601,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
         		items: AlarmQuerySecondTabPanelItems,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check3');
         				var alarmOverViewPanelId='';
         				var alarmDetailsPanelId='';
         				if(oldCard.id=="FESDiagramResultAlarmInfoTabPanel_Id"){

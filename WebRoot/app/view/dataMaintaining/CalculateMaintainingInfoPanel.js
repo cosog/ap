@@ -19,6 +19,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         				title: '功图计算',
         				id:'RPCCalculateMaintainingInfoPanel_Id',
         				items: [RPCCalculateMaintainingInfoView],
+        				iconCls: 'check3',
         				layout: "fit",
         				border: false
         			},{
@@ -27,11 +28,14 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         				id:'PCPCalculateMaintainingInfoPanel_Id',
         				items: [PCPCalculateMaintainingInfoView],
         				layout: "fit",
-        				hidden: pcpHidden,
         				border: false
         			}],
         			listeners: {
-        				tabchange: function (tabPanel, newCard,oldCard, obj) {
+        				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				oldCard.setIconCls(null);
+            				newCard.setIconCls('check3');
+            			},
+            			tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         					if(newCard.id=="RPCCalculateMaintainingInfoPanel_Id"){
         						Ext.getCmp("selectedDeviceType_global").setValue(0); 

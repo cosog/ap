@@ -60,6 +60,37 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolAlarmInstanceWindow");
                         window.show();
         			}
+                },"-",{
+                	xtype: 'button',
+        			text: '导入',
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+        			iconCls: 'import',
+        			handler: function (v, o) {
+        				var selectedDeviceTypeName="";
+        				var selectedDeviceTypeId="";
+        				var tabTreeStore = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getStore();
+        				var count=tabTreeStore.getCount();
+        				var tabTreeSelection = Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
+        				var rec=null;
+        				if (tabTreeSelection.length > 0) {
+        					rec=tabTreeSelection[0];
+        					selectedDeviceTypeName=foreachAndSearchTabAbsolutePath(tabTreeStore.data.items,tabTreeSelection[0].data.deviceTypeId);
+        					selectedDeviceTypeId=tabTreeSelection[0].data.deviceTypeId;
+        				} else {
+        					if(count>0){
+        						rec=orgTreeStore.getAt(0);
+        						selectedDeviceTypeName=orgTreeStore.getAt(0).data.text;
+        						selectedDeviceTypeId=orgTreeStore.getAt(0).data.deviceTypeId;
+        					}
+        				}
+        				var window = Ext.create("AP.view.acquisitionUnit.ImportAlarmInstanceWindow");
+                        window.show();
+        				Ext.getCmp("ImportAlarmInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+//        			    Ext.getCmp("ImportAlarmInstanceWinTabLabel_Id").show();
+        			    
+        			    Ext.getCmp('ImportAlarmInstanceWinDeviceType_Id').setValue(selectedDeviceTypeId);
+        				
+        			}
                 }],
                 layout: "border",
                 items: [{
@@ -115,6 +146,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     tabPosition: 'top',
                     items: [{
                     	title:'数据量',
+                    	iconCls: 'check3',
                     	id:"ModbusProtocolAlarmInstanceNumItemsTableInfoPanel_Id",
                     	region: 'center',
                 		layout: "border",
@@ -280,7 +312,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                          }
                     }],
                     listeners: {
-                    	tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				oldCard.setIconCls(null);
+            				newCard.setIconCls('check3');
+            			},
+            			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     		var selectRow= Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue();
                 			var selectedItem=Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id").getStore().getAt(selectRow);
                     		if(newCard.id=="ModbusProtocolAlarmInstanceNumItemsTableInfoPanel_Id"){

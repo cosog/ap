@@ -385,6 +385,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	items: [{
             		title:'附加信息',
             		id:'DeviceAdditionalInfoPanel_Id',
+            		iconCls: 'check3',
             		html: '<div class="DeviceAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAdditionalInfoTableDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -602,7 +603,8 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	}],
             	listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check3');
         			},
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				var deviceId=0;

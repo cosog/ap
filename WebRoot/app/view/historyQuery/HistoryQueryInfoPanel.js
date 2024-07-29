@@ -3,6 +3,7 @@ var historyStatTabItems=[{
 	layout: 'fit',
 	id:'HistoryQueryFESdiagramResultStatGraphPanel_Id',
 	hidden: onlyMonitor,
+	iconCls: onlyMonitor?null:'check3',
 	html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -24,6 +25,7 @@ var historyStatTabItems=[{
 	title:'运行状态',
 	layout: 'fit',
 	id:'HistoryQueryRunStatusStatGraphPanel_Id',
+	iconCls: onlyMonitor?'check3':null,
 	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -92,6 +94,7 @@ var historyQueryCenterTabPanelItems=[{
 	id:"HistoryDataTabPanel",
     layout: 'border',
     border: false,
+    iconCls: 'check3',
     items: [{
     	region: 'north',
     	height: '50%',
@@ -418,7 +421,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                 		tabPosition: 'top',
                 		items: historyStatTabItems,
                 		listeners: {
-            				tabchange: function (tabPanel, newCard,oldCard, obj) {
+                			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard,oldCard, obj) {
             					if(newCard.id=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
             						loadAndInitHistoryQueryFESdiagramResultStat(true);
             					}else if(newCard.id=="HistoryQueryStatGraphPanel_Id"){
@@ -877,7 +884,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     }],
             		items: historyQueryCenterTabPanelItems,
             		listeners: {
-        				tabchange: function (tabPanel, newCard,oldCard, obj) {
+            			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				oldCard.setIconCls(null);
+            				newCard.setIconCls('check3');
+            			},
+            			tabchange: function (tabPanel, newCard,oldCard, obj) {
         					if(newCard.id=="HistoryDataTabPanel"){
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();

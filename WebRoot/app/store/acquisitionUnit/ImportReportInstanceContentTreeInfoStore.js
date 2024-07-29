@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ImportReportInstanceContentTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.importAlarmInstanceContentTreeInfoStore',
+    alias: 'widget.importReportInstanceContentTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/getUploadedAlarmInstanceTreeData',
+        url: context + '/acquisitionUnitManagerController/getUploadedReportInstanceTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -18,17 +18,17 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceType=Ext.getCmp("ImportAlarmInstanceWinDeviceType_Id").getValue();
+        	var deviceType=Ext.getCmp("ImportReportInstanceWinDeviceType_Id").getValue();
         	var new_params = {
         			deviceType: deviceType
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },
         load: function (store, options, eOpts) {
-        	var treeGridPanel = Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id");
+        	var treeGridPanel = Ext.getCmp("ImportReportInstanceContentTreeGridPanel_Id");
             if (!isNotVal(treeGridPanel)) {
             	treeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ImportAlarmInstanceContentTreeGridPanel_Id",
+                    id: "ImportReportInstanceContentTreeGridPanel_Id",
 //                    layout: "fit",
                     border: false,
                     animate: true,
@@ -63,7 +63,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
                     	flex: 12,
                     	dataIndex: 'msg',
                     	renderer:function(value,o,p,e){
-                    		return adviceImportAlarmInstanceCollisionInfoColor(value,o,p,e);
+                    		return adviceImportReportInstanceCollisionInfoColor(value,o,p,e);
                     	}
                     },{
                         header: 'id',
@@ -76,7 +76,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
                 		align:'center',
                 		width:50,
                 		renderer :function(value,e,o){
-                			return iconImportSingleAlarmInstanceAction(value,e,o)
+                			return iconImportSingleReportInstanceAction(value,e,o)
                 		} 
                     }],
                     listeners: {
@@ -101,7 +101,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
                     }
 
                 });
-                var panel = Ext.getCmp("importAlarmInstanceTreePanel_Id");
+                var panel = Ext.getCmp("importReportInstanceTreePanel_Id");
                 panel.add(treeGridPanel);
             }
             

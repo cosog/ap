@@ -20,9 +20,12 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         	        		activeTab: 0,
         	        		border: false,
         	        		tabPosition: 'left',
+        	        		iconCls: i==0?'check1':null,
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				oldCard.setIconCls(null);
+        	        				newCard.setIconCls('check2');
         	        				oldCard.removeAll();
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
@@ -65,6 +68,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         						title: tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
+        						iconCls: j==0?'check2':null,
         						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
@@ -95,6 +99,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
+        					iconCls: i==0?'check1':null,
     						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].deviceTypeId,
     						border: false
         			};
@@ -118,7 +123,9 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                 items: items,
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				if(oldCard.xtype=='tabpanel'){
+                		oldCard.setIconCls(null);
+        				newCard.setIconCls('check1');
+                		if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{
         					oldCard.removeAll();

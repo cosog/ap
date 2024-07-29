@@ -146,6 +146,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     tabPosition: 'top',
                     items: [{
                         title: '单井报表',
+                        iconCls: 'check3',
                         id: 'ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id',
                         xtype: 'tabpanel',
                         activeTab: 0,
@@ -153,6 +154,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         tabPosition: 'top',
                         items: [{
                             title: '班报表',
+                            iconCls: 'check3',
                             id: 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id',
                             layout: "border",
                             border: false,
@@ -295,7 +297,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	}]
                         }],
                         listeners: {
-                            tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard, obj) {
                                 var unitTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
                                 var selectedUnitId = 0;
                                 if (unitTreeSelection.length > 0) {
@@ -337,6 +343,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         tabPosition: 'top',
                         items: [{
                             title: '日报表',
+                            iconCls: 'check3',
                             id: 'ModbusProtocolReportUnitProductionRangeReportTemplatePanel_Id',
                             layout: "border",
                             border: false,
@@ -408,13 +415,21 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	}]
                         }],
                         listeners: {
-                            tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                				oldCard.setIconCls(null);
+                				newCard.setIconCls('check3');
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard, obj) {
 
                             }
                         }
                     }],
                     listeners: {
-                        tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				oldCard.setIconCls(null);
+            				newCard.setIconCls('check3');
+            			},
+            			tabchange: function (tabPanel, newCard, oldCard, obj) {
                             var unitTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
                             var selectedUnitId = 0;
                             if (unitTreeSelection.length > 0) {

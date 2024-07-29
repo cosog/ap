@@ -89,6 +89,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 	id:"ScadaDriverModbusProtocolConfigTabPanel_Id",
                 	items: [ModbusProtocolConfigInfoView],
     				layout: "fit",
+    				iconCls: 'check1',
     				border: false
                 },{
                 	title:'单元配置',
@@ -104,7 +105,11 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     				border: false
                 }],
                 listeners: {
-                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check1');
+        			},
+        			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){
                     		Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
                     		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);

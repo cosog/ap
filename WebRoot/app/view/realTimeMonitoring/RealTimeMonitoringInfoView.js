@@ -23,10 +23,13 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        		activeTab: 0,
         	        		border: false,
         	        		tabPosition: 'left',
+        	        		iconCls: i==0?'check1':null,
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        				oldCard.removeAll();
+        	        				oldCard.setIconCls(null);
+        	        				newCard.setIconCls('check2');
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        				var RealTimeMonitoringInfoPanel = Ext.create('AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel');
@@ -46,6 +49,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         						title: tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
+        						iconCls: j==0?'check2':null,
         						id: 'RealTimeMonitoringTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
@@ -77,6 +81,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'RealTimeMonitoringTabPanel_'+tabInfo.children[i].deviceTypeId,
+    						iconCls: i==0?'check1':null,
     						border: false
         			};
         			if(i==0){
@@ -209,6 +214,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         				}else{
         					oldCard.removeAll();
         				}
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check1');
         			},
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
     					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 

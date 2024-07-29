@@ -654,6 +654,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         			title: '单条记录',
     				layout: "fit",
     				id:'RPCCalculateMaintainingPanel',
+    				iconCls: 'check3',
     				border: false,
     				bbar: bbar,
     				html:'<div class=RPCCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="RPCCalculateMaintainingDiv_id"></div></div>',
@@ -683,7 +684,11 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
     				border: false
         		}],
         		listeners: {
-    				tabchange: function (tabPanel, newCard,oldCard, obj) {
+        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check3');
+        			},
+        			tabchange: function (tabPanel, newCard,oldCard, obj) {
     					if(newCard.id=="RPCCalculateMaintainingPanel"){
     						Ext.getCmp("RPCCalculateMaintainingUpdateDataBtn").show();
     						Ext.getCmp("RPCCalculateMaintainingLinkedDataBtn").show();

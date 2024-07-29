@@ -20,10 +20,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         	        	activeTab: 0,
         	        	border: false,
         	        	tabPosition: 'left',
+        	        	iconCls: i==0?'check1':null,
         	        	items:[],
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        			oldCard.removeAll();
+        	        			oldCard.setIconCls(null);
+    	        				newCard.setIconCls('check2');
         	        		},
         	        		tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        			var HistoryQueryInfoPanel = Ext.create('AP.view.historyQuery.HistoryQueryInfoPanel');
@@ -45,6 +48,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         					tpl:tabInfo.children[i].children[j].text,
         					layout: 'fit',
         					id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
+        					iconCls: j==0?'check2':null,
         					border: false
         				};
             			if(j==0){
@@ -75,6 +79,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         				title: tabInfo.children[i].text,
         				tpl: tabInfo.children[i].text,
         				layout: 'fit',
+        				iconCls: i==0?'check1':null,
     					id: 'HistoryQueryRootTabPanel_'+tabInfo.children[i].deviceTypeId,
     					border: false
         			};
@@ -103,6 +108,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         				}else{
         					oldCard.removeAll();
         				}
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check1');
         			},
     				tabchange: function (tabPanel, newCard,oldCard, obj) {
     					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 

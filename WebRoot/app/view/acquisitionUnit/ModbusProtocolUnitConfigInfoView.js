@@ -23,6 +23,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 	id:'ModbusProtocolAcqUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolAcqUnitConfigInfoView],
     				layout: "fit",
+    				iconCls: 'check2',
     				border: false
                 },{
 //                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报警单元</div>',
@@ -47,7 +48,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
     				border: false
                 }],
                 listeners: {
-                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check2');
+        			},
+        			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
                 			Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
                 			var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");

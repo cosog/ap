@@ -30,6 +30,7 @@ import com.cosog.model.ProtocolAlarmInstance;
 import com.cosog.model.ProtocolDisplayInstance;
 import com.cosog.model.ProtocolInstance;
 import com.cosog.model.ProtocolModel;
+import com.cosog.model.ProtocolReportInstance;
 import com.cosog.model.ProtocolRunStatusConfig;
 import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
@@ -38,10 +39,14 @@ import com.cosog.model.User;
 import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
+import com.cosog.model.drive.ExportAcqInstanceData;
 import com.cosog.model.drive.ExportAcqUnitData;
+import com.cosog.model.drive.ExportAlarmInstanceData;
 import com.cosog.model.drive.ExportAlarmUnitData;
+import com.cosog.model.drive.ExportDisplayInstanceData;
 import com.cosog.model.drive.ExportDisplayUnitData;
 import com.cosog.model.drive.ExportProtocolConfig;
+import com.cosog.model.drive.ExportReportInstanceData;
 import com.cosog.model.drive.ExportReportUnitData;
 import com.cosog.model.drive.ImportProtocolContent;
 import com.cosog.model.drive.InitInstance;
@@ -9086,10 +9091,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
-	public void doModbusProtocolInstanceAdd(T protocolInstance) throws Exception {
+	public void doModbusProtocolInstanceAdd(ProtocolInstance protocolInstance) throws Exception {
 		getBaseDao().addObject(protocolInstance);
 	}
-	public void doModbusProtocolInstanceEdit(T protocolInstance) throws Exception {
+	public void doModbusProtocolInstanceEdit(ProtocolInstance protocolInstance) throws Exception {
 		getBaseDao().updateObject(protocolInstance);
 	}
 	
@@ -9162,7 +9167,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().addObject(alarmUnitItem);
 	}
 	
-	public void doModbusProtocolDisplayInstanceEdit(T protocolDisplayInstance) throws Exception {
+	public void doModbusProtocolDisplayInstanceEdit(ProtocolDisplayInstance protocolDisplayInstance) throws Exception {
 		getBaseDao().updateObject(protocolDisplayInstance);
 	}
 	
@@ -9170,11 +9175,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().updateObject(reportUnit);
 	}
 	
-	public void doModbusProtocolReportInstanceEdit(T protocolReportInstance) throws Exception {
+	public void doModbusProtocolReportInstanceEdit(ProtocolReportInstance protocolReportInstance) throws Exception {
 		getBaseDao().updateObject(protocolReportInstance);
 	}
 	
-	public void doModbusProtocolAlarmInstanceEdit(T protocolAlarmInstance) throws Exception {
+	public void doModbusProtocolAlarmInstanceEdit(ProtocolAlarmInstance protocolAlarmInstance) throws Exception {
 		getBaseDao().updateObject(protocolAlarmInstance);
 	}
 	
@@ -9572,7 +9577,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
 				+ " t.packetsendinterval,"//12
-				+ " t.sort,t.unitid,t2.unit_name "//13~15
+				+ " t.sort,t.unitid,t2.unit_name, "//13~15
+				+ " t2.protocol"
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2 "
 				+ " where t.unitid=t2.id ";
 		if(StringManagerUtils.isNotNull(instanceList)){
@@ -9592,7 +9598,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"CtrlProtocolType\":\""+obj[4]+"\",");
 			result_json.append("\"SignInPrefixSuffixHex\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
 			result_json.append("\"SignInPrefix\":\""+((obj[6]+"").replaceAll("null", ""))+"\",");
-			result_json.append("\"SignInIDHex\":\""+((obj[6]+"").replaceAll("null", ""))+"\",");
+			result_json.append("\"SigninSuffix\":\""+((obj[7]+"").replaceAll("null", ""))+"\",");
 			result_json.append("\"SignInIDHex\":"+StringManagerUtils.stringToInteger(obj[8]+"")+",");
 			
 			result_json.append("\"HeartbeatPrefixSuffixHex\":"+StringManagerUtils.stringToInteger(obj[9]+"")+",");
@@ -9603,7 +9609,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"PacketSendInterval\":"+StringManagerUtils.stringToInteger(obj[12]+"")+",");
 			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[13]+"")+",");
 			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(obj[14]+"")+",");
-			result_json.append("\"UnitName\":\""+obj[15]+"\"");
+			result_json.append("\"UnitName\":\""+obj[15]+"\",");
+			result_json.append("\"Protocol\":\""+obj[16]+"\"");
 
 			result_json.append("},");
 		}
@@ -9733,9 +9740,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolDisplayInstanceExportData(String instanceList){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort "
-				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2"
-				+ " where t.displayunitid=t2.id and t.id in("+instanceList+")"
+		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort,t3.unit_name as acqUnitName, t3.protocol  "
+				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3"
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id "
+				+ " and t.id in("+instanceList+")"
 				+ " order by t.displayunitid,t.id";
 		List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
 		for(int i=0;i<displayInstanceQueryList.size();i++){
@@ -9746,7 +9754,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"Code\":\""+displayInstanceObj[2]+"\",");
 			result_json.append("\"DisplayUnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
 			result_json.append("\"DisplayUnitName\":\""+displayInstanceObj[4]+"\",");
-			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+"");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
+			result_json.append("\"AcqUnitName\":\""+displayInstanceObj[6]+"\",");
+			result_json.append("\"Protocol\":\""+displayInstanceObj[7]+"\"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -9759,7 +9769,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolAlarmInstanceExportData(String instanceList){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort "
+		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort ,t2.protocol"
 				+ " from TBL_PROTOCOLALARMINSTANCE t ,tbl_alarm_unit_conf t2"
 				+ " where t.alarmunitid=t2.id and t.id in("+instanceList+")"
 				+ " order by t.alarmunitid,t.id";
@@ -9770,9 +9780,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(displayInstanceObj[0]+"")+",");
 			result_json.append("\"Name\":\""+displayInstanceObj[1]+"\",");
 			result_json.append("\"Code\":\""+displayInstanceObj[2]+"\",");
-			result_json.append("\"AlarmUnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
-			result_json.append("\"AlarmUnitName\":\""+displayInstanceObj[4]+"\",");
-			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+"");
+			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
+			result_json.append("\"UnitName\":\""+displayInstanceObj[4]+"\",");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
+			result_json.append("\"Protocol\":\""+displayInstanceObj[6]+"\"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -10788,7 +10799,670 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public void doModbusProtocolDisplayInstanceAdd(T protocolDisplayInstance) throws Exception {
+	
+	public String getUploadedAcqInstanceTreeData(List<ExportAcqInstanceData> uploadInstanceList,String deviceType,User user){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		
+		List<String> protoolList=new ArrayList<>();
+		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
+		List<?> protoolQueryList = this.findCallSql(protocolSql);
+		for(int i=0;i<protoolQueryList.size();i++){
+			protoolList.add(protoolQueryList.get(i)+"");
+		}
+		
+		String instanceSql="select t.name,t2.unit_name,t2.protocol "
+				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.devicetype in ("+allDeviceIds+")";
+		List<?> instanceQueryList = this.findCallSql(instanceSql);
+		
+		tree_json.append("[");
+		if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+			for(int i=0;i<uploadInstanceList.size();i++){
+				String msg="";
+				int saveSign=0;//无冲突覆盖
+				if(StringManagerUtils.existOrNot(protoolList, uploadInstanceList.get(i).getProtocol(), false)){
+					String acqUnitSql="select t.unit_name from TBL_ACQ_UNIT_CONF t where t.protocol='"+uploadInstanceList.get(i).getProtocol()+"' and t.unit_name ='"+uploadInstanceList.get(i).getUnitName()+"'";
+					List<?> acqUnitQueryList = this.findCallSql(acqUnitSql);
+					if(acqUnitQueryList.size()>0){
+						if(instanceQueryList.size()>0){
+							for(int j=0;j<instanceQueryList.size();j++){
+								Object[] obj=(Object[])instanceQueryList.get(j);
+								if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getName()) 
+										&& (obj[1]+"").equalsIgnoreCase(uploadInstanceList.get(i).getUnitName())
+										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
+										){
+									saveSign=1;//覆盖
+									msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+									break;
+								}
+							}
+						}
+					}else{
+						saveSign=2;
+						msg="实例所属采控单元"+uploadInstanceList.get(i).getUnitName()+"不存在，请先添加对应采控单元";
+					}
+				}else{
+					saveSign=2;
+					msg="实例所属协议"+uploadInstanceList.get(i).getProtocol()+"不存在，请先添加对应协议及采控单元";
+				}
+				
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+uploadInstanceList.get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+uploadInstanceList.get(i).getCode()+"\",");
+				tree_json.append("\"unitName\":\""+uploadInstanceList.get(i).getUnitName()+"\",");
+				tree_json.append("\"protocol\":\""+uploadInstanceList.get(i).getProtocol()+"\",");
+				tree_json.append("\"msg\":\""+msg+"\",");
+				tree_json.append("\"saveSign\":\""+saveSign+"\",");
+				tree_json.append("\"iconCls\": \"acqUnit\",");
+				tree_json.append("\"action\": \"\",");
+				tree_json.append("\"leaf\": true");
+				tree_json.append("},");
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
+	public void importAcqInstance(ExportAcqInstanceData instanceData,User user){
+		Gson gson=new Gson();
+		String instanceSql="select t.id,t.code,t.unitId "
+				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2 "
+				+ " where t.unitid=t2.id "
+				+ " and t.name='"+instanceData.getName()+"' "
+				+ " and t2.unit_name='"+instanceData.getUnitName()+"' "
+				+ " and t2.protocol='"+instanceData.getProtocol()+"' "
+				+ " order by t.id desc";
+		List<?> instanceList = this.findCallSql(instanceSql);
+		String instanceId="";
+		String instanceCode="";
+		String unitId="";
+		int r=0;
+		if(instanceList.size()>0){
+			Object[] obj=(Object[]) instanceList.get(0);
+			instanceId=obj[0]+"";
+			instanceCode=obj[1]+"";
+			unitId=obj[2]+"";
+			
+			ProtocolInstance protocolInstance =new ProtocolInstance();
+			
+			protocolInstance.setId(StringManagerUtils.stringTransferInteger(instanceId));
+			protocolInstance.setName(instanceData.getName());
+			protocolInstance.setCode(instanceCode);
+			protocolInstance.setAcqProtocolType(instanceData.getAcqProtocolType());
+			protocolInstance.setCtrlProtocolType(instanceData.getCtrlProtocolType());
+			protocolInstance.setSignInPrefixSuffixHex(instanceData.getSignInPrefixSuffixHex());
+			protocolInstance.setSignInIDHex(instanceData.getSignInIDHex());
+			protocolInstance.setSignInPrefix(instanceData.getSignInPrefix());
+			protocolInstance.setSignInSuffix(instanceData.getSigninSuffix());
+			protocolInstance.setHeartbeatPrefixSuffixHex(instanceData.getHeartbeatPrefixSuffixHex());
+			protocolInstance.setHeartbeatPrefix(instanceData.getHeartbeatPrefix());
+			protocolInstance.setHeartbeatSuffix(instanceData.getHeartbeatSuffix());
+			protocolInstance.setPacketSendInterval(instanceData.getPacketSendInterval());
+			protocolInstance.setUnitId(StringManagerUtils.stringTransferInteger(unitId));
+			protocolInstance.setSort(instanceData.getSort());
+			try {
+				this.doModbusProtocolInstanceEdit(protocolInstance);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				
+				String unitSql="select t.id from tbl_acq_unit_conf t "
+						+ "where t.unit_name='"+instanceData.getUnitName()
+						+"' and t.protocol='"+instanceData.getProtocol()+"' "
+						+ " order by t.id desc";
+				String unidId="";
+				List<?> unitList = this.findCallSql(unitSql);
+				if(unitList.size()>0){
+					unidId=unitList.get(0)+"";
+				}
+				if(StringManagerUtils.isNotNull(unidId)){
+					ProtocolInstance protocolInstance =new ProtocolInstance();
+					
+					protocolInstance.setId(StringManagerUtils.stringTransferInteger(instanceId));
+					protocolInstance.setName(instanceData.getName());
+					protocolInstance.setCode(instanceCode);
+					protocolInstance.setAcqProtocolType(instanceData.getAcqProtocolType());
+					protocolInstance.setCtrlProtocolType(instanceData.getCtrlProtocolType());
+					protocolInstance.setSignInPrefixSuffixHex(instanceData.getSignInPrefixSuffixHex());
+					protocolInstance.setSignInIDHex(instanceData.getSignInIDHex());
+					protocolInstance.setSignInPrefix(instanceData.getSignInPrefix());
+					protocolInstance.setSignInSuffix(instanceData.getSigninSuffix());
+					protocolInstance.setHeartbeatPrefixSuffixHex(instanceData.getHeartbeatPrefixSuffixHex());
+					protocolInstance.setHeartbeatPrefix(instanceData.getHeartbeatPrefix());
+					protocolInstance.setHeartbeatSuffix(instanceData.getHeartbeatSuffix());
+					protocolInstance.setPacketSendInterval(instanceData.getPacketSendInterval());
+					protocolInstance.setUnitId(StringManagerUtils.stringTransferInteger(unitId));
+					protocolInstance.setSort(instanceData.getSort());
+					this.doModbusProtocolInstanceAdd(protocolInstance);
+					
+					unitList = this.findCallSql(instanceSql);
+					instanceId="";
+					instanceCode="";
+					unitId="";
+					if(instanceList.size()>0){
+						Object[] obj=(Object[]) instanceList.get(0);
+						instanceId=obj[0]+"";
+						instanceCode=obj[1]+"";
+						unitId=obj[2]+"";
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		if(StringManagerUtils.isNotNull(instanceId)){
+			List<String> instanceInitList=new ArrayList<String>();
+			instanceInitList.add(instanceData.getName());
+			
+			MemoryDataManagerTask.loadAcqInstanceOwnItemById(instanceId,"update");
+			MemoryDataManagerTask.loadDeviceInfoByInstanceId(instanceId,"update");
+			MemoryDataManagerTask.loadDeviceInfoByInstanceId(instanceId,"update");
+			EquipmentDriverServerTask.initInstanceConfig(instanceInitList,"update");
+			EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(instanceId,"update");
+			
+			
+			if(user!=null){
+				try {
+					this.service.saveSystemLog(user,2,"导入采控实例:"+instanceData.getName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	public String getUploadedDisplayInstanceTreeData(List<ExportDisplayInstanceData> uploadInstanceList,String deviceType,User user){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		
+		List<String> protoolList=new ArrayList<>();
+		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
+		List<?> protoolQueryList = this.findCallSql(protocolSql);
+		for(int i=0;i<protoolQueryList.size();i++){
+			protoolList.add(protoolQueryList.get(i)+"");
+		}
+		
+		String instanceSql="select t.name,t2.unit_name as displayUnitName,t3.unit_name as acqUnitName,t4.name as protocol "
+				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " and t4.devicetype in ("+allDeviceIds+")";
+		List<?> instanceQueryList = this.findCallSql(instanceSql);
+		
+		tree_json.append("[");
+		if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+			for(int i=0;i<uploadInstanceList.size();i++){
+				String msg="";
+				int saveSign=0;//无冲突覆盖
+				if(StringManagerUtils.existOrNot(protoolList, uploadInstanceList.get(i).getProtocol(), false)){
+					String unitSql="select t.unit_name from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
+							+ " where t.acqunitid=t2.id"
+							+ " and t2.unit_name='"+uploadInstanceList.get(i).getAcqUnitName()+"' and t.unit_name ='"+uploadInstanceList.get(i).getDisplayUnitName()+"'";
+					List<?> unitQueryList = this.findCallSql(unitSql);
+					if(unitQueryList.size()>0){
+						if(instanceQueryList.size()>0){
+							for(int j=0;j<instanceQueryList.size();j++){
+								Object[] obj=(Object[])instanceQueryList.get(j);
+								if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getName()) 
+										&& (obj[1]+"").equalsIgnoreCase(uploadInstanceList.get(i).getDisplayUnitName())
+										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getAcqUnitName())
+										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
+										){
+									saveSign=1;//覆盖
+									msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+									break;
+								}
+							}
+						}
+					}else{
+						saveSign=2;
+						msg="实例所属显示单元"+uploadInstanceList.get(i).getDisplayUnitName()+"不存在，请先添加对应显示单元";
+					}
+				}else{
+					saveSign=2;
+					msg="实例所属协议"+uploadInstanceList.get(i).getProtocol()+"不存在，请先添加对应协议、采控单元以及显示单元";
+				}
+				
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+uploadInstanceList.get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+uploadInstanceList.get(i).getCode()+"\",");
+				tree_json.append("\"displayUnitName\":\""+uploadInstanceList.get(i).getDisplayUnitName()+"\",");
+				tree_json.append("\"acqUnitName\":\""+uploadInstanceList.get(i).getAcqUnitName()+"\",");
+				tree_json.append("\"protocol\":\""+uploadInstanceList.get(i).getProtocol()+"\",");
+				tree_json.append("\"msg\":\""+msg+"\",");
+				tree_json.append("\"saveSign\":\""+saveSign+"\",");
+				tree_json.append("\"iconCls\": \"acqUnit\",");
+				tree_json.append("\"action\": \"\",");
+				tree_json.append("\"leaf\": true");
+				tree_json.append("},");
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
+	public void importDisplayInstance(ExportDisplayInstanceData instanceData,User user){
+		Gson gson=new Gson();
+		String instanceSql="select t.id,t.code,t.displayunitid "
+				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " and t.name='"+instanceData.getName()+"' "
+				+ " and t2.unit_name='"+instanceData.getDisplayUnitName()+"' "
+				+ " and t3.unit_name='"+instanceData.getAcqUnitName()+"' "
+				+ " and t4.name='"+instanceData.getProtocol()+"' "
+				+ " order by t.id desc";
+		List<?> instanceList = this.findCallSql(instanceSql);
+		String instanceId="";
+		String instanceCode="";
+		String unitId="";
+		int r=0;
+		if(instanceList.size()>0){
+			Object[] obj=(Object[]) instanceList.get(0);
+			instanceId=obj[0]+"";
+			instanceCode=obj[1]+"";
+			unitId=obj[2]+"";
+			
+			ProtocolDisplayInstance protocolDisplayInstance=new ProtocolDisplayInstance();
+			protocolDisplayInstance.setId(instanceData.getId());
+			protocolDisplayInstance.setCode(instanceData.getCode());
+			protocolDisplayInstance.setName(instanceData.getName());
+			protocolDisplayInstance.setDisplayUnitId(StringManagerUtils.stringToInteger(unitId));
+			protocolDisplayInstance.setSort(instanceData.getSort());
+			
+			
+			try {
+				this.doModbusProtocolDisplayInstanceEdit(protocolDisplayInstance);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				
+				String unitSql="select t.id from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
+						+ "where t.acqunitid=t2.id "
+						+ " and t.unit_name='"+instanceData.getDisplayUnitName()+"'"
+						+ " and t2.unit_name='"+instanceData.getAcqUnitName()+"'"
+						+ " and t2.protocol='"+instanceData.getProtocol()+"' "
+						+ " order by t.id desc";
+				String unidId="";
+				List<?> unitList = this.findCallSql(unitSql);
+				if(unitList.size()>0){
+					unidId=unitList.get(0)+"";
+				}
+				if(StringManagerUtils.isNotNull(unidId)){
+					ProtocolDisplayInstance protocolDisplayInstance=new ProtocolDisplayInstance();
+					protocolDisplayInstance.setId(instanceData.getId());
+					protocolDisplayInstance.setCode(instanceData.getCode());
+					protocolDisplayInstance.setName(instanceData.getName());
+					protocolDisplayInstance.setDisplayUnitId(StringManagerUtils.stringToInteger(unitId));
+					protocolDisplayInstance.setSort(instanceData.getSort());
+					
+					
+					this.doModbusProtocolDisplayInstanceAdd(protocolDisplayInstance);
+					
+					unitList = this.findCallSql(instanceSql);
+					instanceId="";
+					instanceCode="";
+					unitId="";
+					if(instanceList.size()>0){
+						Object[] obj=(Object[]) instanceList.get(0);
+						instanceId=obj[0]+"";
+						instanceCode=obj[1]+"";
+						unitId=obj[2]+"";
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		if(StringManagerUtils.isNotNull(instanceId)){
+			MemoryDataManagerTask.loadDisplayInstanceOwnItemById(instanceId,"update");
+			MemoryDataManagerTask.loadDeviceInfoByInstanceId(instanceId,"update");
+			MemoryDataManagerTask.loadDeviceInfoByInstanceId(instanceId,"update");
+			
+			
+			if(user!=null){
+				try {
+					this.service.saveSystemLog(user,2,"导入显示实例:"+instanceData.getName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public String getUploadedAlarmInstanceTreeData(List<ExportAlarmInstanceData> uploadInstanceList,String deviceType,User user){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		
+		List<String> protoolList=new ArrayList<>();
+		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
+		List<?> protoolQueryList = this.findCallSql(protocolSql);
+		for(int i=0;i<protoolQueryList.size();i++){
+			protoolList.add(protoolQueryList.get(i)+"");
+		}
+		
+		String instanceSql="select t.name,t2.unit_name,t2.protocol "
+				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.devicetype in ("+allDeviceIds+")";
+		List<?> instanceQueryList = this.findCallSql(instanceSql);
+		
+		tree_json.append("[");
+		if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+			for(int i=0;i<uploadInstanceList.size();i++){
+				String msg="";
+				int saveSign=0;//无冲突覆盖
+				if(StringManagerUtils.existOrNot(protoolList, uploadInstanceList.get(i).getProtocol(), false)){
+					String unitSql="select t.unit_name from tbl_alarm_unit_conf t where t.protocol='"+uploadInstanceList.get(i).getProtocol()+"' and t.unit_name ='"+uploadInstanceList.get(i).getUnitName()+"'";
+					List<?> unitQueryList = this.findCallSql(unitSql);
+					if(unitQueryList.size()>0){
+						if(instanceQueryList.size()>0){
+							for(int j=0;j<instanceQueryList.size();j++){
+								Object[] obj=(Object[])instanceQueryList.get(j);
+								if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getName()) 
+										&& (obj[1]+"").equalsIgnoreCase(uploadInstanceList.get(i).getUnitName())
+										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
+										){
+									saveSign=1;//覆盖
+									msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+									break;
+								}
+							}
+						}
+					}else{
+						saveSign=2;
+						msg="实例所属报警单元"+uploadInstanceList.get(i).getUnitName()+"不存在，请先添加对应报警单元";
+					}
+				}else{
+					saveSign=2;
+					msg="实例所属协议"+uploadInstanceList.get(i).getProtocol()+"不存在，请先添加对应协议及报警单元";
+				}
+				
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+uploadInstanceList.get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+uploadInstanceList.get(i).getCode()+"\",");
+				tree_json.append("\"unitName\":\""+uploadInstanceList.get(i).getUnitName()+"\",");
+				tree_json.append("\"protocol\":\""+uploadInstanceList.get(i).getProtocol()+"\",");
+				tree_json.append("\"msg\":\""+msg+"\",");
+				tree_json.append("\"saveSign\":\""+saveSign+"\",");
+				tree_json.append("\"iconCls\": \"acqUnit\",");
+				tree_json.append("\"action\": \"\",");
+				tree_json.append("\"leaf\": true");
+				tree_json.append("},");
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
+	public void importAlarmInstance(ExportAlarmInstanceData instanceData,User user){
+		Gson gson=new Gson();
+		String instanceSql="select t.id,t.code,t.unitId "
+				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2 "
+				+ " where t.alarmunitid=t2.id "
+				+ " and t.name='"+instanceData.getName()+"' "
+				+ " and t2.unit_name='"+instanceData.getUnitName()+"' "
+				+ " and t2.protocol='"+instanceData.getProtocol()+"' "
+				+ " order by t.id desc";
+		List<?> instanceList = this.findCallSql(instanceSql);
+		String instanceId="";
+		String instanceCode="";
+		String unitId="";
+		int r=0;
+		if(instanceList.size()>0){
+			Object[] obj=(Object[]) instanceList.get(0);
+			instanceId=obj[0]+"";
+			instanceCode=obj[1]+"";
+			unitId=obj[2]+"";
+			
+			ProtocolAlarmInstance protocolAlarmInstance=new ProtocolAlarmInstance();
+			protocolAlarmInstance.setId(instanceData.getId());
+			protocolAlarmInstance.setCode(instanceData.getCode());
+			protocolAlarmInstance.setName(instanceData.getName());
+			protocolAlarmInstance.setAlarmUnitId(StringManagerUtils.stringToInteger(unitId));
+			protocolAlarmInstance.setSort(instanceData.getSort());
+			try {
+				this.doModbusProtocolAlarmInstanceEdit(protocolAlarmInstance);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				
+				String unitSql="select t.id from tbl_alarm_unit_conf t "
+						+ "where t.unit_name='"+instanceData.getUnitName()+"' "
+						+" and t.protocol='"+instanceData.getProtocol()+"' "
+						+ " order by t.id desc";
+				String unidId="";
+				List<?> unitList = this.findCallSql(unitSql);
+				if(unitList.size()>0){
+					unidId=unitList.get(0)+"";
+				}
+				if(StringManagerUtils.isNotNull(unidId)){
+					ProtocolAlarmInstance protocolAlarmInstance=new ProtocolAlarmInstance();
+					protocolAlarmInstance.setId(instanceData.getId());
+					protocolAlarmInstance.setCode(instanceData.getCode());
+					protocolAlarmInstance.setName(instanceData.getName());
+					protocolAlarmInstance.setAlarmUnitId(StringManagerUtils.stringToInteger(unitId));
+					protocolAlarmInstance.setSort(instanceData.getSort());
+					this.doModbusProtocolAlarmInstanceAdd(protocolAlarmInstance);
+					
+					unitList = this.findCallSql(instanceSql);
+					instanceId="";
+					instanceCode="";
+					unitId="";
+					if(instanceList.size()>0){
+						Object[] obj=(Object[]) instanceList.get(0);
+						instanceId=obj[0]+"";
+						instanceCode=obj[1]+"";
+						unitId=obj[2]+"";
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		if(StringManagerUtils.isNotNull(instanceId)){
+			MemoryDataManagerTask.loadAlarmInstanceOwnItemById(instanceId,"update");
+			MemoryDataManagerTask.loadDeviceInfoByAlarmInstanceId(instanceId,"update");
+			MemoryDataManagerTask.loadDeviceInfoByAlarmInstanceId(instanceId,"update");
+			if(user!=null){
+				try {
+					this.service.saveSystemLog(user,2,"导入报警实例:"+instanceData.getName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	public String getUploadedReportInstanceTreeData(List<ExportReportInstanceData> uploadInstanceList,String deviceType,User user){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer tree_json = new StringBuffer();
+		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		String instanceSql="select t.name,t2.unit_name "
+				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
+				+ " where t.unitid=t2.id ";
+		List<?> instanceQueryList = this.findCallSql(instanceSql);
+		
+		tree_json.append("[");
+		if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+			for(int i=0;i<uploadInstanceList.size();i++){
+				String msg="";
+				int saveSign=0;//无冲突覆盖
+
+				String unitSql="select t.unit_name from tbl_report_unit_conf t where  t.unit_name ='"+uploadInstanceList.get(i).getUnitName()+"'";
+				List<?> unitQueryList = this.findCallSql(unitSql);
+				if(unitQueryList.size()>0){
+					if(instanceQueryList.size()>0){
+						for(int j=0;j<instanceQueryList.size();j++){
+							Object[] obj=(Object[])instanceQueryList.get(j);
+							if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getName()) 
+									&& (obj[1]+"").equalsIgnoreCase(uploadInstanceList.get(i).getUnitName())
+									){
+								saveSign=1;//覆盖
+								msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+								break;
+							}
+						}
+					}
+				}else{
+					saveSign=2;
+					msg="实例所属报表单元"+uploadInstanceList.get(i).getUnitName()+"不存在，请先添加对应报表单元";
+				}
+				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"text\":\""+uploadInstanceList.get(i).getName()+"\",");
+				tree_json.append("\"code\":\""+uploadInstanceList.get(i).getCode()+"\",");
+				tree_json.append("\"unitName\":\""+uploadInstanceList.get(i).getUnitName()+"\",");
+				tree_json.append("\"msg\":\""+msg+"\",");
+				tree_json.append("\"saveSign\":\""+saveSign+"\",");
+				tree_json.append("\"iconCls\": \"acqUnit\",");
+				tree_json.append("\"action\": \"\",");
+				tree_json.append("\"leaf\": true");
+				tree_json.append("},");
+			}
+		}
+		if(tree_json.toString().endsWith(",")){
+			tree_json.deleteCharAt(tree_json.length() - 1);
+		}
+		tree_json.append("]");
+		
+		result_json.append("[");
+		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("]");
+		
+		return result_json.toString();
+	}
+	
+	public void importReportInstance(ExportReportInstanceData instanceData,User user){
+		Gson gson=new Gson();
+		String instanceSql="select t.id,t.code,t.unitId "
+				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
+				+ " where t.unitid=t2.id "
+				+ " and t.name='"+instanceData.getName()+"' "
+				+ " and t2.unit_name='"+instanceData.getUnitName()+"' "
+				+ " order by t.id desc";
+		List<?> instanceList = this.findCallSql(instanceSql);
+		String instanceId="";
+		String instanceCode="";
+		String unitId="";
+		int r=0;
+		if(instanceList.size()>0){
+			Object[] obj=(Object[]) instanceList.get(0);
+			instanceId=obj[0]+"";
+			instanceCode=obj[1]+"";
+			unitId=obj[2]+"";
+			
+			ProtocolReportInstance protocolReportInstance=new ProtocolReportInstance();
+			protocolReportInstance.setId(instanceData.getId());
+			protocolReportInstance.setCode(instanceData.getCode());
+			protocolReportInstance.setName(instanceData.getName());
+			protocolReportInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
+			protocolReportInstance.setSort(instanceData.getSort());
+			
+			try {
+				this.doModbusProtocolReportInstanceEdit(protocolReportInstance);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				
+				String unitSql="select t.id from tbl_report_unit_conf t "
+						+ "where t.unit_name='"+instanceData.getUnitName()+"' "
+						+ " order by t.id desc";
+				String unidId="";
+				List<?> unitList = this.findCallSql(unitSql);
+				if(unitList.size()>0){
+					unidId=unitList.get(0)+"";
+				}
+				if(StringManagerUtils.isNotNull(unidId)){
+					ProtocolReportInstance protocolReportInstance=new ProtocolReportInstance();
+					protocolReportInstance.setId(instanceData.getId());
+					protocolReportInstance.setCode(instanceData.getCode());
+					protocolReportInstance.setName(instanceData.getName());
+					protocolReportInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
+					protocolReportInstance.setSort(instanceData.getSort());
+					this.doModbusProtocolReportInstanceAdd(protocolReportInstance);
+					
+					unitList = this.findCallSql(instanceSql);
+					instanceId="";
+					instanceCode="";
+					unitId="";
+					if(instanceList.size()>0){
+						Object[] obj=(Object[]) instanceList.get(0);
+						instanceId=obj[0]+"";
+						instanceCode=obj[1]+"";
+						unitId=obj[2]+"";
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if(StringManagerUtils.isNotNull(instanceId)){
+			if(user!=null){
+				try {
+					this.service.saveSystemLog(user,2,"导入报表实例:"+instanceData.getName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void doModbusProtocolDisplayInstanceAdd(ProtocolDisplayInstance protocolDisplayInstance) throws Exception {
 		getBaseDao().addObject(protocolDisplayInstance);
 	}
 	
@@ -10796,11 +11470,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		getBaseDao().addObject(reportUnit);
 	}
 	
-	public void doModbusProtocolReportInstanceAdd(T protocolReportInstance) throws Exception {
+	public void doModbusProtocolReportInstanceAdd(ProtocolReportInstance protocolReportInstance) throws Exception {
 		getBaseDao().addObject(protocolReportInstance);
 	}
 	
-	public void doModbusProtocolAlarmInstanceAdd(T protocolAlarmInstance) throws Exception {
+	public void doModbusProtocolAlarmInstanceAdd(ProtocolAlarmInstance protocolAlarmInstance) throws Exception {
 		getBaseDao().addObject(protocolAlarmInstance);
 	}
 	

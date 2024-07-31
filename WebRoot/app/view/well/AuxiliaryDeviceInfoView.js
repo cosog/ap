@@ -20,7 +20,8 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoView", {
     						border: false
         			};
         			if(i==0){
-            			panelItem.items=[];
+        				panelItem.iconCls='check2';
+        				panelItem.items=[];
             			panelItem.items.push(AuxiliaryDeviceInfoPanel);
             		}
         			items.push(panelItem);
@@ -54,6 +55,8 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoView", {
         		items:items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				oldCard.setIconCls(null);
+        				newCard.setIconCls('check2');
         				if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{

@@ -241,7 +241,8 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-        	var deviceName=getTabPanelActiveName("RealTimeMonitoringTabPanel");
+        	var deviceTypeName=getTabPanelActiveName("RealTimeMonitoringTabPanel");
+        	var deviceName = Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
         	var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
         	var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
         	var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
@@ -249,6 +250,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
+                    deviceTypeName:deviceTypeName,
                     deviceName:deviceName,
                     FESdiagramResultStatValue:FESdiagramResultStatValue,
                     commStatusStatValue:commStatusStatValue,

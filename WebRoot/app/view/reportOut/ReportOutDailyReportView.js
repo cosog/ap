@@ -64,19 +64,14 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         			var allSecondIds='';
         			for(var j=0;j<tabInfo.children[i].children.length;j++){
         				var secondTabPanel={
-//        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">'+tabInfo.children[i].children[j].text+'</div>',
         						title: tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
-        						iconCls: j==0?'check2':null,
+        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
         						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
             			if(j==0){
-            				if(i==0){
-            					secondTabPanel.items=[];
-                				secondTabPanel.items.push(DailyReportPanel);
-            				}
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
@@ -85,15 +80,19 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         			}
         			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
-//        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
         						title: '全部',
         						tpl:'全部',
+        						iconCls:'check2',
         						layout: 'fit',
         						id: 'ProductionReportRootTabPanel_'+allSecondIds,
         						border: false
         				};
-        				panelItem.items.push(secondTabPanel_all);
+        				panelItem.items.splice(0, 0, secondTabPanel_all);
         			}
+        			if(i==0 && panelItem.items.length>0){
+        				panelItem.items[0].items=[];
+        				panelItem.items[0].items.push(DailyReportPanel);
+    				}
         		}else{
         			panelItem={
         					title: tabInfo.children[i].text,

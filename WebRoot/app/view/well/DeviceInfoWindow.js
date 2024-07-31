@@ -17,6 +17,69 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var deviceTypes=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+        
+        var deviceTypeStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/getDeviceTypeComb',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							deviceTypes:deviceTypes	
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var deviceTypeComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  '设备类型',
+					emptyText : '请选择设备类型',
+					blankText : '请选择设备类型',
+					id : 'deviceTypeComb_Id',
+					anchor : '95%',
+					store: deviceTypeStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : false,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					disabled: isNumber(deviceTypes)?true:false,
+					forceSelection : isNumber(deviceTypes)?true:false,
+				    value: isNumber(deviceTypes)?deviceTypes:null,
+					listeners : {
+						select: function (v,o) {
+							if(o.data.boxkey==''){
+								v.setValue('');
+								v.setRawValue(' ');
+							}
+							Ext.getCmp("addDeviceType_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
         
         var applicationScenariosStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -373,6 +436,14 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                         }
                     }
                 }
+            },deviceTypeComb,{
+         		xtype: "textfield",
+         		fieldLabel: '设备类型',
+         		hidden:true,
+         		id: 'addDeviceType_Id',
+         		anchor: '95%',
+         		name: "deviceInformation.deviceType",
+         		value: getDeviceTypeFromTabId("DeviceManagerTabPanel")
             },applicationScenariosComb,{
             	xtype: "hidden",
                 fieldLabel: '应用场景',
@@ -609,15 +680,6 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 minValue: 1,
                 anchor: '95%',
                 msgTarget: 'side'
-            },{
-
-         		xtype: "textfield",
-         		fieldLabel: '设备类型',
-         		hidden:true,
-         		id: 'addDeviceType_Id',
-         		anchor: '95%',
-         		name: "deviceInformation.deviceType",
-         		value: getDeviceTypeFromTabId("DeviceManagerTabPanel")
             }],
             buttons: [{
                 id: 'addFormDevice_Id',

@@ -312,6 +312,20 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceTypeComb")
+	public String getDeviceTypeComb() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String deviceTypes = ParamUtils.getParameter(request, "deviceTypes");
+		String json = this.wellInformationManagerService.getDeviceTypeComb(deviceTypes);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/changeDeviceOrg")
 	public String changeDeviceOrg() throws Exception {
 		this.pager=new Page("pageForm",request);
@@ -514,40 +528,6 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getExportDeviceInfo")
-	public String getExportDeviceInfo() throws IOException {
-		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
-		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
-		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
-		int offset = (intPage - 1) * pageSize + 1;
-		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
-		deviceType= ParamUtils.getParameter(request, "deviceType");
-		orgId=ParamUtils.getParameter(request, "orgId");
-		User user=null;
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		
-		
-		String json="";
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			json = this.wellInformationManagerService.getExportRPCDeviceInfo(orgId,deviceType,applicationScenarios);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			json = this.wellInformationManagerService.getExportPCPDeviceInfo(orgId,deviceType,applicationScenarios);
-		}
-		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getBatchAddDeviceTableInfo")
 	public String getBatchAddDeviceTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -567,28 +547,6 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount);
-		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getDeviceInformationData")
-	public String getDeviceInformationData() throws IOException {
-		String recordId = ParamUtils.getParameter(request, "recordId");
-		deviceType= ParamUtils.getParameter(request, "deviceType");
-		this.pager = new Page("pagerForm", request);
-		String json="";
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			json = this.wellInformationManagerService.getRPCDeviceInformationData(recordId);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-//			json = this.wellInformationManagerService.getPipeDeviceInfoList(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
-//			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount);
-		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1220,7 +1178,7 @@ public class WellInformationManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}else{
-			json=this.wellInformationManagerService.saveDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+			json=this.wellInformationManagerService.saveDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,user);
 		}
 		
 		List<String> initWellList=new ArrayList<String>();
@@ -1783,7 +1741,7 @@ public class WellInformationManagerController extends BaseController {
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setDeviceInformation(deviceInformation);
 				dataSynchronizationThread.setUser(user);
-				dataSynchronizationThread.setDeviceType(deviceInformation.getDeviceType());
+				dataSynchronizationThread.setDeviceType(deviceInformation.getDeviceType()+"");
 				dataSynchronizationThread.setDeviceManagerService(deviceManagerService);
 				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
 						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
@@ -1819,7 +1777,7 @@ public class WellInformationManagerController extends BaseController {
 			List<String> addWellList=new ArrayList<String>();
 			addWellList.add(smsDeviceInformation.getDeviceName());
 			EquipmentDriverServerTask.initSMSDevice(addWellList,"update");
-			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, user,300);
+			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, user,300+"");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);

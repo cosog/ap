@@ -165,6 +165,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 iconCls: 'add',
                 disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
+                	var deviceTypes=getDeviceTypeFromTabId("DeviceManagerTabPanel");
                 	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
                 	var selectedOrgName="";
                 	var selectedOrgId="";
@@ -187,7 +188,10 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     });
                     window.show();
                     Ext.getCmp("deviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
-                    Ext.getCmp("addDeviceType_Id").setValue(getDeviceTypeFromTabId("DeviceManagerTabPanel"));
+                    
+                    if(isNumber(deviceTypes)){
+                    	Ext.getCmp("addDeviceType_Id").setValue(deviceTypes);
+                    }
                     Ext.getCmp("addDeviceOrg_Id").setValue(selectedOrgId);
                     Ext.getCmp("addFormDevice_Id").show();
                     Ext.getCmp("updateFormDevice_Id").hide();
@@ -755,6 +759,16 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                         } else {
                             columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井', '螺杆泵井']}";
                         }
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "deviceTypeName".toUpperCase()) {
+                        var source = "[";
+                        for (var j = 0; j < result.deviceTypeDropdownData.length; j++) {
+                            source += "\'" + result.deviceTypeDropdownData[j] + "\'";
+                            if (j < result.deviceTypeDropdownData.length - 1) {
+                                source += ",";
+                            }
+                        }
+                        source += "]";
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "instanceName".toUpperCase()) {
                         var source = "[";
                         for (var j = 0; j < result.instanceDropdownData.length; j++) {
@@ -1003,6 +1017,11 @@ var DeviceInfoHandsontableHelper = {
                         		}
                         	}else if(prop.toUpperCase() === "allPath".toUpperCase() || prop.toUpperCase() === "productionDataUpdateTime".toUpperCase()){
                         		cellProperties.readOnly = true;
+                        	}else if(prop.toUpperCase() === "deviceTypeName".toUpperCase()){
+                        		var deviceTypes=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+                        		if(isNumber(deviceTypes)){
+                        			cellProperties.readOnly = true;
+                        		}
                         	}
                         }
                     }else{

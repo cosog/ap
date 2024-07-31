@@ -574,6 +574,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}else{
 				sql+= " and t.devicetype in ("+deviceType+")";
 			}
+			
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= " and t.devicename='"+deviceName+"'";
+			}
+			
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
@@ -735,6 +740,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+= " and t.devicetype="+deviceType;
 			}else{
 				sql+= " and t.devicetype in ("+deviceType+")";
+			}
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= " and t.devicename='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";

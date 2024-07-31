@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -968,19 +969,33 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	@SuppressWarnings("resource")
-	public List<WellHandsontableChangedData.Updatelist> saveDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws SQLException {
+	public List<WellHandsontableChangedData.Updatelist> saveDeviceData(
+			WellInformationManagerService<?> wellInformationManagerService,
+			WellHandsontableChangedData wellHandsontableChangedData,
+			String orgId,String deviceType,User user) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
 		List<String> initWellList=new ArrayList<String>();
-		List<String> updateWellList=new ArrayList<String>();
-		List<String> addWellList=new ArrayList<String>();
+//		List<String> updateWellList=new ArrayList<String>();
+//		List<String> addWellList=new ArrayList<String>();
 		List<String> deleteWellList=new ArrayList<String>();
 		List<String> deleteWellNameList=new ArrayList<String>();
 		List<String> disableWellIdList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
 		
 		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
+		
+		Map<String,Integer> deviceTypeMap=new HashMap<>();
+		if(!StringManagerUtils.isNum(deviceType)){
+			String sql="select t.name,t.id from tbl_devicetypeinfo t where t.id in("+user.getDeviceTypeIds()+") order by t.id";
+			List<?> deviceTypeList=this.findCallSql(sql);
+			for(int i=0;i<deviceTypeList.size();i++){
+				Object[] obj=(Object[]) deviceTypeList.get(i);
+				deviceTypeMap.put(obj[0]+"", StringManagerUtils.stringTransferInteger(obj[1]+""));
+			}
+		}
+		
 		try {
 			cs = conn.prepareCall("{call prd_update_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
@@ -994,7 +1009,14 @@ public class BaseDao extends HibernateDaoSupport {
 							}
 							cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
 							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-							cs.setString(3, deviceType+"");
+							
+							String saveDeviceType=deviceType;
+							if(!StringManagerUtils.isNum(deviceType)){
+								String deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName().replaceAll(" ", "");
+								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
+							}
+							cs.setString(3, saveDeviceType);
+							
 							
 							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
 							
@@ -1022,9 +1044,11 @@ public class BaseDao extends HibernateDaoSupport {
 							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
+//									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 								}else if(saveSign==1){//更新
-									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
+//									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 								}
 								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 							}
@@ -1046,7 +1070,14 @@ public class BaseDao extends HibernateDaoSupport {
 							}
 							cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
 							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-							cs.setString(3, deviceType+"");
+							
+							String saveDeviceType=deviceType;
+							if(!StringManagerUtils.isNum(deviceType)){
+								String deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName().replaceAll(" ", "");
+								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
+							}
+							cs.setString(3, saveDeviceType);
+							
 							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
 							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
@@ -1072,9 +1103,11 @@ public class BaseDao extends HibernateDaoSupport {
 							collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+//									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
 								}else if(saveSign==1){//更新
-									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+//									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
 								}
 								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
 							}
@@ -1095,19 +1128,18 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				queryDeleteWellSql="select id,t.devicename from tbl_device t "
-						+ " where t.devicetype="+deviceType+" "
-						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
+				queryDeleteWellSql="select id,t.devicename,t.devicetype,t.orgid from tbl_device t "
+						+ " where t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
 						+ " and t.orgid in("+orgId+")";
 				delSql="delete from tbl_device t "
-						+ " where t.devicetype="+deviceType+" "
-						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+") "
+						+ " where t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+") "
 						+ " and t.orgid in("+orgId+")";
 				List<?> list = this.findCallSql(queryDeleteWellSql);
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
 					deleteWellList.add(obj[0]+"");
 					deleteWellNameList.add(obj[1]+"");
+					this.saveDeviceOperationLog(obj[1]+"",2,user,StringManagerUtils.stringToInteger(obj[2]+""),obj[3]+"");
 				}
 				
 				ps=conn.prepareStatement(delSql);
@@ -1138,8 +1170,8 @@ public class BaseDao extends HibernateDaoSupport {
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(103);
 				dataSynchronizationThread.setInitWellList(initWellList);
-				dataSynchronizationThread.setUpdateList(updateWellList);
-				dataSynchronizationThread.setAddList(addWellList);
+//				dataSynchronizationThread.setUpdateList(updateWellList);
+//				dataSynchronizationThread.setAddList(addWellList);
 				dataSynchronizationThread.setDeleteList(null);
 				dataSynchronizationThread.setDeleteNameList(null);
 				dataSynchronizationThread.setCondition(1);
@@ -1336,7 +1368,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setCondition(0);
 				dataSynchronizationThread.setMethod("delete");
 				dataSynchronizationThread.setUser(user);
-				dataSynchronizationThread.setDeviceType(deviceType);
+//				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
 				executor.execute(dataSynchronizationThread);
 			}
@@ -1351,465 +1383,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setCondition(1);
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setUser(user);
-				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				executor.execute(dataSynchronizationThread);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(ps!=null){
-				ps.close();
-			}
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return collisionList;
-	}
-	
-	@SuppressWarnings("resource")
-	public List<WellHandsontableChangedData.Updatelist> batchAddRPCDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,
-			String orgId,int deviceType,String applicationScenariosStr,String isCheckout,User user) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		PreparedStatement ps=null;
-		
-		int applicationScenarios=StringManagerUtils.stringToInteger(applicationScenariosStr);
-		
-		List<String> initWellList=new ArrayList<String>();
-		List<String> updateWellList=new ArrayList<String>();
-		List<String> addWellList=new ArrayList<String>();
-		List<String> deleteWellList=new ArrayList<String>();
-		List<String> deleteWellNameList=new ArrayList<String>();
-		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
-		int license=0;
-		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
-		if(acStatusProbeResonanceData!=null){
-			license=acStatusProbeResonanceData.getLicenseNumber();
-		}
-		try {
-			cs = conn.prepareCall("{call prd_save_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-			if(wellHandsontableChangedData.getUpdatelist()!=null){
-				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-					try{
-						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName())){
-							int status=1;
-							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
-								status=0;
-							}
-							String pumpType="",barrelType="",crankRotationDirection="";
-							if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
-			        			pumpType="R";
-			        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
-			        			pumpType="T";
-			        		}
-			        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
-			        			barrelType="L";
-			        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
-			        			barrelType="H";
-			        		}
-			        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
-			        			crankRotationDirection="Clockwise";
-			        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
-			        			crankRotationDirection="Anticlockwise";
-			        		}
-			        		
-						
-							RPCCalculateRequestData productionData=new RPCCalculateRequestData();
-							RPCCalculateRequestData.Balance balance=new RPCCalculateRequestData.Balance();
-							productionData.init();
-							productionData.setFESDiagram(null);
-							productionData.setPumpingUnit(null);
-							balance.setEveryBalance(new ArrayList<EveryBalance>());
-							
-							if(applicationScenarios!=0){
-								productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity()));
-								productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
-							}
-							productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
-							productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
-							
-							
-							productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
-							productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
-							
-							productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
-							productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
-							productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWellHeadTemperature()));
-							
-							if(applicationScenarios!=0){
-								productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterCut()));
-								productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
-								
-								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(productionData.getProduction().getWaterCut(), productionData.getFluidPVT().getCrudeOilDensity(), productionData.getFluidPVT().getWaterDensity());
-								productionData.getProduction().setWeightWaterCut(weightWaterCut);
-							}else{
-								productionData.getProduction().setWaterCut(100);
-								productionData.getProduction().setWeightWaterCut(100);
-							}
-							
-							productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()));						
-							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
-							
-//							productionData.getPump().setPumpType(pumpType);
-							productionData.getPump().setBarrelType(barrelType);
-							productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
-							productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpBoreDiameter())*0.001));
-							productionData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()));
-							
-							productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
-							productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));
-							
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())>0){
-								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength1()));
-								productionData.getRodString().getEveryRod().add(everyRod);
-							}
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())>0){
-								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength2()));
-								productionData.getRodString().getEveryRod().add(everyRod);
-							}
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())>0){
-								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength3()));
-								productionData.getRodString().getEveryRod().add(everyRod);
-							}
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())>0){
-								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength4()));
-								productionData.getRodString().getEveryRod().add(everyRod);
-							}
-							
-							productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
-							productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
-							
-							int manualInterventionResultCode=0;
-							if(!"不干预".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResultName())){
-								manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(wellHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResultName());
-							}
-							productionData.getManualIntervention().setCode(manualInterventionResultCode);
-							
-							productionData.getManualIntervention().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getLevelCorrectValue()));
-							
-							String[] balanceWeight=wellHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight().split(",");
-							String[] balancePosition=wellHandsontableChangedData.getUpdatelist().get(i).getBalancePosition().split(",");
-							for(int j=0;j<balanceWeight.length;j++){
-								if(StringManagerUtils.isNotNull(balanceWeight[j])){
-									RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
-									everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[j]));
-									if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[j])){
-										everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[j]));
-									}
-									balance.getEveryBalance().add(everyBalance);
-								}
-							}
-							
-							cs.setString(1, orgId);
-							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-							cs.setString(3, deviceType+"");
-							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getReportInstanceName().replaceAll(" ", ""));
-							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
-							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", ""));
-							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
-							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
-							cs.setInt(12, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
-							cs.setString(13, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", ""));
-							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getVideoKeyName1().replaceAll(" ", ""));
-							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
-							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getVideoKeyName2().replaceAll(" ", ""));
-							
-							cs.setInt(17, status);
-							cs.setString(18, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-							cs.setString(19, new Gson().toJson(productionData));
-							cs.setString(20, wellHandsontableChangedData.getUpdatelist().get(i).getManufacturer().replaceAll(" ", ""));
-							cs.setString(21, wellHandsontableChangedData.getUpdatelist().get(i).getModel().replaceAll(" ", ""));
-							cs.setString(22, wellHandsontableChangedData.getUpdatelist().get(i).getStroke().replaceAll(" ", ""));
-							cs.setString(23, new Gson().toJson(balance));
-							cs.setInt(24, StringManagerUtils.stringToInteger(isCheckout));
-							cs.setInt(25, license);
-							cs.registerOutParameter(26, Types.INTEGER);
-							cs.registerOutParameter(27,Types.VARCHAR);
-							cs.executeUpdate();
-							int saveSign=cs.getInt(26);
-							String saveResultStr=cs.getString(27);
-							if(saveSign==0||saveSign==1){//保存成功
-								if(saveSign==0){//添加
-									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-								}else if(saveSign==1){//更新
-									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-								}
-								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-							}else{//保存失败，数据冲突或者超出限制
-								wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
-								wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
-								collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
-							}
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						continue;
-					}
-				}
-			}
-			if(wellHandsontableChangedData.getInsertlist()!=null){
-				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-					try{
-						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){
-							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){
-								int status=1;
-								if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
-									status=0;
-								}
-								String pumpType="",barrelType="",crankRotationDirection="";
-								if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
-				        			pumpType="R";
-				        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
-				        			pumpType="T";
-				        		}
-				        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
-				        			barrelType="L";
-				        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
-				        			barrelType="H";
-				        		}
-				        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
-				        			crankRotationDirection="Clockwise";
-				        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
-				        			crankRotationDirection="Anticlockwise";
-				        		}
-				        		
-							
-								RPCCalculateRequestData productionData=new RPCCalculateRequestData();
-								RPCCalculateRequestData.Balance balance=new RPCCalculateRequestData.Balance();
-								productionData.init();
-								productionData.setFESDiagram(null);
-								productionData.setPumpingUnit(null);
-								balance.setEveryBalance(new ArrayList<EveryBalance>());
-								
-								if(applicationScenarios!=0){
-									productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity()));
-									productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getSaturationPressure()));
-								}
-								productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterDensity()));
-								productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNaturalGasRelativeDensity()));
-								
-								productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirDepth()));
-								productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirTemperature()));
-								
-								productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getTubingPressure()));
-								productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCasingPressure()));
-								productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWellHeadTemperature()));
-								
-								
-								if(applicationScenarios!=0){
-									productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterCut()));
-									productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()));
-									
-									float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(productionData.getProduction().getWaterCut(), productionData.getFluidPVT().getCrudeOilDensity(), productionData.getFluidPVT().getWaterDensity());
-									productionData.getProduction().setWeightWaterCut(weightWaterCut);
-								}else{
-									productionData.getProduction().setWaterCut(100);
-									productionData.getProduction().setWeightWaterCut(100);
-								}
-								
-								
-								productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
-								productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
-								
-//								productionData.getPump().setPumpType(pumpType);
-								productionData.getPump().setBarrelType(barrelType);
-								productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpGrade()));
-								productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpBoreDiameter())*0.001));
-								productionData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPlungerLength()));
-								
-								productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter())*0.001));
-								productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter())*0.001));
-								
-								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())>0){
-									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade1());
-									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())*0.001));
-									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter1())*0.001));
-									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength1()));
-									productionData.getRodString().getEveryRod().add(everyRod);
-								}
-								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())>0){
-									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade2());
-									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())*0.001));
-									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter2())*0.001));
-									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength2()));
-									productionData.getRodString().getEveryRod().add(everyRod);
-								}
-								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())>0){
-									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade3());
-									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())*0.001));
-									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter3())*0.001));
-									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength3()));
-									productionData.getRodString().getEveryRod().add(everyRod);
-								}
-								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())>0){
-									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade4());
-									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())*0.001));
-									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter4())*0.001));
-									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength4()));
-									productionData.getRodString().getEveryRod().add(everyRod);
-								}
-								
-								productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()));
-								productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossValue()));
-								
-								int manualInterventionResultCode=0;
-								if(!"不干预".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResultName())){
-									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(wellHandsontableChangedData.getInsertlist().get(i).getManualInterventionResultName());
-								}
-								productionData.getManualIntervention().setCode(manualInterventionResultCode);
-								productionData.getManualIntervention().setLevelCorrectValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getLevelCorrectValue()));
-								
-								
-								String[] balanceWeight=wellHandsontableChangedData.getInsertlist().get(i).getBalanceWeight().split(",");
-								String[] balancePosition=wellHandsontableChangedData.getInsertlist().get(i).getBalancePosition().split(",");
-								for(int j=0;j<balanceWeight.length;j++){
-									if(StringManagerUtils.isNotNull(balanceWeight[i])){
-										RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
-										everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[i]));
-										if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[i])){
-											everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[i]));
-										}
-										balance.getEveryBalance().add(everyBalance);
-									}
-								}
-								
-								cs.setString(1, orgId);
-								cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-								cs.setString(3, deviceType+"");
-								cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-								cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-								cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getReportInstanceName().replaceAll(" ", ""));
-								cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-								cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
-								cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", ""));
-								cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
-								cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
-								cs.setInt(12, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
-								cs.setString(13, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", ""));
-								cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getVideoKeyName1().replaceAll(" ", ""));
-								cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
-								cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getVideoKeyName2().replaceAll(" ", ""));
-								cs.setInt(17, status);
-								cs.setString(18, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
-								cs.setString(19, new Gson().toJson(productionData));
-								cs.setString(20, wellHandsontableChangedData.getInsertlist().get(i).getManufacturer().replaceAll(" ", ""));
-								cs.setString(21, wellHandsontableChangedData.getInsertlist().get(i).getModel().replaceAll(" ", ""));
-								cs.setString(22, wellHandsontableChangedData.getInsertlist().get(i).getStroke().replaceAll(" ", ""));
-								cs.setString(23, new Gson().toJson(balance));
-								cs.setInt(24, StringManagerUtils.stringToInteger(isCheckout));
-								cs.setInt(25, license);
-								cs.registerOutParameter(26, Types.INTEGER);
-								cs.registerOutParameter(27,Types.VARCHAR);
-								cs.executeUpdate();
-								int saveSign=cs.getInt(26);
-								String saveResultStr=cs.getString(27);
-								if(saveSign==0||saveSign==1){//保存成功
-									if(saveSign==0){//添加
-										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-									}else if(saveSign==1){//更新
-										updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-									}
-									initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-								}else{//保存失败，数据冲突或者超出限制
-									wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
-									wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
-									collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
-								}
-							}
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						continue;
-					}
-				}
-			}
-			if(wellHandsontableChangedData.getDelidslist()!=null&&wellHandsontableChangedData.getDelidslist().size()>0){
-				String delIds="";
-				String delSql="";
-				String queryDeleteWellSql="";
-				for(int i=0;i<wellHandsontableChangedData.getDelidslist().size();i++){
-					delIds+=wellHandsontableChangedData.getDelidslist().get(i);
-					if(i<wellHandsontableChangedData.getDelidslist().size()-1){
-						delIds+=",";
-					}
-				}
-				queryDeleteWellSql="select id,t.devicename from tbl_device t "
-						+ " where t.devicetype="+deviceType+" "
-						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
-						+ " and t.orgid in("+orgId+")";
-				delSql="delete from tbl_device t "
-						+ " where t.devicetype="+deviceType+" "
-						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+") "
-						+ " and t.orgid in("+orgId+")";
-				List<?> list = this.findCallSql(queryDeleteWellSql);
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[]) list.get(i);
-					deleteWellList.add(obj[0]+"");
-					deleteWellNameList.add(obj[1]+"");
-				}
-//				if(deleteWellList.size()>0){
-//					EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(wellHandsontableChangedData.getDelidslist(),0,"delete");
-//					MemoryDataManagerTask.loadRPCDeviceInfo(deleteWellList,0,"delete");
-//				}
-				ps=conn.prepareStatement(delSql);
-				int result=ps.executeUpdate();
-			}
-			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-					TimeUnit.SECONDS, 
-					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-			if(deleteWellList.size()>0){
-				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(102);
-				dataSynchronizationThread.setInitWellList(null);
-				dataSynchronizationThread.setUpdateList(null);
-				dataSynchronizationThread.setAddList(null);
-				dataSynchronizationThread.setDeleteList(deleteWellList);
-				dataSynchronizationThread.setDeleteNameList(deleteWellNameList);
-				dataSynchronizationThread.setCondition(0);
-				dataSynchronizationThread.setMethod("delete");
-				dataSynchronizationThread.setUser(user);
-				dataSynchronizationThread.setDeviceType(deviceType);
-				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				executor.execute(dataSynchronizationThread);
-			}
-			if(initWellList.size()>0){
-				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(103);
-				dataSynchronizationThread.setInitWellList(initWellList);
-				dataSynchronizationThread.setUpdateList(updateWellList);
-				dataSynchronizationThread.setAddList(addWellList);
-				dataSynchronizationThread.setDeleteList(null);
-				dataSynchronizationThread.setDeleteNameList(null);
-				dataSynchronizationThread.setCondition(1);
-				dataSynchronizationThread.setMethod("update");
-				dataSynchronizationThread.setUser(user);
+//				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
 				executor.execute(dataSynchronizationThread);
 			}
@@ -1911,7 +1485,7 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			saveDeviceOperationLog(updateWellList,addWellList,deleteWellList,user,300);
+			saveDeviceOperationLog(updateWellList,addWellList,deleteWellList,user,300+"");
 			
 			if(initWellList.size()>0){
 				EquipmentDriverServerTask.initSMSDevice(initWellList,"update");
@@ -2112,7 +1686,32 @@ public class BaseDao extends HibernateDaoSupport {
 		return collisionList;
 	}
 	
-	public boolean saveDeviceOperationLog(List<String> updateWellList,List<String> addWellList,List<String> deleteWellList,User user,int deviceType) throws SQLException{
+	public boolean saveDeviceOperationLog(String deviceName,int type,User user,int deviceType,String remark) throws SQLException{
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		try {
+			cs = conn.prepareCall("{call prd_save_deviceOperationLog(?,?,?,?,?,?,?)}");
+			String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			cs.setString(1, currentTiem);
+			cs.setString(2, deviceName);
+			cs.setInt(3, deviceType);
+			cs.setInt(4, type);
+			cs.setString(5, user.getUserId());
+			cs.setString(6, user.getLoginIp());
+			cs.setString(7, remark);
+			cs.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			if(cs!=null){
+				cs.close();
+			}
+			conn.close();
+		}
+		return true;
+	}
+	
+	public boolean saveDeviceOperationLog(List<String> updateWellList,List<String> addWellList,List<String> deleteWellList,User user,String deviceType) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
@@ -2121,7 +1720,7 @@ public class BaseDao extends HibernateDaoSupport {
 			for(int i=0;addWellList!=null && i<addWellList.size();i++){
 				cs.setString(1, currentTiem);
 				cs.setString(2, addWellList.get(i));
-				cs.setInt(3, deviceType);
+				cs.setInt(3, StringManagerUtils.stringToInteger(deviceType));
 				cs.setInt(4, 0);
 				cs.setString(5, user.getUserId());
 				cs.setString(6, user.getLoginIp());
@@ -2131,7 +1730,7 @@ public class BaseDao extends HibernateDaoSupport {
 			for(int i=0;updateWellList!=null && i<updateWellList.size();i++){
 				cs.setString(1, currentTiem);
 				cs.setString(2, updateWellList.get(i));
-				cs.setInt(3, deviceType);
+				cs.setInt(3, StringManagerUtils.stringToInteger(deviceType));
 				cs.setInt(4, 1);
 				cs.setString(5, user.getUserId());
 				cs.setString(6, user.getLoginIp());
@@ -2141,7 +1740,7 @@ public class BaseDao extends HibernateDaoSupport {
 			for(int i=0;deleteWellList!=null && i<deleteWellList.size();i++){
 				cs.setString(1, currentTiem);
 				cs.setString(2, deleteWellList.get(i));
-				cs.setInt(3, deviceType);
+				cs.setInt(3, StringManagerUtils.stringToInteger(deviceType));
 				cs.setInt(4, 2);
 				cs.setString(5, user.getUserId());
 				cs.setString(6, user.getLoginIp());

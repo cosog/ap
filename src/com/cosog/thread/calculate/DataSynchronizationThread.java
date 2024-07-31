@@ -25,7 +25,7 @@ public class DataSynchronizationThread implements Runnable{
 	public String param1;
 	public int sign;
 	public User user;
-	public int deviceType;
+	public String deviceType;
 	
 	public AcquisitionUnitManagerService<AcquisitionUnit> acquisitionUnitManagerService;
 	
@@ -146,11 +146,11 @@ public class DataSynchronizationThread implements Runnable{
 			}else if(sign==102){//删除抽油机井
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(deleteList,condition,method);
 				MemoryDataManagerTask.loadDeviceInfo(deleteList,condition,method);
-				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
+//				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
 			}else if(sign==103){//修改抽油机井
 				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
-				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
+//				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -245,10 +245,10 @@ public class DataSynchronizationThread implements Runnable{
 	public void setDeviceManagerService(WellInformationManagerService<DeviceInformation> deviceManagerService) {
 		this.deviceManagerService = deviceManagerService;
 	}
-	public int getDeviceType() {
+	public String getDeviceType() {
 		return deviceType;
 	}
-	public void setDeviceType(int deviceType) {
+	public void setDeviceType(String deviceType) {
 		this.deviceType = deviceType;
 	}
 }

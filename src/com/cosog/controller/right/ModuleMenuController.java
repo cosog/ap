@@ -354,7 +354,7 @@ public class ModuleMenuController extends BaseController {
 		list = this.services.queryAddModuleList(Module.class, null);
 		MainModuleRecursion r = new MainModuleRecursion();
 		for (Module module : list) {
-			if (module.getMdParentid() == 0) {
+			if (!r.hasParent(list, module)) {
 				json = r.recursionAddModuleFn(list, module);
 			}
 		}

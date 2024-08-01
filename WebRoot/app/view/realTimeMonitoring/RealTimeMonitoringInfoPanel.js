@@ -465,12 +465,6 @@ var RealTimeMonitoringRightTabPanelItems=[{
         hidden: false,
         collapsible: true
 	}]
-},{
-	title:'计算数据',
-	id: 'RealTimeMonitoringRightCalculateDataPanel',
-    border: false,
-    hidden: true,
-    layout: 'fit'
 }];
 
 
@@ -752,26 +746,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                         			if(newCard.id=="RealTimeMonitoringRightDeviceInfoPanel"){
                         				if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
                         					Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
-                        				}else{
-                        					Ext.getCmp("RealTimeMonitoringRightCalculateDataPanel").removeAll();
-                                        	Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
-                        				}
-                        			}else if(newCard.id=="RealTimeMonitoringRightCalculateDataPanel"){
-                        				var calculateType=0;
-                        				if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                        					calculateType  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
-                        					if(calculateType==1 || calculateType==2){
-                            					var deviceInfoGridPanel=Ext.getCmp("RealTimeMonitoringDeviceProductionDataGridPanel_Id");
-                                    			if(isNotVal(deviceInfoGridPanel)){
-                                    				deviceInfoGridPanel.getStore().load();
-                                    			}else{
-                                    				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceProductionDataStore');
-                                    			}
-                            				}else{
-                            					tabPanel.setActiveTab(0);
-                            				}
-                        				}else{
-                        					Ext.getCmp("RealTimeMonitoringRightCalculateDataPanel").removeAll();
                         				}
                         			}
                         		}

@@ -27,6 +27,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				cleanDeviceAddInfoAndControlInfo();
         	        				oldCard.removeAll();
         	        				oldCard.setIconCls(null);
         	        				newCard.setIconCls('check2');

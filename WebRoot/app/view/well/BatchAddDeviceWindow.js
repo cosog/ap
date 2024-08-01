@@ -132,6 +132,16 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                         } else {
                             columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井', '螺杆泵井']}";
                         }
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "deviceTypeName".toUpperCase()) {
+                        var source = "[";
+                        for (var j = 0; j < result.deviceTypeDropdownData.length; j++) {
+                            source += "\'" + result.deviceTypeDropdownData[j] + "\'";
+                            if (j < result.deviceTypeDropdownData.length - 1) {
+                                source += ",";
+                            }
+                        }
+                        source += "]";
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
                     } else if (dataIndex.toUpperCase() === "instanceName".toUpperCase()) {
                         var source = "[";
                         for (var j = 0; j < result.instanceDropdownData.length; j++) {
@@ -436,11 +446,6 @@ var BatchAddDeviceHandsontableHelper = {
         batchAddDeviceHandsontableHelper.saveData = function () {
         	var orgId = Ext.getCmp('batchAddDeviceOrg_Id').getValue();
             var deviceType = Ext.getCmp('batchAddDeviceType_Id').getValue();
-//            var applicationScenarios=0;
-//            var gridPanel = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id");
-//            if (isNotVal(gridPanel)) {
-//            	applicationScenarios = Ext.getCmp("BatchAddDeviceApplicationScenariosListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
-//            }
             var isCheckout=1;
             var saveDate={};
             saveDate.updatelist=[];

@@ -403,7 +403,7 @@ public class RoleManagerController extends BaseController {
 		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabs(DeviceTypeInfo.class,user);
 		boolean flag = false;
 		for (DeviceTypeInfo tabInfo : list) {
-			if (tabInfo.getParentId() == 0) {
+			if (!r.hasParent(list, tabInfo)) {
 				flag = true;
 				json = r.recursionRightTabTreeFn(list, tabInfo);
 //				break;
@@ -436,12 +436,11 @@ public class RoleManagerController extends BaseController {
 		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabs(DeviceTypeInfo.class,user);
 		boolean flag = false;
 		for (DeviceTypeInfo tabInfo : list) {
-			if (tabInfo.getParentId() == 0) {
+			if (!r.hasParent(list, tabInfo)) {
 				flag = true;
 				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
 //				break;
 			}
-
 		}
 		if (flag == false && list.size() > 0) {
 			for (DeviceTypeInfo tabInfo : list) {
@@ -469,7 +468,7 @@ public class RoleManagerController extends BaseController {
 		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabsWithoutRoot(DeviceTypeInfo.class,user);
 		boolean flag = false;
 		for (DeviceTypeInfo tabInfo : list) {
-			if (tabInfo.getParentId() == 0) {
+			if (!r.hasParent(list, tabInfo)) {
 				flag = true;
 				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
 //				break;

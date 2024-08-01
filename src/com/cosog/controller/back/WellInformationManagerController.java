@@ -1147,7 +1147,7 @@ public class WellInformationManagerController extends BaseController {
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		
 		if((!Config.getInstance().configFile.getAp().getOthers().isIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
-			String instanceNames=this.wellInformationManagerService.getDefaultInstanceName(StringManagerUtils.stringToInteger(deviceType));
+			String instanceNames=this.wellInformationManagerService.getDefaultInstanceName(deviceType);
 			String[] instanceNameArr=instanceNames.split(";");
 			if(instanceNameArr.length==4){
 				if(wellHandsontableChangedData.getUpdatelist()!=null){
@@ -1357,7 +1357,7 @@ public class WellInformationManagerController extends BaseController {
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		
 		if((!Config.getInstance().configFile.getAp().getOthers().isIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
-			String[] instanceNameArr=this.wellInformationManagerService.getDefaultInstanceName(StringManagerUtils.stringToInteger(deviceType)).split(";");
+			String[] instanceNameArr=this.wellInformationManagerService.getDefaultInstanceName(deviceType).split(";");
 			if(instanceNameArr.length==4){
 				if(wellHandsontableChangedData.getUpdatelist()!=null){
 					for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
@@ -1386,7 +1386,7 @@ public class WellInformationManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}else{
-			json=this.wellInformationManagerService.batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
+			json=this.wellInformationManagerService.batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

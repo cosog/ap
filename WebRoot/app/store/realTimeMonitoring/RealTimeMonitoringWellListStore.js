@@ -143,7 +143,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                         		
                         		var RealTimeMonitoringRightControlAndVideoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightControlAndVideoPanel");
                     			var RealTimeMonitoringRightDeviceInfoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightDeviceInfoPanel");
-                    			var RealTimeMonitoringRightCalculateDataPanel = rightTabPanel.getComponent("RealTimeMonitoringRightCalculateDataPanel");
                     			
                     			if( (deviceInfo.videoNum>0 || deviceInfo.controlItemNum>0) && RealTimeMonitoringRightControlAndVideoPanel==undefined){
                     				rightTabPanel.insert(0,RealTimeMonitoringRightTabPanelItems[0]);
@@ -182,8 +181,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                         					rightTabPanel.remove("RealTimeMonitoringRightControlAndVideoPanel");
                         				}
                         			}
-                        		}else{
-                        			
                         		}
                     		}
                     	},

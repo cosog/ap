@@ -24,6 +24,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(cosog.string.loading).show();
         	        				oldCard.setIconCls(null);
         	        				newCard.setIconCls('check2');
         	        				oldCard.removeAll();
@@ -105,7 +106,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    					oldCard.setIconCls(null);
+    					Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(cosog.string.loading).show();oldCard.setIconCls(null);
         				newCard.setIconCls('check1');
         				if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();

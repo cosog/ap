@@ -471,6 +471,7 @@ var RealTimeMonitoringRightTabPanelItems=[{
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.realTimeMonitoringInfoPanel',
+    id: 'RealTimeMonitoringInfoPanel_Id',
     layout: 'fit',
     border: false,
     initComponent: function () {

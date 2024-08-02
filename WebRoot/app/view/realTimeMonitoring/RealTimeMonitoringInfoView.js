@@ -3,6 +3,7 @@ var accessTokenInfo=null;
 var demoAccessTokenInfo=null;
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
     extend: 'Ext.panel.Panel',
+    id: 'RealTimeMonitoringInfoView_Id',
     alias: 'widget.realTimeMonitoringInfoView', // 定义别名
     layout: 'fit',
     border: false,
@@ -27,6 +28,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(cosog.string.loading).show();
         	        				cleanDeviceAddInfoAndControlInfo();
         	        				oldCard.removeAll();
         	        				oldCard.setIconCls(null);
@@ -35,7 +37,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        				var RealTimeMonitoringInfoPanel = Ext.create('AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel');
         	        				newCard.add(RealTimeMonitoringInfoPanel);
-        	        				
         	        				realTimeDataRefresh();
         	        			},
         	        			afterrender: function (panel, eOpts) {
@@ -216,7 +217,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				if(oldCard.xtype=='tabpanel'){
+    					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(cosog.string.loading).show();
+    					if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{
         					oldCard.removeAll();
@@ -1764,13 +1766,13 @@ function getDeviceAddInfoAndControlInfo(deviceId,deviceType){
 
 function cleanDeviceAddInfoAndControlInfo(){
 	clearVideo();
-	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightControlPanel"))){
+	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightControlPanel")) && isNotVal(Ext.getCmp("RealTimeMonitoringRightControlPanel"))   ){
 		Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
 	}
-	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel"))){
+	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel")) && isNotVal(Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel"))){
 		Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel").removeAll();
 	}
-	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel"))){
+	if(isNotVal(Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel")) && isNotVal(Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel"))){
 		Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
 	}
 }

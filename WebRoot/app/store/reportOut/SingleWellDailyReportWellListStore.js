@@ -97,6 +97,7 @@ Ext.define('AP.store.reportOut.SingleWellDailyReportWellListStore', {
                     $("#SingleWellRangeReportCurveDiv_Id").html('');
             	}
             }
+            Ext.getCmp("ProductionReportRootTabPanel").getEl().unmask();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

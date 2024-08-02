@@ -143,6 +143,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
     initComponent: function () {
         var me = this;
         
+        
+        
 //        var FESDiagramResultAlarmInfoPanel = Ext.create('AP.view.alarmQuery.FESDiagramResultAlarmInfoPanel');
 //        var RunStatusAlarmInfoPanel = Ext.create('AP.view.alarmQuery.RunStatusAlarmInfoPanel');
 //        var CommunicationAlarmInfoPanel = Ext.create('AP.view.alarmQuery.CommunicationAlarmInfoPanel');

@@ -159,6 +159,9 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     		if(total>0&&Ext.getCmp("RealTimeMonitoringRightTabPanel").getActiveTab().id=="RealTimeMonitoringRightDeviceInfoPanel"){
     			deviceAuxiliaryInfoGridPanel.plugins[0].toggleRow(0,0);
     		}
+    		
+    		Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
+    		Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
         },
         beforeload: function (store, options) {
         	var wellName  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;

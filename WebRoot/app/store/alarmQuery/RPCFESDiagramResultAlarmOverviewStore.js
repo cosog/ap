@@ -102,6 +102,7 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore', {
                 	Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmStore');
                 }
             }
+            Ext.getCmp("AlarmQueryRootTabPanel").getEl().unmask();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

@@ -2246,12 +2246,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-		}
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		Jedis jedis=null;
 		List<byte[]> totalItemSet=null;
 		try{
@@ -5511,8 +5506,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer calColumnNameBuff = new StringBuffer();
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1";
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
@@ -5578,8 +5572,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolRunStatusItems(String classes,String deviceType,String protocolCode) {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1 ";
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
@@ -5703,8 +5696,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		
 		List<Integer> runValueIndexList=new ArrayList<Integer>();
 		List<Integer> runConfigValueList=new ArrayList<Integer>();

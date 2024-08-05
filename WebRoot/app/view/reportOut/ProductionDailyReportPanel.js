@@ -672,6 +672,13 @@ var ProductionDailyReportHelper = {
 	        productionDailyReportHelper.titleCenter = function () {
 	            $(containerid).width($($('.wtHider')[0]).width());
 	        }
+	        
+	        productionDailyReportHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
 
 	        productionDailyReportHelper.createTable = function () {
 	            productionDailyReportHelper.container.innerHTML = "";
@@ -728,6 +735,7 @@ var ProductionDailyReportHelper = {
 	                    		}
 	                    	}
 	                    }
+	                    cellProperties.renderer=productionDailyReportHelper.addCellStyle;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import com.cosog.model.DataMapping;
 import com.cosog.model.KeyValue;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
+import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;
@@ -85,7 +86,7 @@ public class EquipmentDriverServerTask {
 		
 		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
 			boolean sendMsg=false;
-//			exampleDataManage();
+			exampleDataManage();
 			do{
 				DriverProbeResponse driverProbeResponse=adInitProbe();
 				String Ver="";
@@ -290,23 +291,39 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static ThreadPool adInit() throws MalformedURLException, InterruptedException{
-		initServerConfig();
-		initProtocolConfig("","");
-		initInstanceConfig(null,"");
-		initSMSInstanceConfig(null,"");
-		initSMSDevice(null,"");
-		initDriverAcquisitionInfoConfig(null,0,"");
-		ThreadPool executor = new ThreadPool("adInit",
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getMaximumPoolSize(), 
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
-				TimeUnit.SECONDS, 
-				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
-		while (!executor.isCompletedByTaskCount()) {
-			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
-			Thread.sleep(1000*1);
-	    }
-		System.out.println("线程池任务执行完毕！");
+		ThreadPool executor=null;
+		try{
+			if(Config.getInstance().configFile.getAp().getOthers().isIot() ){
+				Gson gson = new Gson();
+				java.lang.reflect.Type type=null;
+				String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();
+				String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
+				type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
+				AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
+				if(adStatusProbeResonanceData!=null){
+					initServerConfig();
+					initProtocolConfig("","");
+					initInstanceConfig(null,"");
+					initSMSInstanceConfig(null,"");
+					initSMSDevice(null,"");
+					initDriverAcquisitionInfoConfig(null,0,"");
+					executor = new ThreadPool("adInit",
+							Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
+							Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getMaximumPoolSize(), 
+							Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
+							TimeUnit.SECONDS, 
+							Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
+					while (!executor.isCompletedByTaskCount()) {
+						System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+						Thread.sleep(1000*1);
+				    }
+					System.out.println("线程池任务执行完毕！");
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		return executor;
 	}
 	
@@ -348,6 +365,8 @@ public class EquipmentDriverServerTask {
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
 				String url=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdAcqGroupDataPushURL();
 				
+				String onlineUrl=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdOnlineStatusPushURL();
+				
 				String path="";
 				path=stringManagerUtils.getFilePath(deviceName+"_01.json","example/");
 				String data=stringManagerUtils.readFile(path,"utf-8");
@@ -355,9 +374,22 @@ public class EquipmentDriverServerTask {
 				path=stringManagerUtils.getFilePath(deviceName+"_02.json","example/");
 				String data2=stringManagerUtils.readFile(path,"utf-8");
 				
+//				path=stringManagerUtils.getFilePath("test3.json","example/");
+//				String onlineData=stringManagerUtils.readFile(path,"utf-8");
+//				
+//				path=stringManagerUtils.getFilePath("test4.json","example/");
+//				String offlineData=stringManagerUtils.readFile(path,"utf-8");
+				
+				
 				int i=0;
 				while(true){
 					if(i%2==0){
+//						if(deviceName.equalsIgnoreCase("rpc11")){
+//							StringManagerUtils.sendPostMethod(onlineUrl, offlineData,"utf-8",0,0);
+//							Thread.sleep(1000*5);
+//							StringManagerUtils.sendPostMethod(onlineUrl, onlineData,"utf-8",0,0);
+//							Thread.sleep(1000*5);
+//						}
 						StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
 					}else{
 						StringManagerUtils.sendPostMethod(url, data2,"utf-8",0,0);
@@ -378,22 +410,22 @@ public class EquipmentDriverServerTask {
 			try {
 				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
-//				sendCycle=60;
+//				sendCycle=10;
 //				timeDifference=0;
-				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
-				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
-				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
-				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
-				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
-				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
-				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
+//				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
+//				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
+//				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
+//				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
+//				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
+//				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
+//				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
 //				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
 //				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
-				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
-				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
+//				
+//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -453,141 +485,6 @@ public class EquipmentDriverServerTask {
 			IPPortInitStatus = iPPortInitStatus;
 		}
 	}
-	
-//	@SuppressWarnings({ "resource" })
-//	public static int syncDataMappingTable(){
-//		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-//		List<String> tableColumnList=MemoryDataManagerTask.getAcqTableColumn();
-//		List<String> acquisitionItemNameList=MemoryDataManagerTask.getAcquisitionItemNameList();
-//		int result=0;
-//		Connection conn = null;   
-//		PreparedStatement pstmt = null;   
-//		ResultSet rs = null;
-//		conn=OracleJdbcUtis.getConnection();
-//		if(conn==null){
-//        	return -1;
-//        }
-//		try {
-//			boolean isDeleteMapping=false;
-//			List<String> deleteMappingList=new ArrayList<>();
-//			//删除重复映射
-//			try {
-//				boolean isDelete=false;
-//				String queryDelItemSql="select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn";
-//				pstmt = conn.prepareStatement(queryDelItemSql);
-//				rs=pstmt.executeQuery();
-//				while(rs.next()){
-//					isDelete=true;
-//					String column=rs.getString(1);
-//					int colCount=rs.getInt(2);
-//					if(colCount>1){
-//						deleteMappingList.add(column);
-//					}
-//				}
-//				if(isDelete){
-//					String delSql="delete from TBL_DATAMAPPING t where t.mappingcolumn in ( select v.mappingcolumn from  (select t2.mappingcolumn,count(1) as cn from TBL_DATAMAPPING t2 group by t2.mappingcolumn) v where v.cn>1 )";
-//					pstmt = conn.prepareStatement(delSql);
-//					result=pstmt.executeUpdate();
-//					if(result>0){
-//						isDeleteMapping=true;
-//					}
-//				}
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//			
-//			//删除不存在的字段映射
-//			try {
-//				int colCount=0;
-//				String queryDelItemSql="select count(1) from tbl_datamapping t where t.mappingcolumn not in("+StringManagerUtils.joinStringArr2(tableColumnList, ",")+")";
-//				pstmt = conn.prepareStatement(queryDelItemSql);
-//				rs=pstmt.executeQuery();
-//				while(rs.next()){
-//					colCount=rs.getInt(1);
-//				}
-//				if(colCount>0){
-//					String delSql="delete from tbl_datamapping t where t.mappingcolumn not in("+StringManagerUtils.joinStringArr2(tableColumnList, ",")+")";
-//					pstmt = conn.prepareStatement(delSql);
-//					result=pstmt.executeUpdate();
-//					if(result>0){
-//						isDeleteMapping=true;
-//					}
-//				}
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//			
-//			//删除不存在的协议项映射
-//			try {
-//				boolean isDelete=false;
-//				String queryDelItemSql="select t.name from tbl_datamapping t where t.name not in("+StringManagerUtils.joinStringArr2(acquisitionItemNameList, ",")+")";
-//				pstmt = conn.prepareStatement(queryDelItemSql);
-//				rs=pstmt.executeQuery();
-//				while(rs.next()){
-//					isDelete=true;
-//					String column=rs.getString(1);
-//					deleteMappingList.add(column);
-//				}
-//				
-//				if(isDelete){
-//					String delSql="delete from tbl_datamapping t where t.name not in("+StringManagerUtils.joinStringArr2(acquisitionItemNameList, ",")+")";
-//					pstmt = conn.prepareStatement(delSql);
-//					result=pstmt.executeUpdate();
-//					if(result>0){
-//						isDeleteMapping=true;
-//					}
-//				}
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//
-//			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-//			MemoryDataManagerTask.loadProtocolMappingColumn();
-//			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-//			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
-//			
-//			for(int i=0;i<acquisitionItemNameList.size();i++){
-//				if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnByTitleMap, acquisitionItemNameList.get(i),false)){
-//					String addMappingColumn="";
-//					for(int j=0;i<tableColumnList.size();j++){
-//						if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, tableColumnList.get(j),false)){
-//							addMappingColumn=tableColumnList.get(j);
-//							DataMapping dataMapping=new DataMapping();
-//							dataMapping.setName(acquisitionItemNameList.get(i));
-//							dataMapping.setMappingColumn(addMappingColumn);
-//							loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
-//							break;
-//						}
-//					}
-//					if(StringManagerUtils.isNotNull(addMappingColumn)){
-//						try {
-//							String addSql="insert into tbl_datamapping(name,mappingcolumn) values('"+acquisitionItemNameList.get(i)+"','"+addMappingColumn+"')";
-//							pstmt = conn.prepareStatement(addSql);
-//							result=pstmt.executeUpdate();
-//						} catch (SQLException e) {
-//							e.printStackTrace();
-//						}
-//					}
-//					
-//				}
-//			}
-//			
-//			//清理不存在的映射数据
-//			if(deleteMappingList.size()>0){
-//				DatabaseTableSynColumnThread databaseTableSynColumnThread=new DatabaseTableSynColumnThread(deleteMappingList);
-//				databaseTableSynColumnThread.start();
-//			}
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally{
-//			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-//		}
-//		MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-//		MemoryDataManagerTask.loadProtocolMappingColumn();
-//
-//		return result;
-//	}
 	
 	@SuppressWarnings({ "resource" })
 	public static int syncDataMappingTable(){
@@ -663,7 +560,6 @@ public class EquipmentDriverServerTask {
 						String addSql="insert into tbl_datamapping(name,mappingcolumn) values('"+acquisitionItemNameList.get(i)+"','"+addMappingColumn+"')";
 						result=OracleJdbcUtis.executeSqlUpdate(addSql);
 					}
-					
 				}
 			}
 		} catch (Exception e) {
@@ -766,12 +662,11 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings("resource")
 	public static int initDataDictionary(String dataDictionaryId){
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		if(modbusProtocolConfig==null){
 			return 0;
 		}
 		int result=0;
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		
 		Collections.sort(modbusProtocolConfig.getProtocol());
 		List<String> acquisitionItemColumns=new ArrayList<String>();

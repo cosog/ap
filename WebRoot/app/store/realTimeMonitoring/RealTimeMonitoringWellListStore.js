@@ -127,14 +127,11 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
         						}
         					}
                     		
-                    		
-                    		
-                    		
-                    		
-                    		
                     		if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0 && deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
                     			cleanDeviceAddInfoAndControlInfo();
                     			Ext.getCmp("RealTimeMonitoringRightTabPanel").hide();
+                    			Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
+                    			Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
                     		}else{
                     			if(Ext.getCmp("RealTimeMonitoringRightTabPanel").isHidden() ){
                     				Ext.getCmp("RealTimeMonitoringRightTabPanel").show();

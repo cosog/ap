@@ -115,6 +115,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 		xtype: 'button',
                         id:"CPUUsedPercentLabel_id",
 //                        width: 180,
+                        height:25,
                         text: 'CPU:',
                         handler: function (v, o) {
                         	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("CPU使用率(%)");

@@ -3841,6 +3841,25 @@ public class StringManagerUtils {
         }
         return flag;
     }
+    
+    public static boolean existDisplayItem(List < DisplayInstanceOwnItem.DisplayItem > displayItemList, String key, boolean caseSensitive, int type) {
+        boolean flag = false;
+        for (int i = 0; i < displayItemList.size(); i++) {
+            if ((type == 0 && displayItemList.get(i).getType() != 2) || (type == 1 && displayItemList.get(i).getType() == 2)) {
+                boolean match = false;
+                if (caseSensitive) {
+                    match = key.equals(displayItemList.get(i).getItemName());
+                } else {
+                    match = key.equalsIgnoreCase(displayItemList.get(i).getItemName());
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
 
     public static boolean existDisplayItemCode(List < DisplayInstanceOwnItem.DisplayItem > displayItemList, String key, boolean caseSensitive, int type) {
         boolean flag = false;

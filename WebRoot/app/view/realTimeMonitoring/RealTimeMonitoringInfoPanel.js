@@ -930,9 +930,9 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	        }
 	        
 	        deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(row>0 && value!=null && value.length>11){
-	        		value=value.substring(0, 8)+"...";
-                }
+//	        	if(row>0 && value!=null && value.length>11){
+//	        		value=value.substring(0, 8)+"...";
+//                }
 	        	
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue()); 
@@ -951,6 +951,14 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
                 }else{
                 	td.style.fontFamily = 'SimHei';
                 }
+	            
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+            	
+//	            if(row>0){
+//	            	td.style.textAlign='left';//内容左对齐
+//	            }
 	            for(var i=0;i<deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
                 	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
                 		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;

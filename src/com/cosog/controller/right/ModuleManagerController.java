@@ -110,7 +110,7 @@ public class ModuleManagerController extends BaseController {
 		list = this.moduleService.queryRightModules(Module.class, moduleName,user);
 		boolean flag = false;
 		for (Module module : list) {
-			if (module.getMdParentid() == 0) {
+			if (!r.hasParent(list, module)) {
 				flag = true;
 				json = r.recursionRightModuleTreeFn(list, module);
 				break;

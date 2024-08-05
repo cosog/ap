@@ -70,6 +70,7 @@ Ext.define('AP.store.log.DeviceOperationLogStore', {
             	Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
             	Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
+            Ext.getCmp("DeviceOperationLogRootTabPanel").getEl().unmask();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

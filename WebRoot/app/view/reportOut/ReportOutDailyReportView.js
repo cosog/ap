@@ -24,6 +24,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        				Ext.getCmp("ProductionReportRootTabPanel").el.mask(cosog.string.loading).show();
         	        				oldCard.setIconCls(null);
         	        				newCard.setIconCls('check2');
         	        				oldCard.removeAll();
@@ -122,6 +123,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                 items: items,
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                		Ext.getCmp("ProductionReportRootTabPanel").el.mask(cosog.string.loading).show();
                 		oldCard.setIconCls(null);
         				newCard.setIconCls('check1');
                 		if(oldCard.xtype=='tabpanel'){

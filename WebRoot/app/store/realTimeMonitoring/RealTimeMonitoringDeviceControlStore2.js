@@ -18,7 +18,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	var get_rawData = store.proxy.reader.rawData;
+            var get_rawData = store.proxy.reader.rawData;
             var isControl = get_rawData.isControl;
             var commStatus = get_rawData.commStatus;
 
@@ -451,12 +451,9 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                 });
                 Ext.getCmp("RealTimeMonitoringRightControlPanel").add(controlGridPanel);
             }
-            Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
-            Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
         },
         beforeload: function (store, options) {
-//        	Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
-        	var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+            var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
             var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
             var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
             var new_params = {

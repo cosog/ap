@@ -119,6 +119,7 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
     	            }
     			}
             }
+            Ext.getCmp("CalculateMaintainingRootTabPanel").getEl().unmask();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

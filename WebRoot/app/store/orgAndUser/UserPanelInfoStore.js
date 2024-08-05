@@ -273,6 +273,9 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
         	                    	updateUserInfoByGridBtn(record);
         	                    }
                             }
+//                        	,isDisabled : function (view, recIndex, cellIndex, item, record) {
+//                        		return true;
+//                            }
                         }]
                     },{
                     	header: '删除',
@@ -307,7 +310,6 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                 var panel = Ext.getCmp("OrgAndUserUserInfoPanel_Id");
                 panel.add(gridPanel);
             }
-
         },
         beforeload: function (store, options) {
         	var selectedOrgId="";

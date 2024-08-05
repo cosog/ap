@@ -176,7 +176,6 @@ public class ResourceMonitoringTask {
 					adRunStatus=1;
 					adVersion=adStatusProbeResonanceData.getVer();
 					adLicense=adStatusProbeResonanceData.getLicenseNumber();
-					
 				}
 			}catch(Exception e){
 				e.printStackTrace();

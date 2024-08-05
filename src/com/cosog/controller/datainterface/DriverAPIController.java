@@ -176,6 +176,9 @@ public class DriverAPIController extends BaseController{
 							updateHistCommRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.acqtime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss')";
 							
 							int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealData);
+							if(result==0){
+								result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql.replaceAll(historyTable, realtimeTable));
+							}
 							result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 								result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRealCommRangeClobSql,clobCont);
@@ -349,6 +352,9 @@ public class DriverAPIController extends BaseController{
 						updateHistCommRangeClobSql+=" where t.deviceId= "+deviceId+" and t.acqtime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 						
 						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealData);
+						if(result==0){
+							result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql.replaceAll(historyTable, realtimeTable));
+						}
 						result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRealCommRangeClobSql,clobCont);
@@ -1078,7 +1084,7 @@ public class DriverAPIController extends BaseController{
 						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(title);
 						String columnName=dataMappingColumn.getMappingColumn();
 						
-						if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null ){
+						if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null &&acqGroup.getValue().get(i).size()>0){
 							value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 						}
 						String rawValue=value;
@@ -1658,10 +1664,11 @@ public class DriverAPIController extends BaseController{
 		}
 		for(int i=0;i<acqGroup.getAddr().size();i++){
 			for(int j=0;j<protocol.getItems().size();j++){
-				if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
-					if(acqGroup.getValue().get(i).size()!=protocol.getItems().get(j).getQuantity()){
+				if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr() && protocol.getItems().get(j).getResolutionMode()!=0){
+					if( !(acqGroup.getValue().get(i)!=null && acqGroup.getValue().get(i).size()==protocol.getItems().get(j).getQuantity()) ){
 						r=false;
 					}
+					
 					break;
 				}
 			}

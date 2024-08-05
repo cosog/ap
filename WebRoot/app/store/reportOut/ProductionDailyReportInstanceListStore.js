@@ -69,6 +69,7 @@ Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
             	$("#ProductionDailyReportDiv_id").html('');
                 $("#ProductionDailyReportCurveDiv_Id").html('');
             }
+            Ext.getCmp("ProductionReportRootTabPanel").getEl().unmask();
         },
         beforeload: function (store, options) {
         	Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").show();

@@ -279,25 +279,14 @@ var DeviceReportCurveSetHandsontableHelper = {
 	        deviceReportCurveSetHandsontableHelper.colHeaders=[];
 	        deviceReportCurveSetHandsontableHelper.columns=[];
 	        
-	        
-	        
-	        deviceReportCurveSetHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = '#DC2828';   
-	             td.style.color='#FFFFFF';
-	        }
-	        
-	        deviceReportCurveSetHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        deviceReportCurveSetHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        }
-	        
-	        deviceReportCurveSetHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
-	        	td.style.fontWeight = 'bold';
-		        td.style.fontSize = '20px';
-		        td.style.fontFamily = 'SimSun';
-		        td.style.height = '40px';
+	            if(col==0){
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        deviceReportCurveSetHandsontableHelper.createTable = function (data) {
@@ -329,9 +318,9 @@ var DeviceReportCurveSetHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if(visualColIndex==0){
-	                    	cellProperties.renderer = deviceReportCurveSetHandsontableHelper.addBoldBg;
 	                    	cellProperties.readOnly = true;
 	                    }
+	                    cellProperties.renderer=deviceReportCurveSetHandsontableHelper.addCellStyle;
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}

@@ -534,6 +534,7 @@ CREATE OR REPLACE PROCEDURE prd_save_device (
                                                     v_orgId  in NUMBER,
                                                     v_deviceName    in varchar2,
                                                     v_devicetype in NUMBER,
+                                                    v_applicationScenariosName    in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -570,6 +571,7 @@ begin
       if othercount=0 then
         Update tbl_device t
         Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
+          t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
           t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
           t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
           t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
@@ -609,7 +611,8 @@ begin
             values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
             commit;
             update tbl_device t
-            set t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
+            set t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
+                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                 t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
                 t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1)
@@ -656,7 +659,8 @@ begin
             values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
             commit;
             update tbl_device t
-            set t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
+            set t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
+                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                 t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
                 t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1)
@@ -1800,6 +1804,7 @@ end prd_update_auxiliarydevice;
 CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_deviceName    in varchar2,
                                                     v_devicetype in NUMBER,
+                                                    v_applicationScenariosName    in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -1832,6 +1837,7 @@ begin
           Update tbl_device t
            Set t.devicename=v_deviceName,
                t.devicetype=v_devicetype,
+               t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),

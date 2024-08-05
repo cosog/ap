@@ -471,7 +471,7 @@ public class MemoryDataManagerTask {
 			
 			jedis = RedisUtil.jedisPool.getResource();
 			if(jedis!=null){
-				jedis.del("ProtocolMappingColumn".getBytes());
+//				jedis.del("ProtocolMappingColumn".getBytes());
 				for (Map.Entry<String, DataMapping> entry : loadProtocolMappingColumnByTitleMap.entrySet()) {
 				    String key = entry.getKey();
 				    DataMapping dataMapping = entry.getValue();
@@ -1845,6 +1845,7 @@ public class MemoryDataManagerTask {
     				int index=-1;
     				for(int i=0;i<displayInstanceOwnItem.getItemList().size();i++){
     					if(displayItem.getItemCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemCode()) 
+    							&& displayItem.getItemName().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemName()) 
     							&& displayItem.getType()==displayInstanceOwnItem.getItemList().get(i).getType()
     							&& displayItem.getBitIndex()==displayInstanceOwnItem.getItemList().get(i).getBitIndex()
     							){

@@ -662,6 +662,13 @@ var SingleWellRangeReportHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
 	        }
+	        
+	        singleWellRangeReportHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
 
 	        // 实现标题居中
 	        singleWellRangeReportHelper.titleCenter = function () {
@@ -722,6 +729,8 @@ var SingleWellRangeReportHelper = {
 	                    		}
 	                    	}
 	                    }
+	                    cellProperties.renderer=singleWellRangeReportHelper.addCellStyle;
+	                    
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
@@ -1103,6 +1112,13 @@ var SingleWellDailyReportHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
 	        }
+	        
+	        singleWellDailyReportHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
 
 	        // 实现标题居中
 	        singleWellDailyReportHelper.titleCenter = function () {
@@ -1166,6 +1182,7 @@ var SingleWellDailyReportHelper = {
 	                    if(row>=singleWellDailyReportHelper.templateData.header.length+singleWellDailyReportHelper.totalCount){
 	                    	cellProperties.readOnly = true;
 	                    }
+	                    cellProperties.renderer=singleWellDailyReportHelper.addCellStyle;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){

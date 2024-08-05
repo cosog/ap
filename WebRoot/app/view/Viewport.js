@@ -156,6 +156,9 @@ function websocketOnMessage(evt) {
     var data = Ext.JSON.decode(receiveData);
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var orgIdArr = leftOrg_Id.split(",");
+    
+//    console.log(data.functionCode);
+    
     if (data.functionCode.toUpperCase() == "adExitAndDeviceOffline".toUpperCase()) { //ad退出，所有设备离线
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
             var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
@@ -305,7 +308,18 @@ function websocketOnMessage(evt) {
                     	);
                 }
                 if (commStatusChange) {
-                    Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringControlAndInfoStore');
+                	if(!Ext.getCmp("RealTimeMonitoringRightTabPanel").isHidden() ){
+                		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
+                    	if(isNotVal(rightTabPanel)){
+                    		var rightTabPanelActiveTabId=rightTabPanel.getActiveTab().id;
+                    		if(rightTabPanelActiveTabId=='RealTimeMonitoringRightControlAndVideoPanel' ){
+                    			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
+                    			if(isNotVal(controlGridPanel)){
+                    				controlGridPanel.getStore().load();
+                    			}
+                    		}
+                    	}
+                	}
                 }
             }
         } else if (activeId.toUpperCase() == "UpstreamAndDownstreamInteraction".toUpperCase()) {
@@ -392,7 +406,18 @@ function websocketOnMessage(evt) {
                             }
                         }
                         if (commStatusChange) {
-                            Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringControlAndInfoStore');
+                        	if(!Ext.getCmp("RealTimeMonitoringRightTabPanel").isHidden() ){
+                        		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
+                            	if(isNotVal(rightTabPanel)){
+                            		var rightTabPanelActiveTabId=rightTabPanel.getActiveTab().id;
+                            		if(rightTabPanelActiveTabId=='RealTimeMonitoringRightControlAndVideoPanel' ){
+                            			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
+                            			if(isNotVal(controlGridPanel)){
+                            				controlGridPanel.getStore().load();
+                            			}
+                            		}
+                            	}
+                        	}
                         }
                     }
                 }

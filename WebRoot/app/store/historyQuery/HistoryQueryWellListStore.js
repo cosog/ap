@@ -185,6 +185,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
 //                    }
 //				}
             }
+            Ext.getCmp("HistoryQueryRootTabPanel").getEl().unmask();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

@@ -976,6 +976,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
+		String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		List<String> initWellList=new ArrayList<String>();
 //		List<String> updateWellList=new ArrayList<String>();
 //		List<String> addWellList=new ArrayList<String>();
@@ -1044,10 +1045,10 @@ public class BaseDao extends HibernateDaoSupport {
 							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 //									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 								}else if(saveSign==1){//更新
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 //									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 								}
 								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
@@ -1104,10 +1105,10 @@ public class BaseDao extends HibernateDaoSupport {
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 //									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 								}else if(saveSign==1){//更新
 //									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"");
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 								}
 								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
 							}
@@ -1139,7 +1140,7 @@ public class BaseDao extends HibernateDaoSupport {
 					Object[] obj=(Object[]) list.get(i);
 					deleteWellList.add(obj[0]+"");
 					deleteWellNameList.add(obj[1]+"");
-					this.saveDeviceOperationLog(obj[1]+"",2,user,StringManagerUtils.stringToInteger(obj[2]+""),obj[3]+"");
+					this.saveDeviceOperationLog(obj[1]+"",2,user,StringManagerUtils.stringToInteger(obj[2]+""),obj[3]+"",currentTiem);
 				}
 				
 				ps=conn.prepareStatement(delSql);
@@ -1197,14 +1198,15 @@ public class BaseDao extends HibernateDaoSupport {
 	
 	@SuppressWarnings("resource")
 	public List<WellHandsontableChangedData.Updatelist> batchAddDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,
-			String orgId,int deviceType,String isCheckout,User user) throws SQLException {
+			String orgId,String deviceType,String isCheckout,User user) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
 		
+		String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		List<String> initWellList=new ArrayList<String>();
-		List<String> updateWellList=new ArrayList<String>();
-		List<String> addWellList=new ArrayList<String>();
+//		List<String> updateWellList=new ArrayList<String>();
+//		List<String> addWellList=new ArrayList<String>();
 		List<String> deleteWellList=new ArrayList<String>();
 		List<String> deleteWellNameList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
@@ -1212,6 +1214,16 @@ public class BaseDao extends HibernateDaoSupport {
 		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
 		if(acStatusProbeResonanceData!=null){
 			license=acStatusProbeResonanceData.getLicenseNumber();
+		}
+		
+		Map<String,Integer> deviceTypeMap=new HashMap<>();
+		if(!StringManagerUtils.isNum(deviceType)){
+			String sql="select t.name,t.id from tbl_devicetypeinfo t where t.id in("+user.getDeviceTypeIds()+") order by t.id";
+			List<?> deviceTypeList=this.findCallSql(sql);
+			for(int i=0;i<deviceTypeList.size();i++){
+				Object[] obj=(Object[]) deviceTypeList.get(i);
+				deviceTypeMap.put(obj[0]+"", StringManagerUtils.stringTransferInteger(obj[1]+""));
+			}
 		}
 		try {
 			cs = conn.prepareCall("{call prd_save_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
@@ -1226,7 +1238,13 @@ public class BaseDao extends HibernateDaoSupport {
 							
 							cs.setString(1, orgId);
 							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-							cs.setString(3, deviceType+"");
+							
+							String saveDeviceType=deviceType;
+							if(!StringManagerUtils.isNum(deviceType)){
+								String deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName().replaceAll(" ", "");
+								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
+							}
+							cs.setString(3, saveDeviceType);
 							
 							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
 							
@@ -1252,10 +1270,13 @@ public class BaseDao extends HibernateDaoSupport {
 							String saveResultStr=cs.getString(19);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
+//									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 								}else if(saveSign==1){//更新
-									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
+//									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 								}
+								
 								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
 							}else{//保存失败，数据冲突或者超出限制
 								wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
@@ -1281,7 +1302,13 @@ public class BaseDao extends HibernateDaoSupport {
 								
 								cs.setString(1, orgId);
 								cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-								cs.setString(3, deviceType+"");
+
+								String saveDeviceType=deviceType;
+								if(!StringManagerUtils.isNum(deviceType)){
+									String deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName().replaceAll(" ", "");
+									saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
+								}
+								cs.setString(3, saveDeviceType);
 								
 								cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
 								
@@ -1307,9 +1334,11 @@ public class BaseDao extends HibernateDaoSupport {
 								String saveResultStr=cs.getString(19);
 								if(saveSign==0||saveSign==1){//保存成功
 									if(saveSign==0){//添加
-										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+//										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+										this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 									}else if(saveSign==1){//更新
-										updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+//										updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+										this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 									}
 									initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
 								}else{//保存失败，数据冲突或者超出限制
@@ -1335,19 +1364,18 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				queryDeleteWellSql="select id,t.wellname from tbl_device t "
-						+ " where t.devicetype="+deviceType+" "
-						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
+				queryDeleteWellSql="select id,t.devicename,t.devicetype,t.orgid from tbl_device t "
+						+ " where t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
 						+ " and t.orgid in("+orgId+")";
 				delSql="delete from tbl_device t "
-						+ " where t.devicetype="+deviceType+" "
-						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+") "
+						+ " where t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+") "
 						+ " and t.orgid in("+orgId+")";
 				List<?> list = this.findCallSql(queryDeleteWellSql);
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
 					deleteWellList.add(obj[0]+"");
 					deleteWellNameList.add(obj[1]+"");
+					this.saveDeviceOperationLog(obj[1]+"",2,user,StringManagerUtils.stringToInteger(obj[2]+""),obj[3]+"",currentTiem);
 				}
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
@@ -1368,7 +1396,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setCondition(0);
 				dataSynchronizationThread.setMethod("delete");
 				dataSynchronizationThread.setUser(user);
-//				dataSynchronizationThread.setDeviceType(deviceType);
+				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
 				executor.execute(dataSynchronizationThread);
 			}
@@ -1376,14 +1404,14 @@ public class BaseDao extends HibernateDaoSupport {
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(103);
 				dataSynchronizationThread.setInitWellList(initWellList);
-				dataSynchronizationThread.setUpdateList(updateWellList);
-				dataSynchronizationThread.setAddList(addWellList);
+//				dataSynchronizationThread.setUpdateList(updateWellList);
+//				dataSynchronizationThread.setAddList(addWellList);
 				dataSynchronizationThread.setDeleteList(null);
 				dataSynchronizationThread.setDeleteNameList(null);
 				dataSynchronizationThread.setCondition(1);
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setUser(user);
-//				dataSynchronizationThread.setDeviceType(deviceType);
+				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
 				executor.execute(dataSynchronizationThread);
 			}
@@ -1686,12 +1714,11 @@ public class BaseDao extends HibernateDaoSupport {
 		return collisionList;
 	}
 	
-	public boolean saveDeviceOperationLog(String deviceName,int type,User user,int deviceType,String remark) throws SQLException{
+	public boolean saveDeviceOperationLog(String deviceName,int type,User user,int deviceType,String remark,String currentTiem) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
 			cs = conn.prepareCall("{call prd_save_deviceOperationLog(?,?,?,?,?,?,?)}");
-			String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			cs.setString(1, currentTiem);
 			cs.setString(2, deviceName);
 			cs.setInt(3, deviceType);

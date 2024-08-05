@@ -24,6 +24,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         	        	items:[],
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(cosog.string.loading).show();
         	        			oldCard.setIconCls(null);
                 				newCard.setIconCls('check1');
                 				oldCard.removeAll();
@@ -99,6 +100,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         		items: items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				Ext.getCmp("AlarmQueryRootTabPanel").el.mask(cosog.string.loading).show();
         				oldCard.setIconCls(null);
         				newCard.setIconCls('check1');
         				if(oldCard.xtype=='tabpanel'){
@@ -118,95 +120,6 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         				}
     					
         				alarmQueryDataRefresh();
-    					
-//    					if(newCard.id=="RPCAlarmQueryPanel_Id"){
-//    						Ext.getCmp("selectedDeviceType_global").setValue(0); 
-//    						var secondTabPanel = Ext.getCmp("RPCAlarmQuerySencodTabPanel");
-//    						var secondActiveId = secondTabPanel.getActiveTab().id;
-//    						if(secondActiveId=="RPCFESDiagramResultAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="RPCRunStatusAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.RPCRunStatusAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="RPCCommunicationAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="RPCNumericValueAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("RPCNumericValueAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.RPCNumericValueAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="RPCEnumValueAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("RPCEnumValueAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.RPCEnumValueAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="RPCSwitchingValueAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore');
-//    							}
-//    						}
-//    					}else if(newCard.id=="PCPAlarmQueryPanel_Id"){
-//    						Ext.getCmp("selectedDeviceType_global").setValue(1); 
-//    						var secondTabPanel = Ext.getCmp("PCPAlarmQuerySencodTabPanel");
-//    						var secondActiveId = secondTabPanel.getActiveTab().id;
-//    						if(secondActiveId=="PCPRunStatusAlarmInfoPanel_Id"){
-//        						var gridPanel = Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id");
-//        						if (isNotVal(gridPanel)) {
-//        							gridPanel.getStore().loadPage(1);
-//        						}else{
-//        							Ext.create('AP.store.alarmQuery.PCPRunStatusAlarmOverviewStore');
-//        						}
-//        					}else if(secondActiveId=="PCPCommunicationAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="PCPNumericValueAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.PCPNumericValueAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="PCPEnumValueAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.PCPEnumValueAlarmOverviewStore');
-//    							}
-//    						}else if(secondActiveId=="PCPSwitchingValueAlarmInfoPanel_Id"){
-//    							var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id");
-//    							if (isNotVal(gridPanel)) {
-//    								gridPanel.getStore().loadPage(1);
-//    							}else{
-//    								Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore');
-//    							}
-//    						}
-//    					}
     				}
     			}
             }]
@@ -446,7 +359,7 @@ function alarmQueryDataRefresh(){
 			}else{
 				Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
 			}
-		}else if(alarmTypeTabActiveId=="RunStatusAlarmInfoPanel_Id"){
+		}else if(alarmTypeTabActiveId=="RunStatusAlarmInfoTabPanel_Id"){
 			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);
 			Ext.getCmp("AlarmDeviceListComb_Id").setValue('');
 			Ext.getCmp("AlarmDeviceListComb_Id").setRawValue('');
@@ -458,7 +371,7 @@ function alarmQueryDataRefresh(){
 			}else{
 				Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
 			}
-		}else if(alarmTypeTabActiveId=="CommunicationAlarmInfoPanel_Id"){
+		}else if(alarmTypeTabActiveId=="CommunicationAlarmInfoTabPanel_Id"){
 			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);
 			Ext.getCmp("AlarmDeviceListComb_Id").setValue('');
 			Ext.getCmp("AlarmDeviceListComb_Id").setRawValue('');
@@ -470,7 +383,7 @@ function alarmQueryDataRefresh(){
 			}else{
 				Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
 			}
-		}else if(alarmTypeTabActiveId=="NumericValueAlarmInfoPanel_Id"){
+		}else if(alarmTypeTabActiveId=="NumericValueAlarmInfoTabPanel_Id"){
 			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);
 			Ext.getCmp("AlarmDeviceListComb_Id").setValue('');
 			Ext.getCmp("AlarmDeviceListComb_Id").setRawValue('');
@@ -482,7 +395,7 @@ function alarmQueryDataRefresh(){
 			}else{
 				Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
 			}
-		}else if(alarmTypeTabActiveId=="EnumValueAlarmInfoPanel_Id"){
+		}else if(alarmTypeTabActiveId=="EnumValueAlarmInfoTabPanel_Id"){
 			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);
 			Ext.getCmp("AlarmDeviceListComb_Id").setValue('');
 			Ext.getCmp("AlarmDeviceListComb_Id").setRawValue('');
@@ -494,7 +407,7 @@ function alarmQueryDataRefresh(){
 			}else{
 				Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
 			}
-		}else if(alarmTypeTabActiveId=="SwitchingValueAlarmInfoPanel_Id"){
+		}else if(alarmTypeTabActiveId=="SwitchingValueAlarmInfoTabPanel_Id"){
 			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);
 			Ext.getCmp("AlarmDeviceListComb_Id").setValue('');
 			Ext.getCmp("AlarmDeviceListComb_Id").setRawValue('');

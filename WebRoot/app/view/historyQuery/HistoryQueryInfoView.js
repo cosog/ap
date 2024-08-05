@@ -24,6 +24,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         	        	items:[],
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(cosog.string.loading).show();
         	        			oldCard.removeAll();
         	        			oldCard.setIconCls(null);
     	        				newCard.setIconCls('check2');
@@ -101,6 +102,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		items: items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(cosog.string.loading).show();
         				if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{

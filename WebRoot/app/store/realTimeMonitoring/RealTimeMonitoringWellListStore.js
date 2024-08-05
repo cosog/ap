@@ -58,6 +58,8 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		
+                    		Ext.getCmp("RealTimeMonitoringInfoPanel_Id").el.mask(cosog.string.loading).show();
+                    		
                     		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
                     		var deviceName=record.data.deviceName;
                     		var deviceId=record.data.id;
@@ -125,14 +127,11 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
         						}
         					}
                     		
-                    		
-                    		
-                    		
-                    		
-                    		
                     		if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0 && deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
                     			cleanDeviceAddInfoAndControlInfo();
                     			Ext.getCmp("RealTimeMonitoringRightTabPanel").hide();
+                    			Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
+                    			Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
                     		}else{
                     			if(Ext.getCmp("RealTimeMonitoringRightTabPanel").isHidden() ){
                     				Ext.getCmp("RealTimeMonitoringRightTabPanel").show();
@@ -143,7 +142,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                         		
                         		var RealTimeMonitoringRightControlAndVideoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightControlAndVideoPanel");
                     			var RealTimeMonitoringRightDeviceInfoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightDeviceInfoPanel");
-                    			var RealTimeMonitoringRightCalculateDataPanel = rightTabPanel.getComponent("RealTimeMonitoringRightCalculateDataPanel");
                     			
                     			if( (deviceInfo.videoNum>0 || deviceInfo.controlItemNum>0) && RealTimeMonitoringRightControlAndVideoPanel==undefined){
                     				rightTabPanel.insert(0,RealTimeMonitoringRightTabPanelItems[0]);
@@ -182,8 +180,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                         					rightTabPanel.remove("RealTimeMonitoringRightControlAndVideoPanel");
                         				}
                         			}
-                        		}else{
-                        			
                         		}
                     		}
                     	},
@@ -209,21 +205,17 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
     			gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
-            	
             	Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-            	
             	var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
             	var activeId = tabPanel.getActiveTab().id;
             	if(activeId=="RealTimeMonitoringCurveTabPanel_Id"){
             		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
                 	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
-                	
                 	$("#realTimeMonitoringCurveContainer").html('');
                 	$("#RealTimeMonitoringInfoDataTableInfoContainer").html('');
             	}else if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
             		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
                 	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
-                	
                 	if(deviceRealTimeMonitoringDataHandsontableHelper!=null){
             			if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
             				deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
@@ -234,8 +226,10 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
             		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
                 	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
             	}
-            	
             	cleanDeviceAddInfoAndControlInfo();
+            	
+            	Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
+            	Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
             }
         },
         beforeload: function (store, options) {

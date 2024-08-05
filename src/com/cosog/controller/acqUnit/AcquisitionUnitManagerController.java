@@ -732,9 +732,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
-		int dataSaveMode=1;
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
@@ -774,7 +772,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String itemCode="";
 						if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
 							itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
+							if(!StringManagerUtils.isNotNull(itemCode)){
+								MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+								loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+								if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
+									itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
+								}
+							}
 						}
+						
+						
+						
+						
 						displayUnitItem = new DisplayUnitItem();
 						displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
 						displayUnitItem.setItemName(itemName);
@@ -787,7 +796,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[4]:"");
 						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[5]:"");
 						displayUnitItem.setMatrix(module_[9]);
-						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
+						if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
+							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
+						}
 					}
 					
 				}
@@ -814,9 +825,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
-		int dataSaveMode=1;
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");

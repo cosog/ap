@@ -1032,23 +1032,23 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(deviceRealTimeMonitoringDataHandsontableHelper!=null&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=''&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var record=deviceRealTimeMonitoringDataHandsontableHelper.sourceData[coords.row];
-	                		var rawValue='';
-	                		if(coords.col==0){
-	                			rawValue=record.name1;
-	                		}else if(coords.col==1){
-	                			rawValue=record.value1;
-	                		}else if(coords.col==2){
-	                			rawValue=record.name2;
-	                		}else if(coords.col==3){
-	                			rawValue=record.value2;
-	                		}else if(coords.col==4){
-	                			rawValue=record.name3;
-	                		}else if(coords.col==5){
-	                			rawValue=record.value3;
-	                		}
-//	                		rawValue='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdsdasdadasdasdadadasdasdasdsdsadsadasdsadasdasdasdsadasdadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaend';
-                			if(isNotVal(rawValue)){
+//	                		var record=deviceRealTimeMonitoringDataHandsontableHelper.sourceData[coords.row];
+//	                		var rawValue='';
+//	                		if(coords.col==0){
+//	                			rawValue=record.name1;
+//	                		}else if(coords.col==1){
+//	                			rawValue=record.value1;
+//	                		}else if(coords.col==2){
+//	                			rawValue=record.name2;
+//	                		}else if(coords.col==3){
+//	                			rawValue=record.value2;
+//	                		}else if(coords.col==4){
+//	                			rawValue=record.name3;
+//	                		}else if(coords.col==5){
+//	                			rawValue=record.value3;
+//	                		}
+	                		var rawValue=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
             					var rowChar=90;
             					var maxWidth=rowChar*10;

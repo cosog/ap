@@ -607,67 +607,23 @@ var SingleWellRangeReportHelper = {
 		        			break;
 		        		}
 		        	}
-	        		
+	        		td.style.whiteSpace='nowrap'; //文本不换行
+	            	td.style.overflow='hidden';//超出部分隐藏
+	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        	}
 	        }
 	        
 	        singleWellRangeReportHelper.addEditableColor = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.color='#ff0000';    
-	        }
-	        
-	        singleWellRangeReportHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(242, 242, 242)';
-	            if (row <= 2&&row>=1) {
-	                td.style.fontWeight = 'bold';
-					td.style.fontSize = '13px';
-					td.style.color = 'rgb(0, 0, 51)';
-					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
-	            }
-	        }
-			
-			singleWellRangeReportHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (row < 1) {
-	                td.style.fontWeight = 'bold';
-			        td.style.fontSize = '25px';
-			        td.style.fontFamily = 'SimSun';
-			        td.style.height = '50px';   
-			    }      
-	        }
-			
-			singleWellRangeReportHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';
-		         if(row < 3){
-	                 td.style.fontWeight = 'bold';
-			         td.style.fontSize = '5px';
-			         td.style.fontFamily = 'SimHei';
-	            }      
-	        }
-			
-
-	        singleWellRangeReportHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(183, 222, 232)';
-	        }
-
-	        singleWellRangeReportHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(216, 228, 188)';
+	             td.style.color='#ff0000'; 
+	             td.style.whiteSpace='nowrap'; //文本不换行
+	             td.style.overflow='hidden';//超出部分隐藏
+	             td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        singleWellRangeReportHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
-	        }
-	        
-	        singleWellRangeReportHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 
 	        // 实现标题居中
@@ -729,7 +685,6 @@ var SingleWellRangeReportHelper = {
 	                    		}
 	                    	}
 	                    }
-	                    cellProperties.renderer=singleWellRangeReportHelper.addCellStyle;
 	                    
 	                    return cellProperties;
 	                },
@@ -1057,67 +1012,23 @@ var SingleWellDailyReportHelper = {
 		        			break;
 		        		}
 		        	}
-	        		
 	        	}
+	        	td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        singleWellDailyReportHelper.addEditableColor = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.color='#ff0000';    
-	        }
-	        
-	        singleWellDailyReportHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(242, 242, 242)';
-	            if (row <= 2&&row>=1) {
-	                td.style.fontWeight = 'bold';
-					td.style.fontSize = '13px';
-					td.style.color = 'rgb(0, 0, 51)';
-					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
-	            }
-	        }
-			
-			singleWellDailyReportHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (row < 1) {
-	                td.style.fontWeight = 'bold';
-			        td.style.fontSize = '25px';
-			        td.style.fontFamily = 'SimSun';
-			        td.style.height = '50px';   
-			    }      
-	        }
-			
-			singleWellDailyReportHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';
-		         if(row < 3){
-	                 td.style.fontWeight = 'bold';
-			         td.style.fontSize = '5px';
-			         td.style.fontFamily = 'SimHei';
-	            }      
-	        }
-			
-
-	        singleWellDailyReportHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(183, 222, 232)';
-	        }
-
-	        singleWellDailyReportHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(216, 228, 188)';
+	             td.style.color='#ff0000';  
+	             td.style.whiteSpace='nowrap'; //文本不换行
+	             td.style.overflow='hidden';//超出部分隐藏
+	             td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        singleWellDailyReportHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
-	        }
-	        
-	        singleWellDailyReportHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 
 	        // 实现标题居中
@@ -1182,7 +1093,6 @@ var SingleWellDailyReportHelper = {
 	                    if(row>=singleWellDailyReportHelper.templateData.header.length+singleWellDailyReportHelper.totalCount){
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    cellProperties.renderer=singleWellDailyReportHelper.addCellStyle;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){

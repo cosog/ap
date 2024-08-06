@@ -185,23 +185,16 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        databaseColumnMappingHandsontableHelper.insertlist=[];
 	        databaseColumnMappingHandsontableHelper.calColumnDropdown=[];
 	        
-	        databaseColumnMappingHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = '#DC2828';   
-	             td.style.color='#FFFFFF';
-	        }
-	        
-	        databaseColumnMappingHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        databaseColumnMappingHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        }
-	        
-	        databaseColumnMappingHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
-	        	td.style.fontWeight = 'bold';
-		        td.style.fontSize = '20px';
-		        td.style.fontFamily = 'SimSun';
-		        td.style.height = '40px';
+	            if(col<=2){
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            if(col!=3){
+	            	td.style.whiteSpace='nowrap'; //文本不换行
+	            	td.style.overflow='hidden';//超出部分隐藏
+	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	            }
 	        }
 	        
 	        databaseColumnMappingHandsontableHelper.createTable = function (data) {
@@ -233,7 +226,11 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if(visualColIndex<=2){
 	                    	cellProperties.readOnly = true;
-	                    	cellProperties.renderer = databaseColumnMappingHandsontableHelper.addBoldBg;
+	                    	
+	                    	if(databaseColumnMappingHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+		    	            	&& databaseColumnMappingHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+		                    	cellProperties.renderer = databaseColumnMappingHandsontableHelper.addCellStyle;
+		    	            }
 	                    }else if(visualColIndex==3){
 	                    	this.type = 'dropdown';
 	                    	this.source = databaseColumnMappingHandsontableHelper.calColumnDropdown;
@@ -285,6 +282,50 @@ var DatabaseColumnMappingHandsontableHelper = {
 		                        }
 	                    	}
 	                    }
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(databaseColumnMappingHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& databaseColumnMappingHandsontableHelper!=null
+	                		&& databaseColumnMappingHandsontableHelper.hot!=''
+	                		&& databaseColumnMappingHandsontableHelper.hot!=undefined 
+	                		&& databaseColumnMappingHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=databaseColumnMappingHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }

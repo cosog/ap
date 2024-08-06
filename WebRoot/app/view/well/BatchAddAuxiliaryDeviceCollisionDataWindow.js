@@ -153,15 +153,20 @@ var BatchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.updatelist = [];
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.delidslist = [];
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.insertlist = [];
-
-        batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments);
-            td.style.backgroundColor = 'rgb(242, 242, 242)';
-        }
         
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             td.style.color = '#ff0000';
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
         }
 
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.createTable = function (data) {
@@ -232,16 +237,53 @@ var BatchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {
                     if(batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='dataInfo'.toUpperCase()){
                     	cellProperties.readOnly = true;
                     	cellProperties.renderer = batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.addBoldBg;
+                    }else{
+                    	if(batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.columns[visualColIndex].type == undefined || batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.columns[visualColIndex].type!='dropdown'){
+                    		cellProperties.renderer = batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.addCellStyle;
+                    	}
                     }
                     return cellProperties;
                 },
-                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-                	
-                },
-                afterDestroy: function () {
-                },
-                beforeRemoveRow: function (index, amount) {},
-                afterChange: function (changes, source) {}
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(batchAddAuxiliaryDeviceOverlayDataHandsontableHelper!=null&&batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.hot!=''&&batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.hot!=undefined && batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
             });
         }
         //保存数据

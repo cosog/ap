@@ -829,9 +829,14 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        pcpRPMCalculateMaintainingHandsontableHelper.delidslist=[];
 	        pcpRPMCalculateMaintainingHandsontableHelper.insertlist=[];
 	        
-	        pcpRPMCalculateMaintainingHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        pcpRPMCalculateMaintainingHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            if(col>=1 && col<=7){
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+            	td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        
@@ -873,15 +878,14 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    if(CalculateMaintainingModuleEditFlag==1){
 	                    	if (visualColIndex >= 1 && visualColIndex <= 7) {
 								cellProperties.readOnly = true;
-								cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addBoldBg;
 			                }
 	                    }else{
 							cellProperties.readOnly = true;
-							if (visualColIndex >= 1 && visualColIndex <= 7) {
-								cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addBoldBg;
-			                }
 		                }
 	                    
+	                    if(pcpRPMCalculateMaintainingHandsontableHelper.columns[visualColIndex].type == undefined || pcpRPMCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='dropdown'){
+                    		cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addCellStyle;
+                    	}
 	                    return cellProperties;
 	                },
 	                afterDestroy: function() {
@@ -924,6 +928,46 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    	}
 	                        
 	                    }
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(pcpRPMCalculateMaintainingHandsontableHelper!=null&&pcpRPMCalculateMaintainingHandsontableHelper.hot!=''&&pcpRPMCalculateMaintainingHandsontableHelper.hot!=undefined && pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }

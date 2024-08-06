@@ -304,11 +304,6 @@ var ReportUnitContentConfigHandsontableHelper = {
 	        reportUnitContentConfigHandsontableHelper.hiddenColumns=[];
 	        reportUnitContentConfigHandsontableHelper.colWidths=[];
 	        
-	        reportUnitContentConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
 	        reportUnitContentConfigHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
@@ -317,6 +312,16 @@ var ReportUnitContentConfigHandsontableHelper = {
 	            		td.style.backgroundColor = '#'+arr[1];
 	            	}
 	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        reportUnitContentConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        reportUnitContentConfigHandsontableHelper.createTable = function (data) {
@@ -387,6 +392,11 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                    
 	                    if(visualColIndex==curveShowCol){
 		                	cellProperties.renderer = reportUnitContentConfigHandsontableHelper.addCurveBg;
+		                }else{
+		                	if(reportUnitContentConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+		    	            	&& reportUnitContentConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+		                    	cellProperties.renderer = reportUnitContentConfigHandsontableHelper.addCellStyle;
+		    	            }
 		                }
 	                    
 	                    return cellProperties;
@@ -455,59 +465,47 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(reportUnitContentConfigHandsontableHelper!=null&&reportUnitContentConfigHandsontableHelper.hot!=''&&reportUnitContentConfigHandsontableHelper.hot!=undefined && reportUnitContentConfigHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
-	                		
-	                		var itemNameCol=2;
-	                		var remarkCol=12;
-	                		if(reportType==0){
-	                			itemNameCol=2;
-		                		remarkCol=12;
-	                		}else if(reportType==1){
-	                			itemNameCol=2;
-		                		remarkCol=15;
-	                		}else if(reportType==2){
-	                			itemNameCol=2;
-		                		remarkCol=12;
-	                		}
-	                		
-	                		if(coords.col==itemNameCol){
-	                			var remark=reportUnitContentConfigHandsontableHelper.hot.getDataAtCell(coords.row,remarkCol);
-	                			if(isNotVal(remark)){
-	                				var showValue=remark;
-	            					var rowChar=90;
-	            					var maxWidth=rowChar*10;
-	            					if(remark.length>rowChar){
-	            						showValue='';
-	            						let arr = [];
-	            						let index = 0;
-	            						while(index<remark.length){
-	            							arr.push(remark.slice(index,index +=rowChar));
-	            						}
-	            						for(var i=0;i<arr.length;i++){
-	            							showValue+=arr[i];
-	            							if(i<arr.length-1){
-	            								showValue+='<br>';
-	            							}
-	            						}
-	            					}
-	                				if(!isNotVal(TD.tip)){
-	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-			                			    target: event.target,
-			                			    maxWidth:maxWidth,
-			                			    html: showValue,
-			                			    listeners: {
-			                			    	hide: function (thisTip, eOpts) {
-			                                	},
-			                                	close: function (thisTip, eOpts) {
-			                                	}
-			                                }
-			                			});
-	                				}else{
-	                					TD.tip.setHtml(showValue);
-	                				}
-	                			}
-	                		}
+	                	if(reportUnitContentConfigHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& reportUnitContentConfigHandsontableHelper!=null
+	                		&& reportUnitContentConfigHandsontableHelper.hot!=''
+	                		&& reportUnitContentConfigHandsontableHelper.hot!=undefined 
+	                		&& reportUnitContentConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=reportUnitContentConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
 	                	}
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
@@ -843,19 +841,20 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        reportUnitContentConfigColInfoHandsontableHelper.AllData=[];
 	        reportUnitContentConfigColInfoHandsontableHelper.rawData=[];
 	        
-	        reportUnitContentConfigColInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
 	        reportUnitContentConfigColInfoHandsontableHelper.addWhiteBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(255, 255, 255)';    
+	             td.style.whiteSpace='nowrap'; //文本不换行
+	             td.style.overflow='hidden';//超出部分隐藏
+	             td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        reportUnitContentConfigColInfoHandsontableHelper.addDataChangeBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(255, 76, 66)'; 
+	             td.style.whiteSpace='nowrap'; //文本不换行
+	             td.style.overflow='hidden';//超出部分隐藏
+	             td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        reportUnitContentConfigColInfoHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -866,6 +865,16 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	            		td.style.backgroundColor = '#'+arr[1];
 	            	}
 	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        reportUnitContentConfigColInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        reportUnitContentConfigColInfoHandsontableHelper.rowDataChange = function(row){
@@ -962,6 +971,8 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	                    			cellProperties.renderer = reportUnitContentConfigColInfoHandsontableHelper.addWhiteBg;
 	                    		}
 	                    	}
+	                    }else if(visualColIndex<=2){
+	                    	cellProperties.renderer = reportUnitContentConfigColInfoHandsontableHelper.addCellStyle;
 	                    }
 	                    return cellProperties;
 	                },
@@ -973,44 +984,47 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(reportUnitContentConfigColInfoHandsontableHelper!=null&&reportUnitContentConfigColInfoHandsontableHelper.hot!=''&&reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined && reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		if(coords.col==2){
-	                			var remark=reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell(coords.row,13);
-	                			if(isNotVal(remark)){
-	                				var showValue=remark;
-	            					var rowChar=90;
-	            					var maxWidth=rowChar*10;
-	            					if(remark.length>rowChar){
-	            						showValue='';
-	            						let arr = [];
-	            						let index = 0;
-	            						while(index<remark.length){
-	            							arr.push(remark.slice(index,index +=rowChar));
-	            						}
-	            						for(var i=0;i<arr.length;i++){
-	            							showValue+=arr[i];
-	            							if(i<arr.length-1){
-	            								showValue+='<br>';
-	            							}
-	            						}
-	            					}
-	                				if(!isNotVal(TD.tip)){
-	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-			                			    target: event.target,
-			                			    maxWidth:maxWidth,
-			                			    html: showValue,
-			                			    listeners: {
-			                			    	hide: function (thisTip, eOpts) {
-			                                	},
-			                                	close: function (thisTip, eOpts) {
-			                                	}
-			                                }
-			                			});
-	                				}else{
-	                					TD.tip.setHtml(showValue);
-	                				}
-	                			}
-	                		}
+	                	if(reportUnitContentConfigColInfoHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& reportUnitContentConfigColInfoHandsontableHelper!=null
+	                		&& reportUnitContentConfigColInfoHandsontableHelper.hot!=''
+	                		&& reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined 
+	                		&& reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
 	                	}
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

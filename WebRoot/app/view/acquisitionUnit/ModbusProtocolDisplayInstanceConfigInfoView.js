@@ -307,14 +307,19 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 	        protocolDisplayInstancePropertiesHandsontableHelper.columns=[];
 	        protocolDisplayInstancePropertiesHandsontableHelper.AllData=[];
 	        
-	        protocolDisplayInstancePropertiesHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
 	        protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstancePropertiesHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolDisplayInstancePropertiesHandsontableHelper.createTable = function (data) {
@@ -342,10 +347,7 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
-	                    	if (visualColIndex ==0 || visualColIndex ==1) {
-								cellProperties.readOnly = true;
-								cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
-			                }
+	                    	
 		                    if(protocolDisplayInstancePropertiesHandsontableHelper.classes===0 || protocolDisplayInstancePropertiesHandsontableHelper.classes===2){
 		                    	cellProperties.readOnly = true;
 								cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
@@ -359,6 +361,12 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolDisplayInstancePropertiesHandsontableHelper);
 			                    	}
 			                    }
+		                    	if (visualColIndex ==0 || visualColIndex ==1) {
+									cellProperties.readOnly = true;
+									cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
+				                }else{
+				                	cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addCellStyle;
+				                }
 		                    }
 	                    }else{
 							cellProperties.readOnly = true;
@@ -367,7 +375,49 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolDisplayInstancePropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolDisplayInstancePropertiesHandsontableHelper!=null
+	                		&& protocolDisplayInstancePropertiesHandsontableHelper.hot!=''
+	                		&& protocolDisplayInstancePropertiesHandsontableHelper.hot!=undefined 
+	                		&& protocolDisplayInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolDisplayInstancePropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -485,16 +535,6 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.colHeaders=[];
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.columns=[];
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.AllData=[];
-	        
-	        protocolDisplayInstanceAcqItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolDisplayInstanceAcqItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        }
 	        
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);

@@ -119,7 +119,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 items: [{
                 	border: true,
                 	region: 'west',
-                	width:'17%',
+                	width:'20%',
                     layout: "border",
                     border: true,
                     header: false,
@@ -316,14 +316,11 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	        protocolConfigAddrMappingItemsHandsontableHelper.AllData=[];
 	        protocolConfigAddrMappingItemsHandsontableHelper.Data=[];
 	        
-	        protocolConfigAddrMappingItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolConfigAddrMappingItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolConfigAddrMappingItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolConfigAddrMappingItemsHandsontableHelper.createTable = function (data) {
@@ -396,25 +393,13 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    if(protocolConfigModuleEditFlag==1){
 	                    	if (visualColIndex ==0) {
 								cellProperties.readOnly = true;
-			                }else if(visualColIndex==8){
-//			                	var IFDataType='';
-//			                	if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-//			                		IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
-//			                	}else{
-//			                		if(protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType!=undefined   ){
-//			                			IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType;
-//			                		}
-//			                	}
-//			                	if(IFDataType==null || IFDataType.toUpperCase().indexOf('FLOAT')<0){
-//			                		cellProperties.readOnly = true;
-//			                	}else{
-//			                		cellProperties.readOnly = false;
-//			                	}
 			                }
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    
+	                    if(protocolConfigAddrMappingItemsHandsontableHelper.columns[visualColIndex].type == undefined || protocolConfigAddrMappingItemsHandsontableHelper.columns[visualColIndex].type!='dropdown'){
+                    		cellProperties.renderer = protocolConfigAddrMappingItemsHandsontableHelper.addCellStyle;
+                    	}
 	                    
 	                    return cellProperties;
 	                },
@@ -435,48 +420,47 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
 	                		}
 	                	}
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolConfigAddrMappingItemsHandsontableHelper!=null&&protocolConfigAddrMappingItemsHandsontableHelper.hot!=''&&protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined && protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
-//	                afterGetColHeader: function (col, th) {
-//	                    setTimeout(() => {
-//	                        if (col === -1 ) {
-//	                            const theads = th.parentNode.parentNode; // 获取当前表头的thead对象
-//	                            const trs = theads.getElementsByTagName('tr'); // 获取所有行
-//	                            const trCols1 = trs[0].getElementsByTagName('th'); // 获取第一行所有列
-//	                            const trCols2 = trs[1].getElementsByTagName('th'); // 获取第二行所有列
-//	                            if (trCols1.length === trCols2.length) {
-//	                                // 行号表头将第一行的底部边框去除掉，符合合并单元格样式
-//	                                // 此处不能执行rowSpan属性，否则出现第二行合表头数据错位
-////	                                trCols1[col].style.borderBottom = 'none';
-////	                                trCols1[1].style.borderBottom = 'none';
-//	                                for (let i = 0; i < trCols1.length; i++) {
-//	                                    // 如果单元格不包含colSpan属性且不是隐藏的单元格，则表明需要合并行，否则，则表明不需要合并行
-//	                                    if (!trCols1[i].getAttribute('colSpan') && trCols1[i].className !== 'hiddenHeader') {
-//	                                        trCols1[i].rowSpan = 2;
-//	                                        trCols1[i].style.verticalAlign = 'middle';
-//	                                        trCols1[i].style.height = '56px';
-//	                                        // 将第二行表格隐藏，并将第一行的底部边框去除
-//	                                        trCols2[i].className = 'hiddenHeader';
-//	                                        trCols1[i].style.borderBottom = 'none';
-//	                                    }
-//	                                }
-//	                            }
-//	                        }
-//	                    }, 100)
-//	                }
-//	                afterOnCellMouseDown : function (event, coords, TD){
-//	                	alert(coords);
-//	                },
-//	        		,colHeaders: function (col) { 
-//	                    switch (col) { 
-//	                     case 0: 
-//	                      var txt = "<input type='checkbox' class='checker' "; 
-//	                      txt += isChecked(data) ? 'checked="checked"' : ''; 
-//	                      txt += "> 全选"; 
-//	                      return txt; 
-//	                     default:
-//	                    	 return protocolConfigAddrMappingItemsHandsontableHelper.colHeaders[col]; 
-//	                    } 
-//	                 }
 	        	});
 	        }
 	        //保存数据
@@ -538,14 +522,19 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	        protocolConfigAddrMaooingPropertiesHandsontableHelper.columns=[];
 	        protocolConfigAddrMaooingPropertiesHandsontableHelper.AllData=[];
 	        
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
 	        protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolConfigAddrMaooingPropertiesHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolConfigAddrMaooingPropertiesHandsontableHelper.createTable = function (data) {
@@ -585,14 +574,12 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
 			                    	}
+			                    	cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addCellStyle;
 			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
 			                    	}
-			                    }else if(visualColIndex === 2 && visualRowIndex===2){
-//			                    	this.validator=function (val, callback) {
-//			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
-//			                    	}
+			                    	cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addCellStyle;
 			                    }
 		                    }
 	                    }else{
@@ -602,7 +589,45 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolConfigAddrMaooingPropertiesHandsontableHelper!=null&&protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=''&&protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=undefined && protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -780,14 +805,11 @@ var ProtocolAddrMappingItemsMeaningConfigHandsontableHelper = {
 	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.columns=[];
 	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.AllData=[];
 	        
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable = function (data) {
@@ -855,9 +877,48 @@ var ProtocolAddrMappingItemsMeaningConfigHandsontableHelper = {
 	                    if(protocolConfigModuleEditFlag!=1){
 	                    	cellProperties.readOnly = true;
 	                    }
+	                    cellProperties.renderer = protocolAddrMappingItemsMeaningConfigHandsontableHelper.addCellStyle;
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null&&protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=''&&protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined && protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }

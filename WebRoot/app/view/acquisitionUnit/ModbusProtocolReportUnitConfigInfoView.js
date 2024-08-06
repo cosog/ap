@@ -630,11 +630,9 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
                 colHeaders: false,
                 rowHeights: singleWellRangeReportTemplateHandsontableHelper.templateData.rowHeights,
                 colWidths: singleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths,
-                //					rowHeaders: true, //显示行头
                 rowHeaders(index) {
                     return 'Row ' + (index + 1);
                 },
-                //					colHeaders: true, //显示列头
                 colHeaders(index) {
                     return 'Col ' + (index + 1);
                 },
@@ -656,7 +654,49 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
                     cellProperties.renderer = singleWellRangeReportTemplateHandsontableHelper.addStyle;
                     return cellProperties;
                 },
-                afterChange: function (changes, source) {}
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(singleWellRangeReportTemplateHandsontableHelper!=null
+                		&& singleWellRangeReportTemplateHandsontableHelper.hot!=''
+                		&& singleWellRangeReportTemplateHandsontableHelper.hot!=undefined 
+                		&& singleWellRangeReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=singleWellRangeReportTemplateHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
             });
         }
         singleWellRangeReportTemplateHandsontableHelper.getData = function (data) {
@@ -848,7 +888,49 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
                     cellProperties.renderer = singleWellDailyReportTemplateHandsontableHelper.addStyle;
                     return cellProperties;
                 },
-                afterChange: function (changes, source) {}
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(singleWellDailyReportTemplateHandsontableHelper!=null
+                		&& singleWellDailyReportTemplateHandsontableHelper.hot!=''
+                		&& singleWellDailyReportTemplateHandsontableHelper.hot!=undefined 
+                		&& singleWellDailyReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=singleWellDailyReportTemplateHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
             });
         }
         singleWellDailyReportTemplateHandsontableHelper.getData = function (data) {
@@ -1030,11 +1112,6 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
         singleWellRangeReportTemplateContentHandsontableHelper.columns = [];
         singleWellRangeReportTemplateContentHandsontableHelper.AllData = [];
 
-        singleWellRangeReportTemplateContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments);
-            td.style.backgroundColor = 'rgb(242, 242, 242)';
-        }
-
         singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value != null) {
@@ -1043,6 +1120,16 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                     td.style.backgroundColor = '#' + arr[1];
                 }
             }
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        singleWellRangeReportTemplateContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
         }
 
         singleWellRangeReportTemplateContentHandsontableHelper.createTable = function (data) {
@@ -1076,6 +1163,12 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                     cellProperties.readOnly = true;
                     if (visualColIndex == 8) {
                         cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
+                    }else{
+                    	if(singleWellRangeReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& singleWellRangeReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='checkbox'
+	    	            		&& prop.toUpperCase() != "config".toUpperCase()){
+	                    	cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCellStyle;
+	    	            }
                     }
                     return cellProperties;
                 },
@@ -1086,47 +1179,49 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                         }
                     }
                 },
-                afterOnCellMouseOver: function (event, coords, TD) {
-                    if (singleWellRangeReportTemplateContentHandsontableHelper != null && singleWellRangeReportTemplateContentHandsontableHelper.hot != '' && singleWellRangeReportTemplateContentHandsontableHelper.hot != undefined && singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell != undefined) {
-                        if (coords.col == 2) {
-                            var remark = singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row, 13);
-                            if (isNotVal(remark)) {
-                                var showValue = remark;
-                                var rowChar = 90;
-                                var maxWidth = rowChar * 10;
-                                if (remark.length > rowChar) {
-                                    showValue = '';
-                                    let arr = [];
-                                    let index = 0;
-                                    while (index < remark.length) {
-                                        arr.push(remark.slice(index, index += rowChar));
-                                    }
-                                    for (var i = 0; i < arr.length; i++) {
-                                        showValue += arr[i];
-                                        if (i < arr.length - 1) {
-                                            showValue += '<br>';
-                                        }
-                                    }
-                                }
-                                if (!isNotVal(TD.tip)) {
-                                    TD.tip = Ext.create('Ext.tip.ToolTip', {
-                                        target: event.target,
-                                        maxWidth: maxWidth,
-                                        html: showValue,
-                                        listeners: {
-                                            hide: function (thisTip, eOpts) {},
-                                            close: function (thisTip, eOpts) {}
-                                        }
-                                    });
-                                } else {
-                                    TD.tip.setHtml(showValue);
-                                }
-                            }
-                        }
-                    }
-                },
-                afterSelectionEnd: function (row, column, row2, column2, preventScrolling, selectionLayerLevel) {
-
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(singleWellRangeReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                		&& singleWellRangeReportTemplateContentHandsontableHelper!=null
+                		&& singleWellRangeReportTemplateContentHandsontableHelper.hot!=''
+                		&& singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined 
+                		&& singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=singleWellRangeReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
                 }
             });
         }
@@ -1243,11 +1338,6 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
         singleWellDailyReportTemplateContentHandsontableHelper.columns = [];
         singleWellDailyReportTemplateContentHandsontableHelper.AllData = [];
 
-        singleWellDailyReportTemplateContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments);
-            td.style.backgroundColor = 'rgb(242, 242, 242)';
-        }
-
         singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value != null) {
@@ -1256,6 +1346,16 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
                     td.style.backgroundColor = '#' + arr[1];
                 }
             }
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        singleWellDailyReportTemplateContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
         }
 
         singleWellDailyReportTemplateContentHandsontableHelper.createTable = function (data) {
@@ -1291,16 +1391,58 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
                     if (visualColIndex == 8) {
                         cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg;
                     }
+                    else{
+                    	if(singleWellDailyReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& singleWellDailyReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='checkbox'
+	    	            		&& prop.toUpperCase()!='config'.toUpperCase()){
+	                    	cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCellStyle;
+	    	            }
+                    }
                     return cellProperties;
                 },
-                afterBeginEditing: function (row, column) {
-                	
-                },
-                afterOnCellMouseOver: function (event, coords, TD) {
-                	
-                },
-                afterSelectionEnd: function (row, column, row2, column2, preventScrolling, selectionLayerLevel) {
-
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(singleWellDailyReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                		&& singleWellDailyReportTemplateContentHandsontableHelper!=null
+                		&& singleWellDailyReportTemplateContentHandsontableHelper.hot!=''
+                		&& singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined 
+                		&& singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=singleWellDailyReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
                 }
             });
         }
@@ -1366,14 +1508,19 @@ var ReportUnitPropertiesHandsontableHelper = {
         reportUnitPropertiesHandsontableHelper.columns = [];
         reportUnitPropertiesHandsontableHelper.AllData = [];
 
-        reportUnitPropertiesHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments);
-            td.style.backgroundColor = 'rgb(242, 242, 242)';
-        }
-
         reportUnitPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             td.style.backgroundColor = 'rgb(245, 245, 245)';
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        reportUnitPropertiesHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
         }
 
         reportUnitPropertiesHandsontableHelper.createTable = function (data) {
@@ -1409,19 +1556,25 @@ var ReportUnitPropertiesHandsontableHelper = {
                             cellProperties.readOnly = true;
                             cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
                         } else if (reportUnitPropertiesHandsontableHelper.classes === 1) {
-                            if (visualColIndex === 2 && visualRowIndex === 0) {
-                                this.validator = function (val, callback) {
-                                    return handsontableDataCheck_NotNull(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
-                                }
-                            } else if (visualColIndex === 2 && visualRowIndex === 2) {
-                                this.validator = function (val, callback) {
-                                    return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
-                                }
-                            } else if (visualColIndex === 2 && visualRowIndex === 1) {
+                        	if (visualColIndex === 0 || visualColIndex === 1) {
+                        		cellProperties.readOnly = true;
+                                cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
+                        	}else if (visualColIndex === 2 && visualRowIndex === 1) {
                                 this.type = 'dropdown';
                                 this.source = ['无', '功图计算', '转速计产'];
                                 this.strict = true;
                                 this.allowInvalid = false;
+                            }else{
+                            	if (visualColIndex === 2 && visualRowIndex === 0) {
+                                    this.validator = function (val, callback) {
+                                        return handsontableDataCheck_NotNull(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
+                                    }
+                                } else if (visualColIndex === 2 && visualRowIndex === 2) {
+                                    this.validator = function (val, callback) {
+                                        return handsontableDataCheck_Num_Nullable(val, callback, row, col, reportUnitPropertiesHandsontableHelper);
+                                    }
+                                }
+                            	cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addCellStyle;
                             }
                         }
                     } else {
@@ -1431,7 +1584,50 @@ var ReportUnitPropertiesHandsontableHelper = {
 
                     return cellProperties;
                 },
-                afterSelectionEnd: function (row, column, row2, column2, preventScrolling, selectionLayerLevel) {}
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(reportUnitPropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
+                		&& reportUnitPropertiesHandsontableHelper!=null
+                		&& reportUnitPropertiesHandsontableHelper.hot!=''
+                		&& reportUnitPropertiesHandsontableHelper.hot!=undefined 
+                		&& reportUnitPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=reportUnitPropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
             });
         }
         reportUnitPropertiesHandsontableHelper.saveData = function () {}
@@ -1593,11 +1789,9 @@ var ProductionReportTemplateHandsontableHelper = {
                 colHeaders: false,
                 rowHeights: productionReportTemplateHandsontableHelper.templateData.rowHeights,
                 colWidths: productionReportTemplateHandsontableHelper.templateData.columnWidths,
-                //					rowHeaders: true, //显示行头
                 rowHeaders(index) {
                     return 'Row ' + (index + 1);
                 },
-                //					colHeaders: true, //显示列头
                 colHeaders(index) {
                     return 'Col ' + (index + 1);
                 },
@@ -1619,7 +1813,49 @@ var ProductionReportTemplateHandsontableHelper = {
                     cellProperties.renderer = productionReportTemplateHandsontableHelper.addStyle;
                     return cellProperties;
                 },
-                afterChange: function (changes, source) {}
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(productionReportTemplateHandsontableHelper!=null
+                		&& productionReportTemplateHandsontableHelper.hot!=''
+                		&& productionReportTemplateHandsontableHelper.hot!=undefined 
+                		&& productionReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=productionReportTemplateHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
             });
         }
         productionReportTemplateHandsontableHelper.getData = function (data) {
@@ -1724,11 +1960,6 @@ var ProductionReportTemplateContentHandsontableHelper = {
         productionReportTemplateContentHandsontableHelper.columns = [];
         productionReportTemplateContentHandsontableHelper.AllData = [];
 
-        productionReportTemplateContentHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments);
-            td.style.backgroundColor = 'rgb(242, 242, 242)';
-        }
-
         productionReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value != null) {
@@ -1737,6 +1968,16 @@ var ProductionReportTemplateContentHandsontableHelper = {
                     td.style.backgroundColor = '#' + arr[1];
                 }
             }
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        productionReportTemplateContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
         }
 
         productionReportTemplateContentHandsontableHelper.createTable = function (data) {
@@ -1769,18 +2010,59 @@ var ProductionReportTemplateContentHandsontableHelper = {
                     var visualColIndex = this.instance.toVisualColumn(col);
                     if (visualColIndex == 10) {
                         cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCurveBg;
+                    }else{
+                    	if(productionReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& productionReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='checkbox'
+	    	            		&& prop.toUpperCase() != "config".toUpperCase()){
+	                    	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCellStyle;
+	    	            }
                     }
                     cellProperties.readOnly = true;
                     return cellProperties;
                 },
-                afterBeginEditing: function (row, column) {
-                	
-                },
-                afterOnCellMouseOver: function (event, coords, TD) {
-                	
-                },
-                afterSelectionEnd: function (row, column, row2, column2, preventScrolling, selectionLayerLevel) {
-
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(productionReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                		&& productionReportTemplateContentHandsontableHelper!=null
+                		&& productionReportTemplateContentHandsontableHelper.hot!=''
+                		&& productionReportTemplateContentHandsontableHelper.hot!=undefined 
+                		&& productionReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=productionReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
                 }
             });
         }

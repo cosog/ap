@@ -450,14 +450,19 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 	        protocolAlarmInstancePropertiesHandsontableHelper.columns=[];
 	        protocolAlarmInstancePropertiesHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstancePropertiesHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
 	        protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolAlarmInstancePropertiesHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstancePropertiesHandsontableHelper.createTable = function (data) {
@@ -485,10 +490,6 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
-	                    	if (visualColIndex ==0 || visualColIndex ==1) {
-								cellProperties.readOnly = true;
-								cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
-			                }
 		                    if(protocolAlarmInstancePropertiesHandsontableHelper.classes===0 || protocolAlarmInstancePropertiesHandsontableHelper.classes===2){
 		                    	cellProperties.readOnly = true;
 								cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
@@ -502,6 +503,12 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
 			                    	}
 			                    }
+		                    	if (visualColIndex ==0 || visualColIndex ==1) {
+									cellProperties.readOnly = true;
+									cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
+				                }else{
+				                	cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addCellStyle;
+				                }
 		                    }
 	                    }else{
 							cellProperties.readOnly = true;
@@ -510,7 +517,49 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstancePropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstancePropertiesHandsontableHelper!=null
+	                		&& protocolAlarmInstancePropertiesHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstancePropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -583,14 +632,11 @@ var ProtocolAlarmInstanceConfigNumItemsHandsontableHelper = {
 	        protocolAlarmInstanceConfigNumItemsHandsontableHelper.columns=[];
 	        protocolAlarmInstanceConfigNumItemsHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstanceConfigNumItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAlarmInstanceConfigNumItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAlarmInstanceConfigNumItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstanceConfigNumItemsHandsontableHelper.createTable = function (data) {
@@ -618,9 +664,57 @@ var ProtocolAlarmInstanceConfigNumItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
+	                    
+	                    if(protocolAlarmInstanceConfigNumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& protocolAlarmInstanceConfigNumItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = protocolAlarmInstanceConfigNumItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstanceConfigNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstanceConfigNumItemsHandsontableHelper!=null
+	                		&& protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -690,14 +784,11 @@ var ProtocolAlarmInstanceConfigCalNumItemsHandsontableHelper = {
 	        protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.columns=[];
 	        protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.createTable = function (data) {
@@ -725,9 +816,57 @@ var ProtocolAlarmInstanceConfigCalNumItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
+	                    
+	                    if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstanceConfigCalNumItemsHandsontableHelper!=null
+	                		&& protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -795,14 +934,16 @@ var ProtocolAlarmInstanceConfigSwitchItemsHandsontableHelper = {
 	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.columns=[];
 	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            if(col<=2){
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            if(col!=3){
+	            	td.style.whiteSpace='nowrap'; //文本不换行
+	            	td.style.overflow='hidden';//超出部分隐藏
+	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	            }
 	        }
 	        
 	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.createTable = function (data) {
@@ -830,9 +971,57 @@ var ProtocolAlarmInstanceConfigSwitchItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
+	                    
+	                    if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstanceConfigSwitchItemsHandsontableHelper!=null
+	                		&& protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -899,14 +1088,11 @@ var ProtocolAlarmInstanceConfigEnumItemsHandsontableHelper = {
 	        protocolAlarmInstanceConfigEnumItemsHandsontableHelper.columns=[];
 	        protocolAlarmInstanceConfigEnumItemsHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstanceConfigEnumItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAlarmInstanceConfigEnumItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAlarmInstanceConfigEnumItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstanceConfigEnumItemsHandsontableHelper.createTable = function (data) {
@@ -934,9 +1120,57 @@ var ProtocolAlarmInstanceConfigEnumItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
+	                    
+	                    if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& protocolAlarmInstanceConfigEnumItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = protocolAlarmInstanceConfigEnumItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstanceConfigEnumItemsHandsontableHelper!=null
+	                		&& protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -1000,14 +1234,11 @@ var ProtocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper = {
 	        protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.columns=[];
 	        protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.createTable = function (data) {
@@ -1035,9 +1266,57 @@ var ProtocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
+	                    
+	                    if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper!=null
+	                		&& protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -1101,14 +1380,11 @@ var ProtocolAlarmInstanceConfigRunStatusItemsHandsontableHelper = {
 	        protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.columns=[];
 	        protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.createTable = function (data) {
@@ -1136,9 +1412,57 @@ var ProtocolAlarmInstanceConfigRunStatusItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
+	                    
+	                    if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper!=null
+	                		&& protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -1202,14 +1526,11 @@ var ProtocolAlarmInstanceConfigCommStatusItemsHandsontableHelper = {
 	        protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.columns=[];
 	        protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.AllData=[];
 	        
-	        protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.createTable = function (data) {
@@ -1237,9 +1558,55 @@ var ProtocolAlarmInstanceConfigCommStatusItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
+	                    if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.addCellStyle;
+	    	            }
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper!=null
+	                		&& protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=''
+	                		&& protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined 
+	                		&& protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }

@@ -251,7 +251,7 @@ public class DriverAPIController extends BaseController{
 			if(acqOnline!=null){
 				jedis = RedisUtil.jedisPool.getResource();
 				List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
-				int deviceType=101;
+				int deviceType=0;
 				int deviceId=0;
 				String deviceName="";
 				int orgId=0;
@@ -410,12 +410,12 @@ public class DriverAPIController extends BaseController{
 							}
 							jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
 						}
-						
 						webSocketSendData = new StringBuffer();
 						webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 						webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
 						webSocketSendData.append("\"deviceId\":"+deviceId+",");
 						webSocketSendData.append("\"orgId\":"+orgId+",");
+						webSocketSendData.append("\"deviceType\":"+deviceType+",");
 						webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
 						webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
 						webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?"上线":"离线")+"\",");
@@ -477,7 +477,7 @@ public class DriverAPIController extends BaseController{
 //				acqOnline.setID(acqOnline.getIPPort());
 				jedis = RedisUtil.jedisPool.getResource();
 				List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
-				int deviceType=101;
+				int deviceType=0;
 				int deviceId=0;
 				String deviceName="";
 				int orgId=0;
@@ -640,6 +640,7 @@ public class DriverAPIController extends BaseController{
 						webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
 						webSocketSendData.append("\"deviceId\":"+deviceId+",");
 						webSocketSendData.append("\"orgId\":"+orgId+",");
+						webSocketSendData.append("\"deviceType\":"+deviceType+",");
 						webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
 						webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
 						webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?"上线":"离线")+"\",");
@@ -1546,7 +1547,12 @@ public class DriverAPIController extends BaseController{
 		}
 		columns+= "]";
 		
-		webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"deviceId\":"+deviceInfo.getId()+",\"deviceName\":\""+deviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+		webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\","
+				+ "\"deviceId\":"+deviceInfo.getId()+","
+				+ "\"deviceName\":\""+deviceInfo.getWellName()+"\","
+				+ "\"orgId\":"+deviceInfo.getOrgId()+","
+				+ "\"deviceType\":"+deviceInfo.getDeviceType()+","
+				+ "\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
 		webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 		webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 		webSocketSendData.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");

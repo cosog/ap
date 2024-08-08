@@ -393,20 +393,12 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                 Ext.getCmp("DeviceControlStoreDataType_Id").setValue(o.data.storeDataType);
                                                 Ext.getCmp("DeviceControlQuantity_Id").setValue(o.data.quantity);
 
-//                                                Ext.getCmp("DeviceControlValue_Id").setValue("");
-
                                                 Ext.getCmp("DeviceControlShowType_Id").setValue(2);
-//                                                Ext.getCmp("DeviceControlValue_Id").show();
-//                                                Ext.getCmp("DeviceControlValueCombo_Id").hide();
-//                                                Ext.getCmp("DeviceControlValue_Id").setFieldLabel(o.data.item);
-//                                                Ext.getCmp("DeviceControlValue_Id").setValue(o.data.value);
 
                                                 if (resolutionMode == 0) { //开关量
 
                                                 } else if (resolutionMode == 1 && itemMeaning.length > 0) { //枚举量
-//                                                    Ext.getCmp("DeviceControlValue_Id").hide();
                                                     Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
-//                                                    Ext.getCmp("DeviceControlValueCombo_Id").setFieldLabel(o.data.item);
                                                     var data = [];
                                                     for (var k = 0; k < itemMeaning.length; k++) {
                                                         data.push(itemMeaning[k]);
@@ -416,35 +408,21 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                                         fields: ['boxkey', 'boxval'],
                                                         data: data
                                                     });
-//                                                    Ext.getCmp("DeviceControlValueCombo_Id").setStore(controlTypeStore);
-//                                                    Ext.getCmp("DeviceControlValueCombo_Id").show();
                                                 } else {
 
                                                 }
                                                 DeviceControlCheckPassWindow.show();
-//                                                Ext.getCmp("DeviceControlValue_Id").setValue("");
                                             }
                                         });
                                     }, 50);
                                 }
                                 return Ext.String.format('<div id="{0}"></div>', id);
                             }
-			        }
-//			        ,{
-//			        	header: '操作2',
-//                        dataIndex: 'operation2',
-//                        align: 'center',
-//                        flex: 2
-//			        }
-			        ],
+			        }],
 			        listeners: {
 			        	columnresize: function ( ct, column, width, eOpts ) {
 			        		if(column.dataIndex=='operation'){
-//			        			alert(width);
-//			        			var aa = Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
-//			                    if (isNotVal(aa)) {
-//			                    	aa.store.reload();
-//			                    }
+			        			
 			        		}
 			        	}
 			        }
@@ -455,7 +433,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
             Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
         },
         beforeload: function (store, options) {
-//        	Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
         	var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
             var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
             var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");

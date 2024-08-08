@@ -426,11 +426,6 @@ public class RealTimeMonitoringController extends BaseController {
 		try {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			int dataSaveMode=1;
-			int DeviceType=0;
-			if((StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300) || StringManagerUtils.stringToInteger(deviceType)==1){
-				DeviceType=1;
-			}
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
 			HttpSession session=request.getSession();
@@ -597,23 +592,16 @@ public class RealTimeMonitoringController extends BaseController {
 	public String deviceControlOperationWhitoutPass() throws Exception {
 		String deviceId = request.getParameter("deviceId");
 		String deviceName = request.getParameter("deviceName");
-		String deviceType = request.getParameter("deviceType");
 		String controlType = request.getParameter("controlType");
 		String controlValue = request.getParameter("controlValue");
-		String storeDataType = request.getParameter("storeDataType");
-		String quantity = request.getParameter("quantity");
+		
 		String jsonLogin = "";
-		String clientIP=StringManagerUtils.getIpAddr(request);
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
 		
 		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
-			if (storeDataType.equalsIgnoreCase("bcd") 
-					|| storeDataType.equalsIgnoreCase("string") 
-					|| (!StringManagerUtils.isNotNull(controlValue)) 
-					|| StringManagerUtils.isNumber(controlValue)
-					|| StringManagerUtils.stringToInteger(quantity)>1 ) {
+			if (StringManagerUtils.isNotNull(controlValue) && StringManagerUtils.isNumber(controlValue)) {
 				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.id="+deviceId;

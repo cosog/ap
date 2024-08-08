@@ -1163,3 +1163,320 @@ function realTimeMonitoringCurve(item){
 		});
 	}
 }
+
+function renderControlBtn(btn,btnIndex){
+	var record = btn.up().getWidgetRecord();
+	
+	var item = record.data.item;
+    var itemcode = record.data.itemcode;
+    var isControl = record.data.isControl;
+    var commStatus = record.data.commStatus;
+    var resolutionMode = record.data.resolutionMode;
+    var itemMeaning = record.data.itemMeaning;
+	
+    var text = "";
+    var hand = false;
+    if (commStatus > 0 && isControl == 1) {
+        hand = false;
+    } else {
+        hand = true;
+    }
+    text = "设置";
+	
+    if(resolutionMode == 1 && itemMeaning.length == 1) {
+    	if(btnIndex==0){
+    		btn.setText(itemMeaning[0][1]);
+        	btn.setTooltip(itemMeaning[0][1]);
+        	btn.setWidth(82);
+    	}else if(btnIndex==1){
+    		btn.setHidden(true);
+//    		btn.up().items.items.splic(1,0);
+    		
+    	}
+    }else if(resolutionMode == 1 && itemMeaning.length == 2){
+    	if(btnIndex==0){
+    		btn.setText(itemMeaning[0][1]);
+        	btn.setTooltip(itemMeaning[0][1]);
+    	}else if(btnIndex==1){
+    		btn.setText(itemMeaning[1][1]);
+        	btn.setTooltip(itemMeaning[1][1]);
+    	}
+    }else if(resolutionMode == 0 && itemMeaning.length > 0){
+    	if(btnIndex==0){
+    		btn.setText('开');
+        	btn.setTooltip('开');
+    	}else if(btnIndex==1){
+    		btn.setText('关');
+        	btn.setTooltip('关');
+    	}
+    }else{
+    	if(btnIndex==0){
+    		btn.setText(text);
+        	btn.setTooltip(text);
+        	btn.setWidth(82);
+    	}else if(btnIndex==1){
+    		btn.setHidden(true);
+    	}
+    }
+    btn.setDisabled(hand);
+//    btn.setDisabled(false);
+}
+
+function controlBtnHandler(btn,btnIndex){
+	var selection=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection();
+	if(selection.length>0){
+		var record = btn.up().getWidgetRecord();
+		
+		var text=btn.getText();
+		var deviceName = record.data.deviceName;
+	    var deviceId = record.data.deviceId;
+		
+		var item = record.data.item;
+	    var itemcode = record.data.itemcode;
+	    var isControl = record.data.isControl;
+	    var commStatus = record.data.commStatus;
+	    var resolutionMode = record.data.resolutionMode;
+	    var itemMeaning = record.data.itemMeaning;
+		
+	    var all_loading = new Ext.LoadMask({msg: '命令发送中，请稍后...',target: Ext.getBody().component});
+	    
+	    if(resolutionMode == 1 && itemMeaning.length == 1) {
+	    	if(btnIndex==0){
+                all_loading.show();
+                Ext.Ajax.request({
+                    url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+                    method: "POST",
+                    params: {
+                        deviceId: deviceId,
+                        deviceName: deviceName,
+                        controlType: itemcode,
+                        controlValue: itemMeaning[0][0]
+                    },
+                    success: function (response, action) {
+                        all_loading.hide();
+                        var data = Ext.decode(response.responseText);
+                        if (data.success == true && data.flag == false) {
+                            Ext.MessageBox.show({
+                                title: cosog.string.ts,
+                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                icon: Ext.MessageBox.INFO,
+                                buttons: Ext.Msg.OK,
+                                fn: function () {
+                                    window.location.href = context + "/login/toLogin";
+                                }
+                            });
+                        } else if (data.flag == true && data.error == false) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        } else if (data.flag == true && data.error == true) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        }
+                    },
+                    failure: function () {
+                        all_loading.hide();
+                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                    }
+                });
+            }else if(btnIndex==1){
+	    		
+	    	}
+	    }else if(resolutionMode == 1 && itemMeaning.length == 2){
+	    	if(btnIndex==0){
+                all_loading.show();
+                Ext.Ajax.request({
+                    url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+                    method: "POST",
+                    params: {
+                        deviceId: deviceId,
+                        deviceName: deviceName,
+                        controlType: itemcode,
+                        controlValue: itemMeaning[0][0]
+                    },
+                    success: function (response, action) {
+                        all_loading.hide();
+                        var data = Ext.decode(response.responseText);
+                        if (data.success == true && data.flag == false) {
+                            Ext.MessageBox.show({
+                                title: cosog.string.ts,
+                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                icon: Ext.MessageBox.INFO,
+                                buttons: Ext.Msg.OK,
+                                fn: function () {
+                                    window.location.href = context + "/login/toLogin";
+                                }
+                            });
+                        } else if (data.flag == true && data.error == false) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        } else if (data.flag == true && data.error == true) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        }
+                    },
+                    failure: function () {
+                        all_loading.hide();
+                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                    }
+                });
+            }else if(btnIndex==1){
+                all_loading.show();
+                Ext.Ajax.request({
+                    url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+                    method: "POST",
+                    params: {
+                        deviceId: deviceId,
+                        deviceName: deviceName,
+                        controlType: itemcode,
+                        controlValue: itemMeaning[1][0]
+                    },
+                    success: function (response, action) {
+                        all_loading.hide();
+                        var data = Ext.decode(response.responseText);
+                        if (data.success == true && data.flag == false) {
+                            Ext.MessageBox.show({
+                                title: cosog.string.ts,
+                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                icon: Ext.MessageBox.INFO,
+                                buttons: Ext.Msg.OK,
+                                fn: function () {
+                                    window.location.href = context + "/login/toLogin";
+                                }
+                            });
+                        } else if (data.flag == true && data.error == false) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        } else if (data.flag == true && data.error == true) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        }
+                    },
+                    failure: function () {
+                        all_loading.hide();
+                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                    }
+                });
+            }
+	    }else if(resolutionMode == 0 && itemMeaning.length > 0){
+	    	if(btnIndex==0){
+                all_loading.show();
+                Ext.Ajax.request({
+                    url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+                    method: "POST",
+                    params: {
+                        deviceId: deviceId,
+                        deviceName: deviceName,
+                        controlType: itemcode,
+                        controlValue: 1
+                    },
+                    success: function (response, action) {
+                        all_loading.hide();
+                        var data = Ext.decode(response.responseText);
+                        if (data.success == true && data.flag == false) {
+                            Ext.MessageBox.show({
+                                title: cosog.string.ts,
+                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                icon: Ext.MessageBox.INFO,
+                                buttons: Ext.Msg.OK,
+                                fn: function () {
+                                    window.location.href = context + "/login/toLogin";
+                                }
+                            });
+                        } else if (data.flag == true && data.error == false) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        } else if (data.flag == true && data.error == true) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        }
+                    },
+                    failure: function () {
+                        all_loading.hide();
+                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                    }
+                });
+            }else if(btnIndex==1){
+                all_loading.show();
+                Ext.Ajax.request({
+                    url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+                    method: "POST",
+                    params: {
+                        deviceId: deviceId,
+                        deviceName: deviceName,
+                        controlType: itemcode,
+                        controlValue: 0
+                    },
+                    success: function (response, action) {
+                        all_loading.hide();
+                        var data = Ext.decode(response.responseText);
+                        if (data.success == true && data.flag == false) {
+                            Ext.MessageBox.show({
+                                title: cosog.string.ts,
+                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                icon: Ext.MessageBox.INFO,
+                                buttons: Ext.Msg.OK,
+                                fn: function () {
+                                    window.location.href = context + "/login/toLogin";
+                                }
+                            });
+                        } else if (data.flag == true && data.error == false) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        } else if (data.flag == true && data.error == true) {
+                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                        }
+                    },
+                    failure: function () {
+                        all_loading.hide();
+                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                    }
+                });
+            }
+	    }else{
+	    	if(btnIndex==0){
+                var operaName = "";
+                if (text == "停抽" || text == "启抽" || text == "即时采集" || text == "即时刷新") {
+                    operaName = "是否执行" + text + "操作";
+                } else {
+                    operaName = "是否执行" + text + item.split("(")[0] + "操作";
+                }
+                Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+                Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+
+                var win_Obj = Ext.getCmp("DeviceControlCheckPassWindow_Id")
+                if (win_Obj != undefined) {
+                    win_Obj.destroy();
+                }
+                var DeviceControlCheckPassWindow = Ext.create("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
+                    title: "设备控制"
+                });
+                
+                var showInfo='名称:<font color=red>'+record.data.itemName+'</font>'
+                	+",存储数据类型:<font color=red>"+record.data.storeDataType+'</font>'
+                	+",存储数据数量:<font color=red>"+record.data.quantity+'</font>'
+                	+",单位:<font color=red>"+record.data.unit+'</font>'
+                
+                Ext.getCmp("DeviceControlItemName_Id").setHtml(showInfo);
+                
+                
+                Ext.getCmp("DeviceControlDeviceName_Id").setValue(deviceName);
+                Ext.getCmp("DeviceControlDeviceId_Id").setValue(deviceId);
+                Ext.getCmp("DeviceControlDeviceType_Id").setValue(getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"));
+
+                Ext.getCmp("DeviceControlType_Id").setValue(record.data.itemcode);
+                Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
+                Ext.getCmp("DeviceControlStoreDataType_Id").setValue(record.data.storeDataType);
+                Ext.getCmp("DeviceControlQuantity_Id").setValue(record.data.quantity);
+
+                Ext.getCmp("DeviceControlShowType_Id").setValue(2);
+
+                if (resolutionMode == 1 && itemMeaning.length > 0) {
+                    Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
+                    var data = [];
+                    for (var k = 0; k < itemMeaning.length; k++) {
+                        data.push(itemMeaning[k]);
+                    }
+                    var controlTypeStore = new Ext.data.SimpleStore({
+                        autoLoad: false,
+                        fields: ['boxkey', 'boxval'],
+                        data: data
+                    });
+                }
+                DeviceControlCheckPassWindow.show();
+            }else if(btnIndex==1){
+	    		
+	    	}
+	    }
+	}
+}

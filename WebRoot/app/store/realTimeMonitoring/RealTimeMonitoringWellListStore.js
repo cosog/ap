@@ -42,19 +42,12 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     bbar: bbar,
                     columnLines: true,
                     forceFit: false,
-//                    stripeRows: true,
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },
                     store: store,
                     columns: newColumns,
                     listeners: {
-                    	selectionchange: function (view, selected, o) {
-                    	},
-                    	rowclick: function( grid, record, element, index, e, eOpts) {
-                    		var deviceId=record.data.id;
-                    		Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
-                    	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		
@@ -70,7 +63,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		
                     		var combDeviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
                     		if(combDeviceName!=''){
-                        		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
+                        		Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
                     		}
                     		
                     		var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");

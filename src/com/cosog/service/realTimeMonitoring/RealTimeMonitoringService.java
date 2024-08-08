@@ -1964,6 +1964,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(controlColumns.size()>0){
 				for(int i=0;i<controlColumns.size();i++){
 					deviceControlList.append("{\"item\":\""+controlItems.get(i)+"\","
+							+ "\"deviceId\":\""+deviceId+"\","
+							+ "\"deviceName\":\""+deviceName+"\","
+							+ "\"itemName\":\""+controlItemList.get(i).getTitle()+"\","
 							+ "\"itemName\":\""+controlItemList.get(i).getTitle()+"\","
 							+ "\"itemcode\":\""+controlColumns.get(i)+"\","
 							+ "\"resolutionMode\":"+controlItemResolutionMode.get(i)+","

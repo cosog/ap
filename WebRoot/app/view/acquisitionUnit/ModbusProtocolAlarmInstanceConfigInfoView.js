@@ -27,7 +27,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     xtype: 'button',
                     text: cosog.string.refresh,
                     iconCls: 'note-refresh',
-                    hidden:false,
+                    hidden: false,
                     handler: function (v, o) {
                     	var treeGridPanel = Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
                         if (isNotVal(treeGridPanel)) {
@@ -936,14 +936,9 @@ var ProtocolAlarmInstanceConfigSwitchItemsHandsontableHelper = {
 	        
 	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(col<=2){
-	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
-	            }
-	            if(col!=3){
-	            	td.style.whiteSpace='nowrap'; //文本不换行
-	            	td.style.overflow='hidden';//超出部分隐藏
-	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.createTable = function (data) {
@@ -1331,7 +1326,7 @@ function CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(id,name,classe
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceRunStatusItemsConfigData',
 		success:function(response) {
 			Ext.getCmp("ModbusProtocolAlarmInstanceRunStatusItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(name+"/工况诊断报警项");
+			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(name+"/运行状态报警项");
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper==null || protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper = ProtocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceRunStatusItemsConfigTableInfoDiv_id");
@@ -1477,7 +1472,7 @@ function CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(id,name,class
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceCommStatusItemsConfigData',
 		success:function(response) {
 			Ext.getCmp("ModbusProtocolAlarmInstanceCommStatusItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(name+"/工况诊断报警项");
+			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(name+"/通信状态报警项");
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper==null || protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper = ProtocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceCommStatusItemsConfigTableInfoDiv_id");

@@ -33,7 +33,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
             if (!isNotVal(treeGridPanel)) {
                 treeGridPanel = Ext.create('Ext.tree.Panel', {
                     id: "ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id",
-//                    layout: "fit",
                     border: false,
                     animate: true,
                     enableDD: false,

@@ -18,7 +18,7 @@ public class ExportDisplayUnitData {
 
     private int CalculateType;
 
-    private List<AlarmItem> ItemList;
+    private List<DisplayItem> ItemList;
 
     public void setId(int Id){
         this.Id = Id;
@@ -56,10 +56,10 @@ public class ExportDisplayUnitData {
     public int getCalculateType(){
         return this.CalculateType;
     }
-    public void setItemList(List<AlarmItem> ItemList){
+    public void setItemList(List<DisplayItem> ItemList){
         this.ItemList = ItemList;
     }
-    public List<AlarmItem> getItemList(){
+    public List<DisplayItem> getItemList(){
         return this.ItemList;
     }
 	
@@ -112,7 +112,7 @@ public class ExportDisplayUnitData {
 		}
 	}
 	
-	public static class AlarmItem
+	public static class DisplayItem
 	{
 	    private int Id;
 

@@ -5272,6 +5272,34 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getImportAlarmUnitItemsData")
+	public String getImportAlarmUnitItemsData() throws IOException {
+		HttpSession session=request.getSession();
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String alarmType=ParamUtils.getParameter(request, "alarmType");
+		
+		
+		List<ExportAlarmUnitData> uploadUnitList=null;
+		User user = (User) session.getAttribute("userLogin");
+		try{
+			if(session.getAttribute("uploadAlarmUnitFile")!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getImportAlarmUnitItemsData(uploadUnitList,protocolName,unitName,alarmType,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveSingelImportedAlarmUnit")
 	public String saveSingelImportedAlarmUnit() throws Exception {
 		HttpSession session=request.getSession();
@@ -5400,6 +5428,36 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 		}
 		String json = acquisitionUnitItemManagerService.getUploadedDisplayUnitTreeData(uploadUnitList,deviceType,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportDisplayUnitItemsConfigData")
+	public String getImportDisplayUnitItemsConfigData() throws IOException {
+		HttpSession session=request.getSession();
+		
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String acqUnitName=ParamUtils.getParameter(request, "acqUnitName");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String calculateType=ParamUtils.getParameter(request, "calculateType");
+		String type=ParamUtils.getParameter(request, "type");
+		
+		
+		List<ExportDisplayUnitData> uploadUnitList=null;
+		try{
+			if(session.getAttribute("uploadDisplayUnitFile")!=null){
+				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute("uploadDisplayUnitFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getImportDisplayUnitItemsConfigData(uploadUnitList,protocolName,acqUnitName,unitName,calculateType,type);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -2264,6 +2264,19 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static CalItem getSingleCalItem(String name,List<CalItem> list){
+		CalItem item=null;
+		if(list!=null){
+			for(CalItem calItem:list){
+				if(name.equalsIgnoreCase(calItem.getName())){
+					item=calItem;
+					break;
+				}
+			}
+		}
+		return item;
+	}
+	
 	public static List<CalItem> getRPCCalculateItem(){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();

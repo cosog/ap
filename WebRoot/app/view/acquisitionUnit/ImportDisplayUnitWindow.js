@@ -1,3 +1,4 @@
+var importDisplayUnitAcqItemsHandsontableHelper=null;
 Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
     extend: 'Ext.window.Window',
     id: 'ImportDisplayUnitWindow_Id',
@@ -128,7 +129,18 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                         html:'<div class="importDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	
+                            	if(importDisplayUnitAcqItemsHandsontableHelper!=null && importDisplayUnitAcqItemsHandsontableHelper.hot!=undefined){
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		importDisplayUnitAcqItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
                             }
                         }
                 	},{
@@ -195,7 +207,12 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
 });
 
 function clearImportDisplayUnitHandsontable(){
-	
+	if(importDisplayUnitAcqItemsHandsontableHelper!=null){
+		if(importDisplayUnitAcqItemsHandsontableHelper.hot!=undefined){
+			importDisplayUnitAcqItemsHandsontableHelper.hot.destroy();
+		}
+		importDisplayUnitAcqItemsHandsontableHelper=null;
+	}
 }
 
 function submitImportedDisplayUnitFile() {
@@ -328,3 +345,171 @@ function saveAllImportedDisplayUnit(){
 		}
 	});
 }
+
+function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
+	Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(unitName!=''){
+				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName+"/采集项");
+			}else{
+				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle("采集项");
+			}
+			
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importDisplayUnitAcqItemsHandsontableHelper==null || importDisplayUnitAcqItemsHandsontableHelper.hot==undefined){
+				importDisplayUnitAcqItemsHandsontableHelper = ImportDisplayUnitAcqItemsHandsontableHelper.createNew("importDisplayUnitAcqItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线']";
+				var columns="["
+						+"{data:'id'}," 
+						+"{data:'title'},"
+						+"{data:'unit'},"
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historyCurveConfShowValue'}"
+						+"]";
+				importDisplayUnitAcqItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importDisplayUnitAcqItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importDisplayUnitAcqItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayUnitAcqItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importDisplayUnitAcqItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayUnitAcqItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			protocolName: protocolName,
+			acqUnitName: acqUnitName,
+			unitName: unitName,
+			calculateType: calculateType,
+			type: 0
+        }
+	});
+};
+
+var ImportDisplayUnitAcqItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importDisplayUnitAcqItemsHandsontableHelper = {};
+	        importDisplayUnitAcqItemsHandsontableHelper.hot1 = '';
+	        importDisplayUnitAcqItemsHandsontableHelper.divid = divid;
+	        importDisplayUnitAcqItemsHandsontableHelper.validresult=true;//数据校验
+	        importDisplayUnitAcqItemsHandsontableHelper.colHeaders=[];
+	        importDisplayUnitAcqItemsHandsontableHelper.columns=[];
+	        importDisplayUnitAcqItemsHandsontableHelper.AllData=[];
+	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if(value!=null){
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
+	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayUnitAcqItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importDisplayUnitAcqItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importDisplayUnitAcqItemsHandsontableHelper.divid);
+	        	importDisplayUnitAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,140,80,60,85,85,85,85],
+	                columns:importDisplayUnitAcqItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importDisplayUnitAcqItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    if(visualColIndex==6||visualColIndex==7){
+		                	cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCurveBg;
+		                }else{
+		                	cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCellStyle;
+		                }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(importDisplayUnitAcqItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& importDisplayUnitAcqItemsHandsontableHelper!=null
+	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot!=''
+	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot!=undefined 
+	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importDisplayUnitAcqItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        return importDisplayUnitAcqItemsHandsontableHelper;
+	    }
+};

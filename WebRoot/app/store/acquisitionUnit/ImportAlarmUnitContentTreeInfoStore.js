@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ImportAlarmUnitContentTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.importAlarmInstanceContentTreeInfoStore',
+    alias: 'widget.importAlarmUnitContentTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/getUploadedAlarmInstanceTreeData',
+        url: context + '/acquisitionUnitManagerController/getUploadedAlarmUnitTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -18,17 +18,17 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceType=Ext.getCmp("ImportAlarmInstanceWinDeviceType_Id").getValue();
+        	var deviceType=Ext.getCmp("ImportAlarmUnitWinDeviceType_Id").getValue();
         	var new_params = {
         			deviceType: deviceType
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },
         load: function (store, options, eOpts) {
-        	var treeGridPanel = Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id");
+        	var treeGridPanel = Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id");
             if (!isNotVal(treeGridPanel)) {
             	treeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ImportAlarmInstanceContentTreeGridPanel_Id",
+                    id: "ImportAlarmUnitContentTreeGridPanel_Id",
 //                    layout: "fit",
                     border: false,
                     animate: true,
@@ -63,7 +63,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
                     	flex: 12,
                     	dataIndex: 'msg',
                     	renderer:function(value,o,p,e){
-                    		return adviceImportAlarmInstanceCollisionInfoColor(value,o,p,e);
+                    		return adviceImportAlarmUnitCollisionInfoColor(value,o,p,e);
                     	}
                     },{
                         header: 'id',
@@ -76,32 +76,81 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
                 		align:'center',
                 		width:50,
                 		renderer :function(value,e,o){
-                			return iconImportSingleAlarmInstanceAction(value,e,o)
+                			return iconImportSingleAlarmUnitAction(value,e,o)
                 		} 
                     }],
                     listeners: {
-                    	rowclick: function( grid, record, element, index, e, eOpts) {
-                    		
-                    	},
-                    	checkchange: function (node, checked) {
-                    		
-                        },
-                        selectionchange ( view, selected, eOpts ){
-                        	
-                        },
                         select( v, record, index, eOpts ){
-                        	
-                        },
-                        beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-                        	
-                        },
-                        checkchange: function (node, checked) {
-                            listenerCheck(node, checked);
+                        	var activeId = Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id;
+                        	if(activeId=="importAlarmUnitNumItemsConfigTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
+                            			CreateImportAlarmUnitCalNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
+                            		}else{
+                            			CreateImportAlarmUnitNumItemsConfigInfoTable('','');
+                            			CreateImportAlarmUnitCalNumItemsConfigInfoTable('','');
+                            		}
+                            	}else{
+                            		CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.text);
+                            		CreateImportAlarmUnitCalNumItemsConfigInfoTable(record.data.protocol,record.data.text);
+                            	}
+                        	}else if(activeId=="importAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
+                            		}else{
+                            			CreateImportAlarmUnitSwitchItemsConfigInfoTable('','');
+                            		}
+                            	}else{
+                            		CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.protocol,record.data.text);
+                            	}
+                        	}else if(activeId=="importAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
+                            		}else{
+                            			CreateImportAlarmUnitEnumItemsConfigInfoTable('','');
+                            		}
+                            	}else{
+                            		CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.protocol,record.data.text);
+                            	}
+                        	}else if(activeId=="importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
+                            		}else{
+                            			CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable('','');
+                            		}
+                            	}else{
+                            		CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.text);
+                            	}
+                        	}else if(activeId=="importAlarmUnitRunStatusConfigTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
+                            		}else{
+                            			CreateImportAlarmUnitRunStatusItemsConfigInfoTable('','');
+                            		}
+                            	}else{
+                            		CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.text);
+                            	}
+                        	}else if(activeId=="importAlarmUnitCommStatusConfigTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
+                            		}else{
+                            			CreateImportAlarmUnitCommStatusItemsConfigInfoTable('','');
+                            		}
+                            	}else{
+                            		CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.text);
+                            	}
+                        	}
                         }
                     }
 
                 });
-                var panel = Ext.getCmp("importAlarmInstanceTreePanel_Id");
+                var panel = Ext.getCmp("importAlarmUnitTreePanel_Id");
                 panel.add(treeGridPanel);
             }
             

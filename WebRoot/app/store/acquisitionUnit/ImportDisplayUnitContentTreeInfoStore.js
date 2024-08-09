@@ -80,23 +80,25 @@ Ext.define('AP.store.acquisitionUnit.ImportDisplayUnitContentTreeInfoStore', {
                 		} 
                     }],
                     listeners: {
-                    	rowclick: function( grid, record, element, index, e, eOpts) {
-                    		
-                    	},
-                    	checkchange: function (node, checked) {
-                    		
-                        },
-                        selectionchange ( view, selected, eOpts ){
-                        	
-                        },
                         select( v, record, index, eOpts ){
-                        	
-                        },
-                        beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-                        	
-                        },
-                        checkchange: function (node, checked) {
-                        	
+                        	if(record.data.classes==0){//选中设备类型deviceType
+                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+                        			CreateImportDisplayUnitAcqItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnit,record.data.children[0].text,record.data.children[0].calculateType);
+//                        			CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.deviceType);
+//                        			CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.deviceType);
+//                        			CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
+                        		}else{
+                        			CreateImportDisplayUnitAcqItemsInfoTable('','','',0);
+//                        			CreateProtocolDisplayInstanceCalItemsInfoTable(-1,'',1,record.data.deviceType);
+//                        			CreateProtocolDisplayInstanceInputItemsInfoTable(-1,'',1,record.data.deviceType);
+//                        			CreateProtocolDisplayInstanceCtrlItemsInfoTable(-1,'',1);
+                        		}
+                        	}else if(record.data.classes==1){//选中显示单元
+                        		CreateImportDisplayUnitAcqItemsInfoTable(record.data.protocol,record.data.acqUnit,record.data.text,record.data.calculateType);
+//                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.deviceType);
+//                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.deviceType);
+//                        		CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes);
+                        	}
                         }
                     }
 

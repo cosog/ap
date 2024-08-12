@@ -20,7 +20,7 @@ public class ExportReportUnitData {
 
     private String Sort;
 
-    private List<DisplayItem> ItemList;
+    private List<ReportItem> ItemList;
 
     public void setId(int Id){
         this.Id = Id;
@@ -70,10 +70,10 @@ public class ExportReportUnitData {
     public String getSort(){
         return this.Sort;
     }
-    public void setItemList(List<DisplayItem> ItemList){
+    public void setItemList(List<ReportItem> ItemList){
         this.ItemList = ItemList;
     }
-    public List<DisplayItem> getItemList(){
+    public List<ReportItem> getItemList(){
         return this.ItemList;
     }
 	
@@ -126,7 +126,7 @@ public class ExportReportUnitData {
 		}
 	}
 	
-	public class DisplayItem
+	public class ReportItem
 	{
 	    private int Id;
 

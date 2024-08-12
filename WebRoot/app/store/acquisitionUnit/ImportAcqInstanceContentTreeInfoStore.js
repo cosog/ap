@@ -80,23 +80,16 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqInstanceContentTreeInfoStore', {
                 		} 
                     }],
                     listeners: {
-                    	rowclick: function( grid, record, element, index, e, eOpts) {
-                    		
-                    	},
-                    	checkchange: function (node, checked) {
-                    		
-                        },
-                        selectionchange ( view, selected, eOpts ){
-                        	
-                        },
                         select( v, record, index, eOpts ){
-                        	
-                        },
-                        beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-                        	
-                        },
-                        checkchange: function (node, checked) {
-                            listenerCheck(node, checked);
+                        	if(record.data.classes==0){
+                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+                        			CreateImportAcqInstanceItemsInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+                        		}else{
+                        			CreateImportAcqInstanceItemsInfoTable('','','');
+                        		}
+                        	}else{
+                        		CreateImportAcqInstanceItemsInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+                        	}
                         }
                     }
 

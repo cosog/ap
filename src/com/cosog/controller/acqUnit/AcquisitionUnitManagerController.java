@@ -5606,6 +5606,54 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getImportReportUnitTemplateData")
+	public String getImportReportUnitTemplateData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportReportUnitData> uploadUnitList=null;
+		String reportType=ParamUtils.getParameter(request, "reportType");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		try{
+			if(session.getAttribute("uploadReportUnitFile")!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute("uploadReportUnitFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getImportReportUnitTemplateData(uploadUnitList,reportType,unitName);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportReportUnitItemsConfigData")
+	public String getImportReportUnitItemsConfigData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportReportUnitData> uploadUnitList=null;
+		String reportType=ParamUtils.getParameter(request, "reportType");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		try{
+			if(session.getAttribute("uploadReportUnitFile")!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute("uploadReportUnitFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getImportReportUnitItemsConfigData(uploadUnitList,reportType,unitName);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveSingelImportedReportUnit")
 	public String saveSingelImportedReportUnit() throws Exception {
 		HttpSession session=request.getSession();
@@ -5731,6 +5779,32 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 		}
 		String json = acquisitionUnitItemManagerService.getUploadedAcqInstanceTreeData(uploadInstanceList,deviceType,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportAcqInstanceItemsData")
+	public String getImportAcqInstanceItemsData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportAcqInstanceData> uploadInstanceList=null;
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String instanceName=ParamUtils.getParameter(request, "instanceName");
+		User user = (User) session.getAttribute("userLogin");
+		try{
+			if(session.getAttribute("uploadAcqInstanceFile")!=null){
+				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute("uploadAcqInstanceFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getImportAcqInstanceItemsData(uploadInstanceList,protocolName,unitName,instanceName);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

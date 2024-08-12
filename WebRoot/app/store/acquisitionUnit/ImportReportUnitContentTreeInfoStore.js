@@ -80,23 +80,40 @@ Ext.define('AP.store.acquisitionUnit.ImportReportUnitContentTreeInfoStore', {
                 		} 
                     }],
                     listeners: {
-                    	rowclick: function( grid, record, element, index, e, eOpts) {
-                    		
-                    	},
-                    	checkchange: function (node, checked) {
-                    		
-                        },
-                        selectionchange ( view, selected, eOpts ){
-                        	
-                        },
                         select( v, record, index, eOpts ){
+                        	var unitName='';
+                        	var reportType=0;
+                        	if(record.data.classes==0){
+                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+                        			unitName=record.data.children[0].text;
+                        		}
+                        	}else if(record.data.classes==1){
+                        		unitName=record.data.text;
+                        	}
                         	
-                        },
-                        beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+                        	var tabPanel = Ext.getCmp("importReportUnitReportTemplateTabPanel_Id");
+            				var activeId = tabPanel.getActiveTab().id;
+            				if(activeId=="importReportUnitSingleWellReportTemplatePanel_Id"){
+            					var singleWellReportActiveId=Ext.getCmp("importReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+            					if(singleWellReportActiveId=='importReportUnitSingleWellDailyReportTemplatePanel_Id'){
+            						reportType=2;
+            					}else if(singleWellReportActiveId=='importReportUnitSingleWellRangeReportTemplatePanel_Id'){
+            						reportType=0;
+            					}
+            				}else if(activeId=="importReportUnitProductionReportTemplatePanel_Id"){
+            					reportType=1;
+            				}
                         	
-                        },
-                        checkchange: function (node, checked) {
-                        	
+            				if(reportType==0){
+                    			CreateImportReportUnitSingleWellRangeReportTemplateInfoTable(unitName);
+                    			CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName);
+                        	}else if(reportType==2){
+                    			CreateImportReportUnitSingleWellDailyReportTemplateInfoTable(unitName);
+                    			CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName);
+                        	}else{
+                        		CreateImportReportUnitProductionReportTemplateInfoTable(unitName);
+                        		CreateImportReportUnitProductionTotalItemsInfoTable(unitName);
+                        	}
                         }
                     }
 

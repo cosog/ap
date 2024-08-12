@@ -995,7 +995,7 @@ public class DriverAPIController extends BaseController{
 		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
 			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
 		}
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		
 		if(acqGroup!=null && protocol!=null){
 			for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
@@ -1070,11 +1070,7 @@ public class DriverAPIController extends BaseController{
 			List<ProtocolItemResolutionData> calItemResolutionDataList,
 			List<KeyValue> acqDataList){
 		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-		}
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		
 		if(acqGroup!=null && protocol!=null && acqInstanceOwnItem!=null){
 			for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
@@ -1697,11 +1693,7 @@ public class DriverAPIController extends BaseController{
 		try{
 			AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
-			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-			}
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			
 			String realtimeTable="tbl_acqdata_latest";
 			String historyTable="tbl_acqdata_hist";
@@ -2099,11 +2091,7 @@ public class DriverAPIController extends BaseController{
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
 			
-			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-			}
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			
 			String realtimeTable="tbl_rpcacqdata_latest";
 			String historyTable="tbl_rpcacqdata_hist";
@@ -2882,12 +2870,7 @@ public class DriverAPIController extends BaseController{
 			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
 				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
-			
-			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-				MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-			}
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			
 			String realtimeTable="tbl_pcpacqdata_latest";
 			String historyTable="tbl_pcpacqdata_hist";

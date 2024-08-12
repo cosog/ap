@@ -1733,6 +1733,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	        return protocolReportInstancePropertiesHandsontableHelper;
 	    }
 };
+
 function CreateReportInstanceProductionTemplateInfoTable(calculateType,code,selectedInstanceName){
 	Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({

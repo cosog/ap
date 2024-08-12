@@ -1882,7 +1882,7 @@ public class StringManagerUtils {
         } catch (Exception e) {
             StringManagerUtils.printLog("发送 POST 请求出现异常！" + e);
             StringManagerUtils.printLog("url:" + url + ",param:" + param);
-            e.printStackTrace();
+//            e.printStackTrace();
         } finally {
             try {
                 if (os != null) {

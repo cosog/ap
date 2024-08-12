@@ -1,3 +1,4 @@
+var importAcqInstanceConfigItemsHandsontableHelper=null;
 Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
     extend: 'Ext.window.Window',
     id:'ImportAcqInstanceWindow_Id',
@@ -139,7 +140,12 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
 });
 
 function clearImportAcqInstanceHandsontable(){
-	
+	if(importAcqInstanceConfigItemsHandsontableHelper!=null){
+		if(importAcqInstanceConfigItemsHandsontableHelper.hot!=undefined){
+			importAcqInstanceConfigItemsHandsontableHelper.hot.destroy();
+		}
+		importAcqInstanceConfigItemsHandsontableHelper=null;
+	}
 }
 
 function submitImportedAcqInstanceFile() {
@@ -274,3 +280,159 @@ iconImportSingleAcqInstanceAction = function(value, e, record) {
 	}
 	return resultstring;
 }
+
+function CreateImportAcqInstanceItemsInfoTable(protocolName,unitName,instanceName){
+	Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportAcqInstanceItemsData',
+		success:function(response) {
+			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").getEl().unmask();
+			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").setTitle(instanceName+"/采控项");
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importAcqInstanceConfigItemsHandsontableHelper==null || importAcqInstanceConfigItemsHandsontableHelper.hot==undefined){
+				importAcqInstanceConfigItemsHandsontableHelper = ImportAcqInstanceConfigItemsHandsontableHelper.createNew("importedAcqInstanceItemInfoTableDiv_Id");
+				var colHeaders="[" 
+					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
+					+"['序号','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
+					+"]";
+				
+				var columns="[{data:'id'},{data:'title'},"
+				 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}},"
+				 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
+				 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
+				 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '只写', '读写']}," 
+				 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}," 
+					+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
+					+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
+					+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
+					+"{data:'unit'}," 
+					+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
+					+"]";
+				importAcqInstanceConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importAcqInstanceConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importAcqInstanceConfigItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importAcqInstanceConfigItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importAcqInstanceConfigItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importAcqInstanceConfigItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			protocolName:protocolName,
+			unitName:unitName,
+			instanceName:instanceName
+        }
+	});
+};
+
+var ImportAcqInstanceConfigItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importAcqInstanceConfigItemsHandsontableHelper = {};
+	        importAcqInstanceConfigItemsHandsontableHelper.hot1 = '';
+	        importAcqInstanceConfigItemsHandsontableHelper.divid = divid;
+	        importAcqInstanceConfigItemsHandsontableHelper.validresult=true;//数据校验
+	        importAcqInstanceConfigItemsHandsontableHelper.colHeaders=[];
+	        importAcqInstanceConfigItemsHandsontableHelper.columns=[];
+	        importAcqInstanceConfigItemsHandsontableHelper.AllData=[];
+	        
+	        importAcqInstanceConfigItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importAcqInstanceConfigItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importAcqInstanceConfigItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importAcqInstanceConfigItemsHandsontableHelper.divid);
+	        	importAcqInstanceConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,130,80,90,90,80,80,90,80,80,80,80],
+	                columns:importAcqInstanceConfigItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+//	                colHeaders:importAcqInstanceConfigItemsHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:importAcqInstanceConfigItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    
+	                    if(importAcqInstanceConfigItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& importAcqInstanceConfigItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = importAcqInstanceConfigItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(importAcqInstanceConfigItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& importAcqInstanceConfigItemsHandsontableHelper!=null
+	                		&& importAcqInstanceConfigItemsHandsontableHelper.hot!=''
+	                		&& importAcqInstanceConfigItemsHandsontableHelper.hot!=undefined 
+	                		&& importAcqInstanceConfigItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importAcqInstanceConfigItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        return importAcqInstanceConfigItemsHandsontableHelper;
+	    }
+};

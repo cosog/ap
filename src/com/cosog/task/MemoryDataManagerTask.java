@@ -2494,6 +2494,29 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static List<CalItem> getAcqTotalCalculateItem(){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("acqTotalCalItemList".getBytes())){
+				MemoryDataManagerTask.loadAcqTotalCalculateItem();
+			}
+			List<byte[]> calItemSet= jedis.zrange("acqTotalCalItemList".getBytes(), 0, -1);
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return calItemList;
+	}
+	
 	public static void loadAcqTotalCalculateItem(){
 		Jedis jedis=null;
 		try {
@@ -2524,6 +2547,29 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	public static List<CalItem> getRPCTotalCalculateItem(){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("rpcTotalCalItemList".getBytes())){
+				MemoryDataManagerTask.loadRPCTotalCalculateItem();
+			}
+			List<byte[]> calItemSet= jedis.zrange("rpcTotalCalItemList".getBytes(), 0, -1);
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return calItemList;
 	}
 	
 	public static void loadRPCTotalCalculateItem(){
@@ -2609,6 +2655,29 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static List<CalItem> getPCPTotalCalculateItem(){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("pcpTotalCalItemList".getBytes())){
+				MemoryDataManagerTask.loadPCPTotalCalculateItem();
+			}
+			List<byte[]> calItemSet= jedis.zrange("pcpTotalCalItemList".getBytes(), 0, -1);
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return calItemList;
+	}
+	
 	public static void loadPCPTotalCalculateItem(){
 		Jedis jedis=null;
 		try {
@@ -2671,6 +2740,29 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static List<CalItem> getAcqTimingTotalCalculateItem(){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("acqTimingTotalCalItemList".getBytes())){
+				MemoryDataManagerTask.loadAcqTimingTotalCalculateItem();
+			}
+			List<byte[]> calItemSet= jedis.zrange("acqTimingTotalCalItemList".getBytes(), 0, -1);
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return calItemList;
+	}
+	
 	public static void loadAcqTimingTotalCalculateItem(){
 		Jedis jedis=null;
 		try {
@@ -2703,6 +2795,29 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	public static List<CalItem> getRPCTimingTotalCalculateItem(){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("rpcTimingTotalCalItemList".getBytes())){
+				MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
+			}
+			List<byte[]> calItemSet= jedis.zrange("rpcTimingTotalCalItemList".getBytes(), 0, -1);
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return calItemList;
 	}
 	
 	public static void loadRPCTimingTotalCalculateItem(){
@@ -2801,6 +2916,29 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	public static List<CalItem> getPCPTimingTotalCalculateItem(){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("pcpTimingTotalCalItemList".getBytes())){
+				MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
+			}
+			List<byte[]> calItemSet= jedis.zrange("pcpTimingTotalCalItemList".getBytes(), 0, -1);
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return calItemList;
 	}
 	
 	public static void loadPCPTimingTotalCalculateItem(){

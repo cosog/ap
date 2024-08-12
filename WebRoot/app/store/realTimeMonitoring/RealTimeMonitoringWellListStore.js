@@ -51,7 +51,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		
-                    		Ext.getCmp("RealTimeMonitoringInfoPanel_Id").el.mask(cosog.string.loading).show();
+//                    		Ext.getCmp("RealTimeMonitoringInfoPanel_Id").el.mask(cosog.string.loading).show();
                     		
                     		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
                     		var deviceName=record.data.deviceName;

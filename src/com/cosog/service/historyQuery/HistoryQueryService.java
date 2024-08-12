@@ -620,9 +620,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 //			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
-			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
 			String hisTableName="tbl_acqdata_hist";
 			String deviceTableName="tbl_device";
@@ -874,9 +873,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		DeviceInfo deviceInfo=null;
 		String deviceInfoKey="DeviceInfo";
 		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-		Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 			if(deviceInfo!=null){
@@ -1626,9 +1624,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		DeviceInfo deviceInfo=null;
 		String deviceInfoKey="DeviceInfo";
 		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-		Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 		
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
@@ -2273,9 +2270,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			DisplayInstanceOwnItem displayInstanceOwnItem=null;
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 			
-			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
 			List<CalItem> calItemList=null;
 			List<CalItem> inputItemList=null;
@@ -2943,19 +2939,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		List<CalItem> calItemList=null;
 		List<CalItem> inputItemList=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		int dataSaveMode=1;
 		String displayInstanceCode="";
 		String graphicSet="{}";
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		String graphicSetTableName="tbl_devicegraphicset";
-		String rpcCalItemsKey="rpcCalItemList";
-		String rpcInputItemsKey="rpcInputItemList";
-		String pcpCalItemsKey="pcpCalItemList";
-		String pcpInputItemsKey="pcpInputItemList";
-		String deviceInfoKey="DeviceInfo";
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try{
 			try{
 				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");

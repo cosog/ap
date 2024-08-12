@@ -691,9 +691,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		    
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
-			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="tbl_device";
@@ -921,17 +920,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			calAndInputTableName="tbl_pcpacqdata_latest";
 		}
 		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-		}
-		if(!dataModelMap.containsKey("ProtocolMappingColumn")){
-			MemoryDataManagerTask.loadProtocolMappingColumn();
-		}
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
-		Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
-		
-		
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
@@ -1865,8 +1854,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		String protocolName="";
 		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try{
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
@@ -2161,18 +2149,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		List<CalItem> inputItemList=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		DeviceInfo deviceInfo=null;
-		int dataSaveMode=1;
 		String displayInstanceCode="";
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
-		String rpcCalItemsKey="rpcCalItemList";
-		String rpcInputItemsKey="rpcInputItemList";
-		String pcpCalItemsKey="pcpCalItemList";
-		String pcpInputItemsKey="pcpInputItemList";
-		String deviceInfoKey="DeviceInfo";
 		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try{
 			try{
 				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
@@ -2586,8 +2567,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try{
 			try{
 				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");

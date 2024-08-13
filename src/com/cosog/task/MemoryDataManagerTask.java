@@ -262,76 +262,6 @@ public class MemoryDataManagerTask {
 		StringManagerUtils.printLog("驱动加载结束");
 	}
 	
-//	public static List<String> getAcqTableColumn(String tableName){
-//		List<String> tableColumnList=new ArrayList<>();
-//		Connection conn = null;   
-//		PreparedStatement pstmt = null;   
-//		ResultSet rs = null;
-//		String sql="select t.COLUMN_NAME from user_tab_cols t "
-//				+ " where t.TABLE_NAME=UPPER('"+tableName+"') "
-//				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
-//				+ " order by t.COLUMN_ID";
-//		try {
-//			conn=OracleJdbcUtis.getConnection();
-//			if(conn!=null){
-//	        	pstmt = conn.prepareStatement(sql);
-//				rs=pstmt.executeQuery();
-//				while(rs.next()){
-//					String columnName=rs.getString(1);
-//					tableColumnList.add(columnName);
-//				}
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally{
-//			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-//		}
-//		return tableColumnList;
-//	}
-	
-//	public static int loadAcqTableColumn(){
-//		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-//		List<String> tableColumnList=new ArrayList<>();
-//		Connection conn = null;   
-//		PreparedStatement pstmt = null;   
-//		ResultSet rs = null;
-//		int result=0;
-//		String sql="select t.COLUMN_NAME from user_tab_cols t "
-//				+ " where t.TABLE_NAME=UPPER('TBL_ACQDATA_LATEST') "
-//				+ " and  UPPER(t.COLUMN_NAME) like 'C\\_%'escape '\\'"
-//				+ " order by t.COLUMN_ID";
-//		try {
-//			conn=OracleJdbcUtis.getConnection();
-//			if(conn==null){
-//				result= -1;
-//	        }else{
-//	        	pstmt = conn.prepareStatement(sql);
-//				rs=pstmt.executeQuery();
-//				while(rs.next()){
-//					String columnName=rs.getString(1);
-//					tableColumnList.add(columnName);
-//				}
-//	        }
-//		} catch (SQLException e) {
-//			result= -1;
-//			e.printStackTrace();
-//		} finally{
-//			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-//		}
-//		dataModelMap.put("acqTableColumnList", tableColumnList);
-//		return result;
-//	}
-	
-//	public static List<String> getAcqTableColumn(){
-//		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-//		List<String> tableColumnList=new ArrayList<>();
-//		if(!dataModelMap.containsKey("acqTableColumnList") || dataModelMap.get("acqTableColumnList")==null){
-//			loadAcqTableColumn();
-//		}
-//		tableColumnList=(List<String>) dataModelMap.get("acqTableColumnList");
-//		return tableColumnList;
-//	}
-	
 	public static void loadAcquisitionItemNameList(){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		List<String> acquisitionItemNameList=new ArrayList<>();
@@ -2275,6 +2205,50 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return item;
+	}
+	
+	public static List<CalItem> getAcqCalculateItem(){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("acqCalItemList".getBytes())){
+				MemoryDataManagerTask.loadAcqCalculateItem();
+			}
+			List<byte[]> calItemSet= jedis.zrange("acqCalItemList".getBytes(), 0, -1);
+			for(byte[] rpcCalItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return calItemList;
+	}
+	
+	public static void loadAcqCalculateItem(){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			//有序集合
+			jedis.zadd("acqCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2,"自定义","在线时间")));
+			jedis.zadd("acqCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","小数",2,"自定义","在线时率")));
+			jedis.zadd("acqCalItemList".getBytes(),3, SerializeObjectUnils.serialize(new CalItem("在线区间","CommRange","",1,"自定义","在线区间")));
+			
+			jedis.zadd("acqCalItemList".getBytes(),4, SerializeObjectUnils.serialize(new CalItem("运行时间","RunTime","h",2,"自定义","运行时间")));
+			jedis.zadd("acqCalItemList".getBytes(),5, SerializeObjectUnils.serialize(new CalItem("运行时率","RunTimeEfficiency","小数",2,"自定义","运行时率")));
+			jedis.zadd("acqCalItemList".getBytes(),6, SerializeObjectUnils.serialize(new CalItem("运行区间","RunRange","",1,"自定义","运行区间")));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
 	}
 	
 	public static List<CalItem> getRPCCalculateItem(){

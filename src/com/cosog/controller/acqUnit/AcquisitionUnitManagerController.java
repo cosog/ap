@@ -1472,7 +1472,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(deviceType,classes,unitId,calculateType);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(classes,unitId,calculateType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1683,9 +1683,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolDisplayInstanceCalItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCalItemsConfigData(id,classes,deviceType);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCalItemsConfigData(id,classes,calculateType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1699,9 +1699,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolDisplayInstanceInputItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceInputItemsConfigData(id,classes,deviceType);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceInputItemsConfigData(id,classes,calculateType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -5946,6 +5946,35 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 		}
 		String json = acquisitionUnitItemManagerService.getUploadedDisplayInstanceTreeData(uploadInstanceList,deviceType,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportDisplayInstanceItemsConfigData")
+	public String getImportDisplayInstanceItemsConfigData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportDisplayInstanceData> uploadInstanceList=null;
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String acqUnitName=ParamUtils.getParameter(request, "acqUnitName");
+		String displayUnitName=ParamUtils.getParameter(request, "displayUnitName");
+		String instanceName=ParamUtils.getParameter(request, "instanceName");
+		String type=ParamUtils.getParameter(request, "type");
+		
+		User user = (User) session.getAttribute("userLogin");
+		try{
+			if(session.getAttribute("uploadDisplayInstanceFile")!=null){
+				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute("uploadDisplayInstanceFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getImportDisplayInstanceItemsConfigData(uploadInstanceList,protocolName,acqUnitName,displayUnitName,instanceName,type);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

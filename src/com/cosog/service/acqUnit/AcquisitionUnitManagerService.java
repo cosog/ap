@@ -1468,7 +1468,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitCalItemsConfigData(String deviceType,String classes,String unitId,String calculateType){
+	public String getProtocolDisplayUnitCalItemsConfigData(String classes,String unitId,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1478,6 +1478,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
 			}else if("2".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3188,20 +3190,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayInstanceCalItemsConfigData(String id,String classes,String deviceType){
+	public String getProtocolDisplayInstanceCalItemsConfigData(String id,String classes,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="rpcCalItemList";
-		if("1".equalsIgnoreCase(deviceType)){
-			key="pcpCalItemList";
-		}
 		List<CalItem> calItemList=new ArrayList<>();
 		try{
-			if("1".equalsIgnoreCase(deviceType)){
+			if("1".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			}if("2".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 			}else{
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3352,33 +3352,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayInstanceInputItemsConfigData(String id,String classes,String deviceType){
+	public String getProtocolDisplayInstanceInputItemsConfigData(String id,String classes,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="rpcInputItemList";
-		if("1".equalsIgnoreCase(deviceType)){
-			key="pcpInputItemList";
-		}
-		Jedis jedis=null;
-		List<byte[]> inputItemSet=null;
+		List<CalItem> inputItemList=new ArrayList<>();
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists(key.getBytes())){
-				if("1".equalsIgnoreCase(deviceType)){
-					MemoryDataManagerTask.loadPCPInputItem();
-				}else{
-					MemoryDataManagerTask.loadRPCInputItem();
-				}
+			if("1".equalsIgnoreCase(calculateType)){
+				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+			}if("2".equalsIgnoreCase(calculateType)){
+				inputItemList=MemoryDataManagerTask.getPCPInputItem();
 			}
-			
-			inputItemSet= jedis.zrange(key.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -3410,7 +3396,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
 				+ " and t3.id= "+id
 				+ " order by t.id";
-		if(inputItemSet!=null){
+		if(inputItemList!=null){
 			List<?> list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[])list.get(i);
@@ -3446,8 +3432,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				historyCurveConfList.add(historyCurveConfShowValue);
 			}
 			int index=1;
-			for(byte[] inputItemByteArr:inputItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(inputItemByteArr);
+			for(CalItem calItem:inputItemList){
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
 					String realtimeSort="";
 					String historySort="";
@@ -5103,7 +5088,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		tree_json.append("[");
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
-		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort   "
+		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype  "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -5122,6 +5107,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"code\":\""+obj[2]+"\",");
 			tree_json.append("\"displayUnitId\":"+obj[3]+",");
 			tree_json.append("\"displayUnitName\":\""+obj[4]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[6]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"expanded\": true,");
@@ -5129,6 +5115,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("{\"classes\":2,");
 			tree_json.append("\"id\":"+obj[3]+",");
 			tree_json.append("\"text\":\""+obj[4]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[6]+"\",");
 			tree_json.append("\"iconCls\": \"acqUnit\","); 
 			tree_json.append("\"leaf\": true}");
 			tree_json.append("]");
@@ -11469,6 +11456,308 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		
 		return result_json.toString();
+	}
+	
+	public String getImportDisplayInstanceItemsConfigData(List<ExportDisplayInstanceData> uploadInstanceList,
+			String protocolName,String acqUnitName,String displayUnitName,String instanceName,String itemType){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "]";
+		ModbusProtocolConfig.Protocol protocolConfig =MemoryDataManagerTask.getProtocolByName(protocolName);
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		if(uploadInstanceList!=null && protocolConfig!=null){
+			for(ExportDisplayInstanceData exportDisplayInstanceData:uploadInstanceList){
+				if(protocolName.equalsIgnoreCase(exportDisplayInstanceData.getProtocol())
+						&& acqUnitName.equalsIgnoreCase(exportDisplayInstanceData.getAcqUnitName())
+						&& displayUnitName.equalsIgnoreCase(exportDisplayInstanceData.getDisplayUnitName())
+						&& instanceName.equalsIgnoreCase(exportDisplayInstanceData.getName())
+						){
+					
+					String displayUnitSql="select t.id,t.calculatetype from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
+							+ " where t.acqunitid=t2.id "
+							+ " and t2.protocol='"+protocolName+"'"
+							+ " and t2.unit_name='"+acqUnitName+"'"
+							+ " and t.unit_name='"+displayUnitName+"'";
+					List<?> displayUnitList=this.findCallSql(displayUnitSql);
+					if(displayUnitList.size()>0){
+						Object[] displayUnitObj=(Object[])displayUnitList.get(0);
+						String displayUnitId=displayUnitObj[0]+"";
+						String displayUnitCalType=displayUnitObj[1]+"";
+						
+						List<String> itemsList=new ArrayList<String>();
+						List<String> itemsCodeList=new ArrayList<String>();
+						List<String> itemsRealtimeSortList=new ArrayList<String>();
+						List<String> itemsHistorySortList=new ArrayList<String>();
+						List<String> itemsBitIndexList=new ArrayList<String>();
+						List<String> itemsShowLevelList=new ArrayList<String>();
+						List<String> realtimeCurveConfList=new ArrayList<String>();
+						List<String> historyCurveConfList=new ArrayList<String>();
+						
+						
+						String sql="select t.itemname,t.bitindex,"
+								+ " t.realtimeSort,t.historySort,"
+								+ " t.showlevel,"
+								+ " t.realtimeCurveConf,historyCurveConf,"
+								+ " t.itemcode "
+								+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3"
+								+ " where t.unitid=t2.id and t2.acqunitid=t3.id and t.type= "+itemType
+								+ " and t3.protocol='"+protocolName+"' "
+								+ " and t3.unit_name='"+acqUnitName+"' "
+								+ " and t2.unit_name='"+displayUnitName+"'"
+								+ " order by t.id";
+						
+						List<?> list=this.findCallSql(sql);
+						
+						for(int i=0;i<list.size();i++){
+							Object[] obj=(Object[])list.get(i);
+							itemsList.add(obj[0]+"");
+							itemsBitIndexList.add(obj[1]+"");
+							itemsRealtimeSortList.add(obj[2]+"");
+							itemsHistorySortList.add(obj[3]+"");
+							
+							itemsShowLevelList.add(obj[4]+"");
+							
+							itemsCodeList.add(obj[7]+"");
+							
+							String realtimeCurveConfShowValue="";
+							String historyCurveConfShowValue="";
+							
+							CurveConf realtimeCurveConfObj=null;
+							if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
+								type = new TypeToken<CurveConf>() {}.getType();
+								realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
+							}
+							
+							CurveConf historyCurveConfObj=null;
+							if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
+								type = new TypeToken<CurveConf>() {}.getType();
+								historyCurveConfObj=gson.fromJson(obj[6]+"", type);
+							}
+							
+							if(realtimeCurveConfObj!=null){
+								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+							}
+							if(historyCurveConfObj!=null){
+								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+							}
+							
+							realtimeCurveConfList.add(realtimeCurveConfShowValue);
+							historyCurveConfList.add(historyCurveConfShowValue);
+						}
+						
+						if(StringManagerUtils.stringToInteger(itemType)==0 || StringManagerUtils.stringToInteger(itemType)==2 ){
+							Collections.sort(protocolConfig.getItems());
+							int index=1;
+							for(int j=0;j<protocolConfig.getItems().size();j++){
+								if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
+									String realtimeSort="";
+									String historySort="";
+									String showLevel="";
+									
+									String realtimeCurveConfShowValue="";
+									String historyCurveConfShowValue="";
+									
+									if(protocolConfig.getItems().get(j).getResolutionMode()==0
+											&&protocolConfig.getItems().get(j).getMeaning()!=null
+											&&protocolConfig.getItems().get(j).getMeaning().size()>0){
+										Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
+										for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+											realtimeSort="";
+											historySort="";
+											showLevel="";
+											realtimeCurveConfShowValue="";
+											historyCurveConfShowValue="";
+											for(int m=0;m<itemsList.size();m++){
+												if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+														&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
+													){
+													realtimeSort=itemsRealtimeSortList.get(m);
+													historySort=itemsHistorySortList.get(m);
+													showLevel=itemsShowLevelList.get(m);
+													realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
+													historyCurveConfShowValue=historyCurveConfList.get(m);
+													
+													result_json.append("{"
+															+ "\"id\":"+(index)+","
+															+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+															+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+															+ "\"showLevel\":\""+showLevel+"\","
+															+ "\"realtimeSort\":\""+realtimeSort+"\","
+															+ "\"historySort\":\""+historySort+"\","
+															+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+															+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+															+ "},");
+													index++;
+													break;
+												}
+											}
+										}
+									}else{
+										for(int k=0;k<itemsList.size();k++){
+											if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
+												realtimeSort=itemsRealtimeSortList.get(k);
+												historySort=itemsHistorySortList.get(k);
+												showLevel=itemsShowLevelList.get(k);
+												realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+												historyCurveConfShowValue=realtimeCurveConfList.get(k);
+												break;
+											}
+										}
+										result_json.append("{"
+												+ "\"id\":"+(index)+","
+												+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+												+ "\"showLevel\":\""+showLevel+"\","
+												+ "\"realtimeSort\":\""+realtimeSort+"\","
+												+ "\"historySort\":\""+historySort+"\","
+												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+												+ "},");
+										index++;
+									}
+								}
+							}
+						}else if(StringManagerUtils.stringToInteger(itemType)==1){
+							List<CalItem> calItemList=new ArrayList<>();
+							try{
+								if("1".equalsIgnoreCase(displayUnitCalType)){
+									calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+								}else if("2".equalsIgnoreCase(displayUnitCalType)){
+									calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+								}else{
+									calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+								}
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							
+							String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
+									+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
+									+ " tbl_datamapping t6 "
+									+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid "
+									+ " and t.itemname=t6.name "
+									+ " and t.dailytotalcalculate=1 and t5.id= "+displayUnitId
+									+ " order by t.id";
+							List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
+							for(int i=0;i<unitDailyTotalItemsList.size();i++){
+								Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
+								String itemName=obj[0]+"";
+								String name=obj[1]+"";
+								String code=(obj[2]+"_TOTAL").toUpperCase();
+								String unit="";
+								if(protocolConfig!=null&&protocolConfig.getItems()!=null){
+									for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
+										if(itemName.equalsIgnoreCase(item.getTitle())){
+											unit=item.getUnit();
+											break;
+										}
+									}
+								}
+								CalItem calItem=new CalItem(name,code,unit,2,"组态",itemName+"日累计计算");
+								calItemList.add(calItem);
+							}
+							
+							int index=1;
+							for(CalItem calItem:calItemList){
+								if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
+									String realtimeSort="";
+									String historySort="";
+									String showLevel="";
+									String realtimeCurveConfShowValue="";
+									String historyCurveConfShowValue="";
+
+									for(int k=0;k<itemsList.size();k++){
+										if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+											realtimeSort=itemsRealtimeSortList.get(k);
+											historySort=itemsHistorySortList.get(k);
+											showLevel=itemsShowLevelList.get(k);
+											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+											historyCurveConfShowValue=historyCurveConfList.get(k);
+											break;
+										}
+									}
+									result_json.append("{"
+											+ "\"id\":"+index+","
+											+ "\"title\":\""+calItem.getName()+"\","
+											+ "\"unit\":\""+calItem.getUnit()+"\","
+											+ "\"showLevel\":\""+showLevel+"\","
+											+ "\"realtimeSort\":\""+realtimeSort+"\","
+											+ "\"historySort\":\""+historySort+"\","
+											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+											+ "\"dataSource\":\""+calItem.getDataSource()+"\""
+											+ "},");
+									index++;
+								}
+							}
+						}else if(StringManagerUtils.stringToInteger(itemType)==3){
+							List<CalItem> inputItemList=new ArrayList<>();
+							try{
+								if("1".equalsIgnoreCase(displayUnitCalType)){
+									inputItemList=MemoryDataManagerTask.getRPCInputItem();
+								}if("2".equalsIgnoreCase(displayUnitCalType)){
+									inputItemList=MemoryDataManagerTask.getPCPInputItem();
+								}
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							int index=1;
+							for(CalItem calItem:inputItemList){
+								if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
+									String realtimeSort="";
+									String historySort="";
+									String showLevel="";
+									String realtimeCurveConfShowValue="";
+									String historyCurveConfShowValue="";
+
+									for(int k=0;k<itemsList.size();k++){
+										if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+											realtimeSort=itemsRealtimeSortList.get(k);
+											historySort=itemsHistorySortList.get(k);
+											showLevel=itemsShowLevelList.get(k);
+											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+											historyCurveConfShowValue=historyCurveConfList.get(k);
+											break;
+										}
+									}
+									result_json.append("{"
+											+ "\"id\":"+index+","
+											+ "\"title\":\""+calItem.getName()+"\","
+											+ "\"unit\":\""+calItem.getUnit()+"\","
+											+ "\"showLevel\":\""+showLevel+"\","
+											+ "\"realtimeSort\":\""+realtimeSort+"\","
+											+ "\"historySort\":\""+historySort+"\","
+											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+											+ "},");
+									index++;
+								}
+							}
+						}
+					}
+					
+					break;
+				}
+			}
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public void importDisplayInstance(ExportDisplayInstanceData instanceData,User user){

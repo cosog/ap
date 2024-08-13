@@ -1,3 +1,7 @@
+var importDisplayInstanceAcqItemsHandsontableHelper=null;
+var importDisplayInstanceCalItemsHandsontableHelper=null;
+var importDisplayInstanceCtrlItemsHandsontableHelper=null;
+var importDisplayInstanceInputItemsHandsontableHelper=null;
 Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
     extend: 'Ext.window.Window',
     id: 'ImportDisplayInstanceWindow_Id',
@@ -128,7 +132,18 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                         html:'<div class="importDisplayInstanceAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceAcqItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	
+                            	if(importDisplayInstanceAcqItemsHandsontableHelper!=null && importDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		importDisplayInstanceAcqItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
                             }
                         }
                 	},{
@@ -195,7 +210,12 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
 });
 
 function clearImportDisplayInstanceHandsontable(){
-	
+	if(importDisplayInstanceAcqItemsHandsontableHelper!=null){
+		if(importDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
+			importDisplayInstanceAcqItemsHandsontableHelper.hot.destroy();
+		}
+		importDisplayInstanceAcqItemsHandsontableHelper=null;
+	}
 }
 
 function submitImportedDisplayInstanceFile() {
@@ -330,3 +350,661 @@ function saveAllImportedDisplayInstance(){
 		}
 	});
 }
+
+function CreateImportDisplayInstanceAcqItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
+	Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(instanceName!=''){
+				Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/采集项");
+			}else{
+				Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle("采集项");
+			}
+			
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importDisplayInstanceAcqItemsHandsontableHelper==null || importDisplayInstanceAcqItemsHandsontableHelper.hot==undefined){
+				importDisplayInstanceAcqItemsHandsontableHelper = ImportDisplayInstanceAcqItemsHandsontableHelper.createNew("importDisplayInstanceAcqItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线']";
+				var columns="["
+						+"{data:'id'}," 
+						+"{data:'title'},"
+						+"{data:'unit'},"
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historyCurveConfShowValue'}"
+						+"]";
+				importDisplayInstanceAcqItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importDisplayInstanceAcqItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importDisplayInstanceAcqItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceAcqItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importDisplayInstanceAcqItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceAcqItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			protocolName:protocolName,
+			acqUnitName:acqUnitName,
+			displayUnitName:displayUnitName,
+			instanceName:instanceName,
+			type:0
+        }
+	});
+};
+
+var ImportDisplayInstanceAcqItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importDisplayInstanceAcqItemsHandsontableHelper = {};
+	        importDisplayInstanceAcqItemsHandsontableHelper.hot1 = '';
+	        importDisplayInstanceAcqItemsHandsontableHelper.divid = divid;
+	        importDisplayInstanceAcqItemsHandsontableHelper.validresult=true;//数据校验
+	        importDisplayInstanceAcqItemsHandsontableHelper.colHeaders=[];
+	        importDisplayInstanceAcqItemsHandsontableHelper.columns=[];
+	        importDisplayInstanceAcqItemsHandsontableHelper.AllData=[];
+	        
+	        importDisplayInstanceAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if(value!=null){
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
+	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayInstanceAcqItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayInstanceAcqItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importDisplayInstanceAcqItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importDisplayInstanceAcqItemsHandsontableHelper.divid);
+	        	importDisplayInstanceAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,140,80,60,85,85,85,85],
+	                columns:importDisplayInstanceAcqItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importDisplayInstanceAcqItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    if(visualColIndex==6||visualColIndex==7){
+		                	cellProperties.renderer = importDisplayInstanceAcqItemsHandsontableHelper.addCurveBg;
+		                }else{
+		                	cellProperties.renderer = importDisplayInstanceAcqItemsHandsontableHelper.addCellStyle;
+		                }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(importDisplayInstanceAcqItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& importDisplayInstanceAcqItemsHandsontableHelper!=null
+	                		&& importDisplayInstanceAcqItemsHandsontableHelper.hot!=''
+	                		&& importDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined 
+	                		&& importDisplayInstanceAcqItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importDisplayInstanceAcqItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        return importDisplayInstanceAcqItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportDisplayInstanceCalItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
+	Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(instanceName!=''){
+				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/计算项");
+			}else{
+				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle("计算项");
+			}
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importDisplayInstanceCalItemsHandsontableHelper==null || importDisplayInstanceCalItemsHandsontableHelper.hot==undefined){
+				importDisplayInstanceCalItemsHandsontableHelper = ImportDisplayInstanceCalItemsHandsontableHelper.createNew("importDisplayInstanceCalItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','数据来源']";
+				var columns="["
+						+"{data:'id'}," 
+						+"{data:'title'},"
+						+"{data:'unit'},"
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceCalItemsHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceCalItemsHandsontableHelper);}}," 
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceCalItemsHandsontableHelper);}}," 
+						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historyCurveConfShowValue'},"
+						+"{data:'dataSource'}"
+						+"]";
+				importDisplayInstanceCalItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importDisplayInstanceCalItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importDisplayInstanceCalItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceCalItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importDisplayInstanceCalItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceCalItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			protocolName:protocolName,
+			acqUnitName:acqUnitName,
+			displayUnitName:displayUnitName,
+			instanceName:instanceName,
+			type:1
+        }
+	});
+};
+
+var ImportDisplayInstanceCalItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importDisplayInstanceCalItemsHandsontableHelper = {};
+	        importDisplayInstanceCalItemsHandsontableHelper.hot1 = '';
+	        importDisplayInstanceCalItemsHandsontableHelper.divid = divid;
+	        importDisplayInstanceCalItemsHandsontableHelper.validresult=true;//数据校验
+	        importDisplayInstanceCalItemsHandsontableHelper.colHeaders=[];
+	        importDisplayInstanceCalItemsHandsontableHelper.columns=[];
+	        importDisplayInstanceCalItemsHandsontableHelper.AllData=[];
+	        
+	        importDisplayInstanceCalItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if(value!=null){
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
+	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayInstanceCalItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayInstanceCalItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importDisplayInstanceCalItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importDisplayInstanceCalItemsHandsontableHelper.divid);
+	        	importDisplayInstanceCalItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,140,80,60,85,85,85,85,85],
+	                columns:importDisplayInstanceCalItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importDisplayInstanceCalItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    if(visualColIndex==6||visualColIndex==7){
+		                	cellProperties.renderer = importDisplayInstanceCalItemsHandsontableHelper.addCurveBg;
+		                }else{
+		                	if(importDisplayInstanceCalItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+		    	            	&& importDisplayInstanceCalItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+		                    	cellProperties.renderer = importDisplayInstanceCalItemsHandsontableHelper.addCellStyle;
+		    	            }
+		                }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(importDisplayInstanceCalItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& importDisplayInstanceCalItemsHandsontableHelper!=null
+	                		&& importDisplayInstanceCalItemsHandsontableHelper.hot!=''
+	                		&& importDisplayInstanceCalItemsHandsontableHelper.hot!=undefined 
+	                		&& importDisplayInstanceCalItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importDisplayInstanceCalItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        return importDisplayInstanceCalItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportDisplayInstanceCtrlItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
+	Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(instanceName!=''){
+				Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/控制项");
+			}else{
+				Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle("控制项");
+			}
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importDisplayInstanceCtrlItemsHandsontableHelper==null || importDisplayInstanceCtrlItemsHandsontableHelper.hot==undefined){
+				importDisplayInstanceCtrlItemsHandsontableHelper = ImportDisplayInstanceCtrlItemsHandsontableHelper.createNew("importDisplayInstanceCtrlItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','单位','显示级别','字段顺序']";
+				var columns="["
+						+"{data:'id'}," 
+						+"{data:'title'},"
+						+"{data:'unit'},"
+						+"{data:'showLevel'}," 
+						+"{data:'realtimeSort'}"
+						+"]";
+				importDisplayInstanceCtrlItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importDisplayInstanceCtrlItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importDisplayInstanceCtrlItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceCtrlItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importDisplayInstanceCtrlItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceCtrlItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			protocolName:protocolName,
+			acqUnitName:acqUnitName,
+			displayUnitName:displayUnitName,
+			instanceName:instanceName,
+			type:2
+        }
+	});
+};
+
+var ImportDisplayInstanceCtrlItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importDisplayInstanceCtrlItemsHandsontableHelper = {};
+	        importDisplayInstanceCtrlItemsHandsontableHelper.hot1 = '';
+	        importDisplayInstanceCtrlItemsHandsontableHelper.divid = divid;
+	        importDisplayInstanceCtrlItemsHandsontableHelper.validresult=true;//数据校验
+	        importDisplayInstanceCtrlItemsHandsontableHelper.colHeaders=[];
+	        importDisplayInstanceCtrlItemsHandsontableHelper.columns=[];
+	        importDisplayInstanceCtrlItemsHandsontableHelper.AllData=[];
+	        
+	        importDisplayInstanceCtrlItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayInstanceCtrlItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importDisplayInstanceCtrlItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importDisplayInstanceCtrlItemsHandsontableHelper.divid);
+	        	importDisplayInstanceCtrlItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,140,80,60,60],
+	                columns:importDisplayInstanceCtrlItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importDisplayInstanceCtrlItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    cellProperties.readOnly = true;
+	                    if(importDisplayInstanceCtrlItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& importDisplayInstanceCtrlItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+	                    	cellProperties.renderer = importDisplayInstanceCtrlItemsHandsontableHelper.addCellStyle;
+	    	            }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(importDisplayInstanceCtrlItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& importDisplayInstanceCtrlItemsHandsontableHelper!=null
+	                		&& importDisplayInstanceCtrlItemsHandsontableHelper.hot!=''
+	                		&& importDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined 
+	                		&& importDisplayInstanceCtrlItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importDisplayInstanceCtrlItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        return importDisplayInstanceCtrlItemsHandsontableHelper;
+	    }
+};
+
+function CreateImportDisplayInstanceInputItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
+	Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
+		success:function(response) {
+			Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(instanceName!=''){
+				Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/录入项");
+			}else{
+				Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle("录入项");
+			}
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importDisplayInstanceInputItemsHandsontableHelper==null || importDisplayInstanceInputItemsHandsontableHelper.hot==undefined){
+				importDisplayInstanceInputItemsHandsontableHelper = ImportDisplayInstanceInputItemsHandsontableHelper.createNew("importDisplayInstanceInputItemsConfigTableInfoDiv_id");
+				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线']";
+				var columns="["
+						+"{data:'id'}," 
+						+"{data:'title'},"
+						+"{data:'unit'},"
+						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceInputItemsHandsontableHelper);}}," 
+						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceInputItemsHandsontableHelper);}}," 
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceInputItemsHandsontableHelper);}}," 
+						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historyCurveConfShowValue'}"
+						+"]";
+				importDisplayInstanceInputItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				importDisplayInstanceInputItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					importDisplayInstanceInputItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceInputItemsHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importDisplayInstanceInputItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importDisplayInstanceInputItemsHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			protocolName:protocolName,
+			acqUnitName:acqUnitName,
+			displayUnitName:displayUnitName,
+			instanceName:instanceName,
+			type:3
+        }
+	});
+};
+
+var ImportDisplayInstanceInputItemsHandsontableHelper = {
+		createNew: function (divid) {
+	        var importDisplayInstanceInputItemsHandsontableHelper = {};
+	        importDisplayInstanceInputItemsHandsontableHelper.hot1 = '';
+	        importDisplayInstanceInputItemsHandsontableHelper.divid = divid;
+	        importDisplayInstanceInputItemsHandsontableHelper.validresult=true;//数据校验
+	        importDisplayInstanceInputItemsHandsontableHelper.colHeaders=[];
+	        importDisplayInstanceInputItemsHandsontableHelper.columns=[];
+	        importDisplayInstanceInputItemsHandsontableHelper.AllData=[];
+	        
+	        importDisplayInstanceInputItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if(value!=null){
+	            	var arr=value.split(';');
+	            	if(arr.length==2){
+	            		td.style.backgroundColor = '#'+arr[1];
+	            	}
+	            }
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayInstanceInputItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayInstanceInputItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+importDisplayInstanceInputItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importDisplayInstanceInputItemsHandsontableHelper.divid);
+	        	importDisplayInstanceInputItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,140,80,60,85,85,85,85],
+	                columns:importDisplayInstanceInputItemsHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importDisplayInstanceInputItemsHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+
+	                    cellProperties.readOnly = true;
+	                    if(visualColIndex==6||visualColIndex==7){
+		                	cellProperties.renderer = importDisplayInstanceInputItemsHandsontableHelper.addCurveBg;
+		                }else{
+		                	if(importDisplayInstanceInputItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+		    	            	&& importDisplayInstanceInputItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+		                    	cellProperties.renderer = importDisplayInstanceInputItemsHandsontableHelper.addCellStyle;
+		    	            }
+		                }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(importDisplayInstanceInputItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                		&& importDisplayInstanceInputItemsHandsontableHelper!=null
+	                		&& importDisplayInstanceInputItemsHandsontableHelper.hot!=''
+	                		&& importDisplayInstanceInputItemsHandsontableHelper.hot!=undefined 
+	                		&& importDisplayInstanceInputItemsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importDisplayInstanceInputItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        return importDisplayInstanceInputItemsHandsontableHelper;
+	    }
+};

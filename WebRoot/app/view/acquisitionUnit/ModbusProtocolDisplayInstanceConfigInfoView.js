@@ -638,7 +638,7 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,deviceType){
+function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,calculateType){
 	Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -687,7 +687,7 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 		params: {
 			id:id,
 			classes:classes,
-			deviceType:deviceType
+			calculateType:calculateType
         }
 	});
 };
@@ -807,7 +807,7 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classes,deviceType){
+function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classes,calculateType){
 	Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -855,7 +855,7 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 		params: {
 			id:id,
 			classes:classes,
-			deviceType:deviceType
+			calculateType:calculateType
         }
 	});
 };

@@ -108,14 +108,6 @@ public class ResourceMonitoringTask {
 		
 		Jedis jedis=null;
 		try{
-//			if(redisStatus==0){
-//				RedisUtil.afterPropertiesSet();
-//			}
-//			jedis = RedisUtil.jedisPool.getResource();
-//			if(redisStatus==0){
-//				MemoryDataManagerTask.loadMemoryData();
-//			}
-			
 			jedis = RedisUtil.jedisPool.getResource();
 			if(redisStatus==0){
 				MemoryDataManagerTask.loadMemoryData();
@@ -168,18 +160,18 @@ public class ResourceMonitoringTask {
 		adVersion="";
 		adLicense=0;
 		if(Config.getInstance().configFile.getAp().getOthers().isIot() ){
-			try{
-				String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
-				type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
-				AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
-				if(adStatusProbeResonanceData!=null){
-					adRunStatus=1;
-					adVersion=adStatusProbeResonanceData.getVer();
-					adLicense=adStatusProbeResonanceData.getLicenseNumber();
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+//			try{
+//				String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
+//				type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
+//				AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
+//				if(adStatusProbeResonanceData!=null){
+//					adRunStatus=1;
+//					adVersion=adStatusProbeResonanceData.getVer();
+//					adLicense=adStatusProbeResonanceData.getLicenseNumber();
+//				}
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
 		}
 		
 		//服务器资源监测

@@ -73,24 +73,24 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore'
                         	if(record.data.classes==0){//选中设备类型deviceType
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			CreateProtocolDisplayInstanceAcqItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                        			CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.deviceType);
-                        			CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.deviceType);
+                        			CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.children[0].calculateType);
+                        			CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.children[0].calculateType);
                         			CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
                         		}else{
                         			CreateProtocolDisplayInstanceAcqItemsInfoTable(-1,'',1);
-                        			CreateProtocolDisplayInstanceCalItemsInfoTable(-1,'',1,record.data.deviceType);
-                        			CreateProtocolDisplayInstanceInputItemsInfoTable(-1,'',1,record.data.deviceType);
+                        			CreateProtocolDisplayInstanceCalItemsInfoTable(-1,'',1,0);
+                        			CreateProtocolDisplayInstanceInputItemsInfoTable(-1,'',1,0);
                         			CreateProtocolDisplayInstanceCtrlItemsInfoTable(-1,'',1);
                         		}
                         	}else if(record.data.classes==2){//选中显示单元
                         		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes);
-                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.deviceType);
-                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.deviceType);
+                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
+                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
                         		CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes);
                         	}else{
                         		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.data.id,record.data.text,record.data.classes);
-                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.deviceType);
-                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.deviceType);
+                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
+                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
                         		CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.data.id,record.data.text,record.data.classes);
                         	}
                         	

@@ -3,47 +3,45 @@ package com.cosog.utils;
 import java.util.List;
 
 public class OEMConfigFile {
+	private Oem oem;
 	
-	private List<OEMConfig> list;
-
-	public List<OEMConfig> getList() {
-		return list;
+	private Report report;
+	
+	private Email email;
+	
+	private Others others;
+	
+	public Oem getOem() {
+		return oem;
 	}
-
-	public void setList(List<OEMConfig> list) {
-		this.list = list;
+	
+	public void setOem(Oem oem) {
+		this.oem = oem;
 	}
-    
-    public static class OEMConfig{
-    	private Oem oem;
-    	private Report report;
-    	private Email email;
-    	private Others others;
-		public Oem getOem() {
-			return oem;
-		}
-		public void setOem(Oem oem) {
-			this.oem = oem;
-		}
-		public Report getReport() {
-			return report;
-		}
-		public void setReport(Report report) {
-			this.report = report;
-		}
-		public Email getEmail() {
-			return email;
-		}
-		public void setEmail(Email email) {
-			this.email = email;
-		}
-		public Others getOthers() {
-			return others;
-		}
-		public void setOthers(Others others) {
-			this.others = others;
-		}
-    }
+	
+	public Report getReport() {
+		return report;
+	}
+	
+	public void setReport(Report report) {
+		this.report = report;
+	}
+	
+	public Email getEmail() {
+		return email;
+	}
+	
+	public void setEmail(Email email) {
+		this.email = email;
+	}
+	
+	public Others getOthers() {
+		return others;
+	}
+	
+	public void setOthers(Others others) {
+		this.others = others;
+	}
 	
 	public static class Oem
 	{
@@ -70,6 +68,10 @@ public class OEMConfigFile {
 	    private String helpButtonIcon;
 	    
 	    private String exitButtonIcon;
+	    
+	    private String zoomInButtonIcon;
+	    
+	    private String zoomoutButtonIcon;
 	    
 	    private String staticResourceTimestamp;
 	    
@@ -166,6 +168,18 @@ public class OEMConfigFile {
 		}
 		public void setHelpDocumentTimestamp(String helpDocumentTimestamp) {
 			this.helpDocumentTimestamp = helpDocumentTimestamp;
+		}
+		public String getZoomInButtonIcon() {
+			return zoomInButtonIcon;
+		}
+		public void setZoomInButtonIcon(String zoomInButtonIcon) {
+			this.zoomInButtonIcon = zoomInButtonIcon;
+		}
+		public String getZoomoutButtonIcon() {
+			return zoomoutButtonIcon;
+		}
+		public void setZoomoutButtonIcon(String zoomoutButtonIcon) {
+			this.zoomoutButtonIcon = zoomoutButtonIcon;
 		}
 	}
 	

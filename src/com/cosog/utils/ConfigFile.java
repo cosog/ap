@@ -235,7 +235,7 @@ public class ConfigFile {
 	    
 	    private ThreadPool threadPool;
 	    
-	    private int oemIndex;
+	    private String oemConfigFile;
 
 	    private OEMConfigFile.Oem oem;
 	    
@@ -287,11 +287,11 @@ public class ConfigFile {
 		public void setReport(OEMConfigFile.Report report) {
 			this.report = report;
 		}
-		public int getOemIndex() {
-			return oemIndex;
+		public String getOemConfigFile() {
+			return oemConfigFile;
 		}
-		public void setOemIndex(int oemIndex) {
-			this.oemIndex = oemIndex;
+		public void setOemConfigFile(String oemConfigFile) {
+			this.oemConfigFile = oemConfigFile;
 		}
 	}
 	

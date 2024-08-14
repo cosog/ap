@@ -13,7 +13,7 @@ ap:
       maxIdle: 200       #连接池中的最大空闲连接
       maxWait: 10000     #连接池最大阻塞等待时间（毫秒）,负值表示没有限制
       timeOut: 10000     #连接超时时间（毫秒）
-   oemIndex: 4
+   oemConfigFile: oemConfig_feizhou
    threadPool: 
       initIdAndIpPort:
          corePoolSize: 100

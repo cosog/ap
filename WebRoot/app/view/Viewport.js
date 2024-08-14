@@ -12,7 +12,7 @@ Ext.define('AP.view.Viewport', {
                 'z-index': 10
             },
             html: '<div id="bannerDiv"><img id="bannerLogoImg" ' + (showLogo ? '' : 'style="display:none;"') + ' src="' + bannerLogoImg + '?timestamp='+oemStaticResourceTimestamp+'" /><span id="bannerTitle">' + oem.title + '</span>' +
-                "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='userLoginOut()'><span id='banner_exit_text'>退出</span></a></div>" +
+                "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='windowZoom()'><span id='banner_exit_text'>退出</span></a></div>" +
                 "<div id='bannerToolbar'><a href='#' id='banner_help' onclick='showHelpDocumentWinFn()'><span id='banner_help_text'>帮助</span></a></div>" +
                 "</div>"
    }, {
@@ -145,6 +145,70 @@ Ext.define('AP.view.Viewport', {
 function websocketOnOpen(openEvt) {
     //  alert(openEvt.Data);
 }
+
+function getZoom(){
+	return parseFloat(document.body.style.zoom) || 1;
+}
+
+function setZoom(zoom){
+	document.body.style.zoom=zoom;
+}
+
+function zoomIn(){
+	var zoom=getZoom();
+	setZoom(zoom+0.1);
+}
+
+function zoomOut(){
+	var zoom=getZoom();
+	if(zoom>0.2){
+		setZoom(zoom-0.1);
+	}
+}
+
+
+
+function windowZoom(){
+	const currentWindow=window;
+	zoomOut();
+	
+//	zoomOut();
+	
+//	var zoomLevel = currentWindow.devicePixelRatio;
+//	
+//	currentWindow.document.body.style.zoom=0.9;
+//	currentWindow.document.body.style.cssText += '; -moz-transform: scale(' + 0.9 + ');-moz-transform-origin: 0 0; '; 
+	
+//	alert(detectZoom());
+	
+//	var event = jQuery.Event("keydown");
+//	event.which = 107;       // Key code for +
+//	event.ctrlkey = true;     
+//	$(document).trigger(event);
+	
+//	var event = new KeyboardEvent('keydown', { key: 'Minus' });
+//	document.body.dispatchEvent(event);
+}
+
+//判断pc浏览器是否缩放，若返回100则为默认无缩放，如果大于100则是放大，否则缩小
+function detectZoom(){
+    var ratio = 0,
+    screen = window.screen,
+    ua = navigator.userAgent.toLowerCase();
+    if (window.devicePixelRatio !== undefined) {
+        ratio = window.devicePixelRatio;
+    }else if (ua.indexOf('msie')) {
+        if (screen.deviceXDPI && screen.logicalXDPI) {
+            ratio = screen.deviceXDPI / screen.logicalXDPI;
+        }
+    }else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+        ratio = window.outerWidth / window.innerWidth;
+    }
+    if (ratio){
+        ratio = Math.round(ratio * 100);
+    }
+    return ratio;
+};
 
 function websocketOnMessage(evt) {
     var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;

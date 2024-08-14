@@ -50,6 +50,12 @@
 
         var exitButtonIcon = oem.exitButtonIcon;
         exitButtonIcon = context + exitButtonIcon.substring(exitButtonIcon.indexOf("/"), exitButtonIcon.length);
+        
+        var zoomInButtonIcon = oem.zoomInButtonIcon;
+        zoomInButtonIcon = context + zoomInButtonIcon.substring(zoomInButtonIcon.indexOf("/"), zoomInButtonIcon.length);
+        
+        var zoomoutButtonIcon = oem.zoomoutButtonIcon;
+        zoomoutButtonIcon = context + zoomoutButtonIcon.substring(zoomoutButtonIcon.indexOf("/"), zoomoutButtonIcon.length);
 
         var productionUnit = ${configFile}.ap.others.productionUnit;
         

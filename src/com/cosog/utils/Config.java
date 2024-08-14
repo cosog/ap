@@ -19,21 +19,28 @@ public class Config {
 				inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/config.yml");
 				configFile = yaml.load(inputStream);
 				
-				Yaml oemYaml = new Yaml(new Constructor(OEMConfigFile.class));
-				oemInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/OEMConfig.yml");
-				OEMConfigFile oemConfigFile = oemYaml.load(oemInputStream);
-				
-				if(configFile!=null && configFile.getAp()!=null && oemConfigFile!=null && oemConfigFile.getList()!=null
-						&& configFile.getAp().getOemIndex()>=oemConfigFile.getList().size()){
-					configFile.getAp().setOemIndex(0);
+				OEMConfigFile oemConfigFile=null;
+				try{
+					if(configFile!=null && configFile.getAp()!=null){
+						String oemConfigFileName=configFile.getAp().getOemConfigFile();
+						if(StringManagerUtils.isNotNull(oemConfigFileName)){
+							if(!oemConfigFileName.endsWith(".yml")){
+								oemConfigFileName+=".yml";
+							}
+							Yaml oemYaml = new Yaml(new Constructor(OEMConfigFile.class));
+							oemInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/"+oemConfigFileName+"");
+							oemConfigFile = oemYaml.load(oemInputStream);
+						}
+					}
+				}catch(Exception e){
+					e.printStackTrace();
 				}
 				
-				if(configFile!=null && configFile.getAp()!=null && oemConfigFile!=null && oemConfigFile.getList()!=null
-						&& configFile.getAp().getOemIndex()<oemConfigFile.getList().size()){
-					configFile.getAp().setOem(oemConfigFile.getList().get(configFile.getAp().getOemIndex()).getOem());
-					configFile.getAp().setReport(oemConfigFile.getList().get(configFile.getAp().getOemIndex()).getReport());
-					configFile.getAp().setEmail(oemConfigFile.getList().get(configFile.getAp().getOemIndex()).getEmail());
-					configFile.getAp().setOthers(oemConfigFile.getList().get(configFile.getAp().getOemIndex()).getOthers());
+				if(configFile!=null && configFile.getAp()!=null && oemConfigFile!=null ){
+					configFile.getAp().setOem(oemConfigFile.getOem());
+					configFile.getAp().setReport(oemConfigFile.getReport());
+					configFile.getAp().setEmail(oemConfigFile.getEmail());
+					configFile.getAp().setOthers(oemConfigFile.getOthers());
 				}
 				
 				if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>65534){

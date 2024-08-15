@@ -1113,13 +1113,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
+		
+		List<String> realtimeColorList=new ArrayList<String>();
+		List<String> realtimeBgColorList=new ArrayList<String>();
+		List<String> historyColorList=new ArrayList<String>();
+		List<String> historyBgColorList=new ArrayList<String>();
 		if("2".equalsIgnoreCase(classes)){
 			String acqUnitIiemsSql="select distinct t.itemname,t.bitindex "
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=0";
 			
 			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.historySort,"
-					+ " t.showlevel,t.realtimeCurveConf,historyCurveConf "
+					+ " t.showlevel,t.realtimeCurveConf,historyCurveConf,"
+					+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
 					+ " order by t.realtimeSort";
@@ -1150,6 +1156,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				realtimeCurveConfList.add(realtimeCurveConf);
 				historyCurveConfList.add(historyCurveConf);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
 			}
 		}
 
@@ -1177,6 +1188,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String historyCurveConf="\"\"";
 						String historyCurveConfShowValue="";
 						String resolutionMode="数据量";
+						String realtimeColor=""; 
+						String realtimeBgColor="";
+						String historyColor="";
+						String historyBgColor="";
+						
+						
+						
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
 							resolutionMode="开关量";
 						}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
@@ -1204,6 +1222,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								historyCurveConf="\"\"";
 								historyCurveConfShowValue="";
 								
+								realtimeColor=""; 
+								realtimeBgColor="";
+								historyColor="";
+								historyBgColor="";
+								
 								for(int m=0;m<itemsList.size();m++){
 									if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
@@ -1214,6 +1237,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										showLevel=itemsShowLevelList.get(m);
 										realtimeCurveConf=realtimeCurveConfList.get(m);
 										historyCurveConf=historyCurveConfList.get(m);
+										
+										realtimeColor=realtimeColorList.get(m);
+										realtimeBgColor=realtimeBgColorList.get(m);
+										historyColor=historyColorList.get(m);
+										historyBgColor=historyBgColorList.get(m);
+										
 										
 										CurveConf realtimeCurveConfObj=null;
 										if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
@@ -1249,7 +1278,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										+ "\"resolutionMode\":\""+resolutionMode+"\","
 										+ "\"showLevel\":\""+showLevel+"\","
 										+ "\"realtimeSort\":\""+realtimeSort+"\","
+										+ "\"realtimeColor\":\""+realtimeColor+"\","
+										+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 										+ "\"historySort\":\""+historySort+"\","
+										+ "\"historyColor\":\""+historyColor+"\","
+										+ "\"historyBgColor\":\""+historyBgColor+"\","
 										+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 										+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 										+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1268,6 +1301,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										
 										realtimeCurveConf=realtimeCurveConfList.get(k);
 										historyCurveConf=historyCurveConfList.get(k);
+										
+										realtimeColor=realtimeColorList.get(k);
+										realtimeBgColor=realtimeBgColorList.get(k);
+										historyColor=historyColorList.get(k);
+										historyBgColor=historyBgColorList.get(k);
 										
 										CurveConf realtimeCurveConfObj=null;
 										if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
@@ -1301,7 +1339,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"resolutionMode\":\""+resolutionMode+"\","
 									+ "\"showLevel\":\""+showLevel+"\","
 									+ "\"realtimeSort\":\""+realtimeSort+"\","
+									+ "\"realtimeColor\":\""+realtimeColor+"\","
+									+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 									+ "\"historySort\":\""+historySort+"\","
+									+ "\"historyColor\":\""+historyColor+"\","
+									+ "\"historyBgColor\":\""+historyBgColor+"\","
 									+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 									+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 									+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1506,6 +1548,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
 		
+		List<String> realtimeColorList = new ArrayList<String>();
+	    List<String> realtimeBgColorList = new ArrayList<String>();
+	    List<String> historyColorList = new ArrayList<String>();
+	    List<String> historyBgColorList = new ArrayList<String>();
+		
 		if("2".equalsIgnoreCase(classes) && StringManagerUtils.isNotNull(unitId)){
 			ModbusProtocolConfig.Protocol protocol=null;
 			String protocolSql="select t.protocol from TBL_ACQ_UNIT_CONF t,tbl_display_unit_conf t2 where t.id=t2.acqunitid and t2.id="+unitId;
@@ -1541,7 +1588,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		if("2".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
-					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
 					+ " order by t.realtimeSort";
@@ -1565,6 +1613,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				realtimeCurveConfList.add(realtimeCurveConf);
 				historyCurveConfList.add(historyCurveConf);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
 			}
 		}
 		
@@ -1579,6 +1632,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String realtimeCurveConfShowValue="";
 			String historyCurveConf="\"\"";
 			String historyCurveConfShowValue="";
+			String realtimeColor=""; 
+			String realtimeBgColor="";
+			String historyColor="";
+			String historyBgColor="";
 
 			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
 			if(checked){
@@ -1589,6 +1646,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						showLevel=itemsShowLevelList.get(k);
 						realtimeCurveConf=realtimeCurveConfList.get(k);
 						historyCurveConf=historyCurveConfList.get(k);
+						
+						realtimeColor=realtimeColorList.get(k);
+						realtimeBgColor=realtimeBgColorList.get(k);
+						historyColor=historyColorList.get(k);
+						historyBgColor=historyBgColorList.get(k);
 						
 						CurveConf realtimeCurveConfObj=null;
 						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
@@ -1618,7 +1680,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"unit\":\""+calItem.getUnit()+"\","
 					+ "\"showLevel\":\""+showLevel+"\","
 					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"realtimeColor\":\""+realtimeColor+"\","
+					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 					+ "\"historySort\":\""+historySort+"\","
+					+ "\"historyColor\":\""+historyColor+"\","
+					+ "\"historyBgColor\":\""+historyBgColor+"\","
 					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 					+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -1673,9 +1739,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
+		List<String> realtimeColorList=new ArrayList<String>();
+		List<String> realtimeBgColorList=new ArrayList<String>();
+		List<String> historyColorList=new ArrayList<String>();
+		List<String> historyBgColorList=new ArrayList<String>();
 		if("2".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
-					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf "
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
 					+ " order by t.realtimeSort";
@@ -1698,6 +1769,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				realtimeCurveConfList.add(realtimeCurveConf);
 				historyCurveConfList.add(historyCurveConf);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
 			}
 		}
 		
@@ -1712,6 +1788,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String realtimeCurveConfShowValue="";
 			String historyCurveConf="\"\"";
 			String historyCurveConfShowValue="";
+			String realtimeColor=""; 
+			String realtimeBgColor="";
+			String historyColor="";
+			String historyBgColor="";
 
 			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
 			if(checked){
@@ -1722,6 +1802,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						showLevel=itemsShowLevelList.get(k);
 						realtimeCurveConf=realtimeCurveConfList.get(k);
 						historyCurveConf=historyCurveConfList.get(k);
+						realtimeColor=realtimeColorList.get(k);
+						realtimeBgColor=realtimeBgColorList.get(k);
+						historyColor=historyColorList.get(k);
+						historyBgColor=historyBgColorList.get(k);
 						
 						CurveConf realtimeCurveConfObj=null;
 						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
@@ -1751,7 +1835,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"unit\":\""+calItem.getUnit()+"\","
 					+ "\"showLevel\":\""+showLevel+"\","
 					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"realtimeColor\":\""+realtimeColor+"\","
+					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 					+ "\"historySort\":\""+historySort+"\","
+					+ "\"historyColor\":\""+historyColor+"\","
+					+ "\"historyBgColor\":\""+historyBgColor+"\","
 					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 					+ "\"historyCurveConf\":"+historyCurveConf+","
@@ -2953,12 +3041,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
+		List<String> realtimeColorList=new ArrayList<String>();
+		List<String> realtimeBgColorList=new ArrayList<String>();
+		List<String> historyColorList=new ArrayList<String>();
+		List<String> historyBgColorList=new ArrayList<String>();
 		
 		String protocolSql="select t.protocol from tbl_display_unit_conf t,tbl_protocoldisplayinstance t2 where t.id=t2.displayunitid and t2.id="+id+"";
 		String sql="select t.itemname,t.bitindex,"
 				+ "t.realtimeSort,t.historySort,"
 				+ "t.showlevel,"
-				+ " t.realtimeCurveConf,historyCurveConf "
+				+ "t.realtimeCurveConf,historyCurveConf,"
+				+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=0 and t3.id= "+id
 				+ " order by t.id";
@@ -3003,6 +3096,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
 				historyCurveConfList.add(historyCurveConfShowValue);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
 			}
 			if(protocolConfig!=null){
 				Collections.sort(protocolConfig.getItems());
@@ -3015,6 +3113,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						
 						String realtimeCurveConfShowValue="";
 						String historyCurveConfShowValue="";
+						String realtimeColor=""; 
+						String realtimeBgColor="";
+						String historyColor="";
+						String historyBgColor="";
 						
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0
 								&&protocolConfig.getItems().get(j).getMeaning()!=null
@@ -3026,6 +3128,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								showLevel="";
 								realtimeCurveConfShowValue="";
 								historyCurveConfShowValue="";
+								realtimeColor=""; 
+								realtimeBgColor="";
+								historyColor="";
+								historyBgColor="";
 								for(int m=0;m<itemsList.size();m++){
 									if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
@@ -3035,6 +3141,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										showLevel=itemsShowLevelList.get(m);
 										realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
 										historyCurveConfShowValue=historyCurveConfList.get(m);
+										realtimeColor=realtimeColorList.get(m);
+										realtimeBgColor=realtimeBgColorList.get(m);
+										historyColor=historyColorList.get(m);
+										historyBgColor=historyBgColorList.get(m);
 										
 										result_json.append("{"
 												+ "\"id\":"+(index)+","
@@ -3042,7 +3152,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 												+ "\"showLevel\":\""+showLevel+"\","
 												+ "\"realtimeSort\":\""+realtimeSort+"\","
+												+ "\"realtimeColor\":\""+realtimeColor+"\","
+												+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 												+ "\"historySort\":\""+historySort+"\","
+												+ "\"historyColor\":\""+historyColor+"\","
+												+ "\"historyBgColor\":\""+historyBgColor+"\","
 												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 												+ "},");
@@ -3059,6 +3173,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									showLevel=itemsShowLevelList.get(k);
 									realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 									historyCurveConfShowValue=realtimeCurveConfList.get(k);
+									realtimeColor=realtimeColorList.get(k);
+									realtimeBgColor=realtimeBgColorList.get(k);
+									historyColor=historyColorList.get(k);
+									historyBgColor=historyBgColorList.get(k);
 									break;
 								}
 							}
@@ -3068,7 +3186,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 									+ "\"showLevel\":\""+showLevel+"\","
 									+ "\"realtimeSort\":\""+realtimeSort+"\","
+									+ "\"realtimeColor\":\""+realtimeColor+"\","
+									+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 									+ "\"historySort\":\""+historySort+"\","
+									+ "\"historyColor\":\""+historyColor+"\","
+									+ "\"historyBgColor\":\""+historyBgColor+"\","
 									+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 									+ "},");
@@ -3228,7 +3350,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
-		
+		List<String> realtimeColorList=new ArrayList<String>();
+		List<String> realtimeBgColorList=new ArrayList<String>();
+		List<String> historyColorList=new ArrayList<String>();
+		List<String> historyBgColorList=new ArrayList<String>();
 		
 		if(StringManagerUtils.isNotNull(id)){
 			
@@ -3269,7 +3394,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String sql="select t.itemname,t.itemcode,t.bitindex,"
 				+ "t.realtimeSort,t.historySort,"
 				+ "t.showlevel,"
-				+ " t.realtimeCurveConf,historyCurveConf "
+				+ "t.realtimeCurveConf,historyCurveConf,"
+				+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
 				+ " order by t.id";
@@ -3307,6 +3433,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
 				historyCurveConfList.add(historyCurveConfShowValue);
+				
+				realtimeColorList.add(obj[8]+"");
+				realtimeBgColorList.add(obj[9]+"");
+				historyColorList.add(obj[10]+"");
+				historyBgColorList.add(obj[11]+"");
 			}
 			int index=1;
 			for(CalItem calItem:calItemList){
@@ -3316,6 +3447,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					String showLevel="";
 					String realtimeCurveConfShowValue="";
 					String historyCurveConfShowValue="";
+					String realtimeColor=""; 
+					String realtimeBgColor="";
+					String historyColor="";
+					String historyBgColor="";
 
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
@@ -3324,6 +3459,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 							historyCurveConfShowValue=historyCurveConfList.get(k);
+							realtimeColor=realtimeColorList.get(k);
+							realtimeBgColor=realtimeBgColorList.get(k);
+							historyColor=historyColorList.get(k);
+							historyBgColor=historyBgColorList.get(k);
 							break;
 						}
 					}
@@ -3333,7 +3472,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"unit\":\""+calItem.getUnit()+"\","
 							+ "\"showLevel\":\""+showLevel+"\","
 							+ "\"realtimeSort\":\""+realtimeSort+"\","
+							+ "\"realtimeColor\":\""+realtimeColor+"\","
+							+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 							+ "\"historySort\":\""+historySort+"\","
+							+ "\"historyColor\":\""+historyColor+"\","
+							+ "\"historyBgColor\":\""+historyBgColor+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 							+ "\"dataSource\":\""+calItem.getDataSource()+"\""
@@ -3387,11 +3530,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		List<String> realtimeCurveConfList=new ArrayList<String>();
 		List<String> historyCurveConfList=new ArrayList<String>();
+		List<String> realtimeColorList=new ArrayList<String>();
+		List<String> realtimeBgColorList=new ArrayList<String>();
+		List<String> historyColorList=new ArrayList<String>();
+		List<String> historyBgColorList=new ArrayList<String>();
 		
 		String sql="select t.itemname,t.itemcode,t.bitindex,"
 				+ "t.realtimeSort,t.historySort,"
 				+ "t.showlevel,"
-				+ " t.realtimeCurveConf,historyCurveConf "
+				+ "t.realtimeCurveConf,historyCurveConf,"
+				+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
 				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
 				+ " and t3.id= "+id
@@ -3430,6 +3578,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
 				historyCurveConfList.add(historyCurveConfShowValue);
+				
+				realtimeColorList.add(obj[8]+"");
+				realtimeBgColorList.add(obj[9]+"");
+				historyColorList.add(obj[10]+"");
+				historyBgColorList.add(obj[11]+"");
 			}
 			int index=1;
 			for(CalItem calItem:inputItemList){
@@ -3439,6 +3592,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					String showLevel="";
 					String realtimeCurveConfShowValue="";
 					String historyCurveConfShowValue="";
+					String realtimeColor=""; 
+					String realtimeBgColor="";
+					String historyColor="";
+					String historyBgColor="";
 
 					for(int k=0;k<itemsList.size();k++){
 						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
@@ -3447,6 +3604,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							showLevel=itemsShowLevelList.get(k);
 							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
 							historyCurveConfShowValue=historyCurveConfList.get(k);
+							realtimeColor=realtimeColorList.get(k);
+							realtimeBgColor=realtimeBgColorList.get(k);
+							historyColor=historyColorList.get(k);
+							historyBgColor=historyBgColorList.get(k);
 							break;
 						}
 					}
@@ -3456,7 +3617,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"unit\":\""+calItem.getUnit()+"\","
 							+ "\"showLevel\":\""+showLevel+"\","
 							+ "\"realtimeSort\":\""+realtimeSort+"\","
+							+ "\"realtimeColor\":\""+realtimeColor+"\","
+							+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 							+ "\"historySort\":\""+historySort+"\","
+							+ "\"historyColor\":\""+historyColor+"\","
+							+ "\"historyBgColor\":\""+historyBgColor+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
 							+ "},");

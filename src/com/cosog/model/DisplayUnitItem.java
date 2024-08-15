@@ -24,6 +24,13 @@ public class DisplayUnitItem implements java.io.Serializable {
 	private Integer bitIndex;
 	private String realtimeCurveConf;
 	private String historyCurveConf;
+	
+	private String realtimeColor;
+	private String realtimeBgColor;
+	
+	private String historyColor;
+	private String historyBgColor;
+	
 	private Integer type;
 
 	public DisplayUnitItem() {
@@ -36,7 +43,10 @@ public class DisplayUnitItem implements java.io.Serializable {
 			String matrix, Integer showLevel, 
 			Integer realtimeSort, Integer historySort, 
 			Integer bitIndex,  
-			String realtimeCurveConf, String historyCurveConf) {
+			String realtimeCurveConf, String historyCurveConf,
+			String realtimeColor, String realtimeBgColor,
+			String historyColor, String historyBgColor
+			) {
 		super();
 		this.id = id;
 		this.unitId = unitId;
@@ -50,6 +60,10 @@ public class DisplayUnitItem implements java.io.Serializable {
 		this.bitIndex = bitIndex;
 		this.realtimeCurveConf = realtimeCurveConf;
 		this.historyCurveConf = historyCurveConf;
+		this.realtimeColor = realtimeColor;
+		this.realtimeBgColor = realtimeBgColor;
+		this.historyColor = historyColor;
+		this.historyBgColor = historyBgColor;
 	}
 
 	@Id
@@ -167,6 +181,42 @@ public class DisplayUnitItem implements java.io.Serializable {
 
 	public void setHistorySort(Integer historySort) {
 		this.historySort = historySort;
+	}
+
+	@Column(name = "realtimeColor", nullable = true, length = 8)
+	public String getRealtimeColor() {
+		return realtimeColor;
+	}
+
+	public void setRealtimeColor(String realtimeColor) {
+		this.realtimeColor = realtimeColor;
+	}
+
+	@Column(name = "realtimeBgColor", nullable = true, length = 8)
+	public String getRealtimeBgColor() {
+		return realtimeBgColor;
+	}
+
+	public void setRealtimeBgColor(String realtimeBgColor) {
+		this.realtimeBgColor = realtimeBgColor;
+	}
+
+	@Column(name = "historyColor", nullable = true, length = 8)
+	public String getHistoryColor() {
+		return historyColor;
+	}
+
+	public void setHistoryColor(String historyColor) {
+		this.historyColor = historyColor;
+	}
+
+	@Column(name = "historyBgColor", nullable = true, length = 8)
+	public String getHistoryBgColor() {
+		return historyBgColor;
+	}
+
+	public void setHistoryBgColor(String historyBgColor) {
+		this.historyBgColor = historyBgColor;
 	}
 
 	

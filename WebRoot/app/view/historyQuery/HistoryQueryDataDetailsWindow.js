@@ -172,10 +172,6 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	        }
 	        
 	        deviceHistoryQueryDataHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-//	        	if(row>0 && value!=null && value.length>11){
-//	        		value=value.substring(0, 8)+"...";
-//                }
-	        	
 	        	td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -202,7 +198,24 @@ var DeviceHistoryQueryDataHandsontableHelper = {
                 	td.style.fontFamily = 'SimHei';
                 }
 	            for(var i=0;i<deviceHistoryQueryDataHandsontableHelper.CellInfo.length;i++){
-                	if(deviceHistoryQueryDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
+	            	if( isNotVal(deviceHistoryQueryDataHandsontableHelper.CellInfo[i].historyColor) ){
+                		var row2=deviceHistoryQueryDataHandsontableHelper.CellInfo[i].row;
+        				var col2=deviceHistoryQueryDataHandsontableHelper.CellInfo[i].col*2;
+        				if(row==row2 && col==col2 ){
+        					td.style.color='#'+deviceHistoryQueryDataHandsontableHelper.CellInfo[i].historyColor;
+        				}
+                	}
+                	
+                	if( isNotVal(deviceHistoryQueryDataHandsontableHelper.CellInfo[i].historyBgColor) ){
+                		var row2=deviceHistoryQueryDataHandsontableHelper.CellInfo[i].row;
+        				var col2=deviceHistoryQueryDataHandsontableHelper.CellInfo[i].col*2;
+        				if(row==row2 && col==col2 ){
+        					td.style.backgroundColor = '#' + deviceHistoryQueryDataHandsontableHelper.CellInfo[i].historyBgColor;
+        				}
+                	}
+	            	
+	            	
+	            	if(deviceHistoryQueryDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
                 		var row2=deviceHistoryQueryDataHandsontableHelper.CellInfo[i].row;
         				var col2=deviceHistoryQueryDataHandsontableHelper.CellInfo[i].col*2+1;
         				if(row==row2 && col==col2 ){

@@ -23,6 +23,13 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public int showLevel;
 		public int realtimeSort;
 		public int historySort;
+		
+		private String realtimeColor;
+		private String realtimeBgColor;
+		
+		private String historyColor;
+		private String historyBgColor;
+		
 		public String realtimeCurveConf;
 		public String historyCurveConf;
 		public int type;
@@ -111,6 +118,30 @@ public class DisplayInstanceOwnItem implements Serializable {
 		}
 		public void setHistorySort(int historySort) {
 			this.historySort = historySort;
+		}
+		public String getRealtimeColor() {
+			return realtimeColor;
+		}
+		public void setRealtimeColor(String realtimeColor) {
+			this.realtimeColor = realtimeColor;
+		}
+		public String getRealtimeBgColor() {
+			return realtimeBgColor;
+		}
+		public void setRealtimeBgColor(String realtimeBgColor) {
+			this.realtimeBgColor = realtimeBgColor;
+		}
+		public String getHistoryColor() {
+			return historyColor;
+		}
+		public void setHistoryColor(String historyColor) {
+			this.historyColor = historyColor;
+		}
+		public String getHistoryBgColor() {
+			return historyBgColor;
+		}
+		public void setHistoryBgColor(String historyBgColor) {
+			this.historyBgColor = historyBgColor;
 		}
 	}
 	

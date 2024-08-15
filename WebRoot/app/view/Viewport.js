@@ -12,7 +12,7 @@ Ext.define('AP.view.Viewport', {
                 'z-index': 10
             },
             html: '<div id="bannerDiv"><img id="bannerLogoImg" ' + (showLogo ? '' : 'style="display:none;"') + ' src="' + bannerLogoImg + '?timestamp='+oemStaticResourceTimestamp+'" /><span id="bannerTitle">' + oem.title + '</span>' +
-                "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='windowZoom()'><span id='banner_exit_text'>退出</span></a></div>" +
+                "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='userLoginOut()'><span id='banner_exit_text'>退出</span></a></div>" +    //userLoginOut
                 "<div id='bannerToolbar'><a href='#' id='banner_help' onclick='showHelpDocumentWinFn()'><span id='banner_help_text'>帮助</span></a></div>" +
                 "</div>"
    }, {
@@ -150,9 +150,9 @@ function getZoom(){
 	return parseFloat(document.body.style.zoom) || 1;
 }
 
-function setZoom(zoom){
-	document.body.style.zoom=zoom;
-}
+//function setZoom(zoom){
+//	document.body.style.zoom=zoom;
+//}
 
 function zoomIn(){
 	var zoom=getZoom();
@@ -166,11 +166,18 @@ function zoomOut(){
 	}
 }
 
-
+function setZoom () {
+    $(document).ready(function () {
+        $('body').css('zoom', '90%');
+    });
+}
 
 function windowZoom(){
-	const currentWindow=window;
-	zoomOut();
+	
+	setZoom();
+	
+//	const currentWindow=window;
+//	zoomOut();
 	
 //	zoomOut();
 	

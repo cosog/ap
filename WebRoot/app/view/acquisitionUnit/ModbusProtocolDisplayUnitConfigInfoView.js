@@ -249,261 +249,297 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
     }
 });
 
-function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName,classes,code,unitId,acqUnitId,unitName){
-	Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitAcqItemsConfigData',
-		success:function(response) {
-			Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
-			var result =  Ext.JSON.decode(response.responseText);
-			if(classes==2){
-				Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName+'/采集项配置');
-			}else{
-				Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle('采集项配置');
-			}
-			if(protocolDisplayUnitAcqItemsConfigHandsontableHelper==null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot==undefined){
-				protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','','','','','']";
-				var columns="[" 
-						+"{data:'checked',type:'checkbox'}," 
-						+"{data:'id'}," 
-						+"{data:'title'},"
-						+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'realtimeCurveConfShowValue'},"
-						+"{data:'historyCurveConfShowValue'},"
-						+"{data:'realtimeCurveConf'},"
-						+"{data:'historyCurveConf'},"
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
-						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
-						+"{data:'bitIndex'}"
-						+"]";
-				
-				protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-				protocolDisplayUnitAcqItemsConfigHandsontableHelper.createTable(result.totalRoot);
-			}else{
-				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.loadData(result.totalRoot);
-			}
-		},
-		failure:function(){
-			Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-		},
-		params: {
-			protocolName:protocolName,
-			classes:classes,
-			code:code,
-			unitId:unitId,
-			acqUnitId:acqUnitId
+function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes, code, unitId, acqUnitId, unitName) {
+    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/getProtocolDisplayUnitAcqItemsConfigData',
+        success: function (response) {
+            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (classes == 2) {
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/采集项配置');
+            } else {
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle('采集项配置');
+            }
+            if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
+                protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
+                var colHeaders = "['','序号','名称','单位','显示级别','实时字段顺序','实时字段前景色','实时字段背景色','历史字段顺序','历史字段前景色','历史字段背景色','实时曲线','历史曲线','','','','','']";
+                var columns = "[" +
+                    "{data:'checked',type:'checkbox'}," +
+                    "{data:'id'}," +
+                    "{data:'title'}," +
+                    "{data:'unit'}," +
+                    "{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
+                    "{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
+                    "{data:'realtimeColor'}," +
+                    "{data:'realtimeBgColor'}," +
+                    "{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
+                    "{data:'historyColor'}," +
+                    "{data:'historyBgColor'}," +
+                    "{data:'realtimeCurveConfShowValue'}," +
+                    "{data:'historyCurveConfShowValue'}," +
+                    "{data:'realtimeCurveConf'}," +
+                    "{data:'historyCurveConf'}," +
+                    "{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," +
+                    "{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
+                    "{data:'bitIndex'}" +
+                    "]";
+
+                protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
+                protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns = Ext.JSON.decode(columns);
+                protocolDisplayUnitAcqItemsConfigHandsontableHelper.createTable(result.totalRoot);
+            } else {
+                protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.loadData(result.totalRoot);
+            }
+        },
+        failure: function () {
+            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+            Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+        },
+        params: {
+            protocolName: protocolName,
+            classes: classes,
+            code: code,
+            unitId: unitId,
+            acqUnitId: acqUnitId
         }
-	});
+    });
 };
 
 var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
-		createNew: function (divid) {
-	        var protocolDisplayUnitAcqItemsConfigHandsontableHelper = {};
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot1 = '';
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.divid = divid;
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.validresult=true;//数据校验
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders=[];
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns=[];
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.AllData=[];
-	        
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
-	            	var arr=value.split(';');
-	            	if(arr.length==2){
-	            		td.style.backgroundColor = '#'+arr[1];
-	            	}
-	            }
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	        }
-	        
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	        }
-	        
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.createTable = function (data) {
-	        	$('#'+protocolDisplayUnitAcqItemsConfigHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+protocolDisplayUnitAcqItemsConfigHandsontableHelper.divid);
-	        	protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		hiddenColumns: {
-	                    columns: [9,10,11,12,13],
-	                    indicators: false,
-	                    copyPasteEnabled: false
-	                },
-	                colWidths: [25,50,140,80,60,85,85,85,85],
-	                columns:protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-	                colHeaders:protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
-	                    if(protocolConfigModuleEditFlag==1){
-	                    	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
-		                	if(ScadaDriverModbusConfigSelectRow!=''){
-		                		var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
-		                		if(selectedItem.data.classes!=2){
-		                			cellProperties.readOnly = true;
-		                			if(visualColIndex==7||visualColIndex==8){
-		    		                	cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-		    		                }else{
-		    		                	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    		    	            	&& protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		    		                    	cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle;
-		    		    	            }
-		    		                }
-		                		}else{
-		                			if (visualColIndex >=1 && visualColIndex<=3) {
-		    							cellProperties.readOnly = true;
-		    		                }
+    createNew: function (divid) {
+        var protocolDisplayUnitAcqItemsConfigHandsontableHelper = {};
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot1 = '';
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.divid = divid;
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.validresult = true; //数据校验
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders = [];
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns = [];
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.AllData = [];
 
-		                			if(visualColIndex==7||visualColIndex==8){
-		    		                	cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-		    		                }else{
-		    		                	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    		    	            	&& protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		    		                    	cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle;
-		    		    	            }
-		    		                }
-		                		}
-		                	}
-	                    }else{
-	                    	cellProperties.readOnly = true;
-	                    	if(visualColIndex==7||visualColIndex==8){
-    		                	cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-    		                }else{
-    		                	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-    		    	            	&& protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-    		                    	cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle;
-    		    	            }
-    		                }
-	                    }
-	                    
-	                    return cellProperties;
-	                },
-	                afterBeginEditing:function(row,column){
-	                	var row1=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==7||column==8)){
-	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
-	                		if(ScadaDriverModbusConfigSelectRow!=''){
-	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
-	                			if(selectedItem.data.classes==2){
-	                				var CurveConfigWindow=Ext.create("AP.view.acquisitionUnit.CurveConfigWindow");
-	                				
-	                				Ext.getCmp("curveConfigSelectedTableType_Id").setValue(0);//采集项表
-	                				Ext.getCmp("curveConfigSelectedRow_Id").setValue(row);
-	                				Ext.getCmp("curveConfigSelectedCol_Id").setValue(column);
-	                				
-	                				CurveConfigWindow.show();
-	                				
-	                				var curveConfig=null;
-	                				if(column==7 && isNotVal(row1[9])){
-	                					curveConfig=row1[9];
-	                				}else if(column==8 && isNotVal(row1[10])){
-	                					curveConfig=row1[10];
-	                				}
-	                				var value='ff0000';
-	                				
-	                				if(isNotVal(curveConfig)){
-	                					Ext.getCmp("curveConfigSort_Id").setValue(curveConfig.sort);
-	                					Ext.getCmp("curveConfigLineWidth_Id").setValue(curveConfig.lineWidth);
-	                					Ext.getCmp("curveConfigDashStyleComb_Id").setValue(curveConfig.dashStyle);
-	                					Ext.getCmp("curveConfigYAxisOppositeComb_Id").setValue(curveConfig.yAxisOpposite);
-	                		        	
-	                		        	Ext.getCmp('curveConfigColor_id').setValue(curveConfig.color);
-	                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
-	                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
-	                		            	background: '#'+curveConfig.color,
-	                		            });
-	                				}else{
-	                					Ext.getCmp('curveConfigColor_id').setValue(value);
-	                		            var Color0=Ext.getCmp('curveConfigColor_id').color;
-	                		            Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
-	                		            	background: '#'+value
-	                		            });
-	                				}
-	                			}
-	                		}
-	                	}
-	                },
-	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[coords.col].type!='checkbox' 
-	                		&& protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null
-	                		&& protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=''
-	                		&& protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined 
-	                		&& protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
-	                		if(isNotVal(rawValue)){
-                				var showValue=rawValue;
-            					var rowChar=90;
-            					var maxWidth=rowChar*10;
-            					if(rawValue.length>rowChar){
-            						showValue='';
-            						let arr = [];
-            						let index = 0;
-            						while(index<rawValue.length){
-            							arr.push(rawValue.slice(index,index +=rowChar));
-            						}
-            						for(var i=0;i<arr.length;i++){
-            							showValue+=arr[i];
-            							if(i<arr.length-1){
-            								showValue+='<br>';
-            							}
-            						}
-            					}
-                				if(!isNotVal(TD.tip)){
-                					var height=28;
-                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-		                			    target: event.target,
-		                			    maxWidth:maxWidth,
-		                			    html: showValue,
-		                			    listeners: {
-		                			    	hide: function (thisTip, eOpts) {
-		                                	},
-		                                	close: function (thisTip, eOpts) {
-		                                	}
-		                                }
-		                			});
-                				}else{
-                					TD.tip.setHtml(showValue);
-                				}
-                			}
-	                	}
-	                }
-	        	});
-	        }
-	        //保存数据
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.saveData = function () {}
-	        protocolDisplayUnitAcqItemsConfigHandsontableHelper.clearContainer = function () {
-	        	protocolDisplayUnitAcqItemsConfigHandsontableHelper.AllData = [];
-	        }
-	        return protocolDisplayUnitAcqItemsConfigHandsontableHelper;
-	    }
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (value != null) {
+                var arr = value.split(';');
+                if (arr.length == 2) {
+                    td.style.backgroundColor = '#' + arr[1];
+                }
+            }
+            td.style.whiteSpace = 'nowrap'; //文本不换行
+            td.style.overflow = 'hidden'; //超出部分隐藏
+            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+        }
+
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (value != null) {
+                td.style.backgroundColor = '#' + value;
+            }
+            td.style.whiteSpace = 'nowrap'; //文本不换行
+            td.style.overflow = 'hidden'; //超出部分隐藏
+            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+        }
+
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace = 'nowrap'; //文本不换行
+            td.style.overflow = 'hidden'; //超出部分隐藏
+            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+        }
+
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.createTable = function (data) {
+            $('#' + protocolDisplayUnitAcqItemsConfigHandsontableHelper.divid).empty();
+            var hotElement = document.querySelector('#' + protocolDisplayUnitAcqItemsConfigHandsontableHelper.divid);
+            protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot = new Handsontable(hotElement, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+                data: data,
+                hiddenColumns: {
+                    columns: [13, 14, 15, 16, 17],
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                colWidths: [25, 50, 140, 80, 60, 85, 95, 95, 85, 95, 95, 85, 85],
+                columns: protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
+                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+                autoWrapRow: true,
+                rowHeaders: false, //显示行头
+                colHeaders: protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders, //显示列头
+                columnSorting: true, //允许排序
+                sortIndicator: true,
+                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    var protocolConfigModuleEditFlag = parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+                    if (protocolConfigModuleEditFlag == 1) {
+                        var ScadaDriverModbusConfigSelectRow = Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
+                        if (ScadaDriverModbusConfigSelectRow != '') {
+                            var selectedItem = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
+                            if (selectedItem.data.classes != 2) {
+                                cellProperties.readOnly = true;
+                                if (visualColIndex == 11 || visualColIndex == 12) {
+                                    cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
+                                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                                    cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
+                                } else {
+                                    if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
+                                        protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'checkbox') {
+                                        cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle;
+                                    }
+                                }
+                            } else {
+                                if (visualColIndex >= 1 && visualColIndex <= 3) {
+                                    cellProperties.readOnly = true;
+                                }
+
+                                if (visualColIndex == 11 || visualColIndex == 12) {
+                                    cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
+                                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                                    cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
+                                } else {
+                                    if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
+                                        protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'checkbox') {
+                                        cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        cellProperties.readOnly = true;
+                        if (visualColIndex == 11 || visualColIndex == 12) {
+                            cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
+                        } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                            cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
+                        } else {
+                            if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
+                                protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'checkbox') {
+                                cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle;
+                            }
+                        }
+                    }
+
+                    return cellProperties;
+                },
+                afterBeginEditing: function (row, column) {
+                    var row1 = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRow(row);
+                    if (row1[0] && (column == 11 || column == 12)) {
+                        var ScadaDriverModbusConfigSelectRow = Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
+                        if (ScadaDriverModbusConfigSelectRow != '') {
+                            var selectedItem = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
+                            if (selectedItem.data.classes == 2) {
+                                var CurveConfigWindow = Ext.create("AP.view.acquisitionUnit.CurveConfigWindow");
+
+                                Ext.getCmp("curveConfigSelectedTableType_Id").setValue(0); //采集项表
+                                Ext.getCmp("curveConfigSelectedRow_Id").setValue(row);
+                                Ext.getCmp("curveConfigSelectedCol_Id").setValue(column);
+
+                                CurveConfigWindow.show();
+
+                                var curveConfig = null;
+                                if (column == 11 && isNotVal(row1[13])) {
+                                    curveConfig = row1[13];
+                                } else if (column == 12 && isNotVal(row1[14])) {
+                                    curveConfig = row1[14];
+                                }
+                                var value = 'ff0000';
+
+                                if (isNotVal(curveConfig)) {
+                                    Ext.getCmp("curveConfigSort_Id").setValue(curveConfig.sort);
+                                    Ext.getCmp("curveConfigLineWidth_Id").setValue(curveConfig.lineWidth);
+                                    Ext.getCmp("curveConfigDashStyleComb_Id").setValue(curveConfig.dashStyle);
+                                    Ext.getCmp("curveConfigYAxisOppositeComb_Id").setValue(curveConfig.yAxisOpposite);
+
+                                    Ext.getCmp('curveConfigColor_id').setValue(curveConfig.color);
+                                    var Color0 = Ext.getCmp('curveConfigColor_id').color;
+                                    Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+                                        background: '#' + curveConfig.color,
+                                    });
+                                } else {
+                                    Ext.getCmp('curveConfigColor_id').setValue(value);
+                                    var Color0 = Ext.getCmp('curveConfigColor_id').color;
+                                    Ext.getCmp('curveConfigColor_id').inputEl.applyStyles({
+                                        background: '#' + value
+                                    });
+                                }
+                            }
+                        }
+                    } else if (row1[0] && (column == 6 || column == 7 || column == 9 || column == 10)) {
+                        var CellColorSelectWindow = Ext.create("AP.view.acquisitionUnit.CellColorSelectWindow");
+
+                        Ext.getCmp("cellColorSelectedTableType_Id").setValue(231); //采集项表
+                        Ext.getCmp("cellColorSelectedRow_Id").setValue(row);
+                        Ext.getCmp("cellColorSelectedCol_Id").setValue(column);
+
+                        CellColorSelectWindow.show();
+
+                        var value = row1[column];
+                        if (value == null || value == '') {
+                            value = 'ff0000';
+                        }
+                        Ext.getCmp('CellColorSelectWindowColor_id').setValue(value);
+                        var BackgroundColor = Ext.getCmp('CellColorSelectWindowColor_id').color;
+                        BackgroundColor.a = 1;
+                        Ext.getCmp('CellColorSelectWindowColor_id').setColor(BackgroundColor);
+                    }
+                },
+                afterOnCellMouseOver: function (event, coords, TD) {
+                    if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[coords.col].type != 'checkbox' &&
+                        protocolDisplayUnitAcqItemsConfigHandsontableHelper != null &&
+                        protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot != '' &&
+                        protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot != undefined &&
+                        protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtCell != undefined) {
+                        var rawValue = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtCell(coords.row, coords.col);
+                        if (isNotVal(rawValue)) {
+                            var showValue = rawValue;
+                            var rowChar = 90;
+                            var maxWidth = rowChar * 10;
+                            if (rawValue.length > rowChar) {
+                                showValue = '';
+                                let arr = [];
+                                let index = 0;
+                                while (index < rawValue.length) {
+                                    arr.push(rawValue.slice(index, index += rowChar));
+                                }
+                                for (var i = 0; i < arr.length; i++) {
+                                    showValue += arr[i];
+                                    if (i < arr.length - 1) {
+                                        showValue += '<br>';
+                                    }
+                                }
+                            }
+                            if (!isNotVal(TD.tip)) {
+                                var height = 28;
+                                TD.tip = Ext.create('Ext.tip.ToolTip', {
+                                    target: event.target,
+                                    maxWidth: maxWidth,
+                                    html: showValue,
+                                    listeners: {
+                                        hide: function (thisTip, eOpts) {},
+                                        close: function (thisTip, eOpts) {}
+                                    }
+                                });
+                            } else {
+                                TD.tip.setHtml(showValue);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        //保存数据
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.saveData = function () {}
+        protocolDisplayUnitAcqItemsConfigHandsontableHelper.clearContainer = function () {
+            protocolDisplayUnitAcqItemsConfigHandsontableHelper.AllData = [];
+        }
+        return protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+    }
 };
+
 
 function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
 	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
@@ -520,7 +556,9 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','','','','数据来源']";
+				var colHeaders="['','序号','名称','单位','显示级别'," 
+					+"'实时字段顺序','实时字段前景色','实时字段背景色','历史字段顺序','历史字段前景色','历史字段背景色'," 
+					+"'实时曲线','历史曲线','','','','数据来源']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -528,7 +566,11 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeColor'}," 
+	                    +"{data:'realtimeBgColor'}," 
 						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
+						+"{data:'historyColor'}," 
+	                    +"{data:'historyBgColor'}," 
 						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
@@ -579,6 +621,16 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        protocolDisplayUnitCalItemsConfigHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value != null) {
+	                td.style.backgroundColor = '#' + value;
+	            }
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+	        }
+	        
 	        protocolDisplayUnitCalItemsConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -593,11 +645,11 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [9,10,11],
+	                    columns: [13,14,15],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,85,85,85,85,85,85,85,85],
+	                colWidths: [25,50,140,80,60,85,95,95,85,95,95,85,85,85,85,85,85],
 	                columns:protocolDisplayUnitCalItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -622,7 +674,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 		                		if(selectedItem.data.classes!=2){
 		                			cellProperties.readOnly = true;
 		                		}else{
-		                			if ((visualColIndex >=1 && visualColIndex<=3) || visualColIndex==12) {
+		                			if ((visualColIndex >=1 && visualColIndex<=3) || visualColIndex==16) {
 		    							cellProperties.readOnly = true;
 		    		                }
 		                		}
@@ -630,9 +682,11 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    if(visualColIndex==7||visualColIndex==8){
+	                    if(visualColIndex==11||visualColIndex==12){
 		                	cellProperties.renderer = protocolDisplayUnitCalItemsConfigHandsontableHelper.addCurveBg;
-		                }else{
+		                }else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                            cellProperties.renderer = protocolDisplayUnitCalItemsConfigHandsontableHelper.addCellBgColor;
+                        }else{
 		                	if(protocolDisplayUnitCalItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 		    	            	&& protocolDisplayUnitCalItemsConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
 		                    	cellProperties.renderer = protocolDisplayUnitCalItemsConfigHandsontableHelper.addCellStyle;
@@ -642,7 +696,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                },
 	                afterBeginEditing:function(row,column){
 	                	var row1=protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==7||column==8)){
+	                	if(row1[0] && (column==11||column==12)){
 	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
 	                		if(ScadaDriverModbusConfigSelectRow!=''){
 	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -656,10 +710,10 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                				CurveConfigWindow.show();
 	                				
 	                				var curveConfig=null;
-	                				if(column==7 && isNotVal(row1[9])){
-	                					curveConfig=row1[9];
-	                				}else if(column==8 && isNotVal(row1[10])){
-	                					curveConfig=row1[10];
+	                				if(column==11 && isNotVal(row1[13])){
+	                					curveConfig=row1[13];
+	                				}else if(column==12 && isNotVal(row1[14])){
+	                					curveConfig=row1[14];
 	                				}
 	                				var value=row1[column];
 	                				if(value==null||value==''){
@@ -686,7 +740,24 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                				}
 	                			}
 	                		}
-	                	}else{
+	                	}else if (row1[0] && (column == 6 || column == 7 || column == 9 || column == 10)) {
+	                        var CellColorSelectWindow = Ext.create("AP.view.acquisitionUnit.CellColorSelectWindow");
+
+	                        Ext.getCmp("cellColorSelectedTableType_Id").setValue(232); //采集项表
+	                        Ext.getCmp("cellColorSelectedRow_Id").setValue(row);
+	                        Ext.getCmp("cellColorSelectedCol_Id").setValue(column);
+
+	                        CellColorSelectWindow.show();
+
+	                        var value = row1[column];
+	                        if (value == null || value == '') {
+	                            value = 'ff0000';
+	                        }
+	                        Ext.getCmp('CellColorSelectWindowColor_id').setValue(value);
+	                        var BackgroundColor = Ext.getCmp('CellColorSelectWindowColor_id').color;
+	                        BackgroundColor.a = 1;
+	                        Ext.getCmp('CellColorSelectWindowColor_id').setColor(BackgroundColor);
+	                    }else{
 	                		return false;
 	                	}
 	                },
@@ -931,7 +1002,9 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			}
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','','','']";
+				var colHeaders="['','序号','名称','单位','显示级别'," 
+					+"'实时字段顺序','实时字段前景色','实时字段背景色','历史字段顺序','历史字段前景色','历史字段背景色'," 
+					+"'实时曲线','历史曲线','','','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -939,7 +1012,11 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeColor'}," 
+	                    +"{data:'realtimeBgColor'}," 
 						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
+						+"{data:'historyColor'}," 
+	                    +"{data:'historyBgColor'}," 
 						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
@@ -989,6 +1066,16 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        protocolDisplayUnitInputItemsConfigHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value != null) {
+	                td.style.backgroundColor = '#' + value;
+	            }
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+	        }
+	        
 	        protocolDisplayUnitInputItemsConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -1003,11 +1090,11 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [9,10,11],
+	                    columns: [13,14,15],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,85,85,85,85],
+	                colWidths: [25,50,140,80,60,85,95,95,85,95,95,85,85],
 	                columns:protocolDisplayUnitInputItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1040,9 +1127,11 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    if(visualColIndex==7||visualColIndex==8){
+	                    if(visualColIndex==11||visualColIndex==12){
 		                	cellProperties.renderer = protocolDisplayUnitInputItemsConfigHandsontableHelper.addCurveBg;
-		                }else{
+		                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                            cellProperties.renderer = protocolDisplayUnitInputItemsConfigHandsontableHelper.addCellBgColor;
+                        }else{
 		                	if(protocolDisplayUnitInputItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 		    	            	&& protocolDisplayUnitInputItemsConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
 		                    	cellProperties.renderer = protocolDisplayUnitInputItemsConfigHandsontableHelper.addCellStyle;
@@ -1052,7 +1141,7 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                },
 	                afterBeginEditing:function(row,column){
 	                	var row1=protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==7||column==8)){
+	                	if(row1[0] && (column==11||column==12)){
 	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
 	                		if(ScadaDriverModbusConfigSelectRow!=''){
 	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -1066,10 +1155,10 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                				CurveConfigWindow.show();
 	                				
 	                				var curveConfig=null;
-	                				if(column==7 && isNotVal(row1[9])){
-	                					curveConfig=row1[9];
-	                				}else if(column==8 && isNotVal(row1[10])){
-	                					curveConfig=row1[10];
+	                				if(column==11 && isNotVal(row1[13])){
+	                					curveConfig=row1[13];
+	                				}else if(column==12 && isNotVal(row1[14])){
+	                					curveConfig=row1[14];
 	                				}
 	                				var value=row1[column];
 	                				if(value==null||value==''){
@@ -1096,9 +1185,24 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                				}
 	                			}
 	                		}
-	                	}else{
-	                		return false;
-	                	}
+	                	}else if (row1[0] && (column == 6 || column == 7 || column == 9 || column == 10)) {
+	                        var CellColorSelectWindow = Ext.create("AP.view.acquisitionUnit.CellColorSelectWindow");
+
+	                        Ext.getCmp("cellColorSelectedTableType_Id").setValue(234); //录入项表
+	                        Ext.getCmp("cellColorSelectedRow_Id").setValue(row);
+	                        Ext.getCmp("cellColorSelectedCol_Id").setValue(column);
+
+	                        CellColorSelectWindow.show();
+
+	                        var value = row1[column];
+	                        if (value == null || value == '') {
+	                            value = 'ff0000';
+	                        }
+	                        Ext.getCmp('CellColorSelectWindowColor_id').setValue(value);
+	                        var BackgroundColor = Ext.getCmp('CellColorSelectWindowColor_id').color;
+	                        BackgroundColor.a = 1;
+	                        Ext.getCmp('CellColorSelectWindowColor_id').setColor(BackgroundColor);
+	                    }
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(protocolDisplayUnitInputItemsConfigHandsontableHelper.columns[coords.col].type!='checkbox' 
@@ -1463,41 +1567,49 @@ var grantDisplayAcqItemsPermission = function () {
         	
         	var itemShowLevel = acqItemsData[index][4];
         	var itemRealtimeSort = acqItemsData[index][5];
-        	var itemHistorySort = acqItemsData[index][6];
         	
+        	var realtimeColor= acqItemsData[index][6];
+        	var realtimeBgColor= acqItemsData[index][7];
+        	
+        	var itemHistorySort = acqItemsData[index][8];
+        	var historyColor= acqItemsData[index][9];
+        	var historyBgColor= acqItemsData[index][10];
         	
         	var realtimeCurveConfigStr="";
         	var historyCurveConfigStr="";
         	
         	var realtimeCurveConfig=null;
-			if(isNotVal(acqItemsData[index][7]) && isNotVal(acqItemsData[index][9])){
-				realtimeCurveConfig=acqItemsData[index][9];
+			if(isNotVal(acqItemsData[index][11]) && isNotVal(acqItemsData[index][13])){
+				realtimeCurveConfig=acqItemsData[index][13];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
 			
 			var historyCurveConfig=null;
-			if(isNotVal(acqItemsData[index][8]) && isNotVal(acqItemsData[index][10])){
-				historyCurveConfig=acqItemsData[index][10];
+			if(isNotVal(acqItemsData[index][12]) && isNotVal(acqItemsData[index][14])){
+				historyCurveConfig=acqItemsData[index][14];
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var resolutionMode = acqItemsData[index][11];
-        	var itemAddr = acqItemsData[index][12];
-        	var bitIndex=acqItemsData[index][13];
+        	var resolutionMode = acqItemsData[index][15];
+        	var itemAddr = acqItemsData[index][16];
+        	var bitIndex=acqItemsData[index][17];
         	
             addjson.push(itemName);
             addItemRealtimeSort.push(itemRealtimeSort);
             var matrix_value = '0,0,0';
             matrixData += itemName + "##"
             + itemRealtimeSort+ "##"
+            + realtimeColor+ "##"
+            + realtimeBgColor+ "##"
             + itemHistorySort+ "##"
+            + historyColor+ "##"
+            + historyBgColor+ "##"
             + itemShowLevel+ "##" 
             + realtimeCurveConfigStr+ "##" 
             + historyCurveConfigStr + "##" 
             + resolutionMode+ "##"
             + itemAddr + "##" 
             + bitIndex +"##"
-            
             + matrix_value+ "|";
         }
     });
@@ -1559,25 +1671,31 @@ var grantDisplayCalItemsPermission = function () {
         	var itemName = calItemsData[index][2];
         	
         	var itemShowLevel = calItemsData[index][4];
+        	
         	var itemRealtimeSort = calItemsData[index][5];
-        	var itemHistorySort = calItemsData[index][6];
+        	var realtimeColor= calItemsData[index][6];
+        	var realtimeBgColor= calItemsData[index][7];
+        	
+        	var itemHistorySort = calItemsData[index][8];
+        	var historyColor= calItemsData[index][9];
+        	var historyBgColor= calItemsData[index][10];
         	
         	var realtimeCurveConfigStr="";
         	var historyCurveConfigStr="";
 
         	var realtimeCurveConfig=null;
-			if(isNotVal(calItemsData[index][7]) && isNotVal(calItemsData[index][9])){
-				realtimeCurveConfig=calItemsData[index][9];
+			if(isNotVal(calItemsData[index][11]) && isNotVal(calItemsData[index][13])){
+				realtimeCurveConfig=calItemsData[index][13];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
 			
 			var historyCurveConfig=null;
-			if(isNotVal(calItemsData[index][8]) && isNotVal(calItemsData[index][10])){
-				historyCurveConfig=calItemsData[index][10];
+			if(isNotVal(calItemsData[index][12]) && isNotVal(calItemsData[index][14])){
+				historyCurveConfig=calItemsData[index][14];
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var itemCode = calItemsData[index][11];
+        	var itemCode = calItemsData[index][15];
         	
             addjson.push(itemCode);
             addItemRealtimeSort.push(itemRealtimeSort);
@@ -1585,7 +1703,11 @@ var grantDisplayCalItemsPermission = function () {
             matrixData += itemName + "##"
             + itemCode+ "##"
             + itemRealtimeSort+ "##"
+            + realtimeColor+ "##"
+            + realtimeBgColor+ "##"
             + itemHistorySort+ "##"
+            + historyColor+ "##"
+            + historyBgColor+ "##"
             + itemShowLevel+ "##" 
             + realtimeCurveConfigStr+ "##" 
             + historyCurveConfigStr + "##" 
@@ -1734,25 +1856,31 @@ var grantDisplayInputItemsPermission = function () {
         	var itemName = inputItemsData[index][2];
         	
         	var itemShowLevel = inputItemsData[index][4];
+        	
         	var itemRealtimeSort = inputItemsData[index][5];
-        	var itemHistorySort = inputItemsData[index][6];
+        	var realtimeColor= inputItemsData[index][6];
+        	var realtimeBgColor= inputItemsData[index][7];
+        	
+        	var itemHistorySort = inputItemsData[index][8];
+        	var historyColor= inputItemsData[index][9];
+        	var historyBgColor= inputItemsData[index][10];
         	
         	var realtimeCurveConfigStr="";
         	var historyCurveConfigStr="";
 
         	var realtimeCurveConfig=null;
-			if(isNotVal(inputItemsData[index][7]) && isNotVal(inputItemsData[index][9])){
-				realtimeCurveConfig=inputItemsData[index][9];
+			if(isNotVal(inputItemsData[index][11]) && isNotVal(inputItemsData[index][13])){
+				realtimeCurveConfig=inputItemsData[index][13];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
 			
 			var historyCurveConfig=null;
-			if(isNotVal(inputItemsData[index][8]) && isNotVal(inputItemsData[index][10])){
-				historyCurveConfig=inputItemsData[index][10];
+			if(isNotVal(inputItemsData[index][12]) && isNotVal(inputItemsData[index][14])){
+				historyCurveConfig=inputItemsData[index][14];
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var itemCode = inputItemsData[index][11];
+        	var itemCode = inputItemsData[index][15];
         	
             addjson.push(itemCode);
             addItemRealtimeSort.push(itemRealtimeSort);
@@ -1760,7 +1888,11 @@ var grantDisplayInputItemsPermission = function () {
             matrixData += itemName + "##"
             + itemCode+ "##"
             + itemRealtimeSort+ "##"
+            + realtimeColor+ "##"
+            + realtimeBgColor+ "##"
             + itemHistorySort+ "##"
+            + historyColor+ "##"
+            + historyBgColor+ "##"
             + itemShowLevel+ "##" 
             + realtimeCurveConfigStr+ "##" 
             + historyCurveConfigStr + "##" 

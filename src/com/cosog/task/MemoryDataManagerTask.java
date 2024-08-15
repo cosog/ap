@@ -1716,6 +1716,7 @@ public class MemoryDataManagerTask {
 					+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
 					+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
 					+ "t.realtimecurveconf,t.historycurveconf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
 					+ "t.type "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 					+ " where t.unitid=t2.id and t2.id=t3.displayunitid";
@@ -1771,7 +1772,11 @@ public class MemoryDataManagerTask {
     				displayItem.setHistorySort(rs.getInt(10));
     				displayItem.setRealtimeCurveConf(rs.getString(11)+"");
     				displayItem.setHistoryCurveConf(rs.getString(12)+"");
-    				displayItem.setType(rs.getInt(13));
+    				displayItem.setRealtimeColor(rs.getString(13)+"");
+    				displayItem.setRealtimeBgColor(rs.getString(14)+"");
+    				displayItem.setHistoryColor(rs.getString(15)+"");
+    				displayItem.setHistoryBgColor(rs.getString(16)+"");
+    				displayItem.setType(rs.getInt(17));
     				int index=-1;
     				for(int i=0;i<displayInstanceOwnItem.getItemList().size();i++){
     					if(displayItem.getItemCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemCode()) 

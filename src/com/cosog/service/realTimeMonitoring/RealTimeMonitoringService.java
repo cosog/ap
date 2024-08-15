@@ -1450,8 +1450,18 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								String resolutionMode="";
 								String bitIndex="";
 								String unit="";
+								
+								String realtimeColor="";
+								String realtimeBgColor="";
+								String historyColor="";
+								String historyBgColor="";
+								
+								int type=0;
+								
 								int alarmLevel=0;
-								if(index<finalProtocolItemResolutionDataList.size()&&StringManagerUtils.isNotNull(finalProtocolItemResolutionDataList.get(index).getColumnName())){
+								if(index<finalProtocolItemResolutionDataList.size()
+										&&StringManagerUtils.isNotNull(finalProtocolItemResolutionDataList.get(index).getColumnName())
+										){
 									columnName=finalProtocolItemResolutionDataList.get(index).getColumnName();
 									value=finalProtocolItemResolutionDataList.get(index).getValue();
 									unit=finalProtocolItemResolutionDataList.get(index).getUnit();
@@ -1461,6 +1471,43 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									columnDataType=finalProtocolItemResolutionDataList.get(index).getColumnDataType();
 									resolutionMode=finalProtocolItemResolutionDataList.get(index).getResolutionMode();
 									bitIndex=finalProtocolItemResolutionDataList.get(index).getBitIndex();
+									type=finalProtocolItemResolutionDataList.get(index).getType();
+									
+									for(DisplayInstanceOwnItem.DisplayItem displayItem:displayInstanceOwnItem.getItemList()){
+										if(type==0){//采控项
+											if("0".equalsIgnoreCase(resolutionMode) 
+													&& displayItem.getType()==type
+													&& displayItem.getItemCode().equalsIgnoreCase(finalProtocolItemResolutionDataList.get(index).getColumn())  
+													&& displayItem.getBitIndex()==StringManagerUtils.stringToInteger(finalProtocolItemResolutionDataList.get(index).getBitIndex())
+													){//开关量
+												realtimeColor=displayItem.getRealtimeColor();
+												realtimeBgColor=displayItem.getRealtimeBgColor();
+												historyColor=displayItem.getHistoryColor();
+												historyBgColor=displayItem.getHistoryBgColor();
+												break;
+											}else if( ("1".equalsIgnoreCase(resolutionMode) || "2".equalsIgnoreCase(resolutionMode) )
+													&& displayItem.getType()==type
+													&& displayItem.getItemCode().equalsIgnoreCase(finalProtocolItemResolutionDataList.get(index).getColumn())  
+													){
+												realtimeColor=displayItem.getRealtimeColor();
+												realtimeBgColor=displayItem.getRealtimeBgColor();
+												historyColor=displayItem.getHistoryColor();
+												historyBgColor=displayItem.getHistoryBgColor();
+												break;
+											}
+										}else if(type==1 || type==3){//计算项和录入项
+											if(displayItem.getType()==type
+													&& displayItem.getItemCode().equalsIgnoreCase(finalProtocolItemResolutionDataList.get(index).getColumn())  
+													){
+												realtimeColor=displayItem.getRealtimeColor();
+												realtimeBgColor=displayItem.getRealtimeBgColor();
+												historyColor=displayItem.getHistoryColor();
+												historyBgColor=displayItem.getHistoryBgColor();
+												break;
+											}
+										}
+									}
+									
 									if(alarmInstanceOwnItem!=null){
 										for(int l=0;l<alarmInstanceOwnItem.getItemList().size();l++){
 											int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
@@ -1523,7 +1570,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}
 								
 								result_json.append("\"value"+(k+1)+"\":\""+value+"\",");
-
 								
 								info_json.append("{\"row\":"+j+",\"col\":"+k+",\"addr\":\""+addr+"\","
 										+ "\"columnName\":\""+columnName+"\","
@@ -1531,6 +1577,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										+ "\"value\":\""+value+"\","
 										+ "\"columnDataType\":\""+columnDataType+"\","
 										+ "\"resolutionMode\":\""+resolutionMode+"\","
+										+ "\"realtimeColor\":\""+realtimeColor+"\","
+										+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+										+ "\"historyColor\":\""+historyColor+"\","
+										+ "\"historyBgColor\":\""+historyBgColor+"\","
+										+ "\"type\":\""+type+"\","
 										+ "\"alarmLevel\":"+alarmLevel+"},");
 							}
 							if(result_json.toString().endsWith(",")){
@@ -1556,6 +1607,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println(result_json.toString().replaceAll("null", ""));
 		return result_json.toString().replaceAll("null", "");
 	}
 	

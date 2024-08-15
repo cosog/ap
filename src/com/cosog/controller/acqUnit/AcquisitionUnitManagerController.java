@@ -750,9 +750,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String module_[] = module_matrix[i].split("##");
 						String itemName=module_[0];
 						
-						String resolutionMode=module_[6];
-						int itemAddr=StringManagerUtils.stringTransferInteger(module_[7]);
-						String bitIndexStr=module_[8];
+						String resolutionMode=module_[10];
+						int itemAddr=StringManagerUtils.stringTransferInteger(module_[11]);
+						String bitIndexStr=module_[12];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
 							for(int j=0;j<protocol.getItems().size();j++){
@@ -781,21 +781,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 							}
 						}
 						
-						
-						
-						
 						displayUnitItem = new DisplayUnitItem();
 						displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
 						displayUnitItem.setItemName(itemName);
 						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
-						displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
+						displayUnitItem.setRealtimeColor(module_[2]);
+						displayUnitItem.setRealtimeBgColor(module_[3]);
+						displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringTransferInteger(module_[4]):null);
+						displayUnitItem.setHistoryColor(module_[5]);
+						displayUnitItem.setHistoryBgColor(module_[6]);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
-						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
-						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[4]:"");
-						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[5]:"");
-						displayUnitItem.setMatrix(module_[9]);
+						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[7])?StringManagerUtils.stringTransferInteger(module_[7]):null);
+						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[8]:"");
+						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[9]:"");
+						displayUnitItem.setMatrix(module_[13]);
 						if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
 							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 						}
@@ -935,12 +936,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
+					displayUnitItem.setRealtimeColor(module_[3]);
+					displayUnitItem.setRealtimeBgColor(module_[4]);
 					
-					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringTransferInteger(module_[4]):null);
-					displayUnitItem.setRealtimeCurveConf(module_[5]);
-					displayUnitItem.setHistoryCurveConf(module_[6]);
-					displayUnitItem.setMatrix(module_[7]);
+					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[5])?StringManagerUtils.stringTransferInteger(module_[5]):null);
+					displayUnitItem.setHistoryColor(module_[6]);
+					displayUnitItem.setHistoryBgColor(module_[7]);
+					
+					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringTransferInteger(module_[8]):null);
+					displayUnitItem.setRealtimeCurveConf(module_[9]);
+					displayUnitItem.setHistoryCurveConf(module_[10]);
+					displayUnitItem.setMatrix(module_[11]);
 					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 				}
 				
@@ -986,11 +992,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
-					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[3])?StringManagerUtils.stringTransferInteger(module_[3]):null);
-					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringTransferInteger(module_[4]):null);
-					displayUnitItem.setRealtimeCurveConf(module_[5]);
-					displayUnitItem.setHistoryCurveConf(module_[6]);
-					displayUnitItem.setMatrix(module_[7]);
+					displayUnitItem.setRealtimeColor(module_[3]);
+					displayUnitItem.setRealtimeBgColor(module_[4]);
+					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[5])?StringManagerUtils.stringTransferInteger(module_[5]):null);
+					displayUnitItem.setHistoryColor(module_[6]);
+					displayUnitItem.setHistoryBgColor(module_[7]);
+					
+					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringTransferInteger(module_[8]):null);
+					displayUnitItem.setRealtimeCurveConf(module_[9]);
+					displayUnitItem.setHistoryCurveConf(module_[10]);
+					displayUnitItem.setMatrix(module_[11]);
 					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 				}
 				

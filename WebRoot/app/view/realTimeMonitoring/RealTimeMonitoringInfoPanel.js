@@ -856,65 +856,7 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	        deviceRealTimeMonitoringDataHandsontableHelper.colHeaders=[];
 	        deviceRealTimeMonitoringDataHandsontableHelper.columns=[];
 	        deviceRealTimeMonitoringDataHandsontableHelper.CellInfo=[];
-	        
 	        deviceRealTimeMonitoringDataHandsontableHelper.sourceData=[];
-	        
-	        deviceRealTimeMonitoringDataHandsontableHelper.addFirstAlarmLevelColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue()); 
-//	        	var BackgroundColor='#'+AlarmShowStyle.FirstLevel.BackgroundColor;
-//	        	var Color='#'+AlarmShowStyle.FirstLevel.Color;
-	        	var Color='#'+AlarmShowStyle.FirstLevel.BackgroundColor;
-	        	var Opacity=AlarmShowStyle.FirstLevel.Opacity;
-	     		
-	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
-//	             td.style.backgroundColor = BackgroundColor;   
-	             td.style.color=Color;
-	             td.style.fontWeight = 'bold';
-	             td.style.fontFamily = 'SimHei';
-	             if(row%2==1){
-	            	 td.style.backgroundColor = '#E6E6E6';
-	             }
-	        }
-	        
-	        deviceRealTimeMonitoringDataHandsontableHelper.addSecondAlarmLevelColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue()); 
-//	        	var BackgroundColor='#'+AlarmShowStyle.SecondLevel.BackgroundColor;
-//	        	var Color='#'+AlarmShowStyle.SecondLevel.Color;
-	        	var Color='#'+AlarmShowStyle.SecondLevel.BackgroundColor;
-	        	var Opacity=AlarmShowStyle.SecondLevel.Opacity;
-	     		
-	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
-//	             td.style.backgroundColor = BackgroundColor;   
-	             td.style.color=Color;
-	             td.style.fontWeight = 'bold';
-	             td.style.fontFamily = 'SimHei';
-	             if(row%2==1){
-	            	 td.style.backgroundColor = '#E6E6E6';
-	             }
-	             
-	        }
-	        
-	        deviceRealTimeMonitoringDataHandsontableHelper.addThirdAlarmLevelColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue()); 
-//	        	var BackgroundColor='#'+AlarmShowStyle.ThirdLevel.BackgroundColor;
-//	        	var Color='#'+AlarmShowStyle.ThirdLevel.Color;
-	        	var Color='#'+AlarmShowStyle.ThirdLevel.BackgroundColor;
-	        	var Opacity=AlarmShowStyle.ThirdLevel.Opacity;
-	     		
-	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
-//	             td.style.backgroundColor = BackgroundColor;   
-	             td.style.color=Color;
-	             td.style.fontWeight = 'bold';
-	             td.style.fontFamily = 'SimHei';
-	             if(row%2==1){
-	            	 td.style.backgroundColor = '#E6E6E6';
-	             }
-	        }
-	        
-	        deviceRealTimeMonitoringDataHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = '#E6E6E6';
-	        }
 	        
 	        deviceRealTimeMonitoringDataHandsontableHelper.addItenmNameColStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -930,10 +872,6 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	        }
 	        
 	        deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-//	        	if(row>0 && value!=null && value.length>11){
-//	        		value=value.substring(0, 8)+"...";
-//                }
-	        	
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue()); 
 	            if (row ==0) {
@@ -960,7 +898,23 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 //	            	td.style.textAlign='left';//内容左对齐
 //	            }
 	            for(var i=0;i<deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
-                	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
+                	if( isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeColor) ){
+                		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
+        				var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2;
+        				if(row==row2 && col==col2 ){
+        					td.style.color='#'+deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeColor;
+        				}
+                	}
+                	
+                	if( isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeBgColor) ){
+                		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
+        				var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2;
+        				if(row==row2 && col==col2 ){
+        					td.style.backgroundColor = '#' + deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeBgColor;
+        				}
+                	}
+	            	
+	            	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
                 		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
         				var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2+1;
         				if(row==row2 && col==col2 ){

@@ -84,123 +84,123 @@ public class EquipmentDriverServerTask {
 			e.printStackTrace();
 		}
 		
-//		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
-//			boolean sendMsg=false;
-//			exampleDataManage();
-//			do{
-//				DriverProbeResponse driverProbeResponse=adInitProbe();
-//				String Ver="";
-//				if(driverProbeResponse!=null){
-//					sendMsg=false;
-//					if(!driverProbeResponse.getHttpServerInitStatus()){
-//						try {
-//							initServerConfig();
-//						} catch (MalformedURLException e) {
-//							e.printStackTrace();
-//						}
-//						driverProbeResponse=adInitProbe();
-//						if(driverProbeResponse==null){
-//							break;
-//						}
-//					}
-//					if(!driverProbeResponse.getProtocolInitStatus()){
-//						initProtocolConfig("","");
-//						initInstanceConfig(null,"");
-//						initSMSInstanceConfig(null,"");
-//						if(executor!=null && executor.isCompletedByTaskCount()){
-//							//清空内存
-//							AdInitMap.cleanData();
-//							initDriverAcquisitionInfoConfig(null,0,"");
-//						}
-//						driverProbeResponse=adInitProbe();
-//						if(driverProbeResponse==null){
-//							break;
-//						}
-//					}
-//					
-//					if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
-//						while(driverProbeResponse!=null && ( (!driverProbeResponse.getProtocolInitStatus())||(!driverProbeResponse.getInstanceInitStatus()) )){
-//							if(!driverProbeResponse.getProtocolInitStatus()){
-//								initProtocolConfig("","");
-//								initInstanceConfig(null,"");
-//								initSMSInstanceConfig(null,"");
-//								if(executor!=null && executor.isCompletedByTaskCount()){
-//									//清空内存
-//									AdInitMap.cleanData();
-//									initDriverAcquisitionInfoConfig(null,0,"");
-//								}
-//								driverProbeResponse=adInitProbe();
-//							}
-//							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
-//								initInstanceConfig(null,"");
-//								initSMSInstanceConfig(null,"");
-//								if(executor!=null && executor.isCompletedByTaskCount()){
-//									//清空内存
-//									AdInitMap.cleanData();
-//									initDriverAcquisitionInfoConfig(null,0,"");
-//								}
-//								driverProbeResponse=adInitProbe();
-//							}
-//						}
-//					}
-//					
-//					if(driverProbeResponse!=null && !driverProbeResponse.getSMSInitStatus()){
-////						initSMSDevice(null,"");
-//					}
-//					
-//					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-//						while(driverProbeResponse!=null 
-//								&& ( 
-//										(!driverProbeResponse.getProtocolInitStatus())
-//										||(!driverProbeResponse.getInstanceInitStatus()) 
-//										||(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() ))
-//									)
-//								){
-//							if(!driverProbeResponse.getProtocolInitStatus()){
-//								initProtocolConfig("","");
-//								initInstanceConfig(null,"");
-//								initSMSInstanceConfig(null,"");
-//								if(executor!=null && executor.isCompletedByTaskCount()){
-//									//清空内存
-//									AdInitMap.cleanData();
-//									initDriverAcquisitionInfoConfig(null,0,"");
-//								}
-//								driverProbeResponse=adInitProbe();
-//							}
-//							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
-//								initInstanceConfig(null,"");
-//								initSMSInstanceConfig(null,"");
-//								if(executor!=null && executor.isCompletedByTaskCount()){
-//									//清空内存
-//									AdInitMap.cleanData();
-//									initDriverAcquisitionInfoConfig(null,0,"");
-//								}
-//								driverProbeResponse=adInitProbe();
-//							}
-//							if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-//								if(executor!=null && executor.isCompletedByTaskCount()){
-//									//清空内存
-//									AdInitMap.cleanData();
-//									initDriverAcquisitionInfoConfig(null,0,"");
-//								}
-//								driverProbeResponse=adInitProbe();
-//							}
-//						}
-//					}
-//					Ver=driverProbeResponse.getVer();
-//				}else{
-//					if(!sendMsg){
-//						StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-//						sendMsg=true;
-//					}
-//				}
-//				try {
-//					Thread.sleep(1000*1);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}while(true);
-//		}
+		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+			boolean sendMsg=false;
+			exampleDataManage();
+			do{
+				DriverProbeResponse driverProbeResponse=adInitProbe();
+				String Ver="";
+				if(driverProbeResponse!=null){
+					sendMsg=false;
+					if(!driverProbeResponse.getHttpServerInitStatus()){
+						try {
+							initServerConfig();
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
+						driverProbeResponse=adInitProbe();
+						if(driverProbeResponse==null){
+							continue;
+						}
+					}
+					if(!driverProbeResponse.getProtocolInitStatus()){
+						initProtocolConfig("","");
+						initInstanceConfig(null,"");
+						initSMSInstanceConfig(null,"");
+						if(executor!=null && executor.isCompletedByTaskCount()){
+							//清空内存
+							AdInitMap.cleanData();
+							initDriverAcquisitionInfoConfig(null,0,"");
+						}
+						driverProbeResponse=adInitProbe();
+						if(driverProbeResponse==null){
+							continue;
+						}
+					}
+					
+					if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
+						while(driverProbeResponse!=null && ( (!driverProbeResponse.getProtocolInitStatus())||(!driverProbeResponse.getInstanceInitStatus()) )){
+							if(!driverProbeResponse.getProtocolInitStatus()){
+								initProtocolConfig("","");
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+						}
+					}
+					
+					if(driverProbeResponse!=null && !driverProbeResponse.getSMSInitStatus()){
+//						initSMSDevice(null,"");
+					}
+					
+					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+						while(driverProbeResponse!=null 
+								&& ( 
+										(!driverProbeResponse.getProtocolInitStatus())
+										||(!driverProbeResponse.getInstanceInitStatus()) 
+										||(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() ))
+									)
+								){
+							if(!driverProbeResponse.getProtocolInitStatus()){
+								initProtocolConfig("","");
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
+								initInstanceConfig(null,"");
+								initSMSInstanceConfig(null,"");
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+							if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
+						}
+					}
+					Ver=driverProbeResponse.getVer();
+				}else{
+					if(!sendMsg){
+						StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+						sendMsg=true;
+					}
+				}
+				try {
+					Thread.sleep(1000*1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}while(true);
+		}
 	}
 	
 	

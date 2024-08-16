@@ -139,8 +139,8 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                         region: 'center',
                         title: '采集项配置',
                         layout: 'fit',
-                        id: 'importAlarmUnitItemsConfigTableInfoPanel_id',
-                        html: '<div class="importAlarmUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitItemsConfigTableInfoDiv_id"></div></div>',
+                        id: 'importAlarmUnitNumItemsConfigTableInfoPanel_id',
+                        html: '<div class="importAlarmUnitNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitNumItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                              	if(importAlarmUnitConfigNumItemsHandsontableHelper!=null && importAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
@@ -581,7 +581,7 @@ function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,unitName){
 			
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigNumItemsHandsontableHelper==null || importAlarmUnitConfigNumItemsHandsontableHelper.hot==undefined){
-				importAlarmUnitConfigNumItemsHandsontableHelper = ImportAlarmUnitConfigNumItemsHandsontableHelper.createNew("importAlarmUnitItemsConfigTableInfoDiv_id");
+				importAlarmUnitConfigNumItemsHandsontableHelper = ImportAlarmUnitConfigNumItemsHandsontableHelper.createNew("importAlarmUnitNumItemsConfigTableInfoDiv_id");
 				var colHeaders="['序号','名称','地址','上限','下限','回差','延时(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr'},"

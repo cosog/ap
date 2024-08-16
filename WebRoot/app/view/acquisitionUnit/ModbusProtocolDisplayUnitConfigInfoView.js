@@ -264,27 +264,33 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             }
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
-                var colHeaders = "['','序号','名称','单位','显示级别','实时字段顺序','实时字段前景色','实时字段背景色','历史字段顺序','历史字段前景色','历史字段背景色','实时曲线','历史曲线','','','','','']";
-                var columns = "[" +
-                    "{data:'checked',type:'checkbox'}," +
-                    "{data:'id'}," +
-                    "{data:'title'}," +
-                    "{data:'unit'}," +
-                    "{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
-                    "{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
-                    "{data:'realtimeColor'}," +
-                    "{data:'realtimeBgColor'}," +
-                    "{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
-                    "{data:'historyColor'}," +
-                    "{data:'historyBgColor'}," +
-                    "{data:'realtimeCurveConfShowValue'}," +
-                    "{data:'historyCurveConfShowValue'}," +
-                    "{data:'realtimeCurveConf'}," +
-                    "{data:'historyCurveConf'}," +
-                    "{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," +
-                    "{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," +
-                    "{data:'bitIndex'}" +
-                    "]";
+                var colHeaders = "[" 
+                	+"['','','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'','','','','']," 
+                	+"['','序号','名称','单位','显示级别'," 
+                	+"'顺序','前景色','背景色','曲线'," 
+                	+"'顺序','前景色','背景色','曲线'," 
+                	+"'','','','','']"
+                	+"]";
+                var columns = "[" 
+                    +"{data:'checked',type:'checkbox'}," 
+                    +"{data:'id'}," 
+                    +"{data:'title'}," 
+                    +"{data:'unit'}," 
+                    +"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'realtimeColor'}," 
+                    +"{data:'realtimeBgColor'}," 
+                    +"{data:'realtimeCurveConfShowValue'}," 
+                    +"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'historyColor'}," 
+                    +"{data:'historyBgColor'}," 
+                    +"{data:'historyCurveConfShowValue'}," 
+                    +"{data:'realtimeCurveConf'}," 
+                    +"{data:'historyCurveConf'}," 
+                    +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
+                    +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'bitIndex'}" 
+                    +"]";
 
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns = Ext.JSON.decode(columns);
@@ -358,12 +364,13 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [25, 50, 140, 80, 60, 85, 95, 95, 85, 95, 95, 85, 85],
+                colWidths: [25, 50, 140, 80, 60, 80, 80, 80, 80, 80, 80, 80, 80],
                 columns: protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
                 rowHeaders: false, //显示行头
-                colHeaders: protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders, //显示列头
+//                colHeaders: protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders, //显示列头
+                nestedHeaders:protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders,//显示列头
                 columnSorting: true, //允许排序
                 sortIndicator: true,
                 manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
@@ -382,9 +389,9 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                             var selectedItem = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
                             if (selectedItem.data.classes != 2) {
                                 cellProperties.readOnly = true;
-                                if (visualColIndex == 11 || visualColIndex == 12) {
+                                if (visualColIndex == 8 || visualColIndex == 12) {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-                                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 10 || visualColIndex == 11) {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
                                 } else {
                                     if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
@@ -397,9 +404,9 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                     cellProperties.readOnly = true;
                                 }
 
-                                if (visualColIndex == 11 || visualColIndex == 12) {
+                                if (visualColIndex == 8 || visualColIndex == 12) {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-                                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 10 || visualColIndex == 11) {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
                                 } else {
                                     if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
@@ -411,9 +418,9 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                         }
                     } else {
                         cellProperties.readOnly = true;
-                        if (visualColIndex == 11 || visualColIndex == 12) {
+                        if (visualColIndex == 8 || visualColIndex == 12) {
                             cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-                        } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+                        } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 10 || visualColIndex == 11) {
                             cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
                         } else {
                             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
@@ -427,7 +434,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 },
                 afterBeginEditing: function (row, column) {
                     var row1 = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-                    if (row1[0] && (column == 11 || column == 12)) {
+                    if (row1[0] && (column == 8 || column == 12)) {
                         var ScadaDriverModbusConfigSelectRow = Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
                         if (ScadaDriverModbusConfigSelectRow != '') {
                             var selectedItem = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -441,7 +448,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 CurveConfigWindow.show();
 
                                 var curveConfig = null;
-                                if (column == 11 && isNotVal(row1[13])) {
+                                if (column == 8 && isNotVal(row1[13])) {
                                     curveConfig = row1[13];
                                 } else if (column == 12 && isNotVal(row1[14])) {
                                     curveConfig = row1[14];
@@ -468,7 +475,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 }
                             }
                         }
-                    } else if (row1[0] && (column == 6 || column == 7 || column == 9 || column == 10)) {
+                    } else if (row1[0] && (column == 6 || column == 7 || column == 10 || column == 11)) {
                         var CellColorSelectWindow = Ext.create("AP.view.acquisitionUnit.CellColorSelectWindow");
 
                         Ext.getCmp("cellColorSelectedTableType_Id").setValue(231); //采集项表
@@ -556,9 +563,13 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别'," 
-					+"'实时字段顺序','实时字段前景色','实时字段背景色','历史字段顺序','历史字段前景色','历史字段背景色'," 
-					+"'实时曲线','历史曲线','','','','数据来源']";
+				var colHeaders="[" 
+					+"['','','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'','','','']," 
+					+"['','序号','名称','单位','显示级别'," 
+					+"'顺序','前景色','背景色','曲线'," 
+					+"'顺序','前景色','背景色','曲线'," 
+					+"'','','','数据来源']" 
+					+"]";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -568,10 +579,10 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeColor'}," 
 	                    +"{data:'realtimeBgColor'}," 
+	                    +"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCalItemsConfigHandsontableHelper);}}," 
 						+"{data:'historyColor'}," 
 	                    +"{data:'historyBgColor'}," 
-						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
 						+"{data:'historyCurveConf'},"
@@ -649,12 +660,13 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,85,95,95,85,95,95,85,85,85,85,85,85],
+	                colWidths: [25,50,140,80,60, 80,80,80,80, 80,80,80,80, 80,80,80,80],
 	                columns:protocolDisplayUnitCalItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:protocolDisplayUnitCalItemsConfigHandsontableHelper.colHeaders,//显示列头
+//	                colHeaders:protocolDisplayUnitCalItemsConfigHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:protocolDisplayUnitCalItemsConfigHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -682,9 +694,9 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    if(visualColIndex==11||visualColIndex==12){
+	                    if(visualColIndex==8||visualColIndex==12){
 		                	cellProperties.renderer = protocolDisplayUnitCalItemsConfigHandsontableHelper.addCurveBg;
-		                }else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+		                }else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 10 || visualColIndex == 11) {
                             cellProperties.renderer = protocolDisplayUnitCalItemsConfigHandsontableHelper.addCellBgColor;
                         }else{
 		                	if(protocolDisplayUnitCalItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -696,7 +708,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                },
 	                afterBeginEditing:function(row,column){
 	                	var row1=protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==11||column==12)){
+	                	if(row1[0] && (column==8||column==12)){
 	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
 	                		if(ScadaDriverModbusConfigSelectRow!=''){
 	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -710,7 +722,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                				CurveConfigWindow.show();
 	                				
 	                				var curveConfig=null;
-	                				if(column==11 && isNotVal(row1[13])){
+	                				if(column==8 && isNotVal(row1[13])){
 	                					curveConfig=row1[13];
 	                				}else if(column==12 && isNotVal(row1[14])){
 	                					curveConfig=row1[14];
@@ -740,7 +752,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                				}
 	                			}
 	                		}
-	                	}else if (row1[0] && (column == 6 || column == 7 || column == 9 || column == 10)) {
+	                	}else if (row1[0] && (column == 6 || column == 7 || column == 10 || column == 11)) {
 	                        var CellColorSelectWindow = Ext.create("AP.view.acquisitionUnit.CellColorSelectWindow");
 
 	                        Ext.getCmp("cellColorSelectedTableType_Id").setValue(232); //采集项表
@@ -1002,9 +1014,13 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			}
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别'," 
-					+"'实时字段顺序','实时字段前景色','实时字段背景色','历史字段顺序','历史字段前景色','历史字段背景色'," 
-					+"'实时曲线','历史曲线','','','']";
+				var colHeaders="[" 
+					+"['','','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'','','']," 
+					+"['','序号','名称','单位','显示级别'," 
+					+"'顺序','前景色','背景色','曲线'," 
+					+"'顺序','前景色','背景色','曲线'," 
+					+"'','','']" 
+					+"]";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -1014,10 +1030,10 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeColor'}," 
 	                    +"{data:'realtimeBgColor'}," 
+						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitInputItemsConfigHandsontableHelper);}}," 
 						+"{data:'historyColor'}," 
 	                    +"{data:'historyBgColor'}," 
-						+"{data:'realtimeCurveConfShowValue'},"
 						+"{data:'historyCurveConfShowValue'},"
 						+"{data:'realtimeCurveConf'},"
 						+"{data:'historyCurveConf'},"
@@ -1094,12 +1110,13 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,85,95,95,85,95,95,85,85],
+	                colWidths: [25,50,140,80,60,80,80,80,80,80,80,80,80],
 	                columns:protocolDisplayUnitInputItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:protocolDisplayUnitInputItemsConfigHandsontableHelper.colHeaders,//显示列头
+//	                colHeaders:protocolDisplayUnitInputItemsConfigHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:protocolDisplayUnitInputItemsConfigHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -1127,9 +1144,9 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    if(visualColIndex==11||visualColIndex==12){
+	                    if(visualColIndex==8||visualColIndex==12){
 		                	cellProperties.renderer = protocolDisplayUnitInputItemsConfigHandsontableHelper.addCurveBg;
-		                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 9 || visualColIndex == 10) {
+		                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 10 || visualColIndex == 11) {
                             cellProperties.renderer = protocolDisplayUnitInputItemsConfigHandsontableHelper.addCellBgColor;
                         }else{
 		                	if(protocolDisplayUnitInputItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -1141,7 +1158,7 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                },
 	                afterBeginEditing:function(row,column){
 	                	var row1=protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0] && (column==11||column==12)){
+	                	if(row1[0] && (column==8||column==12)){
 	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
 	                		if(ScadaDriverModbusConfigSelectRow!=''){
 	                			var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -1155,7 +1172,7 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                				CurveConfigWindow.show();
 	                				
 	                				var curveConfig=null;
-	                				if(column==11 && isNotVal(row1[13])){
+	                				if(column==8 && isNotVal(row1[13])){
 	                					curveConfig=row1[13];
 	                				}else if(column==12 && isNotVal(row1[14])){
 	                					curveConfig=row1[14];
@@ -1185,7 +1202,7 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                				}
 	                			}
 	                		}
-	                	}else if (row1[0] && (column == 6 || column == 7 || column == 9 || column == 10)) {
+	                	}else if (row1[0] && (column == 6 || column == 7 || column == 10 || column == 11)) {
 	                        var CellColorSelectWindow = Ext.create("AP.view.acquisitionUnit.CellColorSelectWindow");
 
 	                        Ext.getCmp("cellColorSelectedTableType_Id").setValue(234); //录入项表
@@ -1566,24 +1583,21 @@ var grantDisplayAcqItemsPermission = function () {
         	var itemName = acqItemsData[index][2];
         	
         	var itemShowLevel = acqItemsData[index][4];
-        	var itemRealtimeSort = acqItemsData[index][5];
         	
+        	var itemRealtimeSort = acqItemsData[index][5];
         	var realtimeColor= acqItemsData[index][6];
         	var realtimeBgColor= acqItemsData[index][7];
-        	
-        	var itemHistorySort = acqItemsData[index][8];
-        	var historyColor= acqItemsData[index][9];
-        	var historyBgColor= acqItemsData[index][10];
-        	
         	var realtimeCurveConfigStr="";
-        	var historyCurveConfigStr="";
-        	
         	var realtimeCurveConfig=null;
-			if(isNotVal(acqItemsData[index][11]) && isNotVal(acqItemsData[index][13])){
+			if(isNotVal(acqItemsData[index][8]) && isNotVal(acqItemsData[index][13])){
 				realtimeCurveConfig=acqItemsData[index][13];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
-			
+        	
+        	var itemHistorySort = acqItemsData[index][9];
+        	var historyColor= acqItemsData[index][10];
+        	var historyBgColor= acqItemsData[index][11];
+        	var historyCurveConfigStr="";
 			var historyCurveConfig=null;
 			if(isNotVal(acqItemsData[index][12]) && isNotVal(acqItemsData[index][14])){
 				historyCurveConfig=acqItemsData[index][14];
@@ -1675,20 +1689,17 @@ var grantDisplayCalItemsPermission = function () {
         	var itemRealtimeSort = calItemsData[index][5];
         	var realtimeColor= calItemsData[index][6];
         	var realtimeBgColor= calItemsData[index][7];
-        	
-        	var itemHistorySort = calItemsData[index][8];
-        	var historyColor= calItemsData[index][9];
-        	var historyBgColor= calItemsData[index][10];
-        	
         	var realtimeCurveConfigStr="";
-        	var historyCurveConfigStr="";
-
         	var realtimeCurveConfig=null;
-			if(isNotVal(calItemsData[index][11]) && isNotVal(calItemsData[index][13])){
+			if(isNotVal(calItemsData[index][8]) && isNotVal(calItemsData[index][13])){
 				realtimeCurveConfig=calItemsData[index][13];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
-			
+        	
+        	var itemHistorySort = calItemsData[index][9];
+        	var historyColor= calItemsData[index][10];
+        	var historyBgColor= calItemsData[index][11];
+        	var historyCurveConfigStr="";
 			var historyCurveConfig=null;
 			if(isNotVal(calItemsData[index][12]) && isNotVal(calItemsData[index][14])){
 				historyCurveConfig=calItemsData[index][14];
@@ -1860,20 +1871,17 @@ var grantDisplayInputItemsPermission = function () {
         	var itemRealtimeSort = inputItemsData[index][5];
         	var realtimeColor= inputItemsData[index][6];
         	var realtimeBgColor= inputItemsData[index][7];
-        	
-        	var itemHistorySort = inputItemsData[index][8];
-        	var historyColor= inputItemsData[index][9];
-        	var historyBgColor= inputItemsData[index][10];
-        	
         	var realtimeCurveConfigStr="";
-        	var historyCurveConfigStr="";
-
         	var realtimeCurveConfig=null;
-			if(isNotVal(inputItemsData[index][11]) && isNotVal(inputItemsData[index][13])){
+			if(isNotVal(inputItemsData[index][8]) && isNotVal(inputItemsData[index][13])){
 				realtimeCurveConfig=inputItemsData[index][13];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
-			
+        	
+        	var itemHistorySort = inputItemsData[index][9];
+        	var historyColor= inputItemsData[index][10];
+        	var historyBgColor= inputItemsData[index][11];
+        	var historyCurveConfigStr="";
 			var historyCurveConfig=null;
 			if(isNotVal(inputItemsData[index][12]) && isNotVal(inputItemsData[index][14])){
 				historyCurveConfig=inputItemsData[index][14];

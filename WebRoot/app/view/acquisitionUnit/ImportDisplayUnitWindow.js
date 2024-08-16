@@ -419,15 +419,24 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitAcqItemsHandsontableHelper==null || importDisplayUnitAcqItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitAcqItemsHandsontableHelper = ImportDisplayUnitAcqItemsHandsontableHelper.createNew("importDisplayUnitAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线']";
+				var colHeaders = "[" 
+                	+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
+                	+"['序号','名称','单位','显示级别'," 
+                	+"'顺序','前景色','背景色','曲线'," 
+                	+"'顺序','前景色','背景色','曲线']"
+                	+"]";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
-						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'realtimeColor'}," 
+	                    +"{data:'realtimeBgColor'}," 
 						+"{data:'realtimeCurveConfShowValue'},"
+						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+						+"{data:'historyColor'}," 
+	                    +"{data:'historyBgColor'}," 
 						+"{data:'historyCurveConfShowValue'}"
 						+"]";
 				importDisplayUnitAcqItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
@@ -482,6 +491,16 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value != null) {
+	                td.style.backgroundColor = '#' + value;
+	            }
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+	        }
+	        
 	        importDisplayUnitAcqItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -495,12 +514,13 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	        	importDisplayUnitAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,85,85,85,85],
+	        		colWidths: [50,140,80,60,80,80,80,80,80,80,80,80],
 	                columns:importDisplayUnitAcqItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:importDisplayUnitAcqItemsHandsontableHelper.colHeaders,//显示列头
+//	                colHeaders:importDisplayUnitAcqItemsHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:importDisplayUnitAcqItemsHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -514,9 +534,11 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6||visualColIndex==7){
+	                    if(visualColIndex==7||visualColIndex==11){
 		                	cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCurveBg;
-		                }else{
+		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
+                            cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCellBgColor;
+                        }else{
 		                	cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCellStyle;
 		                }
 	                    return cellProperties;
@@ -735,18 +757,30 @@ function CreateImportDisplayUnitCalItemsInfoTable(protocolName,acqUnitName,unitN
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitCalItemsHandsontableHelper==null || importDisplayUnitCalItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitCalItemsHandsontableHelper = ImportDisplayUnitCalItemsHandsontableHelper.createNew("importDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线','数据来源']";
+				
+				var colHeaders="[" 
+					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'']," 
+					+"['序号','名称','单位','显示级别'," 
+					+"'顺序','前景色','背景色','曲线'," 
+					+"'顺序','前景色','背景色','曲线'," 
+					+"'数据来源']" 
+					+"]";
+				
 				var columns="["
-						+"{data:'id'}," 
-						+"{data:'title'},"
-						+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitCalItemsHandsontableHelper);}}," 
-						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitCalItemsHandsontableHelper);}}," 
-						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitCalItemsHandsontableHelper);}}," 
-						+"{data:'realtimeCurveConfShowValue'},"
-						+"{data:'historyCurveConfShowValue'},"
-						+"{data:'dataSource'}"
-						+"]";
+					+"{data:'id'}," 
+					+"{data:'title'},"
+					+"{data:'unit'},"
+					+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
+					+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
+					+"{data:'realtimeColor'}," 
+                    +"{data:'realtimeBgColor'}," 
+					+"{data:'realtimeCurveConfShowValue'},"
+					+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
+					+"{data:'historyColor'}," 
+                    +"{data:'historyBgColor'}," 
+					+"{data:'historyCurveConfShowValue'},"
+					+"{data:'dataSource'}"
+					+"]";
 				importDisplayUnitCalItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importDisplayUnitCalItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -799,6 +833,16 @@ var ImportDisplayUnitCalItemsHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        importDisplayUnitCalItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value != null) {
+	                td.style.backgroundColor = '#' + value;
+	            }
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+	        }
+	        
 	        importDisplayUnitCalItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -812,12 +856,13 @@ var ImportDisplayUnitCalItemsHandsontableHelper = {
 	        	importDisplayUnitCalItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,85,85,85,85,85],
+	        		colWidths: [50,140,80,60,80,80,80,80,80,80,80,80,80],
 	                columns:importDisplayUnitCalItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:importDisplayUnitCalItemsHandsontableHelper.colHeaders,//显示列头
+//	                colHeaders:importDisplayUnitCalItemsHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:importDisplayUnitCalItemsHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -831,9 +876,11 @@ var ImportDisplayUnitCalItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6||visualColIndex==7){
+	                    if(visualColIndex==7||visualColIndex==11){
 		                	cellProperties.renderer = importDisplayUnitCalItemsHandsontableHelper.addCurveBg;
-		                }else{
+		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
+                            cellProperties.renderer = importDisplayUnitCalItemsHandsontableHelper.addCellBgColor;
+                        }else{
 		                	if(importDisplayUnitCalItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 		    	            	&& importDisplayUnitCalItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
 		                    	cellProperties.renderer = importDisplayUnitCalItemsHandsontableHelper.addCellStyle;
@@ -906,17 +953,27 @@ function CreateImportDisplayUnitInputItemsInfoTable(protocolName,acqUnitName,uni
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitInputItemsHandsontableHelper==null || importDisplayUnitInputItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitInputItemsHandsontableHelper = ImportDisplayUnitInputItemsHandsontableHelper.createNew("importDisplayUnitInputItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线']";
+				var colHeaders="[" 
+					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
+					+"['序号','名称','单位','显示级别'," 
+					+"'顺序','前景色','背景色','曲线'," 
+					+"'顺序','前景色','背景色','曲线']" 
+					+"]";
+				
 				var columns="["
-						+"{data:'id'}," 
-						+"{data:'title'},"
-						+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitInputItemsHandsontableHelper);}}," 
-						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitInputItemsHandsontableHelper);}}," 
-						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitInputItemsHandsontableHelper);}}," 
-						+"{data:'realtimeCurveConfShowValue'},"
-						+"{data:'historyCurveConfShowValue'}"
-						+"]";
+					+"{data:'id'}," 
+					+"{data:'title'},"
+					+"{data:'unit'},"
+					+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
+					+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
+					+"{data:'realtimeColor'}," 
+                    +"{data:'realtimeBgColor'}," 
+					+"{data:'realtimeCurveConfShowValue'},"
+					+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
+					+"{data:'historyColor'}," 
+                    +"{data:'historyBgColor'}," 
+					+"{data:'historyCurveConfShowValue'}"
+					+"]";
 				importDisplayUnitInputItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importDisplayUnitInputItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -969,6 +1026,16 @@ var ImportDisplayUnitInputItemsHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        importDisplayUnitInputItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value != null) {
+	                td.style.backgroundColor = '#' + value;
+	            }
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+	        }
+	        
 	        importDisplayUnitInputItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -982,12 +1049,13 @@ var ImportDisplayUnitInputItemsHandsontableHelper = {
 	        	importDisplayUnitInputItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,85,85,85,85],
+	        		colWidths: [50,140,80,60,80,80,80,80,80,80,80,80],
 	                columns:importDisplayUnitInputItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:importDisplayUnitInputItemsHandsontableHelper.colHeaders,//显示列头
+//	                colHeaders:importDisplayUnitInputItemsHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:importDisplayUnitInputItemsHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -1001,9 +1069,11 @@ var ImportDisplayUnitInputItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==6||visualColIndex==7){
+	                    if(visualColIndex==7||visualColIndex==11){
 		                	cellProperties.renderer = importDisplayUnitInputItemsHandsontableHelper.addCurveBg;
-		                }else{
+		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
+                            cellProperties.renderer = importDisplayUnitInputItemsHandsontableHelper.addCellBgColor;
+                        }else{
 		                	if(importDisplayUnitInputItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 		    	            	&& importDisplayUnitInputItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
 		                    	cellProperties.renderer = importDisplayUnitInputItemsHandsontableHelper.addCellStyle;

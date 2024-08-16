@@ -6116,8 +6116,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getUploadedAlarmInstanceTreeData")
 	public String getUploadedAlarmInstanceTreeData() throws IOException {
 		HttpSession session=request.getSession();
-		List<ExportAlarmInstanceData> uploadInstanceList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		List<ExportAlarmInstanceData> uploadInstanceList=null;
 		User user = (User) session.getAttribute("userLogin");
 		try{
 			if(session.getAttribute("uploadAlarmInstanceFile")!=null){
@@ -6128,6 +6128,35 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 		}
 		String json = acquisitionUnitItemManagerService.getUploadedAlarmInstanceTreeData(uploadInstanceList,deviceType,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getImportAlarmInstanceItemsData")
+	public String getImportAlarmInstanceItemsData() throws IOException {
+		HttpSession session=request.getSession();
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String instanceName=ParamUtils.getParameter(request, "instanceName");
+		String alarmType=ParamUtils.getParameter(request, "alarmType");
+		
+		
+		List<ExportAlarmInstanceData> uploadInstanceList=null;
+		User user = (User) session.getAttribute("userLogin");
+		try{
+			if(session.getAttribute("uploadAlarmInstanceFile")!=null){
+				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute("uploadAlarmInstanceFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = acquisitionUnitItemManagerService.getImportAlarmInstanceItemsData(uploadInstanceList,protocolName,unitName,instanceName,alarmType,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

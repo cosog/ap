@@ -1,6 +1,6 @@
-var protocolConfigAddrMappingItemsHandsontableHelper=null;
-var protocolConfigAddrMaooingPropertiesHandsontableHelper=null;
-var protocolAddrMappingItemsMeaningConfigHandsontableHelper=null;
+var protocolItemsConfigHandsontableHelper=null;
+var protocolPropertiesHandsontableHelper=null;
+var protocolItemsMeaningConfigHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolConfigInfoView',
@@ -142,15 +142,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         html:'<div class="ModbusProtocolAddrMappingPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolConfigAddrMaooingPropertiesHandsontableHelper!=null && protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=undefined){
-//                            		protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.refreshDimensions();
+                            	if(protocolPropertiesHandsontableHelper!=null && protocolPropertiesHandsontableHelper.hot!=undefined){
+//                            		protocolPropertiesHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;
                             		}
-                            		protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.updateSettings({
+                            		protocolPropertiesHandsontableHelper.hot.updateSettings({
                             			width:newWidth,
                             			height:newHeight
                             		});
@@ -175,15 +175,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         html:'<div class="ModbusProtocolAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolConfigAddrMappingItemsHandsontableHelper!=null && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-//                            		protocolConfigAddrMappingItemsHandsontableHelper.hot.refreshDimensions();
+                            	if(protocolItemsConfigHandsontableHelper!=null && protocolItemsConfigHandsontableHelper.hot!=undefined){
+//                            		protocolItemsConfigHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;
                             		}
-                            		protocolConfigAddrMappingItemsHandsontableHelper.hot.updateSettings({
+                            		protocolItemsConfigHandsontableHelper.hot.updateSettings({
                             			width:newWidth,
                             			height:newHeight
                             		});
@@ -203,15 +203,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         html:'<div class="ModbusProtocolAddrMappingItemsMeaningTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null && protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined){
-//                            		protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.refreshDimensions();
+                            	if(protocolItemsMeaningConfigHandsontableHelper!=null && protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+//                            		protocolItemsMeaningConfigHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;
                             		}
-                            		protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.updateSettings({
+                            		protocolItemsMeaningConfigHandsontableHelper.hot.updateSettings({
                             			width:newWidth,
                             			height:newHeight
                             		});
@@ -236,40 +236,40 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
 			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle(protocolName);
 			var result =  Ext.JSON.decode(response.responseText);
-			if(protocolConfigAddrMappingItemsHandsontableHelper==null || protocolConfigAddrMappingItemsHandsontableHelper.hot==undefined){
-				protocolConfigAddrMappingItemsHandsontableHelper = ProtocolConfigAddrMappingItemsHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id");
+			if(protocolItemsConfigHandsontableHelper==null || protocolItemsConfigHandsontableHelper.hot==undefined){
+				protocolItemsConfigHandsontableHelper = ProtocolItemsConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
 					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
 					+"['序号','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
 					+"]";
 				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}},"
+					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}},"
 					 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
-					 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
+					 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
 					 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '只写', '读写']}," 
 					 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}," 
 						+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
-						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
-						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
+						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
+						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
 						+"{data:'unit'}," 
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
 						+"]";
-				protocolConfigAddrMappingItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				protocolConfigAddrMappingItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+				protocolItemsConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				protocolItemsConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
-					protocolConfigAddrMappingItemsHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-					protocolConfigAddrMappingItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					protocolItemsConfigHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+					protocolItemsConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
-					protocolConfigAddrMappingItemsHandsontableHelper.Data=result.totalRoot;
-					protocolConfigAddrMappingItemsHandsontableHelper.createTable(result.totalRoot);
+					protocolItemsConfigHandsontableHelper.Data=result.totalRoot;
+					protocolItemsConfigHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				if(result.totalRoot.length==0){
-					protocolConfigAddrMappingItemsHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-					protocolConfigAddrMappingItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					protocolItemsConfigHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+					protocolItemsConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
-					protocolConfigAddrMappingItemsHandsontableHelper.Data=result.totalRoot;
-					protocolConfigAddrMappingItemsHandsontableHelper.hot.loadData(result.totalRoot);
+					protocolItemsConfigHandsontableHelper.Data=result.totalRoot;
+					protocolItemsConfigHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
 			if(result.totalRoot.length==0){
@@ -287,7 +287,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
             			protocolCode=selectedProtocol.data.children[0].code;
             		}
             		
-            		var row1=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtRow(0);
+            		var row1=protocolItemsConfigHandsontableHelper.hot.getDataAtRow(0);
             		var itemAddr=row1[2];
             		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
         		}
@@ -305,37 +305,37 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 	});
 };
 
-var ProtocolConfigAddrMappingItemsHandsontableHelper = {
+var ProtocolItemsConfigHandsontableHelper = {
 		createNew: function (divid) {
-	        var protocolConfigAddrMappingItemsHandsontableHelper = {};
-	        protocolConfigAddrMappingItemsHandsontableHelper.hot1 = '';
-	        protocolConfigAddrMappingItemsHandsontableHelper.divid = divid;
-	        protocolConfigAddrMappingItemsHandsontableHelper.validresult=true;//数据校验
-	        protocolConfigAddrMappingItemsHandsontableHelper.colHeaders=[];
-	        protocolConfigAddrMappingItemsHandsontableHelper.columns=[];
-	        protocolConfigAddrMappingItemsHandsontableHelper.AllData=[];
-	        protocolConfigAddrMappingItemsHandsontableHelper.Data=[];
+	        var protocolItemsConfigHandsontableHelper = {};
+	        protocolItemsConfigHandsontableHelper.hot1 = '';
+	        protocolItemsConfigHandsontableHelper.divid = divid;
+	        protocolItemsConfigHandsontableHelper.validresult=true;//数据校验
+	        protocolItemsConfigHandsontableHelper.colHeaders=[];
+	        protocolItemsConfigHandsontableHelper.columns=[];
+	        protocolItemsConfigHandsontableHelper.AllData=[];
+	        protocolItemsConfigHandsontableHelper.Data=[];
 	        
-	        protocolConfigAddrMappingItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolItemsConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        protocolConfigAddrMappingItemsHandsontableHelper.createTable = function (data) {
-	        	$('#'+protocolConfigAddrMappingItemsHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+protocolConfigAddrMappingItemsHandsontableHelper.divid);
-	        	protocolConfigAddrMappingItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        protocolItemsConfigHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolItemsConfigHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolItemsConfigHandsontableHelper.divid);
+	        	protocolItemsConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		colWidths: [50,130,80,90,90,80,80,90,80,80,80,80],
-	                columns:protocolConfigAddrMappingItemsHandsontableHelper.columns,
+	                columns:protocolItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-//	                colHeaders:protocolConfigAddrMappingItemsHandsontableHelper.colHeaders,//显示列头
-	                nestedHeaders:protocolConfigAddrMappingItemsHandsontableHelper.colHeaders,//显示列头
+//	                colHeaders:protocolItemsConfigHandsontableHelper.colHeaders,//显示列头
+	                nestedHeaders:protocolItemsConfigHandsontableHelper.colHeaders,//显示列头
 	                nestedRows:true,
 	                columnHeaderHeight: 28,
 	                columnSorting: true,//允许排序
@@ -397,8 +397,8 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    if(protocolConfigAddrMappingItemsHandsontableHelper.columns[visualColIndex].type == undefined || protocolConfigAddrMappingItemsHandsontableHelper.columns[visualColIndex].type!='dropdown'){
-                    		cellProperties.renderer = protocolConfigAddrMappingItemsHandsontableHelper.addCellStyle;
+	                    if(protocolItemsConfigHandsontableHelper.columns[visualColIndex].type == undefined || protocolItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown'){
+                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.addCellStyle;
                     	}
 	                    
 	                    return cellProperties;
@@ -415,15 +415,15 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
 	                    			protocolCode=selectedProtocol.data.children[0].code;
 	                    		}
-	                    		var row1=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtRow(row);
+	                    		var row1=protocolItemsConfigHandsontableHelper.hot.getDataAtRow(row);
 	                    		var itemAddr=row1[2];
 	                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
 	                		}
 	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolConfigAddrMappingItemsHandsontableHelper!=null&&protocolConfigAddrMappingItemsHandsontableHelper.hot!=''&&protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined && protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                	if(protocolItemsConfigHandsontableHelper!=null&&protocolItemsConfigHandsontableHelper.hot!=''&&protocolItemsConfigHandsontableHelper.hot!=undefined && protocolItemsConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolItemsConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
             					var rowChar=90;
@@ -464,11 +464,11 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	        	});
 	        }
 	        //保存数据
-	        protocolConfigAddrMappingItemsHandsontableHelper.saveData = function () {}
-	        protocolConfigAddrMappingItemsHandsontableHelper.clearContainer = function () {
-	        	protocolConfigAddrMappingItemsHandsontableHelper.AllData = [];
+	        protocolItemsConfigHandsontableHelper.saveData = function () {}
+	        protocolItemsConfigHandsontableHelper.clearContainer = function () {
+	        	protocolItemsConfigHandsontableHelper.AllData = [];
 	        }
-	        return protocolConfigAddrMappingItemsHandsontableHelper;
+	        return protocolItemsConfigHandsontableHelper;
 	    }
 };
 
@@ -495,34 +495,34 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		root.push(item2);
 	}
 	
-	if(protocolConfigAddrMaooingPropertiesHandsontableHelper==null || protocolConfigAddrMaooingPropertiesHandsontableHelper.hot==undefined){
-		protocolConfigAddrMaooingPropertiesHandsontableHelper = ProtocolConfigAddrMaooingPropertiesHandsontableHelper.createNew("ModbusProtocolAddrMappingPropertiesTableInfoDiv_id");
+	if(protocolPropertiesHandsontableHelper==null || protocolPropertiesHandsontableHelper.hot==undefined){
+		protocolPropertiesHandsontableHelper = ProtocolPropertiesHandsontableHelper.createNew("ModbusProtocolAddrMappingPropertiesTableInfoDiv_id");
 		var colHeaders="['序号','名称','变量']";
 		var columns="[{data:'id'}," 
 			+"{data:'title'}," 
 			+"{data:'value'}]";
-		protocolConfigAddrMaooingPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-		protocolConfigAddrMaooingPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
-		protocolConfigAddrMaooingPropertiesHandsontableHelper.classes=data.classes;
-		protocolConfigAddrMaooingPropertiesHandsontableHelper.createTable(root);
+		protocolPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+		protocolPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
+		protocolPropertiesHandsontableHelper.classes=data.classes;
+		protocolPropertiesHandsontableHelper.createTable(root);
 	}else{
-		protocolConfigAddrMaooingPropertiesHandsontableHelper.classes=data.classes;
-		protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.loadData(root);
+		protocolPropertiesHandsontableHelper.classes=data.classes;
+		protocolPropertiesHandsontableHelper.hot.loadData(root);
 	}
 };
 
-var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
+var ProtocolPropertiesHandsontableHelper = {
 		createNew: function (divid) {
-	        var protocolConfigAddrMaooingPropertiesHandsontableHelper = {};
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.hot = '';
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.classes =null;
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.divid = divid;
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.validresult=true;//数据校验
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.colHeaders=[];
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.columns=[];
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.AllData=[];
+	        var protocolPropertiesHandsontableHelper = {};
+	        protocolPropertiesHandsontableHelper.hot = '';
+	        protocolPropertiesHandsontableHelper.classes =null;
+	        protocolPropertiesHandsontableHelper.divid = divid;
+	        protocolPropertiesHandsontableHelper.validresult=true;//数据校验
+	        protocolPropertiesHandsontableHelper.colHeaders=[];
+	        protocolPropertiesHandsontableHelper.columns=[];
+	        protocolPropertiesHandsontableHelper.AllData=[];
 	        
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -530,25 +530,25 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolPropertiesHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.createTable = function (data) {
-	        	$('#'+protocolConfigAddrMaooingPropertiesHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+protocolConfigAddrMaooingPropertiesHandsontableHelper.divid);
-	        	protocolConfigAddrMaooingPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
+	        protocolPropertiesHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolPropertiesHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolPropertiesHandsontableHelper.divid);
+	        	protocolPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		colWidths: [2,3,5],
-	                columns:protocolConfigAddrMaooingPropertiesHandsontableHelper.columns,
+	                columns:protocolPropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:protocolConfigAddrMaooingPropertiesHandsontableHelper.colHeaders,//显示列头
+	                colHeaders:protocolPropertiesHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -563,35 +563,35 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	                    
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
-	                    	if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===0){
+	                    	if(protocolPropertiesHandsontableHelper.classes===0){
 								cellProperties.readOnly = true;
-								cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
-		                    }else if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
+								cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
+		                    }else if(protocolPropertiesHandsontableHelper.classes===1){
 		                    	if (visualColIndex ==0 || visualColIndex ==1) {
 									cellProperties.readOnly = true;
-									cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
+									cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
 				                }else if(visualColIndex === 2 && visualRowIndex===0){
 			                    	this.validator=function (val, callback) {
-			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolPropertiesHandsontableHelper);
 			                    	}
-			                    	cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addCellStyle;
+			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addCellStyle;
 			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 			                    	this.validator=function (val, callback) {
-			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolPropertiesHandsontableHelper);
 			                    	}
-			                    	cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addCellStyle;
+			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addCellStyle;
 			                    }
 		                    }
 	                    }else{
 							cellProperties.readOnly = true;
-							cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
+							cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
 	                    }
 	                    
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolConfigAddrMaooingPropertiesHandsontableHelper!=null&&protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=''&&protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=undefined && protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                	if(protocolPropertiesHandsontableHelper!=null&&protocolPropertiesHandsontableHelper.hot!=''&&protocolPropertiesHandsontableHelper.hot!=undefined && protocolPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolPropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
             					var rowChar=90;
@@ -631,11 +631,11 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	                }
 	        	});
 	        }
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.saveData = function () {}
-	        protocolConfigAddrMaooingPropertiesHandsontableHelper.clearContainer = function () {
-	        	protocolConfigAddrMaooingPropertiesHandsontableHelper.AllData = [];
+	        protocolPropertiesHandsontableHelper.saveData = function () {}
+	        protocolPropertiesHandsontableHelper.clearContainer = function () {
+	        	protocolPropertiesHandsontableHelper.AllData = [];
 	        }
-	        return protocolConfigAddrMaooingPropertiesHandsontableHelper;
+	        return protocolPropertiesHandsontableHelper;
 	    }
 };
 
@@ -643,10 +643,10 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 function SaveModbusProtocolAddrMappingConfigTreeData(){
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
 	var AddrMappingItemsSelectRow= Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
-	if(ScadaDriverModbusConfigSelectRow!='' && protocolConfigAddrMaooingPropertiesHandsontableHelper!=null && protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=null){
+	if(ScadaDriverModbusConfigSelectRow!='' && protocolPropertiesHandsontableHelper!=null && protocolPropertiesHandsontableHelper.hot!=null){
 		var selectedItem=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
 		var protocolConfigData={};
-		var propertiesData=protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.getData();
+		var propertiesData=protocolPropertiesHandsontableHelper.hot.getData();
 		if(selectedItem.data.classes==1){//选中的是协议
 			protocolConfigData=selectedItem.data;
 			protocolConfigData.text=propertiesData[0][2];
@@ -663,8 +663,8 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 			configInfo.Sort=protocolConfigData.sort;
 			configInfo.DataConfig=[];
 			
-			if(protocolConfigAddrMappingItemsHandsontableHelper!=null && protocolConfigAddrMappingItemsHandsontableHelper.hot!=null){
-				var driverConfigItemsData=protocolConfigAddrMappingItemsHandsontableHelper.hot.getData();
+			if(protocolItemsConfigHandsontableHelper!=null && protocolItemsConfigHandsontableHelper.hot!=null){
+				var driverConfigItemsData=protocolItemsConfigHandsontableHelper.hot.getData();
 				for(var i=0;i<driverConfigItemsData.length;i++){
 					if(isNotVal(driverConfigItemsData[i][1])){
 						var item={};
@@ -692,7 +692,7 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 						item.ResolutionMode=driverConfigItemsData[i][11];
 						if(i==AddrMappingItemsSelectRow){
 							item.Meaning=[];
-							var itemsMeaningData=protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.getData();
+							var itemsMeaningData=protocolItemsMeaningConfigHandsontableHelper.hot.getData();
 							for(var j=0;j<itemsMeaningData.length;j++){
 								if(isNotVal(itemsMeaningData[j][0]) && isNotVal(itemsMeaningData[j][1])){
 									var meaning={};
@@ -720,7 +720,7 @@ function saveModbusProtocolAddrMappingConfigData(configInfo){
 		url:context + '/acquisitionUnitManagerController/saveModbusProtocolAddrMappingConfigData',
 		success:function(response) {
 			var data=Ext.JSON.decode(response.responseText);
-			protocolConfigAddrMappingItemsHandsontableHelper.clearContainer();
+			protocolItemsConfigHandsontableHelper.clearContainer();
 			if (data.success) {
 				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
 				Ext.MessageBox.alert("信息","保存成功");
@@ -745,11 +745,11 @@ function saveModbusProtocolAddrMappingConfigData(configInfo){
 }
 
 function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,isNew){
-	if(isNew&&protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null){
-		if(protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined){
-			protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.destroy();
+	if(isNew&&protocolItemsMeaningConfigHandsontableHelper!=null){
+		if(protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+			protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
 		}
-		protocolAddrMappingItemsMeaningConfigHandsontableHelper=null;
+		protocolItemsMeaningConfigHandsontableHelper=null;
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -760,28 +760,28 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 			if(result.itemResolutionMode==2){
 				Ext.getCmp("ModbusProtocolAddrMappingItemsMeaningConfigPanel_Id").setTitle("");
 			}
-			if(protocolAddrMappingItemsMeaningConfigHandsontableHelper==null || protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot==undefined){
-				protocolAddrMappingItemsMeaningConfigHandsontableHelper = ProtocolAddrMappingItemsMeaningConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id");
+			if(protocolItemsMeaningConfigHandsontableHelper==null || protocolItemsMeaningConfigHandsontableHelper.hot==undefined){
+				protocolItemsMeaningConfigHandsontableHelper = ProtocolItemsMeaningConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id");
 				var colHeaders="['数值','含义']";
 				if(result.itemResolutionMode==0){
 					colHeaders="['位','含义']";
 				}
-				var columns="[{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAddrMappingItemsMeaningConfigHandsontableHelper);}},"
+				var columns="[{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsMeaningConfigHandsontableHelper);}},"
 						+"{data:'meaning'}" 
 						+"]";
 				
-				protocolAddrMappingItemsMeaningConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				protocolAddrMappingItemsMeaningConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+				protocolItemsMeaningConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				protocolItemsMeaningConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
-					protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					protocolItemsMeaningConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
-					protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable(result.totalRoot);
+					protocolItemsMeaningConfigHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				if(result.totalRoot.length==0){
-					protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					protocolItemsMeaningConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
-					protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.loadData(result.totalRoot);
+					protocolItemsMeaningConfigHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
 		},
@@ -795,35 +795,35 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 	});
 };
 
-var ProtocolAddrMappingItemsMeaningConfigHandsontableHelper = {
+var ProtocolItemsMeaningConfigHandsontableHelper = {
 		createNew: function (divid) {
-	        var protocolAddrMappingItemsMeaningConfigHandsontableHelper = {};
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot1 = '';
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.divid = divid;
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.validresult=true;//数据校验
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.colHeaders=[];
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.columns=[];
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.AllData=[];
+	        var protocolItemsMeaningConfigHandsontableHelper = {};
+	        protocolItemsMeaningConfigHandsontableHelper.hot1 = '';
+	        protocolItemsMeaningConfigHandsontableHelper.divid = divid;
+	        protocolItemsMeaningConfigHandsontableHelper.validresult=true;//数据校验
+	        protocolItemsMeaningConfigHandsontableHelper.colHeaders=[];
+	        protocolItemsMeaningConfigHandsontableHelper.columns=[];
+	        protocolItemsMeaningConfigHandsontableHelper.AllData=[];
 	        
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolItemsMeaningConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable = function (data) {
-	        	$('#'+protocolAddrMappingItemsMeaningConfigHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+protocolAddrMappingItemsMeaningConfigHandsontableHelper.divid);
-	        	protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot = new Handsontable(hotElement, {
+	        protocolItemsMeaningConfigHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolItemsMeaningConfigHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolItemsMeaningConfigHandsontableHelper.divid);
+	        	protocolItemsMeaningConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		colWidths: [1,3],
-	                columns:protocolAddrMappingItemsMeaningConfigHandsontableHelper.columns,
+	                columns:protocolItemsMeaningConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:protocolAddrMappingItemsMeaningConfigHandsontableHelper.colHeaders,//显示列头
+	                colHeaders:protocolItemsMeaningConfigHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -877,12 +877,12 @@ var ProtocolAddrMappingItemsMeaningConfigHandsontableHelper = {
 	                    if(protocolConfigModuleEditFlag!=1){
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    cellProperties.renderer = protocolAddrMappingItemsMeaningConfigHandsontableHelper.addCellStyle;
+	                    cellProperties.renderer = protocolItemsMeaningConfigHandsontableHelper.addCellStyle;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null&&protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=''&&protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined && protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                	if(protocolItemsMeaningConfigHandsontableHelper!=null&&protocolItemsMeaningConfigHandsontableHelper.hot!=''&&protocolItemsMeaningConfigHandsontableHelper.hot!=undefined && protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
             					var rowChar=90;
@@ -923,10 +923,10 @@ var ProtocolAddrMappingItemsMeaningConfigHandsontableHelper = {
 	        	});
 	        }
 	        //保存数据
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.saveData = function () {}
-	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.clearContainer = function () {
-	        	protocolAddrMappingItemsMeaningConfigHandsontableHelper.AllData = [];
+	        protocolItemsMeaningConfigHandsontableHelper.saveData = function () {}
+	        protocolItemsMeaningConfigHandsontableHelper.clearContainer = function () {
+	        	protocolItemsMeaningConfigHandsontableHelper.AllData = [];
 	        }
-	        return protocolAddrMappingItemsMeaningConfigHandsontableHelper;
+	        return protocolItemsMeaningConfigHandsontableHelper;
 	    }
 };

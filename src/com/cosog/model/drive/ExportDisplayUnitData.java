@@ -123,6 +123,10 @@ public class ExportDisplayUnitData {
 	    private String ItemCode;
 
 	    private int RealtimeSort;
+	    
+	    private String RealtimeColor;
+	    
+	    private String RealtimeBgColor;
 
 	    private int BitIndex;
 
@@ -137,6 +141,10 @@ public class ExportDisplayUnitData {
 	    private String Matrix;
 
 	    private int HistorySort;
+	    
+	    private String HistoryColor;
+	    
+	    private String HistoryBgColor;
 
 	    public void setId(int Id){
 	        this.Id = Id;
@@ -210,6 +218,30 @@ public class ExportDisplayUnitData {
 	    public int getHistorySort(){
 	        return this.HistorySort;
 	    }
+		public String getRealtimeColor() {
+			return RealtimeColor;
+		}
+		public void setRealtimeColor(String realtimeColor) {
+			RealtimeColor = realtimeColor;
+		}
+		public String getRealtimeBgColor() {
+			return RealtimeBgColor;
+		}
+		public void setRealtimeBgColor(String realtimeBgColor) {
+			RealtimeBgColor = realtimeBgColor;
+		}
+		public String getHistoryColor() {
+			return HistoryColor;
+		}
+		public void setHistoryColor(String historyColor) {
+			HistoryColor = historyColor;
+		}
+		public String getHistoryBgColor() {
+			return HistoryBgColor;
+		}
+		public void setHistoryBgColor(String historyBgColor) {
+			HistoryBgColor = historyBgColor;
+		}
 	}
 
 	public String getAcqUnit() {

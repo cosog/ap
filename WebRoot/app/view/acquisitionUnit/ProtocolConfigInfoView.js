@@ -198,23 +198,23 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     		listeners: {
     			beforeclose: function ( panel, eOpts) {
     				//地址映射HandsontableHelper资源
-    				if(protocolConfigAddrMappingItemsHandsontableHelper!=null){
-    					if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-    						protocolConfigAddrMappingItemsHandsontableHelper.hot.destroy();
+    				if(protocolItemsConfigHandsontableHelper!=null){
+    					if(protocolItemsConfigHandsontableHelper.hot!=undefined){
+    						protocolItemsConfigHandsontableHelper.hot.destroy();
     					}
-    					protocolConfigAddrMappingItemsHandsontableHelper=null;
+    					protocolItemsConfigHandsontableHelper=null;
     				}
-    				if(protocolConfigAddrMaooingPropertiesHandsontableHelper!=null){
-    					if(protocolConfigAddrMaooingPropertiesHandsontableHelper.hot!=undefined){
-    						protocolConfigAddrMaooingPropertiesHandsontableHelper.hot.destroy();
+    				if(protocolPropertiesHandsontableHelper!=null){
+    					if(protocolPropertiesHandsontableHelper.hot!=undefined){
+    						protocolPropertiesHandsontableHelper.hot.destroy();
     					}
-    					protocolConfigAddrMaooingPropertiesHandsontableHelper=null;
+    					protocolPropertiesHandsontableHelper=null;
     				}
-    				if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null){
-    					if(protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined){
-    						protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.destroy();
+    				if(protocolItemsMeaningConfigHandsontableHelper!=null){
+    					if(protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+    						protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
     					}
-    					protocolAddrMappingItemsMeaningConfigHandsontableHelper=null;
+    					protocolItemsMeaningConfigHandsontableHelper=null;
     				}
     				
     				//采控组HandsontableHelper资源

@@ -1,0 +1,718 @@
+{
+    "singleWellRangeReportTemplate": [{
+        "calculateType": 0,
+        "templateCode": "CBMWell_heichao",
+        "templateName": "煤层气井排采数据表_单井日报表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title": ["deviceNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "",
+                "backgroundColor": "",
+                "textAlign": "center"
+            },
+            "title": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["日期", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""]
+        }],
+        "fixedRowsTop": 4,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths": [80, 80,80,80,80,80,80,80,80,80,80,1000],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 12
+        },{
+            "row": 1,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 12
+        }, {
+            "row": 2,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 2,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 4,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 5,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 7,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 9,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 11,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 1,
+            "startColumn": 0,
+            "endRow": 1,
+            "endColumn": 0
+        },{
+            "startRow": 4,
+            "startColumn": 3,
+            "endRow": 999999999,
+            "endColumn": 3
+        },{
+            "startRow": 4,
+            "startColumn": 11,
+            "endRow": 999999999,
+            "endColumn": 11
+        }]
+    }, {
+        "calculateType": 2,
+        "templateCode": "oilWell_ScrewPump",
+        "templateName": "油井_螺杆泵井单井日报表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title": ["deviceNameLabel井日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["序号", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+        }],
+        "fixedRowsTop": 3,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths": [50, 80, 80, 100, 70, 80, 100, 70, 80, 80, 80, 80, 80, 80, 80, 80, 80, 120, 80, 75],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 20
+        }, {
+            "row": 1,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 2,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 5,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 8,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 11,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 12,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 13,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 14,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 15,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 16,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 18,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 19,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 3,
+            "startColumn": 19,
+            "endRow": 999999999,
+            "endColumn": 19
+        }]
+    }],
+    "singleWellDailyReportTemplate": [{
+        "calculateType": 0,
+        "templateCode": "CBMWell_heichaoDailyReport",
+        "templateName": "煤层气井排采数据表_单井班报表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "",
+                "backgroundColor": "",
+                "textAlign": "center"
+            },
+            "title": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["时间", "当日生产时间/h", "工作制度", "", "动液面(m)", "压 力(Mpa)", "", "瞬时产量", "", "日累计产量", "", "返排率%", "氯离子浓度mg/L", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["", "", "冲次", "冲程", "", "井底压力", "套压", "气(方/小时)", "水(方/小时)", "气(方)", "水(方)", "", "", ""]
+        }],
+        "fixedRowsTop": 4,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths": [80, 80,80,80,80,80,80,100,100,80,80,80,80,1000],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 14
+        },{
+            "row": 1,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 14
+        }, {
+            "row": 2,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 2,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 4,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 5,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 7,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 9,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 11,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 12,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 13,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 1,
+            "startColumn": 0,
+            "endRow": 1,
+            "endColumn": 0
+        },{
+            "startRow": 4,
+            "startColumn": 3,
+            "endRow": 999999999,
+            "endColumn": 3
+        },{
+            "startRow": 4,
+            "startColumn": 11,
+            "endRow": 999999999,
+            "endColumn": 11
+        },{
+            "startRow": 4,
+            "startColumn": 12,
+            "endRow": 999999999,
+            "endColumn": 12
+        },{
+            "startRow": 4,
+            "startColumn": 13,
+            "endRow": 999999999,
+            "endColumn": 13
+        }]
+    }, {
+        "calculateType": 2,
+        "templateCode": "oilWell_ScrewPumpDailyReport",
+        "templateName": "油井_螺杆泵井单井班报表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title": ["deviceNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["序号", "时间", "通信", "", "", "时率", "", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+        }],
+        "fixedRowsTop": 3,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths": [50, 120, 80, 100, 70, 80, 100, 70, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 120, 80, 75],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 23
+        }, {
+            "row": 1,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 2,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 5,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 8,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 11,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 14,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 15,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 16,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 17,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 18,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 19,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 21,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 22,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 3,
+            "startColumn": 22,
+            "endRow": 999999999,
+            "endColumn": 22
+        }]
+    }],
+    "productionReportTemplate": [{
+        "calculateType": 0,
+        "templateCode": "CBMWell_heichaoProductionReport",
+        "templateName": "煤层气井排采生产报表_区域日报",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title": ["orgNameLabel排采日报表", "", "", "", "", "", "", "", "", "", "", "", ""]
+        },{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["日期","井名", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["", "", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""]
+        }],
+        "fixedRowsTop": 3,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths": [80, 80,80,80,80,80,80,80,80,80,80,80,1000],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 13
+        },{
+            "row": 1,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        },{
+            "row": 1,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 2,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 3,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 5,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 6,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 8,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 10,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 12,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 3,
+            "startColumn": 4,
+            "endRow": 999999999,
+            "endColumn": 4
+        },{
+            "startRow": 3,
+            "startColumn": 12,
+            "endRow": 999999999,
+            "endColumn": 12
+        }]
+    }, {
+        "calculateType": 2,
+        "templateCode": "oilWell_ScrewPumpProductionReoirt",
+        "templateName": "油井_螺杆泵井区域日报",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title": ["orgNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+        }],
+        "fixedRowsTop": 3,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths": [50, 90, 80, 80, 100, 70, 80, 100, 70, 80, 80, 80, 80, 80, 80, 80, 80, 80, 120, 80, 75],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 21
+        }, {
+            "row": 1,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 2,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 3,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 6,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 9,
+            "rowspan": 1,
+            "colspan": 3
+        }, {
+            "row": 1,
+            "col": 12,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 13,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 14,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 15,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 16,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 17,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 19,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 20,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 3,
+            "startColumn": 20,
+            "endRow": 999999999,
+            "endColumn": 20
+        }]
+    }]
+}

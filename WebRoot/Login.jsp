@@ -78,15 +78,12 @@
     <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-    
-
 	<script>
 	var context='<%=path%>'; 
 	
 	var oem = ${configFile}.ap.oem;
 	var loginBackgroundImage=oem.loginBackgroundImage;
 	loginBackgroundImage=context+loginBackgroundImage.substring(loginBackgroundImage.indexOf("/"),loginBackgroundImage.length);
-	
 	
 	$(function () {
 		initDisplayInformation();

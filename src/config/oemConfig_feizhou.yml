@@ -5,18 +5,18 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: ""               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./images/logo/favicon_fzby.ico"      #网页图标
-   logo: "./images/logo/logo_fzby.png"            #软件logo
-   loginBackgroundImage: "./images/login/login.jpg"  #登录界面背景图片
-   loginCSS: "./styles/login_fzby.css"            #登录界面CSS
-   bannerCSS: "./styles/banner_fzby.css"          #主界面banner CSS
-   helpButtonIcon: "./images/help.svg"            #帮助按钮图标
-   exitButtonIcon: "./images/exit.svg"            #退出按钮图标
-   zoomInButtonIcon: "./images/zoomin.svg"        #放大按钮图标
-   zoomoutButtonIcon: "./images/zooout.svg"       #缩小按钮图标
-   staticResourceTimestamp: 20240729092000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
-   helpDocument: "./readme/ap_cbm/help.html"             #帮助文档
-   helpDocumentTimestamp: 20240625183000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+   favicon: "./oem/feizhou/images/logo/favicon_fzby.ico"      #网页图标
+   logo: "./oem/feizhou/images/logo/logo.png"            #软件logo
+   loginBackgroundImage: "./oem/feizhou/images/login/login.jpg"  #登录界面背景图片
+   loginCSS: "./oem/feizhou/styles/login.css"            #登录界面CSS
+   bannerCSS: "./oem/feizhou/styles/banner.css"          #主界面banner CSS
+   helpButtonIcon: "./oem/feizhou/images/help.svg"            #帮助按钮图标
+   exitButtonIcon: "./oem/feizhou/images/exit.svg"            #退出按钮图标
+   zoomInButtonIcon: "./oem/feizhou/images/zoomin.svg"        #放大按钮图标
+   zoomoutButtonIcon: "./oem/feizhou/images/zooout.svg"       #缩小按钮图标
+   staticResourceTimestamp: 20240819090000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+   helpDocument: "./oem/feizhou/readme/help.html"             #帮助文档
+   helpDocumentTimestamp: 20240819090000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
    offsetHour: 0                          #偏移小时 数值范围：0~12
    interval: 1                            #间隔 单位：小时 数值范围：1~12

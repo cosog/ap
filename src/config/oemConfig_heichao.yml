@@ -5,17 +5,17 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: "技术支持：天津黑潮科技有限公司"               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./images/logo/favicon_heichao.ico"      #网页图标
-   logo: "./images/logo/logo_heichao.png"            #软件logo
-   loginBackgroundImage: "./images/login/login.jpg"  #登录界面背景图片
-   loginCSS: "./styles/login_heichao.css"            #登录界面CSS
-   bannerCSS: "./styles/banner_heichao.css"          #主界面banner CSS
-   helpButtonIcon: "./images/help.svg"            #帮助按钮图标
-   exitButtonIcon: "./images/exit.svg"            #退出按钮图标
-   zoomInButtonIcon: "./images/zoomin.svg"        #放大按钮图标
-   zoomoutButtonIcon: "./images/zooout.svg"       #缩小按钮图标
+   favicon: "./oem/heichao/images/logo/favicon_heichao.ico"      #网页图标
+   logo: "./oem/heichao/images/logo/logo_heichao.png"            #软件logo
+   loginBackgroundImage: "./oem/heichao/images/login/login.jpg"  #登录界面背景图片
+   loginCSS: "./oem/heichao/styles/login_heichao.css"            #登录界面CSS
+   bannerCSS: "./oem/heichao/styles/banner_heichao.css"          #主界面banner CSS
+   helpButtonIcon: "./oem/heichao/images/help.svg"            #帮助按钮图标
+   exitButtonIcon: "./oem/heichao/images/exit.svg"            #退出按钮图标
+   zoomInButtonIcon: "./oem/heichao/images/zoomin.svg"        #放大按钮图标
+   zoomoutButtonIcon: "./oem/heichao/images/zooout.svg"       #缩小按钮图标
    staticResourceTimestamp: 20240729092000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
-   helpDocument: "./readme/ap_cbm/help.html"             #帮助文档
+   helpDocument: "./oem/heichao/readme/ap_cbm/help.html"             #帮助文档
    helpDocumentTimestamp: 20240625183000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
    offsetHour: 8                          #偏移小时 数值范围：0~12

@@ -4,17 +4,17 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: ""               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./images/logo/favicon_cnpc.ico"
-   logo: "./images/logo/logo_cnpc.png"
-   loginBackgroundImage: "./images/login/login.jpg"
-   loginCSS: "./styles/login_cnpc.css"
-   bannerCSS: "./styles/banner_cnpc.css"
-   helpButtonIcon: "./images/help.svg"            #帮助按钮图标
-   exitButtonIcon: "./images/exit.svg"            #退出按钮图标
-   zoomInButtonIcon: "./images/zoomin.svg"        #放大按钮图标
-   zoomoutButtonIcon: "./images/zooout.svg"       #缩小按钮图标
+   favicon: "./oem/cnpc/images/logo/favicon_cnpc.ico"
+   logo: "./oem/cnpc/images/logo/logo_cnpc.png"
+   loginBackgroundImage: "./oem/cnpc/images/login/login.jpg"
+   loginCSS: "./oem/cnpc/styles/login_cnpc.css"
+   bannerCSS: "./oem/cnpc/styles/banner_cnpc.css"
+   helpButtonIcon: "./oem/cnpc/images/help.svg"            #帮助按钮图标
+   exitButtonIcon: "./oem/cnpc/images/exit.svg"            #退出按钮图标
+   zoomInButtonIcon: "./oem/cnpc/images/zoomin.svg"        #放大按钮图标
+   zoomoutButtonIcon: "./oem/cnpc/images/zooout.svg"       #缩小按钮图标
    staticResourceTimestamp: 20240729092000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
-   helpDocument: "./readme/ap_cbm/help.html"             #帮助文档
+   helpDocument: "./oem/cnpc/readme/ap_cbm/help.html"             #帮助文档
    helpDocumentTimestamp: 20240625183000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
    offsetHour: 0                          #偏移小时 数值范围：0~12

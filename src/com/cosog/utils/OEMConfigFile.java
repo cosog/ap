@@ -265,6 +265,8 @@ public class OEMConfigFile {
 
 	    private boolean printLog;
 	    
+	    private boolean exportAdInitData;
+	    
 	    private int exportLimit;
 
 	    private boolean simulateAcqEnable;
@@ -401,10 +403,18 @@ public class OEMConfigFile {
 		public void setShowVideo(boolean showVideo) {
 			this.showVideo = showVideo;
 		}
+		public boolean isExportAdInitData() {
+			return exportAdInitData;
+		}
+		public void setExportAdInitData(boolean exportAdInitData) {
+			this.exportAdInitData = exportAdInitData;
+		}
 	}
 	
 	public static class Report
 	{
+		private String template;
+		
 		private int offsetHour;
 		
 		private int interval;
@@ -433,6 +443,14 @@ public class OEMConfigFile {
 
 		public void setDelay(int delay) {
 			this.delay = delay;
+		}
+
+		public String getTemplate() {
+			return template;
+		}
+
+		public void setTemplate(String template) {
+			this.template = template;
 		}
 	}
 }

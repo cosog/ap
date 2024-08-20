@@ -1,6 +1,12 @@
 eclipse.preferences.version=1
 encoding//WebRoot/dataSource/dataSource.json=UTF-8
 encoding//WebRoot/example/test3.json=UTF-8
+encoding//WebRoot/oem/cnooc/reportTemplate/reportTemplate.json=UTF-8
+encoding//WebRoot/oem/cnpc/reportTemplate/reportTemplate.json=UTF-8
+encoding//WebRoot/oem/feizhou/reportTemplate/reportTemplate.json=UTF-8
+encoding//WebRoot/oem/heichao/reportTemplate=UTF-8
+encoding//WebRoot/oem/heichao/reportTemplate/reportTemplate.json=UTF-8
+encoding//WebRoot/oem/zhuchuang/reportTemplate/reportTemplate.json=UTF-8
 encoding//WebRoot/reportTemplate/reportTemplate.json=UTF-8
 encoding//WebRoot/reportTemplate/reportTemplate_all.json=UTF-8
 encoding//WebRoot/reportTemplate/reportTemplate_cbm.json=UTF-8

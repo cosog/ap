@@ -25,11 +25,10 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
             layout: "border",
             tbar:[{
                 xtype: 'radiogroup',
-//              fieldLabel: '格式',
-//              labelWidth: 30,
               id: 'ExportProtocolAcqInstanceWindowDataType_Id',
               cls: 'x-check-group-alt',
               name: 'type',
+              hidden: !exportAdInitData,
               items: [
                   {boxLabel: '界面导入导出格式',width: 120, inputValue: 1, checked: true},
                   {boxLabel: '协议通格式',width: 90, inputValue: 2}

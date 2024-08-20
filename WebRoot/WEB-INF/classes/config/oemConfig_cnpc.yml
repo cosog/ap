@@ -17,6 +17,7 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    helpDocument: "./oem/cnpc/readme/ap_cbm/help.html"             #帮助文档
    helpDocumentTimestamp: 20240625183000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
+   template: oem/cnpc/reportTemplate/reportTemplate.json    #报表模板
    offsetHour: 0                          #偏移小时 数值范围：0~12
    interval: 1                            #间隔 单位：小时 数值范围：1~12
    delay: 5                               #跨天汇总延时，单位：分钟 数值范围：0~30
@@ -43,7 +44,8 @@ others:
    showVideo: true                     #是否含视频
    showLogo: true                  #是否显示图标
    printLog: true                  #是否打印日志
-   exportLimit: 10000              #导出数据上限
+   exportAdInitData: false         #是否可导出ad初始化数据
+   exportLimit: 10000              #导出excel数据上限
    simulateAcqEnable: false         #是否发送模拟数据，用于演示
    sendCycle: 600                  #模拟数据发送周期，单位：秒
    timeDifference: 60              #模拟数据井之间发送间隔，单位：秒

@@ -4024,15 +4024,24 @@ public class MemoryDataManagerTask {
 		String path="";
 		String configData="";
 		java.lang.reflect.Type type=null;
-		path=stringManagerUtils.getFilePath("reportTemplate.json","reportTemplate/");
+		
+		String template=Config.getInstance().configFile.getAp().getReport().getTemplate();
+//		path=stringManagerUtils.getFilePath("reportTemplate.json","reportTemplate/");
+		path=stringManagerUtils.getFilePath(template);
 		configData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<ReportTemplate>() {}.getType();
 		ReportTemplate reportTemplate=gson.fromJson(configData, type);
 		if(reportTemplate==null){
 			reportTemplate=new ReportTemplate();
+			reportTemplate.setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
 			reportTemplate.setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
 			reportTemplate.setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
 		}else{
+			if(reportTemplate.getSingleWellDailyReportTemplate()==null){
+				reportTemplate.setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getSingleWellDailyReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getSingleWellDailyReportTemplate());
+			}
 			if(reportTemplate.getSingleWellRangeReportTemplate()==null){
 				reportTemplate.setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
 			}else if(reportTemplate.getSingleWellRangeReportTemplate().size()>0){

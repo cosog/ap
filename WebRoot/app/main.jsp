@@ -80,6 +80,8 @@
         	onlyFESDiagramCal=true;
         }
         
+        var exportAdInitData = ${configFile}.ap.others.exportAdInitData;
+        
         var showVideoConfig = ${configFile}.ap.others.showVideo;
         
         var showLogo = ${configFile}.ap.others.showLogo;

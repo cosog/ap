@@ -4,11 +4,11 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: ""               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./oem/cnpc/images/logo/favicon_cnpc.ico"
-   logo: "./oem/cnpc/images/logo/logo_cnpc.png"
+   favicon: "./oem/cnpc/images/logo/favicon.ico"
+   logo: "./oem/cnpc/images/logo/logo.png"
    loginBackgroundImage: "./oem/cnpc/images/login/login.jpg"
-   loginCSS: "./oem/cnpc/styles/login_cnpc.css"
-   bannerCSS: "./oem/cnpc/styles/banner_cnpc.css"
+   loginCSS: "./oem/cnpc/styles/login.css"
+   bannerCSS: "./oem/cnpc/styles/banner.css"
    helpButtonIcon: "./oem/cnpc/images/help.svg"            #帮助按钮图标
    exitButtonIcon: "./oem/cnpc/images/exit.svg"            #退出按钮图标
    zoomInButtonIcon: "./oem/cnpc/images/zoomin.svg"        #放大按钮图标

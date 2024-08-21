@@ -4,11 +4,11 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: ""               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./oem/cnooc/images/logo/favicon_cnooc.ico"
-   logo: "./oem/cnooc/images/logo/logo_cnooc.png"
+   favicon: "./oem/cnooc/images/logo/favicon.ico"
+   logo: "./oem/cnooc/images/logo/logo.png"
    loginBackgroundImage: "./oem/cnooc/images/login/login.jpg"
-   loginCSS: "./oem/cnooc/styles/login_cnooc.css"
-   bannerCSS: "./oem/cnooc/styles/banner_cnooc.css"
+   loginCSS: "./oem/cnooc/styles/login.css"
+   bannerCSS: "./oem/cnooc/styles/banner.css"
    helpButtonIcon: "./oem/cnooc/images/help.svg"            #帮助按钮图标
    exitButtonIcon: "./oem/cnooc/images/exit.svg"            #退出按钮图标
    zoomInButtonIcon: "./oem/cnooc/images/zoomin.svg"        #放大按钮图标

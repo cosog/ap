@@ -5,7 +5,7 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: ""               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./oem/feizhou/images/logo/favicon_fzby.ico"      #网页图标
+   favicon: "./oem/feizhou/images/logo/logo.png"      #网页图标
    logo: "./oem/feizhou/images/logo/logo.png"            #软件logo
    loginBackgroundImage: "./oem/feizhou/images/login/login.jpg"  #登录界面背景图片
    loginCSS: "./oem/feizhou/styles/login.css"            #登录界面CSS

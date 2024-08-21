@@ -5,11 +5,11 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: "技术支持：天津黑潮科技有限公司"               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./oem/heichao/images/logo/favicon_heichao.ico"      #网页图标
-   logo: "./oem/heichao/images/logo/logo_heichao.png"            #软件logo
+   favicon: "./oem/heichao/images/logo/favicon.ico"      #网页图标
+   logo: "./oem/heichao/images/logo/logo.png"            #软件logo
    loginBackgroundImage: "./oem/heichao/images/login/login.jpg"  #登录界面背景图片
-   loginCSS: "./oem/heichao/styles/login_heichao.css"            #登录界面CSS
-   bannerCSS: "./oem/heichao/styles/banner_heichao.css"          #主界面banner CSS
+   loginCSS: "./oem/heichao/styles/login.css"            #登录界面CSS
+   bannerCSS: "./oem/heichao/styles/banner.css"          #主界面banner CSS
    helpButtonIcon: "./oem/heichao/images/help.svg"            #帮助按钮图标
    exitButtonIcon: "./oem/heichao/images/exit.svg"            #退出按钮图标
    zoomInButtonIcon: "./oem/heichao/images/zoomin.svg"        #放大按钮图标

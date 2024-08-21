@@ -65,8 +65,8 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 		l = new Locale("en", "US"); 
 		} 
 		//ActionContext.getContext().setLocale(l);   
-		 request.getSession().setAttribute("WW_TRANS_I18N_LOCALE", l);
-		   request.getSession().setAttribute("browserLang",locale);
+		request.getSession().setAttribute("WW_TRANS_I18N_LOCALE", l);
+		request.getSession().setAttribute("browserLang",locale);
 //		// 取会话中的语言版本
 //		browserLang = (String) request.getSession().getAttribute("locale");
 //		// 如果会话中没有指定，则取浏览器的语言版本

@@ -4,11 +4,11 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    copy: ""               #技术支持
    linkaddress: ""
    linkshow: ""
-   favicon: "./oem/zhuchuang/images/logo/favicon_zhuchuang.ico"
-   logo: "./oem/zhuchuang/images/logo/logo_zhuchuang.png"
+   favicon: "./oem/zhuchuang/images/logo/favicon.ico"
+   logo: "./oem/zhuchuang/images/logo/logo.png"
    loginBackgroundImage: "./oem/zhuchuang/images/login/login.jpg"
-   loginCSS: "./oem/zhuchuang/styles/login_zhuchuang.css"
-   bannerCSS: "./oem/zhuchuang/styles/banner_zhuchuang.css"
+   loginCSS: "./oem/zhuchuang/styles/login.css"
+   bannerCSS: "./oem/zhuchuang/styles/banner.css"
    helpButtonIcon: "./oem/zhuchuang/images/help.svg"            #帮助按钮图标
    exitButtonIcon: "./oem/zhuchuang/images/exit.svg"            #退出按钮图标
    zoomInButtonIcon: "./oem/zhuchuang/images/zoomin.svg"        #放大按钮图标

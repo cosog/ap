@@ -107,8 +107,8 @@ private CommonDataService service;
 				+ " from  viw_role t"
 				+ " where 1=1 "
 				+ " and t.role_id not in( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
-				+ " and t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
-						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")";
+				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )";
 		if (StringManagerUtils.isNotNull(roleName)) {
 			sql+=" and t.role_Name like '%" + roleName + "%' ";
 		}

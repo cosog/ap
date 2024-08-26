@@ -4,7 +4,7 @@ ap:
       driver: oracle.jdbc.driver.OracleDriver
       dialect: org.hibernate.dialect.Oracle10gDialect
       user: ap
-      password: ap123#
+      password: Ap201#
    redis:                #redis配置 一般只需配置addr和password
       addr: 127.0.0.1    #服务器IP
       port: 6379         #端口

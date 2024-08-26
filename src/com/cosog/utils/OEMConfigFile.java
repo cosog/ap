@@ -397,7 +397,7 @@ public class OEMConfigFile {
 		public void setDeviceShowName(String deviceShowName) {
 			this.deviceShowName = deviceShowName;
 		}
-		public boolean isShowVideo() {
+		public boolean getShowVideo() {
 			return showVideo;
 		}
 		public void setShowVideo(boolean showVideo) {

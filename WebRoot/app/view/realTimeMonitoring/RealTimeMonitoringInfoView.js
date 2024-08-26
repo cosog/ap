@@ -1685,22 +1685,24 @@ function initVideo(panelId,divId,videoUrl,videoKeyId,deviceType,videoNo,isNew){
 }
 
 function createVideo(deviceType,data,videoNo,isNew){
-	var panelId1='RealTimeMonitoringRightVideoPanel1';
-	var divId1='RealTimeMonitoringRightVideoDiv1_Id';
-	
-	var panelId2='RealTimeMonitoringRightVideoPanel2';
-	var divId2='RealTimeMonitoringRightVideoDiv2_Id';
-	
-	var videoUrl1=data.videoUrl1,videoUrl2=data.videoUrl2;
-	var videoKeyId1=data.videoKeyId1,videoKeyId2=data.videoKeyId2;
-	
-	if(videoNo==1){
-		initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
-	}else if(videoNo==2){
-		initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
-	}else{
-		initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
-		initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+	if(showVideoConfig){
+		var panelId1='RealTimeMonitoringRightVideoPanel1';
+		var divId1='RealTimeMonitoringRightVideoDiv1_Id';
+		
+		var panelId2='RealTimeMonitoringRightVideoPanel2';
+		var divId2='RealTimeMonitoringRightVideoDiv2_Id';
+		
+		var videoUrl1=data.videoUrl1,videoUrl2=data.videoUrl2;
+		var videoKeyId1=data.videoKeyId1,videoKeyId2=data.videoKeyId2;
+		
+		if(videoNo==1){
+			initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
+		}else if(videoNo==2){
+			initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+		}else{
+			initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
+			initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+		}
 	}
 }
 

@@ -178,7 +178,7 @@ public class SyncFBDataTast {
 				+ " from tbl_device t "
 				+ " left outer join (select t2.deviceid,max(t2.acqtime) as acqtime from tbl_acqdata_hist t2 group by t2.deviceid) v on t.id=v.deviceid "
 				+ " where 1=1"
-				+ " and t.id > 11182"
+				+ " and t.id > 10482"
 				+ " order by t.id";
 		ThreadPool executor = new ThreadPool("syncFBHistoryData",
 				10, 

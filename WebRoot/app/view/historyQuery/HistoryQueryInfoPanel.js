@@ -22,28 +22,6 @@ var historyStatTabItems=[{
         }
     }
 },{
-	title:'运行状态',
-	layout: 'fit',
-	id:'HistoryQueryRunStatusStatGraphPanel_Id',
-	iconCls: onlyMonitor?'check3':null,
-	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if ($("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        		highchartsResize("HistoryQueryRunStatusStatGraphPanelPieDiv_Id");
-        	}else{
-            	var toolTip=Ext.getCmp("HistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
-            	if(!isNotVal(toolTip)){
-            		Ext.create('Ext.tip.ToolTip', {
-                        id:'HistoryQueryRunStatusStatGraphPanelPieToolTip_Id',
-                		target: 'HistoryQueryRunStatusStatGraphPanelPieDiv_Id',
-                        html: '点击饼图不同区域或标签，查看相应统计数据'
-                    });
-            	}
-            }
-        }
-    }
-},{
 	title:'通信状态',
 	layout: 'fit',
 	hidden: onlyFESDiagramCal,
@@ -59,6 +37,28 @@ var historyStatTabItems=[{
             		Ext.create('Ext.tip.ToolTip', {
                         id:'HistoryQueryStatGraphPanelPieToolTip_Id',
                 		target: 'HistoryQueryStatGraphPanelPieDiv_Id',
+                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                    });
+            	}
+            }
+        }
+    }
+},{
+	title:'运行状态',
+	layout: 'fit',
+	id:'HistoryQueryRunStatusStatGraphPanel_Id',
+	iconCls: onlyMonitor?'check3':null,
+	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if ($("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        		highchartsResize("HistoryQueryRunStatusStatGraphPanelPieDiv_Id");
+        	}else{
+            	var toolTip=Ext.getCmp("HistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
+            	if(!isNotVal(toolTip)){
+            		Ext.create('Ext.tip.ToolTip', {
+                        id:'HistoryQueryRunStatusStatGraphPanelPieToolTip_Id',
+                		target: 'HistoryQueryRunStatusStatGraphPanelPieDiv_Id',
                         html: '点击饼图不同区域或标签，查看相应统计数据'
                     });
             	}

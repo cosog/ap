@@ -12,8 +12,7 @@ Ext.application({
 	// the namespace specified in the name config.
 	appFolder : context + '/app',
 	// 应用初始化时，调用的controller
-	controllers : [ 'frame.IframeControl', 'frame.MainIframeControl', 'right.RightOrgInfoControl', 'right.RightInfoControl',
-        'alarmSet.MoveAlarmSetInfoController' ],
+	controllers : [ 'frame.IframeControl', 'frame.MainIframeControl', 'right.RightOrgInfoControl', 'right.RightInfoControl'],
 	launch : function() {
 		Ext.tip.QuickTipManager.init();
 	},

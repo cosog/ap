@@ -51,7 +51,8 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 	allowBlank: false
                 },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-                    var rn=true
+                    var rn=true;
+                    var loginUserRoleModules=getLoginUserRoleModules();
                     var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                     if(RoleManagerModuleEditFlag==1){
         	    		for(var i=0;i<loginUserRoleModules.length;i++){
@@ -86,13 +87,14 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 	allowBlank: false
                 },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-                    var rn=true
+                    var rn=true;
+                    var loginUserRoleModules=getLoginUserRoleModules();
         	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                     if(RoleManagerModuleEditFlag==1){
                     	if(!record.isLeaf()){
                     		rn= false;
             	    	}else{
-            	    		rn=true
+            	    		rn=true;
             	    		for(var i=0;i<loginUserRoleModules.length;i++){
             	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
             	    				if(loginUserRoleModules[i].editFlag!=1){
@@ -109,25 +111,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
             	listeners: {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-//            	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
-//	                    if(RoleManagerModuleEditFlag==1){
-//	                    	if(!record.isLeaf()){
-//	            	    		return false;
-//	            	    	}else{
-//	            	    		var rn=true
-//	            	    		for(var i=0;i<loginUserRoleModules.length;i++){
-//	            	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
-//	            	    				if(loginUserRoleModules[i].editFlag!=1){
-//	            	    					rn= false;
-//	            	    				}
-//	            	    				break;
-//	            	    			}
-//	            	    		}
-//	            	    		return rn;
-//	            	    	}
-//	                    }else{
-//	                    	return false;
-//	                    }
+            	    	
             	    }
             	}
             }, {
@@ -144,13 +128,14 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 	allowBlank: false
                 },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-                    var rn=true
+                    var rn=true;
+                    var loginUserRoleModules=getLoginUserRoleModules();
                     var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                     if(RoleManagerModuleEditFlag==1){
                     	if(record.data.mdCode.toUpperCase()!='DeviceRealTimeMonitoring'.toUpperCase()){
                     		rn= false;
             	    	}else{
-            	    		rn=true
+            	    		rn=true;
             	    		for(var i=0;i<loginUserRoleModules.length;i++){
             	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
             	    				if(loginUserRoleModules[i].controlFlag!=1){
@@ -167,27 +152,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
             	listeners: {
             	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-//            	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
-//	                    if(RoleManagerModuleEditFlag==1){
-//	                    	if(!record.isLeaf()){
-//	            	    		return false;
-//	            	    	}else if(record.data.mdCode.toUpperCase()!='DeviceRealTimeMonitoring'.toUpperCase()){
-//	            	    		return false;
-//	            	    	}else{
-//	            	    		var rn=true
-//	            	    		for(var i=0;i<loginUserRoleModules.length;i++){
-//	            	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
-//	            	    				if(loginUserRoleModules[i].controlFlag!=1){
-//	            	    					rn= false;
-//	            	    				}
-//	            	    				break;
-//	            	    			}
-//	            	    		}
-//	            	    		return rn;
-//	            	    	}
-//	                    }else{
-//	                    	return false;
-//	                    }
+            	    	
             	    }
             	}
             }]
@@ -200,3 +165,22 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
         }
     }
 });
+
+function getLoginUserRoleModules(){
+	var loginUserRoleModules=[];
+	Ext.Ajax.request({
+		method:'POST',
+		async: false,
+		url:context + '/roleManagerController/getLoginUserRoleModules',
+		success:function(response) {
+			loginUserRoleModules = Ext.JSON.decode(response.responseText);
+		},
+		failure:function(){
+		}
+	});
+	return loginUserRoleModules;
+	
+	
+	
+	
+}

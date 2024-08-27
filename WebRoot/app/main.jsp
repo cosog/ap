@@ -40,6 +40,18 @@
         var context = '<%=path%>';
 
         var user_ = "${userLogin.userNo}";
+        if (user_ == null || "" == (user_)) {
+            window.location.href = "../login/toLogin";
+        }
+        
+        var userAccount = "${userLogin.userId}";
+
+        var loginUserRoleLevel = "${userLogin.roleLevel}";
+        var loginUserRoleShowLevel = "${userLogin.roleShowLevel}";
+        var loginUserRoleReportEdit = true;
+        var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
+        
+        
         var oem = ${configFile}.ap.oem;
 
         var bannerLogoImg = oem.logo;
@@ -101,24 +113,19 @@
 
 
         var defaultPageSize = ${configFile}.ap.others.pageSize;
-        
-        var userAccount = "${userLogin.userId}";
-
-        var loginUserRoleLevel = "${userLogin.roleLevel}";
-        var loginUserRoleShowLevel = "${userLogin.roleShowLevel}";
-        var loginUserRoleReportEdit = true;
-        var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
-        var loginUserRoleModules=${userLogin.moduleList};
-        
         var tabInfo=${tabInfo};
-        
-        if (user_ == null || "" == (user_)) {
-            window.location.href = "../login/toLogin";
-        }
 
         function initBannerDisplayInformation() {
             $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
             $("#banner_help").css("background", "url(" + helpButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+            
+            if(!showLogo){
+            	 $('#bannerLogoImg').css('display', 'none');
+            }else{
+            	$('#bannerLogoImg').css('display', 'block');
+            	$("#bannerLogoImg").attr("src", bannerLogoImg + "?timestamp="+oemStaticResourceTimestamp);
+            }
+            $('#bannerTitle').html(oem.title);
         }
 
     </script>

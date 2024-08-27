@@ -511,6 +511,25 @@ public class RoleManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getLoginUserRoleModules")
+	public String getLoginUserRoleModules() throws Exception {
+		String json = "[]";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		if(user!=null){
+			json = user.getModuleList();
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("constructProtocolConfigTabTreeGridTree json==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String getRoleName() {
 		return roleName;
 	}

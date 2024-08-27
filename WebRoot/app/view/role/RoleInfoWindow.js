@@ -205,7 +205,8 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                         	allowBlank: false
                         },
                         renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-                            var rn=true
+                            var rn=true;
+                            var loginUserRoleModules=getLoginUserRoleModules();
                             var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                             if(RoleManagerModuleEditFlag==1){
                 	    		for(var i=0;i<loginUserRoleModules.length;i++){
@@ -235,13 +236,14 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                         	allowBlank: false
                         },
                         renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-                            var rn=true
+                            var rn=true;
+                            var loginUserRoleModules=getLoginUserRoleModules();
                 	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                             if(RoleManagerModuleEditFlag==1){
                             	if(!record.isLeaf()){
                             		rn= false;
                     	    	}else{
-                    	    		rn=true
+                    	    		rn=true;
                     	    		for(var i=0;i<loginUserRoleModules.length;i++){
                     	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
                     	    				if(loginUserRoleModules[i].editFlag!=1){
@@ -270,13 +272,14 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                         	allowBlank: false
                         },
                         renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-                            var rn=true
+                            var rn=true;
+                            var loginUserRoleModules=getLoginUserRoleModules();
                             var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                             if(RoleManagerModuleEditFlag==1){
                             	if(record.data.mdCode.toUpperCase()!='DeviceRealTimeMonitoring'.toUpperCase()){
                             		rn= false;
                     	    	}else{
-                    	    		rn=true
+                    	    		rn=true;
                     	    		for(var i=0;i<loginUserRoleModules.length;i++){
                     	    			if(loginUserRoleModules[i].mdCode==record.data.mdCode){
                     	    				if(loginUserRoleModules[i].controlFlag!=1){

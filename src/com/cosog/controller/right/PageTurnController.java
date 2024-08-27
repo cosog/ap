@@ -77,6 +77,7 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
 		session.setAttribute("bannerCSS", configFile.getAp().getOem().getBannerCSS());
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
+		session.setAttribute("showVideo", configFile.getAp().getOthers().getShowVideo());
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
 		return "app/main";

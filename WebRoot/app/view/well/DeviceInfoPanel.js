@@ -123,7 +123,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     var heads = "";
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
                     var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
-                    var wellInformationName = Ext.getCmp('deviceListComb_Id').getValue();
+                    var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
                     
                     var url = context + '/wellInformationManagerController/exportWellInformationData';
                     for (var i = 0; i < deviceInfoHandsontableHelper.colHeaders.length; i++) {
@@ -143,15 +143,13 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     + "&heads=" + URLencode(URLencode(heads)) 
                     + "&orgId=" + leftOrg_Id 
                     + "&deviceType="+deviceType
-//                    + "&applicationScenarios="+applicationScenarios
-                    + "&wellInformationName=" + URLencode(URLencode(wellInformationName)) 
+                    + "&deviceName=" + URLencode(URLencode(deviceName)) 
                     + "&recordCount=10000" 
                     + "&fileName=" + URLencode(URLencode(deviceTypeName+"设备列表")) 
                     + "&title=" + URLencode(URLencode(deviceTypeName))
                     + '&key='+key;
                     exportDataMask(key,maskPanelId,cosog.string.loading);
                     openExcelWindow(url + '?flag=true' + param);
-                  
                 }
             },'-',{
                 id: 'DeviceTotalCount_Id',
@@ -735,7 +733,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 	}
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
-    var wellInformationName_Id = Ext.getCmp('deviceListComb_Id').getValue();
+    var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
     Ext.getCmp("DeviceTablePanel_id").el.mask(cosog.string.loading).show();
     Ext.Ajax.request({
         method: 'POST',
@@ -912,7 +910,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {
-            wellInformationName: wellInformationName_Id,
+        	deviceName: deviceName,
             deviceType: deviceType,
             recordCount: 50,
             orgId: leftOrg_Id,

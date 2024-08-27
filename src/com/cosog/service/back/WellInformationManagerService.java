@@ -1379,10 +1379,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String deviceName = (String) map.get("deviceName");
 		String deviceType=(String) map.get("deviceType");
 		String orgId = (String) map.get("orgId");
-		String WellInformation_Str = "";
-		if (StringManagerUtils.isNotNull(deviceName)) {
-			WellInformation_Str = " and t.devicename like '%" + deviceName+ "%'";
-		}
 		
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select id,orgName,deviceName,deviceTypeName,"
@@ -1392,8 +1388,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " status,statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 				+ " sortNum"
 				+ " from "+tableName+" t "
-				+ " where 1=1"
-				+ WellInformation_Str;
+				+ " where 1=1";
+		if (StringManagerUtils.isNotNull(deviceName)) {
+			sql += " and t.devicename like '%" + deviceName+ "%'";
+		};
 		sql+= " and t.orgid in ("+orgId+" )";
 		sql+= " and t.devicetype in ("+deviceType+")";
 		sql+= " order by t.sortnum,t.devicename ";
@@ -1533,13 +1531,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			String tableName="viw_device";
-			String wellInformationName = (String) map.get("wellInformationName");
+			String deviceName = (String) map.get("deviceName");
 			String deviceType=(String) map.get("deviceType");
 			String orgId = (String) map.get("orgId");
-			String WellInformation_Str = "";
-			if (StringManagerUtils.isNotNull(wellInformationName)) {
-				WellInformation_Str = " and t.devicename like '%" + wellInformationName+ "%'";
-			}
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
@@ -1552,12 +1546,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql = "select id,orgName,deviceName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
-					+ " tcptype,signInId,slave,t.peakdelay,"
-					+ " sortNum,status,statusName,allpath,"
-					+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime"
-					+ " from "+tableName+" t where 1=1"
-					+ WellInformation_Str;
+		    String sql = "select id,orgName,deviceName,deviceTypeName,"
+					+ " applicationScenarios,applicationScenariosName,"
+					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
+					+ " tcptype,signInId,ipport,slave,t.peakdelay,"
+					+ " status,statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
+					+ " sortNum"
+					+ " from "+tableName+" t "
+					+ " where 1=1";
+			if (StringManagerUtils.isNotNull(deviceName)) {
+				sql += " and t.devicename like '%" + deviceName+ "%'";
+			}
 			sql+= " and t.orgid in ("+orgId+" )";
 			sql+= " and t.devicetype in ("+deviceType+")";
 			sql+= " order by t.sortnum,t.devicename ";
@@ -1574,19 +1573,26 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("{\"id\":\""+(i+1)+"\",");
 				result_json.append("\"orgName\":\""+obj[1]+"\",");
 				result_json.append("\"deviceName\":\""+obj[2]+"\",");
-				result_json.append("\"applicationScenariosName\":\""+obj[3]+"\",");
-				result_json.append("\"instanceName\":\""+obj[4]+"\",");
-				result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
-				result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
-				result_json.append("\"tcpType\":\""+(obj[7]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
-				result_json.append("\"signInId\":\""+obj[8]+"\",");
-				result_json.append("\"slave\":\""+obj[9]+"\",");
-				result_json.append("\"peakDelay\":\""+obj[10]+"\",");
-				result_json.append("\"status\":\""+obj[12]+"\",");
-				result_json.append("\"statusName\":\""+obj[13]+"\",");
-				result_json.append("\"allPath\":\""+obj[14]+"\",");
-				result_json.append("\"sortNum\":\""+obj[11]+"\",");
-				result_json.append("\"productionDataUpdateTime\":\""+obj[15]+"\"}");
+				
+				result_json.append("\"deviceTypeName\":\""+obj[3]+"\",");
+				
+				result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
+				result_json.append("\"applicationScenariosName\":\""+obj[5]+"\",");
+				
+				result_json.append("\"instanceName\":\""+obj[6]+"\",");
+				result_json.append("\"displayInstanceName\":\""+obj[7]+"\",");
+				result_json.append("\"alarmInstanceName\":\""+obj[8]+"\",");
+				result_json.append("\"reportInstanceName\":\""+obj[9]+"\",");
+				result_json.append("\"tcpType\":\""+(obj[10]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
+				result_json.append("\"signInId\":\""+obj[11]+"\",");
+				result_json.append("\"ipPort\":\""+obj[12]+"\",");
+				result_json.append("\"slave\":\""+obj[13]+"\",");
+				result_json.append("\"peakDelay\":\""+obj[14]+"\",");
+				result_json.append("\"status\":\""+obj[15]+"\",");
+				result_json.append("\"statusName\":\""+obj[16]+"\",");
+				result_json.append("\"allPath\":\""+obj[17]+"\",");
+				result_json.append("\"productionDataUpdateTime\":\""+obj[18]+"\",");
+				result_json.append("\"sortNum\":\""+obj[19]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

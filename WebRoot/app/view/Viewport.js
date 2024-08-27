@@ -1,4 +1,7 @@
 var websocketClient = null;
+
+
+
 Ext.define('AP.view.Viewport', {
     extend: 'Ext.container.Viewport',
     id: 'frame_imivport_ids',
@@ -11,11 +14,11 @@ Ext.define('AP.view.Viewport', {
             bodyStyle: {
                 'z-index': 10
             },
-            html: '<div id="bannerDiv"><img id="bannerLogoImg" ' + (showLogo ? '' : 'style="display:none;"') + ' src="' + bannerLogoImg + '?timestamp='+oemStaticResourceTimestamp+'" /><span id="bannerTitle">' + oem.title + '</span>' +
-                "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='userLoginOut()'><span id='banner_exit_text'>退出</span></a></div>" +    //userLoginOut
-                "<div id='bannerToolbar'><a href='#' id='banner_help' onclick='showHelpDocumentWinFn()'><span id='banner_help_text'>帮助</span></a></div>" +
-                "</div>"
-   }, {
+            html: '<div id="bannerDiv"><img id="bannerLogoImg" style="display:none;"/><span id="bannerTitle">bannerTitle</span>' +
+            "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='userLoginOut()'><span id='banner_exit_text'>退出</span></a></div>" +    //userLoginOut
+            "<div id='bannerToolbar'><a href='#' id='banner_help' onclick='showHelpDocumentWinFn()'><span id='banner_help_text'>帮助</span></a></div>" +
+            "</div>"
+    }, {
             id: 'center_ids',
             region: 'center',
             border: false,
@@ -96,25 +99,13 @@ Ext.define('AP.view.Viewport', {
                 border: false,
                 autoDestroy: true
        }]
-   },
-        {
-            id: 'frame_south',
-            region: 'south',
-            xtype: "panel",
-            border: false,
-            hidden: true,
-            bodyStyle: 'background-color:#FBFBFB;',
-            html: "<div id=\"footer\">" + oem.copy + "&nbsp;<a href='" + oem.linkaddress + "' target='_blank'>" + oem.linkshow + "</a> " + "</div>",
-            height: 30
-   }],
+   	}],
     listeners: {
         afterrender: function (panel, eOpts) {
-            //			alert(user_);
             initBannerDisplayInformation();
             var baseUrl = getBaseUrl().replace("https", "ws").replace("http", "ws");
             var moduleCode = "ApWebSocketClient_" + user_;
             if ('WebSocket' in window) {
-                //				websocketClient = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
                 websocketClient = new ReconnectingWebSocket(baseUrl + "/websocketServer/" + moduleCode);
                 websocketClient.debug = true;
                 websocketClient.reconnectInterval = 1000;
@@ -122,12 +113,9 @@ Ext.define('AP.view.Viewport', {
                 websocketClient.maxReconnectInterval = 30000;
                 websocketClient.reconnectDecay = 1.5;
                 websocketClient.automaticOpen = true;
-                //				websocketClient.maxReconnectAttempts = 5;
             } else if ('MozWebSocket' in window) {
-                //				websocketClient = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
                 websocketClient = new MozWebSocket(baseUrl + "/websocketServer/" + moduleCode);
             } else {
-                //				websocketClient = new SockJS(getBaseUrl()+"/sockjs/socketServer?module_Code="+moduleCode);
                 websocketClient = new SockJS(getBaseUrl() + "/websocketServer/" + moduleCode);
             }
             websocketClient.onopen = websocketOnOpen;

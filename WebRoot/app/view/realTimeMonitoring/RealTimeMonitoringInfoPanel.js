@@ -27,31 +27,6 @@ var realtimeStatTabItems=[{
         }
     }
 },{
-	title:'运行状态',
-	layout: 'fit',
-	closable:false,
-	iconCls: onlyMonitor?'check3':null,
-	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
-	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if(isNotVal($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
-        		if ($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
-        		}else{
-                	var toolTip=Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
-                	if(!isNotVal(toolTip)){
-                		Ext.create('Ext.tip.ToolTip', {
-                            id:'RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
-                    		target: 'RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
-                            html: '点击饼图不同区域或标签，查看相应统计数据'
-                        });
-                	}
-                }
-        	}
-        }
-    }
-},{
 	title:'通信状态',
 	layout: 'fit',
 	closable:false,
@@ -69,6 +44,31 @@ var realtimeStatTabItems=[{
                 		Ext.create('Ext.tip.ToolTip', {
                             id:'RealTimeMonitoringStatGraphPanelPieToolTip_Id',
                     		target: 'RealTimeMonitoringStatGraphPanelPieDiv_Id',
+                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                        });
+                	}
+                }
+        	}
+        }
+    }
+},{
+	title:'运行状态',
+	layout: 'fit',
+	closable:false,
+	iconCls: onlyMonitor?'check3':null,
+	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
+	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	listeners: {
+        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        	if(isNotVal($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
+        		if ($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
+        		}else{
+                	var toolTip=Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
+                    		target: 'RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
                             html: '点击饼图不同区域或标签，查看相应统计数据'
                         });
                 	}

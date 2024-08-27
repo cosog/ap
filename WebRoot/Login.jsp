@@ -8,16 +8,36 @@
 	String flag="";
 	String name="";
 	String password="";
-	String viewProjectName=(String)session.getAttribute("viewProjectName");
-	String favicon=(String)session.getAttribute("favicon");
-	favicon=favicon.substring(favicon.indexOf("/"),favicon.length());
-	String loginCSS=(String)session.getAttribute("loginCSS");
-	loginCSS=loginCSS.substring(loginCSS.indexOf("/"),loginCSS.length());
 	
-	boolean showLogo=(boolean)session.getAttribute("showLogo");
 	
-	String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
-	String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
+	String viewProjectName="";
+	if(session.getAttribute("viewProjectName")!=null){
+		viewProjectName=(String)session.getAttribute("viewProjectName");
+	}
+	String favicon="";
+	if(session.getAttribute("favicon")!=null){
+		favicon=(String)session.getAttribute("favicon");
+		favicon=favicon.substring(favicon.indexOf("/"),favicon.length());
+	}
+	String loginCSS="";
+	if(session.getAttribute("loginCSS")!=null){
+		loginCSS=(String)session.getAttribute("loginCSS");
+		loginCSS=loginCSS.substring(loginCSS.indexOf("/"),loginCSS.length());
+	}
+	boolean showLogo=false;
+	if(session.getAttribute("showLogo")!=null){
+		showLogo=(boolean)session.getAttribute("showLogo");
+	}
+	
+	String oemStaticResourceTimestamp="";
+	if(session.getAttribute("oemStaticResourceTimestamp")!=null){
+		oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
+	}
+	
+	String otherStaticResourceTimestamp="";
+	if(session.getAttribute("otherStaticResourceTimestamp")!=null){
+		otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
+	}
 	try{
 		Cookie[] cookies=request.getCookies();
 		System.out.println(cookies.length);

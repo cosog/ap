@@ -75,31 +75,52 @@ public class MemoryDataManagerTask {
 		cleanData();
 		
 		loadProtocolConfig("");
+		System.out.println("加载协议完成");
 		
 		loadProtocolRunStatusConfig();
+		System.out.println("加载协议运行状态配置完成");
 		
 		loadReportTemplateConfig();
+		System.out.println("加载报表模板完成");
 		
 		MemoryDataManagerTask.loadPCPCalculateItem();
+		System.out.println("加载PCP计算项完成");
+		
 		MemoryDataManagerTask.loadPCPInputItem();
+		System.out.println("加载PCP输入项完成");
+		
 		MemoryDataManagerTask.loadPCPTotalCalculateItem();
+		System.out.println("加载PCP汇总项完成");
+		
 		MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
+		System.out.println("加载PCP定时汇总项完成");
 		
 		MemoryDataManagerTask.loadRPCCalculateItem();
+		System.out.println("加载RPC计算项完成");
 		MemoryDataManagerTask.loadRPCInputItem();
+		System.out.println("加载RPC输入项完成");
 		MemoryDataManagerTask.loadRPCTotalCalculateItem();
+		System.out.println("加载RPC汇总项完成");
 		MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
+		System.out.println("加载RPC定时汇总项完成");
 		
 		loadAcqInstanceOwnItemById("","update");
+		System.out.println("加载采控实例信息完成");
 		loadAlarmInstanceOwnItemById("","update");
+		System.out.println("加载报警实例信息完成");
 		loadDisplayInstanceOwnItemById("","update");
+		System.out.println("加载显示实例信息完成");
 		
 		loadDeviceInfo(null,0,"update");
+		System.out.println("加载设备信息完成");
 		
-		loadDeviceRealtimeAcqData(null);
+//		loadDeviceRealtimeAcqData(null);
+//		System.out.println("加载设备实时数据完成");
 		
 		loadTodayFESDiagram(null,0);
+		System.out.println("加载设备当天功图数据完成");
 		loadTodayRPMData(null,0);
+		System.out.println("加载设备当天转速数据完成");
 	}
 	
 	public static void cleanData(){

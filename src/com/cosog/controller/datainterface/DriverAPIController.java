@@ -1614,9 +1614,15 @@ public class DriverAPIController extends BaseController{
 				String resolutionMode="";
 				String unit="";
 				int alarmLevel=0;
+				
+				String realtimeColor="";
+				String realtimeBgColor="";
+				String historyColor="";
+				String historyBgColor="";
+				
+				int type=0;
 				if(index<finalAcquisitionItemInfoList.size() 
 						&& StringManagerUtils.isNotNull(finalAcquisitionItemInfoList.get(index).getTitle())
-//						&&StringManagerUtils.existOrNot(userItems, finalAcquisitionItemInfoList.get(index).getRawTitle(),false)
 						){
 					columnName=finalAcquisitionItemInfoList.get(index).getTitle();
 					value=finalAcquisitionItemInfoList.get(index).getValue();
@@ -1626,6 +1632,27 @@ public class DriverAPIController extends BaseController{
 					resolutionMode=finalAcquisitionItemInfoList.get(index).getResolutionMode()+"";
 					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
 					unit=finalAcquisitionItemInfoList.get(index).getUnit();
+					
+					for(DisplayInstanceOwnItem.DisplayItem displayItem:displayInstanceOwnItem.getItemList()){
+						if("0".equalsIgnoreCase(resolutionMode) 
+								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  
+								&& displayItem.getBitIndex()==StringManagerUtils.stringToInteger(finalAcquisitionItemInfoList.get(index).getBitIndex())
+								){//开关量
+							realtimeColor=displayItem.getRealtimeColor();
+							realtimeBgColor=displayItem.getRealtimeBgColor();
+							historyColor=displayItem.getHistoryColor();
+							historyBgColor=displayItem.getHistoryBgColor();
+							break;
+						}else if( ("1".equalsIgnoreCase(resolutionMode) || "2".equalsIgnoreCase(resolutionMode) )
+								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  
+								){
+							realtimeColor=displayItem.getRealtimeColor();
+							realtimeBgColor=displayItem.getRealtimeBgColor();
+							historyColor=displayItem.getHistoryColor();
+							historyBgColor=displayItem.getHistoryBgColor();
+							break;
+						}
+					}
 				}
 				
 				if(StringManagerUtils.isNotNull(columnName)&&StringManagerUtils.isNotNull(unit)){
@@ -1634,7 +1661,20 @@ public class DriverAPIController extends BaseController{
 					webSocketSendData.append("\"name"+(k+1)+"\":\""+columnName+"\",");
 				}
 				webSocketSendData.append("\"value"+(k+1)+"\":\""+value+"\",");
-				displayItemInfo_json.append("{\"row\":"+j+",\"col\":"+k+",\"columnName\":\""+columnName+"\",\"column\":\""+column+"\",\"value\":\""+value+"\",\"rawValue\":\""+rawValue+"\",\"columnDataType\":\""+columnDataType+"\",\"resolutionMode\":\""+resolutionMode+"\",\"alarmLevel\":"+alarmLevel+"},");
+				displayItemInfo_json.append("{\"row\":"+j+","
+						+ "\"col\":"+k+","
+						+ "\"columnName\":\""+columnName+"\","
+						+ "\"column\":\""+column+"\","
+						+ "\"value\":\""+value+"\","
+						+ "\"rawValue\":\""+rawValue+"\","
+						+ "\"columnDataType\":\""+columnDataType+"\","
+						+ "\"resolutionMode\":\""+resolutionMode+"\","
+						+ "\"realtimeColor\":\""+realtimeColor+"\","
+						+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+						+ "\"historyColor\":\""+historyColor+"\","
+						+ "\"historyBgColor\":\""+historyBgColor+"\","
+						+ "\"type\":\""+type+"\","
+						+ "\"alarmLevel\":"+alarmLevel+"},");
 			}
 			if(webSocketSendData.toString().endsWith(",")){
 				webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
@@ -1762,27 +1802,19 @@ public class DriverAPIController extends BaseController{
 										
 					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
 					
-					
-//					Map<String,String> saveDataMap=DataProcessing(acqGroup,protocol);
-					
-//					Iterator<Map.Entry<String, String>> iterator = saveDataMap.entrySet().iterator();
-//					while (iterator.hasNext()) {
-//					    Map.Entry<String, String> entry = iterator.next();
-//					    String key = entry.getKey();
-//					    String value = entry.getValue();
-//					    updateRealtimeData+=",t."+key+"='"+value+"'";
-//						insertHistColumns+=","+key;
-//						insertHistValue+=",'"+value+"'";
-//					}
-					
-					
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
-							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getColumnName());
-							String columnName=dataMappingColumn.getMappingColumn();
+							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
+							String columnName="";
+							try{
+								columnName=dataMappingColumn.getMappingColumn();
+							}catch(Exception e){
+//								System.out.println(protocolItemResolutionDataList.get(i).getRawColumnName());
+							}
+							
 							String rawValue=protocolItemResolutionDataList.get(i).getRawValue();
 							if(runStatus==2){
-								runStatus=RunStatusProcessing(rawValue,protocol.getCode()+"_"+protocolItemResolutionDataList.get(i).getColumnName());
+								runStatus=RunStatusProcessing(rawValue,protocol.getCode()+"_"+columnName);
 							}
 							
 							if(runStatus==2){

@@ -989,7 +989,7 @@ public class WellInformationManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
-		wellInformationName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellInformationName"),"utf-8");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
@@ -1013,7 +1013,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
-		map.put("wellInformationName", wellInformationName);
+		map.put("deviceName", deviceName);
 		map.put("deviceType", deviceType);
 		map.put("orgCode", orgCode);
 		map.put("resCode", resCode);

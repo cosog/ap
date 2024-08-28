@@ -1814,7 +1814,7 @@ public class DriverAPIController extends BaseController{
 							
 							String rawValue=protocolItemResolutionDataList.get(i).getRawValue();
 							if(runStatus==2){
-								runStatus=RunStatusProcessing(rawValue,protocol.getCode()+"_"+columnName);
+								runStatus=RunStatusProcessing(rawValue,(protocol.getCode()+"_"+columnName).toUpperCase());
 							}
 							
 							if(runStatus==2){
@@ -1953,36 +1953,44 @@ public class DriverAPIController extends BaseController{
 						
 						MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"",realtimeDataTimeMap);
 					}
+					//更新实时数据
+					int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+					if(result==0){
+						updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
+						result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
+					}
 					
-					//如果满足单组入库间隔或者有报警，保存数据
+					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						List<String> clobCont=new ArrayList<String>();
+						String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
+						clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+							updateRealRangeClobSql+=", t.runrange=?";
+							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+						}
+						updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+					}
+					
+					//如果满足单组入库间隔或者有报警，保存历史数据
 					if(save || alarm){
 						String saveRawDataSql="insert into "+rawDataTable+"(deviceid,acqtime,rawdata)values("+deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
 						deviceInfo.setSaveTime(acqTime);
-						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-						if(result==0){
-							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
-							result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-						}
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(saveRawDataSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
-						
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							List<String> clobCont=new ArrayList<String>();
-							String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
 							String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
 							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
 							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-								updateRealRangeClobSql+=", t.runrange=?";
 								updateHisRangeClobSql+=", t.runrange=?";
 								updateTotalRangeClobSql+=", t.runrange=?";
 								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 							}
-							updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
 							updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 							updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
-							commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 						}

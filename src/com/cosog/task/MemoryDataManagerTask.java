@@ -562,7 +562,7 @@ public class MemoryDataManagerTask {
 					}
 				}
 				
-				String key=protocolRunStatusConfig.getProtocol()+"_"+protocolRunStatusConfig.getItemName();
+				String key=(protocolRunStatusConfig.getProtocol()+"_"+protocolRunStatusConfig.getItemMappingColumn()).toUpperCase();
 				jedis.hset("ProtocolRunStatusConfig".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(protocolRunStatusConfig));//哈希(Hash)
 			}
 		}catch (Exception e) {

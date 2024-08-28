@@ -17,7 +17,9 @@ Ext.define('AP.controller.frame.MainIframeControl', {
 function extFuncTreeItemsClk(view, rec, item, index, e) {
     try {
         if (rec.isLeaf()) {
-            var module_Id_ = rec.data.id;
+        	Ext.getCmp("frame_center_ids").el.mask(cosog.string.loading).show();
+        	
+        	var module_Id_ = rec.data.id;
             var tabPanel = Ext.getCmp("frame_center_ids");
             if (module_Id_ == "backAdmin") {
                 if (user_Type == 1 || user_Type == 2 || user_Type == 3) {
@@ -67,7 +69,7 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
                     
                 }
             }
-
+            Ext.getCmp("frame_center_ids").getEl().unmask();
         }
     } catch (e) {
         Ext.Msg.alert("exception", " name: " + e.name + "\n message: " + e.message + " \n lineNumber: " + e.lineNumber + " \n fileName: " + e.fileName + " \n stack: " + e.stack);

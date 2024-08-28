@@ -1,6 +1,8 @@
 package com.cosog.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +21,7 @@ import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
+import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -46,6 +49,30 @@ public class CalculateUtils {
 		String responseDataStr=StringManagerUtils.sendPostMethod(commUrl, requestDataStr,"utf-8",0,0);
 		type = new TypeToken<CommResponseData>() {}.getType();
 		CommResponseData responseData=gson.fromJson(responseDataStr, type);
+		
+		//区间处理
+		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getCurrent().getCommEfficiency().getRange().size()>100){
+			Iterator<CommResponseData.Range> it = responseData.getCurrent().getCommEfficiency().getRange().iterator();
+			while(it.hasNext()){
+				if(responseData.getCurrent().getCommEfficiency().getRange().size()>100){
+					it.remove();
+				}else{
+					break;
+				}
+			}
+			String[] rangeArr=responseData.getCurrent().getCommEfficiency().getRangeString().split(";");
+			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
+			Iterator<String> rangeStrIt = rangeList.iterator();
+			while(it.hasNext()){
+				if(rangeList.size()>100){
+					rangeStrIt.remove();
+				}else{
+					break;
+				}
+			}
+			responseData.getCurrent().getCommEfficiency().setRangeString(StringUtils.join(rangeList, ";"));
+		}
+		
 		return responseData;
 	}
 	
@@ -55,6 +82,32 @@ public class CalculateUtils {
 		String responseDataStr=StringManagerUtils.sendPostMethod(runUrl, requestDataStr,"utf-8",0,0);
 		type = new TypeToken<TimeEffResponseData>() {}.getType();
 		TimeEffResponseData responseData=gson.fromJson(responseDataStr, type);
+		
+		//区间处理
+		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getCurrent().getRunEfficiency().getRange().size()>100){
+			Iterator<TimeEffResponseData.Range> it = responseData.getCurrent().getRunEfficiency().getRange().iterator();
+			while(it.hasNext()){
+				if(responseData.getCurrent().getRunEfficiency().getRange().size()>100){
+					it.remove();
+				}else{
+					break;
+				}
+			}
+			
+			String[] rangeArr=responseData.getCurrent().getRunEfficiency().getRangeString().split(";");
+			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
+			Iterator<String> rangeStrIt = rangeList.iterator();
+			while(it.hasNext()){
+				if(rangeList.size()>100){
+					rangeStrIt.remove();
+				}else{
+					break;
+				}
+			}
+			responseData.getCurrent().getRunEfficiency().setRangeString(StringUtils.join(rangeList, ";"));
+		}
+		
+		
 		return responseData;
 	}
 	
@@ -91,8 +144,39 @@ public class CalculateUtils {
 		String responseDataStr=StringManagerUtils.sendPostMethod(totalUrl, requestDataStr,"utf-8",0,0);
 		type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
 		TotalAnalysisResponseData responseData=gson.fromJson(responseDataStr, type);
-//		System.out.println("汇总请求数据:"+requestDataStr);
-//		System.out.println("汇总返回数据:"+responseDataStr);
+		
+		//通信区间处理
+		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getCommRange().split(";").length>100){
+			String[] rangeArr=responseData.getCommRange().split(";");
+			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
+			
+			Iterator<String> it = rangeList.iterator();
+			while(it.hasNext()){
+				if(rangeList.size()>100){
+					it.remove();
+				}else{
+					break;
+				}
+			}
+			responseData.setCommRange(StringUtils.join(rangeList, ";"));
+		}
+		
+		//运行区间处理
+		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getRunRange().split(";").length>100){
+			String[] rangeArr=responseData.getRunRange().split(";");
+			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
+			
+			Iterator<String> it = rangeList.iterator();
+			while(it.hasNext()){
+				if(rangeList.size()>100){
+					it.remove();
+				}else{
+					break;
+				}
+			}
+			responseData.setRunRange(StringUtils.join(rangeList, ";"));
+		}
+		
 		return responseData;
 	}
 	

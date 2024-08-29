@@ -51,10 +51,12 @@ public class CalculateUtils {
 		CommResponseData responseData=gson.fromJson(responseDataStr, type);
 		
 		//区间处理
-		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getCurrent().getCommEfficiency().getRange().size()>100){
+		if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
+				&& responseData!=null && responseData.getResultStatus()==1 
+				&& responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 			Iterator<CommResponseData.Range> it = responseData.getCurrent().getCommEfficiency().getRange().iterator();
 			while(it.hasNext()){
-				if(responseData.getCurrent().getCommEfficiency().getRange().size()>100){
+				if(responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{
 					break;
@@ -64,7 +66,7 @@ public class CalculateUtils {
 			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
 			Iterator<String> rangeStrIt = rangeList.iterator();
 			while(it.hasNext()){
-				if(rangeList.size()>100){
+				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					rangeStrIt.remove();
 				}else{
 					break;
@@ -84,10 +86,12 @@ public class CalculateUtils {
 		TimeEffResponseData responseData=gson.fromJson(responseDataStr, type);
 		
 		//区间处理
-		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getCurrent().getRunEfficiency().getRange().size()>100){
+		if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
+				&& responseData!=null && responseData.getResultStatus()==1 && 
+				responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 			Iterator<TimeEffResponseData.Range> it = responseData.getCurrent().getRunEfficiency().getRange().iterator();
 			while(it.hasNext()){
-				if(responseData.getCurrent().getRunEfficiency().getRange().size()>100){
+				if(responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{
 					break;
@@ -98,7 +102,7 @@ public class CalculateUtils {
 			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
 			Iterator<String> rangeStrIt = rangeList.iterator();
 			while(it.hasNext()){
-				if(rangeList.size()>100){
+				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					rangeStrIt.remove();
 				}else{
 					break;
@@ -146,13 +150,15 @@ public class CalculateUtils {
 		TotalAnalysisResponseData responseData=gson.fromJson(responseDataStr, type);
 		
 		//通信区间处理
-		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getCommRange().split(";").length>100){
+		if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
+				&& responseData!=null && responseData.getResultStatus()==1 
+				&& responseData.getCommRange().split(";").length>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 			String[] rangeArr=responseData.getCommRange().split(";");
 			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
 			
 			Iterator<String> it = rangeList.iterator();
 			while(it.hasNext()){
-				if(rangeList.size()>100){
+				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{
 					break;
@@ -162,13 +168,15 @@ public class CalculateUtils {
 		}
 		
 		//运行区间处理
-		if(responseData!=null && responseData.getResultStatus()==1 && responseData.getRunRange().split(";").length>100){
+		if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
+				&& responseData!=null && responseData.getResultStatus()==1 
+				&& responseData.getRunRange().split(";").length>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 			String[] rangeArr=responseData.getRunRange().split(";");
 			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
 			
 			Iterator<String> it = rangeList.iterator();
 			while(it.hasNext()){
-				if(rangeList.size()>100){
+				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{
 					break;

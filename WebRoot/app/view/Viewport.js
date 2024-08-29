@@ -642,19 +642,8 @@ function websocketOnMessage(evt) {
                 gridPanel.getStore().load();
             }
         }
-    } else if (data.functionCode.toUpperCase() == "DatabaseDataCleaning".toUpperCase()) { //字段同步，数据库清理
-    	if (activeId.toUpperCase() == "DriverManagement".toUpperCase()) {
-    		var tabPanel = Ext.getCmp("ScadaDriverConfigTabPanel_Id");
-            var tabPanelActiveId = tabPanel.getActiveTab().id;
-            if (tabPanelActiveId == "ScadaDriverModbusProtocolConfigTabPanel_Id") {
-            	if(data.updateColCount!=data.count){
-            		Ext.getCmp("ScadaDriverConfigTabPanelLabel_id").show();
-            		Ext.getCmp("ScadaDriverConfigTabPanelLabel_id").setText(data.message);
-            	}else{
-            		Ext.getCmp("ScadaDriverConfigTabPanelLabel_id").hide();
-            	}
-            }
-    	}
+    } else if (data.functionCode.toUpperCase() == "DatabaseDataCleaning".toUpperCase()) {
+    	
     }
 }
 

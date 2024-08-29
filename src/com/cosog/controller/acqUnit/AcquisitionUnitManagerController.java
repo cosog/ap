@@ -4029,7 +4029,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		
 		fileName+="导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+//		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		
+		File file=StringManagerUtils.createJsonFile(json, path);
+		
+		
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4079,7 +4083,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String fileName="协议初始化";
 		fileName+="导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		
 		HttpSession session=request.getSession();
 		InputStream in=null;
@@ -4451,7 +4455,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolAcqUnitExportData(unitList);
 		String fileName="采控单元导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4500,7 +4504,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolAlarmUnitExportData(unitList);
 		String fileName="报警单元导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4549,7 +4553,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolReportUnitExportData(unitList);
 		String fileName="报表单元导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4598,7 +4602,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolDisplayUnitExportData(unitList);
 		String fileName="显示单元导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4647,7 +4651,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolAcqInstanceExportData(instanceList);
 		String fileName="采控实例导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4696,7 +4700,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolAcqInstanceInitExportData(instanceList);
 		String fileName="采控实例初始化导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4745,7 +4749,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolDisplayInstanceExportData(instanceList);
 		String fileName="显示实例导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4794,7 +4798,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolAlarmInstanceExportData(instanceList);
 		String fileName="报警实例导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
@@ -4843,7 +4847,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json=acquisitionUnitManagerService.getProtocolReportInstanceExportData(instanceList);
 		String fileName="报表实例导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
+		File file=StringManagerUtils.createJsonFile(json, path);
 		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;

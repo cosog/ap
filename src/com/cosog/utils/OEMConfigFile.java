@@ -267,6 +267,8 @@ public class OEMConfigFile {
 	    
 	    private boolean exportAdInitData;
 	    
+	    private int rangeLimit;
+	    
 	    private int exportLimit;
 
 	    private boolean simulateAcqEnable;
@@ -408,6 +410,12 @@ public class OEMConfigFile {
 		}
 		public void setExportAdInitData(boolean exportAdInitData) {
 			this.exportAdInitData = exportAdInitData;
+		}
+		public int getRangeLimit() {
+			return rangeLimit;
+		}
+		public void setRangeLimit(int rangeLimit) {
+			this.rangeLimit = rangeLimit;
 		}
 	}
 	

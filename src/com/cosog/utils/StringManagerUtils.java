@@ -99,6 +99,7 @@ import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -2398,7 +2399,8 @@ public class StringManagerUtils {
      * @return 格式化后的JSON字符串
      */
     public static String toPrettyFormat(String json) {
-        if (!StringManagerUtils.isNotNull(json)) {
+    	String result="";
+    	if (!StringManagerUtils.isNotNull(json)) {
             return json;
         }
         if (json.indexOf("'") != -1) {
@@ -2418,10 +2420,33 @@ public class StringManagerUtils {
             //将换行转换一下，因为JSON串中字符串不能出现显式的换行  
             json = json.replaceAll("\n", "\\u000a");
         }
+        
         JsonParser jsonParser = new JsonParser();
-        JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(jsonObject);
+        if(json.startsWith("[")){
+        	JsonArray jsonArrey=jsonParser.parse(json).getAsJsonArray();
+        	result=gson.toJson(jsonArrey);
+        }else if(json.startsWith("{")){
+        	JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
+        	result=gson.toJson(jsonObject);
+        }
+        
+//        boolean isList=false;
+//        if(json.startsWith("[{") && json.endsWith("}]")){
+//        	isList=true;
+//        	json="{\"dataList\":"+json+"}";
+//        }
+//        
+//        JsonParser jsonParser = new JsonParser();
+//        JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        
+//        String result=gson.toJson(jsonObject);
+//        if(isList){
+//        	result=result.substring(16, result.length());
+//        	result=result.substring(0, result.length()-2);
+//        }
+        return result;
     }
     public static String jsonStringFormat(String json) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

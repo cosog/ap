@@ -71,19 +71,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 activeTab: 0,
                 border: false,
                 tabPosition: 'bottom',
-                tabBar:{
-                	items: [{
-                        xtype: 'tbfill'
-                    },{
-                		xtype: 'button',
-                        id:"ScadaDriverConfigTabPanelLabel_id",
-                        text: '',
-                        hidden: true,
-                        handler: function (v, o) {
-                        	
-                        }
-                	}]
-                },
                 items: [{
                 	title:'协议配置',
                 	id:"ScadaDriverModbusProtocolConfigTabPanel_Id",
@@ -92,13 +79,13 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     				iconCls: 'check1',
     				border: false
                 },{
-                	title:'单元配置',
+                	title:'单元组态',
                 	id:'ScadaDriverModbusUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'实例配置',
+                	title:'实例组态',
                 	id:'ScadaDriverModbusInstanceConfigTabPanel_Id',
                 	items: [ModbusProtocolInstanceConfigInfoView],
     				layout: "fit",

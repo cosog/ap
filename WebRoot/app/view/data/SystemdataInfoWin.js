@@ -58,27 +58,23 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
         });
 		
 		Ext.apply(me, {
-			items:[
-				{
+			items:[{
 					region: 'north',
 					height:'150px',
 					xtype:'form',
 					border: false,
 		            id: "sysSubFormId",
-		            items: [
-		                {
+		            items: [{
 		                    xtype: "panel",
 		                    layout: "fit",
 		                    border: false,
 		                    bodyStyle: "padding:10px;",
-		                    items: [
-		                        {
+		                    items: [{
 		                            xtype: 'fieldset',
 		                            title: cosog.string.msg,
 		                            style: "padding:10px;",
 		                            collapsed: false,
-		                            items: [
-		                                    {
+		                            items: [{
 		                                    	xtype:'textfield',
 		                                    	id: "syscname_Id",
 		                                        name: 'systemdataInfo.cname',

@@ -67,7 +67,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         						tpl:'全部',
         						iconCls:'check2',
         						layout: 'fit',
-        						id: 'RealTimeMonitoringTabPanel_'+allSecondIds,
+        						id: 'DeviceManagerPanel_'+allSecondIds,
         						border: false
         				};
 //        				panelItem.items.push(secondTabPanel_all);

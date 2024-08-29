@@ -962,29 +962,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
     				displayItem.setType(StringManagerUtils.stringToInteger(obj[10]+""));
     				displayItemList.add(displayItem);
 				}
-				for(int k=0;k<displayItemList.size();k++){
-					if(displayItemList.get(k).getType()!=2 && displayItemList.get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
-						String header=displayItemList.get(k).getItemName();
-						String dataIndex=displayItemList.get(k).getItemCode();
-						for(ModbusProtocolConfig.Items item:protocol.getItems()){
-							if(item.getResolutionMode()==0 
-									&& displayItemList.get(k).getItemName().equalsIgnoreCase(item.getTitle())
-									&& item.getMeaning()!=null
-									&& item.getMeaning().size()>0
-									){//开关量处理
-								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning: item.getMeaning()){
-									if(displayItemList.get(k).getBitIndex()==itemsMeaning.getValue()){
-										header=itemsMeaning.getMeaning();
-										dataIndex+="_"+itemsMeaning.getValue();
-										break;
-									}
-								}
-								break;
-							}
-						}
-						columns.append("{ \"header\":\""+header+"\",\"dataIndex\":\""+dataIndex+"\"},");
-					}
-				}
+				
 				
 				//采集项
 				for(int j=0;j<protocol.getItems().size();j++){
@@ -1050,6 +1028,66 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 							
 						}
+					}
+				}
+				
+				
+				for(int k=0;k<displayItemList.size();k++){
+					if(displayItemList.get(k).getType()!=2 && displayItemList.get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
+						String header=displayItemList.get(k).getItemName();
+						String dataIndex=displayItemList.get(k).getItemCode();
+						String unit="";
+						if(displayItemList.get(k).getType()==0){
+							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, header);
+							if(item!=null){
+								unit=item.getUnit();
+							}
+						}else if(displayItemList.get(k).getType()==1){
+							if(dailyTotalCalItemMap.containsKey(dataIndex.toUpperCase())){
+								DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get(dataIndex.toUpperCase()) ;
+								if(displayItem!=null){
+									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItem.getItemSourceName());
+									if(item!=null){
+										unit=item.getUnit();
+									}
+								}
+							}else{
+								CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, calItemList);
+								if(calItem!=null){
+									unit=calItem.getUnit();
+								}
+							}
+							
+							
+						}else if(displayItemList.get(k).getType()==3){
+							CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, inputItemList);
+							if(calItem!=null){
+								unit=calItem.getUnit();
+							}
+						}
+						
+						for(ModbusProtocolConfig.Items item:protocol.getItems()){
+							if(item.getResolutionMode()==0 
+									&& displayItemList.get(k).getItemName().equalsIgnoreCase(item.getTitle())
+									&& item.getMeaning()!=null
+									&& item.getMeaning().size()>0
+									){//开关量处理
+								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning: item.getMeaning()){
+									if(displayItemList.get(k).getBitIndex()==itemsMeaning.getValue()){
+										header=itemsMeaning.getMeaning();
+										dataIndex+="_"+itemsMeaning.getValue();
+										break;
+									}
+								}
+								break;
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(unit)){
+							header+="("+unit+")";
+						}
+						
+						columns.append("{ \"header\":\""+header+"\",\"dataIndex\":\""+dataIndex+"\"},");
 					}
 				}
 			}
@@ -1471,13 +1509,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
 							if(displayItem!=null){
 								String unit="";
-								if(protocol!=null&&protocol.getItems()!=null){
-									for(ModbusProtocolConfig.Items item:protocol.getItems()){
-										if(displayItem.getItemSourceName().equalsIgnoreCase(item.getTitle())){
-											unit=item.getUnit();
-											break;
-										}
-									}
+								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItem.getItemSourceName());
+								if(item!=null){
+									unit=item.getUnit();
 								}
 								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
 										dailyTotalDataObj[2]+"",
@@ -1646,7 +1680,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
 			}
 			
-			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
 				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
 				inputItemList=MemoryDataManagerTask.getRPCInputItem();
@@ -1676,7 +1709,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<CalItem> displayInputItemList=new ArrayList<CalItem>();
 			Map<String,DisplayInstanceOwnItem.DisplayItem> dailyTotalCalItemMap=new LinkedHashMap<>();
 			
-			
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
@@ -1684,35 +1716,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.acqdata";
 			if(displayInstanceOwnItem!=null&&userInfo!=null&&protocol!=null){
 				Collections.sort(displayInstanceOwnItem.getItemList());
-				
-				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-					if(displayInstanceOwnItem.getItemList().get(k).getType()!=2 && displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
-						String header=displayInstanceOwnItem.getItemList().get(k).getItemName();
-						String dataIndex=displayInstanceOwnItem.getItemList().get(k).getItemCode();
-						
-						for(ModbusProtocolConfig.Items item:protocol.getItems()){
-							if(item.getResolutionMode()==0 
-									&& header.equalsIgnoreCase(item.getTitle())
-									&& item.getMeaning()!=null
-									&& item.getMeaning().size()>0
-									){//开关量处理
-								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning: item.getMeaning()){
-									if(displayInstanceOwnItem.getItemList().get(k).getBitIndex()==itemsMeaning.getValue()){
-										header=itemsMeaning.getMeaning();
-										dataIndex+="_"+itemsMeaning.getValue();
-										break;
-									}
-								}
-								break;
-							}
-						}
-						
-						
-						field+=","+dataIndex;
-						head+=","+header;
-					}
-				}
-				
 				//采集项
 				for(int j=0;j<protocol.getItems().size();j++){
 					if((!"w".equalsIgnoreCase(protocol.getItems().get(j).getRWType())) 
@@ -1777,6 +1780,66 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 							
 						}
+					}
+				}
+				
+				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+					if(displayInstanceOwnItem.getItemList().get(k).getType()!=2 && displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
+						String header=displayInstanceOwnItem.getItemList().get(k).getItemName();
+						String dataIndex=displayInstanceOwnItem.getItemList().get(k).getItemCode();
+						
+						String unit="";
+						if(displayInstanceOwnItem.getItemList().get(k).getType()==0){
+							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, header);
+							if(item!=null){
+								unit=item.getUnit();
+							}
+						}else if(displayInstanceOwnItem.getItemList().get(k).getType()==1){
+							if(dailyTotalCalItemMap.containsKey(dataIndex.toUpperCase())){
+								DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get(dataIndex.toUpperCase()) ;
+								if(displayItem!=null){
+									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItem.getItemSourceName());
+									if(item!=null){
+										unit=item.getUnit();
+									}
+								}
+							}else{
+								CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, calItemList);
+								if(calItem!=null){
+									unit=calItem.getUnit();
+								}
+							}
+						}else if(displayInstanceOwnItem.getItemList().get(k).getType()==3){
+							CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, inputItemList);
+							if(calItem!=null){
+								unit=calItem.getUnit();
+							}
+						}
+						
+						
+						for(ModbusProtocolConfig.Items item:protocol.getItems()){
+							if(item.getResolutionMode()==0 
+									&& header.equalsIgnoreCase(item.getTitle())
+									&& item.getMeaning()!=null
+									&& item.getMeaning().size()>0
+									){//开关量处理
+								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning: item.getMeaning()){
+									if(displayInstanceOwnItem.getItemList().get(k).getBitIndex()==itemsMeaning.getValue()){
+										header=itemsMeaning.getMeaning();
+										dataIndex+="_"+itemsMeaning.getValue();
+										break;
+									}
+								}
+								break;
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(unit)){
+							header+="("+unit+")";
+						}
+						
+						field+=","+dataIndex;
+						head+=","+header;
 					}
 				}
 			}

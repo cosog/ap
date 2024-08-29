@@ -20,6 +20,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
     },
     initComponent: function () {
         var moduleTree = this;
+        var loginUserRoleModules=getLoginUserRoleModules();
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         Ext.apply(moduleTree, {
             store: moduleStore,
@@ -52,7 +53,6 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
                     var rn=true;
-                    var loginUserRoleModules=getLoginUserRoleModules();
                     var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                     if(RoleManagerModuleEditFlag==1){
         	    		for(var i=0;i<loginUserRoleModules.length;i++){
@@ -88,7 +88,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
                     var rn=true;
-                    var loginUserRoleModules=getLoginUserRoleModules();
+//                    var loginUserRoleModules=getLoginUserRoleModules();
         	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                     if(RoleManagerModuleEditFlag==1){
                     	if(!record.isLeaf()){
@@ -129,7 +129,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
                     var rn=true;
-                    var loginUserRoleModules=getLoginUserRoleModules();
+//                    var loginUserRoleModules=getLoginUserRoleModules();
                     var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                     if(RoleManagerModuleEditFlag==1){
                     	if(record.data.mdCode.toUpperCase()!='DeviceRealTimeMonitoring'.toUpperCase()){
@@ -179,8 +179,4 @@ function getLoginUserRoleModules(){
 		}
 	});
 	return loginUserRoleModules;
-	
-	
-	
-	
 }

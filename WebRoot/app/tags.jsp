@@ -33,7 +33,7 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 </script>
 <!-- Extjs 核心脚本-->
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ext-all.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-<!-- 
+<!--
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/Month.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimePicker.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimeField.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

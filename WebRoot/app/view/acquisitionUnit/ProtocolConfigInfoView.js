@@ -1,4 +1,70 @@
 var loginUserProtocolConfigModuleRight=getRoleModuleRight('DriverManagement');
+
+//协议配置
+var protocolItemsConfigHandsontableHelper=null;
+var protocolPropertiesHandsontableHelper=null;
+var protocolItemsMeaningConfigHandsontableHelper=null;
+
+//采控单元
+var protocolAcqUnitConfigItemsHandsontableHelper=null;
+var protocolConfigAcqUnitPropertiesHandsontableHelper=null;
+
+//报警单元
+var protocolConfigAlarmUnitPropertiesHandsontableHelper=null;
+var protocolAlarmUnitConfigNumItemsHandsontableHelper=null;
+var protocolAlarmUnitConfigSwitchItemsHandsontableHelper=null;
+var protocolAlarmUnitConfigEnumItemsHandsontableHelper=null;
+var protocolAlarmUnitConfigCommStatusItemsHandsontableHelper=null;
+var protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper=null;
+var protocolAlarmUnitConfigCalNumItemsHandsontableHelper=null;
+var protocolAlarmUnitConfigRunStatusItemsHandsontableHelper=null;
+
+//显示单元
+var protocolDisplayUnitAcqItemsConfigHandsontableHelper=null;
+var protocolDisplayUnitCalItemsConfigHandsontableHelper=null;
+var protocolDisplayUnitCtrlItemsConfigHandsontableHelper=null;
+var protocolDisplayUnitInputItemsConfigHandsontableHelper=null;
+var protocolDisplayUnitPropertiesHandsontableHelper=null;
+
+//报表单元
+var reportUnitPropertiesHandsontableHelper = null;
+var singleWellRangeReportTemplateHandsontableHelper = null;
+var singleWellRangeReportTemplateContentHandsontableHelper = null;
+var productionReportTemplateHandsontableHelper = null;
+var productionReportTemplateContentHandsontableHelper = null;
+var singleWellDailyReportTemplateHandsontableHelper = null;
+var singleWellDailyReportTemplateContentHandsontableHelper = null;
+
+//采控实例
+var protocolInstanceConfigItemsHandsontableHelper=null;
+var protocolConfigInstancePropertiesHandsontableHelper=null;
+
+//显示实例
+var protocolDisplayInstanceAcqItemsHandsontableHelper=null;
+var protocolDisplayInstanceCalItemsHandsontableHelper=null;
+var protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
+var protocolDisplayInstanceInputItemsHandsontableHelper=null;
+var protocolDisplayInstancePropertiesHandsontableHelper=null;
+
+//报警实例
+var protocolAlarmInstanceConfigNumItemsHandsontableHelper=null;
+var protocolAlarmInstanceConfigCalNumItemsHandsontableHelper=null;
+var protocolAlarmInstanceConfigSwitchItemsHandsontableHelper=null;
+var protocolAlarmInstanceConfigEnumItemsHandsontableHelper=null;
+var protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
+var protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper=null;
+var protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper=null;
+var protocolAlarmInstancePropertiesHandsontableHelper=null;
+
+//报表实例
+var reportInstanceSingleWellRangeReportTemplateHandsontableHelper=null;
+var reportInstanceSingleWellRangeReportContentHandsontableHelper=null;
+var reportInstanceSingleWellDailyReportTemplateHandsontableHelper=null;
+var reportInstanceSingleWellDailyReportContentHandsontableHelper=null;
+var reportInstanceProductionTemplateHandsontableHelper=null;
+var reportInstanceProductionTemplateContentHandsontableHelper=null;
+var protocolReportInstancePropertiesHandsontableHelper=null;
+
 Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.protocolConfigInfoView',
@@ -8,8 +74,8 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     initComponent: function () {
     	var me = this;
     	var ModbusProtocolConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView');
-    	var ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
-        var ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
+//    	var ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
+//        var ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
         
         
         
@@ -81,13 +147,13 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 },{
                 	title:'单元组态',
                 	id:'ScadaDriverModbusUnitConfigTabPanel_Id',
-                	items: [ModbusProtocolUnitConfigInfoView],
+//                	items: [ModbusProtocolUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
                 	title:'实例组态',
                 	id:'ScadaDriverModbusInstanceConfigTabPanel_Id',
-                	items: [ModbusProtocolInstanceConfigInfoView],
+//                	items: [ModbusProtocolInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 }],
@@ -95,6 +161,20 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         				oldCard.setIconCls(null);
         				newCard.setIconCls('check1');
+        				
+        				if(newCard.id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
+        					var ModbusProtocolUnitConfigInfoView=Ext.getCmp("modbusProtocolUnitConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolUnitConfigInfoView)){
+        						ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
+        						Ext.getCmp("ScadaDriverModbusUnitConfigTabPanel_Id").add(ModbusProtocolUnitConfigInfoView);
+        					}
+        				}else if(newCard.id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
+        					var ModbusProtocolInstanceConfigInfoView=Ext.getCmp("modbusProtocolInstanceConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolInstanceConfigInfoView)){
+        						ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
+        						Ext.getCmp("ScadaDriverModbusInstanceConfigTabPanel_Id").add(ModbusProtocolInstanceConfigInfoView);
+        					}
+        				}
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){

@@ -7,9 +7,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
     initComponent: function () {
     	var me = this;
     	var ModbusProtocolAcqUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView');
-    	var ModbusProtocolAlarmUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView');
-    	var ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
-    	var ModbusProtocolReportUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView');
+//    	var ModbusProtocolAlarmUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView');
+//    	var ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
+//    	var ModbusProtocolReportUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView');
     	Ext.apply(me, {
     		items: [{
     			xtype: 'tabpanel',
@@ -18,7 +18,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 border: false,
                 tabPosition: 'left',
                 items: [{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">采控单元</div>',
                 	title:'采控单元',
                 	id:'ModbusProtocolAcqUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolAcqUnitConfigInfoView],
@@ -26,24 +25,21 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
     				iconCls: 'check2',
     				border: false
                 },{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报警单元</div>',
                 	title:'报警单元',
                 	id:'ModbusProtocolAlarmUnitConfigTabPanel_Id',
-                	items: [ModbusProtocolAlarmUnitConfigInfoView],
+//                	items: [ModbusProtocolAlarmUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">显示单元</div>',
                 	title:'显示单元',
                 	id:'ModbusProtocolDisplayUnitConfigTabPanel_Id',
-                	items: [ModbusProtocolDisplayUnitConfigInfoView],
+//                	items: [ModbusProtocolDisplayUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表单元</div>',
                 	title:'报表单元',
                 	id:'ModbusProtocolReportUnitConfigTabPanel_Id',
-                	items: [ModbusProtocolReportUnitConfigInfoView],
+//                	items: [ModbusProtocolReportUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 }],
@@ -51,6 +47,26 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         				oldCard.setIconCls(null);
         				newCard.setIconCls('check2');
+        				
+        				if(newCard.id=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
+        					var ModbusProtocolAlarmUnitConfigInfoView=Ext.getCmp("modbusProtocolAlarmUnitConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolAlarmUnitConfigInfoView)){
+        						ModbusProtocolAlarmUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView');
+        						Ext.getCmp("ModbusProtocolAlarmUnitConfigTabPanel_Id").add(ModbusProtocolAlarmUnitConfigInfoView);
+        					}
+        				}else if(newCard.id=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
+        					var ModbusProtocolDisplayUnitConfigInfoView=Ext.getCmp("modbusProtocolDisplayUnitConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolDisplayUnitConfigInfoView)){
+        						ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
+        						Ext.getCmp("ModbusProtocolDisplayUnitConfigTabPanel_Id").add(ModbusProtocolDisplayUnitConfigInfoView);
+        					}
+        				}else if(newCard.id=="ModbusProtocolReportUnitConfigTabPanel_Id"){
+        					var ModbusProtocolReportUnitConfigInfoView=Ext.getCmp("modbusProtocolReportUnitConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolReportUnitConfigInfoView)){
+        						ModbusProtocolReportUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView');
+        						Ext.getCmp("ModbusProtocolReportUnitConfigTabPanel_Id").add(ModbusProtocolReportUnitConfigInfoView);
+        					}
+        				}
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqUnitConfigTabPanel_Id"){

@@ -102,6 +102,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
             Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
         },
         beforeload: function (store, options) {
+        	Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
         	var deviceName = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
             var deviceId = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
             var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");

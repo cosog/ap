@@ -1,6 +1,6 @@
-var protocolItemsConfigHandsontableHelper=null;
-var protocolPropertiesHandsontableHelper=null;
-var protocolItemsMeaningConfigHandsontableHelper=null;
+//var protocolItemsConfigHandsontableHelper=null;
+//var protocolPropertiesHandsontableHelper=null;
+//var protocolItemsMeaningConfigHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolConfigInfoView',
@@ -493,6 +493,12 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		item2.title='排序序号';
 		item2.value=data.sort;
 		root.push(item2);
+		
+		var item3={};
+		item3.id=3;
+		item3.title='协议隶属';
+		item3.value=data.deviceTypeAllPath;
+		root.push(item3);
 	}
 	
 	if(protocolPropertiesHandsontableHelper==null || protocolPropertiesHandsontableHelper.hot==undefined){
@@ -579,6 +585,9 @@ var ProtocolPropertiesHandsontableHelper = {
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolPropertiesHandsontableHelper);
 			                    	}
+			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addCellStyle;
+			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
+			                    	cellProperties.readOnly = true;
 			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addCellStyle;
 			                    }
 		                    }

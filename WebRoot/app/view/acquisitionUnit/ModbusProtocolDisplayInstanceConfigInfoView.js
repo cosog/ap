@@ -1,8 +1,8 @@
-var protocolDisplayInstanceAcqItemsHandsontableHelper=null;
-var protocolDisplayInstanceCalItemsHandsontableHelper=null;
-var protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
-var protocolDisplayInstanceInputItemsHandsontableHelper=null;
-var protocolDisplayInstancePropertiesHandsontableHelper=null;
+//var protocolDisplayInstanceAcqItemsHandsontableHelper=null;
+//var protocolDisplayInstanceCalItemsHandsontableHelper=null;
+//var protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
+//var protocolDisplayInstanceInputItemsHandsontableHelper=null;
+//var protocolDisplayInstancePropertiesHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolDisplayInstanceConfigInfoView',

@@ -1,12 +1,12 @@
-var singleWellRangeReportTemplateHandsontableHelper = null;
-var singleWellRangeReportTemplateContentHandsontableHelper = null;
-var reportUnitPropertiesHandsontableHelper = null;
-
-var productionReportTemplateHandsontableHelper = null;
-var productionReportTemplateContentHandsontableHelper = null;
-
-var singleWellDailyReportTemplateHandsontableHelper = null;
-var singleWellDailyReportTemplateContentHandsontableHelper = null;
+//var singleWellRangeReportTemplateHandsontableHelper = null;
+//var singleWellRangeReportTemplateContentHandsontableHelper = null;
+//var reportUnitPropertiesHandsontableHelper = null;
+//
+//var productionReportTemplateHandsontableHelper = null;
+//var productionReportTemplateContentHandsontableHelper = null;
+//
+//var singleWellDailyReportTemplateHandsontableHelper = null;
+//var singleWellDailyReportTemplateContentHandsontableHelper = null;
 
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
     extend: 'Ext.panel.Panel',
@@ -526,8 +526,10 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
 
         singleWellRangeReportTemplateHandsontableHelper.initData = function () {
             singleWellRangeReportTemplateHandsontableHelper.data = [];
-            for (var i = 0; i < singleWellRangeReportTemplateHandsontableHelper.templateData.header.length; i++) {
-                singleWellRangeReportTemplateHandsontableHelper.data.push(singleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title);
+            if(singleWellRangeReportTemplateHandsontableHelper.templateData.header!=undefined){
+            	for (var i = 0; i < singleWellRangeReportTemplateHandsontableHelper.templateData.header.length; i++) {
+                    singleWellRangeReportTemplateHandsontableHelper.data.push(singleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title);
+                }
             }
         }
 
@@ -758,8 +760,10 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
 
         singleWellDailyReportTemplateHandsontableHelper.initData = function () {
             singleWellDailyReportTemplateHandsontableHelper.data = [];
-            for (var i = 0; i < singleWellDailyReportTemplateHandsontableHelper.templateData.header.length; i++) {
-                singleWellDailyReportTemplateHandsontableHelper.data.push(singleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title);
+            if(singleWellDailyReportTemplateHandsontableHelper.templateData.header!=undefined){
+            	for (var i = 0; i < singleWellDailyReportTemplateHandsontableHelper.templateData.header.length; i++) {
+                    singleWellDailyReportTemplateHandsontableHelper.data.push(singleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title);
+                }
             }
         }
 
@@ -1685,8 +1689,10 @@ var ProductionReportTemplateHandsontableHelper = {
 
         productionReportTemplateHandsontableHelper.initData = function () {
             productionReportTemplateHandsontableHelper.data = [];
-            for (var i = 0; i < productionReportTemplateHandsontableHelper.templateData.header.length; i++) {
-                productionReportTemplateHandsontableHelper.data.push(productionReportTemplateHandsontableHelper.templateData.header[i].title);
+            if(productionReportTemplateHandsontableHelper.templateData.header!=undefined){
+            	for (var i = 0; i < productionReportTemplateHandsontableHelper.templateData.header.length; i++) {
+                    productionReportTemplateHandsontableHelper.data.push(productionReportTemplateHandsontableHelper.templateData.header[i].title);
+                }
             }
         }
 

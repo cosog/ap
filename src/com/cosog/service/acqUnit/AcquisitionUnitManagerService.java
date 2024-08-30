@@ -4485,26 +4485,48 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String modbusProtocolAddrMappingTreeData(String deviceTypeIds){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		
 		tree_json.append("[");
-		String[] deviceTypeIdArr=deviceTypeIds.split(",");
-		if(modbusProtocolConfig!=null){
-			//排序
-			Collections.sort(modbusProtocolConfig.getProtocol());
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				
-				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
-					tree_json.append("{\"classes\":1,");
-					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					tree_json.append("\"iconCls\": \"protocol\",");
-					tree_json.append("\"leaf\": true");
-					tree_json.append("},");
-				}
-			}
+		
+		String sql="select t.name,t.code,t.sort,t.devicetype,t2.name as deviceTypeName,t2.allpath as deviceTypeAllPath from tbl_protocol t,viw_devicetypeinfo t2 "
+				+ " where t.devicetype=t2.id "
+				+ " and t.devicetype in ("+deviceTypeIds+") "
+				+ " order by t.sort,t.name";
+		List<?> list=this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"text\":\""+obj[0]+"\",");
+			tree_json.append("\"code\":\""+obj[1]+"\",");
+			tree_json.append("\"sort\":\""+obj[2]+"\",");
+			tree_json.append("\"deviceType\":\""+obj[3]+"\",");
+			tree_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
+			tree_json.append("\"deviceTypeAllPath\":\""+obj[5]+"\",");
+			tree_json.append("\"iconCls\": \"protocol\",");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
 		}
+		
+		
+//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//		String[] deviceTypeIdArr=deviceTypeIds.split(",");
+//		if(modbusProtocolConfig!=null){
+//			//排序
+//			Collections.sort(modbusProtocolConfig.getProtocol());
+//			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+//				
+//				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+//					tree_json.append("{\"classes\":1,");
+//					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+//					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+//					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
+//					tree_json.append("\"iconCls\": \"protocol\",");
+//					tree_json.append("\"leaf\": true");
+//					tree_json.append("},");
+//				}
+//			}
+//		}
+		
+		
 		if(tree_json.toString().endsWith(",")){
 			tree_json.deleteCharAt(tree_json.length() - 1);
 		}

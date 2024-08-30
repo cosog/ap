@@ -267,16 +267,18 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                         id:'userEnableRadio0_Id'
                     }
                 ]
-            }, {
-                xtype: 'datetimefield',
-                id: 'userRegTime_Id',
-                format: 'Y-m-d H:i:s',
-                anchor: '100%',
-                hidden:true,
-                fieldLabel: cosog.string.userRegTime,
-                value: new Date(),
-                name: "user.userRegtime"
-            }],
+            }
+//            , {
+//                xtype: 'datetimefield',
+//                id: 'userRegTime_Id',
+//                format: 'Y-m-d H:i:s',
+//                anchor: '100%',
+//                hidden:true,
+//                fieldLabel: cosog.string.userRegTime,
+//                value: new Date(),
+//                name: "user.userRegtime"
+//            }
+            ],
             buttons: [{
                 id: 'addFormUser_Id',
                 xtype: 'button',

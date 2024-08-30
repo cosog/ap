@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,6 +168,7 @@ public class UserManagerController extends BaseController {
 			List<String> receivingEMailAccount=new ArrayList<String>();
 //			user.setUserPwd(UnixPwdCrypt.crypt("dogVSgod", user.getUserPwd()));
 			user.setUserPwd(StringManagerUtils.stringToMD5(user.getUserPwd()));
+			user.setUserRegtime(new Date());
 			this.userService.addUser(user);
 			
 			List<String> userList=new ArrayList<String>();
@@ -177,20 +179,6 @@ public class UserManagerController extends BaseController {
 				receivingEMailAccount.add(user.getUserInEmail());
 				StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
 			}
-			
-//			HttpSession session=request.getSession();
-//			User userLogin = (User) session.getAttribute("userLogin");
-//			orgId = "" + userLogin.getUserorgids();
-//			
-//			userLogin.setOrgtreeid(orgManagerService.findOrgById(user.getUserOrgid()));
-//			userLogin.setUserParentOrgids(orgService.findParentIds(user.getUserOrgid()));
-//			userLogin.setUserorgids(orgService.findChildIds(user.getUserOrgid()));
-//			userLogin.setUserOrgNames(orgService.findChildNames(user.getUserOrgid()));
-//			userLogin.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
-//			userLogin.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
-//			
-//			userLogin = (User) session.getAttribute("userLogin");
-//			orgId = "" + userLogin.getUserorgids();
 			
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);

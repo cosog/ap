@@ -1,5 +1,5 @@
-var protocolAcqUnitConfigItemsHandsontableHelper=null;
-var protocolConfigAcqUnitPropertiesHandsontableHelper=null;
+//var protocolAcqUnitConfigItemsHandsontableHelper=null;
+//var protocolConfigAcqUnitPropertiesHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolAcqUnitConfigInfoView',

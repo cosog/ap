@@ -1,12 +1,12 @@
-var protocolAlarmInstanceConfigNumItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigCalNumItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigSwitchItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigEnumItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper=null;
-
-var protocolAlarmInstancePropertiesHandsontableHelper=null;
+//var protocolAlarmInstanceConfigNumItemsHandsontableHelper=null;
+//var protocolAlarmInstanceConfigCalNumItemsHandsontableHelper=null;
+//var protocolAlarmInstanceConfigSwitchItemsHandsontableHelper=null;
+//var protocolAlarmInstanceConfigEnumItemsHandsontableHelper=null;
+//var protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
+//var protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper=null;
+//var protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper=null;
+//
+//var protocolAlarmInstancePropertiesHandsontableHelper=null;
 
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', {
     extend: 'Ext.panel.Panel',

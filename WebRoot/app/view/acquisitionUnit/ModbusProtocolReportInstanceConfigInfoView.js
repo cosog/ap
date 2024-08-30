@@ -1,13 +1,13 @@
-var reportInstanceSingleWellRangeReportTemplateHandsontableHelper=null;
-var reportInstanceSingleWellRangeReportContentHandsontableHelper=null;
-
-var reportInstanceSingleWellDailyReportTemplateHandsontableHelper=null;
-var reportInstanceSingleWellDailyReportContentHandsontableHelper=null;
-
-var reportInstanceProductionTemplateHandsontableHelper=null;
-var reportInstanceProductionTemplateContentHandsontableHelper=null;
-
-var protocolReportInstancePropertiesHandsontableHelper=null;
+//var reportInstanceSingleWellRangeReportTemplateHandsontableHelper=null;
+//var reportInstanceSingleWellRangeReportContentHandsontableHelper=null;
+//
+//var reportInstanceSingleWellDailyReportTemplateHandsontableHelper=null;
+//var reportInstanceSingleWellDailyReportContentHandsontableHelper=null;
+//
+//var reportInstanceProductionTemplateHandsontableHelper=null;
+//var reportInstanceProductionTemplateContentHandsontableHelper=null;
+//
+//var protocolReportInstancePropertiesHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolReportInstanceConfigInfoView',
@@ -531,9 +531,11 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 	        
 	        reportInstanceSingleWellRangeReportTemplateHandsontableHelper.initData=function(){
 	        	reportInstanceSingleWellRangeReportTemplateHandsontableHelper.data=[];
-	        	for(var i=0;i<reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header.length;i++){
-		        	reportInstanceSingleWellRangeReportTemplateHandsontableHelper.data.push(reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title);
-		        }
+	        	if(reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header!=undefined){
+	        		for(var i=0;i<reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header.length;i++){
+			        	reportInstanceSingleWellRangeReportTemplateHandsontableHelper.data.push(reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title);
+			        }
+	        	}
 	        }
 	        
 	        reportInstanceSingleWellRangeReportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
@@ -935,9 +937,11 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 	        
 	        reportInstanceSingleWellDailyReportTemplateHandsontableHelper.initData=function(){
 	        	reportInstanceSingleWellDailyReportTemplateHandsontableHelper.data=[];
-	        	for(var i=0;i<reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header.length;i++){
-		        	reportInstanceSingleWellDailyReportTemplateHandsontableHelper.data.push(reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title);
-		        }
+	        	if(reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header!=undefined){
+	        		for(var i=0;i<reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header.length;i++){
+			        	reportInstanceSingleWellDailyReportTemplateHandsontableHelper.data.push(reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title);
+			        }
+	        	}
 	        }
 	        
 	        reportInstanceSingleWellDailyReportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
@@ -1779,9 +1783,11 @@ var ReportInstanceProductionTemplateHandsontableHelper = {
 	        
 	        reportInstanceProductionTemplateHandsontableHelper.initData=function(){
 	        	reportInstanceProductionTemplateHandsontableHelper.data=[];
-	        	for(var i=0;i<reportInstanceProductionTemplateHandsontableHelper.templateData.header.length;i++){
-		        	reportInstanceProductionTemplateHandsontableHelper.data.push(reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].title);
-		        }
+	        	if(reportInstanceProductionTemplateHandsontableHelper.templateData.header!=undefined){
+	        		for(var i=0;i<reportInstanceProductionTemplateHandsontableHelper.templateData.header.length;i++){
+			        	reportInstanceProductionTemplateHandsontableHelper.data.push(reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].title);
+			        }
+	        	}
 	        }
 	        
 	        reportInstanceProductionTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {

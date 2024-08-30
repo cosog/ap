@@ -7,10 +7,10 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
     initComponent: function () {
     	var me = this;
     	var ModbusProtocolAcqInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView');
-    	var ModbusProtocolDisplayInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView');
-    	var ModbusProtocolAlarmInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView');
-    	var ModbusProtocolSMSInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView');
-    	var ModbusProtocolReportInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView');
+//    	var ModbusProtocolDisplayInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView');
+//    	var ModbusProtocolAlarmInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView');
+//    	var ModbusProtocolSMSInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView');
+//    	var ModbusProtocolReportInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView');
     	Ext.apply(me, {
     		items: [{
     			xtype: 'tabpanel',
@@ -19,7 +19,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 border: false,
                 tabPosition: 'left',
                 items: [{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">采控实例</div>',
                 	title:'采控实例',
                 	id:"ModbusProtocolAcqInstanceConfigTabPanel_Id",
                 	items: [ModbusProtocolAcqInstanceConfigInfoView],
@@ -27,31 +26,27 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
     				layout: "fit",
     				border: false
                 },{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">显示实例</div>',
                 	title:'显示实例',
                 	id:'ModbusProtocolDisplayInstanceConfigTabPanel_Id',
-                	items: [ModbusProtocolDisplayInstanceConfigInfoView],
+//                	items: [ModbusProtocolDisplayInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报警实例</div>',
                 	title:'报警实例',
                 	id:'ModbusProtocolAlarmInstanceConfigTabPanel_Id',
-                	items: [ModbusProtocolAlarmInstanceConfigInfoView],
+//                	items: [ModbusProtocolAlarmInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">报表实例</div>',
                 	title:'报表实例',
                 	id:'ModbusProtocolReportInstanceConfigTabPanel_Id',
-                	items: [ModbusProtocolReportInstanceConfigInfoView],
+//                	items: [ModbusProtocolReportInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-//                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">短信实例</div>',
                 	title:'短信实例',
                 	id:'ModbusProtocolSMSInstanceConfigTabPanel_Id',
-                	items: [ModbusProtocolSMSInstanceConfigInfoView],
+//                	items: [ModbusProtocolSMSInstanceConfigInfoView],
     				layout: "fit",
     				border: false
                 }],
@@ -59,6 +54,32 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         				oldCard.setIconCls(null);
         				newCard.setIconCls('check2');
+        				
+        				if(newCard.id=="ModbusProtocolDisplayInstanceConfigTabPanel_Id"){
+        					var ModbusProtocolDisplayInstanceConfigInfoView=Ext.getCmp("modbusProtocolDisplayInstanceConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolDisplayInstanceConfigInfoView)){
+        						ModbusProtocolDisplayInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView');
+        						Ext.getCmp("ModbusProtocolDisplayInstanceConfigTabPanel_Id").add(ModbusProtocolDisplayInstanceConfigInfoView);
+        					}
+        				}else if(newCard.id=="ModbusProtocolAlarmInstanceConfigTabPanel_Id"){
+        					var ModbusProtocolAlarmInstanceConfigInfoView=Ext.getCmp("modbusProtocolAlarmInstanceConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolAlarmInstanceConfigInfoView)){
+        						ModbusProtocolAlarmInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView');
+        						Ext.getCmp("ModbusProtocolAlarmInstanceConfigTabPanel_Id").add(ModbusProtocolAlarmInstanceConfigInfoView);
+        					}
+        				}else if(newCard.id=="ModbusProtocolSMSInstanceConfigTabPanel_Id"){
+        					var ModbusProtocolSMSInstanceConfigInfoView=Ext.getCmp("modbusProtocolSMSInstanceConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolSMSInstanceConfigInfoView)){
+        						ModbusProtocolSMSInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView');
+        						Ext.getCmp("ModbusProtocolSMSInstanceConfigTabPanel_Id").add(ModbusProtocolSMSInstanceConfigInfoView);
+        					}
+        				}else if(newCard.id=="ModbusProtocolReportInstanceConfigTabPanel_Id"){
+        					var ModbusProtocolReportInstanceConfigInfoView=Ext.getCmp("modbusProtocolReportInstanceConfigInfoViewId");
+        					if(!isNotVal(ModbusProtocolReportInstanceConfigInfoView)){
+        						ModbusProtocolReportInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView');
+        						Ext.getCmp("ModbusProtocolReportInstanceConfigTabPanel_Id").add(ModbusProtocolReportInstanceConfigInfoView);
+        					}
+        				}
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){

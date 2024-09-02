@@ -52,9 +52,9 @@ public class CalculateDataManagerTask {
 		RPCTotalCalculation();
 		PCPTotalCalculation();
 		
-		AcquisitionTimingCalculate();
-		RPCTimingCalculate();
-		PCPTimingCalculate();
+//		AcquisitionTimingCalculate();
+//		RPCTimingCalculate();
+//		PCPTimingCalculate();
 	}
 	
 	@Scheduled(cron = "0/1 * * * * ?")

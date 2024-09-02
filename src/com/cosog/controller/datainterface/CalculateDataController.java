@@ -259,9 +259,12 @@ public class CalculateDataController extends BaseController{
 	public String AcquisitionDataTimingTotalCalculation() throws ParseException, SQLException, IOException{
 		String time=ParamUtils.getParameter(request, "time");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
-		calculateDataService.AcquisitionDataTimingTotalCalculation(timeStr);
+//		timeStr="2024-09-01 23:00:00";
 		
-		System.out.println("抽油机井曲线数据汇总完成");
+		long t1 = System.nanoTime();
+		calculateDataService.AcquisitionDataTimingTotalCalculation(timeStr);
+		long t2 = System.nanoTime();
+		System.out.println("采集数据定时汇总完成"+ ",总耗时:" + StringManagerUtils.getTimeDiff(t1, t2));
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

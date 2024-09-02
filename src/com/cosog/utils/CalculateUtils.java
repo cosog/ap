@@ -56,6 +56,7 @@ public class CalculateUtils {
 				&& responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 			Iterator<CommResponseData.Range> it = responseData.getCurrent().getCommEfficiency().getRange().iterator();
 			while(it.hasNext()){
+				CommResponseData.Range range=(CommResponseData.Range)it.next();
 				if(responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{
@@ -66,6 +67,7 @@ public class CalculateUtils {
 			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
 			Iterator<String> rangeStrIt = rangeList.iterator();
 			while(it.hasNext()){
+				String range=(String)rangeStrIt.next();
 				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					rangeStrIt.remove();
 				}else{
@@ -91,6 +93,7 @@ public class CalculateUtils {
 				responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 			Iterator<TimeEffResponseData.Range> it = responseData.getCurrent().getRunEfficiency().getRange().iterator();
 			while(it.hasNext()){
+				TimeEffResponseData.Range range=(TimeEffResponseData.Range)it.next();
 				if(responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{
@@ -102,6 +105,7 @@ public class CalculateUtils {
 			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
 			Iterator<String> rangeStrIt = rangeList.iterator();
 			while(it.hasNext()){
+				String range=(String)rangeStrIt.next();
 				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					rangeStrIt.remove();
 				}else{
@@ -158,6 +162,7 @@ public class CalculateUtils {
 			
 			Iterator<String> it = rangeList.iterator();
 			while(it.hasNext()){
+				String range=(String)it.next();
 				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{
@@ -176,6 +181,7 @@ public class CalculateUtils {
 			
 			Iterator<String> it = rangeList.iterator();
 			while(it.hasNext()){
+				String range=(String)it.next();
 				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
 					it.remove();
 				}else{

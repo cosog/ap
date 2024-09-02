@@ -316,6 +316,7 @@ public class BaseDao extends HibernateDaoSupport {
 		int n = 0;
 		Connection conn=null;
 		PreparedStatement ps=null;
+		java.io.StringReader reader=null;
 		try {
 			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 			ps=conn.prepareStatement(sql);
@@ -324,17 +325,32 @@ public class BaseDao extends HibernateDaoSupport {
 //				clob.putString(1,  values.get(i)); 
 //				ps.setClob(i+1, clob);  
 				
-				ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
+				reader=new java.io.StringReader(values.get(i));
+				ps.setCharacterStream(i+1, reader, values.get(i).length());
 			}
 			n=ps.executeUpdate();
+			java.io.StringReader aa=new java.io.StringReader("");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (ps != null) {
+				if(reader!=null){
+					reader.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				if(ps != null) {
 					ps.close();
 				}
-				if (conn != null) {
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				if(conn != null) {
 					conn.close();
 				}
 			} catch (SQLException e) {

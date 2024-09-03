@@ -1030,7 +1030,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		return requestDataList;
 	}
 	
-	public List<String> AcquisitionDataTimingTotalCalculation(String timeStr){
+	public List<String> AcquisitionDataTimingTotalCalculation(String timeStr,String deviceIdStr){
 		ThreadPool executor = new ThreadPool("AcquisitionDataTinmingTotalCalculate",
 				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getCorePoolSize(), 
 				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getMaximumPoolSize(), 
@@ -1042,9 +1042,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " from tbl_device t "
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
-				+ " where 1=1"
-//				+ " and t.id=1"
-				+ " order by t.id";
+				+ " where 1=1";
+		if(StringManagerUtils.isNotNull(deviceIdStr)){
+			sql+= " and t.id in ("+deviceIdStr+")";
+		}
+		sql+= " order by t.id";
 		List<?> welllist = findCallSql(sql);
 		for(int i=0;i<welllist.size();i++){
 			try{

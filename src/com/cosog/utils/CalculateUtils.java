@@ -49,33 +49,42 @@ public class CalculateUtils {
 		String responseDataStr=StringManagerUtils.sendPostMethod(commUrl, requestDataStr,"utf-8",0,0);
 		type = new TypeToken<CommResponseData>() {}.getType();
 		CommResponseData responseData=gson.fromJson(responseDataStr, type);
-		
-		//区间处理
-		if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
-				&& responseData!=null && responseData.getResultStatus()==1 
-				&& responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
-			Iterator<CommResponseData.Range> it = responseData.getCurrent().getCommEfficiency().getRange().iterator();
-			while(it.hasNext()){
-				CommResponseData.Range range=(CommResponseData.Range)it.next();
-				if(responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
-					it.remove();
-				}else{
-					break;
+		try{
+			//区间处理
+			if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
+					&& responseData!=null 
+					&& responseData.getResultStatus()==1 
+					&& responseData.getCurrent()!=null
+					&& responseData.getCurrent().getCommEfficiency()!=null
+					&& responseData.getCurrent().getCommEfficiency().getRange()!=null
+					&& responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
+				Iterator<CommResponseData.Range> it = responseData.getCurrent().getCommEfficiency().getRange().iterator();
+				while(it.hasNext()){
+					CommResponseData.Range range=(CommResponseData.Range)it.next();
+					if(responseData.getCurrent().getCommEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
+						it.remove();
+					}else{
+						break;
+					}
 				}
-			}
-			String[] rangeArr=responseData.getCurrent().getCommEfficiency().getRangeString().split(";");
-			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
-			Iterator<String> rangeStrIt = rangeList.iterator();
-			while(it.hasNext()){
-				String range=(String)rangeStrIt.next();
-				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
-					rangeStrIt.remove();
-				}else{
-					break;
+				String[] rangeArr=responseData.getCurrent().getCommEfficiency().getRangeString().split(";");
+				ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
+				Iterator<String> rangeStrIt = rangeList.iterator();
+				while(it.hasNext()){
+					String range=(String)rangeStrIt.next();
+					if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
+						rangeStrIt.remove();
+					}else{
+						break;
+					}
 				}
+				responseData.getCurrent().getCommEfficiency().setRangeString(StringUtils.join(rangeList, ";"));
 			}
-			responseData.getCurrent().getCommEfficiency().setRangeString(StringUtils.join(rangeList, ";"));
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(responseDataStr);
 		}
+		
 		
 		return responseData;
 	}
@@ -86,36 +95,42 @@ public class CalculateUtils {
 		String responseDataStr=StringManagerUtils.sendPostMethod(runUrl, requestDataStr,"utf-8",0,0);
 		type = new TypeToken<TimeEffResponseData>() {}.getType();
 		TimeEffResponseData responseData=gson.fromJson(responseDataStr, type);
-		
-		//区间处理
-		if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
-				&& responseData!=null && responseData.getResultStatus()==1 && 
-				responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
-			Iterator<TimeEffResponseData.Range> it = responseData.getCurrent().getRunEfficiency().getRange().iterator();
-			while(it.hasNext()){
-				TimeEffResponseData.Range range=(TimeEffResponseData.Range)it.next();
-				if(responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
-					it.remove();
-				}else{
-					break;
+		try{
+			//区间处理
+			if(Config.getInstance().configFile.getAp().getOthers().getRangeLimit()>0 
+					&& responseData!=null 
+					&& responseData.getResultStatus()==1 
+					&& responseData.getCurrent()!=null
+					&& responseData.getCurrent().getRunEfficiency()!=null
+					&& responseData.getCurrent().getRunEfficiency().getRange()!=null
+					&& responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
+				Iterator<TimeEffResponseData.Range> it = responseData.getCurrent().getRunEfficiency().getRange().iterator();
+				while(it.hasNext()){
+					TimeEffResponseData.Range range=(TimeEffResponseData.Range)it.next();
+					if(responseData.getCurrent().getRunEfficiency().getRange().size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
+						it.remove();
+					}else{
+						break;
+					}
 				}
-			}
-			
-			String[] rangeArr=responseData.getCurrent().getRunEfficiency().getRangeString().split(";");
-			ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
-			Iterator<String> rangeStrIt = rangeList.iterator();
-			while(it.hasNext()){
-				String range=(String)rangeStrIt.next();
-				if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
-					rangeStrIt.remove();
-				}else{
-					break;
+				
+				String[] rangeArr=responseData.getCurrent().getRunEfficiency().getRangeString().split(";");
+				ArrayList<String> rangeList = new ArrayList<>(Arrays.asList(rangeArr));
+				Iterator<String> rangeStrIt = rangeList.iterator();
+				while(it.hasNext()){
+					String range=(String)rangeStrIt.next();
+					if(rangeList.size()>Config.getInstance().configFile.getAp().getOthers().getRangeLimit()){
+						rangeStrIt.remove();
+					}else{
+						break;
+					}
 				}
+				responseData.getCurrent().getRunEfficiency().setRangeString(StringUtils.join(rangeList, ";"));
 			}
-			responseData.getCurrent().getRunEfficiency().setRangeString(StringUtils.join(rangeList, ";"));
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(responseDataStr);
 		}
-		
-		
 		return responseData;
 	}
 	

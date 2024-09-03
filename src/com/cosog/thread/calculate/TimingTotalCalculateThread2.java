@@ -33,7 +33,7 @@ import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class TimingTotalCalculateThread extends Thread {
+public class TimingTotalCalculateThread2 extends Thread {
     private int threadId;
     private int deviceId;
     private String deviceName;
@@ -44,7 +44,7 @@ public class TimingTotalCalculateThread extends Thread {
     private CommonDataService commonDataService = null;
 
 
-    public TimingTotalCalculateThread(int threadId, int deviceId, String deviceName, String timeStr, String templateCode,
+    public TimingTotalCalculateThread2(int threadId, int deviceId, String deviceName, String timeStr, String templateCode,
         String reportUnitId, int calculateType, CommonDataService commonDataService) {
         super();
         this.threadId = threadId;

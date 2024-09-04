@@ -24,8 +24,8 @@ report:                                   #报表配置
    delay: 5                               #跨天汇总延时，单位：分钟 数值范围：0~30
 email:                #邮件发送账号配置
    snedAccount:
-      account: 123456@126.com          #邮箱账号
-      password: CANDRMRCDLKHUKQX       #邮箱授权码或独立密码
+      account: shfzby@126.com          #邮箱账号
+      password: WYWHZENVGKLPZWIR       #邮箱授权码或独立密码
       smtpHost: smtp.126.com           #邮箱服务器地址，不同服务器地址不同
       smtpPort: 465                    #邮箱SMTP端口，以实际为准
 others:
@@ -39,12 +39,14 @@ others:
    defaultGraghSize: 30            #图形平铺每页图形数量
    vacuateThreshold: 300           #历史曲线、图形抽稀阈值
    productionUnit: stere           #产量单位 stere-立方米 ton-吨
+   resourceMonitoringSaveData: 50000 #资源检测保存历史记录数
+   resourceMonitoringVacuateThreshold: 5000           #资源监测曲线抽稀阈值
    iot: true                      #是否为物联网模式
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: ""                     #模块 ""-仅监测 rpc-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
    showVideo: false                     #是否含视频
    showLogo: true                  #是否显示图标
-   printLog: true                  #是否打印日志
+   printLog: false                  #是否打印日志
    exportAdInitData: false         #是否可导出ad初始化数据
    rangeLimit: 100                 #在线区间和运行区间，数组最大长度，超过将覆盖，0-无上限
    exportLimit: 10000              #导出excel数据上限

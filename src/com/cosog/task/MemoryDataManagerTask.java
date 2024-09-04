@@ -1517,13 +1517,22 @@ public class MemoryDataManagerTask {
 				rs=pstmt.executeQuery();
 				while(rs.next()){
 					AcqInstanceOwnItem acqInstanceOwnItem=null;
-					if(jedis.hexists("AcqInstanceOwnItem".getBytes(), rs.getString(1).getBytes())){
-						byte[]byt=  jedis.hget("AcqInstanceOwnItem".getBytes(), rs.getString(1).getBytes());
-						Object obj = SerializeObjectUnils.unserizlize(byt);
-						if (obj instanceof AcqInstanceOwnItem) {
-							acqInstanceOwnItem=(AcqInstanceOwnItem) obj;
-				         }
-					}else{
+					try{
+						if(jedis.hexists("AcqInstanceOwnItem".getBytes(), rs.getString(1).getBytes())){
+							byte[]byt=  jedis.hget("AcqInstanceOwnItem".getBytes(), rs.getString(1).getBytes());
+							if(byt!=null){
+								Object obj = SerializeObjectUnils.unserizlize(byt);
+								if (obj instanceof AcqInstanceOwnItem) {
+									acqInstanceOwnItem=(AcqInstanceOwnItem) obj;
+						        }
+							}
+						}else{
+							acqInstanceOwnItem=new AcqInstanceOwnItem();
+						}
+					}catch(Exception e){
+						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+e);
+					}
+					if(acqInstanceOwnItem==null){
 						acqInstanceOwnItem=new AcqInstanceOwnItem();
 					}
 					
@@ -1565,7 +1574,7 @@ public class MemoryDataManagerTask {
 				}
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+e);
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
 				jedis.close();

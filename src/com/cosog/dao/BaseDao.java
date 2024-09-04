@@ -413,7 +413,7 @@ public class BaseDao extends HibernateDaoSupport {
 			return query.list();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql);
+			System.out.println("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql);
 			return new ArrayList<>();
 		}
 		

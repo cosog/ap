@@ -750,19 +750,7 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
         },
         plotOptions: {
             spline: {
-//                lineWidth: 1,
                 fillOpacity: 0.3,
-//                marker: {
-//                    enabled: true,
-//                    radius: 3, //曲线点半径，默认是4
-//                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-//                    states: {
-//                        hover: {
-//                            enabled: true,
-//                            radius: 6
-//                        }
-//                    }
-//                },
                 shadow: true,
                 events: {
                 	legendItemClick: function(e){

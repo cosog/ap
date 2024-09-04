@@ -252,6 +252,10 @@ public class OEMConfigFile {
 	    private int vacuateThreshold;
 
 	    private String productionUnit;
+	    
+	    private int resourceMonitoringSaveData;
+	    
+	    private int resourceMonitoringVacuateThreshold;
 
 	    private boolean iot;
 
@@ -416,6 +420,18 @@ public class OEMConfigFile {
 		}
 		public void setRangeLimit(int rangeLimit) {
 			this.rangeLimit = rangeLimit;
+		}
+		public int getResourceMonitoringSaveData() {
+			return resourceMonitoringSaveData;
+		}
+		public void setResourceMonitoringSaveData(int resourceMonitoringSaveData) {
+			this.resourceMonitoringSaveData = resourceMonitoringSaveData;
+		}
+		public int getResourceMonitoringVacuateThreshold() {
+			return resourceMonitoringVacuateThreshold;
+		}
+		public void setResourceMonitoringVacuateThreshold(int resourceMonitoringVacuateThreshold) {
+			this.resourceMonitoringVacuateThreshold = resourceMonitoringVacuateThreshold;
 		}
 	}
 	

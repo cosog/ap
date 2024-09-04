@@ -2955,22 +2955,38 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getResourceProbeHistoryCurveData(String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from tbl_resourcemonitoring t "
-				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') +1 "
+				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " order by t.acqTime";
-		int totals = getTotalCountRows(sql);//获取总记录数
-		List<?> list=this.findCallSql(sql);
-		dynSbf.append("{\"success\":true,\"totalCount\":" + totals + ",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
+		int resourceMonitoringVacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringVacuateThreshold();
+		int total = getTotalCountRows(sql);//获取总记录数
+		int rarefy=total/resourceMonitoringVacuateThreshold+1;
+		String finalSql=sql;
+		if(rarefy>1){
+			finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+resourceMonitoringVacuateThreshold+","+total+")<"+resourceMonitoringVacuateThreshold+"";
+		}
+		List<?> list=this.findCallSql(finalSql);
+		String minAcqTime="";
+		String maxAcqTime="";
+		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Object[] obj = (Object[]) list.get(i);
 				dynSbf.append("{ \"acqTime\":\"" + obj[0] + "\",");
 				dynSbf.append("\"value\":\""+obj[1]+"\"},");
+				
+				if(i==0){
+					minAcqTime=obj[0]+"";
+				}
+				if(i==list.size()-1){
+					maxAcqTime=obj[0]+"";
+				}
 			}
 			if(dynSbf.toString().endsWith(",")){
 				dynSbf.deleteCharAt(dynSbf.length() - 1);
 			}
 		}
-		dynSbf.append("]}");
+//		dynSbf.append("]}");
+		dynSbf.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	

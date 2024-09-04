@@ -383,6 +383,14 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     var title = itemName.split("(")[0] + "曲线";
     var legend=false;
     var legendName = [itemName];
+    
+    var timeFormat='%m-%d';
+    if(data.length>0 && get_rawData.minAcqTime.split(' ')[0]==get_rawData.maxAcqTime.split(' ')[0]){
+	    timeFormat='%H:%M';
+    }
+    
+    
+    
     if(itemCode.toUpperCase()=='cpuUsedPercent'.toUpperCase()){
     	legendName = [];
     	for (var i = 0; i < data.length; i++) {
@@ -449,12 +457,12 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
        '#FF00FF' // 紫
      ];
 
-    initResourceProbeHistoryCurveChartFn(ser, tickInterval, divId, title, "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "时间", itemName, color,legend);
+    initResourceProbeHistoryCurveChartFn(ser, tickInterval, divId, title, "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "时间", itemName, color,legend,timeFormat);
 
     return false;
 };
 
-function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color,legend) {
+function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color,legend,timeFormat) {
     
     Highcharts.setOptions({
         global: {
@@ -484,13 +492,13 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
             type: 'datetime',
             title: {
                 text: xtitle
-            },
-            labels: {
+            },labels: {
                 formatter: function () {
-                    return Highcharts.dateFormat("%Y-%m-%d", this.value);
+                    return Highcharts.dateFormat(timeFormat, this.value);
                 },
-                rotation: 0, //倾斜度，防止数量过多显示不全  
-                step: 2
+                autoRotation:true,//自动旋转
+                rotation: -45 //倾斜度，防止数量过多显示不全  
+//                step: 2
             }
         },
         yAxis: [{

@@ -1209,82 +1209,88 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								&&protocolConfig.getItems().get(j).getMeaning().size()>0){
 							Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
 							for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-								checked=false;
-								realtimeSort="";
-								historySort="";
-								showLevel="";
-								realtimeCurveConf="\"\"";
-								realtimeCurveConfShowValue="";
-								historyCurveConf="\"\"";
-								historyCurveConfShowValue="";
-								
-								realtimeColor=""; 
-								realtimeBgColor="";
-								historyColor="";
-								historyBgColor="";
-								
-								for(int m=0;m<itemsList.size();m++){
-									if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
-											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
-										){
-										checked=true;
-										realtimeSort=itemsRealtimeSortList.get(m);
-										historySort=itemsHistorySortList.get(m);
-										showLevel=itemsShowLevelList.get(m);
-										realtimeCurveConf=realtimeCurveConfList.get(m);
-										historyCurveConf=historyCurveConfList.get(m);
+								for(int i=0;i<acqItemsList.size();i++){
+									if(acqItemsList.get(i).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+											&& acqItemsBitIndexList.get(i).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")){
+										checked=false;
+										realtimeSort="";
+										historySort="";
+										showLevel="";
+										realtimeCurveConf="\"\"";
+										realtimeCurveConfShowValue="";
+										historyCurveConf="\"\"";
+										historyCurveConfShowValue="";
 										
-										realtimeColor=realtimeColorList.get(m);
-										realtimeBgColor=realtimeBgColorList.get(m);
-										historyColor=historyColorList.get(m);
-										historyBgColor=historyBgColorList.get(m);
+										realtimeColor=""; 
+										realtimeBgColor="";
+										historyColor="";
+										historyBgColor="";
 										
-										
-										CurveConf realtimeCurveConfObj=null;
-										if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
-											type = new TypeToken<CurveConf>() {}.getType();
-											realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
+										for(int m=0;m<itemsList.size();m++){
+											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
+												){
+												checked=true;
+												realtimeSort=itemsRealtimeSortList.get(m);
+												historySort=itemsHistorySortList.get(m);
+												showLevel=itemsShowLevelList.get(m);
+												realtimeCurveConf=realtimeCurveConfList.get(m);
+												historyCurveConf=historyCurveConfList.get(m);
+												
+												realtimeColor=realtimeColorList.get(m);
+												realtimeBgColor=realtimeBgColorList.get(m);
+												historyColor=historyColorList.get(m);
+												historyBgColor=historyBgColorList.get(m);
+												
+												
+												CurveConf realtimeCurveConfObj=null;
+												if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
+													type = new TypeToken<CurveConf>() {}.getType();
+													realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
+												}
+												
+												CurveConf historyCurveConfObj=null;
+												if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
+													type = new TypeToken<CurveConf>() {}.getType();
+													historyCurveConfObj=gson.fromJson(historyCurveConf, type);
+												}
+												
+												if(realtimeCurveConfObj!=null){
+													realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+												}
+												if(historyCurveConfObj!=null){
+													historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+												}
+												
+												break;
+											}
 										}
 										
-										CurveConf historyCurveConfObj=null;
-										if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
-											type = new TypeToken<CurveConf>() {}.getType();
-											historyCurveConfObj=gson.fromJson(historyCurveConf, type);
-										}
-										
-										if(realtimeCurveConfObj!=null){
-											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
-										}
-										if(historyCurveConfObj!=null){
-											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
-										}
-										
+										result_json.append("{"
+												+ "\"checked\":"+checked+","
+												+ "\"id\":"+(index)+","
+												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+												+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+												+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
+												+ "\"RWType\":\""+RWType+"\","
+												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+												+ "\"resolutionMode\":\""+resolutionMode+"\","
+												+ "\"showLevel\":\""+showLevel+"\","
+												+ "\"realtimeSort\":\""+realtimeSort+"\","
+												+ "\"realtimeColor\":\""+realtimeColor+"\","
+												+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+												+ "\"historySort\":\""+historySort+"\","
+												+ "\"historyColor\":\""+historyColor+"\","
+												+ "\"historyBgColor\":\""+historyBgColor+"\","
+												+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
+												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+												+ "\"historyCurveConf\":"+historyCurveConf+","
+												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+												+ "},");
+										index++;
 										break;
 									}
 								}
-								
-								result_json.append("{"
-										+ "\"checked\":"+checked+","
-										+ "\"id\":"+(index)+","
-										+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-										+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
-										+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
-										+ "\"RWType\":\""+RWType+"\","
-										+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-										+ "\"resolutionMode\":\""+resolutionMode+"\","
-										+ "\"showLevel\":\""+showLevel+"\","
-										+ "\"realtimeSort\":\""+realtimeSort+"\","
-										+ "\"realtimeColor\":\""+realtimeColor+"\","
-										+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-										+ "\"historySort\":\""+historySort+"\","
-										+ "\"historyColor\":\""+historyColor+"\","
-										+ "\"historyBgColor\":\""+historyBgColor+"\","
-										+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
-										+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-										+ "\"historyCurveConf\":"+historyCurveConf+","
-										+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
-										+ "},");
-								index++;
 							}
 						}else{
 							checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false);

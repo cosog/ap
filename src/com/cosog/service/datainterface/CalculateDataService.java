@@ -385,7 +385,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		
 
-		String sql="t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
+		String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
 		
 		String newestDailyTotalDataSql="select t.id,t.deviceid,t.acqtime,t.itemcolumn,t.itemname,t.totalvalue,t.todayvalue "
 				+ " from tbl_dailytotalcalculate_hist t,"

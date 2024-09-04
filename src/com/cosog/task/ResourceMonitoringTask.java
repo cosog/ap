@@ -93,6 +93,8 @@ public class ResourceMonitoringTask {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
+		int resourceMonitoringSaveData=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringSaveData();
+		
 		try{
 			deviceAmount=getDeviceAmount();
 		}catch(Exception e){
@@ -236,7 +238,7 @@ public class ResourceMonitoringTask {
 		try{
 			conn=OracleJdbcUtis.getConnection();
 			if(conn!=null){
-				cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?)}");
+				cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?)}");
 				cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 				cs.setInt(2, acRunStatus);
 				cs.setString(3, acVersion);
@@ -246,6 +248,7 @@ public class ResourceMonitoringTask {
 				cs.setString(7, memUsedPercentValue);
 				cs.setFloat(8, tableSpaceInfo.getUsedPercent());
 				cs.setInt(9, redisStatus);
+				cs.setInt(10, resourceMonitoringSaveData);
 				cs.executeUpdate();
 				if(cs!=null){
 					cs.close();

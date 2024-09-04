@@ -329,6 +329,14 @@ public class StringManagerUtils {
         String strdate = format.format(newDate2);
         return strdate;
     }
+    
+    public static String addHour(Date date, float addHourCount) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long mm = (long) (1000 * 60 * 60 * addHourCount);
+        Date newDate2 = new Date(date.getTime() + mm);
+        String strdate = format.format(newDate2);
+        return strdate;
+    }
 
     /** 
      * 计算两个日期之间相差的天数 
@@ -1435,6 +1443,17 @@ public class StringManagerUtils {
     public static Date stringToDate(String strDate) {
         Date s_date = null;
         SimpleDateFormat sdf = new SimpleDateFormat(DATEPATTERN);
+        try {
+            s_date = (Date) sdf.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return s_date;
+    }
+    
+    public static Date stringToDate(String strDate,String simeStamp) {
+        Date s_date = null;
+        SimpleDateFormat sdf = new SimpleDateFormat(simeStamp);
         try {
             s_date = (Date) sdf.parse(strDate);
         } catch (ParseException e) {

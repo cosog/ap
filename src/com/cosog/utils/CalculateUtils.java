@@ -354,7 +354,7 @@ public class CalculateUtils {
 		}
 		try{
 			dataSbf.append("{\"AKString\":\"\",");
-			dataSbf.append("\"WellName\":\""+deviceInfo.getWellName()+"\",");
+			dataSbf.append("\"WellName\":\""+deviceInfo.getDeviceName()+"\",");
 			dataSbf.append("\"Date\":\""+date+"\",");
 			dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
@@ -485,7 +485,7 @@ public class CalculateUtils {
 		}
 		
 		dataSbf.append("{\"AKString\":\"\",");
-		dataSbf.append("\"WellName\":\""+deviceInfo.getWellName()+"\",");
+		dataSbf.append("\"WellName\":\""+deviceInfo.getDeviceName()+"\",");
 		dataSbf.append("\"Date\":\""+date+"\",");
 		dataSbf.append("\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",");
 		dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");

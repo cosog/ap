@@ -695,7 +695,7 @@ public class MemoryDataManagerTask {
 							List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
 							for(int j=0;j<deviceInfoByteList.size();j++){
 								DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-								if(wellList.get(i).equalsIgnoreCase(deviceInfo.getWellName())){
+								if(wellList.get(i).equalsIgnoreCase(deviceInfo.getDeviceName())){
 									jedis.hdel("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.hdel("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.hdel("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
@@ -770,7 +770,7 @@ public class MemoryDataManagerTask {
 					deviceInfo.setId(rs.getInt(1));
 					deviceInfo.setOrgId(rs.getInt(2));
 					deviceInfo.setOrgName(rs.getString(3));
-					deviceInfo.setWellName(rs.getString(4));
+					deviceInfo.setDeviceName(rs.getString(4));
 					deviceInfo.setDeviceType(rs.getInt(5));
 					deviceInfo.setDeviceTypeName(rs.getString(6));
 					deviceInfo.setApplicationScenarios(rs.getInt(7));
@@ -1774,13 +1774,22 @@ public class MemoryDataManagerTask {
     			rs=pstmt.executeQuery();
     			while(rs.next()){
     				DisplayInstanceOwnItem displayInstanceOwnItem=null;
-    				if(jedis.hexists("DisplayInstanceOwnItem".getBytes(), rs.getString(1).getBytes())){
-    					byte[]byt=  jedis.hget("DisplayInstanceOwnItem".getBytes(), rs.getString(1).getBytes());
-    					Object obj = SerializeObjectUnils.unserizlize(byt);
-    					if (obj instanceof DisplayInstanceOwnItem) {
-    						displayInstanceOwnItem=(DisplayInstanceOwnItem) obj;
-    			         }
-    				}else{
+    				try{
+    					if(jedis.hexists("DisplayInstanceOwnItem".getBytes(), rs.getString(1).getBytes())){
+        					byte[]byt=  jedis.hget("DisplayInstanceOwnItem".getBytes(), rs.getString(1).getBytes());
+        					if(byt!=null){
+        						Object obj = SerializeObjectUnils.unserizlize(byt);
+            					if (obj instanceof DisplayInstanceOwnItem) {
+            						displayInstanceOwnItem=(DisplayInstanceOwnItem) obj;
+            			        }
+        					}
+        				}else{
+        					displayInstanceOwnItem=new DisplayInstanceOwnItem();
+        				}
+					}catch(Exception e){
+						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+e);
+					}
+    				if(displayInstanceOwnItem==null){
     					displayInstanceOwnItem=new DisplayInstanceOwnItem();
     				}
     				
@@ -2054,13 +2063,22 @@ public class MemoryDataManagerTask {
 				rs=pstmt.executeQuery();
 				while(rs.next()){
 					AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-					if(jedis.hexists("AlarmInstanceOwnItem".getBytes(), rs.getString(1).getBytes())){
-						byte[]byt=  jedis.hget("AlarmInstanceOwnItem".getBytes(), rs.getString(1).getBytes());
-						Object obj = SerializeObjectUnils.unserizlize(byt);
-						if (obj instanceof AlarmInstanceOwnItem) {
-							alarmInstanceOwnItem=(AlarmInstanceOwnItem) obj;
-				         }
-					}else{
+					try{
+						if(jedis.hexists("AlarmInstanceOwnItem".getBytes(), rs.getString(1).getBytes())){
+							byte[]byt=  jedis.hget("AlarmInstanceOwnItem".getBytes(), rs.getString(1).getBytes());
+							if(byt!=null){
+								Object obj = SerializeObjectUnils.unserizlize(byt);
+								if (obj instanceof AlarmInstanceOwnItem) {
+									alarmInstanceOwnItem=(AlarmInstanceOwnItem) obj;
+						        }
+							}
+						}else{
+							alarmInstanceOwnItem=new AlarmInstanceOwnItem();
+						}
+					}catch(Exception e){
+						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+e);
+					}
+					if(alarmInstanceOwnItem==null){
 						alarmInstanceOwnItem=new AlarmInstanceOwnItem();
 					}
 					

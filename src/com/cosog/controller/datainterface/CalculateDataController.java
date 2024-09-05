@@ -184,7 +184,7 @@ public class CalculateDataController extends BaseController{
 		
 		calculateDataService.AcquisitionDataDailyCalculation(tatalDate,deviceId);
 		
-		System.out.println("抽油机井曲线数据汇总完成");
+		System.out.println("采集数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -217,8 +217,7 @@ public class CalculateDataController extends BaseController{
 		}
 		
 		requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
-		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
-			System.out.println("抽油机井隔天汇总请求数据-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+requestDataList.get(i));
+		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){
 			try {
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
@@ -229,7 +228,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,date);
 				}else{
-					System.out.println("抽油机井曲线数据汇总error:"+requestDataList.get(i));
+					System.out.println("功图数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -237,7 +236,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("抽油机井曲线数据汇总完成");
+		System.out.println("功图数据隔天汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -289,7 +288,7 @@ public class CalculateDataController extends BaseController{
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
 		calculateDataService.RPCTimingTotalCalculation(timeStr);
 		
-		System.out.println("抽油机井曲线数据汇总完成");
+		System.out.println("功图定时汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -333,7 +332,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,date);
 				}else{
-					System.out.println("抽油机井曲线数据汇总error:"+requestDataList.get(i));
+					System.out.println("转速数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -341,7 +340,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("螺杆泵井转速数据汇总完成");
+		System.out.println("转速数据隔天汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -364,7 +363,7 @@ public class CalculateDataController extends BaseController{
 		String time=ParamUtils.getParameter(request, "time");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
 		calculateDataService.PCPTimingTotalCalculation(timeStr);
-		System.out.println("螺杆泵井转速数据汇总完成");
+		System.out.println("转速数据定时汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

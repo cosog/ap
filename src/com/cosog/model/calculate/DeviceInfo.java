@@ -9,7 +9,7 @@ public class DeviceInfo implements Serializable {
 	private Integer id;
 	private Integer orgId;
 	private String orgName;
-	private String wellName;
+	private String deviceName;
 	private Integer deviceType;
 	private String deviceTypeName;
 	private Integer calculateType;
@@ -131,14 +131,6 @@ public class DeviceInfo implements Serializable {
 
 	public void setOrgId(Integer orgId) {
 		this.orgId = orgId;
-	}
-
-	public String getWellName() {
-		return wellName;
-	}
-
-	public void setWellName(String wellName) {
-		this.wellName = wellName;
 	}
 
 	public Integer getDeviceType() {
@@ -510,6 +502,14 @@ public class DeviceInfo implements Serializable {
 
 	public void setDailyTotalItemMap(Map<String, DailyTotalItem> dailyTotalItemMap) {
 		this.dailyTotalItemMap = dailyTotalItemMap;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 }

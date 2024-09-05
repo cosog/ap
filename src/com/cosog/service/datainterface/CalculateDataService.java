@@ -678,7 +678,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String sql="select t.id,t.devicename from tbl_device t where 1=1";
+		String sql="select t.id,t.devicename from tbl_device t where t.calculatetype=1";
 		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -1141,18 +1141,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.systemefficiency,t.energyper100mlift,"
 				+ "t.submergence "
 				+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
-				+ " where t2.calculateType=2 and t.deviceId=t2.id "
+				+ " where t.deviceId=t2.id "
+				+ " and t2.calculateType=2"
 				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
 		String commStatusSql="select t2.id, t2.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange "
 				+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
-				+ " where t2.calculateType=2 and t.deviceId=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
+				+ " where t.deviceId=t2.id and t2.calculateType=2 and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		
 		String runStatusSql="select t2.id, t2.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
 				+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
-				+ " where t2.calculateType=2 and t.deviceId=t2.id and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
+				+ " where t.deviceId=t2.id and t2.calculateType=2 and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 				+ " from tbl_pcpdailycalculationdata t,tbl_device t2 "

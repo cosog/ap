@@ -19,7 +19,7 @@ import com.cosog.thread.calculate.FBHistoryDataSyncThread;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.Config;
-import com.cosog.utils.CounterUtils;
+import com.cosog.utils.FeiZhouCounterUtils;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
@@ -186,13 +186,13 @@ public class SyncFBDataTast {
 				5, 
 				TimeUnit.SECONDS, 
 				0);
-		CounterUtils.reset();//加法计数器清零
-		CounterUtils.calculateSpeedTimer();//创建统计计算速度计时器
+		FeiZhouCounterUtils.reset();//加法计数器清零
+		FeiZhouCounterUtils.calculateSpeedTimer();//创建统计计算速度计时器
 		do{
 			List<Object[]> deviceList=OracleJdbcUtis.query(sql);
-			CounterUtils.initCountDownLatch(deviceList.size());
+			FeiZhouCounterUtils.initCountDownLatch(deviceList.size());
 			
-			long sum1=CounterUtils.sum();
+			long sum1=FeiZhouCounterUtils.sum();
 			long calculateStartTime=System.nanoTime();
 			for(Object[] obj:deviceList){
 				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
@@ -200,23 +200,14 @@ public class SyncFBDataTast {
 				executor.execute(new FBHistoryDataSyncThread(deviceId, acqtime));
 			}
 			try {
-				CounterUtils.await();//等待所有线程执行完毕
+				FeiZhouCounterUtils.await();//等待所有线程执行完毕
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			long calculateEndTime=System.nanoTime();
-			long sum2=CounterUtils.sum();
+			long sum2=FeiZhouCounterUtils.sum();
 			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":Thread complete，execute count:"+(sum2-sum1)+",time:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
-//			while (!executor.isCompletedByTaskCount()) {
-//				System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
-//				try {
-//					Thread.sleep(1000*1);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//		    }
-			
 		}while(true);
 		
 		

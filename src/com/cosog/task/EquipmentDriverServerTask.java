@@ -23,7 +23,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.cosog.model.DataMapping;
-import com.cosog.model.KeyValue;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.DeviceInfo;
@@ -32,12 +31,11 @@ import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.ModbusProtocolConfig;
-import com.cosog.thread.calculate.DatabaseTableSynColumnThread;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
-import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AdInitMap;
 import com.cosog.utils.Config;
+import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
@@ -56,6 +54,8 @@ public class EquipmentDriverServerTask {
 	
 	private static boolean initSwitch=true;
 	private static boolean initEnable=initSwitch&&Config.getInstance().configFile.getAp().getOthers().isIot();
+	
+	public static boolean initFinished=false;
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
 	}
@@ -63,6 +63,9 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast(){
+		CounterUtils.reset();
+		CounterUtils.timer();
+		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -78,6 +81,7 @@ public class EquipmentDriverServerTask {
 		ThreadPool executor=null;
 		try {
 			executor = adInit();
+			initFinished=true;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -410,7 +414,7 @@ public class EquipmentDriverServerTask {
 			try {
 				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
-//				sendCycle=10;
+//				sendCycle=60;
 //				timeDifference=0;
 //				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
 //				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
@@ -424,7 +428,8 @@ public class EquipmentDriverServerTask {
 //				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
 //				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
-//				
+//				new ExampleDataManageThread("rpc12",sendCycle,timeDifference*0).start();
+				
 //				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1342,7 +1347,7 @@ public class EquipmentDriverServerTask {
 							matching=true;
 						}
 					}else if(condition==1){
-						if(StringManagerUtils.existOrNot(wellList, deviceInfo.getWellName()+"", false)){
+						if(StringManagerUtils.existOrNot(wellList, deviceInfo.getDeviceName()+"", false)){
 							matching=true;
 						}
 					}

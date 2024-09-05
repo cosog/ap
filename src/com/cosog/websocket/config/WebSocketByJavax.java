@@ -127,7 +127,8 @@ public class WebSocketByJavax {
                 				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
                 			}
                 		}catch(Exception e){
-                			e.printStackTrace();
+//                			e.printStackTrace();
+                			StringManagerUtils.printLog("webSocket信息推送失败:"+message);
                 		}
                     }
                 }

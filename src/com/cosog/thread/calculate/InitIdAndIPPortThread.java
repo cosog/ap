@@ -64,7 +64,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		Map<String,InitializedDeviceInfo> initializedDeviceList=AdInitMap.getIdInitMapObject();
 		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=AdInitMap.getIpPoetInitMapObject();
 
-		String wellName=deviceInfo.getWellName();
+		String wellName=deviceInfo.getDeviceName();
 		String tcpType=deviceInfo.getTcpType()==null?"":deviceInfo.getTcpType();
 		String signinId=deviceInfo.getSignInId()==null?"":deviceInfo.getSignInId();
 		String ipPort=deviceInfo.getIpPort()==null?"":deviceInfo.getIpPort();

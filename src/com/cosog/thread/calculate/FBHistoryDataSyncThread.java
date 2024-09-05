@@ -9,7 +9,7 @@ import com.cosog.model.DataMapping;
 import com.cosog.model.KeyValue;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.SyncFBDataTast;
-import com.cosog.utils.CounterUtils;
+import com.cosog.utils.FeiZhouCounterUtils;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -173,7 +173,7 @@ public class FBHistoryDataSyncThread implements Runnable{
 //						if(deviceId>10000){
 //							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 //						}
-						CounterUtils.incr();//计数器加一
+						FeiZhouCounterUtils.incr();//计数器加一
 					}catch(Exception e){
 						e.printStackTrace();
 						continue;
@@ -185,7 +185,7 @@ public class FBHistoryDataSyncThread implements Runnable{
 		}finally{
 			
 		}
-		CounterUtils.countDown();
+		FeiZhouCounterUtils.countDown();
 		System.out.println("设备id:"+deviceId+"执行完毕！");
 	}
 }

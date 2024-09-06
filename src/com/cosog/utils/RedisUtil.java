@@ -55,6 +55,7 @@ public class RedisUtil implements Serializable{
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxTotal(maxActive); 
         config.setMaxIdle(maxIdle); 
+        config.setMinIdle(maxIdle);
         config.setMaxWaitMillis(maxWait); 
         config.setTestOnBorrow(testOnBorrow);
         if(StringManagerUtils.isNotNull(auth)){
@@ -62,7 +63,6 @@ public class RedisUtil implements Serializable{
         }else{
         	jedisPool = new JedisPool(config, addr, port,timeOut);
         }
-        
     }
 
     public  static void afterPropertiesSet(){

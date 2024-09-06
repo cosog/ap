@@ -438,13 +438,8 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							String resultName="";
 							String optimizationSuggestion="";
 							
-							Jedis jedis=null;
 							try{
-								jedis = RedisUtil.jedisPool.getResource();
-								if(!jedis.exists("RPCWorkType".getBytes())){
-									MemoryDataManagerTask.loadRPCWorkType();
-								}
-								WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes()));
+								WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
 								if(workType!=null){
 									resultName=workType.getResultName();
 									optimizationSuggestion=workType.getOptimizationSuggestion();
@@ -452,9 +447,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							}catch(Exception e){
 								e.printStackTrace();
 							}finally{
-								if(jedis!=null&&jedis.isConnected()){
-									jedis.close();
-								}
+								
 							}
 							resultName=getOperaValue(resultName,dataWriteBackConfig.getDiagramResult().getColumns().getResultName().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getResultName().getRatio());
 							optimizationSuggestion=getOperaValue(optimizationSuggestion,dataWriteBackConfig.getDiagramResult().getColumns().getOptimizationSuggestion().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getOptimizationSuggestion().getRatio());

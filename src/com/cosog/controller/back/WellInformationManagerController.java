@@ -1256,32 +1256,11 @@ public class WellInformationManagerController extends BaseController {
 							}
 							if(rpcProductionData.getManualIntervention()!=null){
 								int manualInterventionResultCode=0;
-								Jedis jedis=null;
-								try{
-									jedis = RedisUtil.jedisPool.getResource();
-									if(!jedis.exists("RPCWorkTypeByName".getBytes())){
-										MemoryDataManagerTask.loadRPCWorkType();
-									}
-									if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
-										if(jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
-											WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
-											manualInterventionResultCode=workType.getResultCode();
-										}
-									}
-								}catch(Exception e){
-									String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-									List<?> resultList = this.wellInformationManagerService.findCallSql(resultNameSql);
-									if(resultList.size()>0){
-										manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-									}
-								}finally{
-									if(jedis!=null&&jedis.isConnected()){
-										jedis.close();
-									}
+								
+								if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(manualInterventionResultName);
 								}
 								rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
-								
-								
 								if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
 									String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
 									List<?> resultList = this.wellInformationManagerService.findCallSql(sql);

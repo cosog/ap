@@ -510,27 +510,17 @@ public class UserManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(selectedOrgId)>0 && StringManagerUtils.isNotNull(selectedUserId)){
 			String sql = "update tbl_user t set t.user_orgid="+selectedOrgId+" where t.user_no in ("+selectedUserId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
-			
-			Jedis jedis=null;
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
 				String [] userNoArr=selectedUserId.split(",");
 				List<String> userNoList=new ArrayList<String>();
 				for(int i=0;i<userNoArr.length;i++){
 					userNoList.add(userNoArr[i]);
 				}
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}else{
-					MemoryDataManagerTask.loadUserInfo(userNoList,0,"update");
-				}
-				
+				MemoryDataManagerTask.loadUserInfo(userNoList,0,"update");
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
+				
 			}
 		}
 	}

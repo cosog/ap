@@ -432,17 +432,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 			if(result!=-1){
 				String sql = "update tbl_org t set t.org_parent="+selectedDestinationOrgId+" where t.org_id="+selectedCurrentOrgId;
 				result=this.getBaseDao().updateOrDeleteBySql(sql);
-				Jedis jedis=null;
-				try{
-					jedis = RedisUtil.jedisPool.getResource();
-					MemoryDataManagerTask.loadUserInfoByOrgId(selectedDestinationOrgId,"update");
-				}catch(Exception e){
-					e.printStackTrace();
-				}finally{
-					if(jedis!=null){
-						jedis.close();
-					}
-				}
+				MemoryDataManagerTask.loadUserInfoByOrgId(selectedDestinationOrgId,"update");
 			}
 		}
 		return result;

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CPUProbeResponseData;
+import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.MemoryProbeResponseData;
 import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.utils.CalculateUtils;
@@ -387,26 +388,14 @@ public class ResourceMonitoringTask {
 	@SuppressWarnings("resource")
 	public static  int getDeviceAmount() throws IOException, SQLException{
 		int deviceAmount=0;
-		Jedis jedis=null;
 		Connection conn=null;
 		PreparedStatement pstmt = null; 
         ResultSet rs=null;
+        boolean jedisStatus=MemoryDataManagerTask.getJedisStatus();
 		try {
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			if(jedis!=null){
-//				if(!jedis.exists("DeviceInfo".getBytes())){
-//					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
-//				}
-//				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-//					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
-//				}
-				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-				List<byte[]> pcpDeviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
-				deviceAmount=(rpcDeviceInfoByteList!=null?rpcDeviceInfoByteList.size():0)+(pcpDeviceInfoByteList!=null?pcpDeviceInfoByteList.size():0 );
+			if(jedisStatus){
+				List<DeviceInfo> deviceList=MemoryDataManagerTask.getDeviceInfo();
+				deviceAmount=(deviceList!=null?deviceList.size():0);
 			}else{
 				conn=OracleJdbcUtis.getConnection();
 		        if(conn!=null){
@@ -417,15 +406,10 @@ public class ResourceMonitoringTask {
 		    			deviceAmount=rs.getInt(1);
 		    		}
 		        }
-		        
 			}
-			
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		return deviceAmount;

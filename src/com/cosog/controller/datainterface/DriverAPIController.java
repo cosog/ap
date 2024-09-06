@@ -64,6 +64,7 @@ import com.cosog.service.right.UserManagerService;
 import com.cosog.task.CalculateDataManagerTask;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.task.OuterDatabaseSyncTask;
 import com.cosog.task.OuterDatabaseSyncTask.RPCWellDataSyncThread;
 import com.cosog.thread.calculate.ThreadPool;
@@ -104,7 +105,7 @@ public class DriverAPIController extends BaseController{
 	private MobileService<?> mobileService;
 	@Autowired
 	private UserManagerService<User> userManagerService;
-	private boolean printInfo=true;
+	private boolean printInfo=false;
 	@Bean
     public static WebSocketByJavax infoHandler() {
         return new WebSocketByJavax();
@@ -114,100 +115,94 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/acq/allDeviceOffline")
 	public String AllDeviceOffline(){
 		StringBuffer webSocketSendData = new StringBuffer();
-		Jedis jedis=null;
 		String functionCode="adExitAndDeviceOffline";
 		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		PrintWriter pw=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("DeviceInfo".getBytes())){
-				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-			}
-			List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-			for(int i=0;i<deviceInfoByteList.size();i++){
+			List<DeviceInfo> deviceList=MemoryDataManagerTask.getDeviceInfo();
+			for(int i=0;i<deviceList.size();i++){
 				String realtimeTable="tbl_acqdata_latest";
 				String historyTable="tbl_acqdata_hist";
-				Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-				if (obj instanceof DeviceInfo) {
-					DeviceInfo deviceInfo=(DeviceInfo)obj;
-					String instanceCode=deviceInfo.getInstanceCode();
-					if(!(!StringManagerUtils.isNotNull(instanceCode)||instanceCode.toUpperCase().contains("KAFKA")||instanceCode.toUpperCase().contains("RPC") || instanceCode.toUpperCase().contains("MQTT"))){
-						if(deviceInfo.getOnLineCommStatus()>0){
-							String commRequest="{"
-									+ "\"AKString\":\"\","
-									+ "\"WellName\":\""+deviceInfo.getDeviceName()+"\","
-									+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
-							if(StringManagerUtils.isNotNull(deviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(deviceInfo.getOnLineCommRange())){
-								commRequest+= "\"Last\":{"
-										+ "\"AcqTime\": \""+deviceInfo.getOnLineAcqTime()+"\","
-										+ "\"CommStatus\": "+(deviceInfo.getOnLineCommStatus()>0?true:false)+","
-										+ "\"CommEfficiency\": {"
-										+ "\"Efficiency\": "+deviceInfo.getOnLineCommEff()+","
-										+ "\"Time\": "+deviceInfo.getOnLineCommTime()+","
-										+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(deviceInfo.getOnLineCommRange())+""
-										+ "}"
-										+ "},";
-							}	
-							commRequest+= "\"Current\": {"
-									+ "\"AcqTime\":\""+time+"\","
-									+ "\"CommStatus\":false"
+				DeviceInfo deviceInfo=deviceList.get(i);
+				String instanceCode=deviceInfo.getInstanceCode();
+				if(!(!StringManagerUtils.isNotNull(instanceCode)||instanceCode.toUpperCase().contains("KAFKA")||instanceCode.toUpperCase().contains("RPC") || instanceCode.toUpperCase().contains("MQTT"))){
+					if(deviceInfo.getOnLineCommStatus()>0){
+						String commRequest="{"
+								+ "\"AKString\":\"\","
+								+ "\"WellName\":\""+deviceInfo.getDeviceName()+"\","
+								+ "\"OffsetHour\":"+Config.getInstance().configFile.getAp().getReport().getOffsetHour()+",";
+						if(StringManagerUtils.isNotNull(deviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(deviceInfo.getOnLineCommRange())){
+							commRequest+= "\"Last\":{"
+									+ "\"AcqTime\": \""+deviceInfo.getOnLineAcqTime()+"\","
+									+ "\"CommStatus\": "+(deviceInfo.getOnLineCommStatus()>0?true:false)+","
+									+ "\"CommEfficiency\": {"
+									+ "\"Efficiency\": "+deviceInfo.getOnLineCommEff()+","
+									+ "\"Time\": "+deviceInfo.getOnLineCommTime()+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(deviceInfo.getOnLineCommRange())+""
 									+ "}"
-									+ "}";
-							CommResponseData commResponseData=CalculateUtils.commCalculate(commRequest);
+									+ "},";
+						}	
+						commRequest+= "\"Current\": {"
+								+ "\"AcqTime\":\""+time+"\","
+								+ "\"CommStatus\":false"
+								+ "}"
+								+ "}";
+						CommResponseData commResponseData=CalculateUtils.commCalculate(commRequest);
+						
+						String updateRealData="update "+realtimeTable+" t set t.acqTime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus=0";
+						String updateRealCommRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
+						
+//						String updateHistData="update "+historyTable+" t set t.acqTime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus=0";
+						String insertHistColumns="deviceid,acqTime,CommStatus";
+						String insertHistValue=deviceInfo.getId()+",to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'),0";
+						String insertHistSql="";
+						String updateHistCommRangeClobSql="update "+historyTable+" t set t.commrange=?";
+						List<String> clobCont=new ArrayList<String>();
+						
+						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+							updateRealData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+									+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+							insertHistColumns+=",commTimeEfficiency,commTime";
+							insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
 							
-							String updateRealData="update "+realtimeTable+" t set t.acqTime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus=0";
-							String updateRealCommRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
-							
-//							String updateHistData="update "+historyTable+" t set t.acqTime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus=0";
-							String insertHistColumns="deviceid,acqTime,CommStatus";
-							String insertHistValue=deviceInfo.getId()+",to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'),0";
-							String insertHistSql="";
-							String updateHistCommRangeClobSql="update "+historyTable+" t set t.commrange=?";
-							List<String> clobCont=new ArrayList<String>();
-							
-							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-								updateRealData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
-										+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
-								insertHistColumns+=",commTimeEfficiency,commTime";
-								insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
-								
-								clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-							}
-							updateRealData+=" where t.deviceId= "+deviceInfo.getId();
-							updateRealCommRangeClobSql+=" where t.deviceId= "+deviceInfo.getId();
-							
-//							updateHistData+=" where t.deviceId= "+deviceInfo.getId()+" and t.acqtime=( select max(t2.acqtime) from "+historyTable+" t2 where t2.deviceid=t.deviceid )";
-							insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
-							updateHistCommRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.acqtime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss')";
-							
-							int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealData);
-							if(result==0){
-								result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql.replaceAll(historyTable, realtimeTable));
-							}
-							result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-								result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRealCommRangeClobSql,clobCont);
-								result=commonDataService.getBaseDao().executeSqlUpdateClob(updateHistCommRangeClobSql,clobCont);
-							}
-							
-							deviceInfo.setCommStatus(0);
-							deviceInfo.setOnLineCommStatus(0);
-							if(commResponseData!=null && commResponseData.getResultStatus()==1){
-								deviceInfo.setAcqTime(time);
-								deviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
-								deviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
-								deviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-								
-								deviceInfo.setOnLineAcqTime(time);
-								deviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
-								deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
-								deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-							}
-							String key=deviceInfo.getId()+"";
-							jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 						}
+						updateRealData+=" where t.deviceId= "+deviceInfo.getId();
+						updateRealCommRangeClobSql+=" where t.deviceId= "+deviceInfo.getId();
+						
+//						updateHistData+=" where t.deviceId= "+deviceInfo.getId()+" and t.acqtime=( select max(t2.acqtime) from "+historyTable+" t2 where t2.deviceid=t.deviceid )";
+						insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
+						updateHistCommRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.acqtime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss')";
+						
+						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealData);
+						if(result==0){
+							result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql.replaceAll(historyTable, realtimeTable));
+						}
+						result=commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
+						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+							result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRealCommRangeClobSql,clobCont);
+							result=commonDataService.getBaseDao().executeSqlUpdateClob(updateHistCommRangeClobSql,clobCont);
+						}
+						
+						deviceInfo.setCommStatus(0);
+						deviceInfo.setOnLineCommStatus(0);
+						if(commResponseData!=null && commResponseData.getResultStatus()==1){
+							deviceInfo.setAcqTime(time);
+							deviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+							deviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+							deviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							
+							deviceInfo.setOnLineAcqTime(time);
+							deviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+							deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+							deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+						}
+						String key=deviceInfo.getId()+"";
+						
+						MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 					}
 				}
+			
 			}
 			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 			webSocketSendData.append("\"time\":\""+time+"\"");
@@ -225,9 +220,6 @@ public class DriverAPIController extends BaseController{
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 			if(pw!=null){
 				pw.close();
 			}
@@ -240,7 +232,6 @@ public class DriverAPIController extends BaseController{
 	public String AcqOnlineData() {
 		ServletInputStream ss=null;
 		Gson gson=new Gson();
-		Jedis jedis=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		String json = "{success:true,flag:true}";
 		PrintWriter pw=null;
@@ -255,7 +246,6 @@ public class DriverAPIController extends BaseController{
 				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 				
 				if(acqOnline!=null){
-					jedis = RedisUtil.jedisPool.getResource();
 					List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
 					int deviceType=0;
 					int deviceId=0;
@@ -263,22 +253,17 @@ public class DriverAPIController extends BaseController{
 					int orgId=0;
 					String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 					
-					if(!jedis.exists("DeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-					for(int i=0;i<deviceInfoByteList.size();i++){
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof DeviceInfo) {
-							DeviceInfo memDeviceInfo=(DeviceInfo)obj;
-							if(acqOnline.getID().equalsIgnoreCase(memDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memDeviceInfo.getSlave())){
-								if(acqOnline.getSlave()>0 || data.contains("\"Slave\"")){
-									if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memDeviceInfo.getSlave())){
-										deviceInfoList.add(memDeviceInfo);
-									}
-								}else if(memDeviceInfo.getStatus()==1){
+					
+					List<DeviceInfo> deviceList=MemoryDataManagerTask.getDeviceInfo();
+					for(int i=0;i<deviceList.size();i++){
+						DeviceInfo memDeviceInfo=deviceList.get(i);
+						if(acqOnline.getID().equalsIgnoreCase(memDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memDeviceInfo.getSlave())){
+							if(acqOnline.getSlave()>0 || data.contains("\"Slave\"")){
+								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memDeviceInfo.getSlave())){
 									deviceInfoList.add(memDeviceInfo);
 								}
+							}else if(memDeviceInfo.getStatus()==1){
+								deviceInfoList.add(memDeviceInfo);
 							}
 						}
 					}
@@ -414,7 +399,7 @@ public class DriverAPIController extends BaseController{
 									deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 									deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 								}
-								jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+								MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 							}
 							webSocketSendData = new StringBuffer();
 							webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
@@ -447,9 +432,6 @@ public class DriverAPIController extends BaseController{
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 			if(ss!=null){
 				try {
 					ss.close();
@@ -468,7 +450,6 @@ public class DriverAPIController extends BaseController{
 	public String IPPortAcqOnlineData() {
 		ServletInputStream ss=null;
 		Gson gson=new Gson();
-		Jedis jedis=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		PrintWriter pw=null;
 		String json = "{success:true,flag:true}";
@@ -482,33 +463,22 @@ public class DriverAPIController extends BaseController{
 				AcqOnline acqOnline=gson.fromJson(data, type);
 				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 				if(acqOnline!=null){
-//					acqOnline.setID(acqOnline.getIPPort());
-					jedis = RedisUtil.jedisPool.getResource();
 					List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
 					int deviceType=0;
 					int deviceId=0;
 					String deviceName="";
 					int orgId=0;
 					String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-					if(!jedis.exists("DeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					if(!jedis.exists("PCPDeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}
-					List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-					for(int i=0;i<deviceInfoByteList.size();i++){
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof DeviceInfo) {
-							DeviceInfo memDeviceInfo=(DeviceInfo)obj;
-							if(acqOnline.getIPPort().equalsIgnoreCase(memDeviceInfo.getIpPort()) && StringManagerUtils.isNotNull(memDeviceInfo.getSlave()) && memDeviceInfo.getStatus()==1){
-								if(acqOnline.getSlave()>0){
-									if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memDeviceInfo.getSlave())){
-										deviceInfoList.add(memDeviceInfo);
-									}
-								}else{
+					List<DeviceInfo> deviceList=MemoryDataManagerTask.getDeviceInfo();
+					for(int i=0;i<deviceList.size();i++){
+						DeviceInfo memDeviceInfo=deviceList.get(i);
+						if(acqOnline.getIPPort().equalsIgnoreCase(memDeviceInfo.getIpPort()) && StringManagerUtils.isNotNull(memDeviceInfo.getSlave()) && memDeviceInfo.getStatus()==1){
+							if(acqOnline.getSlave()>0){
+								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memDeviceInfo.getSlave())){
 									deviceInfoList.add(memDeviceInfo);
 								}
+							}else{
+								deviceInfoList.add(memDeviceInfo);
 							}
 						}
 					}
@@ -640,7 +610,7 @@ public class DriverAPIController extends BaseController{
 									deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 									deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 								}
-								jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
+								MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 							}
 							
 							webSocketSendData = new StringBuffer();
@@ -675,9 +645,6 @@ public class DriverAPIController extends BaseController{
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 			if(ss!=null){
 				try {
 					ss.close();
@@ -696,7 +663,6 @@ public class DriverAPIController extends BaseController{
 	public String AcqGroupData(){
 		CounterUtils.incr();
 		ServletInputStream ss=null;
-		Jedis jedis=null;
 		String json = "{success:true,flag:true}";
 		PrintWriter pw=null;
 		try {
@@ -708,7 +674,6 @@ public class DriverAPIController extends BaseController{
 				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				AcqGroup acqGroup=gson.fromJson(data, type);
 				if(acqGroup!=null){
-					jedis = RedisUtil.jedisPool.getResource();
 					DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(acqGroup.getID(), acqGroup.getSlave());
 					if(deviceInfo!=null){
 						long t1=System.nanoTime();
@@ -731,9 +696,6 @@ public class DriverAPIController extends BaseController{
 			e1.printStackTrace();
 		} finally{
 			CounterUtils.decr();
-			if(jedis!=null){
-				jedis.close();
-			}
 			if(ss!=null){
 				try {
 					ss.close();
@@ -752,7 +714,6 @@ public class DriverAPIController extends BaseController{
 	public String IPPortAcqGroupData(){
 		CounterUtils.incr();
 		ServletInputStream ss=null;
-		Jedis jedis=null;
 		String json = "{success:true,flag:true}";
 		PrintWriter pw=null;
 		try {
@@ -764,27 +725,15 @@ public class DriverAPIController extends BaseController{
 				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				AcqGroup acqGroup=gson.fromJson(data, type);
 				if(acqGroup!=null){
-//					acqGroup.setID(acqGroup.getIPPort());
-					jedis = RedisUtil.jedisPool.getResource();
-					DeviceInfo deviceInfo=null;
-					
-					if(!jedis.exists("DeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+					DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfoByIPPort(acqGroup.getIPPort(), acqGroup.getSlave());
+					if(deviceInfo!=null){
+						long t1=System.nanoTime();
+						this.DataProcessing(deviceInfo,acqGroup);
+						long t2=System.nanoTime();
+						printDenugInfo(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+deviceInfo.getDeviceName()+"采集组数据处理耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+					}else{
+						StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getIPPort()+","+acqGroup.getSlave());
 					}
-					List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-					for(int i=0;i<deviceInfoByteList.size();i++){
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof DeviceInfo) {
-							DeviceInfo memDeviceInfo=(DeviceInfo)obj;
-							if(acqGroup.getIPPort().equalsIgnoreCase(memDeviceInfo.getIpPort()) && acqGroup.getSlave()==StringManagerUtils.stringToInteger(memDeviceInfo.getSlave())){
-								deviceInfo=memDeviceInfo;
-								break;
-							}
-						}
-					}
-					
-					
-					this.DataProcessing(deviceInfo,acqGroup);
 				}else{
 					json = "{success:true,flag:false}";
 				}
@@ -798,9 +747,6 @@ public class DriverAPIController extends BaseController{
 			e1.printStackTrace();
 		} finally{
 			CounterUtils.decr();
-			if(jedis!=null){
-				jedis.close();
-			}
 			if(ss!=null){
 				try {
 					ss.close();
@@ -1234,9 +1180,7 @@ public class DriverAPIController extends BaseController{
 	
 	public int RunStatusProcessing(String rawValue,String code){
 		int runStatus=2;
-		Jedis jedis=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
 			ProtocolRunStatusConfig protocolRunStatusConfig=MemoryDataManagerTask.getProtocolRunStatusConfig(code);
 			if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
 				if(protocolRunStatusConfig.getResolutionMode()==1){
@@ -1327,9 +1271,7 @@ public class DriverAPIController extends BaseController{
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
+			
 		}
 		return runStatus;
 	}
@@ -2215,30 +2157,9 @@ public class DriverAPIController extends BaseController{
 		
 		DataWriteBackConfig dataWriteBackConfig=MemoryDataManagerTask.getDataWriteBackConfig();
 		
-		Jedis jedis=null;
 		RPCDeviceTodayData deviceTodayData=null;
 		RPCCalculateResponseData rpcCalculateResponseData=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("RPCDeviceTodayData".getBytes())){
-				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
-			}
-			if(jedis.hexists("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes())){
-				deviceTodayData=(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes()));
-			}
-			
-			if(!jedis.exists("rpcCalItemList".getBytes())){
-				MemoryDataManagerTask.loadRPCCalculateItem();
-			}
-			
-			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
-				MemoryDataManagerTask.loadAcqInstanceOwnItemById("","update");
-			}
-			
-			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
-				MemoryDataManagerTask.loadProtocolMappingColumn();
-			}
-			
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			
 			String realtimeTable="tbl_rpcacqdata_latest";
@@ -2247,13 +2168,10 @@ public class DriverAPIController extends BaseController{
 			if(acqGroup!=null){
 				String protocolName="";
 				String acqProtocolType="";
-				AcqInstanceOwnItem acqInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes())){
-					acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes()));
-					if(acqInstanceOwnItem!=null){
-						protocolName=acqInstanceOwnItem.getProtocol();
-						acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
-					}
+				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				if(acqInstanceOwnItem!=null){
+					protocolName=acqInstanceOwnItem.getProtocol();
+					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 				}
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
@@ -2846,7 +2764,7 @@ public class DriverAPIController extends BaseController{
 							responseResultData.getPumpEfficiency().setPumpEff4(rpcCalculateResponseData.getPumpEfficiency().getPumpEff4());
 							responseResultData.getPumpEfficiency().setPumpEff(rpcCalculateResponseData.getPumpEfficiency().getPumpEff());
 						}
-						
+						deviceTodayData=MemoryDataManagerTask.getRPCDeviceTodayDataById(deviceInfo.getId());
 						//删除非当天采集的功图数据
 						if(deviceTodayData!=null){
 							Iterator<RPCCalculateResponseData> it = deviceTodayData.getRPCCalculateList().iterator();
@@ -2978,17 +2896,13 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					//放入内存数据库中
-					if(jedis!=null && deviceTodayData!=null){
-						jedis.hset("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
-					}
+					MemoryDataManagerTask.updateRPCDeviceTodayDataDeviceInfo(deviceTodayData);
 				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
+			
 		}
 		return rpcCalculateResponseData;
 	}
@@ -2998,42 +2912,18 @@ public class DriverAPIController extends BaseController{
 			boolean save,int checkSign){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		Jedis jedis=null;
 		PCPDeviceTodayData deviceTodayData=null;
 		PCPCalculateResponseData pcpCalculateResponseData=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			
-			if(!jedis.exists("PCPDeviceTodayData".getBytes())){
-				MemoryDataManagerTask.loadTodayRPMData(null,0);
-			}
-			if(jedis.hexists("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes())){
-				deviceTodayData=(PCPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes()));
-			}
-			
-			if(!jedis.exists("pcpCalItemList".getBytes())){
-				MemoryDataManagerTask.loadPCPCalculateItem();
-			}
-			
-			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
-				MemoryDataManagerTask.loadProtocolMappingColumn();
-			}
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			
 			String realtimeTable="tbl_pcpacqdata_latest";
 			String historyTable="tbl_pcpacqdata_hist";
 			String totalDataTable="tbl_pcpdailycalculationdata";
 			if(acqGroup!=null){
-				List<byte[]> pcpCalItemSet=null;
-				if(jedis!=null){
-					pcpCalItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
-				}
+//				List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				String protocolName="";
-				AcqInstanceOwnItem acqInstanceOwnItem=null;
-				if(jedis!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes())){
-					acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes()));
-					protocolName=acqInstanceOwnItem.getProtocol();
-				}
+				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
@@ -3230,6 +3120,7 @@ public class DriverAPIController extends BaseController{
 							
 							
 							//删除非当天采集的转速数据
+							deviceTodayData=MemoryDataManagerTask.getPCPDeviceTodayDataById(deviceInfo.getId());
 							if(deviceTodayData!=null){
 								Iterator<PCPCalculateResponseData> it = deviceTodayData.getPCPCalculateList().iterator();
 								while(it.hasNext()){
@@ -3330,18 +3221,13 @@ public class DriverAPIController extends BaseController{
 							commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
 						}
 					}
-					
-					if(jedis!=null && deviceTodayData!=null){
-						jedis.hset("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
-					}
+					MemoryDataManagerTask.updatePCPDeviceTodayDataDeviceInfo(deviceTodayData);
 				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
+			
 		}
 		
 		return pcpCalculateResponseData;

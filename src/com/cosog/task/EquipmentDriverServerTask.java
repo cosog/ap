@@ -52,7 +52,7 @@ import redis.clients.jedis.Jedis;
 public class EquipmentDriverServerTask {
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initSwitch=true;
+	private static boolean initSwitch=false;
 	private static boolean initEnable=initSwitch&&Config.getInstance().configFile.getAp().getOthers().isIot();
 	
 	public static boolean initFinished=false;
@@ -1319,7 +1319,6 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings({ "static-access" })
 	public static int initDriverAcquisitionInfoConfig(List<String> wellList,int condition,String method){
-		Jedis jedis=null;
 		try{
 			ThreadPool executor = new ThreadPool("adInit",
 					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
@@ -1327,18 +1326,13 @@ public class EquipmentDriverServerTask {
 					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
 					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
-			
-			jedis = RedisUtil.jedisPool.getResource();
 			if(!StringManagerUtils.isNotNull(method)){
 				method="update";
 			}
-			if(!jedis.exists("DeviceInfo".getBytes())){
-				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-			}
-			List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-			for(int i=0;i<deviceInfoByteList.size();i++){
+			List<DeviceInfo> deviceList=MemoryDataManagerTask.getDeviceInfo();
+			for(int i=0;i<deviceList.size();i++){
 				boolean matching=false;
-				DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+				DeviceInfo deviceInfo=deviceList.get(i);
 				if(wellList==null){
 					matching=true;
 				}else{
@@ -1360,9 +1354,7 @@ public class EquipmentDriverServerTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		return 0;
 	}
@@ -1700,22 +1692,15 @@ public class EquipmentDriverServerTask {
 		if(wellList==null || wellList.size()==0){
 			return;
 		}
-		Jedis jedis=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			List<byte[]> deviceInfoByteList=null;
+			List<DeviceInfo> deviceList=MemoryDataManagerTask.getDeviceInfo();
 			String url=stringManagerUtils.getProjectUrl()+"/api/acq/id/online";
 			String key="ID";
-			if(!jedis.exists("DeviceInfo".getBytes())){
-				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-			}
-			deviceInfoByteList=jedis.hvals("DeviceInfo".getBytes());
-			for(int i=0;i<deviceInfoByteList.size();i++){
-				Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-				StringBuffer json_buff = new StringBuffer();
-				if (obj instanceof RPCDeviceInfo) {
-					RPCDeviceInfo deviceInfo=(RPCDeviceInfo)obj;
+			if(deviceList!=null){
+				for(int i=0;i<deviceList.size();i++){
+					StringBuffer json_buff = new StringBuffer();
+					DeviceInfo deviceInfo=deviceList.get(i);
 					if(StringManagerUtils.existOrNot(wellList, deviceInfo.getId()+"", false)){
 						if("TCPServer".equalsIgnoreCase(deviceInfo.getTcpType().replaceAll(" ", ""))){
 							url=stringManagerUtils.getProjectUrl()+"/api/acq/ipport/online";
@@ -1733,12 +1718,11 @@ public class EquipmentDriverServerTask {
 					}
 				}
 			}
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 	}
 }	

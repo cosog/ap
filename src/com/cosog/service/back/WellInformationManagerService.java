@@ -387,37 +387,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String sql = "update "+tableName+" t set t.orgid="+selectedOrgId+" where t.id in ("+selectedDeviceId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
 			
-			Jedis jedis=null;
 			try{
-				try{
-					jedis = RedisUtil.jedisPool.getResource();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
 				if(deviceType<300){
-					if(!jedis.exists("DeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}else{
-						List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-						for(int i=0;i<deviceInfoByteList.size();i++){
-							Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-							if (obj instanceof DeviceInfo) {
-								DeviceInfo deviceInfo=(DeviceInfo)obj;
-								if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
-									deviceInfo.setOrgId(StringManagerUtils.stringToInteger(selectedOrgId));
-									deviceInfo.setOrgName(selectedOrgName);
-									jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
-								}
-							}
+					List<DeviceInfo> deviceInfoList =MemoryDataManagerTask.getDeviceInfo();
+					for(int i=0;i<deviceInfoList.size();i++){
+						DeviceInfo deviceInfo=deviceInfoList.get(i);
+						if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
+							deviceInfo.setOrgId(StringManagerUtils.stringToInteger(selectedOrgId));
+							deviceInfo.setOrgName(selectedOrgName);
+							MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 						}
 					}
 				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
+				
 			}
 		}
 	}
@@ -434,37 +419,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String sql = "update "+tableName+" t set t.devicetype="+selectedDeviceTypeId+" where t.id in ("+selectedDeviceId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
 			
-			Jedis jedis=null;
 			try{
-				try{
-					jedis = RedisUtil.jedisPool.getResource();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				if(deviceType<300){
-					if(!jedis.exists("DeviceInfo".getBytes())){
-						MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-					}else{
-						List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-						for(int i=0;i<deviceInfoByteList.size();i++){
-							Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-							if (obj instanceof DeviceInfo) {
-								DeviceInfo deviceInfo=(DeviceInfo)obj;
-								if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
-									deviceInfo.setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
-									deviceInfo.setDeviceTypeName(selectedDeviceTypeName);
-									jedis.hset("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceInfo));
-								}
-							}
-						}
+				List<DeviceInfo> deviceInfoList =MemoryDataManagerTask.getDeviceInfo(selectedDeviceId.split(","));
+				for(int i=0;i<deviceInfoList.size();i++){
+					DeviceInfo deviceInfo=deviceInfoList.get(i);
+					if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
+						deviceInfo.setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
+						deviceInfo.setDeviceTypeName(selectedDeviceTypeName);
+						MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 					}
 				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
+				
 			}
 		}
 	}
@@ -2200,17 +2168,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer resultNameBuff = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		Jedis jedis=null;
 		try{
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
 			String columns = "["
 					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 					+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
@@ -2382,8 +2340,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						
 						String manualInterventionName="不干预";
 						if(rpcProductionData.getManualIntervention()!=null && rpcProductionData.getManualIntervention().getCode()>0){
-							if(jedis!=null && jedis.hexists("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes())){
-								WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes()));
+							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"");
+							if(workType!=null){
 								manualInterventionName=workType.getResultName();
 							}else{
 								String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
@@ -2633,9 +2591,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
+			
 		}
 		return result_json.toString().replaceAll("null", "");
 	}

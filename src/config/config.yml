@@ -9,8 +9,8 @@ ap:
       addr: 127.0.0.1    #服务器IP
       port: 6379         #端口
       password: ap123#   #密码 无密码时设为空字符串""
-      maxActive: 1024    #连接池可用连接实例的最大数目
-      maxIdle: 200       #连接池中的最大空闲连接
+      maxActive: 150    #连接池可用连接实例的最大数目
+      maxIdle: 150       #连接池中的最大空闲连接
       maxWait: 10000     #连接池最大阻塞等待时间（毫秒）,负值表示没有限制
       timeOut: 10000     #连接超时时间（毫秒）
    oemConfigFile: oemConfig_feizhou

@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.log4j.Logger;
 
+import com.cosog.task.MemoryDataManagerTask;
+
 public class CounterUtils {
 	public static LongAdder count = new LongAdder();
 	public static LongAdder exceptionCalCount = new LongAdder();
@@ -55,8 +57,11 @@ public class CounterUtils {
             @Override
             public void run() {
             	System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":正在处理的采集组数据记录-"+CounterUtils.sum());
+            	if(MemoryDataManagerTask.getJedisStatus()){
+            		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":redis连接数-"+RedisUtil.jedisPool.getNumActive());
+            	}
             }
         };
-        timer.schedule(timerTask, 1000*2, 1000*60); // 两秒后每分钟执行一次
+        timer.schedule(timerTask, 1000*2, 1000*10); // 两秒后每分钟执行一次
     }
 }

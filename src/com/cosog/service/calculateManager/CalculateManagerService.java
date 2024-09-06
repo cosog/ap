@@ -116,16 +116,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer resultNameBuff = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		Jedis jedis=null;
 		try{
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			columns = ddic.getTableHeader();
 			
@@ -263,8 +254,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						if(rpcProductionData.getManualIntervention().getCode()==0){
 							manualInterventionResultName="不干预";
 						}else{
-							if(jedis!=null && jedis.hexists("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes())){
-								WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes()));
+							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"");
+							if(workType!=null){
 								manualInterventionResultName=workType.getResultName();
 							}else{
 								String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
@@ -297,9 +288,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
-			}
+			
 		}
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -738,16 +727,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
-			Jedis jedis=null;
 			try{
-				try{
-					jedis = RedisUtil.jedisPool.getResource();
-					if(!jedis.exists("RPCWorkTypeByName".getBytes())){
-						MemoryDataManagerTask.loadRPCWorkType();
-					}
-				}catch(Exception e){
-					e.printStackTrace();
-				}
 				for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
 					StringBuffer productionDataBuff = new StringBuffer();
 					
@@ -894,8 +874,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					String manualInterventionResultName=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResult();
 					int manualInterventionResultCode=0;
 					if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
-						if(jedis!=null && jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
-							WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
+						WorkType workType=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName);
+						if(workType!=null){
 							manualInterventionResultCode=workType.getResultCode();
 						}else{
 							String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
@@ -930,9 +910,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
-				if(jedis!=null&&jedis.isConnected()){
-					jedis.close();
-				}
+				
 			}
 		}
 	}

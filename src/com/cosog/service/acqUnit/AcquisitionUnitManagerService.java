@@ -581,23 +581,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getModbusProtocolCalNumAlarmItemsConfigData(String deviceType,String classes,String code){
+	public String getModbusProtocolCalNumAlarmItemsConfigData(String calculateType,String classes,String code){
 		StringBuffer result_json = new StringBuffer();
 		
-		Jedis jedis=null;
-		List<byte[]> calItemSet=null;
+		List<CalItem> calItemList=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				if(!jedis.exists("rpcCalItemList".getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-				}
-				calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
+			if(StringManagerUtils.stringToInteger(calculateType)==1){
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 			}else{
-				if(!jedis.exists("pcpCalItemList".getBytes())){
-					MemoryDataManagerTask.loadPCPCalculateItem();
-				}
-				calItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 			}
 			String columns = "["
 					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -614,7 +608,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalRoot\":[");
-			if(calItemSet!=null){
+			if(calItemList!=null){
 				List<String> itemsList=new ArrayList<String>();
 				List<?> list=null;
 				if("3".equalsIgnoreCase(classes)){
@@ -632,8 +626,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				
 				int index=1;
-				for(byte[] rpcCalItemByteArr:calItemSet){
-					CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+				for(CalItem calItem:calItemList){
 					if(calItem.getDataType()==2){
 						String upperLimit="",lowerLimit="",hystersis="",delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 						boolean checked=false;
@@ -679,9 +672,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		return result_json.toString();
 	}
@@ -2318,57 +2309,35 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="acqTimingTotalCalItemList";
 		
-		if(StringManagerUtils.stringToInteger(reportType)==2){
-			if("1".equalsIgnoreCase(calculateType)){
-				key="rpcTimingTotalCalItemList";
-			}else if("2".equalsIgnoreCase(calculateType)){
-				key="pcpTimingTotalCalItemList";
-			}else{
-				key="acqTimingTotalCalItemList";
-			}
-		}else{
-			if("1".equalsIgnoreCase(calculateType)){
-				key="rpcTotalCalItemList";
-			}else if("2".equalsIgnoreCase(calculateType)){
-				key="pcpTotalCalItemList";
-			}else{
-				key="acqTotalCalItemList";
-			}
-		}
 		
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
-		Jedis jedis=null;
-		List<byte[]> totalItemSet=null;
+		
+		List<CalItem> totalItemList=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists(key.getBytes())){
-				if(StringManagerUtils.stringToInteger(reportType)==2){
-					if("1".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
-					}else if("2".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
-					}else{
-						MemoryDataManagerTask.loadAcqTimingTotalCalculateItem();
-					}
+
+			if(StringManagerUtils.stringToInteger(reportType)==2){
+				if("1".equalsIgnoreCase(calculateType)){
+					totalItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem();
+				}else if("2".equalsIgnoreCase(calculateType)){
+					totalItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem();
 				}else{
-					if("1".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadRPCTotalCalculateItem();
-					}else if("2".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadPCPTotalCalculateItem();
-					}else{
-						MemoryDataManagerTask.loadAcqTotalCalculateItem();
-					}
+					totalItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem();
+				}
+			}else{
+				if("1".equalsIgnoreCase(calculateType)){
+					totalItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+				}else if("2".equalsIgnoreCase(calculateType)){
+					totalItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+				}else{
+					totalItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
 				}
 			}
-			totalItemSet= jedis.zrange(key.getBytes(), 0, -1);
+		
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -2432,10 +2401,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		
 		int index=1;
-		if(totalItemSet!=null){
-			for(byte[] totalItemByteArr:totalItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(totalItemByteArr);
-				
+		if(totalItemList!=null){
+			for(CalItem calItem:totalItemList){
 				boolean checked=false;
 				String sortStr="";
 				String showLevel="";
@@ -2637,32 +2604,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="acqTotalCalItemList";
-		if("1".equalsIgnoreCase(calculateType)){
-			key="rpcTotalCalItemList";
-		}else if("2".equalsIgnoreCase(calculateType)){
-			key="pcpTotalCalItemList";
-		}
-		Jedis jedis=null;
-		List<byte[]> calItemSet=null;
+		List<CalItem> calItemList=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists(key.getBytes())){
-				if("1".equalsIgnoreCase(calculateType)){
-					MemoryDataManagerTask.loadRPCTotalCalculateItem();
-				}else if("2".equalsIgnoreCase(calculateType)){
-					MemoryDataManagerTask.loadPCPTotalCalculateItem();
-				}else{
-					MemoryDataManagerTask.loadAcqTotalCalculateItem();
-				}
+
+			if("1".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+			}else if("2".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
 			}
-			calItemSet= jedis.zrange(key.getBytes(), 0, -1);
+		
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -2691,10 +2646,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(i);
 			String unit="";
 			String dataType="\"\"";
-			if(calItemSet!=null){
-				CalItem calItem=null;
-				for(byte[] calItemByteArr:calItemSet){
-					calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+			if(calItemList!=null){
+				for(CalItem calItem:calItemList){
 					if( (obj[1]+"").equalsIgnoreCase(calItem.getCode()) ){
 						unit=calItem.getUnit();
 						dataType=calItem.getDataType()+"";
@@ -2784,32 +2737,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String key="acqTimingTotalCalItemList";
-		if("1".equalsIgnoreCase(calculateType)){
-			key="rpcTimingTotalCalItemList";
-		}else if("2".equalsIgnoreCase(calculateType)){
-			key="pcpTimingTotalCalItemList";
-		}
-		Jedis jedis=null;
-		List<byte[]> calItemSet=null;
+		List<CalItem> calItemList=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists(key.getBytes())){
-				if("1".equalsIgnoreCase(calculateType)){
-					MemoryDataManagerTask.loadRPCTimingTotalCalculateItem();
-				}else if("2".equalsIgnoreCase(calculateType)){
-					MemoryDataManagerTask.loadPCPTimingTotalCalculateItem();
-				}else{
-					MemoryDataManagerTask.loadAcqTimingTotalCalculateItem();
-				}
+			if("1".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem();
+			}else if("2".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem();
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem();
 			}
-			calItemSet= jedis.zrange(key.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -2838,10 +2778,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(i);
 			String unit="";
 			String dataType="\"\"";
-			if(calItemSet!=null){
-				CalItem calItem=null;
-				for(byte[] calItemByteArr:calItemSet){
-					calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+			if(calItemList!=null){
+				for(CalItem calItem:calItemList){
 					if( (obj[1]+"").equalsIgnoreCase(calItem.getCode()) ){
 						unit=calItem.getUnit();
 						dataType=calItem.getDataType()+"";
@@ -3706,30 +3644,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceCalNumItemsConfigData(String id,String classes,String resolutionMode,String deviceType){
+	public String getProtocolAlarmInstanceCalNumItemsConfigData(String id,String classes,String resolutionMode,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
-		Jedis jedis=null;
-		List<byte[]> calItemSet=null;
+		List<CalItem> calItemList=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				if(!jedis.exists("rpcCalItemList".getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-				}
-				calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
+			if(StringManagerUtils.stringToInteger(calculateType)==1){
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			}if(StringManagerUtils.stringToInteger(calculateType)==2){
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 			}else{
-				if(!jedis.exists("pcpCalItemList".getBytes())){
-					MemoryDataManagerTask.loadPCPCalculateItem();
-				}
-				calItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -3772,9 +3702,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String unit="";
-			if(calItemSet!=null){
-				for(byte[] rpcCalItemByteArr:calItemSet){
-					CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+			if(calItemList!=null){
+				for(CalItem calItem:calItemList){
 					if(calItem.getDataType()==2&&(obj[2]+"").equalsIgnoreCase(calItem.getCode())){
 						unit=calItem.getUnit();
 						break;
@@ -6988,7 +6917,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
-		List<byte[]> rpcCalItemSet=null;
+		List<CalItem> rpcCalItemList=null;
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -7013,22 +6942,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0 ){
 			String key="rpcCalItemList";
-			Jedis jedis=null;
-			
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists(key.getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-				}
-				
-				rpcCalItemSet= jedis.zrange(key.getBytes(), 0, -1);
-			}catch(Exception e){
-				e.printStackTrace();
-			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
-			}
+			rpcCalItemList=MemoryDataManagerTask.getRPCCalculateItem();
 			
 			int unitId=0;
 			if(StringManagerUtils.stringToInteger(typeStr)==1){//显示单元
@@ -7088,10 +7002,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		if(rpcCalItemSet!=null){
+		if(rpcCalItemList!=null){
 			int index=1;
-			for(byte[] rpcCalItemByteArr:rpcCalItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+			for(CalItem calItem:rpcCalItemList){
 				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
 					String sort="";
 					String showLevel="";
@@ -7317,7 +7230,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
-		List<byte[]> calItemSet=null;
+		List<CalItem> calItemList=null;
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -7336,21 +7249,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
-			Jedis jedis=null;
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("rpcCalItemList".getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-				}
-				calItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
-			}catch(Exception e){
-				e.printStackTrace();
-			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
-			}
 			
+			calItemList=MemoryDataManagerTask.getRPCCalculateItem();
 			
 			int unitId=0;
 			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
@@ -7373,9 +7273,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							for(int j=0;j<exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().size();j++){
 								if(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getType()==5){
 									String unit="";
-									if(calItemSet!=null){
-										for(byte[] rpcCalItemByteArr:calItemSet){
-											CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+									if(calItemList!=null){
+										for(CalItem calItem:calItemList){
 											if(calItem.getDataType()==2&&(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()).equalsIgnoreCase(calItem.getCode())){
 												unit=calItem.getUnit();
 												break;
@@ -9432,9 +9331,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sql = "update tbl_protocol t set t.devicetype="+selectedDeviceTypeId+" where t.id in ("+selectedProtocolId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
 			
-			Jedis jedis=null;
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				String [] protocolArr=selectedProtocolId.split(",");
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
@@ -9442,13 +9339,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						modbusProtocolConfig.getProtocol().get(i).setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
 					}
 				}
-				jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
+				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
+				
 			}
 		}
 	}

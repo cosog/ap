@@ -75,22 +75,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	
 	public String getHistoryQueryCommStatusStatData(String orgId,String deviceType,String deviceTypeStatValue) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
-		List<byte[]> deviceInfoByteList=null;
+		List<DeviceInfo> deviceInfoList=null;
+		boolean jedisStatus=false;
 		try{
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("AlarmShowStyle".getBytes())){
-					MemoryDataManagerTask.initAlarmStyle();
-				}
-				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-				
-
-				if(!jedis.exists("DeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+				jedisStatus= MemoryDataManagerTask.getJedisStatus();
+				alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
+				deviceInfoList=MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -102,7 +94,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":3,");
 			int total=0,online=0,goOnline=0,offline=0;
-			if(jedis==null){
+			if(!jedisStatus){
 				String tableName="tbl_rpcacqdata_latest";
 				String deviceTableName="viw_rpcdevice";
 				if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -131,29 +123,23 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 				}
 			}else{
-				if(deviceInfoByteList!=null){
-					for(int i=0;i<deviceInfoByteList.size();i++){
+				if(deviceInfoList!=null){
+					for(int i=0;i<deviceInfoList.size();i++){
 						int commStatus=0;
-
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof DeviceInfo) {
-							DeviceInfo deviceInfo=(DeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId())){
-								commStatus=deviceInfo.getOnLineCommStatus();
-								if(commStatus==1){
-									online+=1;
-								}else if(commStatus==2){
-									goOnline+=1;
-								}else{
-									offline+=1;;
-								}
+						DeviceInfo deviceInfo=deviceInfoList.get(i);
+						if(StringManagerUtils.stringToArrExistNum(orgId, deviceInfo.getOrgId())){
+							commStatus=deviceInfo.getOnLineCommStatus();
+							if(commStatus==1){
+								online+=1;
+							}else if(commStatus==2){
+								goOnline+=1;
+							}else{
+								offline+=1;;
 							}
 						}
-					
 					}
 				}
 			}
-			
 			
 			total=online+goOnline+offline;
 			result_json.append("\"totalRoot\":[");
@@ -182,9 +168,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
@@ -285,26 +269,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	
 	public String getHistoryQueryDeviceList(String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("AlarmShowStyle".getBytes())){
-					MemoryDataManagerTask.initAlarmStyle();
-				}
-				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-
-				if(!jedis.exists("DeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-			
-				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
@@ -365,16 +332,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String commStatusName=obj[5]+"";
 				String runStatusName=obj[10]+"";
 				
-				DeviceInfo deviceInfo=null;
-				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
-				}
+				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 				String protocolName="";
-				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
-				if(acqInstanceOwnItem!=null){
-					protocolName=acqInstanceOwnItem.getProtocol();
+				AcqInstanceOwnItem acqInstanceOwnItem=null;
+				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+				if(deviceInfo!=null){
+					acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+					if(acqInstanceOwnItem!=null){
+						protocolName=acqInstanceOwnItem.getProtocol();
+					}
+					alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 				}
-				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
+				
 				
 				
 				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
@@ -414,9 +383,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
@@ -572,48 +539,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		try{
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("DeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				if(!jedis.exists("AlarmShowStyle".getBytes())){
-					MemoryDataManagerTask.initAlarmStyle();
-				}
-				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-				
-				if(!jedis.exists("rpcCalItemList".getBytes())){
-					MemoryDataManagerTask.loadRPCCalculateItem();
-				}
-				
-				if(!jedis.exists("pcpCalItemList".getBytes())){
-					MemoryDataManagerTask.loadPCPCalculateItem();
-				}
-				
-				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null,0,"update");
-				}
-				
-				if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadAcqInstanceOwnItemById("","update");
-				}
-				
-				if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
-				}
-				
-				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-				}
+				alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -630,20 +561,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			DataDictionary ddic = null;
 			List<String> ddicAcqColumnsList=new ArrayList<String>();
 			
-			DeviceInfo deviceInfo=null;
-			if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-				deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
-			}
+			DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
+			
 			String protocolName="";
 			AcqInstanceOwnItem acqInstanceOwnItem=null;
-			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes())){
-				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), deviceInfo.getInstanceCode().getBytes()));
-				protocolName=acqInstanceOwnItem.getProtocol();
+			if(deviceInfo!=null){
+				acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				if(acqInstanceOwnItem!=null){
+					protocolName=acqInstanceOwnItem.getProtocol();
+				}
 			}
 			
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes())){
-				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), deviceInfo.getAlarmInstanceCode().getBytes()));
+			if(deviceInfo!=null){
+				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 			}
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
@@ -838,9 +769,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
@@ -3934,38 +3863,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
-		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		DeviceInfo deviceInfo=null;
 		String alarmInstanceCode="";
 		try{
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("DeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
-				}
-				if(jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+				alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
+				deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
+				if(deviceInfo!=null){
 					alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
-				}
-				
-				if(!jedis.exists("AlarmShowStyle".getBytes())){
-					MemoryDataManagerTask.initAlarmStyle();
-				}
-				alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-				
-				
-				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
-					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
-				}
-				
-				if(StringManagerUtils.isNotNull(alarmInstanceCode)&&jedis.hexists("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(),alarmInstanceCode.getBytes()));
-				}
-				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
+					alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -4183,9 +4091,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+			
 		}
 		return dynSbf.toString().replaceAll("null", "");
 	}

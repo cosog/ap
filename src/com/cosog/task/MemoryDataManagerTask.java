@@ -123,6 +123,22 @@ public class MemoryDataManagerTask {
 		System.out.println("加载设备当天转速数据完成");
 	}
 	
+	public static boolean getJedisStatus(){
+		boolean r=false;
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			r=true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null && jedis.isConnected() ){
+				jedis.close();
+			}
+		}
+		return r;
+	}
+	
 	public static void cleanData(){
 		Jedis jedis=null;
 		try{
@@ -165,6 +181,19 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void updateProtocolConfig(ModbusProtocolConfig modbusProtocolConfig){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
 	
 	@SuppressWarnings("static-access")
 	public static void loadProtocolConfig(String protocolName){
@@ -633,6 +662,76 @@ public class MemoryDataManagerTask {
 		return deviceInfo;
 	}
 	
+	public static DeviceInfo getDeviceInfoByIPPort(String IPPort,int slave){
+		List<DeviceInfo> deviceInfoList=getDeviceInfo();
+		DeviceInfo deviceInfo=null;
+		if(deviceInfoList!=null){
+			for(int i=0;i<deviceInfoList.size();i++){
+				if(IPPort.equalsIgnoreCase(deviceInfoList.get(i).getIpPort()) && slave==StringManagerUtils.stringToInteger(deviceInfoList.get(i).getSlave())){
+					deviceInfo=deviceInfoList.get(i);
+					break;
+				}
+			}
+		}
+		return deviceInfo;
+	}
+	
+	public static List<DeviceInfo> getDeviceInfo(String[] ids){
+		Jedis jedis=null;
+		List<DeviceInfo> list=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("DeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+			}
+			List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+			for(int i=0;i<deviceInfoByteList.size();i++){
+				Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+				if (obj instanceof DeviceInfo) {
+					DeviceInfo deviceInfo=(DeviceInfo)obj;
+					if(StringManagerUtils.existOrNot(ids, deviceInfo.getId()+"")){
+						list.add(deviceInfo);
+					}
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return list;
+	}
+	
+	public static List<DeviceInfo> getDeviceInfoByOrgIdArr(String[] orgIdArr){
+		Jedis jedis=null;
+		List<DeviceInfo> list=new ArrayList<>();
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("DeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+			}
+			List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+			for(int i=0;i<deviceInfoByteList.size();i++){
+				Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+				if (obj instanceof DeviceInfo) {
+					DeviceInfo deviceInfo=(DeviceInfo)obj;
+					if(StringManagerUtils.existOrNot(orgIdArr, deviceInfo.getOrgId()+"")){
+						list.add(deviceInfo);
+					}
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return list;
+	}
+	
 	public static List<DeviceInfo> getDeviceInfo(){
 		Jedis jedis=null;
 		List<DeviceInfo> list=new ArrayList<>();
@@ -956,7 +1055,10 @@ public class MemoryDataManagerTask {
 			if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
 				List<String> deviceIdList=new ArrayList<>();
 				deviceIdList.add(deviceId);
+				long t1=System.nanoTime();
 				loadDeviceRealtimeAcqData(deviceIdList);
+				long t2=System.nanoTime();
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备"+deviceId+"当天数据至内存,耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 			}
 			if(jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
 				realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
@@ -976,14 +1078,10 @@ public class MemoryDataManagerTask {
 		java.lang.reflect.Type type=null;
 		Jedis jedis=null;
 		try {
-			
 			jedis = RedisUtil.jedisPool.getResource();
-			
 			List<CalItem> rpcCalItemList=MemoryDataManagerTask.getRPCCalculateItem();
 			List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
-			
 			String date=StringManagerUtils.getCurrentTime();
-			
 			//先进行初始化
 			if(deviceIdList!=null && deviceIdList.size()>0){
 				for(int i=0;i<deviceIdList.size();i++){
@@ -3403,6 +3501,27 @@ public class MemoryDataManagerTask {
 		return resultCode;
 	}
 	
+	public static WorkType getWorkTypeByName(String resultName){
+		WorkType workType=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCWorkTypeByName".getBytes())){
+				MemoryDataManagerTask.loadRPCWorkType();
+			}
+			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
+				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return workType;
+	}
+	
 	public static AlarmShowStyle getAlarmShowStyle(){
 		AlarmShowStyle alarmShowStyle=null;
 		Jedis jedis=null;
@@ -3763,6 +3882,46 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
+	
+	public static PCPDeviceTodayData getPCPDeviceTodayDataById(int deviceId){
+		PCPDeviceTodayData deviceTodayData=null;
+		Jedis jedis=null;
+		String key=deviceId+"";
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("PCPDeviceTodayData".getBytes())){
+				MemoryDataManagerTask.loadTodayRPMData(null,0);
+			}
+			if(jedis.hexists("PCPDeviceTodayData".getBytes(), key.getBytes())){
+				deviceTodayData=(PCPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceTodayData".getBytes(), key.getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return deviceTodayData;
+	}
+	
+	public static void updatePCPDeviceTodayDataDeviceInfo(PCPDeviceTodayData deviceTodayData){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("PCPDeviceTodayData".getBytes())){
+				MemoryDataManagerTask.loadTodayRPMData(null,0);
+			}
+			jedis.hset("PCPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
 			if(jedis!=null&&jedis.isConnected()){
 				jedis.close();
 			}

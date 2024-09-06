@@ -1052,30 +1052,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			
-			Jedis jedis=null;
-			List<byte[]> calItemSet=null;
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists(key.getBytes())){
-					if("1".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadRPCTotalCalculateItem();
-					}else if("2".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadPCPTotalCalculateItem();
-					}else{
-						MemoryDataManagerTask.loadAcqTotalCalculateItem();
-					}
-				}
-				calItemSet= jedis.zrange(key.getBytes(), 0, -1);
-			}catch(Exception e){
-				e.printStackTrace();
-			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
+			List<CalItem> calItemList=null;
+			if("1".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+			}else if("2".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
 			}
 			
-			for(byte[] calItemByteArr:calItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+			for(CalItem calItem:calItemList){
 				calItemName.add(calItem.getName());
 			}
 			
@@ -1170,30 +1156,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			
-			Jedis jedis=null;
-			List<byte[]> calItemSet=null;
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists(key.getBytes())){
-					if("1".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadRPCTotalCalculateItem();
-					}else if("2".equalsIgnoreCase(calculateType)){
-						MemoryDataManagerTask.loadPCPTotalCalculateItem();
-					}else{
-						MemoryDataManagerTask.loadAcqTotalCalculateItem();
-					}
-				}
-				calItemSet= jedis.zrange(key.getBytes(), 0, -1);
-			}catch(Exception e){
-				e.printStackTrace();
-			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
+			List<CalItem> calItemList=null;
+			if("1".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+			}else if("2".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
 			}
 			
-			for(byte[] calItemByteArr:calItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+			for(CalItem calItem:calItemList){
 				calItemName.add(calItem.getName());
 			}
 			
@@ -2538,17 +2510,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				Collections.sort(modbusProtocolConfig.getProtocol());
 			}
-			Jedis jedis=null;
-			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
-			}catch(Exception e){
-				e.printStackTrace();
-			}finally{
-				if(jedis!=null){
-					jedis.close();
-				}
-			}
+			
+			MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
+			
 			if(StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(003);

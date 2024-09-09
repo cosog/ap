@@ -139,39 +139,22 @@ public class MemoryDataManagerTask {
 		return r;
 	}
 	
-	public static void cleanData(){
+	public static String getJedisVersion(){
+		String redisVersion="";
 		Jedis jedis=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			jedis.del("modbusProtocolConfig".getBytes());
-			jedis.del("ProtocolMappingColumn".getBytes());
-			jedis.del("ProtocolMappingColumnByTitle".getBytes());
-			jedis.del("CalculateColumnInfo".getBytes());
-			jedis.del("ProtocolRunStatusConfig".getBytes());
-			jedis.del("DeviceInfo".getBytes());
-			jedis.del("RPCDeviceTodayData".getBytes());
-			jedis.del("PCPDeviceInfo".getBytes());
-			jedis.del("PCPDeviceTodayData".getBytes());
-			jedis.del("AcqInstanceOwnItem".getBytes());
-			jedis.del("DisplayInstanceOwnItem".getBytes());
-			jedis.del("AlarmInstanceOwnItem".getBytes());
-			jedis.del("rpcCalItemList".getBytes());
-			jedis.del("pcpCalItemList".getBytes());
-			jedis.del("acqTotalCalItemList".getBytes());
-			jedis.del("rpcTotalCalItemList".getBytes());
-			jedis.del("pcpTotalCalItemList".getBytes());
-			jedis.del("acqTimingTotalCalItemList".getBytes());
-			jedis.del("rpcTimingTotalCalItemList".getBytes());
-			jedis.del("pcpTimingTotalCalItemList".getBytes());
-			jedis.del("rpcInputItemList".getBytes());
-			jedis.del("pcpInputItemList".getBytes());
-			jedis.del("UserInfo".getBytes());
-			jedis.del("RPCWorkType".getBytes());
-			jedis.del("RPCWorkTypeByName".getBytes());
-			jedis.del("AlarmShowStyle".getBytes());
-			jedis.del("UIKitAccessToken".getBytes());
-			jedis.del("ReportTemplateConfig".getBytes());
-			jedis.del("DeviceRealtimeAcqData".getBytes());
+			String info = jedis.info();
+			String[] infoArr=info.replaceAll("\r\n", "\n").split("\n");
+			for(int i=0;i<infoArr.length;i++){
+				if(infoArr[i].startsWith("redis_version:")){
+					String[] versionArr=infoArr[i].split(":");
+					if(versionArr.length==2){
+						redisVersion=versionArr[1];
+					}
+					break;
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -179,6 +162,140 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+		return redisVersion;
+	}
+	
+	public static RedisInfo getJedisInfo(){
+		RedisInfo redisInfo= new RedisInfo();
+		redisInfo.setStatus(0);
+		redisInfo.setVersion("");
+		
+		String redisVersion="";
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			redisInfo.setStatus(1);
+			String info = jedis.info();
+			String[] infoArr=info.replaceAll("\r\n", "\n").split("\n");
+			for(int i=0;i<infoArr.length;i++){
+				if(infoArr[i].startsWith("redis_version:")){
+					String[] versionArr=infoArr[i].split(":");
+					if(versionArr.length==2){
+						redisVersion=versionArr[1];
+						redisInfo.setVersion(redisVersion);
+					}
+				}else if(infoArr[i].startsWith("os:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setOs(arr[1]);
+					}
+				}else if(infoArr[i].startsWith("arch_bits:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setArch_bits(StringManagerUtils.stringToInteger(arr[1]));
+					}
+				}else if(infoArr[i].startsWith("tcp_port:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setTcp_port(StringManagerUtils.stringToInteger(arr[1]));
+					}
+				}else if(infoArr[i].startsWith("used_memory:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setUsed_memory(StringManagerUtils.stringToLong(arr[1]));
+					}
+				}else if(infoArr[i].startsWith("used_memory_human:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setUsed_memory_human(arr[1]);
+					}
+				}else if(infoArr[i].startsWith("maxmemory:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setMaxmemory(StringManagerUtils.stringToLong(arr[1]));
+					}
+				}else if(infoArr[i].startsWith("maxmemory_human:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setMaxmemory_human(arr[1]);
+					}
+				}else if(infoArr[i].startsWith("total_system_memory:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setTotal_system_memory(StringManagerUtils.stringToLong(arr[1]));
+					}
+				}else if(infoArr[i].startsWith("total_system_memory_human:")){
+					String[] arr=infoArr[i].split(":");
+					if(arr.length==2){
+						redisInfo.setTotal_system_memory_human(arr[1]);
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null && jedis.isConnected() ){
+				jedis.close();
+			}
+		}
+		return redisInfo;
+	}
+	
+	public static void cleanData(String key){
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis.exists(key.getBytes())){
+				jedis.del(key.getBytes());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null && jedis.isConnected() ){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static void cleanData(){
+		cleanData("modbusProtocolConfig");
+		cleanData("ProtocolMappingColumn");
+		cleanData("ProtocolMappingColumnByTitle");
+		cleanData("CalculateColumnInfo");
+		cleanData("ProtocolRunStatusConfig");
+		
+		cleanData("AcqInstanceOwnItem");
+		cleanData("DisplayInstanceOwnItem");
+		cleanData("AlarmInstanceOwnItem");
+		cleanData("rpcCalItemList");
+		cleanData("pcpCalItemList");
+		cleanData("acqTotalCalItemList");
+		cleanData("rpcTotalCalItemList");
+		cleanData("pcpTotalCalItemList");
+		cleanData("acqTimingTotalCalItemList");
+		cleanData("rpcTimingTotalCalItemList");
+		cleanData("pcpTimingTotalCalItemList");
+		cleanData("rpcInputItemList");
+		cleanData("pcpInputItemList");
+		cleanData("UserInfo");
+		cleanData("RPCWorkType");
+		cleanData("RPCWorkTypeByName");
+		cleanData("AlarmShowStyle");
+		cleanData("UIKitAccessToken");
+		cleanData("ReportTemplateConfig");
+		
+		
+		List<DeviceInfo> deviceInfoList = MemoryDataManagerTask.getDeviceInfo();
+		if(deviceInfoList!=null){
+			for(DeviceInfo deviceInfo:deviceInfoList){
+				cleanData("DeviceRealtimeAcqData"+deviceInfo.getId());
+			}
+			
+		}
+		
+		cleanData("RPCDeviceTodayData");
+		cleanData("PCPDeviceTodayData");
+		cleanData("DeviceInfo");
 	}
 	
 	public static void updateProtocolConfig(ModbusProtocolConfig modbusProtocolConfig){
@@ -786,19 +903,19 @@ public class MemoryDataManagerTask {
 						jedis.hdel("RPCDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 						jedis.hdel("PCPDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 						
-						jedis.hdel("DeviceRealtimeAcqData".getBytes(), wellList.get(i).getBytes());
+						jedis.del(("DeviceRealtimeAcqData"+wellList.get(i)).getBytes());
 					}
 				}else if(condition==1){
 					for(int i=0;i<wellList.size();i++){
 						if(jedis.exists("DeviceInfo".getBytes())){
-							List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
-							for(int j=0;j<deviceInfoByteList.size();j++){
-								DeviceInfo deviceInfo=(DeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+							List<DeviceInfo> deviceInfoList = MemoryDataManagerTask.getDeviceInfo();
+							for(int j=0;j<deviceInfoList.size();j++){
+								DeviceInfo deviceInfo=deviceInfoList.get(i);
 								if(wellList.get(i).equalsIgnoreCase(deviceInfo.getDeviceName())){
 									jedis.hdel("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.hdel("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.hdel("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
-									jedis.hdel("DeviceRealtimeAcqData".getBytes(), (deviceInfo.getId()+"").getBytes());
+									jedis.del(("DeviceRealtimeAcqData"+deviceInfo.getId()).getBytes());
 									break;
 								}
 							}
@@ -1036,7 +1153,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			jedis.hset("DeviceRealtimeAcqData".getBytes(), deviceId.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+			jedis.set(("DeviceRealtimeAcqData"+deviceId).getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -1051,8 +1168,8 @@ public class MemoryDataManagerTask {
 		Map<String,Map<String,String>> realtimeDataTimeMap=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			String key=deviceId;
-			if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+			String key="DeviceRealtimeAcqData"+deviceId;
+			if(!jedis.exists(key.getBytes())){
 				List<String> deviceIdList=new ArrayList<>();
 				deviceIdList.add(deviceId);
 				long t1=System.nanoTime();
@@ -1060,8 +1177,8 @@ public class MemoryDataManagerTask {
 				long t2=System.nanoTime();
 				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备"+deviceId+"当天数据至内存,耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 			}
-			if(jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
-				realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+			if(jedis.exists(key.getBytes())){
+				realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.get(key.getBytes()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1085,36 +1202,34 @@ public class MemoryDataManagerTask {
 			//先进行初始化
 			if(deviceIdList!=null && deviceIdList.size()>0){
 				for(int i=0;i<deviceIdList.size();i++){
-					if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),deviceIdList.get(i).getBytes())){
+					String key="DeviceRealtimeAcqData"+deviceIdList.get(i);
+					if(!jedis.exists(key)){
 						Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
-						jedis.hset("DeviceRealtimeAcqData".getBytes(), deviceIdList.get(i).getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+						jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 					}
 				}
 			}else{
 				List<DeviceInfo> deviceInfoList = MemoryDataManagerTask.getDeviceInfo();
 				if(deviceInfoList!=null && deviceInfoList.size()>0){
 					for(DeviceInfo deviceInfo:deviceInfoList){
-						String key=deviceInfo.getId()+"";
-						if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+						String key="DeviceRealtimeAcqData"+deviceInfo.getId();
+						if(!jedis.exists(key.getBytes())){
 							Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
-							jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+							jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 						}
 					}
 				}
 			}
 			
-			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-			if(!dataModelMap.containsKey("ProtocolMappingColumn")){
-				MemoryDataManagerTask.loadProtocolMappingColumn();
-			}
-			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
-			
 			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
-			
 			sql+=" from tbl_acqdata_hist t "
 				+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
-				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+				if(deviceIdList.size()==1){
+					sql+=" and t.deviceId="+deviceIdList.get(0);
+				}else{
+					sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+				}
 			}
 			sql+=" order by t.deviceId,t.acqTime";
 			
@@ -1128,8 +1243,8 @@ public class MemoryDataManagerTask {
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
 				
-				String key=deviceId+"";
-				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+				String key="DeviceRealtimeAcqData"+deviceId;
+				if(!jedis.exists(key.getBytes())){
 					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					
@@ -1139,9 +1254,9 @@ public class MemoryDataManagerTask {
 						}
 					}
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
-					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+					jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}else{
-					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.get(key.getBytes()));
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					if(acqDataList!=null){
 						for(int i=0;i<acqDataList.size();i++){
@@ -1149,7 +1264,7 @@ public class MemoryDataManagerTask {
 						}
 					}
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
-					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+					jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}
 			}
 			
@@ -1161,7 +1276,11 @@ public class MemoryDataManagerTask {
 			sql+= " from viw_rpcacqdata_hist t"
 					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
-				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+				if(deviceIdList.size()==1){
+					sql+=" and t.deviceId="+deviceIdList.get(0);
+				}else{
+					sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+				}
 			}
 			sql+=" order by t.deviceId,t.acqTime";
 			
@@ -1169,7 +1288,7 @@ public class MemoryDataManagerTask {
 			for(Object[] obj:queryRPCCalDataList){
 				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
 				String acqTime=obj[1]+"";
-				String key=deviceId+"";
+				String key="DeviceRealtimeAcqData"+deviceId;
 				String productionDataStr=obj[2]+"";
 				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
@@ -1203,7 +1322,7 @@ public class MemoryDataManagerTask {
 					}
 				}
 				
-				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+				if(!jedis.exists(key.getBytes())){
 					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					
@@ -1218,9 +1337,9 @@ public class MemoryDataManagerTask {
 					}
 					
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
-					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+					jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}else{
-					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.get(key.getBytes()));
 					Map<String,String> everyDataMap =realtimeDataTimeMap.get(acqTime);
 					if(everyDataMap!=null){
 						for(int i=0;i<rpcCalItemList.size();i++){
@@ -1234,7 +1353,7 @@ public class MemoryDataManagerTask {
 						}
 						
 						realtimeDataTimeMap.put(acqTime, everyDataMap);
-						jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+						jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 					}
 				}
 			}
@@ -1247,7 +1366,11 @@ public class MemoryDataManagerTask {
 			sql+= " from viw_pcpacqdata_hist t"
 					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
-				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+				if(deviceIdList.size()==1){
+					sql+=" and t.deviceId="+deviceIdList.get(0);
+				}else{
+					sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+				}
 			}
 			sql+=" order by t.deviceId,t.acqTime";
 			
@@ -1255,7 +1378,7 @@ public class MemoryDataManagerTask {
 			for(Object[] obj:queryPCPCalDataList){
 				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
 				String acqTime=obj[1]+"";
-				String key=deviceId+"";
+				String key="DeviceRealtimeAcqData"+deviceId;
 				String productionDataStr=obj[2]+"";
 				type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 				PCPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
@@ -1283,7 +1406,7 @@ public class MemoryDataManagerTask {
 					}
 				}
 				
-				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+				if(!jedis.exists(key.getBytes())){
 					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					
@@ -1298,9 +1421,9 @@ public class MemoryDataManagerTask {
 					}
 					
 					realtimeDataTimeMap.put(acqTime, everyDataMap);
-					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+					jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 				}else{
-					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.get(key.getBytes()));
 					Map<String,String> everyDataMap =realtimeDataTimeMap.get(acqTime);
 					if(everyDataMap!=null){
 						for(int i=0;i<pcpCalItemList.size();i++){
@@ -1314,7 +1437,7 @@ public class MemoryDataManagerTask {
 						}
 						
 						realtimeDataTimeMap.put(acqTime, everyDataMap);
-						jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+						jedis.set(key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
 					}
 				}
 			}
@@ -1326,6 +1449,260 @@ public class MemoryDataManagerTask {
 			}
 		}
 	}
+	
+//	public static void loadDeviceRealtimeAcqData(List<String> deviceIdList){
+//		Gson gson = new Gson();
+//		java.lang.reflect.Type type=null;
+//		Jedis jedis=null;
+//		try {
+//			jedis = RedisUtil.jedisPool.getResource();
+//			List<CalItem> rpcCalItemList=MemoryDataManagerTask.getRPCCalculateItem();
+//			List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
+//			String date=StringManagerUtils.getCurrentTime();
+//			//先进行初始化
+//			if(deviceIdList!=null && deviceIdList.size()>0){
+//				for(int i=0;i<deviceIdList.size();i++){
+//					if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),deviceIdList.get(i).getBytes())){
+//						Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
+//						jedis.hset("DeviceRealtimeAcqData".getBytes(), deviceIdList.get(i).getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//					}
+//				}
+//			}else{
+//				List<DeviceInfo> deviceInfoList = MemoryDataManagerTask.getDeviceInfo();
+//				if(deviceInfoList!=null && deviceInfoList.size()>0){
+//					for(DeviceInfo deviceInfo:deviceInfoList){
+//						String key=deviceInfo.getId()+"";
+//						if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+//							Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
+//							jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//						}
+//					}
+//				}
+//			}
+//			
+//			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+//			if(!dataModelMap.containsKey("ProtocolMappingColumn")){
+//				MemoryDataManagerTask.loadProtocolMappingColumn();
+//			}
+//			Map<String,DataMapping> loadProtocolMappingColumnMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumn");
+//			
+//			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
+//			
+//			sql+=" from tbl_acqdata_hist t "
+//				+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+//			if(deviceIdList!=null && deviceIdList.size()>0){
+//				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+//			}
+//			sql+=" order by t.deviceId,t.acqTime";
+//			
+//			List<Object[]> queryDataList=OracleJdbcUtis.query(sql);
+//			
+//			for(Object[] obj:queryDataList){
+//				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+//				String acqTime=obj[1]+"";
+//				String acqData=obj[2]+"";
+//				
+//				type = new TypeToken<List<KeyValue>>() {}.getType();
+//				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+//				
+//				String key=deviceId+"";
+//				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+//					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
+//					Map<String,String> everyDataMap =new LinkedHashMap<>();
+//					
+//					if(acqDataList!=null){
+//						for(int i=0;i<acqDataList.size();i++){
+//							everyDataMap.put(acqDataList.get(i).getKey().toUpperCase(), acqDataList.get(i).getValue());
+//						}
+//					}
+//					realtimeDataTimeMap.put(acqTime, everyDataMap);
+//					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//				}else{
+//					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+//					Map<String,String> everyDataMap =new LinkedHashMap<>();
+//					if(acqDataList!=null){
+//						for(int i=0;i<acqDataList.size();i++){
+//							everyDataMap.put(acqDataList.get(i).getKey().toUpperCase(), acqDataList.get(i).getValue());
+//						}
+//					}
+//					realtimeDataTimeMap.put(acqTime, everyDataMap);
+//					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//				}
+//			}
+//			
+//			//加载功图计算数据
+//			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";
+//			for(CalItem calItem:rpcCalItemList){
+//				sql+=",t."+calItem.getCode();
+//			}	
+//			sql+= " from viw_rpcacqdata_hist t"
+//					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+//			if(deviceIdList!=null && deviceIdList.size()>0){
+//				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+//			}
+//			sql+=" order by t.deviceId,t.acqTime";
+//			
+//			List<Object[]> queryRPCCalDataList=OracleJdbcUtis.query(sql);
+//			for(Object[] obj:queryRPCCalDataList){
+//				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+//				String acqTime=obj[1]+"";
+//				String key=deviceId+"";
+//				String productionDataStr=obj[2]+"";
+//				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+//				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
+//				Map<String,String> productionDataMap=new LinkedHashMap<>();
+//				if(productionData!=null){
+//					if(productionData.getFluidPVT()!=null){
+//						productionDataMap.put("CrudeOilDensity".toUpperCase(), productionData.getFluidPVT().getCrudeOilDensity()+"");
+//						productionDataMap.put("WaterDensity".toUpperCase(), productionData.getFluidPVT().getWaterDensity()+"");
+//						productionDataMap.put("NaturalGasRelativeDensity".toUpperCase(), productionData.getFluidPVT().getNaturalGasRelativeDensity()+"");
+//						productionDataMap.put("SaturationPressure".toUpperCase(), productionData.getFluidPVT().getSaturationPressure()+"");
+//					}
+//					if(productionData.getReservoir()!=null){
+//						productionDataMap.put("ReservoirDepth".toUpperCase(), productionData.getReservoir().getDepth()+"");
+//						productionDataMap.put("ReservoirTemperature".toUpperCase(), productionData.getReservoir().getTemperature()+"");
+//					}
+//					if(productionData.getProduction()!=null){
+//						productionDataMap.put("TubingPressure".toUpperCase(), productionData.getProduction().getTubingPressure()+"");
+//						productionDataMap.put("CasingPressure".toUpperCase(), productionData.getProduction().getCasingPressure()+"");
+//						productionDataMap.put("WellHeadTemperature".toUpperCase(), productionData.getProduction().getWellHeadTemperature()+"");
+//						productionDataMap.put("WaterCut".toUpperCase(), productionData.getProduction().getWaterCut()+"");
+//						productionDataMap.put("ProductionGasOilRatio".toUpperCase(), productionData.getProduction().getProductionGasOilRatio()+"");
+//						productionDataMap.put("ProducingfluidLevel".toUpperCase(), productionData.getProduction().getProducingfluidLevel()+"");
+//						productionDataMap.put("PumpSettingDepth".toUpperCase(), productionData.getProduction().getPumpSettingDepth()+"");
+//						
+//					}
+//					if(productionData.getPump()!=null){
+//						productionDataMap.put("PumpBoreDiameter".toUpperCase(), productionData.getPump().getPumpBoreDiameter()+"");
+//					}
+//					if(productionData.getManualIntervention()!=null){
+//						productionDataMap.put("LevelCorrectValue".toUpperCase(), productionData.getManualIntervention().getLevelCorrectValue()+"");
+//					}
+//				}
+//				
+//				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+//					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
+//					Map<String,String> everyDataMap =new LinkedHashMap<>();
+//					
+//					for(int i=0;i<rpcCalItemList.size();i++){
+//						everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
+//					}
+//
+//					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+//					while(productionDataMapIterator.hasNext()){
+//						Map.Entry<String,String> entry = productionDataMapIterator.next();
+//						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+//					}
+//					
+//					realtimeDataTimeMap.put(acqTime, everyDataMap);
+//					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//				}else{
+//					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+//					Map<String,String> everyDataMap =realtimeDataTimeMap.get(acqTime);
+//					if(everyDataMap!=null){
+//						for(int i=0;i<rpcCalItemList.size();i++){
+//							everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
+//						}
+//						
+//						Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+//						while(productionDataMapIterator.hasNext()){
+//							Map.Entry<String,String> entry = productionDataMapIterator.next();
+//							everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+//						}
+//						
+//						realtimeDataTimeMap.put(acqTime, everyDataMap);
+//						jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//					}
+//				}
+//			}
+//			
+//			//加载转速计产数据
+//			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";
+//			for(CalItem calItem:pcpCalItemList){
+//				sql+=",t."+calItem.getCode();
+//			}	
+//			sql+= " from viw_pcpacqdata_hist t"
+//					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+//			if(deviceIdList!=null && deviceIdList.size()>0){
+//				sql+=" and t.deviceId in("+StringUtils.join(deviceIdList, ",")+")";
+//			}
+//			sql+=" order by t.deviceId,t.acqTime";
+//			
+//			List<Object[]> queryPCPCalDataList=OracleJdbcUtis.query(sql);
+//			for(Object[] obj:queryPCPCalDataList){
+//				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+//				String acqTime=obj[1]+"";
+//				String key=deviceId+"";
+//				String productionDataStr=obj[2]+"";
+//				type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+//				PCPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
+//				Map<String,String> productionDataMap=new LinkedHashMap<>();
+//				if(productionData!=null){
+//					if(productionData.getFluidPVT()!=null){
+//						productionDataMap.put("CrudeOilDensity".toUpperCase(), productionData.getFluidPVT().getCrudeOilDensity()+"");
+//						productionDataMap.put("WaterDensity".toUpperCase(), productionData.getFluidPVT().getWaterDensity()+"");
+//						productionDataMap.put("NaturalGasRelativeDensity".toUpperCase(), productionData.getFluidPVT().getNaturalGasRelativeDensity()+"");
+//						productionDataMap.put("SaturationPressure".toUpperCase(), productionData.getFluidPVT().getSaturationPressure()+"");
+//					}
+//					if(productionData.getReservoir()!=null){
+//						productionDataMap.put("ReservoirDepth".toUpperCase(), productionData.getReservoir().getDepth()+"");
+//						productionDataMap.put("ReservoirTemperature".toUpperCase(), productionData.getReservoir().getTemperature()+"");
+//					}
+//					if(productionData.getProduction()!=null){
+//						productionDataMap.put("TubingPressure".toUpperCase(), productionData.getProduction().getTubingPressure()+"");
+//						productionDataMap.put("CasingPressure".toUpperCase(), productionData.getProduction().getCasingPressure()+"");
+//						productionDataMap.put("WellHeadTemperature".toUpperCase(), productionData.getProduction().getWellHeadTemperature()+"");
+//						productionDataMap.put("WaterCut".toUpperCase(), productionData.getProduction().getWaterCut()+"");
+//						productionDataMap.put("ProductionGasOilRatio".toUpperCase(), productionData.getProduction().getProductionGasOilRatio()+"");
+//						productionDataMap.put("ProducingfluidLevel".toUpperCase(), productionData.getProduction().getProducingfluidLevel()+"");
+//						productionDataMap.put("PumpSettingDepth".toUpperCase(), productionData.getProduction().getPumpSettingDepth()+"");
+//						
+//					}
+//				}
+//				
+//				if(!jedis.hexists("DeviceRealtimeAcqData".getBytes(),key.getBytes())){
+//					Map<String,Map<String,String>> realtimeDataTimeMap=new LinkedHashMap<>();
+//					Map<String,String> everyDataMap =new LinkedHashMap<>();
+//					
+//					for(int i=0;i<pcpCalItemList.size();i++){
+//						everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), obj[3]+"");
+//					}
+//					
+//					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+//					while(productionDataMapIterator.hasNext()){
+//						Map.Entry<String,String> entry = productionDataMapIterator.next();
+//						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+//					}
+//					
+//					realtimeDataTimeMap.put(acqTime, everyDataMap);
+//					jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//				}else{
+//					Map<String,Map<String,String>> realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeAcqData".getBytes(), key.getBytes()));
+//					Map<String,String> everyDataMap =realtimeDataTimeMap.get(acqTime);
+//					if(everyDataMap!=null){
+//						for(int i=0;i<pcpCalItemList.size();i++){
+//							everyDataMap.put(pcpCalItemList.get(i).getCode().toUpperCase(), obj[3]+"");
+//						}
+//						
+//						Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
+//						while(productionDataMapIterator.hasNext()){
+//							Map.Entry<String,String> entry = productionDataMapIterator.next();
+//							everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+//						}
+//						
+//						realtimeDataTimeMap.put(acqTime, everyDataMap);
+//						jedis.hset("DeviceRealtimeAcqData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeDataTimeMap));
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally{
+//			if(jedis!=null&&jedis.isConnected()){
+//				jedis.close();
+//			}
+//		}
+//	}
 	
 	public static void loadDeviceInfoByPumpingAuxiliaryId(String auxiliaryId,String method){
 		Connection conn = null;
@@ -4161,6 +4538,86 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return accessToken;
+	}
+	
+	public static class RedisInfo{
+		public int status;
+		public String version;
+		public String os;
+		public int arch_bits;
+		public int tcp_port;
+		public long used_memory;
+		public String used_memory_human;
+		public long maxmemory;
+		public String maxmemory_human;
+		public long total_system_memory;
+		public String total_system_memory_human;
+		public int getStatus() {
+			return status;
+		}
+		public void setStatus(int status) {
+			this.status = status;
+		}
+		public String getVersion() {
+			return version;
+		}
+		public void setVersion(String version) {
+			this.version = version;
+		}
+		public String getOs() {
+			return os;
+		}
+		public void setOs(String os) {
+			this.os = os;
+		}
+		public int getArch_bits() {
+			return arch_bits;
+		}
+		public void setArch_bits(int arch_bits) {
+			this.arch_bits = arch_bits;
+		}
+		public long getUsed_memory() {
+			return used_memory;
+		}
+		public void setUsed_memory(long used_memory) {
+			this.used_memory = used_memory;
+		}
+		public String getUsed_memory_human() {
+			return used_memory_human;
+		}
+		public void setUsed_memory_human(String used_memory_human) {
+			this.used_memory_human = used_memory_human;
+		}
+		public int getTcp_port() {
+			return tcp_port;
+		}
+		public void setTcp_port(int tcp_port) {
+			this.tcp_port = tcp_port;
+		}
+		public long getMaxmemory() {
+			return maxmemory;
+		}
+		public void setMaxmemory(long maxmemory) {
+			this.maxmemory = maxmemory;
+		}
+		public String getMaxmemory_human() {
+			return maxmemory_human;
+		}
+		public void setMaxmemory_human(String maxmemory_human) {
+			this.maxmemory_human = maxmemory_human;
+		}
+		public long getTotal_system_memory() {
+			return total_system_memory;
+		}
+		public void setTotal_system_memory(long total_system_memory) {
+			this.total_system_memory = total_system_memory;
+		}
+		public String getTotal_system_memory_human() {
+			return total_system_memory_human;
+		}
+		public void setTotal_system_memory_human(String total_system_memory_human) {
+			this.total_system_memory_human = total_system_memory_human;
+		}
 	}
 	
 	public static class CalItem implements Serializable {

@@ -32,6 +32,7 @@ import com.cosog.model.calculate.CPUProbeResponseData;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.MemoryProbeResponseData;
 import com.cosog.model.drive.InitializedDeviceInfo;
+import com.cosog.task.MemoryDataManagerTask.RedisInfo;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
@@ -109,33 +110,42 @@ public class ResourceMonitoringTask {
 			e.printStackTrace();
 		}
 		
-		Jedis jedis=null;
-		try{
-			jedis = RedisUtil.jedisPool.getResource();
+		RedisInfo redisInfo=MemoryDataManagerTask.getJedisInfo();
+		redisVersion=redisInfo.getVersion();
+		if(redisInfo.getStatus()==1){
 			if(redisStatus==0){
 				MemoryDataManagerTask.loadMemoryData();
 			}
-			redisStatus=1;
-			String info = jedis.info();
-			String[] infoArr=info.replaceAll("\r\n", "\n").split("\n");
-			for(int i=0;i<infoArr.length;i++){
-				if(infoArr[i].startsWith("redis_version:")){
-					String[] versionArr=infoArr[i].split(":");
-					if(versionArr.length==2){
-						redisVersion=versionArr[1];
-					}
-					break;
-				}
-			}
-		}catch(Exception e){
-			redisStatus=0;
-			redisVersion="";
-			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 		}
+		redisStatus=redisInfo.getStatus();
+		
+//		Jedis jedis=null;
+//		try{
+//			jedis = RedisUtil.jedisPool.getResource();
+//			if(redisStatus==0){
+//				MemoryDataManagerTask.loadMemoryData();
+//			}
+//			redisStatus=1;
+//			String info = jedis.info();
+//			String[] infoArr=info.replaceAll("\r\n", "\n").split("\n");
+//			for(int i=0;i<infoArr.length;i++){
+//				if(infoArr[i].startsWith("redis_version:")){
+//					String[] versionArr=infoArr[i].split(":");
+//					if(versionArr.length==2){
+//						redisVersion=versionArr[1];
+//					}
+//					break;
+//				}
+//			}
+//		}catch(Exception e){
+//			redisStatus=0;
+//			redisVersion="";
+//			e.printStackTrace();
+//		}finally{
+//			if(jedis!=null){
+//				jedis.close();
+//			}
+//		}
 		
 		//ac状态检测
 		try{

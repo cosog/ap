@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.LongAdder;
 import org.apache.log4j.Logger;
 
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.MemoryDataManagerTask.RedisInfo;
 
 public class CounterUtils {
 	public static LongAdder count = new LongAdder();
@@ -57,8 +58,9 @@ public class CounterUtils {
             @Override
             public void run() {
             	System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":正在处理的采集组数据记录-"+CounterUtils.sum());
-            	if(MemoryDataManagerTask.getJedisStatus()){
-            		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":redis连接数-"+RedisUtil.jedisPool.getNumActive());
+            	RedisInfo redisInfo=MemoryDataManagerTask.getJedisInfo();
+            	if(redisInfo.getStatus()==1){
+            		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":redis连接数-"+RedisUtil.jedisPool.getNumActive()+",最大内存:"+redisInfo.getMaxmemory_human()+",已用内存:"+redisInfo.getUsed_memory_human());
             	}
             }
         };

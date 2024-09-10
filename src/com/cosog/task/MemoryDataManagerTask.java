@@ -123,6 +123,24 @@ public class MemoryDataManagerTask {
 		System.out.println("加载设备当天转速数据完成");
 	}
 	
+	public static String getMemoryUsage(String key){
+		long size=0;
+		Jedis jedis=null;
+		String r="";
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			size=jedis.memoryUsage(key.getBytes());
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null && jedis.isConnected() ){
+				jedis.close();
+			}
+		}
+		r=StringManagerUtils.byteToHumanStr(size);
+		return r;
+	}
+	
 	public static boolean getJedisStatus(){
 		boolean r=false;
 		Jedis jedis=null;
@@ -1175,7 +1193,9 @@ public class MemoryDataManagerTask {
 				long t1=System.nanoTime();
 				loadDeviceRealtimeAcqData(deviceIdList);
 				long t2=System.nanoTime();
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备"+deviceId+"当天数据至内存,耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+				
+				String memoryUsage =getMemoryUsage(key);
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备"+deviceId+"当天数据至内存,数据大小:"+memoryUsage+",耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 			}
 			if(jedis.exists(key.getBytes())){
 				realtimeDataTimeMap =(Map<String,Map<String,String>>) SerializeObjectUnils.unserizlize(jedis.get(key.getBytes()));

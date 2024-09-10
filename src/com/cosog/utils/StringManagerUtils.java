@@ -3750,6 +3750,35 @@ public class StringManagerUtils {
         }
         return result;
     }
+    
+    public static boolean isSameDay(String fromDateStr, String toDateStr, String format) {
+    	boolean result = false;
+    	try {
+    		if (!StringManagerUtils.isNotNull(fromDateStr)) {
+    			result = false;
+    		}else{
+    			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+    			Date fromDate = simpleDateFormat.parse(fromDateStr);
+                Date toDate = simpleDateFormat.parse(toDateStr);
+                result=isSameDay(fromDate,toDate);
+    		}
+        } catch (ParseException e) {
+        	result = false;
+        }
+    	return result;
+    }
+    
+    public static boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+                && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
+                && cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
 
     public static long getTimeStamp(String timeStr, String format) {
         long result = 0;
@@ -4327,4 +4356,26 @@ public class StringManagerUtils {
 		}
 		return flag;
 	}
+    
+    public static String byteToHumanStr(long b){
+    	String unit="b";
+    	String r="";
+    	if(b<1024){
+    		r=b+unit;
+    	}else if(b>=1024 && b<1024*1024){
+    		unit="kb";
+    		double kb=(double)(b/1024);
+    		r=kb+unit;
+    	}else if(b>=1024*1024 && b<1024*1024*1024){
+    		unit="mb";
+    		double mb=(double)(b/(1024*1024));
+    		r=mb+unit;
+    	}else if(b>=1024*1024*1024 && b<1024*1024*1024*1024){
+    		unit="gb";
+    		double gb=(double)(b/(1024*1024*1024));
+    		r=gb+unit;
+    	}
+    	
+    	return r;
+    }
 }

@@ -52,7 +52,7 @@ import redis.clients.jedis.Jedis;
 public class EquipmentDriverServerTask {
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initSwitch=false;
+	private static boolean initSwitch=true;
 	private static boolean initEnable=initSwitch&&Config.getInstance().configFile.getAp().getOthers().isIot();
 	
 	public static boolean initFinished=false;

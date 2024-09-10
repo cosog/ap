@@ -75,6 +75,7 @@ import com.cosog.utils.Config;
 import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
+import com.cosog.utils.ParamUtils;
 import com.cosog.utils.ProtocolItemResolutionData;
 import com.cosog.utils.Recursion;
 import com.cosog.utils.RedisUtil;
@@ -105,7 +106,7 @@ public class DriverAPIController extends BaseController{
 	private MobileService<?> mobileService;
 	@Autowired
 	private UserManagerService<User> userManagerService;
-	private boolean printInfo=false;
+	private static boolean printInfo=false;
 	@Bean
     public static WebSocketByJavax infoHandler() {
         return new WebSocketByJavax();
@@ -1719,7 +1720,8 @@ public class DriverAPIController extends BaseController{
 					t1=System.nanoTime();
 					Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceInfo.getId()+"");
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"获取内存实时数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+					String memoryUsage =MemoryDataManagerTask.getMemoryUsage("DeviceRealtimeAcqData"+deviceInfo.getId());
+					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"获取内存实时数据,数据量:"+memoryUsage+",耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					if(realtimeDataTimeMap==null){
 						realtimeDataTimeMap=new LinkedHashMap<>();
@@ -1728,6 +1730,8 @@ public class DriverAPIController extends BaseController{
 					String lastSaveTime=deviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
 					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
+					
+					boolean isSameDay=StringManagerUtils.isSameDay(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
 					
 					String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 					
@@ -1757,7 +1761,7 @@ public class DriverAPIController extends BaseController{
 					t1=System.nanoTime();
 					commResponseData=commEffCalaulate(deviceInfo,acqTime,1);
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"进行通信计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"进行通信计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1";
 					String insertHistColumns="deviceid,acqTime,checkSign,CommStatus";
@@ -1772,7 +1776,7 @@ public class DriverAPIController extends BaseController{
 					t1=System.nanoTime();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList,acqDataList);
 					t2=System.nanoTime();	
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"采集组数据解析耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"采集组数据解析耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
 					
@@ -1801,12 +1805,12 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"判断运行状态耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"判断运行状态耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					if(isAcqRunStatus){
 						t1=System.nanoTime();
 						timeEffResponseData=tiemEffCalaulate(deviceInfo,acqTime,runStatus);
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"进行时率计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"进行时率计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}
 					//通信
 					deviceInfo.setAcqTime(acqTime);
@@ -1876,14 +1880,14 @@ public class DriverAPIController extends BaseController{
 							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
 						}
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"功图数据计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"功图数据计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}else if(deviceInfo.getCalculateType()==2){
 						t1=System.nanoTime();
 						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
 								acqTime,calItemResolutionDataList,runStatus,save,checkSign);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"转速数据计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"转速数据计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}
 					
 					
@@ -1912,7 +1916,7 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,rpcCalculateResponseData);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"报警判断耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"报警判断耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						if(acquisitionItemInfo.getAlarmLevel()>0){
@@ -1924,17 +1928,20 @@ public class DriverAPIController extends BaseController{
 					//保存至内存中
 					t1=System.nanoTime();
 					if(realtimeDataTimeMap!=null){
-						//删除非当天采集的数据
-						Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
-						while(realtimeDataTimeMapIterator.hasNext()){
-							Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
-						    String key = entry.getKey();
-						    Map<String,String> value = entry.getValue();
-							if(!StringManagerUtils.timeMatchDate(key, StringManagerUtils.getCurrentTime(), 0)
-									){
-								realtimeDataTimeMapIterator.remove();
+						//如果跨天,删除非当天采集的数据
+						if(!isSameDay){
+							Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
+							while(realtimeDataTimeMapIterator.hasNext()){
+								Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
+							    String key = entry.getKey();
+							    Map<String,String> value = entry.getValue();
+								if(!StringManagerUtils.timeMatchDate(key, StringManagerUtils.getCurrentTime(), 0)
+										){
+									realtimeDataTimeMapIterator.remove();
+								}
 							}
 						}
+						
 						//添加新采集数据至内存
 						Map<String,String> everyDataMap =new LinkedHashMap<>();
 						for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
@@ -1959,7 +1966,7 @@ public class DriverAPIController extends BaseController{
 						result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 					}
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库实时数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库实时数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					//更新数据库实时clob数据
 					t1=System.nanoTime();
@@ -1978,7 +1985,7 @@ public class DriverAPIController extends BaseController{
 					updateRealClobSql+=" where t.deviceid="+deviceInfo.getId();
 					commonDataService.getBaseDao().executeSqlUpdateClob(updateRealClobSql,clobCont);	
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库实时clob数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));		
+//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库实时clob数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));		
 					
 					
 					//如果满足单组入库间隔或者有报警，保存历史数据
@@ -1988,18 +1995,18 @@ public class DriverAPIController extends BaseController{
 						t1=System.nanoTime();
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						
 						
 						t1=System.nanoTime();
 						commonDataService.getBaseDao().updateOrDeleteBySql(saveRawDataSql);
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存采集原始数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存采集原始数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						
 						t1=System.nanoTime();
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存汇总数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存汇总数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						
 						//更新历史clob数据
 						t1=System.nanoTime();
@@ -2017,7 +2024,7 @@ public class DriverAPIController extends BaseController{
 						updateHistoryClobSql+="where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 						commonDataService.getBaseDao().executeSqlUpdateClob(updateHistoryClobSql,clobCont);	
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库历史clob数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));	
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库历史clob数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));	
 						
 						
 						
@@ -2035,7 +2042,7 @@ public class DriverAPIController extends BaseController{
 							
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,totalClobCont);
 							t2=System.nanoTime();
-							printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新汇总区间数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//							printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新汇总区间数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						}
 						
 						
@@ -2043,7 +2050,7 @@ public class DriverAPIController extends BaseController{
 						t1=System.nanoTime();
 						saveDailyTotalData(deviceInfo);
 						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存日汇总数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存日汇总数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						//统计
 //						t1=System.nanoTime();
 //						CalculateDataManagerTask.acquisitionDataTotalCalculate(deviceInfo.getId()+"", date);
@@ -2054,7 +2061,7 @@ public class DriverAPIController extends BaseController{
 							t1=System.nanoTime();
 							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getDeviceName(),deviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
 							t2=System.nanoTime();
-							printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存报警数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//							printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存报警数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						}
 						
 						//保存计算数据
@@ -2070,7 +2077,7 @@ public class DriverAPIController extends BaseController{
 					t1=System.nanoTime();
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"放入内存数据库中耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"同步设备内存数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					//处理websocket推送
 					t1=System.nanoTime();
 					if(displayInstanceOwnItem!=null){
@@ -4125,9 +4132,41 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
+	@RequestMapping("/updatePrintInfo")
+	public String updatePrintInfo() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data = ParamUtils.getParameter(request, "data");
+		DriverAPIController.printInfo=StringManagerUtils.stringToInteger(data)==1;
+		this.pager = new Page("pagerForm", request);
+		String json = "{\"Success\":true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	} 
+	
 	public void printDenugInfo(String info){
 		if(printInfo){
 			System.out.println(info);
 		}
+	}
+
+
+	public boolean isPrintInfo() {
+		return printInfo;
+	}
+
+
+	public void setPrintInfo(boolean printInfo) {
+		this.printInfo = printInfo;
 	}
 }

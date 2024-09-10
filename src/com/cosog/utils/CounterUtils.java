@@ -57,11 +57,12 @@ public class CounterUtils {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-            	System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":正在处理的采集组数据记录-"+CounterUtils.sum());
+            	String log=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":正在处理的采集组数据记录-"+CounterUtils.sum();
             	RedisInfo redisInfo=MemoryDataManagerTask.getJedisInfo();
             	if(redisInfo.getStatus()==1){
-            		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":redis连接数-"+RedisUtil.jedisPool.getNumActive()+",最大内存:"+redisInfo.getMaxmemory_human()+",已用内存:"+redisInfo.getUsed_memory_human());
+            		log+=",redis连接数-"+RedisUtil.jedisPool.getNumActive()+",最大内存:"+redisInfo.getMaxmemory_human()+",已用内存:"+redisInfo.getUsed_memory_human();
             	}
+            	System.out.println(log);
             }
         };
         timer.schedule(timerTask, 1000*2, 1000*10); // 两秒后每分钟执行一次

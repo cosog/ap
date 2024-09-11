@@ -1717,15 +1717,7 @@ public class DriverAPIController extends BaseController{
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
 				if(protocol!=null){
-					t1=System.nanoTime();
-					Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceInfo.getId()+"");
-					t2=System.nanoTime();
-					String memoryUsage =MemoryDataManagerTask.getMemoryUsage("DeviceRealtimeAcqData"+deviceInfo.getId());
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"获取内存实时数据,数据量:"+memoryUsage+",耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
-					if(realtimeDataTimeMap==null){
-						realtimeDataTimeMap=new LinkedHashMap<>();
-					}
 					
 					String lastSaveTime=deviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
@@ -1925,38 +1917,24 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					
-					//保存至内存中
+					//添加新采集数据至内存
 					t1=System.nanoTime();
-					if(realtimeDataTimeMap!=null){
-						//如果跨天,删除非当天采集的数据
-						if(!isSameDay){
-							Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
-							while(realtimeDataTimeMapIterator.hasNext()){
-								Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
-							    String key = entry.getKey();
-							    Map<String,String> value = entry.getValue();
-								if(!StringManagerUtils.timeMatchDate(key, StringManagerUtils.getCurrentTime(), 0)
-										){
-									realtimeDataTimeMapIterator.remove();
-								}
-							}
-						}
-						
-						//添加新采集数据至内存
-						Map<String,String> everyDataMap =new LinkedHashMap<>();
-						for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-							everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
-						}
-						realtimeDataTimeMap.put(acqTime, everyDataMap);
-						
-						MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"",realtimeDataTimeMap);
+					Map<String,String> everyDataMap =new LinkedHashMap<>();
+					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
+						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 					}
+					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap);
 					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新内存数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+					String memoryUsage =MemoryDataManagerTask.getMemoryUsage("DeviceRealtimeAcqData_"+deviceInfo.getId());
+					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新内存数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",更新后数据量:"+memoryUsage);
 					
-					
-//					List<String> acqDataClobCont=new ArrayList<String>();
-//					acqDataClobCont.add(new Gson().toJson(acqDataList));
+					//如果跨天,删除非当天采集的数据
+					if(!isSameDay){
+						t1=System.nanoTime();
+						MemoryDataManagerTask.delDeviceRealtimeAcqData(deviceInfo.getId()+"", StringManagerUtils.getCurrentTime());
+						t2=System.nanoTime();
+						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"跨天清理内存数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+					}
 					
 					//更新实时数据
 					t1=System.nanoTime();

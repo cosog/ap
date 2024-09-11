@@ -3755,7 +3755,7 @@ public class StringManagerUtils {
     	boolean result = false;
     	try {
     		if (!StringManagerUtils.isNotNull(fromDateStr)) {
-    			result = false;
+    			result = true;
     		}else{
     			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
     			Date fromDate = simpleDateFormat.parse(fromDateStr);

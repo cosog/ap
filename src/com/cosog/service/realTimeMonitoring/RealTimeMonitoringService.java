@@ -2248,6 +2248,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "\"list\":[");
 			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
 				Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceId+"");
+				//排序
+//				Map<String,Map<String,String>> realtimeDataTimeSortedMap = new TreeMap<>(realtimeDataTimeMap);
 				if(realtimeDataTimeMap!=null && realtimeDataTimeMap.size()>0){
 					Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
 					while(realtimeDataTimeMapIterator.hasNext()){

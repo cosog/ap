@@ -45,8 +45,9 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 <script type="text/javascript" src="<%=path%>/scripts/extjs/locale/locale-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script> 
 <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
-<!--
+
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/ux.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<!--
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 -->
 

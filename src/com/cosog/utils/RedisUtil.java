@@ -33,6 +33,10 @@ public class RedisUtil implements Serializable{
     
     private static int timeOut=Config.getInstance().configFile.getAp().getRedis().getTimeOut();
     
+    private static int maxMemory=Config.getInstance().configFile.getAp().getRedis().getMaxMemory();
+    
+    private static String maxMemoryPolicy=Config.getInstance().configFile.getAp().getRedis().getMaxMemoryPolicy();
+    
     //在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
     private static boolean testOnBorrow=true;
     
@@ -69,7 +73,9 @@ public class RedisUtil implements Serializable{
         // TODO Auto-generated method stub
         initialPool(); 
         try {
-             jedis = jedisPool.getResource();
+        	jedis = jedisPool.getResource();
+        	jedis.configSet("maxmemory", maxMemory+"MB");
+        	jedis.configSet("maxmemory-policy", maxMemoryPolicy);
         } catch (Exception e) {
             System.out.println("连接jedisPool失败!");
         } finally{

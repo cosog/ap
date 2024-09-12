@@ -265,10 +265,11 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
                 var colHeaders = "[" 
-                	+"['','','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'','','','','']," 
+                	+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','','']," 
+                	+"['','','','','',{label: '动态数据', colspan: 3},'趋势曲线',{label: '历史数据', colspan: 3},'趋势曲线','','','','','']," 
                 	+"['','序号','名称','单位','显示级别'," 
-                	+"'顺序','前景色','背景色','曲线'," 
-                	+"'顺序','前景色','背景色','曲线'," 
+                	+"'字段顺序','前景色','背景色','曲线配置'," 
+                	+"'字段顺序','前景色','背景色','曲线配置'," 
                 	+"'','','','','']"
                 	+"]";
                 var columns = "[" 
@@ -564,10 +565,11 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
-					+"['','','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'','','','']," 
+					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','']," 
+					+"['','','','','',{label: '动态数据', colspan: 3},'趋势曲线',{label: '历史数据', colspan: 3},'趋势曲线','','','','']," 
 					+"['','序号','名称','单位','显示级别'," 
-					+"'顺序','前景色','背景色','曲线'," 
-					+"'顺序','前景色','背景色','曲线'," 
+					+"'字段顺序','前景色','背景色','曲线配置'," 
+					+"'字段顺序','前景色','背景色','曲线配置'," 
 					+"'','','','数据来源']" 
 					+"]";
 				var columns="[" 
@@ -1015,10 +1017,11 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
-					+"['','','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'','','']," 
+					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','']," 
+					+"['','','','','',{label: '动态数据', colspan: 3},'趋势曲线',{label: '历史数据', colspan: 3},'趋势曲线','','','']," 
 					+"['','序号','名称','单位','显示级别'," 
-					+"'顺序','前景色','背景色','曲线'," 
-					+"'顺序','前景色','背景色','曲线'," 
+					+"'字段顺序','前景色','背景色','曲线配置'," 
+					+"'字段顺序','前景色','背景色','曲线配置'," 
 					+"'','','']" 
 					+"]";
 				var columns="[" 

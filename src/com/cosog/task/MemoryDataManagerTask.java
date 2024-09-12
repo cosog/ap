@@ -187,6 +187,21 @@ public class MemoryDataManagerTask {
 		return redisVersion;
 	}
 	
+	public static void redisInit(){
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			jedis.configSet("maxmemory", "2048MB");
+			jedis.configSet("maxmemory-policy", "allkeys-random");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null && jedis.isConnected() ){
+				jedis.close();
+			}
+		}
+	}
+	
 	public static RedisInfo getJedisInfo(){
 		RedisInfo redisInfo= new RedisInfo();
 		redisInfo.setStatus(0);

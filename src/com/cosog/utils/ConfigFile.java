@@ -86,6 +86,10 @@ public class ConfigFile {
 		
 		private int timeOut;
 		
+		private int maxMemory;
+		
+		private String maxMemoryPolicy;
+		
 		public String getAddr() {
 			return addr;
 		}
@@ -127,6 +131,18 @@ public class ConfigFile {
 		}
 		public void setTimeOut(int timeOut) {
 			this.timeOut = timeOut;
+		}
+		public int getMaxMemory() {
+			return maxMemory;
+		}
+		public void setMaxMemory(int maxMemory) {
+			this.maxMemory = maxMemory;
+		}
+		public String getMaxMemoryPolicy() {
+			return maxMemoryPolicy;
+		}
+		public void setMaxMemoryPolicy(String maxMemoryPolicy) {
+			this.maxMemoryPolicy = maxMemoryPolicy;
 		}
 	}
 	

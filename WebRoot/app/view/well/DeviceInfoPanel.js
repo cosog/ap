@@ -2044,7 +2044,7 @@ var ProductionHandsontableHelper = {
 	        
 	        productionHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	        }
 	        
 	        productionHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
@@ -2276,7 +2276,7 @@ var PumpingInfoHandsontableHelper = {
 	        
 	        pumpingInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -2496,7 +2496,7 @@ var VideoInfoHandsontableHelper = {
 	        videoInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(col<=2){
-	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            if(col!=3){
 	            	td.style.whiteSpace='nowrap'; //文本不换行

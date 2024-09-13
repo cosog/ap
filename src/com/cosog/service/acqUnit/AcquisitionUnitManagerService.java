@@ -417,7 +417,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
 				+ "]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("{ \"success\":true,\"protocolCode\":\""+protocolCode+"\",\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
 		List<String> itemsList=new ArrayList<String>();

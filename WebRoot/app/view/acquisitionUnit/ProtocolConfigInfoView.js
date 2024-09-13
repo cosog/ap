@@ -501,12 +501,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					protocolDisplayUnitCalItemsConfigHandsontableHelper=null;
     				}
-    				if(protocolDisplayUnitPropertiesHandsontableHelper!=null){
-    					if(protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
-    						protocolDisplayUnitPropertiesHandsontableHelper.hot.destroy();
-    					}
-    					protocolDisplayUnitPropertiesHandsontableHelper=null;
-    				}
     				if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null){
     					if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
     						protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.destroy();
@@ -518,6 +512,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     						protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.destroy();
     					}
     					protocolDisplayUnitInputItemsConfigHandsontableHelper=null;
+    				}
+    				if(protocolDisplayUnitPropertiesHandsontableHelper!=null){
+    					if(protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
+    						protocolDisplayUnitPropertiesHandsontableHelper.hot.destroy();
+    					}
+    					protocolDisplayUnitPropertiesHandsontableHelper=null;
     				}
     				
     				//报表单元

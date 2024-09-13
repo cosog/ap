@@ -71,19 +71,34 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(index);
                         	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-                        			CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-                        			CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
-                            		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.data.deviceType,record.data.children[0].classes);
-                        		}else{
-                        			CreateProtocolDisplayUnitAcqItemsConfigInfoTable('',1,'');
-                        			CreateProtocolDisplayUnitCtrlItemsConfigInfoTable('',1,'');
-                        			
-                        			CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.data.deviceType,1);
-                            		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.data.deviceType,1);
-                            	}
-                        		
+                        		if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null){
+                					if(protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
+                						protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.destroy();
+                					}
+                					protocolDisplayUnitAcqItemsConfigHandsontableHelper=null;
+                				}
+                				if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null){
+                					if(protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
+                						protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.destroy();
+                					}
+                					protocolDisplayUnitCalItemsConfigHandsontableHelper=null;
+                				}
+                				if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null){
+                					if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
+                						protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.destroy();
+                					}
+                					protocolDisplayUnitCtrlItemsConfigHandsontableHelper=null;
+                				}
+                				if(protocolDisplayUnitInputItemsConfigHandsontableHelper!=null){
+                					if(protocolDisplayUnitInputItemsConfigHandsontableHelper.hot!=undefined){
+                						protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.destroy();
+                					}
+                					protocolDisplayUnitInputItemsConfigHandsontableHelper=null;
+                				}
+                				Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle('采集项配置');
+                				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle('控制项配置');
+                				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle('计算项配置');
+                				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle('录入项配置');
                         	}else if(record.data.classes==1){
                         		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
@@ -131,6 +146,16 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                 panel.add(gridPanel);
             }
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue());
+            if(selectedRow==0){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.classes>0){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }
+            
+            
             gridPanel.getSelectionModel().deselectAll(true);
             gridPanel.getSelectionModel().select(selectedRow, true);
         }

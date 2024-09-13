@@ -70,13 +70,24 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(index);
-                        	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateProtocolAcqUnitItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-                        		}
-                        	}else if(record.data.classes==1){
-                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-                        	}else if(record.data.classes==2){
+                        	if(record.data.classes==0 || record.data.classes==1){
+                        		if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
+                					if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                						protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAcqUnitConfigItemsHandsontableHelper=null;
+                				}
+                        		
+                        		
+//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                        			CreateProtocolAcqUnitItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
+//                        		}
+                        	}
+//                        	else if(record.data.classes==1){
+//                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
+//                        	}
+                        	
+                        	else if(record.data.classes==2){
                         		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
                         	}else if(record.data.classes==3){
                         		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
@@ -130,6 +141,14 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                 panel.add(gridPanel);
             }
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue());
+            if(selectedRow==0){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.classes>1){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }
             gridPanel.getSelectionModel().deselectAll(true);
             gridPanel.getSelectionModel().select(selectedRow, true);
         }

@@ -323,6 +323,14 @@ var ProtocolItemsConfigHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        protocolItemsConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
 	        protocolItemsConfigHandsontableHelper.createTable = function (data) {
 	        	$('#'+protocolItemsConfigHandsontableHelper.divid).empty();
 	        	var hotElement = document.querySelector('#'+protocolItemsConfigHandsontableHelper.divid);
@@ -397,9 +405,15 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
-	                    if(protocolItemsConfigHandsontableHelper.columns[visualColIndex].type == undefined || protocolItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown'){
-                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.addCellStyle;
-                    	}
+	                    
+	                    if (visualColIndex ==0) {
+	                    	cellProperties.renderer = protocolItemsConfigHandsontableHelper.addBoldBg;
+	                    }else{
+	                    	if(protocolItemsConfigHandsontableHelper.columns[visualColIndex].type == undefined || protocolItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown'){
+	                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.addCellStyle;
+	                    	}
+	                    }
+	                    
 	                    
 	                    return cellProperties;
 	                },
@@ -530,7 +544,7 @@ var ProtocolPropertiesHandsontableHelper = {
 	        
 	        protocolPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本

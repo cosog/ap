@@ -4657,7 +4657,8 @@ function highchartsResize(divId){
 			var isFullScreen = isBrowserFullScreen();
 			var browserType=getBrowserType();
 			if(browserType==5||(!isFullScreen)){
-				charts.setSize($("#"+divId).offsetWidth, $("#"+divId).offsetHeight,true);
+//				charts.setSize($("#"+divId).offsetWidth, $("#"+divId).offsetHeight,true);
+				charts.reflow();
 			}
 		}
 	}

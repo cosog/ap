@@ -71,11 +71,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(index);
                         	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateProtocolInstanceAcqItemsInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                        		}else{
-                        			CreateProtocolInstanceAcqItemsInfoTable(-1,'',1);
-                        		}
+                        		if(protocolInstanceConfigItemsHandsontableHelper!=null){
+                					if(protocolInstanceConfigItemsHandsontableHelper.hot!=undefined){
+                						protocolInstanceConfigItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolInstanceConfigItemsHandsontableHelper=null;
+                				}
                         	}else{
                         		CreateProtocolInstanceAcqItemsInfoTable(record.data.id,record.data.text,record.data.classes);
                         	}
@@ -126,6 +127,14 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
                 ModbusProtocolInstanceConfigPanel.add(treeGridPanel);
             }
             var selectedRow=parseInt(Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").getValue());
+            if(selectedRow==0){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.classes>0){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }
             treeGridPanel.getSelectionModel().deselectAll(true);
             treeGridPanel.getSelectionModel().select(selectedRow, true);
         }

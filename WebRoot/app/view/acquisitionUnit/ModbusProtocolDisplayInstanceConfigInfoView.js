@@ -310,7 +310,7 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 	        
 	        protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -514,17 +514,9 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 						+"]";
 				protocolDisplayInstanceAcqItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceAcqItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceAcqItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceAcqItemsHandsontableHelper.createTable(result.totalRoot);
-				}
+				protocolDisplayInstanceAcqItemsHandsontableHelper.createTable(result.totalRoot);
 			}else{
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceAcqItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceAcqItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
+				protocolDisplayInstanceAcqItemsHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 		},
 		failure:function(){
@@ -550,11 +542,13 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
+	            if(value!=null && value!=""){
 	            	var arr=value.split(';');
 	            	if(arr.length==2){
 	            		td.style.backgroundColor = '#'+arr[1];
 	            	}
+	            }else{
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
@@ -563,8 +557,10 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (value != null) {
+	            if (value!=null && value!="") {
 	                td.style.backgroundColor = '#' + value;
+	            }else{
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            td.style.whiteSpace = 'nowrap'; //文本不换行
 	            td.style.overflow = 'hidden'; //超出部分隐藏
@@ -573,6 +569,37 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstanceAcqItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(protocolDisplayInstanceAcqItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        		protocolDisplayInstanceAcqItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(protocolDisplayInstanceAcqItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        		protocolDisplayInstanceAcqItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		protocolDisplayInstanceAcqItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        protocolDisplayInstanceAcqItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	        }
+	        
+	        protocolDisplayInstanceAcqItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstanceAcqItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -609,7 +636,7 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
                             cellProperties.renderer = protocolDisplayInstanceAcqItemsHandsontableHelper.addCellBgColor;
                         }else{
-		                	cellProperties.renderer = protocolDisplayInstanceAcqItemsHandsontableHelper.addCellStyle;
+		                	cellProperties.renderer = protocolDisplayInstanceAcqItemsHandsontableHelper.addReadOnlyBg;
 		                }
 	                    return cellProperties;
 	                },
@@ -705,17 +732,9 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 						+"]";
 				protocolDisplayInstanceCalItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceCalItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceCalItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceCalItemsHandsontableHelper.createTable(result.totalRoot);
-				}
+				protocolDisplayInstanceCalItemsHandsontableHelper.createTable(result.totalRoot);
 			}else{
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceCalItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceCalItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
+				protocolDisplayInstanceCalItemsHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 		},
 		failure:function(){
@@ -742,11 +761,13 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceCalItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
+	            if(value!=null && value!=""){
 	            	var arr=value.split(';');
 	            	if(arr.length==2){
 	            		td.style.backgroundColor = '#'+arr[1];
 	            	}
+	            }else{
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
@@ -755,8 +776,10 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceCalItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (value != null) {
+	            if (value!=null && value!="") {
 	                td.style.backgroundColor = '#' + value;
+	            }else{
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            td.style.whiteSpace = 'nowrap'; //文本不换行
 	            td.style.overflow = 'hidden'; //超出部分隐藏
@@ -765,6 +788,37 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceCalItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstanceCalItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(protocolDisplayInstanceCalItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        		protocolDisplayInstanceCalItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(protocolDisplayInstanceCalItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        		protocolDisplayInstanceCalItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		protocolDisplayInstanceCalItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        protocolDisplayInstanceCalItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	        }
+	        
+	        protocolDisplayInstanceCalItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstanceCalItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -801,10 +855,7 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
                             cellProperties.renderer = protocolDisplayInstanceCalItemsHandsontableHelper.addCellBgColor;
                         }else{
-		                	if(protocolDisplayInstanceCalItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    	            	&& protocolDisplayInstanceCalItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		                    	cellProperties.renderer = protocolDisplayInstanceCalItemsHandsontableHelper.addCellStyle;
-		    	            }
+                        	cellProperties.renderer = protocolDisplayInstanceCalItemsHandsontableHelper.addReadOnlyBg;
 		                }
 	                    return cellProperties;
 	                },
@@ -896,17 +947,9 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 						+"]";
 				protocolDisplayInstanceInputItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceInputItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceInputItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceInputItemsHandsontableHelper.createTable(result.totalRoot);
-				}
+				protocolDisplayInstanceInputItemsHandsontableHelper.createTable(result.totalRoot);
 			}else{
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceInputItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceInputItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
+				protocolDisplayInstanceInputItemsHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 		},
 		failure:function(){
@@ -933,11 +976,13 @@ var ProtocolDisplayInstanceInputItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceInputItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
+	            if(value!=null && value!=""){
 	            	var arr=value.split(';');
 	            	if(arr.length==2){
 	            		td.style.backgroundColor = '#'+arr[1];
 	            	}
+	            }else{
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
@@ -946,8 +991,10 @@ var ProtocolDisplayInstanceInputItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceInputItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (value != null) {
+	            if (value!=null && value!="") {
 	                td.style.backgroundColor = '#' + value;
+	            }else{
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            td.style.whiteSpace = 'nowrap'; //文本不换行
 	            td.style.overflow = 'hidden'; //超出部分隐藏
@@ -956,6 +1003,37 @@ var ProtocolDisplayInstanceInputItemsHandsontableHelper = {
 	        
 	        protocolDisplayInstanceInputItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(protocolDisplayInstanceInputItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        		protocolDisplayInstanceInputItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(protocolDisplayInstanceInputItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        		protocolDisplayInstanceInputItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		protocolDisplayInstanceInputItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	        }
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstanceInputItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -992,10 +1070,7 @@ var ProtocolDisplayInstanceInputItemsHandsontableHelper = {
 		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
                             cellProperties.renderer = protocolDisplayInstanceInputItemsHandsontableHelper.addCellBgColor;
                         }else{
-		                	if(protocolDisplayInstanceInputItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    	            	&& protocolDisplayInstanceInputItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		                    	cellProperties.renderer = protocolDisplayInstanceInputItemsHandsontableHelper.addCellStyle;
-		    	            }
+                        	cellProperties.renderer = protocolDisplayInstanceInputItemsHandsontableHelper.addReadOnlyBg;
 		                }
 	                    return cellProperties;
 	                },
@@ -1074,17 +1149,9 @@ function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes
 						+"]";
 				protocolDisplayInstanceCtrlItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceCtrlItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceCtrlItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceCtrlItemsHandsontableHelper.createTable(result.totalRoot);
-				}
+				protocolDisplayInstanceCtrlItemsHandsontableHelper.createTable(result.totalRoot);
 			}else{
-				if(result.totalRoot.length==0){
-					protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
+				protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 		},
 		failure:function(){
@@ -1115,6 +1182,37 @@ var ProtocolDisplayInstanceCtrlItemsHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        protocolDisplayInstanceCtrlItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(protocolDisplayInstanceCtrlItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        		protocolDisplayInstanceCtrlItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(protocolDisplayInstanceCtrlItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        		protocolDisplayInstanceCtrlItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		protocolDisplayInstanceCtrlItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        protocolDisplayInstanceCtrlItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	        }
+	        
+	        protocolDisplayInstanceCtrlItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolDisplayInstanceCtrlItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
 	        protocolDisplayInstanceCtrlItemsHandsontableHelper.createTable = function (data) {
 	        	$('#'+protocolDisplayInstanceCtrlItemsHandsontableHelper.divid).empty();
 	        	var hotElement = document.querySelector('#'+protocolDisplayInstanceCtrlItemsHandsontableHelper.divid);
@@ -1139,10 +1237,7 @@ var ProtocolDisplayInstanceCtrlItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(protocolDisplayInstanceCtrlItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-	    	            	&& protocolDisplayInstanceCtrlItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-	                    	cellProperties.renderer = protocolDisplayInstanceCtrlItemsHandsontableHelper.addCellStyle;
-	    	            }
+	                    cellProperties.renderer = protocolDisplayInstanceCtrlItemsHandsontableHelper.addReadOnlyBg;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){

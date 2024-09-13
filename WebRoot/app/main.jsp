@@ -114,6 +114,8 @@
 
         var defaultPageSize = ${configFile}.ap.others.pageSize;
         var tabInfo=${tabInfo};
+        
+        var resourceMonitoringSaveData=${configFile}.ap.others.resourceMonitoringSaveData; 
 
         function initBannerDisplayInformation() {
             $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");

@@ -214,7 +214,7 @@ var DeviceHistoryCurveSetHandsontableHelper = {
 	        deviceHistoryCurveSetHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(col==0){
-	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏

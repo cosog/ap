@@ -254,7 +254,7 @@ var DeviceControlValueHandsontableHelper = {
 	        
 	        deviceControlValueHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.backgroundColor = 'rgb(251, 251, 251)';
 	        }
 	        
 	        deviceControlValueHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {

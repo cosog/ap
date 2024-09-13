@@ -71,17 +71,31 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(index);
                         	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-                        		}else{
-                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
-                        			if(protocolItemsConfigHandsontableHelper!=null && protocolItemsConfigHandsontableHelper.hot!=undefined){
-                        				protocolItemsConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-                        			}
-                        			if(protocolItemsMeaningConfigHandsontableHelper!=null && protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
-                        				protocolItemsMeaningConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-                        			}
-                        		}
+                        		if(protocolItemsConfigHandsontableHelper!=null){
+                					if(protocolItemsConfigHandsontableHelper.hot!=undefined){
+                						protocolItemsConfigHandsontableHelper.hot.destroy();
+                					}
+                					protocolItemsConfigHandsontableHelper=null;
+                				}
+                        		if(protocolItemsMeaningConfigHandsontableHelper!=null){
+                					if(protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+                						protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
+                					}
+                					protocolItemsMeaningConfigHandsontableHelper=null;
+                				}
+                        		Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
+                        		
+//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                        			CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
+//                        		}else{
+//                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
+//                        			if(protocolItemsConfigHandsontableHelper!=null && protocolItemsConfigHandsontableHelper.hot!=undefined){
+//                        				protocolItemsConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+//                        			}
+//                        			if(protocolItemsMeaningConfigHandsontableHelper!=null && protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+//                        				protocolItemsMeaningConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+//                        			}
+//                        		}
                         	}else if(record.data.classes==1){
                         		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         	}
@@ -127,6 +141,15 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                 panel.add(treeGridPanel);
             }
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue());
+            if(selectedRow==0){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.classes>0){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }
+            
             treeGridPanel.getSelectionModel().deselectAll(true);
             treeGridPanel.getSelectionModel().select(selectedRow, true);
         }

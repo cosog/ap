@@ -49,10 +49,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore', {
                     		var selectedGroup=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectGroupRow);
                     		
                     		if(selectedGroup.data.classes==0){
-                    			if(isNotVal(selectedGroup.data.children) && selectedGroup.data.children.length>0){
-                    				CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedGroup.data.children[0].text,selectedGroup.data.children[0].classes,selectedGroup.data.children[0].code,record.data.addr);
-                    			}
-                    			
+                    			if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigSwitchItemsHandsontableHelper=null;
+                				}
                     		}else if(selectedGroup.data.classes==1){
                     			CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedGroup.data.text,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr);
                         	}else if(selectedGroup.data.classes==2||selectedGroup.data.classes==3){
@@ -68,8 +70,17 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore', {
             	gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(0, true);
             }else{
-            	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
-            		protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.loadData([]);
+            	if(isNotVal(get_rawData.protocolCode)){
+            		if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+                		protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.loadData([]);
+                	}
+            	}else{
+            		if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null){
+    					if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+    						protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.destroy();
+    					}
+    					protocolAlarmUnitConfigSwitchItemsHandsontableHelper=null;
+    				}
             	}
             }
         },
@@ -81,8 +92,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore', {
         		var selectedProtocol=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
         		if(selectedProtocol.data.classes==1){//选中的是协议
         			protocolCode=selectedProtocol.data.code;
-        		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
-        			protocolCode=selectedProtocol.data.children[0].code;
+        		}else if(selectedProtocol.data.classes==0){
+        			protocolCode='';
         		}else if(selectedProtocol.data.classes==2||selectedProtocol.data.classes==3){
         			protocolCode=selectedProtocol.parentNode.data.code;
             	}

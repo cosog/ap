@@ -221,6 +221,10 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     	
                     	Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
                     }
+                },'->',{
+                	xtype: 'label',
+                	hidden:false,
+                	html: '保留最近<font color=red>'+resourceMonitoringSaveData+'</font>条记录'
                 }
         	],
         	html: '<div id="ResourceProbeHistoryCurveDiv_Id" style="width:100%;height:100%;"></div>',

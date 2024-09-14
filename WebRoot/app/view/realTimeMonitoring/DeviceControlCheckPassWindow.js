@@ -14,9 +14,9 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 500,
-    minWidth: 500,
-    height: 310,
+    width: 600,
+    minWidth: 600,
+    height: 410,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     padding:0,
@@ -64,6 +64,11 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 xtype: 'textfield',
                 value: '',
                 hidden: true
+            },{
+                id: 'DeviceControlItemMeaning_Id',//项含义
+                xtype: 'textfield',
+                value: '',
+                hidden: true
             },'->',{
                 xtype: 'button',
                 text: '确定',
@@ -79,24 +84,43 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 	var controlValue='';
                 	var storeDataType= Ext.getCmp('DeviceControlStoreDataType_Id').getValue();
                 	var quantity= Ext.getCmp('DeviceControlQuantity_Id').getValue();
+                	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
                 	if(deviceControlValueHandsontableHelper!=null && deviceControlValueHandsontableHelper.hot!=null){
                 		var controlValueData=deviceControlValueHandsontableHelper.hot.getData();
-                		for(var i=0;i<controlValueData.length;i++){
-                			
-                			if(isNotVal(controlValueData[i][1])){
-                				controlValue+=controlValueData[i][1];
-                			}else{
-                				controlValue+=" ";
-                			}
-                			
-                			if(i<controlValueData.length-1){
-                				controlValue+=',';
-                			}
-                			if( !(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING') ){
-                				if( isNotVal(controlValueData[i][1]) && (!isNumber(controlValueData[i][1])) ){
-                					isValid=false;
-                				}
-                			}
+                		if(resolutionMode==1 && quantity==1){
+                			var itemMeaning=Ext.getCmp('DeviceControlItemMeaning_Id').getValue();
+        					itemMeaning=Ext.JSON.decode(itemMeaning);
+        					var controlValue="";
+        					
+        					if(isNotVal(itemMeaning) && itemMeaning.length>0){
+        						for(var i=0;i<itemMeaning.length;i++){
+        							if(controlValueData[0][1]==itemMeaning[i][1]){
+        								controlValue=itemMeaning[i][0];
+        								break;
+        							}
+        						}
+        					}
+        					if(!isNumber(controlValue)){
+        						isValid=false;
+        					}
+                		}else{
+                			for(var i=0;i<controlValueData.length;i++){
+                    			
+                    			if(isNotVal(controlValueData[i][1])){
+                    				controlValue+=controlValueData[i][1];
+                    			}else{
+                    				controlValue+=" ";
+                    			}
+                    			
+                    			if(i<controlValueData.length-1){
+                    				controlValue+=',';
+                    			}
+                    			if( !(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING') ){
+                    				if( isNotVal(controlValueData[i][1]) && (!isNumber(controlValueData[i][1])) ){
+                    					isValid=false;
+                    				}
+                    			}
+                    		}
                 		}
                 	}else{
                 		isValid=false;
@@ -203,6 +227,8 @@ function CreateDeviceControlValueTable(){
 	var deviceType= Ext.getCmp('DeviceControlDeviceType_Id').getValue();
 	var controlType= Ext.getCmp('DeviceControlType_Id').getValue();
 	var storeDataType= Ext.getCmp('DeviceControlStoreDataType_Id').getValue();
+	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+	var quantity= Ext.getCmp('DeviceControlQuantity_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getDeviceControlValueList',
@@ -213,11 +239,36 @@ function CreateDeviceControlValueTable(){
 				var colHeaders="['序号','数值']";
 				var columns="[" 
 						+"{data:'index'}," ;
-				if(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING'){
-					columns+="{data:'value'}";
+				
+				if(resolutionMode==1 && quantity==1){
+					var itemMeaning=Ext.getCmp('DeviceControlItemMeaning_Id').getValue();
+					itemMeaning=Ext.JSON.decode(itemMeaning);
+					if(isNotVal(itemMeaning) && itemMeaning.length>0){
+						var itemMeaningStr="";
+						for(var i=0;i<itemMeaning.length;i++){
+							itemMeaningStr+="'"+itemMeaning[i][1]+"'";
+							if(i<itemMeaning.length-1){
+								itemMeaningStr+=',';
+							}
+						}
+						
+						columns+="{data:'value',type:'dropdown',strict:true,allowInvalid:false,source:["+itemMeaningStr+"]}," 
+					}else{
+						if(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING'){
+							columns+="{data:'value'}";
+						}else{
+							columns+="{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceControlValueHandsontableHelper);}}" 
+						}
+					}
 				}else{
-					columns+="{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceControlValueHandsontableHelper);}}" 
+					if(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING'){
+						columns+="{data:'value'}";
+					}else{
+						columns+="{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceControlValueHandsontableHelper);}}" 
+					}
 				}
+				
+				
 				columns+="]";
 				deviceControlValueHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceControlValueHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -254,7 +305,7 @@ var DeviceControlValueHandsontableHelper = {
 	        
 	        deviceControlValueHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        deviceControlValueHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {

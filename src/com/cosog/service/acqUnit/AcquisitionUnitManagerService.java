@@ -1247,10 +1247,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												}
 												
 												if(realtimeCurveConfObj!=null){
-													realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+													realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 												}
 												if(historyCurveConfObj!=null){
-													historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+													historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 												}
 												
 												break;
@@ -1313,10 +1313,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										}
 										
 										if(realtimeCurveConfObj!=null){
-											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 										}
 										if(historyCurveConfObj!=null){
-											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 										}
 										break;
 									}
@@ -1658,10 +1658,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 						}
 						break;
 					}
@@ -1813,10 +1813,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 						}
 						break;
 					}
@@ -2010,7 +2010,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
 						}
 						
 						
@@ -2251,7 +2251,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
 						}
 						
 						
@@ -2451,7 +2451,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 							
 							if(reportCurveConfObj!=null){
-								reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+								reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
 							}
 							
 							
@@ -2547,7 +2547,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
 						}
 						
 						
@@ -2673,7 +2673,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			if(reportCurveConfObj!=null){
-				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
 			}
 			
 			String curveStatType="";
@@ -2805,7 +2805,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			if(reportCurveConfObj!=null){
-				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+reportCurveConfObj.getColor();
+				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
 			}
 			
 			String curveStatType="";
@@ -3028,10 +3028,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				
 				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 				}
 				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 				}
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -3365,10 +3365,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				
 				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 				}
 				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 				}
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -3510,10 +3510,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				
 				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 				}
 				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 				}
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -6818,10 +6818,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									}
 									
 									if(realtimeCurveConfObj!=null){
-										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 									}
 									if(historyCurveConfObj!=null){
-										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 									}
 									
 									realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -6985,10 +6985,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									}
 									
 									if(realtimeCurveConfObj!=null){
-										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 									}
 									if(historyCurveConfObj!=null){
-										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 									}
 									
 									realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -10792,10 +10792,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			if(displayItemList.get(i).getRealtimeCurveConf()!=null && displayItemList.get(i).getRealtimeCurveConf().getSort()>0 && StringManagerUtils.isNotNull(displayItemList.get(i).getRealtimeCurveConf().getColor())){
-				realtimeCurveConfShowValue=displayItemList.get(i).getRealtimeCurveConf().getSort()+";"+displayItemList.get(i).getRealtimeCurveConf().getColor();
+				realtimeCurveConfShowValue=displayItemList.get(i).getRealtimeCurveConf().getSort()+";"+(displayItemList.get(i).getRealtimeCurveConf().getYAxisOpposite()?"右":"左")+";"+displayItemList.get(i).getRealtimeCurveConf().getColor();
 			}
 			if(displayItemList.get(i).getHistoryCurveConf()!=null && displayItemList.get(i).getHistoryCurveConf().getSort()>0 && StringManagerUtils.isNotNull(displayItemList.get(i).getHistoryCurveConf().getColor())){
-				historyCurveConfShowValue=displayItemList.get(i).getHistoryCurveConf().getSort()+";"+displayItemList.get(i).getHistoryCurveConf().getColor();
+				historyCurveConfShowValue=displayItemList.get(i).getHistoryCurveConf().getSort()+";"+(displayItemList.get(i).getHistoryCurveConf().getYAxisOpposite()?"右":"左")+";"+displayItemList.get(i).getHistoryCurveConf().getColor();
 			}
 			
 			result_json.append("{"
@@ -11082,7 +11082,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String averageSignStr=reportItemList.get(i).getAverageSign();
 			String reportCurveConfShowValue="";
 			if(reportItemList.get(i).getReportCurveConf()!=null){
-				reportCurveConfShowValue=reportItemList.get(i).getReportCurveConf().getSort()+";"+reportItemList.get(i).getReportCurveConf().getColor();
+				reportCurveConfShowValue=reportItemList.get(i).getReportCurveConf().getSort()+";"+(reportItemList.get(i).getReportCurveConf().getYAxisOpposite()?"右":"左")+";"+reportItemList.get(i).getReportCurveConf().getColor();
 			}
 			
 			String curveStatType=reportItemList.get(i).getCurveStatType().replaceAll("null", "");
@@ -11670,10 +11670,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 							
 							if(realtimeCurveConfObj!=null){
-								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+realtimeCurveConfObj.getColor();
+								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
 							}
 							if(historyCurveConfObj!=null){
-								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+historyCurveConfObj.getColor();
+								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
 							}
 							
 							realtimeCurveConfList.add(realtimeCurveConfShowValue);

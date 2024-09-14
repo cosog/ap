@@ -73,65 +73,81 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                         	var activeId = Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").getActiveTab().id;
                         	if(activeId=="ModbusProtocolAlarmInstanceNumItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateProtocolAlarmInstanceNumItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                            			CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.children[0].deviceType);
-                            		}else{
-                            			CreateProtocolAlarmInstanceNumItemsConfigInfoTable(-1,'',1);
-                            			CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(-1,'',1,record.data.deviceType);
-                            		}
-                            	}else{
+                        			if(protocolAlarmInstanceConfigNumItemsHandsontableHelper!=null){
+                    					if(protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
+                    						protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolAlarmInstanceConfigNumItemsHandsontableHelper=null;
+                    				}
+                    				if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper!=null){
+                    					if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
+                    						protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolAlarmInstanceConfigCalNumItemsHandsontableHelper=null;
+                    				}
+                    				Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("数据量报警项");
+                        		}else{
                             		CreateProtocolAlarmInstanceNumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             		CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes,record.data.deviceType);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceSwitchItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                            		}else{
-                            			CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(-1,'',1);
-                            		}
-                            	}else{
+                        			if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper!=null){
+                    					if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
+                    						protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolAlarmInstanceConfigSwitchItemsHandsontableHelper=null;
+                    				}
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("开关量报警项");
+                        		}else{
                             		CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceEnumItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                            		}else{
-                            			CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(-1,'',1);
-                            		}
-                            	}else{
+                        			if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper!=null){
+                    					if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
+                    						protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolAlarmInstanceConfigEnumItemsHandsontableHelper=null;
+                    				}
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("枚举量报警项");
+                        		}else{
                             		CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                            		}else{
-                            			CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(-1,'',1);
-                            		}
-                            	}else{
+                        			if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper!=null){
+                    					if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
+                    						protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
+                    				}
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("工况诊断报警项");
+                        		}else{
                             		CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceRunStatusItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                            		}else{
-                            			CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(-1,'',1);
-                            		}
-                            	}else{
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("运行状态报警项");
+                        			if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper!=null){
+                    					if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+                    						protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper=null;
+                    				}
+                        		}else{
                             		CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceCommStatusItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
-                            		}else{
-                            			CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(-1,'',1);
-                            		}
-                            	}else{
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("通信状态报警项");
+                        			if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper!=null){
+                    					if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+                    						protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper=null;
+                    				}
+                        		}else{
                             		CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
                         	}
@@ -179,6 +195,14 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                 panel.add(treeGridPanel);
             }
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue());
+            if(selectedRow==0){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.classes>0){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }
             treeGridPanel.getSelectionModel().deselectAll(true);
             treeGridPanel.getSelectionModel().select(selectedRow, true);
         }

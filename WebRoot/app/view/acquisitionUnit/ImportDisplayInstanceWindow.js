@@ -449,8 +449,8 @@ var ImportDisplayInstanceAcqItemsHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
 	            	var arr=value.split(';');
-	            	if(arr.length==2){
-	            		td.style.backgroundColor = '#'+arr[1];
+	            	if(arr.length==3){
+	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -640,8 +640,8 @@ var ImportDisplayInstanceCalItemsHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
 	            	var arr=value.split(';');
-	            	if(arr.length==2){
-	            		td.style.backgroundColor = '#'+arr[1];
+	            	if(arr.length==3){
+	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -981,8 +981,8 @@ var ImportDisplayInstanceInputItemsHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
 	            	var arr=value.split(';');
-	            	if(arr.length==2){
-	            		td.style.backgroundColor = '#'+arr[1];
+	            	if(arr.length==3){
+	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行

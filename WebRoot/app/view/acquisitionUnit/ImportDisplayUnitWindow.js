@@ -480,12 +480,14 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	        
 	        importDisplayUnitAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
+	            var bg='rgb(245, 245, 245)';
+	            if(value!=null && value!=""){
 	            	var arr=value.split(';');
-	            	if(arr.length==2){
-	            		td.style.backgroundColor = '#'+arr[1];
+	            	if(arr.length==3){
+	            		bg = '#'+arr[2];
 	            	}
 	            }
+	            td.style.backgroundColor = bg;
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -493,8 +495,10 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	        
 	        importDisplayUnitAcqItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (value != null) {
+	            if (value != null && value!="") {
 	                td.style.backgroundColor = '#' + value;
+	            }else{
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            }
 	            td.style.whiteSpace = 'nowrap'; //文本不换行
 	            td.style.overflow = 'hidden'; //超出部分隐藏
@@ -503,9 +507,21 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	        
 	        importDisplayUnitAcqItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	            if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='checkbox'){
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        	}else if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='dropdown'){
+		            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            td.style.whiteSpace='nowrap'; //文本不换行
+	            	td.style.overflow='hidden';//超出部分隐藏
+	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+		        }else{
+		            Handsontable.renderers.TextRenderer.apply(this, arguments);
+		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            td.style.whiteSpace='nowrap'; //文本不换行
+	            	td.style.overflow='hidden';//超出部分隐藏
+	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+		        }
 	        }
 	        
 	        importDisplayUnitAcqItemsHandsontableHelper.createTable = function (data) {
@@ -824,8 +840,8 @@ var ImportDisplayUnitCalItemsHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
 	            	var arr=value.split(';');
-	            	if(arr.length==2){
-	            		td.style.backgroundColor = '#'+arr[1];
+	            	if(arr.length==3){
+	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -1017,8 +1033,8 @@ var ImportDisplayUnitInputItemsHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null){
 	            	var arr=value.split(';');
-	            	if(arr.length==2){
-	            		td.style.backgroundColor = '#'+arr[1];
+	            	if(arr.length==3){
+	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行

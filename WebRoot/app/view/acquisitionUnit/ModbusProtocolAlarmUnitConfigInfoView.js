@@ -544,12 +544,12 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigNumItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAlarmUnitConfigNumItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -557,7 +557,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigNumItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -752,12 +752,12 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigCalNumItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAlarmUnitConfigCalNumItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -765,7 +765,7 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigCalNumItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -936,7 +936,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	        
 	        protocolConfigAlarmUnitPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1118,12 +1118,12 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigEnumItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAlarmUnitConfigEnumItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1131,7 +1131,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigEnumItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1321,12 +1321,12 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1334,7 +1334,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1521,12 +1521,12 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1534,7 +1534,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1725,12 +1725,12 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1738,7 +1738,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1920,12 +1920,12 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1933,7 +1933,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	        
 	        protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本

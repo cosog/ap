@@ -1514,7 +1514,7 @@ var ReportUnitPropertiesHandsontableHelper = {
 
         reportUnitPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
-            td.style.backgroundColor = 'rgb(251, 251, 251)';
+            td.style.backgroundColor = 'rgb(245, 245, 245)';
             td.style.whiteSpace='nowrap'; //文本不换行
         	td.style.overflow='hidden';//超出部分隐藏
         	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本

@@ -1395,11 +1395,21 @@ function controlBtnHandler(btn,btnIndex){
                 var DeviceControlCheckPassWindow = Ext.create("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                     title: "设备控制"
                 });
-                
+                var resolutionModeName='';
+                if(resolutionMode==0){
+                	resolutionModeName='开关量';
+                }else if(resolutionMode==1){
+                	resolutionModeName='枚举量';
+                }else if(resolutionMode==2){
+                	resolutionModeName='数据量';
+                }
                 var showInfo='名称:<font color=red>'+record.data.itemName+'</font>'
                 	+",存储数据类型:<font color=red>"+record.data.storeDataType+'</font>'
-                	+",存储数据数量:<font color=red>"+record.data.quantity+'</font>'
-                	+",单位:<font color=red>"+record.data.unit+'</font>'
+                	+",存储数据数量:<font color=red>"+record.data.quantity+'</font>';
+                if(isNotVal(resolutionModeName)){
+                	showInfo+=",解析模式:<font color=red>"+resolutionModeName+'</font>'
+                }
+                showInfo+=",单位:<font color=red>"+(isNotVal(record.data.unit)?record.data.unit:"无")+'</font>'
                 
                 Ext.getCmp("DeviceControlItemName_Id").setHtml(showInfo);
                 
@@ -1414,9 +1424,9 @@ function controlBtnHandler(btn,btnIndex){
                 Ext.getCmp("DeviceControlQuantity_Id").setValue(record.data.quantity);
 
                 Ext.getCmp("DeviceControlShowType_Id").setValue(2);
-
                 if (resolutionMode == 1 && itemMeaning.length > 0) {
                     Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
+                    Ext.getCmp("DeviceControlItemMeaning_Id").setValue(JSON.stringify(itemMeaning));
                     var data = [];
                     for (var k = 0; k < itemMeaning.length; k++) {
                         data.push(itemMeaning[k]);

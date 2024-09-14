@@ -288,7 +288,7 @@ var ImportProtocolContentHandsontableHelper = {
 	        
 	        importProtocolContentHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        importProtocolContentHandsontableHelper.createTable = function (data) {

@@ -846,7 +846,7 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	        rpcFESDiagramCalculateMaintainingHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(col<=7 && col<=1){
-	            	td.style.backgroundColor = 'rgb(251, 251, 251)';
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏

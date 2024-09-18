@@ -863,7 +863,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				inputItemList=MemoryDataManagerTask.getPCPInputItem();
 			}else{
-				calItemList=new ArrayList<>();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 				inputItemList=new ArrayList<>();
 			}
 			
@@ -957,14 +957,19 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"
 							+ "t2.acqdata ";
 
-					if(StringManagerUtils.stringToInteger(calculateType)>0){
-						for(int i=0;i<displayCalItemList.size();i++){
-							String column=displayCalItemList.get(i).getCode();
+					for(int i=0;i<displayCalItemList.size();i++){
+						String column=displayCalItemList.get(i).getCode();
+						if(StringManagerUtils.stringToInteger(calculateType)>0){
 							if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
 								column="resultCode";
 							}
 							sql+=",t3."+column;
+						}else{
+							sql+=",t2."+column;
 						}
+					}
+					
+					if(StringManagerUtils.stringToInteger(calculateType)>0){
 						if(displayInputItemList.size()>0){
 							sql+=",t3.productiondata";
 						}
@@ -2084,7 +2089,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 					inputItemList=MemoryDataManagerTask.getPCPInputItem();
 				}else{
-					calItemList=new ArrayList<>();
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){
@@ -2308,6 +2313,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						if(inputItemColumnList.size()>0){
 							calAndInputColumn+=",t3.productiondata";
 						}
+					}else{
+						for(int i=0;i<calItemColumnList.size();i++){
+							calAndInputColumn+=",t."+calItemColumnList.get(i);
+						}
 					}
 					
 					String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
@@ -2500,7 +2509,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 					inputItemList=MemoryDataManagerTask.getPCPInputItem();
 				}else{
-					calItemList=new ArrayList<>();
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){
@@ -2658,6 +2667,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 					if(inputItemColumnList.size()>0){
 						calAndInputColumn+=",t3.productiondata";
+					}
+				}else{
+					for(int i=0;i<calItemColumnList.size();i++){
+						calAndInputColumn+=",t."+calItemColumnList.get(i);
 					}
 				}
 				

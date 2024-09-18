@@ -829,6 +829,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				inputItemList=new ArrayList<>();
 			}
 			
 			String hisTableName="tbl_acqdata_hist";
@@ -1031,6 +1034,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				if(displayInputItemList.size()>0){
 					sql+=",t3.productiondata";
+				}
+			}else{
+				for(int i=0;i<displayCalItemList.size();i++){
+					String column=displayCalItemList.get(i).getCode();
+					sql+=",t2."+column;
 				}
 			}
 			
@@ -1615,6 +1623,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				inputItemList=new ArrayList<>();
 			}
 			
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -1783,6 +1794,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				if(displayInputItemList.size()>0){
 					sql+=",t3.productiondata";
+				}
+			}else{
+				for(int i=0;i<displayCalItemList.size();i++){
+					String column=displayCalItemList.get(i).getCode();
+					sql+=",t2."+column;
 				}
 			}
 			
@@ -2297,7 +2313,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				inputItemList=MemoryDataManagerTask.getPCPInputItem();
 			}else{
-				calItemList=new ArrayList<>();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 				inputItemList=new ArrayList<>();
 			}
 			String columns = "[";
@@ -2398,14 +2414,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"//3~5
 							+ "t2.acqdata ";//6
 					
-					if(StringManagerUtils.stringToInteger(calculateType)>0){
-						for(int i=0;i<displayCalItemList.size();i++){
-							String column=displayCalItemList.get(i).getCode();
+					for(int i=0;i<displayCalItemList.size();i++){
+						String column=displayCalItemList.get(i).getCode();
+						if(StringManagerUtils.stringToInteger(calculateType)>0){
 							if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
 								column="resultCode";
 							}
 							sql+=",t3."+column;
+						}else{
+							sql+=",t2."+column;
 						}
+					}
+					
+					if(StringManagerUtils.stringToInteger(calculateType)>0){
 						if(displayInputItemList.size()>0){
 							sql+=",t3.productiondata";
 						}
@@ -2575,7 +2596,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								String rawColumnName=columnName;
 								String value=obj[index]+"";
 								if(obj[index] instanceof CLOB || obj[index] instanceof Clob){
-									value=StringManagerUtils.CLOBObjectToString(index);
+									value=StringManagerUtils.CLOBObjectToString(obj[index]);
 								}
 								String rawValue=value;
 								String addr="";
@@ -3004,7 +3025,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 					inputItemList=MemoryDataManagerTask.getPCPInputItem();
 				}else{
-					calItemList=new ArrayList<>();
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){
@@ -3305,6 +3326,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 					if(inputItemColumnList.size()>0){
 						calAndInputColumn+=",t3.productiondata";
+					}
+				}else{
+					for(int i=0;i<calItemColumnList.size();i++){
+						calAndInputColumn+=",t."+calItemColumnList.get(i);
 					}
 				}
 				

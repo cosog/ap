@@ -337,14 +337,20 @@ var ProtocolItemsConfigHandsontableHelper = {
 	        	protocolItemsConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
+	        		hiddenColumns: {
+	                    columns: [0],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 	        		colWidths: [50,130,80,90,90,80,80,90,80,80,80,80],
 	                columns:protocolItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
+	                rowHeaders: true,//显示行头
+	                bindRowsWithHeaders: 'strict',
 //	                colHeaders:protocolItemsConfigHandsontableHelper.colHeaders,//显示列头
 	                nestedHeaders:protocolItemsConfigHandsontableHelper.colHeaders,//显示列头
-	                nestedRows:true,
+//	                nestedRows:true,
 	                columnHeaderHeight: 28,
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
@@ -416,6 +422,9 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    
 	                    
 	                    return cellProperties;
+	                },
+	                beforeRemoveRow: function (index, amount,physicalRows,source) {
+//	                	alert(index);
 	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
 	                	if(row==row2 && column==column2){

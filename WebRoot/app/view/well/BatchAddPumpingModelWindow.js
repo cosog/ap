@@ -221,14 +221,7 @@ var BatchAddPumpingModelHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     return cellProperties;
-                },
-                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-                	
-                },
-                afterDestroy: function () {
-                },
-                beforeRemoveRow: function (index, amount) {},
-                afterChange: function (changes, source) {}
+                }
             });
         }
         //保存数据

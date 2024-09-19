@@ -607,8 +607,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
                              	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
                             	 var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-                            	 var fileName='抽油机井实时监控数据';
-                            	 var title='抽油机井实时监控数据';
+                            	 var fileName='实时监控设备概览数据';
+                            	 var title='实时监控设备概览数据';
                             	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
                             	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                              }
@@ -1038,9 +1038,6 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
                 				}
                 			}
 	                	}
-	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	
 	                }
 	        	});
 	        }

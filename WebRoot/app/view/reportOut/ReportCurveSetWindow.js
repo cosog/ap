@@ -362,8 +362,7 @@ var DeviceReportCurveSetHandsontableHelper = {
                 				}
                 			}
 	                	}
-	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}
+	                }
 	        	});
 	        }
 	        return deviceReportCurveSetHandsontableHelper;

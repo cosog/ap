@@ -281,14 +281,15 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             if(result.totalRoot.length==0){
             	Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue('');
             	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue('');
-            	
+            	auxiliaryDeviceInfoHandsontableHelper.hot.selectCell(0,'name');
             	CreateAndLoadAuxiliaryDeviceDetailsTable(0,0);
             }else{
             	Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(0);
             	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(0);
-            	
-            	var rowdata = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(0);
-            	CreateAndLoadAuxiliaryDeviceDetailsTable(rowdata[0],rowdata[1]);
+            	auxiliaryDeviceInfoHandsontableHelper.hot.selectCell(0,'name');
+            	var recordId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(0,'id');
+            	var specificType=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(0,'specificType')
+            	CreateAndLoadAuxiliaryDeviceDetailsTable(recordId,specificType);
             }
             Ext.getCmp("AuxiliaryDeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -354,7 +355,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
-//                outsideClickDeselects:false,
+                outsideClickDeselects:false,
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -389,17 +390,9 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     	if(selectedRow!=startRow){
                     		Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(startRow);
                         	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(endRow);
-                    		
-                    		var row1=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(startRow);
-                        	var recordId=0;
-                        	var specificType=0;
-                        	if(isNotVal(row1[0])){
-                        		recordId=row1[0];
-                        		specificType=row1[1];
-                        	}
-                        	
+                        	var recordId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'id');
+                        	var specificType=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'specificType')
                         	CreateAndLoadAuxiliaryDeviceDetailsTable(recordId,specificType);
-                        	
                     	}else{
                     		Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(startRow);
                         	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(endRow);

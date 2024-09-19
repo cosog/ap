@@ -1184,6 +1184,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											String unit=item.getUnit();
 											int sort=9999;
 											
+											if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+													||"float32".equalsIgnoreCase(item.getIFDataType())
+													||"float64".equalsIgnoreCase(item.getIFDataType())){
+												if(value.toUpperCase().contains("E")){
+								                 	value=StringManagerUtils.scientificNotationToNormal(value);
+								                 }
+											}
+											
 											if(item.getResolutionMode()==1 || item.getResolutionMode()==2){//如果是枚举量
 												for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 													if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
@@ -1278,7 +1286,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														break;
 													}
 												}
-												
 												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 											}

@@ -695,6 +695,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 							if(col!=null&&col.equalsIgnoreCase(ddicAcqColumnsList.get(j))){
 								item=protocol.getItems().get(k);
+								
+								if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+										||"float32".equalsIgnoreCase(item.getIFDataType())
+										||"float64".equalsIgnoreCase(item.getIFDataType())){
+									if(value.toUpperCase().contains("E")){
+					                 	value=StringManagerUtils.scientificNotationToNormal(value);
+					                 }
+								}
+								
 								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
 										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
@@ -1330,7 +1339,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									String bitIndex="";
 									String unit=item.getUnit();
 									int sort=9999;
-									
+									if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+											||"float32".equalsIgnoreCase(item.getIFDataType())
+											||"float64".equalsIgnoreCase(item.getIFDataType())){
+										if(value.toUpperCase().contains("E")){
+						                 	value=StringManagerUtils.scientificNotationToNormal(value);
+						                 }
+									}
 									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
 										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
@@ -2072,7 +2087,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									String bitIndex="";
 									String unit=item.getUnit();
 									int sort=9999;
-									
+									if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+											||"float32".equalsIgnoreCase(item.getIFDataType())
+											||"float64".equalsIgnoreCase(item.getIFDataType())){
+										if(value.toUpperCase().contains("E")){
+						                 	value=StringManagerUtils.scientificNotationToNormal(value);
+						                 }
+									}
 									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
 										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
@@ -2645,7 +2666,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											String bitIndex="";
 											String unit=item.getUnit();
 											int sort=9999;
-											
+											if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+													||"float32".equalsIgnoreCase(item.getIFDataType())
+													||"float64".equalsIgnoreCase(item.getIFDataType())){
+												if(value.toUpperCase().contains("E")){
+								                 	value=StringManagerUtils.scientificNotationToNormal(value);
+								                 }
+											}
 											if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
 												for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
 													if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){

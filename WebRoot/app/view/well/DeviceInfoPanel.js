@@ -847,6 +847,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                 	deviceInfoHandsontableHelper.createTable(result.totalRoot);
                 }
             } else {
+            	deviceInfoHandsontableHelper.hot.deselectCell();
             	deviceInfoHandsontableHelper.dataLength=result.totalCount;
             	if(result.totalRoot.length==0){
             		deviceInfoHandsontableHelper.hiddenRows = [0];
@@ -864,7 +865,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             if(result.totalRoot.length==0){
             	Ext.getCmp("DeviceSelectRow_Id").setValue('');
             	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-            	
+            	deviceInfoHandsontableHelper.hot.selectCell(0,'deviceName');
             	CreateDeviceAdditionalInformationTable(0,'',0);
             }else{
             	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
@@ -876,30 +877,22 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             		}
             	}
             	Ext.getCmp("DeviceSelectRow_Id").setValue(selectRow);
-            	var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(selectRow);
+            	deviceInfoHandsontableHelper.hot.selectCell(selectRow,'deviceName');
+        		
+        		var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'id');
+            	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceName');
+            	var applicationScenarios=0;
+            	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'applicationScenariosName');
+            	if(applicationScenariosName=='油井'){
+    				applicationScenarios=1;
+    			}
             	
             	var combDeviceName=Ext.getCmp('deviceListComb_Id').getValue();
         		if(combDeviceName!=''){
-            		Ext.getCmp("selectedDeviceId_global").setValue(rowdata[0]);
+            		Ext.getCmp("selectedDeviceId_global").setValue(recordId);
         		}
-        		
-        		var applicationScenarios=0;
-        		var applicationScenariosindex=-1;
-            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
-                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
-                    	applicationScenariosindex=i;
-                    	break;
-                    }
-                }
-        		if(applicationScenariosindex>=0){
-        			if(rowdata[applicationScenariosindex]=='油井'){
-        				applicationScenarios=1;
-        			} 
-        		}
-        		
-        		
-        		
-        		CreateDeviceAdditionalInformationTable(rowdata[0],rowdata[1],applicationScenarios);
+            	
+        		CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios);
             }
             Ext.getCmp("DeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -977,6 +970,7 @@ var DeviceInfoHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
+                outsideClickDeselects:false,
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -1028,7 +1022,6 @@ var DeviceInfoHandsontableHelper = {
                             		}
                         		}
                         	}
-                        	
                         	if(deviceInfoHandsontableHelper.columns[visualColIndex].type == undefined || deviceInfoHandsontableHelper.columns[visualColIndex].type!='dropdown'){
                         		cellProperties.renderer = deviceInfoHandsontableHelper.addCellStyle;
                         	}
@@ -1043,7 +1036,6 @@ var DeviceInfoHandsontableHelper = {
                 	if(row<0 && row2<0){//只选中表头
                 		Ext.getCmp("DeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-                    	
                     	CreateDeviceAdditionalInformationTable(0,'',0);
                 	}else{
                 		if(row<0){
@@ -1058,46 +1050,23 @@ var DeviceInfoHandsontableHelper = {
                     		startRow=row2;
                         	endRow=row;
                     	}
-                    	
                     	var selectedRow=Ext.getCmp("DeviceSelectRow_Id").getValue();
-                    	
                     	if(selectedRow!=startRow){
                     		Ext.getCmp("DeviceSelectRow_Id").setValue(startRow);
                         	Ext.getCmp("DeviceSelectEndRow_Id").setValue(endRow);
-                    		
-                    		var row1=deviceInfoHandsontableHelper.hot.getDataAtRow(startRow);
-                        	var recordId=0;
-                        	var deviceName='';
-                        	if(isNotVal(row1[0])){
-                        		recordId=row1[0];
-                        	}
-                        	if(isNotVal(row1[1])){
-                        		deviceName=row1[1];
-                        	}
-                        	
-                        	var applicationScenariosindex=-1;
+                        	var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'id');
+                        	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'deviceName');
                         	var applicationScenarios=0;
-        	            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
-        	                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
-        	                    	applicationScenariosindex=i;
-        	                    	break;
-        	                    }
-        	                }
-        	        		if(applicationScenariosindex>=0){
-        	        			if(row1[applicationScenariosindex]=='油井'){
-        	        				applicationScenarios=1;
-        	        			} 
-        	        		}
-                        	
-                        	
+                        	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'applicationScenariosName');
+                        	if(applicationScenariosName=='油井'){
+    	        				applicationScenarios=1;
+    	        			}
                         	CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios);
-                        	
                         	Ext.getCmp("selectedDeviceId_global").setValue(recordId);
                     	}else{
                     		Ext.getCmp("DeviceSelectRow_Id").setValue(startRow);
                         	Ext.getCmp("DeviceSelectEndRow_Id").setValue(endRow);
                     	}
-                    	
                 	}
                 },
                 afterDestroy: function () {
@@ -2424,7 +2393,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 			var result =  Ext.JSON.decode(response.responseText);
 			var panelTitle='视频配置';
 			if(isNotVal(deviceName)){
-				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】视频配置";
+				panelTitle="【<font color='red'>"+deviceName+"</font>】视频配置";
 			}
 //			Ext.getCmp("DeviceVideoInfoPanel_Id").setTitle(panelTitle);
 			if(videoInfoHandsontableHelper==null || videoInfoHandsontableHelper.hot==undefined){
@@ -2607,6 +2576,7 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 			if(!isNotVal(deviceName)){
 				deviceName='';
 			}
+			
 //			Ext.getCmp("DeviceAdditionalInfoPanel_Id").setTitle(deviceName+"附加信息");
 			if(deviceAdditionalInfoHandsontableHelper==null || deviceAdditionalInfoHandsontableHelper.hot==undefined){
 				deviceAdditionalInfoHandsontableHelper = DeviceAdditionalInfoHandsontableHelper.createNew("DeviceAdditionalInfoTableDiv_id");

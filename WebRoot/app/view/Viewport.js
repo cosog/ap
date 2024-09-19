@@ -238,7 +238,7 @@ function websocketOnMessage(evt) {
                 gridPanel.getStore().load();
             }
         }
-    } else if (data.functionCode.toUpperCase() == "deviceRealTimeMonitoringData".toUpperCase()) { //接收到推送的抽油机井实时监控数据
+    } else if (data.functionCode.toUpperCase() == "deviceRealTimeMonitoringData".toUpperCase()) { //接收到推送的实时监控数据
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
         	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
         	var deviceTypeArr = deviceType.split(",");
@@ -409,7 +409,7 @@ function websocketOnMessage(evt) {
                 }
             }
         }
-    } else if (data.functionCode.toUpperCase() == "deviceRealTimeMonitoringStatusData".toUpperCase()) { //接收到推送的抽油机井通信数据
+    } else if (data.functionCode.toUpperCase() == "deviceRealTimeMonitoringStatusData".toUpperCase()) { //接收到推送的通信数据
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
         	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
         	var deviceTypeArr = deviceType.split(",");

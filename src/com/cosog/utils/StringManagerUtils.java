@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.Proxy;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -3692,11 +3693,23 @@ public class StringManagerUtils {
             if (list.get(i) == null) {
                 jsonBuffer.append(",");
             } else if ("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")) {
-                jsonBuffer.append(StringManagerUtils.stringToInteger(list.get(i) + "") + ",");
+                String value=list.get(i) + "";
+                if(value.toUpperCase().contains("E")){
+                	value=StringManagerUtils.scientificNotationToNormal(value);
+                }
+            	jsonBuffer.append(value + ",");
             } else if ("float32".equalsIgnoreCase(item.getIFDataType())) {
-                jsonBuffer.append(StringManagerUtils.stringToFloat(list.get(i) + "") + ",");
+            	 String value=list.get(i) + "";
+                 if(value.toUpperCase().contains("E")){
+                 	value=StringManagerUtils.scientificNotationToNormal(value);
+                 }
+             	jsonBuffer.append(value + ",");
             } else if ("float64".equalsIgnoreCase(item.getIFDataType())) {
-                jsonBuffer.append(StringManagerUtils.stringToDouble(list.get(i) + "") + ",");
+            	 String value=list.get(i) + "";
+                 if(value.toUpperCase().contains("E")){
+                 	value=StringManagerUtils.scientificNotationToNormal(value);
+                 }
+             	 jsonBuffer.append(value + ",");
             } else if ("string".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(list.get(i) + ",");
             } else if ("bool".equalsIgnoreCase(item.getIFDataType()) || "boolean".equalsIgnoreCase(item.getIFDataType())) {
@@ -4377,5 +4390,12 @@ public class StringManagerUtils {
     	}
     	
     	return r;
+    }
+    
+    public static String scientificNotationToNormal(String dataStr){
+    	double scientificNotation =StringManagerUtils.stringToDouble(dataStr);
+        BigDecimal bd = new BigDecimal(scientificNotation);
+        String decimalString = bd.toPlainString();
+        return decimalString;
     }
 }

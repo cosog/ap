@@ -336,8 +336,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
                 				}
                 			}
 	                	}
-	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}
+	                }
 	        	});
 	        }
 	        return deviceHistoryQueryDataHandsontableHelper;

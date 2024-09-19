@@ -185,12 +185,6 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				item1.value=data.text;
 				root.push(item1);
 				
-//				var item2={};
-//				item2.id=2;
-//				item2.title='设备类型';
-//				item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
-//				root.push(item2);
-				
 				var item2={};
 				item2.id=2;
 				item2.title='采控单元';
@@ -684,7 +678,6 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
-//			saveData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
 			saveData.unitId=selectedItem.data.unitId;
 			saveData.unitName=propertiesData[1][2];
 			saveData.acqProtocolType=propertiesData[2][2];

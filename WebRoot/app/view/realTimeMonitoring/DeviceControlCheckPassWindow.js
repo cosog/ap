@@ -349,8 +349,7 @@ var DeviceControlValueHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    return cellProperties;
-	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}
+	                }
 	        	});
 	        }
 	        return deviceControlValueHandsontableHelper;

@@ -82,40 +82,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 id: 'formModbusProtocolInstance_Id',
                 anchor: '100%',
                 name: "protocolInstance.id"
-            },
-//            {
-//				xtype : "hidden",
-//				id : 'modbusProtocolInstanceDeviceType_Id',
-//				value: 0,
-//				name : "protocolInstance.deviceType"
-//			},{
-//            	xtype : "combobox",
-//				fieldLabel : '设备类型<font color=red>*</font>',
-//				labelWidth: 135,
-//				id : 'modbusProtocolInstanceDeviceTypeComb_Id',
-//				anchor : '100%',
-//				triggerAction : 'all',
-//				selectOnFocus : false,
-//			    forceSelection : true,
-//			    value:0,
-//			    allowBlank: false,
-//				editable : false,
-//				store : new Ext.data.SimpleStore({
-//							fields : ['value', 'text'],
-//							data : [[0, '抽油机井'],[1, '螺杆泵井']]
-//						}),
-//				displayField : 'text',
-//				valueField : 'value',
-//				queryMode : 'local',
-//				emptyText : '请选择设备类型',
-//				blankText : '请选择设备类型',
-//				listeners : {
-//					select:function(v,o){
-//						Ext.getCmp("modbusProtocolInstanceDeviceType_Id").setValue(this.value);
-//					}
-//				}
-//            }, 
-            {
+            },{
                 id: 'formModbusProtocolInstanceName_Id',
                 name: "protocolInstance.name",
                 fieldLabel: '实例名称<font color=red>*</font>',

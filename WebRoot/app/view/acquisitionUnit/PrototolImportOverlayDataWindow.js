@@ -533,8 +533,7 @@ var ProtocolImportOverlayHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
 	                    return cellProperties;
-	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}
+	                }
 	        	});
 	        }
 	        return protocolImportOverlayHandsontableHelper;
@@ -623,8 +622,7 @@ var ProtocolImportErrorHandsontableHelper = {
 	                    	cellProperties.renderer = protocolImportErrorHandsontableHelper.addBoldBg;
 	                    }
 	                    return cellProperties;
-	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {}
+	                }
 	        	});
 	        }
 	        return protocolImportErrorHandsontableHelper;

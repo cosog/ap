@@ -264,6 +264,8 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 					protocolItemsConfigHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
+				protocolItemsConfigHandsontableHelper.hot.deselectCell();
+				
 				if(result.totalRoot.length==0){
 					protocolItemsConfigHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 					protocolItemsConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
@@ -273,18 +275,20 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				}
 			}
 			if(result.totalRoot.length==0){
+				protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
 				CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','',true);
 			}else{
+//				protocolItemsConfigHandsontableHelper.hot.selectRows(0);
+				protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
+				
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
-				var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+				var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
 				var protocolCode="";
-        		if(ScadaDriverModbusConfigSelectRow!=''){
-        			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
+        		if(protocolTreeGridPanelSelectRow!=''){
+        			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
             		if(selectedProtocol.data.classes==1){//选中的是协议
             			protocolCode=selectedProtocol.data.code;
-            		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
-            			protocolCode=selectedProtocol.data.children[0].code;
             		}
             		
             		var row1=protocolItemsConfigHandsontableHelper.hot.getDataAtRow(0);
@@ -359,7 +363,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
-//	                outsideClickDeselects:false,
+	                outsideClickDeselects:false,
 	                contextMenu: {
 	                	items: {
 	                	    "row_above": {
@@ -419,30 +423,61 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.addCellStyle;
 	                    	}
 	                    }
-	                    
-	                    
 	                    return cellProperties;
 	                },
-	                beforeRemoveRow: function (index, amount,physicalRows,source) {
-//	                	alert(index);
-	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
-	                	if(row==row2 && column==column2){
-	                		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(row);
-	                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
-	                		var protocolCode="";
-	                		if(ScadaDriverModbusConfigSelectRow!=''){
-	                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
-	                    		if(selectedProtocol.data.classes==1){//选中的是协议
-	                    			protocolCode=selectedProtocol.data.code;
-	                    		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
-	                    			protocolCode=selectedProtocol.data.children[0].code;
-	                    		}
-	                    		var row1=protocolItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-	                    		var itemAddr=row1[2];
-	                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
-	                		}
+	                	if(row<0 && row2<0){//只选中表头
+	                		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
+	                		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','',true);
+	                	}else{
+	                		if(row<0){
+	                    		row=0;
+	                    	}
+	                    	if(row2<0){
+	                    		row2=0;
+	                    	}
+	                    	var startRow=row;
+	                    	var endRow=row2;
+	                    	if(row>row2){
+	                    		startRow=row2;
+	                        	endRow=row;
+	                    	}
+	                    	
+	                    	var selectedRow=Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
+	                    	if(selectedRow!=startRow){
+	                    		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(startRow);
+		                		var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+		                		var protocolCode="";
+		                		if(protocolTreeGridPanelSelectRow!=''){
+		                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
+		                    		if(selectedProtocol.data.classes==1){//选中的是协议
+		                    			protocolCode=selectedProtocol.data.code;
+		                    		}
+		                    		var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'addr');
+		                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
+		                		}
+	                    	}else{
+	                    		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(startRow);
+	                    	}
 	                	}
+	                	
+	                	
+//	                	if(row==row2){
+//	                		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(row);
+//	                		var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+//	                		var protocolCode="";
+//	                		if(protocolTreeGridPanelSelectRow!=''){
+//	                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
+//	                    		if(selectedProtocol.data.classes==1){//选中的是协议
+//	                    			protocolCode=selectedProtocol.data.code;
+//	                    		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
+//	                    			protocolCode=selectedProtocol.data.children[0].code;
+//	                    		}
+//	                    		var row1=protocolItemsConfigHandsontableHelper.hot.getDataAtRow(row);
+//	                    		var itemAddr=row1[2];
+//	                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
+//	                		}
+//	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(protocolItemsConfigHandsontableHelper!=null&&protocolItemsConfigHandsontableHelper.hot!=''&&protocolItemsConfigHandsontableHelper.hot!=undefined && protocolItemsConfigHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -673,16 +708,15 @@ var ProtocolPropertiesHandsontableHelper = {
 
 
 function SaveModbusProtocolAddrMappingConfigTreeData(){
-	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+	var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
 	var AddrMappingItemsSelectRow= Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
-	if(ScadaDriverModbusConfigSelectRow!='' && protocolPropertiesHandsontableHelper!=null && protocolPropertiesHandsontableHelper.hot!=null){
-		var selectedItem=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
+	if(protocolTreeGridPanelSelectRow!='' && protocolPropertiesHandsontableHelper!=null && protocolPropertiesHandsontableHelper.hot!=null){
+		var selectedItem=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
 		var protocolConfigData={};
 		var propertiesData=protocolPropertiesHandsontableHelper.hot.getData();
 		if(selectedItem.data.classes==1){//选中的是协议
 			protocolConfigData=selectedItem.data;
 			protocolConfigData.text=propertiesData[0][2];
-//			protocolConfigData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
 			protocolConfigData.sort=propertiesData[1][2];
 		}else if(selectedItem.data.classes==0 && isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
 			protocolConfigData=selectedItem.data.children[0];

@@ -2118,8 +2118,6 @@ function SaveReportUnitData() {
                     reportUnitProperties.productionReportTemplate = templateSelection[0].data.templateCode;
                 }
             }
-
-            //			reportUnitProperties.calculateType=(propertiesData[1][2]=="抽油机井"?0:1);
             reportUnitProperties.calculateType = 0;
             if (propertiesData[1][2] == "功图计算") {
                 reportUnitProperties.calculateType = 1;
@@ -2130,7 +2128,6 @@ function SaveReportUnitData() {
         }
         if (selectedItem.data.classes == 1) { //保存单元
             SaveModbusProtocolReportUnitData(reportUnitProperties);
-            //			grantReportTotalCalItemsPermission(reportUnitProperties.calculateType);
         }
     }
 };

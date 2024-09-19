@@ -243,9 +243,6 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    }
 	                    return cellProperties;
 	                },
-	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	
-	                },
 	                beforeRemoveRow: function (index, amount) {
 	                    var ids = [];
 	                    if (amount != 0) {

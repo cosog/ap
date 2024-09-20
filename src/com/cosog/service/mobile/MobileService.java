@@ -285,7 +285,7 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		result_json.append("\"DataList\":[");
 		result_json.append("{\"Item\":\"运行\",\"Count\":"+run+"},");
-		result_json.append("{\"Item\":\"停抽\",\"Count\":"+stop+"},");
+		result_json.append("{\"Item\":\"停止\",\"Count\":"+stop+"},");
 		result_json.append("{\"Item\":\"无数据\",\"Count\":"+noData+"},");
 		result_json.append("{\"Item\":\"上线\",\"Count\":"+goOnline+"},");
 		result_json.append("{\"Item\":\"离线\",\"Count\":"+offline+"}");
@@ -399,7 +399,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
@@ -426,7 +426,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.deviceName";
 			
@@ -572,7 +572,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.liquidWeightProduction_L,"
 					+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.liquidVolumetricProduction_L,"
@@ -589,7 +589,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.deviceName";
 			
@@ -785,7 +785,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
@@ -809,7 +809,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			
 			
@@ -950,7 +950,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "t2.runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
@@ -967,7 +967,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			sql+= "  order by t2.acqtime desc";
 			
@@ -1716,7 +1716,7 @@ public class MobileService<T> extends BaseService<T> {
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",\"Date\":\""+date+"\",\"DataList\":[");
 		
 		result_json.append("{\"Item\":\"运行\",\"Count\":"+run+"},");
-		result_json.append("{\"Item\":\"停抽\",\"Count\":"+stop+"},");
+		result_json.append("{\"Item\":\"停止\",\"Count\":"+stop+"},");
 		result_json.append("{\"Item\":\"无数据\",\"Count\":"+noData+"},");
 		result_json.append("{\"Item\":\"上线\",\"Count\":"+goOnline+"},");
 		result_json.append("{\"Item\":\"离线\",\"Count\":"+offline+"}");
@@ -1823,7 +1823,7 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
@@ -1848,7 +1848,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.deviceName";
 			
@@ -1973,7 +1973,7 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
@@ -1991,7 +1991,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t.sortnum,t.deviceName";
 			List<?> list = this.findCallSql(sql);
@@ -2164,7 +2164,7 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "t2.resultcode,decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 					+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
@@ -2189,7 +2189,7 @@ public class MobileService<T> extends BaseService<T> {
 			}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t2.caldate,t.sortnum,t.deviceName";
 			
@@ -2310,7 +2310,7 @@ public class MobileService<T> extends BaseService<T> {
 			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
 					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ "decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
 					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
@@ -2328,7 +2328,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(statType==2 && StringManagerUtils.isNotNull(statValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
 			}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+statValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+statValue+"'";
 			}
 			sql+=" order by t2.caldate,t.sortnum,t.deviceName";
 			

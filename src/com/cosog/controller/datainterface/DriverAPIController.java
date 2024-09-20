@@ -1838,7 +1838,7 @@ public class DriverAPIController extends BaseController{
 					insertHistColumns+=",runStatus";
 					insertHistValue+=","+runStatus;
 					updateTotalDataSql+=",t.runStatus= "+runStatus;
-					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停抽":"无数据"),runStatus+"","","runStatusName","","","","",1,1));
+					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停止":"无数据"),runStatus+"","","runStatusName","","","","",1,1));
 					
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
@@ -1899,7 +1899,7 @@ public class DriverAPIController extends BaseController{
 								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}else if(workType!=null&&alarmInstanceOwnItem.getItemList().get(i).getType()==4 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
 								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停抽":"无数据"))){
+							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停止":"无数据"))){
 								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}
 						}

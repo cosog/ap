@@ -938,7 +938,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsList=new ArrayList<String>();
 		List<String> runStatusItemsList=new ArrayList<String>();
 		runStatusItemsList.add("运行");
-		runStatusItemsList.add("停抽");
+		runStatusItemsList.add("停止");
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.delay,"
@@ -960,7 +960,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 			String itemCode="run";
 			int value=1;
-			if("停抽".equals(runStatusItemsList.get(i))){
+			if("停止".equals(runStatusItemsList.get(i))){
 				itemCode="stop";
 				value=0;
 			}

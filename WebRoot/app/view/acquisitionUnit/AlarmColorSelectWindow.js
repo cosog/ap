@@ -195,7 +195,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'stopBackgroundColor_id',
-                        fieldLabel: '停抽',
+                        fieldLabel: '停止',
                         labelWidth: 70,
                         anchor:'90%',
                         listeners : {
@@ -410,7 +410,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'stopColor_id',
-                        fieldLabel: '停抽',
+                        fieldLabel: '停止',
                         labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',

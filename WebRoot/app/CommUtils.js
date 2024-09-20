@@ -1612,7 +1612,7 @@ color16ToRgba = function(sColor,Opacity){
 			 		backgroundColor='#'+alarmShowStyle.Run.stop.BackgroundColor;
 			 		color='#'+alarmShowStyle.Run.stop.Color;
 			 		opacity=alarmShowStyle.Run.stop.Opacity;
-			 		val='停抽';
+			 		val='停止';
 				}else if (runStatus == 1) {
 					backgroundColor='#'+alarmShowStyle.Run.run.BackgroundColor;
 			 		color='#'+alarmShowStyle.Run.run.Color;

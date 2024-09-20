@@ -25,15 +25,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
     				iconCls: 'check2',
     				border: false
                 },{
-                	title:'报警单元',
-                	id:'ModbusProtocolAlarmUnitConfigTabPanel_Id',
-//                	items: [ModbusProtocolAlarmUnitConfigInfoView],
-    				layout: "fit",
-    				border: false
-                },{
                 	title:'显示单元',
                 	id:'ModbusProtocolDisplayUnitConfigTabPanel_Id',
 //                	items: [ModbusProtocolDisplayUnitConfigInfoView],
+    				layout: "fit",
+    				border: false
+                },{
+                	title:'报警单元',
+                	id:'ModbusProtocolAlarmUnitConfigTabPanel_Id',
+//                	items: [ModbusProtocolAlarmUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{

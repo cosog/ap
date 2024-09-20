@@ -35,7 +35,7 @@ public class GkmcConstants {
 	public static final String GK_CODE1229 = "1229";// 严重出煤渣
 	public static final String GK_CODE1230 = "1230";// 惯性载荷大
 	/**************************************************************/
-	public static final String GK_CODE1231 = "1231";// 停抽
+	public static final String GK_CODE1231 = "1231";// 停止
 	public static final String GK_CODE1232 = "1232";// 功图测试异常
 	public static final String GK_CODE1233 = "1233";// 缺相
 	public static final String GK_CODE1234 = "1234";// 皮带断

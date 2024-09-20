@@ -358,7 +358,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\"count\":"+run+"},");
 			
 			result_json.append("{\"id\":3,");
-			result_json.append("\"item\":\"停抽\",");
+			result_json.append("\"item\":\"停止\",");
 			result_json.append("\"itemCode\":\"stop\",");
 			result_json.append("\"count\":"+stop+"},");
 			
@@ -461,7 +461,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -495,7 +495,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
-					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"//13~14
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
 					+ "t.calculateType";//18
 			sql+= " from "+deviceTableName+" t "
@@ -521,7 +521,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -641,7 +641,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
-					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"//13~14
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange"//15~17
 					+"";
 			
@@ -675,7 +675,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -797,7 +797,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";

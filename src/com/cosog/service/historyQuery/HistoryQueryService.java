@@ -254,7 +254,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行','停抽'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行','停止'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -284,7 +284,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ " t2.commtime,t2.commtimeefficiency,t2.commrange,"
-					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据')) as runStatusName,"
+					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
 					+ " t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
@@ -309,7 +309,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -418,7 +418,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(runStatusStatValue)){
-			sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+runStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 			sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -487,7 +487,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停抽','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -590,7 +590,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
-					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停抽','无数据'),'') as runStatusName,"//8~9
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停止','无数据'),'') as runStatusName,"//8~9
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
 					+ "t.calculateType";//13
 			
@@ -1110,7 +1110,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(runStatus==1){
 						runStatusName="运行";
 					}else if(runStatus==0){
-						runStatusName="停抽";
+						runStatusName="停止";
 					}else{
 						runStatusName="无数据";
 					}
@@ -1588,7 +1588,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	
 	public boolean exportDeviceHistoryData(User user,HttpServletResponse response,String fileName,String title,
 			String orgId,String deviceId,String deviceName,String deviceType,String calculateType,Page pager,int userNo){
-		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1846,7 +1845,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " order by t.acqTime desc";
 			List<?> dailyTotalDatasList = this.findCallSql(dailyTotalDatasql);
 			
-			
+			StringBuffer result_json = null;
 			List<Object> record=null;
 			JSONObject jsonObject=null;
 			Object[] obj=null;
@@ -1866,6 +1865,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 				obj=(Object[]) list.get(i);
 				record = new ArrayList<>();
+				result_json = new StringBuffer();
 				
 				String acqTime=obj[2]+"";
 				int commStatus=StringManagerUtils.stringToInteger(obj[3]+"");
@@ -1877,7 +1877,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(runStatus==1){
 						runStatusName="运行";
 					}else if(runStatus==0){
-						runStatusName="停抽";
+						runStatusName="停止";
 					}else{
 						runStatusName="无数据";
 					}
@@ -3933,7 +3933,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
-					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停抽')) as runStatusName,"//8~9
+					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停止')) as runStatusName,"//8~9
 					+ "t.runtime,t.runtimeefficiency,t.runrange,"//10~12
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ " t.stroke,t.spm,"//16~17
@@ -4176,7 +4176,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
-					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停抽')) as runStatusName,"//8~9
+					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停止')) as runStatusName,"//8~9
 					+ "t.runtime,t.runtimeefficiency,t.runrange,"//10~12
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ " t.stroke,t.spm,"//16~17

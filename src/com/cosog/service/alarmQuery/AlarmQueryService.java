@@ -120,7 +120,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	public boolean exportAlarmData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager){
 		try{
-			StringBuffer result_json = new StringBuffer();
+			
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			String tableName="viw_alarminfo_hist";
 			
@@ -166,6 +166,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			List<Object> record=null;
 			JSONObject jsonObject=null;
 			Object[] obj=null;
+			StringBuffer result_json = null;
 			for(int i=0;i<list.size();i++){
 				obj=(Object[]) list.get(i);
 				result_json = new StringBuffer();
@@ -330,7 +331,6 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	public boolean exportAlarmOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager){
 		try{
-			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			String tableName="viw_alarminfo_latest";
 			
@@ -377,6 +377,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;
+			StringBuffer result_json = null;
 			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
 				obj=(Object[]) list.get(i);

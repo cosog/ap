@@ -247,6 +247,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     },{
                     	title:'工况诊断',
                     	id:"ModbusProtocolAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id",
+                    	hidden: onlyMonitor,
                     	 layout: 'fit',
                          html:'<div class="ModbusProtocolAlarmInstanceFESDiagramResultItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id"></div></div>',
                          listeners: {

@@ -384,6 +384,20 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	xtype: 'tabpanel',
             	id:'DeviceAdditionalInformationRabpanel_Id',
             	activeTab: 0,
+            	tabBar:{
+            		items: [{
+                        xtype: 'tbfill'
+                    },{
+                    	xtype: 'label',
+                    	id: 'DeviceAdditionalInformationLabel_Id',
+                    	hidden:true,
+                    	html: ''
+                    },{
+                    	xtype: 'label',
+                    	hidden:false,
+                    	html: '&nbsp;'
+                    }]
+            	},
             	items: [{
             		title:'附加信息',
             		id:'DeviceAdditionalInfoPanel_Id',
@@ -652,14 +666,25 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 });
 
 function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios,isNew){
+	var showInfo='';
+	
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationRabpanel_Id");
 	var activeId=tabPanel.getActiveTab().id;
 	if(activeId=='DeviceAdditionalInfoPanel_Id'){
 		CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew);
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】附加信息&nbsp;"
+		}
 	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){
 		CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew);
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】辅件设备&nbsp;"
+		}
 	}else if(activeId=='DeviceVideoInfoPanel_Id'){
 		CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew);
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】视频配置&nbsp;"
+		}
 	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
 		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 		var calculateType=getDeviceCalculateType(deviceId);
@@ -669,7 +694,12 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 			CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,isNew);
 			CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew);
 		}
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】计算数据配置&nbsp;"
+		}
 	}
+	Ext.getCmp("DeviceAdditionalInformationLabel_Id").setHtml(showInfo);
+    Ext.getCmp("DeviceAdditionalInformationLabel_Id").show();
 }
 
 function getDeviceCalculateType(deviceId){

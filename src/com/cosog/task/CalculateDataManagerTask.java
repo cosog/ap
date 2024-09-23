@@ -57,6 +57,7 @@ public class CalculateDataManagerTask {
 //		PCPTimingCalculate();
 	}
 	
+	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
@@ -75,8 +76,10 @@ public class CalculateDataManagerTask {
 				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}
+		Thread.currentThread().yield();
 	}
 	
+	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
@@ -91,6 +94,7 @@ public class CalculateDataManagerTask {
 				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}
+		Thread.currentThread().yield();
 	}
 	
 	public static void AcquisitionDataTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{

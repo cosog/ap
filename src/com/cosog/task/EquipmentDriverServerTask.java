@@ -2,13 +2,10 @@ package com.cosog.task;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.ServerSocket;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +23,6 @@ import com.cosog.model.DataMapping;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.DeviceInfo;
-import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
@@ -39,20 +35,16 @@ import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
-import com.cosog.utils.RedisUtil;
-import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import redis.clients.jedis.Jedis;
 
 
 @Component("EquipmentDriverServerTask")  
 public class EquipmentDriverServerTask {
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initSwitch=false;
+	private static boolean initSwitch=true;
 	private static boolean initEnable=initSwitch&&Config.getInstance().configFile.getAp().getOthers().isIot();
 	
 	public static boolean initFinished=false;

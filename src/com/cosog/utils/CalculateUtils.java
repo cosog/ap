@@ -209,10 +209,10 @@ public class CalculateUtils {
 		return responseData;
 	}
 	
-	public static AppRunStatusProbeResonanceData appProbe(String requestDataStr){
+	public static AppRunStatusProbeResonanceData appProbe(String requestDataStr,int timeOut){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(appProbe, requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(appProbe, requestDataStr,"utf-8",timeOut,0);
 		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
 		AppRunStatusProbeResonanceData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;

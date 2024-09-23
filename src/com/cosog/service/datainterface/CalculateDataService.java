@@ -71,12 +71,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 		getBaseDao().saveAlarmInfo(deviceName,deviceType,acqTime,acquisitionItemInfoList);
 	}
 	
-	public void saveAndSendAlarmInfo(int deviceId,String deviceName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
+	public void saveAndSendAlarmInfo(int deviceId,String deviceName,String deviceType,String deviceTypeName,
+			String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
 		boolean isSendSMS=false;
 		boolean isSendMail=false;
 		StringBuffer SMSContent = new StringBuffer();
 		StringBuffer EMailContent = new StringBuffer();
-		SMSContent.append(((StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200)?"抽油机井":"螺杆泵井")+"设备"+deviceName+"于"+acqTime+"发生报警:");
+		SMSContent.append(deviceTypeName+deviceName+"于"+acqTime+"发生报警:");
 		Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 		List<AcquisitionItemInfo> saveAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 		for(int i=0;i<acquisitionItemInfoList.size();i++){
@@ -99,9 +100,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 					if(acquisitionItemInfoList.get(i).getIsSendMessage()==1){//如果该报警项发送短信
 						isSendSMS=true;
 						if(acquisitionItemInfoList.get(i).getAlarmType()==3){//开关量报警
-							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
+							SMSContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){//枚举量报警
-							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
+							SMSContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){//数值量报警
 							SMSContent.append(acquisitionItemInfoList.get(i).getTitle()+acquisitionItemInfoList.get(i).getAlarmInfo()
 									+",报警值"+acquisitionItemInfoList.get(i).getValue()
@@ -116,9 +117,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 					if(acquisitionItemInfoList.get(i).getIsSendMail()==1){//如果该报警项发送邮件
 						isSendMail=true;
 						if(acquisitionItemInfoList.get(i).getAlarmType()==3){//开关量报警
-							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
+							EMailContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){//枚举量报警
-							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
+							EMailContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){//数值量报警
 							EMailContent.append(acquisitionItemInfoList.get(i).getTitle()+acquisitionItemInfoList.get(i).getAlarmInfo()
 									+",报警值"+acquisitionItemInfoList.get(i).getValue()
@@ -155,17 +156,24 @@ public class CalculateDataService<T> extends BaseService<T> {
 			getBaseDao().saveAlarmInfo(deviceName,deviceType,acqTime,saveAcquisitionItemInfoList);
 		}
 		if(isSendSMS || isSendMail){
-			sendAlarmSMS(deviceName,deviceType,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());
+			sendAlarmSMS(deviceName,deviceType,deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());
 		}
 	}
 	
-	public void sendAlarmSMS(String deviceName,String deviceType,boolean isSendSMS,boolean isSendMail,String SMSContent,String EMailContent) throws SQLException{
+	public void sendAlarmSMS(String deviceName,String deviceType,String deviceTypeName,boolean isSendSMS,boolean isSendMail,String SMSContent,String EMailContent) throws SQLException{
 		String SMSUrl=Config.getInstance().configFile.getAd().getRw().getWriteSMS();
 		String deviceTableName="tbl_device";
 		
 		String userSql="select u.user_id,u.user_phone,u.user_receivesms,u.user_in_email,u.user_receivemail "
 				+ " from tbl_user u,tbl_role r "
-				+ " where u.user_type=r.role_id and (u.user_orgid in (select org_id from tbl_org t start with org_id=( select t2.orgid from "+deviceTableName+" t2 where t2.deviceName='"+deviceName+"' and t2.devicetype="+deviceType+" ) connect by prior  org_parent=org_id) or u.user_orgid=0)";
+				+ " where u.user_enable=1 and u.user_type=r.role_id "
+				+ " and ("
+				+ "	u.user_orgid in ("
+				+ "		select org_id from tbl_org t "
+				+ "		start with org_id=( select t2.orgid from "+deviceTableName+" t2 where t2.deviceName='"+deviceName+"' and t2.devicetype="+deviceType+" ) "
+				+ "		connect by prior  org_parent=org_id"
+				+ " ) or u.user_orgid=0"
+				+ " )";
 		List<?> list = this.findCallSql(userSql);
 		List<String> receivingEMailAccount=new ArrayList<String>();
 		for(int i=0;i<list.size();i++){
@@ -180,7 +188,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			}
 		}
 		if(isSendMail&&receivingEMailAccount.size()>0){
-			StringManagerUtils.sendEMail(((StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200)?"泵":"管")+"设备"+deviceName+"报警", EMailContent, receivingEMailAccount);
+			StringManagerUtils.sendEMail(deviceTypeName+deviceName+"报警", EMailContent, receivingEMailAccount);
 		}
 	}
 	

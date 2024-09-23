@@ -1227,7 +1227,7 @@ public class BaseDao extends HibernateDaoSupport {
 		List<String> deleteWellNameList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
 		int license=0;
-		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("",10);
 		if(acStatusProbeResonanceData!=null){
 			license=acStatusProbeResonanceData.getLicenseNumber();
 		}

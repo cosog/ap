@@ -6,11 +6,13 @@ import java.lang.reflect.Proxy;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +45,7 @@ import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.model.gridmodel.WellGridPanelData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.service.base.BaseService;
@@ -595,7 +598,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public boolean exportDeviceRealTimeOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceName,String deviceType,
 			String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager){
-		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int dataSaveMode=1;
 		Gson gson = new Gson();
@@ -604,36 +606,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-			String heads[]=head.split(",");
-			String columns[]=field.split(",");
+			List<String> headList = new ArrayList<>(Arrays.asList(head.split(",")));
+			List<String> columnList=new ArrayList<>(Arrays.asList(field.split(",")));
 			
-			List<Object> headRow = new ArrayList<>();
-			for(int i=0;i<heads.length;i++){
-				headRow.add(heads[i]);
-			}
-		    List<List<Object>> sheetDataList = new ArrayList<>();
-		    sheetDataList.add(headRow);
-		    
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			Map<Integer,Map<String,String>> addInfoMap=new HashMap<>();
+			Map<String,Integer> addInfoKeyMap=new LinkedHashMap<>();
 			
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
-			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+			
 			
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="tbl_device";
 			String calTableName="tbl_rpcacqdata_latest";
-			String ddicName="realTimeMonitoring_Overview";
-			DataDictionary ddic = null;
-			List<String> ddicColumnsList=new ArrayList<String>();
-			
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			
-			String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+tableName+"') order by t.COLUMN_ID";
-			List<String> tableColumnsList=new ArrayList<String>();
-			List<?> columnList = this.findCallSql(columnSql);
-			for(int i=0;i<columnList.size();i++){
-				tableColumnsList.add(columnList.get(i).toString());
-			}
 			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
@@ -645,15 +628,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange"//15~17
 					+"";
 			
-			String[] ddicColumns=ddic.getSql().split(",");
-			for(int i=0;i<ddicColumns.length;i++){
-				if(StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
-					ddicColumnsList.add(ddicColumns[i]);
-				}
-			}
-			for(int i=0;i<ddicColumnsList.size();i++){
-				sql+=",t2."+ddicColumnsList.get(i);
-			}
+			String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit from tbl_device t,tbl_deviceaddinfo t2 "
+					+ " where t.id=t2.deviceid "
+					+ " and t.orgid in ("+orgId+") ";
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
@@ -662,11 +639,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
+				addInfoSql+= " and t.devicetype="+deviceType;
 			}else{
 				sql+= " and t.devicetype in ("+deviceType+")";
+				addInfoSql+= " and t.devicetype in ("+deviceType+")";
 			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+= " and t.devicename='"+deviceName+"'";
+				addInfoSql+= " and t.devicename='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
@@ -681,18 +661,19 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
 			sql+=" order by t.sortnum,t.devicename";
+			addInfoSql+=" order by t.id,t2.id";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list = this.findCallSql(finalSql);
+			List<?> addInfoList = this.findCallSql(addInfoSql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;
 			Object[] obj=null;
+			List<String> dataList=new ArrayList<>();
 			for(int i=0;i<list.size();i++){
 				obj=(Object[]) list.get(i);
-				result_json = new StringBuffer();
-				record = new ArrayList<>();
+				StringBuffer result_json = new StringBuffer();
 				
 				String deviceId=obj[0]+"";
-				
 				
 				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 				String protocolName="";
@@ -703,8 +684,19 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						protocolName=acqInstanceOwnItem.getProtocol();
 					}
 				}
-				
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				
+				Map<String,String> deviceAddInfoMap=new LinkedHashMap<>(); 
+				for(int j=0;j<addInfoList.size();j++){
+					Object[] addInfoObj=(Object[]) addInfoList.get(j);
+					if(deviceId.equalsIgnoreCase(addInfoObj[0]+"")){
+						deviceAddInfoMap.put(addInfoObj[1]+"", StringManagerUtils.isNotNull(addInfoObj[3]+"")?(addInfoObj[2]+"("+addInfoObj[3]+")"):(addInfoObj[2]+""));
+						if(!addInfoKeyMap.containsKey(addInfoObj[1]+"")){
+							addInfoKeyMap.put(addInfoObj[1]+"", addInfoKeyMap.size()+1);
+						}
+					}
+				}
+				addInfoMap.put(StringManagerUtils.stringTransferInteger(deviceId), deviceAddInfoMap);
 				
 				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceName\":\""+obj[1]+"\",");
@@ -726,40 +718,54 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"runTimeEfficiency\":\""+obj[16]+"\",");
 				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[17])+"\"");
 				
-				for(int j=0;j<ddicColumnsList.size();j++){
-					String value=obj[18+j]+"";
-					if(protocol!=null){
-						for(int k=0;k<protocol.getItems().size();k++){
-							String col="";
-							if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
-								col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
-							}
-							if(col!=null&&col.equalsIgnoreCase(ddicColumnsList.get(j))){
-								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
-									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
-										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"")||StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
-											value=protocol.getItems().get(k).getMeaning().get(l).getMeaning();
-											break;
-										}
-									}
-								}
-								break;
-							}
-						}
+				if(deviceAddInfoMap.size()>0){
+					Iterator<Map.Entry<String,String>> iterator = deviceAddInfoMap.entrySet().iterator();
+					while (iterator.hasNext()) {
+					    Map.Entry<String,String> entry = iterator.next();
+					    String key = entry.getKey();
+					    String value = entry.getValue();
+					    if(addInfoKeyMap.containsKey(key)){
+					    	String col="addInfoColumn"+addInfoKeyMap.get(key);
+					    	result_json.append(",\""+col+"\":\""+value+"\"");
+					    }
 					}
-					result_json.append(",\""+ddicColumnsList.get(j).replaceAll(" ", "")+"\":\""+value+"\"");
 				}
+				
 				result_json.append("}");
-				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
-				for (int j = 0; j < columns.length; j++) {
-					if(jsonObject.has(columns[j])){
-						record.add(jsonObject.getString(columns[j]));
+				dataList.add(result_json.toString());
+			}
+			
+			Iterator<Map.Entry<String,Integer>> iterator = addInfoKeyMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String,Integer> entry = iterator.next();
+				String key = entry.getKey();
+			    int value = entry.getValue();
+			    headList.add(key);
+			    columnList.add("addInfoColumn"+value);
+			}
+			
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<headList.size();i++){
+				headRow.add(headList.get(i));
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			for(int i=0;i<dataList.size();i++){
+				record = new ArrayList<>();
+				jsonObject = JSONObject.fromObject(dataList.get(i).replaceAll("null", ""));
+				for (int j = 0; j < columnList.size(); j++) {
+					if(jsonObject.has(columnList.get(j))){
+						record.add(jsonObject.getString(columnList.get(j)));
 					}else{
 						record.add("");
 					}
 				}
 				sheetDataList.add(record);
 			}
+			
+			
 			ExcelUtils.export(response,fileName,title, sheetDataList);
 			if(user!=null){
 		    	try {

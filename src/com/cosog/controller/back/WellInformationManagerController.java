@@ -1688,7 +1688,7 @@ public class WellInformationManagerController extends BaseController {
 			
 			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
 			int license=0;
-			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("",10);
 			if(acStatusProbeResonanceData!=null){
 				license=acStatusProbeResonanceData.getLicenseNumber();
 			}

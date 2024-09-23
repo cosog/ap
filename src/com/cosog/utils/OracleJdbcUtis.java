@@ -207,6 +207,29 @@ public class OracleJdbcUtis {
         }  
     }
 	
+	public static boolean databaseStatus(){
+		boolean r=false;
+		Connection conn=null;
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			if(conn!=null){
+				r=true;
+			}
+		} catch (Exception e) {
+			r=false;
+			e.printStackTrace();
+		}finally{
+			if(conn!=null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return r;
+	}
+	
 	public static int executeSqlUpdateClob(String sql,List<String> values) throws SQLException {
 		int n = 0;
 		Connection conn=null;
@@ -285,6 +308,45 @@ public class OracleJdbcUtis {
 		return list;
 	}
 	
+	public static List<Object[]> query(String sql,int timeout) {
+		Connection conn=OracleJdbcUtis.getConnection();
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		ResultSetMetaData rsmd=null;
+		List<Object[]> list=new ArrayList<Object[]>();
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setQueryTimeout(timeout);
+			rs=ps.executeQuery();
+			rsmd=rs.getMetaData();  
+			int columnCount=rsmd.getColumnCount();  
+			while(rs.next())
+			{
+				Object[] objs=new Object[columnCount];
+				for(int i=0;i<columnCount;i++){
+					if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
+						try {
+							objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+						} catch (IOException e) {
+							objs[i]="";
+							e.printStackTrace();
+						}
+					}else{
+						objs[i]=rs.getObject(i+1);
+					}
+				}
+				list.add(objs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(sql);
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, ps, rs);
+		}
+		return list;
+	}
+	
 	public static List<Object[]> query(String sql,String driver,String url,String username,String password) {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
@@ -328,12 +390,81 @@ public class OracleJdbcUtis {
 		return list;
 	}
 	
+	public static List<Object[]> query(String sql,String driver,String url,String username,String password,int timeout) {
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		ResultSetMetaData rsmd=null;
+		List<Object[]> list=new ArrayList<Object[]>();
+		Connection conn=OracleJdbcUtis.getConnection(driver, url, username, password);
+		try {
+			if(conn!=null){
+				ps = conn.prepareStatement(sql);
+				ps.setQueryTimeout(timeout);
+				rs=ps.executeQuery();
+				rsmd=rs.getMetaData();  
+				int columnCount=rsmd.getColumnCount();  
+				while(rs.next())
+				{
+					Object[] objs=new Object[columnCount];
+					for(int i=0;i<columnCount;i++){
+						if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
+							try {
+								if(rs.getClob(i+1)!=null){
+									objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+								}else{
+									objs[i]="";
+								}
+							} catch (IOException e) {
+								objs[i]="";
+								e.printStackTrace();
+							}
+						}else{
+							objs[i]=rs.getObject(i+1);
+						}
+					}
+					list.add(objs);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(sql);
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, ps, rs);
+		}
+		return list;
+	}
+	
 	public static List<Object[]> query(Connection conn,PreparedStatement ps,ResultSet rs,String sql) {
 		ResultSetMetaData rsmd=null;
 		List<Object[]> list=new ArrayList<Object[]>();
 		
 		try {
 			ps = conn.prepareStatement(sql);
+			rs=ps.executeQuery();
+			rsmd=rs.getMetaData();  
+			int columnCount=rsmd.getColumnCount();  
+			while(rs.next())
+			{
+				Object[] objs=new Object[columnCount];
+				for(int i=0;i<columnCount;i++){
+					objs[i]=rs.getObject(i+1);
+				}
+				list.add(objs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(sql);
+		}
+		return list;
+	}
+	
+	public static List<Object[]> query(Connection conn,PreparedStatement ps,ResultSet rs,String sql,int timeout) {
+		ResultSetMetaData rsmd=null;
+		List<Object[]> list=new ArrayList<Object[]>();
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setQueryTimeout(timeout);
 			rs=ps.executeQuery();
 			rsmd=rs.getMetaData();  
 			int columnCount=rsmd.getColumnCount();  

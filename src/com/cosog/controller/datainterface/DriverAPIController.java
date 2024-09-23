@@ -249,6 +249,7 @@ public class DriverAPIController extends BaseController{
 				if(acqOnline!=null){
 					List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
 					int deviceType=0;
+					String deviceTypeName="";
 					int deviceId=0;
 					String deviceName="";
 					int orgId=0;
@@ -282,6 +283,7 @@ public class DriverAPIController extends BaseController{
 							//抽油机
 							DeviceInfo deviceInfo=deviceInfoList.get(i);
 							deviceType=deviceInfo.getDeviceType();
+							deviceTypeName=deviceInfo.getDeviceTypeName();
 							deviceId=deviceInfo.getId();
 							deviceName=deviceInfo.getDeviceName();
 							orgId=deviceInfo.getOrgId();
@@ -387,7 +389,7 @@ public class DriverAPIController extends BaseController{
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
 								if(commAlarmLevel>0&&timeDiff>delay*1000){
 									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
-									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
+									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
 								}
 							}
@@ -466,6 +468,7 @@ public class DriverAPIController extends BaseController{
 				if(acqOnline!=null){
 					List<DeviceInfo> deviceInfoList=new ArrayList<DeviceInfo>();
 					int deviceType=0;
+					String deviceTypeName="";
 					int deviceId=0;
 					String deviceName="";
 					int orgId=0;
@@ -496,6 +499,7 @@ public class DriverAPIController extends BaseController{
 							//抽油机
 							DeviceInfo deviceInfo=deviceInfoList.get(i);
 							deviceType=deviceInfo.getDeviceType();
+							deviceTypeName=deviceInfo.getDeviceTypeName();
 							deviceId=deviceInfo.getId();
 							deviceName=deviceInfo.getDeviceName();
 							orgId=deviceInfo.getOrgId();
@@ -598,7 +602,7 @@ public class DriverAPIController extends BaseController{
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
 								if(commAlarmLevel>0&&timeDiff>delay*1000){
 									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
-									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
+									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
 								}
 							}
@@ -780,53 +784,56 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setUnit(protocolItemResolutionDataList.get(i).getUnit());
 			acquisitionItemInfo.setSort(protocolItemResolutionDataList.get(i).getSort());
 			for(int l=0;alarmInstanceOwnItem!=null&&l<alarmInstanceOwnItem.getItemList().size();l++){
-				if((acquisitionItemInfo.getAddr()+"").equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")){
-					int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-					if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
-						float hystersis=alarmInstanceOwnItem.getItemList().get(l).getHystersis();
-						if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+hystersis){
-							alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-							acquisitionItemInfo.setAlarmLevel(alarmLevel);
-							acquisitionItemInfo.setHystersis(hystersis);
-							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
-							acquisitionItemInfo.setAlarmInfo("高报");
-							acquisitionItemInfo.setAlarmType(2);
-							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-						}else if((StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()-hystersis)){
-							alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-							acquisitionItemInfo.setAlarmLevel(alarmLevel);
-							acquisitionItemInfo.setHystersis(hystersis);
-							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
-							acquisitionItemInfo.setAlarmInfo("低报");
-							acquisitionItemInfo.setAlarmType(2);
-							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-						}
-						break;
-					}else if(alarmType==0  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//开关量报警
-						if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
-							if(acquisitionItemInfo.getBitIndex().equals(alarmInstanceOwnItem.getItemList().get(l).getBitIndex()+"") && StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
+				int alarmSign=alarmInstanceOwnItem.getItemList().get(l).getAlarmSign();
+				if(alarmSign==1){
+					if((acquisitionItemInfo.getAddr()+"").equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")){
+						int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
+						if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
+							float hystersis=alarmInstanceOwnItem.getItemList().get(l).getHystersis();
+							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+hystersis){
 								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
 								acquisitionItemInfo.setAlarmLevel(alarmLevel);
-								acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
-								acquisitionItemInfo.setAlarmType(0);
+								acquisitionItemInfo.setHystersis(hystersis);
+								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
+								acquisitionItemInfo.setAlarmInfo("高报");
+								acquisitionItemInfo.setAlarmType(2);
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+							}else if((StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()-hystersis)){
+								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+								acquisitionItemInfo.setAlarmLevel(alarmLevel);
+								acquisitionItemInfo.setHystersis(hystersis);
+								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
+								acquisitionItemInfo.setAlarmInfo("低报");
+								acquisitionItemInfo.setAlarmType(2);
 								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
 								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
 								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
 							}
-						}
-					}else if(alarmType==1  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//枚举量报警
-						if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
-							alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-							acquisitionItemInfo.setAlarmLevel(alarmLevel);
-							acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
-							acquisitionItemInfo.setAlarmType(1);
-							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+							break;
+						}else if(alarmType==0  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//开关量报警
+							if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
+								if(acquisitionItemInfo.getBitIndex().equals(alarmInstanceOwnItem.getItemList().get(l).getBitIndex()+"") && StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
+									alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+									acquisitionItemInfo.setAlarmLevel(alarmLevel);
+									acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
+									acquisitionItemInfo.setAlarmType(0);
+									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+								}
+							}
+						}else if(alarmType==1  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//枚举量报警
+							if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
+								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+								acquisitionItemInfo.setAlarmLevel(alarmLevel);
+								acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
+								acquisitionItemInfo.setAlarmType(1);
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+							}
 						}
 					}
 				}
@@ -1694,7 +1701,6 @@ public class DriverAPIController extends BaseController{
 		
 		boolean save=false;
 		boolean alarm=false;
-		long t1,t2=0;
 		try{
 			AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
@@ -1750,10 +1756,7 @@ public class DriverAPIController extends BaseController{
 					int checkSign=acqGroupDataCheck(protocol,acqGroup)?1:0;
 					
 					//进行通信计算
-					t1=System.nanoTime();
 					commResponseData=commEffCalaulate(deviceInfo,acqTime,1);
-					t2=System.nanoTime();
-//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"进行通信计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1";
 					String insertHistColumns="deviceid,acqTime,checkSign,CommStatus";
@@ -1765,15 +1768,9 @@ public class DriverAPIController extends BaseController{
 					List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					
-					t1=System.nanoTime();
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList,acqDataList);
-					t2=System.nanoTime();	
-//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"采集组数据解析耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
-					
 					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
 					
-					
-					t1=System.nanoTime();
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
 							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
@@ -1796,13 +1793,8 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 					}
-					t2=System.nanoTime();
-//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"判断运行状态耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					if(isAcqRunStatus){
-						t1=System.nanoTime();
 						timeEffResponseData=tiemEffCalaulate(deviceInfo,acqTime,runStatus);
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"进行时率计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}
 					//通信
 					deviceInfo.setAcqTime(acqTime);
@@ -1862,7 +1854,6 @@ public class DriverAPIController extends BaseController{
 					List<ProtocolItemResolutionData> inputItemItemResolutionDataList=new ArrayList<>();;
 					
 					if(deviceInfo.getCalculateType()==1){
-						t1=System.nanoTime();
 						rpcCalculateRequestData=new RPCCalculateRequestData();
 						rpcCalculateRequestData.init();
 						rpcCalculateResponseData=RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
@@ -1871,15 +1862,10 @@ public class DriverAPIController extends BaseController{
 						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
 						}
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"功图数据计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}else if(deviceInfo.getCalculateType()==2){
-						t1=System.nanoTime();
 						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
 								acqTime,calItemResolutionDataList,runStatus,save,checkSign);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"转速数据计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}
 					
 					
@@ -1891,7 +1877,6 @@ public class DriverAPIController extends BaseController{
 					//排序
 					Collections.sort(protocolItemResolutionDataList);
 					//报警判断
-					t1=System.nanoTime();
 					int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
 					if(alarmInstanceOwnItem!=null){
 						for(int i=0;i<alarmInstanceOwnItem.itemList.size();i++){
@@ -1907,8 +1892,6 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,rpcCalculateResponseData);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
-					t2=System.nanoTime();
-//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"报警判断耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						if(acquisitionItemInfo.getAlarmLevel()>0){
@@ -1918,36 +1901,25 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					//添加新采集数据至内存
-					t1=System.nanoTime();
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 					}
 					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap);
-					t2=System.nanoTime();
-					String memoryUsage =MemoryDataManagerTask.getMemoryUsage("DeviceRealtimeAcqData_"+deviceInfo.getId());
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新内存数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",更新后数据量:"+memoryUsage);
 					
 					//如果跨天,删除非当天采集的数据
 					if(!isSameDay){
-						t1=System.nanoTime();
 						MemoryDataManagerTask.delDeviceRealtimeAcqData(deviceInfo.getId()+"", StringManagerUtils.getCurrentTime());
-						t2=System.nanoTime();
-						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"跨天清理内存数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}
 					
 					//更新实时数据
-					t1=System.nanoTime();
 					int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 					if(result==0){
 						updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
 						result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 					}
-					t2=System.nanoTime();
-//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库实时数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					
 					//更新数据库实时clob数据
-					t1=System.nanoTime();
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(new Gson().toJson(acqDataList));
 					String updateRealClobSql="update "+realtimeTable+" t set t.acqdata=? ";
@@ -1961,33 +1933,20 @@ public class DriverAPIController extends BaseController{
 						
 					}		
 					updateRealClobSql+=" where t.deviceid="+deviceInfo.getId();
-					commonDataService.getBaseDao().executeSqlUpdateClob(updateRealClobSql,clobCont);	
-					t2=System.nanoTime();
-//					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库实时clob数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));		
+					commonDataService.getBaseDao().executeSqlUpdateClob(updateRealClobSql,clobCont);
 					
 					
 					//如果满足单组入库间隔或者有报警，保存历史数据
 					if(save || alarm){
 						String saveRawDataSql="insert into "+rawDataTable+"(deviceid,acqtime,rawdata)values("+deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
 						deviceInfo.setSaveTime(acqTime);
-						t1=System.nanoTime();
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						
-						
-						t1=System.nanoTime();
 						commonDataService.getBaseDao().updateOrDeleteBySql(saveRawDataSql);
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存采集原始数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						
-						t1=System.nanoTime();
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存汇总数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						
 						//更新历史clob数据
-						t1=System.nanoTime();
 						clobCont=new ArrayList<String>();
 						clobCont.add(new Gson().toJson(acqDataList));
 						String updateHistoryClobSql="update "+historyTable+" t set t.acqdata=? ";
@@ -2001,14 +1960,11 @@ public class DriverAPIController extends BaseController{
 						}		
 						updateHistoryClobSql+="where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 						commonDataService.getBaseDao().executeSqlUpdateClob(updateHistoryClobSql,clobCont);	
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新数据库历史clob数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));	
 						
 						
 						
 						//更新汇总区间数据
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-							t1=System.nanoTime();
 							List<String> totalClobCont=new ArrayList<String>();
 							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
 							totalClobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -2019,16 +1975,11 @@ public class DriverAPIController extends BaseController{
 							updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 							
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,totalClobCont);
-							t2=System.nanoTime();
-//							printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"更新汇总区间数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						}
 						
 						
 						//保存日汇总数据
-						t1=System.nanoTime();
 						saveDailyTotalData(deviceInfo);
-						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存日汇总数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						//统计
 //						t1=System.nanoTime();
 //						CalculateDataManagerTask.acquisitionDataTotalCalculate(deviceInfo.getId()+"", date);
@@ -2036,10 +1987,7 @@ public class DriverAPIController extends BaseController{
 //						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"实时汇总计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						//报警项
 						if(alarm){
-							t1=System.nanoTime();
-							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getDeviceName(),deviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
-							t2=System.nanoTime();
-//							printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"保存报警数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getDeviceName(),deviceInfo.getDeviceType()+"",deviceInfo.getDeviceTypeName(),acqTime,acquisitionItemInfoList);
 						}
 						
 						//保存计算数据
@@ -2052,12 +2000,8 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					//放入内存数据库中
-					t1=System.nanoTime();
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
-					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"同步设备内存数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					//处理websocket推送
-					t1=System.nanoTime();
 					if(displayInstanceOwnItem!=null){
 						for (String websocketClientUser : websocketClientUserList) {
 							UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
@@ -2070,8 +2014,6 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 					}
-					t2=System.nanoTime();
-					printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"websocket推送耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 				}
 			}
 		}catch(Exception e){

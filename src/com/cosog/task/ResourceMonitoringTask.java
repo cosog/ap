@@ -78,7 +78,7 @@ public class ResourceMonitoringTask {
     private static String tableSpaceName="";
     
 	@SuppressWarnings("static-access")
-	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/2 * * * * ?")
 	public void checkAndSendResourceMonitoring(){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
@@ -119,37 +119,9 @@ public class ResourceMonitoringTask {
 		}
 		redisStatus=redisInfo.getStatus();
 		
-//		Jedis jedis=null;
-//		try{
-//			jedis = RedisUtil.jedisPool.getResource();
-//			if(redisStatus==0){
-//				MemoryDataManagerTask.loadMemoryData();
-//			}
-//			redisStatus=1;
-//			String info = jedis.info();
-//			String[] infoArr=info.replaceAll("\r\n", "\n").split("\n");
-//			for(int i=0;i<infoArr.length;i++){
-//				if(infoArr[i].startsWith("redis_version:")){
-//					String[] versionArr=infoArr[i].split(":");
-//					if(versionArr.length==2){
-//						redisVersion=versionArr[1];
-//					}
-//					break;
-//				}
-//			}
-//		}catch(Exception e){
-//			redisStatus=0;
-//			redisVersion="";
-//			e.printStackTrace();
-//		}finally{
-//			if(jedis!=null){
-//				jedis.close();
-//			}
-//		}
-		
 		//ac状态检测
 		try{
-			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("",10);
 			if(acStatusProbeResonanceData!=null){
 				acRunStatus=1;
 				acVersion=acStatusProbeResonanceData.getVer();
@@ -174,7 +146,7 @@ public class ResourceMonitoringTask {
 		adLicense=0;
 		if(Config.getInstance().configFile.getAp().getOthers().isIot() ){
 			try{
-				String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
+				String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",10,0);
 				type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
 				AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
 				if(adStatusProbeResonanceData!=null){
@@ -198,8 +170,8 @@ public class ResourceMonitoringTask {
 		if( ((!Config.getInstance().configFile.getAp().getOthers().isIot()) && acRunStatus==1)
 				|| (Config.getInstance().configFile.getAp().getOthers().isIot() && adRunStatus==1) 
 				){
-			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",0,0);
-			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",0,0);
+			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",10,0);
+			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",10,0);
 			type = new TypeToken<CPUProbeResponseData>() {}.getType();
 			CPUProbeResponseData cpuProbeResponseData=gson.fromJson(CPUProbeResponseDataStr, type);
 			type = new TypeToken<MemoryProbeResponseData>() {}.getType();
@@ -312,6 +284,7 @@ public class ResourceMonitoringTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 	
 	@Bean
@@ -349,6 +322,7 @@ public class ResourceMonitoringTask {
     			String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
     			String tableSpaceSql="select default_tablespace from dba_users where username=upper('"+userName+"')";
     			pstmt = conn.prepareStatement(tableSpaceSql); 
+    			pstmt.setQueryTimeout(10);
     			rs=pstmt.executeQuery();
     			while(rs.next()){
     				tableSpaceName=rs.getString(1);
@@ -361,6 +335,7 @@ public class ResourceMonitoringTask {
     				+ "and t.BYTES<34359721984";
             
     		pstmt = conn.prepareStatement(sql); 
+    		pstmt.setQueryTimeout(10);
     		rs=pstmt.executeQuery();
     		while(rs.next()){
     			tableSpaceInfo.setTableSpaceName(tableSpaceName);

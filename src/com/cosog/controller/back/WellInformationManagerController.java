@@ -2208,7 +2208,7 @@ public class WellInformationManagerController extends BaseController {
 			title+="-"+acqTime.replaceAll(" ", "_").replaceAll("-", "").replaceAll(":", "");
 		}
 	    // 导出数据
-	    ExcelUtils.export(response,title,sheetName, sheetDataList);
+	    ExcelUtils.export(response,title,sheetName, sheetDataList,1);
 	    if(session!=null){
 			session.setAttribute(key, 1);
 		}

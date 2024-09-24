@@ -387,65 +387,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
-	
-	public String getHistoryQueryDeviceListExportData(String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
-		StringBuffer result_json = new StringBuffer();
-		String deviceTableName="tbl_device";
-		String tableName="tbl_rpcacqdata_latest";
-		if(StringManagerUtils.stringToInteger(deviceType)==1){
-			tableName="tbl_pcpacqdata_latest";
-			deviceTableName="tbl_device";
-		}
-		
-		String sql="select t.id,t.devicename,t2.commstatus,"
-				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
-		sql+= " from "+deviceTableName+" t "
-				+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
-				+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
-		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
-		}
-		
-		sql+= " where  t.orgid in ("+orgId+") ";
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and t.deviceName='"+deviceName+"'";
-		}
-		if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-			sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
-		}
-		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
-		}
-		if(StringManagerUtils.isNotNull(runStatusStatValue)){
-			sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
-		}
-		if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
-			sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
-		}
-		sql+=" order by t.sortnum,t.devicename";
-		
-		int maxvalue=pager.getLimit()+pager.getStart();
-		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		
-		List<?> list = this.findCallSql(finalSql);
-		result_json.append("[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"deviceName\":\""+obj[1]+"\",");
-			result_json.append("\"commStatus\":"+obj[2]+",");
-			result_json.append("\"commStatusName\":\""+obj[3]+"\",");
-			result_json.append("\"acqTime\":\""+obj[4]+"\",");
-			result_json.append("\"deviceTypeName\":\""+obj[5]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		return result_json.toString().replaceAll("\"null\"", "\"\"");
-	}
-	
 	public boolean exportHistoryQueryDeviceListData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,
 			String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
@@ -454,6 +395,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
+			String calTableName="tbl_rpcacqdata_latest";
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
@@ -466,22 +408,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql="select t.id,t.devicename,t2.commstatus,"
-					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
-			sql+= " from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
-			if(StringManagerUtils.stringToInteger(deviceType)==0){
-				sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
+		    String sql="select t.id,t.devicename,c1.name as devicetypename,"
+					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+					+ " t2.commtime,t2.commtimeefficiency,t2.commrange,"
+					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
+					+ " t2.runtime,t2.runtimeefficiency,t2.runrange,"
+					+ " t.calculateType "
+					+ " from "+deviceTableName+" t "
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
+					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
+					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
+					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
+					+ " where  t.orgid in ("+orgId+") ";
+			if(StringManagerUtils.isNum(deviceType)){
+				sql+= " and t.devicetype="+deviceType;
+			}else{
+				sql+= " and t.devicetype in ("+deviceType+")";
 			}
 			
-			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
-			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
@@ -504,10 +454,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				record = new ArrayList<>();
 				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceName\":\""+obj[1]+"\",");
-				result_json.append("\"commStatus\":\""+obj[2]+"\",");
-				result_json.append("\"commStatusName\":\""+obj[3]+"\",");
-				result_json.append("\"acqTime\":\""+obj[4]+"\",");
-				result_json.append("\"deviceTypeName\":\""+obj[5]+"\"}");
+				result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
+				result_json.append("\"acqTime\":\""+obj[3]+"\",");
+				result_json.append("\"commStatus\":\""+obj[4]+"\",");
+				result_json.append("\"commStatusName\":\""+obj[5]+"\",");
+				result_json.append("\"commTime\":\""+obj[6]+"\",");
+				result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
+				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
+				result_json.append("\"runStatus\":\""+obj[9]+"\",");
+				result_json.append("\"runStatusName\":\""+obj[10]+"\",");
+				result_json.append("\"runTime\":\""+obj[11]+"\",");
+				result_json.append("\"runTimeEfficiency\":\""+obj[12]+"\",");
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[13])+"\",");
+				result_json.append("\"calculateType\":\""+obj[14]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
@@ -519,7 +478,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				sheetDataList.add(record);
 			}
-			ExcelUtils.export(response,fileName,title, sheetDataList);
+			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,"导出文件:"+title);
@@ -2272,7 +2231,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sheetDataList.add(record);
 			}
 			
-			ExcelUtils.export(response,fileName,title, sheetDataList);
+			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,"导出文件:"+title);
@@ -3887,7 +3846,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				sheetDataList.add(record);
 			}
-			ExcelUtils.export(response,fileName,title, sheetDataList);
+			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,"导出文件:"+title);
@@ -4301,7 +4260,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				sheetDataList.add(record);
 			}
-			ExcelUtils.export(response,fileName,title, sheetDataList);
+			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,"导出文件:"+title);

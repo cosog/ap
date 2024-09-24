@@ -606,13 +606,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			List<String> firstFeadList = new ArrayList<>(Arrays.asList(head.split(",")));
 			List<String> headList = new ArrayList<>(Arrays.asList(head.split(",")));
 			List<String> columnList=new ArrayList<>(Arrays.asList(field.split(",")));
 			
 			Map<Integer,Map<String,String>> addInfoMap=new HashMap<>();
 			Map<String,Integer> addInfoKeyMap=new LinkedHashMap<>();
 			
-			
+			int maxAuxiliaryDeviceCount=0;
 			
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="tbl_device";
@@ -631,6 +632,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit from tbl_device t,tbl_deviceaddinfo t2 "
 					+ " where t.id=t2.deviceid "
 					+ " and t.orgid in ("+orgId+") ";
+			
+			String auxiliaryDeviceSql="select t.id,t3.name,t3.manufacturer,t3.model,t3.remark from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
+					+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id"
+					+ " and t.orgid in ("+orgId+") ";
+			
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
@@ -640,13 +646,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
 				addInfoSql+= " and t.devicetype="+deviceType;
+				auxiliaryDeviceSql+= " and t.devicetype="+deviceType;
 			}else{
 				sql+= " and t.devicetype in ("+deviceType+")";
 				addInfoSql+= " and t.devicetype in ("+deviceType+")";
+				auxiliaryDeviceSql+= " and t.devicetype in ("+deviceType+")";
 			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+= " and t.devicename='"+deviceName+"'";
 				addInfoSql+= " and t.devicename='"+deviceName+"'";
+				auxiliaryDeviceSql+= " and t.devicename='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
 				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
@@ -662,9 +671,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			sql+=" order by t.sortnum,t.devicename";
 			addInfoSql+=" order by t.id,t2.id";
+			auxiliaryDeviceSql+=" order by t.sortnum,t.devicename,t3.sort";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list = this.findCallSql(finalSql);
 			List<?> addInfoList = this.findCallSql(addInfoSql);
+			List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;
 			Object[] obj=null;
@@ -686,6 +697,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
+				//附加信息
 				Map<String,String> deviceAddInfoMap=new LinkedHashMap<>(); 
 				for(int j=0;j<addInfoList.size();j++){
 					Object[] addInfoObj=(Object[]) addInfoList.get(j);
@@ -697,6 +709,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				addInfoMap.put(StringManagerUtils.stringTransferInteger(deviceId), deviceAddInfoMap);
+				
+				
+				
 				
 				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceName\":\""+obj[1]+"\",");
@@ -731,8 +746,33 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				
+				
+				//辅件设备
+				int auxiliaryDeviceCount=0;
+				for(int j=0;j<auxiliaryDeviceList.size();j++){
+					Object[] auxiliaryDeviceObj=(Object[]) auxiliaryDeviceList.get(j);
+					if(deviceId.equalsIgnoreCase(auxiliaryDeviceObj[0]+"")){
+						auxiliaryDeviceCount++;
+						result_json.append(",\"auxiliaryDevice"+auxiliaryDeviceCount+"Name\":\""+auxiliaryDeviceObj[1]+"\"");
+						result_json.append(",\"auxiliaryDevice"+auxiliaryDeviceCount+"Manufacturer\":\""+auxiliaryDeviceObj[2]+"\"");
+						result_json.append(",\"auxiliaryDevice"+auxiliaryDeviceCount+"Model\":\""+auxiliaryDeviceObj[3]+"\"");
+						result_json.append(",\"auxiliaryDevice"+auxiliaryDeviceCount+"Remark\":\""+auxiliaryDeviceObj[4]+"\"");
+					}
+				}
+				
+				if(maxAuxiliaryDeviceCount<auxiliaryDeviceCount){
+					maxAuxiliaryDeviceCount=auxiliaryDeviceCount;
+				}
 				result_json.append("}");
 				dataList.add(result_json.toString());
+			}
+			
+			int overviewColSize=headList.size();
+			int rowIndexCol=0;
+			int addInfoColSize=addInfoKeyMap.size();
+			if(headList.size()>0 && "序号".equalsIgnoreCase(headList.get(0))){
+				rowIndexCol=1;
+				overviewColSize-=1;
 			}
 			
 			Iterator<Map.Entry<String,Integer>> iterator = addInfoKeyMap.entrySet().iterator();
@@ -741,17 +781,66 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String key = entry.getKey();
 			    int value = entry.getValue();
 			    headList.add(key);
+			    firstFeadList.add(key);
 			    columnList.add("addInfoColumn"+value);
 			}
 			
+			if(maxAuxiliaryDeviceCount>0){
+				for(int i=0;i<maxAuxiliaryDeviceCount;i++){
+					headList.add("设备名称");
+					headList.add("厂家");
+					headList.add("规格型号");
+					headList.add("备注");
+					
+					firstFeadList.add("设备名称");
+					firstFeadList.add("厂家");
+					firstFeadList.add("规格型号");
+					firstFeadList.add("备注");
+					
+				    columnList.add("auxiliaryDevice"+(i+1)+"Name");
+				    columnList.add("auxiliaryDevice"+(i+1)+"Manufacturer");
+				    columnList.add("auxiliaryDevice"+(i+1)+"Model");
+				    columnList.add("auxiliaryDevice"+(i+1)+"Remark");
+				}
+			}
 			
+			List<List<Object>> sheetDataList = new ArrayList<>();
+			//创建第一行表头
+			List<Object> firstHeadRow = new ArrayList<>();
+			if(overviewColSize>0){
+				firstFeadList.set(rowIndexCol, "设备概览");
+				for(int i=1;i<overviewColSize;i++){
+					firstFeadList.set(rowIndexCol+i, ExcelUtils.COLUMN_MERGE);
+				}
+			}
+			if(addInfoColSize>0){
+				firstFeadList.set(rowIndexCol+overviewColSize, "附加信息");
+				for(int i=1;i<addInfoColSize;i++){
+					firstFeadList.set(rowIndexCol+overviewColSize+i, ExcelUtils.COLUMN_MERGE);
+				}
+			}
+			if(maxAuxiliaryDeviceCount>0){
+				firstFeadList.set(rowIndexCol+overviewColSize+addInfoColSize, "辅件设备");
+				for(int i=1;i<maxAuxiliaryDeviceCount*4;i++){
+					firstFeadList.set(rowIndexCol+overviewColSize+addInfoColSize+i, ExcelUtils.COLUMN_MERGE);
+				}
+			}
+			
+			for(int i=0;i<firstFeadList.size();i++){
+				firstHeadRow.add(firstFeadList.get(i));
+			}
+		    sheetDataList.add(firstHeadRow);
+			
+		    //创建第二行表头
 			List<Object> headRow = new ArrayList<>();
+			if(rowIndexCol==1){
+				headList.set(rowIndexCol-1, ExcelUtils.ROW_MERGE);
+			}
 			for(int i=0;i<headList.size();i++){
 				headRow.add(headList.get(i));
 			}
-		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
-			
+		    
 			for(int i=0;i<dataList.size();i++){
 				record = new ArrayList<>();
 				jsonObject = JSONObject.fromObject(dataList.get(i).replaceAll("null", ""));
@@ -764,9 +853,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				sheetDataList.add(record);
 			}
-			
-			
-			ExcelUtils.export(response,fileName,title, sheetDataList);
+			ExcelUtils.export(response,fileName,title, sheetDataList,2);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,"导出文件:"+title);

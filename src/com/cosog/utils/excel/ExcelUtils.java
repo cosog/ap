@@ -381,22 +381,22 @@ public class ExcelUtils {
         return cell.getCellFormula();
     }
  
-    public static <T> void exportTemplate(HttpServletResponse response, String fileName, Class<T> clazz) {
-        exportTemplate(response, fileName, fileName, clazz, false);
+    public static <T> void exportTemplate(HttpServletResponse response, String fileName, Class<T> clazz,int titleSize) {
+        exportTemplate(response, fileName, fileName, clazz, false,titleSize);
     }
  
     public static <T> void exportTemplate(HttpServletResponse response, String fileName, String sheetName,
-                                          Class<T> clazz) {
-        exportTemplate(response, fileName, sheetName, clazz, false);
+                                          Class<T> clazz,int titleSize) {
+        exportTemplate(response, fileName, sheetName, clazz, false,titleSize);
     }
  
     public static <T> void exportTemplate(HttpServletResponse response, String fileName, Class<T> clazz,
-                                          boolean isContainExample) {
-        exportTemplate(response, fileName, fileName, clazz, isContainExample);
+                                          boolean isContainExample,int titleSize) {
+        exportTemplate(response, fileName, fileName, clazz, isContainExample,titleSize);
     }
  
     public static <T> void exportTemplate(HttpServletResponse response, String fileName, String sheetName,
-                                          Class<T> clazz, boolean isContainExample) {
+                                          Class<T> clazz, boolean isContainExample,int titleSize) {
         // 获取表头字段
         List<ExcelClassField> headFieldList = getExcelClassFieldList(clazz);
         // 获取表头数据和示例数据
@@ -418,7 +418,7 @@ public class ExcelUtils {
             sheetDataList.add(exampleList);
         }
         // 导出数据
-        export(response, fileName, sheetName, sheetDataList, selectMap);
+        export(response, fileName, sheetName, sheetDataList, selectMap,titleSize);
     }
  
     private static <T> List<ExcelClassField> getExcelClassFieldList(Class<T> clazz) {
@@ -521,7 +521,7 @@ public class ExcelUtils {
      * @param file      本地文件对象
      * @param sheetData 导出数据
      */
-    public static void exportFile(File file, List<List<Object>> sheetData) {
+    public static void exportFile(File file, List<List<Object>> sheetData,int titleSize) {
         if (file == null) {
             System.out.println("文件创建失败");
             return;
@@ -531,7 +531,7 @@ public class ExcelUtils {
         }
         Map<String, List<List<Object>>> map = new HashMap<>();
         map.put(file.getName(), sheetData);
-        export(null, file, file.getName(), map, null);
+        export(null, file, file.getName(), map, null,titleSize);
     }
  
     /**
@@ -543,10 +543,10 @@ public class ExcelUtils {
      * @param list     导出数据
      * @throws IOException IO异常
      */
-    public static <T> File exportFile(String filePath, String fileName, List<T> list) throws IOException {
+    public static <T> File exportFile(String filePath, String fileName, List<T> list,int titleSize) throws IOException {
         File file = getFile(filePath, fileName);
         List<List<Object>> sheetData = getSheetData(list);
-        exportFile(file, sheetData);
+        exportFile(file, sheetData,titleSize);
         return file;
     }
  
@@ -653,55 +653,55 @@ public class ExcelUtils {
         return map;
     }
  
-    public static void exportEmpty(HttpServletResponse response, String fileName) {
+    public static void exportEmpty(HttpServletResponse response, String fileName,int titleSize) {
         List<List<Object>> sheetDataList = new ArrayList<>();
         List<Object> headList = new ArrayList<>();
         headList.add("导出无数据");
         sheetDataList.add(headList);
-        export(response, fileName, sheetDataList);
+        export(response, fileName, sheetDataList,titleSize);
     }
  
-    public static void export(HttpServletResponse response, String fileName, List<List<Object>> sheetDataList) {
-        export(response, fileName, fileName, sheetDataList, null);
+    public static void export(HttpServletResponse response, String fileName, List<List<Object>> sheetDataList,int titleSize) {
+        export(response, fileName, fileName, sheetDataList, null,titleSize);
     }
  
-    public static void exportManySheet(HttpServletResponse response, String fileName, Map<String, List<List<Object>>> sheetMap) {
-        export(response, null, fileName, sheetMap, null);
+    public static void exportManySheet(HttpServletResponse response, String fileName, Map<String, List<List<Object>>> sheetMap,int titleSize) {
+        export(response, null, fileName, sheetMap, null,titleSize);
     }
  
  
-    public static void export(HttpServletResponse response, String fileName, String sheetName,List<List<Object>> sheetDataList) {
-        export(response, fileName, sheetName, sheetDataList, null);
+    public static void export(HttpServletResponse response, String fileName, String sheetName,List<List<Object>> sheetDataList,int titleSize) {
+        export(response, fileName, sheetName, sheetDataList, null,titleSize);
     }
  
     public static void export(HttpServletResponse response, String fileName, String sheetName,
-                              List<List<Object>> sheetDataList, Map<Integer, List<String>> selectMap) {
+                              List<List<Object>> sheetDataList, Map<Integer, List<String>> selectMap,int titleSize) {
  
         Map<String, List<List<Object>>> map = new HashMap<>();
         map.put(sheetName, sheetDataList);
-        export(response, null, fileName, map, selectMap);
+        export(response, null, fileName, map, selectMap,titleSize);
     }
  
-    public static <T, K> void export(HttpServletResponse response, String fileName, List<T> list, Class<K> template) {
+    public static <T, K> void export(HttpServletResponse response, String fileName, List<T> list, Class<K> template,int titleSize) {
         // list 是否为空
         boolean lisIsEmpty = list == null || list.isEmpty();
         // 如果模板数据为空，且导入的数据为空，则导出空文件
         if (template == null && lisIsEmpty) {
-            exportEmpty(response, fileName);
+            exportEmpty(response, fileName,titleSize);
             return;
         }
         // 如果 list 数据，则导出模板数据
         if (lisIsEmpty) {
-            exportTemplate(response, fileName, template);
+            exportTemplate(response, fileName, template,titleSize);
             return;
         }
         // 导出数据
         List<List<Object>> sheetDataList = getSheetData(list);
-        export(response, fileName, sheetDataList);
+        export(response, fileName, sheetDataList,titleSize);
     }
  
-    public static void export(HttpServletResponse response, String fileName, List<List<Object>> sheetDataList, Map<Integer, List<String>> selectMap) {
-        export(response, fileName, fileName, sheetDataList, selectMap);
+    public static void export(HttpServletResponse response, String fileName, List<List<Object>> sheetDataList, Map<Integer, List<String>> selectMap,int titleSize) {
+        export(response, fileName, fileName, sheetDataList, selectMap,titleSize);
     }
     
     private static void export(HttpServletResponse response,String fileName,String sheetName,String head,String field,List<Object> record){
@@ -769,7 +769,7 @@ public class ExcelUtils {
     }
  
     private static void export(HttpServletResponse response, File file, String fileName,
-                               Map<String, List<List<Object>>> sheetMap, Map<Integer, List<String>> selectMap) {
+                               Map<String, List<List<Object>>> sheetMap, Map<Integer, List<String>> selectMap,int titleSize) {
         // 整个 Excel 表格 book 对象
         SXSSFWorkbook book = new SXSSFWorkbook();
         // 每个 Sheet 页
@@ -815,7 +815,7 @@ public class ExcelUtils {
                         setCellPicture(book, row, patriarch, i, j, (URL) o);
                     } else {
                         Cell cell = row.createCell(j);
-                        if (i == 0) {
+                        if (i < titleSize) {
                             // 第一行为表头行，采用灰色底背景
                             v = setCellValue(cell, o, headStyle);
                         } else {

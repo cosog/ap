@@ -174,7 +174,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 				}
 				sheetDataList.add(record);
 			}
-			ExcelUtils.export(response,fileName,title, sheetDataList);
+			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,"导出文件:"+title);
@@ -309,7 +309,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 				}
 				sheetDataList.add(record);
 			}
-			ExcelUtils.export(response,fileName,title, sheetDataList);
+			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,"导出文件:"+title);

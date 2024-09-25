@@ -869,39 +869,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		return true;
 	}
-	
-	public int getPCPDeviceRealTimeOverviewDataPage(String orgId,String deviceId,String deviceName,String deviceType,String commStatusStatValue,String runStatusStatValue,
-			String deviceTypeStatValue,String limit){
-		int dataPage=1;
-		try{
-			String tableName="tbl_pcpacqdata_latest";
-			String deviceTableName="tbl_pcpdevice";
-			
-			String sql="select t.id from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
-					+ " where  t.orgid in ("+orgId+") ";
-			if(StringManagerUtils.isNum(deviceType)){
-				sql+= " and t.devicetype="+deviceType;
-			}else{
-				sql+= " and t.devicetype in ("+deviceType+")";
-			}
-			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
-			}
-			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
-			}
-			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
-				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
-			}
-			sql+=" order by t.sortnum,t.devicename";
-			dataPage=this.getDataPage(StringManagerUtils.stringToInteger(deviceId), sql, StringManagerUtils.stringToInteger(limit));
-		}catch(Exception e){
-			dataPage=1;
-		}
-		return dataPage;
-	}
 
 	public String getDeviceRealTimeMonitoringData(String deviceId,String deviceName,String deviceType,String calculateType,int userNo) throws IOException, SQLException{
 		int items=3;

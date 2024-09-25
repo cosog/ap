@@ -32,6 +32,7 @@ import com.cosog.model.DataWriteBackConfig;
 import com.cosog.model.KeyValue;
 import com.cosog.model.Org;
 import com.cosog.model.ProtocolRunStatusConfig;
+import com.cosog.model.RealtimeTotalInfo;
 import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
@@ -125,6 +126,29 @@ public class DriverAPIController extends BaseController{
 				String realtimeTable="tbl_acqdata_latest";
 				String historyTable="tbl_acqdata_hist";
 				DeviceInfo deviceInfo=deviceList.get(i);
+				RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
+				if(realtimeTotalInfo==null){
+					realtimeTotalInfo=new RealtimeTotalInfo();
+					realtimeTotalInfo.setDeviceId(deviceInfo.getId());
+					realtimeTotalInfo.setDeviceName(deviceInfo.getDeviceName());
+					
+					realtimeTotalInfo.setAcqTime(deviceInfo.getAcqTime());
+					realtimeTotalInfo.setOnLineAcqTime(deviceInfo.getOnLineAcqTime());
+					realtimeTotalInfo.setCommStatus(deviceInfo.getCommStatus());
+					realtimeTotalInfo.setCommTime(deviceInfo.getCommTime());
+					realtimeTotalInfo.setCommEff(deviceInfo.getCommEff());
+					realtimeTotalInfo.setCommRange(deviceInfo.getCommRange());
+					realtimeTotalInfo.setOnLineCommStatus(deviceInfo.getOnLineCommStatus());
+					realtimeTotalInfo.setOnLineCommTime(deviceInfo.getOnLineCommTime());
+					realtimeTotalInfo.setOnLineCommEff(deviceInfo.getOnLineCommEff());
+					realtimeTotalInfo.setOnLineCommRange(deviceInfo.getOnLineCommRange());
+					realtimeTotalInfo.setRunStatus(deviceInfo.getRunStatus());
+					realtimeTotalInfo.setRunTime(deviceInfo.getRunTime());
+					realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
+					realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
+					
+					realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+				}
 				String instanceCode=deviceInfo.getInstanceCode();
 				if(!(!StringManagerUtils.isNotNull(instanceCode)||instanceCode.toUpperCase().contains("KAFKA")||instanceCode.toUpperCase().contains("RPC") || instanceCode.toUpperCase().contains("MQTT"))){
 					if(deviceInfo.getOnLineCommStatus()>0){
@@ -197,10 +221,24 @@ public class DriverAPIController extends BaseController{
 							deviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 							deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 							deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							
+							realtimeTotalInfo.setAcqTime(time);
+							realtimeTotalInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+							realtimeTotalInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+							realtimeTotalInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							
+							realtimeTotalInfo.setOnLineAcqTime(time);
+							realtimeTotalInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+							realtimeTotalInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+							realtimeTotalInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							
+							
+							
 						}
 						String key=deviceInfo.getId()+"";
 						
 						MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
+						MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
 					}
 				}
 			
@@ -282,6 +320,7 @@ public class DriverAPIController extends BaseController{
 						for(int i=0;i<deviceInfoList.size();i++){
 							//抽油机
 							DeviceInfo deviceInfo=deviceInfoList.get(i);
+							
 							deviceType=deviceInfo.getDeviceType();
 							deviceTypeName=deviceInfo.getDeviceTypeName();
 							deviceId=deviceInfo.getId();
@@ -396,13 +435,43 @@ public class DriverAPIController extends BaseController{
 							
 							if(deviceInfo!=null){
 								deviceInfo.setOnLineCommStatus(acqOnline.getStatus()?2:0);
+								
+								RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
+								if(realtimeTotalInfo==null){
+									realtimeTotalInfo=new RealtimeTotalInfo();
+									realtimeTotalInfo.setDeviceId(deviceInfo.getId());
+									realtimeTotalInfo.setDeviceName(deviceInfo.getDeviceName());
+									
+									realtimeTotalInfo.setAcqTime(deviceInfo.getAcqTime());
+									realtimeTotalInfo.setOnLineAcqTime(deviceInfo.getOnLineAcqTime());
+									realtimeTotalInfo.setCommStatus(deviceInfo.getCommStatus());
+									realtimeTotalInfo.setCommTime(deviceInfo.getCommTime());
+									realtimeTotalInfo.setCommEff(deviceInfo.getCommEff());
+									realtimeTotalInfo.setCommRange(deviceInfo.getCommRange());
+									realtimeTotalInfo.setOnLineCommStatus(deviceInfo.getOnLineCommStatus());
+									realtimeTotalInfo.setOnLineCommTime(deviceInfo.getOnLineCommTime());
+									realtimeTotalInfo.setOnLineCommEff(deviceInfo.getOnLineCommEff());
+									realtimeTotalInfo.setOnLineCommRange(deviceInfo.getOnLineCommRange());
+									realtimeTotalInfo.setRunStatus(deviceInfo.getRunStatus());
+									realtimeTotalInfo.setRunTime(deviceInfo.getRunTime());
+									realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
+									realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
+									
+									realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+								}
+								
 								if(commResponseData!=null && commResponseData.getResultStatus()==1){
 									deviceInfo.setOnLineAcqTime(acqTime);
 									deviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 									deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 									deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+									realtimeTotalInfo.setOnLineAcqTime(acqTime);
+									realtimeTotalInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+									realtimeTotalInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+									realtimeTotalInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 								}
 								MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
+								MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
 							}
 							webSocketSendData = new StringBuffer();
 							webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
@@ -609,13 +678,42 @@ public class DriverAPIController extends BaseController{
 							
 							if(deviceInfo!=null){
 								deviceInfo.setOnLineCommStatus(acqOnline.getStatus()?2:0);
+								RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
+								if(realtimeTotalInfo==null){
+									realtimeTotalInfo=new RealtimeTotalInfo();
+									realtimeTotalInfo.setDeviceId(deviceInfo.getId());
+									realtimeTotalInfo.setDeviceName(deviceInfo.getDeviceName());
+									
+									realtimeTotalInfo.setAcqTime(deviceInfo.getAcqTime());
+									realtimeTotalInfo.setOnLineAcqTime(deviceInfo.getOnLineAcqTime());
+									realtimeTotalInfo.setCommStatus(deviceInfo.getCommStatus());
+									realtimeTotalInfo.setCommTime(deviceInfo.getCommTime());
+									realtimeTotalInfo.setCommEff(deviceInfo.getCommEff());
+									realtimeTotalInfo.setCommRange(deviceInfo.getCommRange());
+									realtimeTotalInfo.setOnLineCommStatus(deviceInfo.getOnLineCommStatus());
+									realtimeTotalInfo.setOnLineCommTime(deviceInfo.getOnLineCommTime());
+									realtimeTotalInfo.setOnLineCommEff(deviceInfo.getOnLineCommEff());
+									realtimeTotalInfo.setOnLineCommRange(deviceInfo.getOnLineCommRange());
+									realtimeTotalInfo.setRunStatus(deviceInfo.getRunStatus());
+									realtimeTotalInfo.setRunTime(deviceInfo.getRunTime());
+									realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
+									realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
+									
+									realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+								}
 								if(commResponseData!=null && commResponseData.getResultStatus()==1){
-									deviceInfo.setOnLineAcqTime(acqTime);
-									deviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
-									deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
-									deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+									realtimeTotalInfo.setOnLineAcqTime(acqTime);
+									realtimeTotalInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+									realtimeTotalInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+									realtimeTotalInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+									
+									realtimeTotalInfo.setOnLineAcqTime(acqTime);
+									realtimeTotalInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+									realtimeTotalInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+									realtimeTotalInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 								}
 								MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
+								MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
 							}
 							
 							webSocketSendData = new StringBuffer();
@@ -1751,6 +1849,36 @@ public class DriverAPIController extends BaseController{
 					WorkType workType=null;
 					PCPCalculateResponseData pcpCalculateResponseData=null;
 					
+					RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
+					if(realtimeTotalInfo==null){
+						realtimeTotalInfo=new RealtimeTotalInfo();
+						realtimeTotalInfo.setDeviceId(deviceInfo.getId());
+						realtimeTotalInfo.setDeviceName(deviceInfo.getDeviceName());
+						
+						realtimeTotalInfo.setAcqTime(deviceInfo.getAcqTime());
+						realtimeTotalInfo.setOnLineAcqTime(deviceInfo.getOnLineAcqTime());
+						realtimeTotalInfo.setCommStatus(deviceInfo.getCommStatus());
+						realtimeTotalInfo.setCommTime(deviceInfo.getCommTime());
+						realtimeTotalInfo.setCommEff(deviceInfo.getCommEff());
+						realtimeTotalInfo.setCommRange(deviceInfo.getCommRange());
+						realtimeTotalInfo.setOnLineCommStatus(deviceInfo.getOnLineCommStatus());
+						realtimeTotalInfo.setOnLineCommTime(deviceInfo.getOnLineCommTime());
+						realtimeTotalInfo.setOnLineCommEff(deviceInfo.getOnLineCommEff());
+						realtimeTotalInfo.setOnLineCommRange(deviceInfo.getOnLineCommRange());
+						realtimeTotalInfo.setRunStatus(deviceInfo.getRunStatus());
+						realtimeTotalInfo.setRunTime(deviceInfo.getRunTime());
+						realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
+						realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
+						
+						realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+					}else{
+						if(!StringManagerUtils.timeMatchDate(realtimeTotalInfo.getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){//如果跨天 清理数据
+							realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+						}
+					}
+					
+					
+					
 					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
 					int runStatus=2;
 					int checkSign=acqGroupDataCheck(protocol,acqGroup)?1:0;
@@ -1774,22 +1902,57 @@ public class DriverAPIController extends BaseController{
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
 							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
-							String columnName="";
-							try{
-								columnName=dataMappingColumn.getMappingColumn();
-							}catch(Exception e){
-//								printDenugInfo(protocolItemResolutionDataList.get(i).getRawColumnName());
+							String mappingColumn="";
+							if(dataMappingColumn!=null){
+								mappingColumn=dataMappingColumn.getMappingColumn();
 							}
 							
 							String rawValue=protocolItemResolutionDataList.get(i).getRawValue();
 							if(runStatus==2){
-								runStatus=RunStatusProcessing(rawValue,(protocol.getCode()+"_"+columnName).toUpperCase());
+								runStatus=RunStatusProcessing(rawValue,(protocol.getCode()+"_"+mappingColumn).toUpperCase());
 							}
 							
 							if(runStatus==2){
 								isAcqRunStatus=false;
 							}else{
 								isAcqRunStatus=true;
+							}
+							//计算采集数据实时汇总
+							if(checkSign==1 && StringManagerUtils.isNum(rawValue)){
+								if(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getResolutionMode())==2){
+									float newValue=StringManagerUtils.stringToFloat(rawValue);
+									Map<String, RealtimeTotalInfo.TotalItam> totalItamMap=realtimeTotalInfo.getTotalItamMap();
+									RealtimeTotalInfo.TotalItam totalItam=totalItamMap.get(mappingColumn);
+									if(totalItam==null){
+										totalItam=new RealtimeTotalInfo.TotalItam();
+										totalItam.setItem(mappingColumn);
+										totalItam.setTotalStatus(new RealtimeTotalInfo.ItemTotalStatus());
+										totalItam.getTotalStatus().setCalTime(acqTime);
+										totalItam.getTotalStatus().setCount(1);
+										totalItam.getTotalStatus().setSum(newValue);
+										totalItam.getTotalStatus().setMaxValue(newValue);
+										totalItam.getTotalStatus().setMinValue(newValue);
+										totalItam.getTotalStatus().setAvgValue(newValue);
+										totalItam.getTotalStatus().setOldestValue(newValue);
+										totalItam.getTotalStatus().setNewestValue(newValue);
+										
+										totalItamMap.put(mappingColumn, totalItam);
+									}else{
+										totalItam.getTotalStatus().setCalTime(acqTime);
+										totalItam.getTotalStatus().setCount(totalItam.getTotalStatus().getCount()+1);
+										totalItam.getTotalStatus().setSum(totalItam.getTotalStatus().getSum()+newValue);
+										totalItam.getTotalStatus().setAvgValue(  totalItam.getTotalStatus().getSum()/totalItam.getTotalStatus().getCount()   );
+										
+										
+										if(newValue>totalItam.getTotalStatus().getMaxValue()){
+											totalItam.getTotalStatus().setMaxValue(newValue);
+										}
+										if(newValue<totalItam.getTotalStatus().getMinValue()){
+											totalItam.getTotalStatus().setMinValue(newValue);
+										}
+										totalItam.getTotalStatus().setNewestValue(newValue);
+									}
+								}
 							}
 						}
 					}
@@ -1890,6 +2053,9 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
+					
+					
+					
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,rpcCalculateResponseData);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList);
 					
@@ -2001,6 +2167,26 @@ public class DriverAPIController extends BaseController{
 					
 					//放入内存数据库中
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
+					
+					realtimeTotalInfo.setDeviceId(deviceInfo.getId());
+					realtimeTotalInfo.setDeviceName(deviceInfo.getDeviceName());
+					realtimeTotalInfo.setAcqTime(deviceInfo.getAcqTime());
+					realtimeTotalInfo.setOnLineAcqTime(deviceInfo.getOnLineAcqTime());
+					realtimeTotalInfo.setCommStatus(deviceInfo.getCommStatus());
+					realtimeTotalInfo.setCommTime(deviceInfo.getCommTime());
+					realtimeTotalInfo.setCommEff(deviceInfo.getCommEff());
+					realtimeTotalInfo.setCommRange(deviceInfo.getCommRange());
+					realtimeTotalInfo.setOnLineCommStatus(deviceInfo.getOnLineCommStatus());
+					realtimeTotalInfo.setOnLineCommTime(deviceInfo.getOnLineCommTime());
+					realtimeTotalInfo.setOnLineCommEff(deviceInfo.getOnLineCommEff());
+					realtimeTotalInfo.setOnLineCommRange(deviceInfo.getOnLineCommRange());
+					realtimeTotalInfo.setRunStatus(deviceInfo.getRunStatus());
+					realtimeTotalInfo.setRunTime(deviceInfo.getRunTime());
+					realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
+					realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
+					MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
+					
+					
 					//处理websocket推送
 					if(displayInstanceOwnItem!=null){
 						for (String websocketClientUser : websocketClientUserList) {

@@ -28,9 +28,11 @@ import com.cosog.model.DataSourceConfig;
 import com.cosog.model.DataWriteBackConfig;
 import com.cosog.model.KeyValue;
 import com.cosog.model.ProtocolRunStatusConfig;
+import com.cosog.model.RealtimeTotalInfo;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
+import com.cosog.model.RealtimeTotalInfo.TotalItam;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AcqInstanceOwnItem.AcqItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
@@ -4178,6 +4180,115 @@ public class MemoryDataManagerTask {
 			}
 		}
 	}
+	
+	public static void updateDeviceRealtimeTotalData(RealtimeTotalInfo realtimeTotalInfo){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			jedis.hset("DeviceRealtimeTotalData".getBytes(), (realtimeTotalInfo.getDeviceId()+"").getBytes(), SerializeObjectUnils.serialize(realtimeTotalInfo));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static RealtimeTotalInfo getDeviceRealtimeTotalDataById(String deviceId){
+		Jedis jedis=null;
+		RealtimeTotalInfo realtimeTotalInfo=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("DeviceRealtimeTotalData".getBytes())){
+				MemoryDataManagerTask.loadDeviceRealtimeTotalData(null,0);
+			}
+			if(jedis.hexists("DeviceRealtimeTotalData".getBytes(), deviceId.getBytes())){
+				realtimeTotalInfo=(RealtimeTotalInfo) SerializeObjectUnils.unserizlize(jedis.hget("DeviceRealtimeTotalData".getBytes(), deviceId.getBytes()));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return realtimeTotalInfo;
+	}
+	
+	public static void loadDeviceRealtimeTotalData(List<String> wellList,int condition){//condition 0 -设备ID 1-设备名称
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			
+			String wells="";
+			if(condition==0){
+				wells=StringUtils.join(wellList, ",");
+			}else{
+				wells=StringManagerUtils.joinStringArr2(wellList, ",");
+			}	
+					
+			String sql="select t2.id,t2.devicename,to_char(t.caltime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
+					+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
+					+ " t.caldata "
+					+ " from tbl_realtimetotalcalculationdata t,tbl_device t2 "
+					+ " where t.deviceid=t2.id";
+			if(StringManagerUtils.isNotNull(wells)){
+				if(condition==0){
+					sql+=" and t2.id in("+wells+")";
+				}else{
+					sql+=" and t2.deviceName in("+wells+")";
+				}
+			}
+			sql+= "order by t2.id";
+
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			
+			for(Object[] obj:list){
+				RealtimeTotalInfo realtimeTotalInfo=new RealtimeTotalInfo();
+				String deviceIdStr=obj[0]+"";
+				if(StringManagerUtils.isNum(deviceIdStr)){
+					String calData=obj[11]+"";
+					String key=deviceIdStr;
+					type = new TypeToken<Map<String,RealtimeTotalInfo.TotalItam>>() {}.getType();
+					Map<String,RealtimeTotalInfo.TotalItam> calDataMap=gson.fromJson(calData, type);
+					
+					realtimeTotalInfo.setDeviceId(StringManagerUtils.stringTransferInteger(deviceIdStr));
+					realtimeTotalInfo.setDeviceName(obj[1]+"");
+					realtimeTotalInfo.setAcqTime(obj[2]+"");
+					
+					realtimeTotalInfo.setCommStatus(StringManagerUtils.stringTransferInteger(obj[3]+""));
+					realtimeTotalInfo.setCommTime(StringManagerUtils.stringToFloat(obj[4]+""));
+					realtimeTotalInfo.setCommEff(StringManagerUtils.stringToFloat(obj[5]+""));
+					realtimeTotalInfo.setCommRange(obj[6]+"");
+					
+					realtimeTotalInfo.setOnLineCommStatus(StringManagerUtils.stringTransferInteger(obj[3]+""));
+					realtimeTotalInfo.setOnLineCommTime(StringManagerUtils.stringToFloat(obj[4]+""));
+					realtimeTotalInfo.setOnLineCommEff(StringManagerUtils.stringToFloat(obj[5]+""));
+					realtimeTotalInfo.setOnLineCommRange(obj[6]+"");
+					
+					realtimeTotalInfo.setRunStatus(StringManagerUtils.stringTransferInteger(obj[7]+""));
+					realtimeTotalInfo.setRunTime(StringManagerUtils.stringToFloat(obj[8]+""));
+					realtimeTotalInfo.setRunEff(StringManagerUtils.stringToFloat(obj[9]+""));
+					realtimeTotalInfo.setRunRange(obj[10]+"");
+					
+					realtimeTotalInfo.setTotalItamMap(calDataMap);
+					
+					jedis.hset("DeviceRealtimeTotalData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(realtimeTotalInfo));
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
 	
 	public static void loadTodayFESDiagram(List<String> wellList,int condition){//condition 0 -设备ID 1-设备名称
 		Connection conn = null;

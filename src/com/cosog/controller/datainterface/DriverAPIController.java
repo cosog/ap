@@ -147,7 +147,7 @@ public class DriverAPIController extends BaseController{
 					realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
 					realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
 					
-					realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+					realtimeTotalInfo.setTotalItemMap(new HashMap<>());
 				}
 				String instanceCode=deviceInfo.getInstanceCode();
 				if(!(!StringManagerUtils.isNotNull(instanceCode)||instanceCode.toUpperCase().contains("KAFKA")||instanceCode.toUpperCase().contains("RPC") || instanceCode.toUpperCase().contains("MQTT"))){
@@ -457,7 +457,7 @@ public class DriverAPIController extends BaseController{
 									realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
 									realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
 									
-									realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+									realtimeTotalInfo.setTotalItemMap(new HashMap<>());
 								}
 								
 								if(commResponseData!=null && commResponseData.getResultStatus()==1){
@@ -699,7 +699,7 @@ public class DriverAPIController extends BaseController{
 									realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
 									realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
 									
-									realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+									realtimeTotalInfo.setTotalItemMap(new HashMap<>());
 								}
 								if(commResponseData!=null && commResponseData.getResultStatus()==1){
 									realtimeTotalInfo.setOnLineAcqTime(acqTime);
@@ -1870,10 +1870,10 @@ public class DriverAPIController extends BaseController{
 						realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
 						realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
 						
-						realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+						realtimeTotalInfo.setTotalItemMap(new HashMap<>());
 					}else{
 						if(!StringManagerUtils.timeMatchDate(realtimeTotalInfo.getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){//如果跨天 清理数据
-							realtimeTotalInfo.setTotalItamMap(new HashMap<>());
+							realtimeTotalInfo.setTotalItemMap(new HashMap<>());
 						}
 					}
 					
@@ -1900,6 +1900,7 @@ public class DriverAPIController extends BaseController{
 					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
 					
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
+						Map<String,DailyTotalItem> dailyTotalItemMap=deviceInfo.getDailyTotalItemMap();
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
 							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
 							String mappingColumn="";
@@ -1918,40 +1919,48 @@ public class DriverAPIController extends BaseController{
 								isAcqRunStatus=true;
 							}
 							//计算采集数据实时汇总
+							
 							if(checkSign==1 && StringManagerUtils.isNum(rawValue)){
 								if(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getResolutionMode())==2){
 									float newValue=StringManagerUtils.stringToFloat(rawValue);
-									Map<String, RealtimeTotalInfo.TotalItam> totalItamMap=realtimeTotalInfo.getTotalItamMap();
-									RealtimeTotalInfo.TotalItam totalItam=totalItamMap.get(mappingColumn);
-									if(totalItam==null){
-										totalItam=new RealtimeTotalInfo.TotalItam();
-										totalItam.setItem(mappingColumn);
-										totalItam.setTotalStatus(new RealtimeTotalInfo.ItemTotalStatus());
-										totalItam.getTotalStatus().setCalTime(acqTime);
-										totalItam.getTotalStatus().setCount(1);
-										totalItam.getTotalStatus().setSum(newValue);
-										totalItam.getTotalStatus().setMaxValue(newValue);
-										totalItam.getTotalStatus().setMinValue(newValue);
-										totalItam.getTotalStatus().setAvgValue(newValue);
-										totalItam.getTotalStatus().setOldestValue(newValue);
-										totalItam.getTotalStatus().setNewestValue(newValue);
-										
-										totalItamMap.put(mappingColumn, totalItam);
+									Map<String, RealtimeTotalInfo.TotalItem> totalItemMap=realtimeTotalInfo.getTotalItemMap();
+									RealtimeTotalInfo.TotalItem totalItem=totalItemMap.get(mappingColumn);
+									if(totalItem==null){
+										totalItem=new RealtimeTotalInfo.TotalItem();
+										totalItem.setItem(mappingColumn);
+										totalItem.setTotalStatus(new RealtimeTotalInfo.ItemTotalStatus());
+										totalItem.getTotalStatus().setCalTime(acqTime);
+										totalItem.getTotalStatus().setCount(1);
+										totalItem.getTotalStatus().setSum(newValue);
+										totalItem.getTotalStatus().setMaxValue(newValue);
+										totalItem.getTotalStatus().setMinValue(newValue);
+										totalItem.getTotalStatus().setAvgValue(newValue);
+										totalItem.getTotalStatus().setOldestValue(newValue);
+										totalItem.getTotalStatus().setNewestValue(newValue);
 									}else{
-										totalItam.getTotalStatus().setCalTime(acqTime);
-										totalItam.getTotalStatus().setCount(totalItam.getTotalStatus().getCount()+1);
-										totalItam.getTotalStatus().setSum(totalItam.getTotalStatus().getSum()+newValue);
-										totalItam.getTotalStatus().setAvgValue(  totalItam.getTotalStatus().getSum()/totalItam.getTotalStatus().getCount()   );
+										if(totalItem.getTotalStatus()==null){
+											totalItem.setTotalStatus(new RealtimeTotalInfo.ItemTotalStatus());
+										}
+										totalItem.getTotalStatus().setCalTime(acqTime);
+										totalItem.getTotalStatus().setCount(totalItem.getTotalStatus().getCount()+1);
+										totalItem.getTotalStatus().setSum(totalItem.getTotalStatus().getSum()+newValue);
+										totalItem.getTotalStatus().setAvgValue(  totalItem.getTotalStatus().getSum()/totalItem.getTotalStatus().getCount()   );
 										
 										
-										if(newValue>totalItam.getTotalStatus().getMaxValue()){
-											totalItam.getTotalStatus().setMaxValue(newValue);
+										if(newValue>totalItem.getTotalStatus().getMaxValue()){
+											totalItem.getTotalStatus().setMaxValue(newValue);
 										}
-										if(newValue<totalItam.getTotalStatus().getMinValue()){
-											totalItam.getTotalStatus().setMinValue(newValue);
+										if(newValue<totalItem.getTotalStatus().getMinValue()){
+											totalItem.getTotalStatus().setMinValue(newValue);
 										}
-										totalItam.getTotalStatus().setNewestValue(newValue);
+										totalItem.getTotalStatus().setNewestValue(newValue);
 									}
+									//判断该项是否进行日汇总计算
+									if(dailyTotalItemMap!=null && dailyTotalItemMap.containsKey(mappingColumn)){
+										totalItem.getTotalStatus().setDailyTotalSign(true);
+										totalItem.getTotalStatus().setDailyTotalValue(dailyTotalItemMap.get(mappingColumn).getTotalValue());
+									}
+									totalItemMap.put(mappingColumn, totalItem);
 								}
 							}
 						}
@@ -2129,10 +2138,33 @@ public class DriverAPIController extends BaseController{
 						
 						
 						
-						//更新汇总区间数据
+						//更新汇总clob数据
+						String totalCalData="";
+						List<KeyValue> deviceTotalDataList=new ArrayList<>();
+						Map<String, RealtimeTotalInfo.TotalItem> totalItemMap=realtimeTotalInfo.getTotalItemMap();
+						Iterator<Map.Entry<String, RealtimeTotalInfo.TotalItem>> totalItemMapIterator = totalItemMap.entrySet().iterator();
+						while (totalItemMapIterator.hasNext()) {
+							Map.Entry<String, RealtimeTotalInfo.TotalItem> entry = totalItemMapIterator.next();
+							 String itemCode=entry.getKey();
+							 String tatalValue="";
+							 RealtimeTotalInfo.TotalItem totalItem=entry.getValue();
+							 tatalValue=(totalItem.getTotalStatus().getMaxValue()+";"
+							 +totalItem.getTotalStatus().getMinValue()+";"
+							 +totalItem.getTotalStatus().getAvgValue()+";"
+							 +totalItem.getTotalStatus().getOldestValue()+";"
+							 +totalItem.getTotalStatus().getNewestValue()+";"
+							 +(totalItem.getTotalStatus().getDailyTotalSign()?totalItem.getTotalStatus().getDailyTotalValue():" ")).replaceAll("null", "");
+							 
+							 KeyValue keyValue=new KeyValue(itemCode,tatalValue);
+							 deviceTotalDataList.add(keyValue);
+						}
+						totalCalData=new Gson().toJson(deviceTotalDataList);
+						
+						
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							List<String> totalClobCont=new ArrayList<String>();
-							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
+							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.caldate=?, t.commrange=?";
+							totalClobCont.add(totalCalData);
 							totalClobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
 								updateTotalRangeClobSql+=", t.runrange=?";
@@ -2147,10 +2179,7 @@ public class DriverAPIController extends BaseController{
 						//保存日汇总数据
 						saveDailyTotalData(deviceInfo);
 						//统计
-//						t1=System.nanoTime();
 //						CalculateDataManagerTask.acquisitionDataTotalCalculate(deviceInfo.getId()+"", date);
-//						t2=System.nanoTime();
-//						printDenugInfo(acqTime+":"+deviceInfo.getDeviceName()+"实时汇总计算耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 						//报警项
 						if(alarm){
 							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getDeviceName(),deviceInfo.getDeviceType()+"",deviceInfo.getDeviceTypeName(),acqTime,acquisitionItemInfoList);
@@ -2168,6 +2197,7 @@ public class DriverAPIController extends BaseController{
 					//放入内存数据库中
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 					
+					//实时汇总放入内存数据库中
 					realtimeTotalInfo.setDeviceId(deviceInfo.getId());
 					realtimeTotalInfo.setDeviceName(deviceInfo.getDeviceName());
 					realtimeTotalInfo.setAcqTime(deviceInfo.getAcqTime());

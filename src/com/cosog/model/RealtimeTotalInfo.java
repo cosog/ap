@@ -39,10 +39,10 @@ public class RealtimeTotalInfo implements java.io.Serializable{
 	
 	private String onLineCommRange;
 	
-	private Map<String,TotalItam> totalItamMap;
+	private Map<String,TotalItem> totalItemMap;
 	
 	
-	public static class TotalItam implements java.io.Serializable {
+	public static class TotalItem implements java.io.Serializable {
 		
 		private static final long serialVersionUID = 1L;
 		
@@ -93,6 +93,8 @@ public class RealtimeTotalInfo implements java.io.Serializable{
 		private float newestValue;
 		
 		private float dailyTotalValue;
+		
+		private boolean dailyTotalSign;//是否进行日汇总计算
 
 		public ItemTotalStatus() {
 			super();
@@ -182,6 +184,14 @@ public class RealtimeTotalInfo implements java.io.Serializable{
 
 		public void setDailyTotalValue(float dailyTotalValue) {
 			this.dailyTotalValue = dailyTotalValue;
+		}
+
+		public boolean getDailyTotalSign() {
+			return dailyTotalSign;
+		}
+
+		public void setDailyTotalSign(boolean dailyTotalSign) {
+			this.dailyTotalSign = dailyTotalSign;
 		}
 	}
 
@@ -273,14 +283,6 @@ public class RealtimeTotalInfo implements java.io.Serializable{
 		this.runRange = runRange;
 	}
 
-	public Map<String, TotalItam> getTotalItamMap() {
-		return totalItamMap;
-	}
-
-	public void setTotalItamMap(Map<String, TotalItam> totalItamMap) {
-		this.totalItamMap = totalItamMap;
-	}
-
 	public String getOnLineAcqTime() {
 		return onLineAcqTime;
 	}
@@ -319,6 +321,14 @@ public class RealtimeTotalInfo implements java.io.Serializable{
 
 	public void setOnLineCommRange(String onLineCommRange) {
 		this.onLineCommRange = onLineCommRange;
+	}
+
+	public Map<String, TotalItem> getTotalItemMap() {
+		return totalItemMap;
+	}
+
+	public void setTotalItemMap(Map<String, TotalItem> totalItemMap) {
+		this.totalItemMap = totalItemMap;
 	}
 	
 }

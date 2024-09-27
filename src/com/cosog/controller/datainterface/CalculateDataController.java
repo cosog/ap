@@ -207,8 +207,6 @@ public class CalculateDataController extends BaseController{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
 		List<String> requestDataList=null;
-		String endAcqTime=java.net.URLDecoder.decode(ParamUtils.getParameter(request, "endAcqTime"),"utf-8");
-		
 		String date="";
 		if(!StringManagerUtils.isNotNull(tatalDate)){
 			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd")),-1);

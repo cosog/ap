@@ -338,9 +338,121 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	public void AcquisitionDataDailyCalculation(String tatalDate,String deviceIdStr) throws ParseException{
 		String date="";
+		if(!StringManagerUtils.isNotNull(tatalDate)){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd")),-1);
+		}else{
+			date=tatalDate;
+		}
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		String statusSql="select t2.id, t2.devicename,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
+				+ " from tbl_acqdata_hist t,tbl_device t2 "
+				+ " where t.deviceId=t2.id "
+				+ " and t.acqTime=( select max(t3.acqTime) from tbl_acqdata_hist t3 where t3.deviceId=t.deviceId and t3.checksign=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
+		if(StringManagerUtils.isNotNull(deviceIdStr)){
+			statusSql+=" and t2.id in("+deviceIdStr+")";
+		}
+		statusSql+=" order by t2.id";
+		List<?> statusQueryList = findCallSql(statusSql);
+		for (int i=0;i<statusQueryList.size();i++) {
+			Object[] obj=(Object[]) statusQueryList.get(i);
+			String deviceId=obj[0]+"";
+			String deviceName=obj[1]+"";
+			 
+			int commStatus=0;
+			float commTime=0;
+			float commTimeEfficiency=0;
+			String commRange="";
+			int runStatus=0;
+			float runTime=0;
+			float runTimeEfficiency=0;
+			String runRange="";
+			 
+			try{
+				TimeEffResponseData timeEffResponseData=null;
+				CommResponseData commResponseData=null;
+
+				if(obj[3]!=null&&StringManagerUtils.stringToInteger(obj[3]+"")>=1){
+					commStatus=StringManagerUtils.stringToInteger(obj[3]+"");
+				}
+				String commTotalRequestData="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+deviceName+"\","
+						+ "\"OffsetHour\":"+offsetHour+","
+						+ "\"Last\":{"
+						+ "\"AcqTime\": \""+obj[2]+"\","
+						+ "\"CommStatus\": "+(commStatus>=1)+","
+						+ "\"CommEfficiency\": {"
+						+ "\"Efficiency\": "+obj[4]+","
+						+ "\"Time\": "+obj[5]+","
+						+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[6]))+""
+						+ "}"
+						+ "},"
+						+ "\"Current\": {"
+						+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
+						+ "\"CommStatus\":true"
+						+ "}"
+						+ "}";
+				commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
+					commTime=commResponseData.getDaily().getCommEfficiency().getTime();
+					commTimeEfficiency=commResponseData.getDaily().getCommEfficiency().getEfficiency();
+					commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+				}
+				
+				
+				if(obj[7]!=null&&StringManagerUtils.stringToInteger(obj[7]+"")>=1){
+					runStatus=StringManagerUtils.stringToInteger(obj[7]+"");
+				}
+				String runTotalRequestData="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+deviceName+"\","
+						+ "\"OffsetHour\":"+offsetHour+","
+						+ "\"Last\":{"
+						+ "\"AcqTime\": \""+obj[2]+"\","
+						+ "\"RunStatus\": "+(runStatus>=1)+","
+						+ "\"RunEfficiency\": {"
+						+ "\"Efficiency\": "+obj[8]+","
+						+ "\"Time\": "+obj[9]+","
+						+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[10]))+""
+						+ "}"
+						+ "},"
+						+ "\"Current\": {"
+						+ "\"AcqTime\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"\","
+						+ "\"RunStatus\":true"
+						+ "}"
+						+ "}";
+				timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
+					runTime=timeEffResponseData.getDaily().getRunEfficiency().getTime();
+					runTimeEfficiency=timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
+					runRange=timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
+				}
+				
+				String updatesql="update tbl_dailycalculationdata t set t.commStatus="+commStatus+",t.commTime="+commTime+",t.commTimeEfficiency="+commTimeEfficiency+","
+				 		+ " t.runStatus="+runStatus+",t.runTime="+runTime+",t.runTimeEfficiency="+runTimeEfficiency+","
+				 		+ " t.commRange=?,"
+				 		+ " t.runRange=?"
+				 		+ " where t.deviceid="+deviceId+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+				 List<String> totalDataClobCont=new ArrayList<String>();
+				 totalDataClobCont.add(commRange);
+				 totalDataClobCont.add(runRange);
+				 try {
+					 OracleJdbcUtis.executeSqlUpdateClob(updatesql, totalDataClobCont);
+				 } catch (SQLException e) {
+					e.printStackTrace();
+				 }
+			}catch(Exception e){
+				 e.printStackTrace();
+			}
+		}
+	}
+	
+	public void AcquisitionDataDailyCalculation2(String tatalDate,String deviceIdStr) throws ParseException{
+		String date="";
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 		if(!StringManagerUtils.isNotNull(tatalDate)){
 			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd")),-1);

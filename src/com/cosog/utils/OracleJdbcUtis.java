@@ -237,11 +237,7 @@ public class OracleJdbcUtis {
 		try {
 			conn=OracleJdbcUtis.getConnection();
 			ps=conn.prepareStatement(sql);
-			for(int i=0;i<values.size();i++){
-//				CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
-//				clob.putString(1,  values.get(i)); 
-//				ps.setClob(i+1, clob);  
-				
+			for(int i=0;i<values.size();i++){ 
 				ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
 			}
 			n=ps.executeUpdate();  

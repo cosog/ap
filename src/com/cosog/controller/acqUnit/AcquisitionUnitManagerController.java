@@ -373,7 +373,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				groupId=list.get(0).toString();
 				AcquisitionUnitGroup acquisitionUnitGroup = new AcquisitionUnitGroup();
 				acquisitionUnitGroup.setUnitId(Integer.parseInt(acqUnit));
-				acquisitionUnitGroup.setGroupId(StringManagerUtils.stringTransferInteger(groupId));
+				acquisitionUnitGroup.setGroupId(StringManagerUtils.stringToInteger(groupId));
 				acquisitionUnitGroup.setMatrix("0,0,0");
 				this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(acquisitionUnitGroup);
 			}
@@ -620,7 +620,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");
 						String itemName=module_[0];
-						int itemAddr=StringManagerUtils.stringTransferInteger(module_[1]);
+						int itemAddr=StringManagerUtils.stringToInteger(module_[1]);
 						String resolutionMode=module_[2];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
@@ -649,7 +649,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						
 						acquisitionGroupItem.setMatrix(module_[4]);
 						acquisitionGroupItem.setDailyTotalCalculateName(module_[5]);
-						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringTransferInteger(module_[6]));
+						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringToInteger(module_[6]));
 						
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
@@ -703,7 +703,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionUnitGroup = new AcquisitionUnitGroup();
 						acquisitionUnitGroup.setUnitId(Integer.parseInt(unitId));
 						log.debug("unitId==" + unitId);
-						acquisitionUnitGroup.setGroupId(StringManagerUtils.stringTransferInteger(module_[0]));
+						acquisitionUnitGroup.setGroupId(StringManagerUtils.stringToInteger(module_[0]));
 						acquisitionUnitGroup.setMatrix(module_[1]);
 						this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(acquisitionUnitGroup);
 					}
@@ -751,7 +751,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String itemName=module_[0];
 						
 						String resolutionMode=module_[10];
-						int itemAddr=StringManagerUtils.stringTransferInteger(module_[11]);
+						int itemAddr=StringManagerUtils.stringToInteger(module_[11]);
 						String bitIndexStr=module_[12];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
@@ -786,14 +786,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setItemName(itemName);
 						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
+						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringToInteger(module_[1]):null);
 						displayUnitItem.setRealtimeColor(module_[2]);
 						displayUnitItem.setRealtimeBgColor(module_[3]);
-						displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringTransferInteger(module_[4]):null);
+						displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringToInteger(module_[4]):null);
 						displayUnitItem.setHistoryColor(module_[5]);
 						displayUnitItem.setHistoryBgColor(module_[6]);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
-						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[7])?StringManagerUtils.stringTransferInteger(module_[7]):null);
+						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[7])?StringManagerUtils.stringToInteger(module_[7]):null);
 						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[8]:"");
 						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[9]:"");
 						displayUnitItem.setMatrix(module_[13]);
@@ -846,7 +846,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");
 						String itemName=module_[0];
-						int itemAddr=StringManagerUtils.stringTransferInteger(module_[4]);
+						int itemAddr=StringManagerUtils.stringToInteger(module_[4]);
 						String resolutionMode=module_[3];
 						String bitIndexStr=module_[5];
 						int bitIndex=-99;
@@ -874,7 +874,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setItemName(itemName);
 						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringTransferInteger(module_[1]):null);
+						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringToInteger(module_[1]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						displayUnitItem.setMatrix(module_[6]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
@@ -935,15 +935,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemName(itemName);
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
+					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
 					displayUnitItem.setRealtimeColor(module_[3]);
 					displayUnitItem.setRealtimeBgColor(module_[4]);
 					
-					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[5])?StringManagerUtils.stringTransferInteger(module_[5]):null);
+					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[5])?StringManagerUtils.stringToInteger(module_[5]):null);
 					displayUnitItem.setHistoryColor(module_[6]);
 					displayUnitItem.setHistoryBgColor(module_[7]);
 					
-					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringTransferInteger(module_[8]):null);
+					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringToInteger(module_[8]):null);
 					displayUnitItem.setRealtimeCurveConf(module_[9]);
 					displayUnitItem.setHistoryCurveConf(module_[10]);
 					displayUnitItem.setMatrix(module_[11]);
@@ -991,14 +991,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setItemName(itemName);
 					displayUnitItem.setItemCode(module_[1]);
 					displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringTransferInteger(module_[2]):null);
+					displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
 					displayUnitItem.setRealtimeColor(module_[3]);
 					displayUnitItem.setRealtimeBgColor(module_[4]);
-					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[5])?StringManagerUtils.stringTransferInteger(module_[5]):null);
+					displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[5])?StringManagerUtils.stringToInteger(module_[5]):null);
 					displayUnitItem.setHistoryColor(module_[6]);
 					displayUnitItem.setHistoryBgColor(module_[7]);
 					
-					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringTransferInteger(module_[8]):null);
+					displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringToInteger(module_[8]):null);
 					displayUnitItem.setRealtimeCurveConf(module_[9]);
 					displayUnitItem.setHistoryCurveConf(module_[10]);
 					displayUnitItem.setMatrix(module_[11]);
@@ -1087,21 +1087,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 						reportUnitItem.setItemName(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName());
 						reportUnitItem.setItemCode(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemCode());
 						
-						reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
+						reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
 						
-						reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
-						reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
+						reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
+						reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
 						
-						reportUnitItem.setPrec( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()):null);
+						reportUnitItem.setPrec( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()):null);
 						
-						reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
-						reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
+						reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
+						reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
 						
 						reportUnitItem.setReportCurveConf(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveConf());
 						
-						reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
+						reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
 						
-						reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
+						reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
 						
 						reportUnitItem.setDataSource(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource());
 						reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");
@@ -1191,21 +1191,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 						reportUnitItem.setItemName(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName());
 						reportUnitItem.setItemCode(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemCode());
 						
-						reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
+						reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
 						
-						reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
-						reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
+						reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
+						reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
 						
-						reportUnitItem.setPrec( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()):null);
+						reportUnitItem.setPrec( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemPrec()):null);
 						
-						reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
-						reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
+						reportUnitItem.setSumSign((totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getSumSign()):null);
+						reportUnitItem.setAverageSign( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getAverageSign()):null);
 						
 						reportUnitItem.setReportCurveConf(totalCalItemsToReportUnitSaveData.getItemList().get(i).getReportCurveConf());
 						
-						reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
+						reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
 						
-						reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringTransferInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
+						reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
 						
 						reportUnitItem.setDataSource(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource());
 						reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");

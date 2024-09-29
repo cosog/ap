@@ -93,7 +93,7 @@ public class MainModuleRecursion {
 	}
 
 	public static String judgeModuleType(int key) {
-		// int temp = StringManagerUtils.stringTransferInteger(key);
+		// int temp = StringManagerUtils.stringToInteger(key);
 		String result = "前台模块";
 		switch (key) {
 		case 0:

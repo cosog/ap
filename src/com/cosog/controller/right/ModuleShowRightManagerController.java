@@ -65,7 +65,7 @@ public class ModuleShowRightManagerController extends BaseController implements 
 						r = new RoleModule();
 						r.setRmRoleId(Integer.parseInt(roleId));
 						log.debug("roleCode==" + roleId);
-						r.setRmModuleid(StringManagerUtils.stringTransferInteger(module_[0]));
+						r.setRmModuleid(StringManagerUtils.stringToInteger(module_[0]));
 						r.setRmMatrix(module_[1]);
 						this.moduleService.saveOrUpdateModule(r);
 					}
@@ -108,7 +108,7 @@ public class ModuleShowRightManagerController extends BaseController implements 
 						r = new RoleDeviceType();
 						r.setRdRoleId(Integer.parseInt(roleId));
 						log.debug("roleCode==" + roleId);
-						r.setRdDeviceTypeId(StringManagerUtils.stringTransferInteger(deviceType_[0]));
+						r.setRdDeviceTypeId(StringManagerUtils.stringToInteger(deviceType_[0]));
 						r.setRdMatrix(deviceType_[1]);
 						this.roleTabService.saveOrUpdateRoleDeviceType(r);
 					}

@@ -114,7 +114,7 @@ public class Recursion {
 	}
 
 	public static String judgeOrgType(String key) {
-		int temp = StringManagerUtils.stringTransferInteger(key);
+		int temp = StringManagerUtils.stringToInteger(key);
 		String result = "局级";
 		switch (temp) {
 		case 1:

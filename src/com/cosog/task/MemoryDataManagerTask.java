@@ -120,6 +120,8 @@ public class MemoryDataManagerTask {
 		
 //		loadDeviceRealtimeAcqData(null);
 //		System.out.println("加载设备实时数据完成");
+		MemoryDataManagerTask.loadDeviceRealtimeTotalData(null,0);
+		System.out.println("加载实时汇总数据完成");
 		
 		loadTodayFESDiagram(null,0);
 		System.out.println("加载设备当天功图数据完成");
@@ -1012,8 +1014,8 @@ public class MemoryDataManagerTask {
 				List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
 				for(Object[] obj:auxiliaryDeviceList){
 					AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
-					auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringTransferInteger(obj[0]+""));
-					auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringTransferInteger(obj[1]+""));
+					auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(obj[0]+""));
+					auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(obj[1]+""));
 					auxiliaryDeviceAddInfo.setManufacturer(obj[2]+"");
 					auxiliaryDeviceAddInfo.setModel(obj[3]+"");
 					auxiliaryDeviceAddInfo.setItemName(obj[4]+"");
@@ -1164,7 +1166,7 @@ public class MemoryDataManagerTask {
 					//日汇总数据
 					deviceInfo.setDailyTotalItemMap(new HashMap<>());
 					for(Object[] obj:dailyTotalList){
-						if(deviceInfo.getId()==StringManagerUtils.stringTransferInteger(obj[1]+"")){
+						if(deviceInfo.getId()==StringManagerUtils.stringToInteger(obj[1]+"")){
 							DeviceInfo.DailyTotalItem dailyTotalItem=new DeviceInfo.DailyTotalItem();
 							dailyTotalItem.setAcqTime(obj[2]+"");
 							dailyTotalItem.setItemColumn((obj[3]+"").toUpperCase());
@@ -4229,6 +4231,16 @@ public class MemoryDataManagerTask {
 				+ " where t.deviceid=t2.id"
 				+ " and t2.id ="+deviceId;
 		List<Object[]> list=OracleJdbcUtis.query(sql);
+		if(list.size()==0){
+			sql="select t2.id,t2.devicename,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
+					+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
+					+ " '' "
+					+ " from tbl_device t2 "
+					+ " left outer join tbl_acqdata_latest t on t.deviceid=t2.id"
+					+ " where t2.id ="+deviceId;
+			list=OracleJdbcUtis.query(sql);
+		}
 		if(list.size()>0){
 			Object[] obj=list.get(0);
 			realtimeTotalInfo=new RealtimeTotalInfo();
@@ -4239,21 +4251,21 @@ public class MemoryDataManagerTask {
 				type = new TypeToken<Map<String,RealtimeTotalInfo.TotalItem>>() {}.getType();
 				Map<String,RealtimeTotalInfo.TotalItem> calDataMap=gson.fromJson(calData, type);
 				
-				realtimeTotalInfo.setDeviceId(StringManagerUtils.stringTransferInteger(deviceIdStr));
+				realtimeTotalInfo.setDeviceId(StringManagerUtils.stringToInteger(deviceIdStr));
 				realtimeTotalInfo.setDeviceName(obj[1]+"");
 				realtimeTotalInfo.setAcqTime(obj[2]+"");
 				
-				realtimeTotalInfo.setCommStatus(StringManagerUtils.stringTransferInteger(obj[3]+""));
+				realtimeTotalInfo.setCommStatus(StringManagerUtils.stringToInteger(obj[3]+""));
 				realtimeTotalInfo.setCommTime(StringManagerUtils.stringToFloat(obj[4]+""));
 				realtimeTotalInfo.setCommEff(StringManagerUtils.stringToFloat(obj[5]+""));
 				realtimeTotalInfo.setCommRange(obj[6]+"");
 				
-				realtimeTotalInfo.setOnLineCommStatus(StringManagerUtils.stringTransferInteger(obj[3]+""));
+				realtimeTotalInfo.setOnLineCommStatus(StringManagerUtils.stringToInteger(obj[3]+""));
 				realtimeTotalInfo.setOnLineCommTime(StringManagerUtils.stringToFloat(obj[4]+""));
 				realtimeTotalInfo.setOnLineCommEff(StringManagerUtils.stringToFloat(obj[5]+""));
 				realtimeTotalInfo.setOnLineCommRange(obj[6]+"");
 				
-				realtimeTotalInfo.setRunStatus(StringManagerUtils.stringTransferInteger(obj[7]+""));
+				realtimeTotalInfo.setRunStatus(StringManagerUtils.stringToInteger(obj[7]+""));
 				realtimeTotalInfo.setRunTime(StringManagerUtils.stringToFloat(obj[8]+""));
 				realtimeTotalInfo.setRunEff(StringManagerUtils.stringToFloat(obj[9]+""));
 				realtimeTotalInfo.setRunRange(obj[10]+"");
@@ -4317,7 +4329,7 @@ public class MemoryDataManagerTask {
 					sql+=" and t2.deviceName in("+wells+")";
 				}
 			}
-			sql+= "order by t2.id";
+			sql+= " order by t2.id";
 
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			
@@ -4330,21 +4342,21 @@ public class MemoryDataManagerTask {
 					type = new TypeToken<Map<String,RealtimeTotalInfo.TotalItem>>() {}.getType();
 					Map<String,RealtimeTotalInfo.TotalItem> calDataMap=gson.fromJson(calData, type);
 					
-					realtimeTotalInfo.setDeviceId(StringManagerUtils.stringTransferInteger(deviceIdStr));
+					realtimeTotalInfo.setDeviceId(StringManagerUtils.stringToInteger(deviceIdStr));
 					realtimeTotalInfo.setDeviceName(obj[1]+"");
 					realtimeTotalInfo.setAcqTime(obj[2]+"");
 					
-					realtimeTotalInfo.setCommStatus(StringManagerUtils.stringTransferInteger(obj[3]+""));
+					realtimeTotalInfo.setCommStatus(StringManagerUtils.stringToInteger(obj[3]+""));
 					realtimeTotalInfo.setCommTime(StringManagerUtils.stringToFloat(obj[4]+""));
 					realtimeTotalInfo.setCommEff(StringManagerUtils.stringToFloat(obj[5]+""));
 					realtimeTotalInfo.setCommRange(obj[6]+"");
 					
-					realtimeTotalInfo.setOnLineCommStatus(StringManagerUtils.stringTransferInteger(obj[3]+""));
+					realtimeTotalInfo.setOnLineCommStatus(StringManagerUtils.stringToInteger(obj[3]+""));
 					realtimeTotalInfo.setOnLineCommTime(StringManagerUtils.stringToFloat(obj[4]+""));
 					realtimeTotalInfo.setOnLineCommEff(StringManagerUtils.stringToFloat(obj[5]+""));
 					realtimeTotalInfo.setOnLineCommRange(obj[6]+"");
 					
-					realtimeTotalInfo.setRunStatus(StringManagerUtils.stringTransferInteger(obj[7]+""));
+					realtimeTotalInfo.setRunStatus(StringManagerUtils.stringToInteger(obj[7]+""));
 					realtimeTotalInfo.setRunTime(StringManagerUtils.stringToFloat(obj[8]+""));
 					realtimeTotalInfo.setRunEff(StringManagerUtils.stringToFloat(obj[9]+""));
 					realtimeTotalInfo.setRunRange(obj[10]+"");

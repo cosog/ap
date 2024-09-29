@@ -2046,8 +2046,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 				
-				reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
-				reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
+				reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringToInteger(reportItemObj[4]+""):null);
+				reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringToInteger(reportItemObj[5]+""):null);
 				
 				
 				String precStr=(reportItemObj[6]+"").replaceAll("null", "");
@@ -2378,8 +2378,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 					
-					reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
-					reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
+					reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringToInteger(reportItemObj[4]+""):null);
+					reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringToInteger(reportItemObj[5]+""):null);
 					
 					
 					String precStr=(reportItemObj[6]+"").replaceAll("null", "");
@@ -2744,8 +2744,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
 						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
 						
-						reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[4]+""):null);
-						reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringTransferInteger(reportItemObj[5]+""):null);
+						reportUnitItem.setSumSign((reportItemObj[4]!=null && StringManagerUtils.isNumber(reportItemObj[4]+"") )?StringManagerUtils.stringToInteger(reportItemObj[4]+""):null);
+						reportUnitItem.setAverageSign( (reportItemObj[5]!=null && StringManagerUtils.isNumber(reportItemObj[5]+"") )?StringManagerUtils.stringToInteger(reportItemObj[5]+""):null);
 						
 						
 						String precStr=(reportItemObj[6]+"").replaceAll("null", "");
@@ -3509,7 +3509,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitItem.setDataSource(reportCurveItemObj[6]+"");
 			
 			String curveStatTypeStr=reportCurveItemObj[4]+"";
-			reportUnitItem.setCurveStatType(StringManagerUtils.isNumber(curveStatTypeStr)?StringManagerUtils.stringTransferInteger(curveStatTypeStr):null);
+			reportUnitItem.setCurveStatType(StringManagerUtils.isNumber(curveStatTypeStr)?StringManagerUtils.stringToInteger(curveStatTypeStr):null);
 			if(StringManagerUtils.isNumber(curveStatTypeStr) && reportUnitItem.getDataType()==2 ){
 				reportCurveItemList.add(reportUnitItem);
 			}

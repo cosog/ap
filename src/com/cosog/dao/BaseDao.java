@@ -321,10 +321,6 @@ public class BaseDao extends HibernateDaoSupport {
 			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 			ps=conn.prepareStatement(sql);
 			for(int i=0;i<values.size();i++){
-//				CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
-//				clob.putString(1,  values.get(i)); 
-//				ps.setClob(i+1, clob);  
-				
 				reader=new java.io.StringReader(values.get(i));
 				ps.setCharacterStream(i+1, reader, values.get(i).length());
 			}
@@ -1009,7 +1005,7 @@ public class BaseDao extends HibernateDaoSupport {
 			List<?> deviceTypeList=this.findCallSql(sql);
 			for(int i=0;i<deviceTypeList.size();i++){
 				Object[] obj=(Object[]) deviceTypeList.get(i);
-				deviceTypeMap.put(obj[0]+"", StringManagerUtils.stringTransferInteger(obj[1]+""));
+				deviceTypeMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
 			}
 		}
 		
@@ -1238,7 +1234,7 @@ public class BaseDao extends HibernateDaoSupport {
 			List<?> deviceTypeList=this.findCallSql(sql);
 			for(int i=0;i<deviceTypeList.size();i++){
 				Object[] obj=(Object[]) deviceTypeList.get(i);
-				deviceTypeMap.put(obj[0]+"", StringManagerUtils.stringTransferInteger(obj[1]+""));
+				deviceTypeMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
 			}
 		}
 		try {

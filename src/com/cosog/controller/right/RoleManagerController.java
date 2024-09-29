@@ -106,7 +106,7 @@ public class RoleManagerController extends BaseController {
 										r=new RoleModule();
 										r = new RoleModule();
 										r.setRmRoleId(addRoleId);
-										r.setRmModuleid(StringManagerUtils.stringTransferInteger(module_[0]));
+										r.setRmModuleid(StringManagerUtils.stringToInteger(module_[0]));
 										r.setRmMatrix(module_[1]);
 										this.roleModuleService.saveOrUpdateRoleModule(r);
 									}

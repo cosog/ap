@@ -53,9 +53,9 @@ public class CalculateDataManagerTask {
 		RPCTotalCalculation();
 		PCPTotalCalculation();
 		
-//		AcquisitionTimingCalculate();
-//		RPCTimingCalculate();
-//		PCPTimingCalculate();
+		AcquisitionTimingCalculate();
+		RPCTimingCalculate();
+		PCPTimingCalculate();
 	}
 	
 	@SuppressWarnings("static-access")

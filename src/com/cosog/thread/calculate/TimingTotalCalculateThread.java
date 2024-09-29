@@ -201,7 +201,7 @@ public class TimingTotalCalculateThread extends Thread {
                 "\"CommEfficiency\": {" +
                 "\"Efficiency\": " + commTimeEfficiency + "," +
                 "\"Time\": " + commTime + "," +
-                "\"Range\": " + commRange + "" +
+                "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(commRange) + "" +
                 "}" +
                 "}," +
                 "\"Current\": {" +
@@ -234,7 +234,7 @@ public class TimingTotalCalculateThread extends Thread {
                 "\"RunEfficiency\": {" +
                 "\"Efficiency\": " + runTimeEfficiency + "," +
                 "\"Time\": " + runTime + "," +
-                "\"Range\": " + runRange + "" +
+                "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(runRange) + "" +
                 "}" +
                 "}," +
                 "\"Current\": {" +
@@ -571,7 +571,7 @@ public class TimingTotalCalculateThread extends Thread {
                 "\"CommEfficiency\": {" +
                 "\"Efficiency\": " + commTimeEfficiency + "," +
                 "\"Time\": " + commTime + "," +
-                "\"Range\": " + commRange + "" +
+                "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(commRange) + "" +
                 "}" +
                 "}," +
                 "\"Current\": {" +
@@ -604,7 +604,7 @@ public class TimingTotalCalculateThread extends Thread {
                 "\"RunEfficiency\": {" +
                 "\"Efficiency\": " + runTimeEfficiency + "," +
                 "\"Time\": " + runTime + "," +
-                "\"Range\": " + runRange + "" +
+                "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(runRange) + "" +
                 "}" +
                 "}," +
                 "\"Current\": {" +
@@ -771,207 +771,224 @@ public class TimingTotalCalculateThread extends Thread {
     		
     		DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
     		RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
-    		if(realtimeTotalInfo==null){
-    			realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataFromDbById(deviceId+"");
-    		}
-    		if(realtimeTotalInfo!=null){
-    			String labelInfoSql = "select t.deviceId, t.headerlabelinfo from tbl_timingcalculationdata t " +
-    	                " where t.id=(" +
-    	                " select v2.id from " +
-    	                " ( select v.id,rownum r from " +
-    	                " (select t2.id from tbl_timingcalculationdata t2 " +
-    	                "  where t2.deviceId=" + deviceId + " and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2" +
-    	                " where r=1)";
-    			TimeEffResponseData timeEffResponseData = null;
-                CommResponseData commResponseData = null;
+//    		if(realtimeTotalInfo==null){
+//    			realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataFromDbById(deviceId+"");
+//    		}
 
-                String lastRunTime = "";
-                String lastCommTime = "";
+			String labelInfoSql = "select t.deviceId, t.headerlabelinfo from tbl_timingcalculationdata t " +
+	                " where t.id=(" +
+	                " select v2.id from " +
+	                " ( select v.id,rownum r from " +
+	                " (select t2.id from tbl_timingcalculationdata t2 " +
+	                "  where t2.deviceId=" + deviceId + " and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2" +
+	                " where r=1)";
+			TimeEffResponseData timeEffResponseData = null;
+            CommResponseData commResponseData = null;
 
-                int commStatus = 0;
-                float commTime = 0;
-                float commTimeEfficiency = 0;
-                String commRange = "";
+            String lastRunTime = "";
+            String lastCommTime = "";
 
-                int runStatus = 0;
-                float runTime = 0;
-                float runTimeEfficiency = 0;
-                String runRange = "";
+            int commStatus = 0;
+            float commTime = 0;
+            float commTimeEfficiency = 0;
+            String commRange = "";
 
-                List <?> labelInfoQueryList = commonDataService.findCallSql(labelInfoSql);
-                String labelInfo = "";
-                ReportTemplate.Template template = null;
+            int runStatus = 0;
+            float runTime = 0;
+            float runTimeEfficiency = 0;
+            String runRange = "";
 
-                //继承表头信息
-                for (int j = 0; j <labelInfoQueryList.size(); j++) {
-                    Object[] labelInfoObj = (Object[]) labelInfoQueryList.get(j);
-                    if (StringManagerUtils.stringToInteger(labelInfoObj[0].toString()) == deviceId) {
-                        labelInfo = labelInfoObj[1] + "";
-                        break;
-                    }
+            List <?> labelInfoQueryList = commonDataService.findCallSql(labelInfoSql);
+            String labelInfo = "";
+            ReportTemplate.Template template = null;
+
+            //继承表头信息
+            for (int j = 0; j <labelInfoQueryList.size(); j++) {
+                Object[] labelInfoObj = (Object[]) labelInfoQueryList.get(j);
+                if (StringManagerUtils.stringToInteger(labelInfoObj[0].toString()) == deviceId) {
+                    labelInfo = labelInfoObj[1] + "";
+                    break;
                 }
+            }
 
-                String updateSql = "update tbl_timingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
+            String updateSql = "update tbl_timingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
 
-                try {
-                    commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, 0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                
-              //报表继承可编辑数据
-                if (StringManagerUtils.isNotNull(templateCode)) {
-                    template = MemoryDataManagerTask.getSingleWellDailyReportTemplateByCode(templateCode);
-                }
-                if (template != null) {
-                    if (template.getEditable() != null && template.getEditable().size()> 0) {
-                        String reportItemSql = "select t.itemname,t.itemcode,t.sort,t.datatype " +
-                            " from TBL_REPORT_ITEMS2UNIT_CONF t " +
-                            " where t.unitid=" + reportUnitId +
-                            " and t.datasource<>'计算'" +
-                            " and t.sort>=0" +
-                            " and t.reporttype=2" +
-                            " order by t.sort";
-                        List <ReportUnitItem> reportItemList = new ArrayList <ReportUnitItem> ();
-                        List <?> reportItemQuertList = commonDataService.findCallSql(reportItemSql);
+            try {
+                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+          //报表继承可编辑数据
+            if (StringManagerUtils.isNotNull(templateCode)) {
+                template = MemoryDataManagerTask.getSingleWellDailyReportTemplateByCode(templateCode);
+            }
+            if (template != null) {
+                if (template.getEditable() != null && template.getEditable().size()> 0) {
+                    String reportItemSql = "select t.itemname,t.itemcode,t.sort,t.datatype " +
+                        " from TBL_REPORT_ITEMS2UNIT_CONF t " +
+                        " where t.unitid=" + reportUnitId +
+                        " and t.datasource<>'计算'" +
+                        " and t.sort>=0" +
+                        " and t.reporttype=2" +
+                        " order by t.sort";
+                    List <ReportUnitItem> reportItemList = new ArrayList <ReportUnitItem> ();
+                    List <?> reportItemQuertList = commonDataService.findCallSql(reportItemSql);
 
-                        for (int k = 0; k <reportItemQuertList.size(); k++) {
-                            Object[] reportItemObj = (Object[]) reportItemQuertList.get(k);
-                            ReportUnitItem reportUnitItem = new ReportUnitItem();
-                            reportUnitItem.setItemName(reportItemObj[0] + "");
-                            reportUnitItem.setItemCode(reportItemObj[1] + "");
-                            reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2] + ""));
-                            reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3] + ""));
+                    for (int k = 0; k <reportItemQuertList.size(); k++) {
+                        Object[] reportItemObj = (Object[]) reportItemQuertList.get(k);
+                        ReportUnitItem reportUnitItem = new ReportUnitItem();
+                        reportUnitItem.setItemName(reportItemObj[0] + "");
+                        reportUnitItem.setItemCode(reportItemObj[1] + "");
+                        reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2] + ""));
+                        reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3] + ""));
 
 
-                            for (int l = 0; l <template.getEditable().size(); l++) {
-                                ReportTemplate.Editable editable = template.getEditable().get(l);
-                                if (editable.getStartRow()>= template.getHeader().size() && reportUnitItem.getSort() - 1>= editable.getStartColumn() && reportUnitItem.getSort() - 1 <= editable.getEndColumn()) { //索引起始不同
-                                    reportItemList.add(reportUnitItem);
-                                    break;
-                                }
-                            }
-                        }
-                        if (reportItemList.size()> 0) {
-                            StringBuffer updateColBuff = new StringBuffer();
-                            for (int m = 0; m <reportItemList.size(); m++) {
-                                updateColBuff.append(reportItemList.get(m).getItemCode() + ",");
-                            }
-                            if (updateColBuff.toString().endsWith(",")) {
-                                updateColBuff.deleteCharAt(updateColBuff.length() - 1);
-                            }
-
-                            String updateEditDataSql = "update tbl_timingcalculationdata t set (" + updateColBuff + ")=" +
-                                " (select " + updateColBuff + " from tbl_timingcalculationdata t2 " +
-                                " where t2.deviceId= " + deviceId +
-                                " and t2.id=" +
-                                " (select v2.id from" +
-                                " (select v.id,rownum r from " +
-                                " (select t3.id from tbl_timingcalculationdata t3 " +
-                                " where t3.deviceId=" + deviceId + " and t3.caltime<to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') " +
-                                " order by t3.caltime desc) v " +
-                                " ) v2" +
-                                " where r=1)" +
-                                ") " +
-                                " where t.deviceId=" + deviceId +
-                                " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') ";
-                            try {
-                                int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        for (int l = 0; l <template.getEditable().size(); l++) {
+                            ReportTemplate.Editable editable = template.getEditable().get(l);
+                            if (editable.getStartRow()>= template.getHeader().size() && reportUnitItem.getSort() - 1>= editable.getStartColumn() && reportUnitItem.getSort() - 1 <= editable.getEndColumn()) { //索引起始不同
+                                reportItemList.add(reportUnitItem);
+                                break;
                             }
                         }
                     }
+                    if (reportItemList.size()> 0) {
+                        StringBuffer updateColBuff = new StringBuffer();
+                        for (int m = 0; m <reportItemList.size(); m++) {
+                            updateColBuff.append(reportItemList.get(m).getItemCode() + ",");
+                        }
+                        if (updateColBuff.toString().endsWith(",")) {
+                            updateColBuff.deleteCharAt(updateColBuff.length() - 1);
+                        }
+
+                        String updateEditDataSql = "update tbl_timingcalculationdata t set (" + updateColBuff + ")=" +
+                            " (select " + updateColBuff + " from tbl_timingcalculationdata t2 " +
+                            " where t2.deviceId= " + deviceId +
+                            " and t2.id=" +
+                            " (select v2.id from" +
+                            " (select v.id,rownum r from " +
+                            " (select t3.id from tbl_timingcalculationdata t3 " +
+                            " where t3.deviceId=" + deviceId + " and t3.caltime<to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') " +
+                            " order by t3.caltime desc) v " +
+                            " ) v2" +
+                            " where r=1)" +
+                            ") " +
+                            " where t.deviceId=" + deviceId +
+                            " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') ";
+                        try {
+                            int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
-                //通信计算
-                lastCommTime = realtimeTotalInfo.getAcqTime();
+            }
+            
+            
+            //通信计算
+            if(realtimeTotalInfo!=null){
+            	lastCommTime = realtimeTotalInfo.getAcqTime();
                 commStatus = realtimeTotalInfo.getCommStatus();
                 commTimeEfficiency = realtimeTotalInfo.getCommEff();
                 commTime = realtimeTotalInfo.getCommTime();
                 commRange = realtimeTotalInfo.getCommRange();
-                String commTotalRequestData = "{" +
-                    "\"AKString\":\"\"," +
-                    "\"WellName\":\"" + deviceName + "\"," +
-                    "\"OffsetHour\":" + offsetHour + "," +
-                    "\"Last\":{" +
-                    "\"AcqTime\": \"" + lastCommTime + "\"," +
-                    "\"CommStatus\": " + (commStatus>= 1) + "," +
-                    "\"CommEfficiency\": {" +
-                    "\"Efficiency\": " + commTimeEfficiency + "," +
-                    "\"Time\": " + commTime + "," +
-                    "\"Range\": " + commRange + "" +
-                    "}" +
-                    "}," +
-                    "\"Current\": {" +
-                    "\"AcqTime\":\"" + timeStr + "\"," +
-                    "\"CommStatus\":" + (commStatus>= 1) + "" +
-                    "}" +
-                    "}";
-                commResponseData = CalculateUtils.commCalculate(commTotalRequestData);
-
-                updateSql += ",CommStatus=" + commStatus;
-                if (commResponseData != null && commResponseData.getResultStatus() == 1) {
-                    if (timeStr.equalsIgnoreCase(range.getEndTime()) && commResponseData.getDaily() != null && StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())) {
-                        commTime = commResponseData.getDaily().getCommEfficiency().getTime();
-                        commTimeEfficiency = commResponseData.getDaily().getCommEfficiency().getEfficiency();
-                        commRange = commResponseData.getDaily().getCommEfficiency().getRangeString();
-                    } else {
-                        commTime = commResponseData.getCurrent().getCommEfficiency().getTime();
-                        commTimeEfficiency = commResponseData.getCurrent().getCommEfficiency().getEfficiency();
-                        commRange = commResponseData.getCurrent().getCommEfficiency().getRangeString();
-                    }
-                    updateSql += ",commTimeEfficiency=" + commTimeEfficiency + ",commTime=" + commTime;
-                }
-               
-                //时率计算
                 lastRunTime = realtimeTotalInfo.getAcqTime();
                 runStatus = realtimeTotalInfo.getRunStatus();
                 runTimeEfficiency = realtimeTotalInfo.getRunEff();
                 runTime = realtimeTotalInfo.getRunTime();
                 runRange = realtimeTotalInfo.getRunRange();
-                String runTotalRequestData = "{" +
-                    "\"AKString\":\"\"," +
-                    "\"WellName\":\"" + deviceName + "\"," +
-                    "\"OffsetHour\":" + offsetHour + "," +
-                    "\"Last\":{" +
-                    "\"AcqTime\": \"" + lastRunTime + "\"," +
-                    "\"RunStatus\": " + (runStatus>= 1) + "," +
-                    "\"RunEfficiency\": {" +
-                    "\"Efficiency\": " + runTimeEfficiency + "," +
-                    "\"Time\": " + runTime + "," +
-                    "\"Range\": " + runRange + "" +
-                    "}" +
-                    "}," +
-                    "\"Current\": {" +
-                    "\"AcqTime\":\"" + timeStr + "\"," +
-                    "\"RunStatus\":" + (runStatus>= 1) + "" +
-                    "}" +
-                    "}";
-                timeEffResponseData = CalculateUtils.runCalculate(runTotalRequestData);
-                updateSql += ",runStatus=" + runStatus;
-                if (timeEffResponseData != null && timeEffResponseData.getResultStatus() == 1) {
-                    if (timeStr.equalsIgnoreCase(range.getEndTime()) && timeEffResponseData.getDaily() != null && StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())) {
-                        runTime = timeEffResponseData.getDaily().getRunEfficiency().getTime();
-                        runTimeEfficiency = timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
-                        runRange = timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
-                    } else {
-                        runTime = timeEffResponseData.getCurrent().getRunEfficiency().getTime();
-                        runTimeEfficiency = timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
-                        runRange = timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
-                    }
-                    updateSql += ",runTimeEfficiency=" + runTimeEfficiency + ",runTime=" + runTime;
-                }
-                
-                updateSql += " where t.deviceId=" + deviceId + " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
-                try {
-                	int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            }else{
+            	lastCommTime = deviceInfo.getAcqTime();
+                commStatus = deviceInfo.getCommStatus();
+                commTimeEfficiency = deviceInfo.getCommEff();
+                commTime = deviceInfo.getCommTime();
+                commRange = deviceInfo.getCommRange();
+                lastRunTime = deviceInfo.getAcqTime();
+                runStatus = deviceInfo.getRunStatus();
+                runTimeEfficiency = deviceInfo.getRunEff();
+                runTime = deviceInfo.getRunTime();
+                runRange = deviceInfo.getRunRange();
+            }
+            
+            String commTotalRequestData = "{" +
+                "\"AKString\":\"\"," +
+                "\"WellName\":\"" + deviceName + "\"," +
+                "\"OffsetHour\":" + offsetHour + "," +
+                "\"Last\":{" +
+                "\"AcqTime\": \"" + lastCommTime + "\"," +
+                "\"CommStatus\": " + (commStatus>= 1) + "," +
+                "\"CommEfficiency\": {" +
+                "\"Efficiency\": " + commTimeEfficiency + "," +
+                "\"Time\": " + commTime + "," +
+                "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(commRange) + "" +
+                "}" +
+                "}," +
+                "\"Current\": {" +
+                "\"AcqTime\":\"" + timeStr + "\"," +
+                "\"CommStatus\":" + (commStatus>= 1) + "" +
+                "}" +
+                "}";
+            commResponseData = CalculateUtils.commCalculate(commTotalRequestData);
 
-                //处理计算数据
-                String totalCalData="";
-				List<KeyValue> deviceTotalDataList=new ArrayList<>();
+            updateSql += ",CommStatus=" + commStatus;
+            if (commResponseData != null && commResponseData.getResultStatus() == 1) {
+                if (timeStr.equalsIgnoreCase(range.getEndTime()) && commResponseData.getDaily() != null && StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())) {
+                    commTime = commResponseData.getDaily().getCommEfficiency().getTime();
+                    commTimeEfficiency = commResponseData.getDaily().getCommEfficiency().getEfficiency();
+                    commRange = commResponseData.getDaily().getCommEfficiency().getRangeString();
+                } else {
+                    commTime = commResponseData.getCurrent().getCommEfficiency().getTime();
+                    commTimeEfficiency = commResponseData.getCurrent().getCommEfficiency().getEfficiency();
+                    commRange = commResponseData.getCurrent().getCommEfficiency().getRangeString();
+                }
+                updateSql += ",commTimeEfficiency=" + commTimeEfficiency + ",commTime=" + commTime;
+            }
+           
+            //时率计算
+            String runTotalRequestData = "{" +
+                "\"AKString\":\"\"," +
+                "\"WellName\":\"" + deviceName + "\"," +
+                "\"OffsetHour\":" + offsetHour + "," +
+                "\"Last\":{" +
+                "\"AcqTime\": \"" + lastRunTime + "\"," +
+                "\"RunStatus\": " + (runStatus>= 1) + "," +
+                "\"RunEfficiency\": {" +
+                "\"Efficiency\": " + runTimeEfficiency + "," +
+                "\"Time\": " + runTime + "," +
+                "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(runRange) + "" +
+                "}" +
+                "}," +
+                "\"Current\": {" +
+                "\"AcqTime\":\"" + timeStr + "\"," +
+                "\"RunStatus\":" + (runStatus>= 1) + "" +
+                "}" +
+                "}";
+            timeEffResponseData = CalculateUtils.runCalculate(runTotalRequestData);
+            updateSql += ",runStatus=" + runStatus;
+            if (timeEffResponseData != null && timeEffResponseData.getResultStatus() == 1) {
+                if (timeStr.equalsIgnoreCase(range.getEndTime()) && timeEffResponseData.getDaily() != null && StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())) {
+                    runTime = timeEffResponseData.getDaily().getRunEfficiency().getTime();
+                    runTimeEfficiency = timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
+                    runRange = timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
+                } else {
+                    runTime = timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+                    runTimeEfficiency = timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
+                    runRange = timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+                }
+                updateSql += ",runTimeEfficiency=" + runTimeEfficiency + ",runTime=" + runTime;
+            }
+            
+            updateSql += " where t.deviceId=" + deviceId + " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
+            try {
+            	int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //处理计算数据
+            String totalCalData="";
+            if(realtimeTotalInfo!=null && realtimeTotalInfo.getTotalItemMap()!=null){
+            	List<KeyValue> deviceTotalDataList=new ArrayList<>();
 				Map<String, RealtimeTotalInfo.TotalItem> totalItemMap=realtimeTotalInfo.getTotalItemMap();
 				Iterator<Map.Entry<String, RealtimeTotalInfo.TotalItem>> totalItemMapIterator = totalItemMap.entrySet().iterator();
 				while (totalItemMapIterator.hasNext()) {
@@ -990,22 +1007,22 @@ public class TimingTotalCalculateThread extends Thread {
 					 deviceTotalDataList.add(keyValue);
 				}
 				totalCalData=new Gson().toJson(deviceTotalDataList);
-                
-                
-                String updateRangeClobSql = "update tbl_timingcalculationdata t set t.calData=?";
-                List <String> clobCont = new ArrayList <String> ();
-                clobCont.add(new Gson().toJson(deviceTotalDataList));
-                if (commResponseData != null && commResponseData.getResultStatus() == 1) {
-                    updateRangeClobSql += ", t.commrange=?";
-                    clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-                    if (timeEffResponseData != null && timeEffResponseData.getResultStatus() == 1) {
-                        updateRangeClobSql += ", t.runrange=?";
-                        clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
-                    }
-                    updateRangeClobSql += " where t.deviceid=" + deviceId + " and t.caltime=" + "to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
-                    commonDataService.getBaseDao().executeSqlUpdateClob(updateRangeClobSql, clobCont);
+            }
+            
+            String updateRangeClobSql = "update tbl_timingcalculationdata t set t.calData=?";
+            List <String> clobCont = new ArrayList <String> ();
+            clobCont.add(totalCalData);
+            if (commResponseData != null && commResponseData.getResultStatus() == 1) {
+                updateRangeClobSql += ", t.commrange=?";
+                clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+                if (timeEffResponseData != null && timeEffResponseData.getResultStatus() == 1) {
+                    updateRangeClobSql += ", t.runrange=?";
+                    clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
                 }
-    		}
+                updateRangeClobSql += " where t.deviceid=" + deviceId + " and t.caltime=" + "to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
+                commonDataService.getBaseDao().executeSqlUpdateClob(updateRangeClobSql, clobCont);
+            }
+		
         }
 
         long calculateEndTime = System.nanoTime();

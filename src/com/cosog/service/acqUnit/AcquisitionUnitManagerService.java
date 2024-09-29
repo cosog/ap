@@ -10358,8 +10358,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(list.size()>0){
 						groupId=list.get(0).toString();
 						AcquisitionUnitGroup acquisitionUnitGroup = new AcquisitionUnitGroup();
-						acquisitionUnitGroup.setUnitId(StringManagerUtils.stringTransferInteger(unitId));
-						acquisitionUnitGroup.setGroupId(StringManagerUtils.stringTransferInteger(groupId));
+						acquisitionUnitGroup.setUnitId(StringManagerUtils.stringToInteger(unitId));
+						acquisitionUnitGroup.setGroupId(StringManagerUtils.stringToInteger(groupId));
 						acquisitionUnitGroup.setMatrix("0,0,0");
 						try {
 							this.grantAcquisitionGroupsPermission(acquisitionUnitGroup);
@@ -10617,17 +10617,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					alarmUnitItem.setUnitId(exportAlarmUnitData.getItemList().get(i).getId());
 					alarmUnitItem.setItemName(exportAlarmUnitData.getItemList().get(i).getItemName());
 					alarmUnitItem.setItemCode(exportAlarmUnitData.getItemList().get(i).getItemCode());
-					alarmUnitItem.setItemAddr(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getItemAddr())?StringManagerUtils.stringTransferInteger(exportAlarmUnitData.getItemList().get(i).getItemAddr()):null  );
+					alarmUnitItem.setItemAddr(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getItemAddr())?StringManagerUtils.stringToInteger(exportAlarmUnitData.getItemList().get(i).getItemAddr()):null  );
 					alarmUnitItem.setType(exportAlarmUnitData.getItemList().get(i).getType());
 					
-					alarmUnitItem.setBitIndex(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getBitIndex())?StringManagerUtils.stringTransferInteger(exportAlarmUnitData.getItemList().get(i).getBitIndex()):null  );
+					alarmUnitItem.setBitIndex(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getBitIndex())?StringManagerUtils.stringToInteger(exportAlarmUnitData.getItemList().get(i).getBitIndex()):null  );
 					alarmUnitItem.setValue(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getValue())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getValue()):null  );
 					
 					alarmUnitItem.setUpperLimit(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getUpperLimit())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getUpperLimit()):null  );
 					alarmUnitItem.setLowerLimit(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getLowerLimit())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getLowerLimit()):null  );
 					alarmUnitItem.setHystersis(StringManagerUtils.isNum(exportAlarmUnitData.getItemList().get(i).getHystersis())?StringManagerUtils.stringToFloat(exportAlarmUnitData.getItemList().get(i).getHystersis()):null  );
 				
-					alarmUnitItem.setDelay(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getDelay())?StringManagerUtils.stringTransferInteger(exportAlarmUnitData.getItemList().get(i).getDelay()):null  );
+					alarmUnitItem.setDelay(StringManagerUtils.isInteger(exportAlarmUnitData.getItemList().get(i).getDelay())?StringManagerUtils.stringToInteger(exportAlarmUnitData.getItemList().get(i).getDelay()):null  );
 					
 					alarmUnitItem.setAlarmLevel(exportAlarmUnitData.getItemList().get(i).getAlarmLevel());
 					alarmUnitItem.setAlarmSign(exportAlarmUnitData.getItemList().get(i).getAlarmSign());
@@ -11186,25 +11186,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				try {
 					ReportUnitItem reportUnitItem = new ReportUnitItem();
 					reportUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
-					reportUnitItem.setReportType(StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getReportType()));
+					reportUnitItem.setReportType(StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getReportType()));
 					reportUnitItem.setItemName(exportReportUnitData.getItemList().get(i).getItemName());
 					reportUnitItem.setItemCode(exportReportUnitData.getItemList().get(i).getItemCode());
 					
-					reportUnitItem.setTotalType( (exportReportUnitData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getTotalType()):null);
+					reportUnitItem.setTotalType( (exportReportUnitData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getTotalType()):null);
 					
-					reportUnitItem.setSort( (exportReportUnitData.getItemList().get(i).getSort()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getSort()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getSort()):null);
-					reportUnitItem.setShowLevel( (exportReportUnitData.getItemList().get(i).getShowLevel()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getShowLevel()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getShowLevel()):null);
+					reportUnitItem.setSort( (exportReportUnitData.getItemList().get(i).getSort()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getSort()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getSort()):null);
+					reportUnitItem.setShowLevel( (exportReportUnitData.getItemList().get(i).getShowLevel()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getShowLevel()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getShowLevel()):null);
 					
-					reportUnitItem.setPrec( (exportReportUnitData.getItemList().get(i).getPrec()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getPrec()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getPrec()):null);
+					reportUnitItem.setPrec( (exportReportUnitData.getItemList().get(i).getPrec()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getPrec()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getPrec()):null);
 					
-					reportUnitItem.setSumSign((exportReportUnitData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getSumSign()):null);
-					reportUnitItem.setAverageSign( (exportReportUnitData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getAverageSign()):null);
+					reportUnitItem.setSumSign((exportReportUnitData.getItemList().get(i).getSumSign()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getSumSign()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getSumSign()):null);
+					reportUnitItem.setAverageSign( (exportReportUnitData.getItemList().get(i).getAverageSign()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getAverageSign()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getAverageSign()):null);
 					
 					reportUnitItem.setReportCurveConf(gson.toJson(exportReportUnitData.getItemList().get(i).getReportCurveConf()));
 					
-					reportUnitItem.setCurveStatType( (exportReportUnitData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getCurveStatType()):null);
+					reportUnitItem.setCurveStatType( (exportReportUnitData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getCurveStatType()):null);
 					
-					reportUnitItem.setDataType( (exportReportUnitData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringTransferInteger(exportReportUnitData.getItemList().get(i).getDataType()):null);
+					reportUnitItem.setDataType( (exportReportUnitData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getDataType()):null);
 					
 					reportUnitItem.setDataSource(exportReportUnitData.getItemList().get(i).getDataSource());
 					reportUnitItem.setMatrix(exportReportUnitData.getItemList().get(i).getMatrix()!=null?exportReportUnitData.getItemList().get(i).getMatrix():"");
@@ -11399,7 +11399,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			ProtocolInstance protocolInstance =new ProtocolInstance();
 			
-			protocolInstance.setId(StringManagerUtils.stringTransferInteger(instanceId));
+			protocolInstance.setId(StringManagerUtils.stringToInteger(instanceId));
 			protocolInstance.setName(instanceData.getName());
 			protocolInstance.setCode(instanceCode);
 			protocolInstance.setAcqProtocolType(instanceData.getAcqProtocolType());
@@ -11412,7 +11412,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			protocolInstance.setHeartbeatPrefix(instanceData.getHeartbeatPrefix());
 			protocolInstance.setHeartbeatSuffix(instanceData.getHeartbeatSuffix());
 			protocolInstance.setPacketSendInterval(instanceData.getPacketSendInterval());
-			protocolInstance.setUnitId(StringManagerUtils.stringTransferInteger(unitId));
+			protocolInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
 			protocolInstance.setSort(instanceData.getSort());
 			try {
 				this.doModbusProtocolInstanceEdit(protocolInstance);
@@ -11435,7 +11435,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.isNotNull(unidId)){
 					ProtocolInstance protocolInstance =new ProtocolInstance();
 					
-					protocolInstance.setId(StringManagerUtils.stringTransferInteger(instanceId));
+					protocolInstance.setId(StringManagerUtils.stringToInteger(instanceId));
 					protocolInstance.setName(instanceData.getName());
 					protocolInstance.setCode(instanceCode);
 					protocolInstance.setAcqProtocolType(instanceData.getAcqProtocolType());
@@ -11448,7 +11448,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					protocolInstance.setHeartbeatPrefix(instanceData.getHeartbeatPrefix());
 					protocolInstance.setHeartbeatSuffix(instanceData.getHeartbeatSuffix());
 					protocolInstance.setPacketSendInterval(instanceData.getPacketSendInterval());
-					protocolInstance.setUnitId(StringManagerUtils.stringTransferInteger(unitId));
+					protocolInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
 					protocolInstance.setSort(instanceData.getSort());
 					this.doModbusProtocolInstanceAdd(protocolInstance);
 					

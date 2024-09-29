@@ -708,7 +708,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 				}
-				addInfoMap.put(StringManagerUtils.stringTransferInteger(deviceId), deviceAddInfoMap);
+				addInfoMap.put(StringManagerUtils.stringToInteger(deviceId), deviceAddInfoMap);
 				
 				
 				

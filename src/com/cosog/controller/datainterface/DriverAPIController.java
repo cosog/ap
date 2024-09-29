@@ -75,6 +75,7 @@ import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.ProtocolItemResolutionData;
@@ -2163,14 +2164,14 @@ public class DriverAPIController extends BaseController{
 						
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							List<String> totalClobCont=new ArrayList<String>();
-							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.caldate=?, t.commrange=?";
+							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.caldata=?, t.commrange=?";
 							totalClobCont.add(totalCalData);
 							totalClobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
 								updateTotalRangeClobSql+=", t.runrange=?";
 								totalClobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 							}
-							updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+							updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 							
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,totalClobCont);
 						}
@@ -2215,7 +2216,51 @@ public class DriverAPIController extends BaseController{
 					realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
 					realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
 					MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
-					
+					//实时汇总放入数据库中
+					String updateSql="update tbl_realtimetotalcalculationdata t set "
+							+ " t.calTime=to_date('"+realtimeTotalInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss'),"
+							+ " t.commStatus="+realtimeTotalInfo.getCommStatus()+","
+							+ " t.commTime="+realtimeTotalInfo.getCommTime()+","
+							+ " t.commtimeefficiency="+realtimeTotalInfo.getCommEff()+","
+							+ " t.commRange=?,"
+							+ " t.runStatus="+realtimeTotalInfo.getRunStatus()+","
+							+ " t.runTime="+realtimeTotalInfo.getRunTime()+","
+							+ " t.runtimeefficiency="+realtimeTotalInfo.getRunEff()+","
+							+ " t.runRange=?,"
+							+ " t.caldata=?"
+							+ " where t.deviceId="+realtimeTotalInfo.getDeviceId();
+					String calData=new Gson().toJson(realtimeTotalInfo.getTotalItemMap());
+					List<String> totalDataClobCont=new ArrayList<String>();
+					totalDataClobCont.add(realtimeTotalInfo.getCommRange());
+					totalDataClobCont.add(realtimeTotalInfo.getRunRange());
+					totalDataClobCont.add(calData);
+					try {
+						int r=commonDataService.getBaseDao().executeSqlUpdateClob(updateSql, totalDataClobCont);
+						if(r==0){
+							String insertSql="insert into tbl_realtimetotalcalculationdata("
+									+ "deviceId,calTime,"
+									+ "commStatus,commTime,commtimeefficiency,commRange,"
+									+ "runStatus,runTime,runtimeefficiency,runRange,"
+									+ "caldata) "
+									+ " values ("
+									+ realtimeTotalInfo.getDeviceId()+","
+									+ " to_date('"+realtimeTotalInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss'),"
+									+realtimeTotalInfo.getCommStatus()+","
+									+realtimeTotalInfo.getCommTime()+","
+									+realtimeTotalInfo.getCommEff()+","
+									+ "?,"
+									+realtimeTotalInfo.getRunStatus()+","
+									+realtimeTotalInfo.getRunTime()+","
+									+realtimeTotalInfo.getRunEff()+","
+									+ "?,"
+									+ "?"	
+									+")";
+							r=commonDataService.getBaseDao().executeSqlUpdateClob(insertSql, totalDataClobCont);
+							r++;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					
 					//处理websocket推送
 					if(displayInstanceOwnItem!=null){

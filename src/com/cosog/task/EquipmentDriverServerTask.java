@@ -402,12 +402,12 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("static-access")
 	public static void exampleDataManage(){
-		if(Config.getInstance().configFile.getAp().getOthers().getSimulateAcqEnable()){
+		if(Config.getInstance().configFile.getAp().getOthers().getSimulateAcqEnable() || 1==1){
 			try {
 				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
-//				sendCycle=60;
-//				timeDifference=0;
+				sendCycle=60;
+				timeDifference=0;
 //				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
 //				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
 //				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
@@ -420,7 +420,7 @@ public class EquipmentDriverServerTask {
 //				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
 //				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
-//				new ExampleDataManageThread("rpc12",sendCycle,timeDifference*0).start();
+				new ExampleDataManageThread("rpc12",sendCycle,timeDifference*0).start();
 				
 //				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {

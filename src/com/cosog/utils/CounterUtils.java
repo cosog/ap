@@ -65,6 +65,6 @@ public class CounterUtils {
             	System.out.println(log);
             }
         };
-        timer.schedule(timerTask, 1000*2, 1000*10); // 两秒后每分钟执行一次
+        timer.schedule(timerTask, 1000*2, 1000*60); // 两秒后每分钟执行一次
     }
 }

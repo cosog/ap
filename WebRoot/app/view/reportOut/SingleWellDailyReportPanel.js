@@ -607,9 +607,12 @@ var SingleWellRangeReportHelper = {
 		        			break;
 		        		}
 		        	}
-	        		td.style.whiteSpace='nowrap'; //文本不换行
-	            	td.style.overflow='hidden';//超出部分隐藏
-	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        		if(row>=singleWellRangeReportHelper.templateData.header.length){
+	        			td.style.whiteSpace='nowrap'; //文本不换行
+		            	td.style.overflow='hidden';//超出部分隐藏
+		            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        		}
+	        		
 	        	}
 	        }
 	        
@@ -1012,10 +1015,12 @@ var SingleWellDailyReportHelper = {
 		        			break;
 		        		}
 		        	}
+	        		if(row>=singleWellDailyReportHelper.templateData.header.length){
+		        		td.style.whiteSpace='nowrap'; //文本不换行
+		            	td.style.overflow='hidden';//超出部分隐藏
+		            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+		        	}
 	        	}
-	        	td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
 	        singleWellDailyReportHelper.addEditableColor = function (instance, td, row, col, prop, value, cellProperties) {

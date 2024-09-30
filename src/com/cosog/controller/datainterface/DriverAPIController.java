@@ -1776,7 +1776,11 @@ public class DriverAPIController extends BaseController{
 		for(int i=0;i<acqGroup.getAddr().size();i++){
 			for(int j=0;j<protocol.getItems().size();j++){
 				if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr() && protocol.getItems().get(j).getResolutionMode()!=0){
-					if( !(acqGroup.getValue().get(i)!=null && acqGroup.getValue().get(i).size()==protocol.getItems().get(j).getQuantity()) ){
+					if( !(
+							acqGroup.getValue().get(i)!=null 
+//							&& (acqGroup.getValue().get(i).size()==protocol.getItems().get(j).getQuantity())
+							) 
+							){
 						r=false;
 					}
 					

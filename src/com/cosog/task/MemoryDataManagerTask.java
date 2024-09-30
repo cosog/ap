@@ -4766,12 +4766,16 @@ public class MemoryDataManagerTask {
 			if(!jedis.exists("UIKitAccessToken".getBytes())){
 				loadUIKitAccessToken(null,"update");
 			}else{
-				accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.hget("UIKitAccessToken".getBytes(),(id+"").getBytes()));
+				if(jedis.hexists("UIKitAccessToken".getBytes(),(id+"").getBytes())){
+					accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.hget("UIKitAccessToken".getBytes(),(id+"").getBytes()));
+				}
 				if(accessToken==null || (accessToken!=null&& "200".equalsIgnoreCase(accessToken.getCode()) &&new Date().getTime()>accessToken.getData().getExpireTime() )        ){
 					List<Integer> loadList=new ArrayList<>();
 					loadList.add(id);
 					loadUIKitAccessToken(loadList,"update");
-					accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.hget("UIKitAccessToken".getBytes(),(id+"").getBytes()));
+					if(jedis.hexists("UIKitAccessToken".getBytes(),(id+"").getBytes())){
+						accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.hget("UIKitAccessToken".getBytes(),(id+"").getBytes()));
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -5348,16 +5352,16 @@ public class MemoryDataManagerTask {
 		return code;
 	}
 	
-	public static String getCalculateColumnNameFromCode(int deviceType,String code){
+	public static String getCalculateColumnNameFromCode(String code){
 		if(!StringManagerUtils.isNotNull(code)){
 			return "";
 		}
 		CalculateColumnInfo calculateColumnInfo=getCalColumnsInfo();
 		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
 		String name="";
-		if(deviceType!=0){
-			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
-		}
+//		if(deviceType!=0){
+//			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
+//		}
 		for(int i=0;i<calculateColumnList.size();i++){
 			if(code.equalsIgnoreCase(calculateColumnList.get(i).getCode())){
 				name=calculateColumnList.get(i).getName();

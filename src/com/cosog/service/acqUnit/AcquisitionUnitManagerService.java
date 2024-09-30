@@ -5647,9 +5647,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		calColumnNameBuff.append("[''");
 		CalculateColumnInfo calculateColumnInfo=MemoryDataManagerTask.getCalColumnsInfo();
 		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
-		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
-		}
+//		if(StringManagerUtils.stringToInteger(deviceType)!=0){
+//			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
+//		}
 		for(int i = 0; i < calculateColumnList.size(); i++){
 			calColumnNameBuff.append(",'"+calculateColumnList.get(i).getName()+"'");
 		}
@@ -5663,7 +5663,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
 			String calColumn=obj[3]+"";
-			String calColumnName=MemoryDataManagerTask.getCalculateColumnNameFromCode(StringManagerUtils.stringToInteger(deviceType), calColumn);
+			String calColumnName=MemoryDataManagerTask.getCalculateColumnNameFromCode(calColumn);
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"itemName\":\""+obj[1]+"\",");

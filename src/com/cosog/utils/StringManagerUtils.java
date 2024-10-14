@@ -4286,6 +4286,26 @@ public class StringManagerUtils {
     	return timeList;
     }
     
+    public static List<String> getTimeRangeList(String dateStr,int offsetHour,int interval,String dayFormatStr) {
+    	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
+    	List<String> timeList=new ArrayList<>();
+    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dayFormat = new SimpleDateFormat(dayFormatStr);
+    	int index=1;
+    	do{
+    		try {
+				long time=((Date) dateFormat.parse(range.getStartTime())).getTime()+(interval*index*60*60*1000);
+				String startTimeStr = dateFormat.format(time);
+				timeList.add(startTimeStr);
+				index++;
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+    	}while(interval*index<=24);
+    	
+    	return timeList;
+    }
+    
     public static List<String> getDaliyTimeList(String dateStr,int offsetHour,int interval) {
     	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
     	List<String> timeList=new ArrayList<>();

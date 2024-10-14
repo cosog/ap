@@ -621,13 +621,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
-					+ "c1.itemname as devicetypename,"//6
+					+ "c1.name as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange"//15~17
-					+"";
+					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
+					+ "t.calculateType";//18
 			
 			String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit from tbl_device t,tbl_deviceaddinfo t2 "
 					+ " where t.id=t2.deviceid "
@@ -636,12 +636,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String auxiliaryDeviceSql="select t.id,t3.name,t3.manufacturer,t3.model,t3.remark from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
 					+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id"
 					+ " and t.orgid in ("+orgId+") ";
-			
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
 					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
+					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
@@ -710,9 +709,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				addInfoMap.put(StringManagerUtils.stringToInteger(deviceId), deviceAddInfoMap);
 				
-				
-				
-				
 				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				
@@ -724,14 +720,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				result_json.append("\"deviceTypeName\":\""+obj[6]+"\",");
 				result_json.append("\"acqTime\":\""+obj[7]+"\",");
-				result_json.append("\"commStatus\":\""+obj[8]+"\",");
+				result_json.append("\"commStatus\":"+obj[8]+",");
+				result_json.append("\"commStatusName\":\""+obj[9]+"\",");
 				result_json.append("\"commTime\":\""+obj[10]+"\",");
 				result_json.append("\"commTimeEfficiency\":\""+obj[11]+"\",");
 				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
-				result_json.append("\"runStatus\":\""+obj[13]+"\",");
+				result_json.append("\"runStatus\":"+obj[13]+",");
+				result_json.append("\"runStatusName\":\""+obj[14]+"\",");
 				result_json.append("\"runTime\":\""+obj[15]+"\",");
 				result_json.append("\"runTimeEfficiency\":\""+obj[16]+"\",");
-				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[17])+"\"");
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[17])+"\",");
+				result_json.append("\"calculateType\":"+obj[18]);
 				
 				if(deviceAddInfoMap.size()>0){
 					Iterator<Map.Entry<String,String>> iterator = deviceAddInfoMap.entrySet().iterator();

@@ -437,7 +437,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getProtocolItemMeaningConfigData(String protocolCode,String itemAddr){
@@ -493,7 +493,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",");
 		result_json.append("\"totalRoot\":"+totalRoot+"");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolNumAlarmItemsConfigData(String protocolName,String classes,String code){
@@ -519,7 +519,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+			String sql="select t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
+					+ " t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
@@ -538,7 +539,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			int index=1;
 			for(int j=0;j<protocolConfig.getItems().size();j++){
 				if((!"w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())) && protocolConfig.getItems().get(j).getResolutionMode()==2){
-					String upperLimit="",lowerLimit="",hystersis="",delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 					boolean checked=false;
 					for(int k=0;k<itemAddrsList.size();k++){
 						Object[] obj = (Object[]) list.get(k);
@@ -548,10 +549,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							lowerLimit=obj[4]+"";
 							hystersis=obj[5]+"";
 							delay=obj[6]+"";
-							alarmLevel=obj[7]+"";
-							alarmSign=obj[8]+"";
-							isSendMessage=obj[9]+"";
-							isSendMail=obj[10]+"";
+							retriggerTime=obj[7]+"";
+							
+							alarmLevel=obj[8]+"";
+							alarmSign=obj[9]+"";
+							isSendMessage=obj[10]+"";
+							isSendMail=obj[11]+"";
 							break;
 						}
 					}
@@ -563,6 +566,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"lowerLimit\":\""+lowerLimit+"\","
 							+ "\"hystersis\":\""+hystersis+"\","
 							+ "\"delay\":\""+delay+"\","
+							+ "\"retriggerTime\":\""+retriggerTime+"\","
 							+ "\"alarmLevel\":\""+alarmLevel+"\","
 							+ "\"alarmSign\":\""+alarmSign+"\","
 							+ "\"isSendMessage\":\""+isSendMessage+"\","
@@ -578,7 +582,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolCalNumAlarmItemsConfigData(String calculateType,String classes,String code){
@@ -612,7 +616,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				List<String> itemsList=new ArrayList<String>();
 				List<?> list=null;
 				if("3".equalsIgnoreCase(classes)){
-					String sql="select t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+					String sql="select t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
+							+ " t.delay,t.retriggerTime,"
 							+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 							+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 							+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
@@ -628,7 +633,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				int index=1;
 				for(CalItem calItem:calItemList){
 					if(calItem.getDataType()==2){
-						String upperLimit="",lowerLimit="",hystersis="",delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+						String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 						boolean checked=false;
 						for(int k=0;k<itemsList.size();k++){
 							Object[] obj = (Object[]) list.get(k);
@@ -638,10 +643,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								lowerLimit=obj[3]+"";
 								hystersis=obj[4]+"";
 								delay=obj[5]+"";
-								alarmLevel=obj[6]+"";
-								alarmSign=obj[7]+"";
-								isSendMessage=obj[8]+"";
-								isSendMail=obj[9]+"";
+								retriggerTime=obj[6]+"";
+								alarmLevel=obj[7]+"";
+								alarmSign=obj[8]+"";
+								isSendMessage=obj[9]+"";
+								isSendMail=obj[10]+"";
 								break;
 							}
 						}
@@ -654,6 +660,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"lowerLimit\":\""+lowerLimit+"\","
 								+ "\"hystersis\":\""+hystersis+"\","
 								+ "\"delay\":\""+delay+"\","
+								+ "\"retriggerTime\":\""+retriggerTime+"\","
 								+ "\"alarmLevel\":\""+alarmLevel+"\","
 								+ "\"alarmSign\":\""+alarmSign+"\","
 								+ "\"isSendMessage\":\""+isSendMessage+"\","
@@ -674,7 +681,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}finally{
 			
 		}
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolEnumAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode){
@@ -697,7 +704,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Integer> itemValueList=new ArrayList<Integer>();
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.itemaddr,t.value,t.delay,"
+			String sql="select t.itemname,t.itemcode,t.itemaddr,t.value,"
+					+ " t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
@@ -718,17 +726,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(protocolConfig.getItems().get(j).getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
 						&& protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)){
 					for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-						String value="",delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+						String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 						boolean checked=false;
 						for(int m=0;m<itemValueList.size();m++){
 							Object[] obj = (Object[]) list.get(m);
 							if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
 								checked=true;
 								delay=obj[4]+"";
-								alarmLevel=obj[5]+"";
-								alarmSign=obj[6]+"";
-								isSendMessage=obj[7]+"";
-								isSendMail=obj[8]+"";
+								retriggerTime=obj[5]+"";
+								alarmLevel=obj[6]+"";
+								alarmSign=obj[7]+"";
+								isSendMessage=obj[8]+"";
+								isSendMail=obj[9]+"";
 								break;
 							}
 						}
@@ -737,6 +746,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"value\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 								+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
 								+ "\"delay\":\""+delay+"\","
+								+ "\"retriggerTime\":\""+retriggerTime+"\","
 								+ "\"alarmLevel\":\""+alarmLevel+"\","
 								+ "\"alarmSign\":\""+alarmSign+"\","
 								+ "\"isSendMessage\":\""+isSendMessage+"\","
@@ -753,7 +763,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolSwitchAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode){
@@ -777,7 +787,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Integer> itemValueList=new ArrayList<Integer>();
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.itemaddr,t.bitindex,t.value,t.delay,"
+			String sql="select t.itemname,t.itemcode,t.itemaddr,t.bitindex,t.value,"
+					+ " t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
@@ -798,7 +809,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(protocolConfig.getItems().get(j).getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
 						&& protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)){
 					for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-						String value="",delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+						String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 						boolean checked=false;
 						for(int m=0;m<itemValueList.size();m++){
 							Object[] obj = (Object[]) list.get(m);
@@ -810,10 +821,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									value="开";
 								}
 								delay=obj[5]+"";
-								alarmLevel=obj[6]+"";
-								alarmSign=obj[7]+"";
-								isSendMessage=obj[8]+"";
-								isSendMail=obj[9]+"";
+								retriggerTime=obj[6]+"";
+								alarmLevel=obj[7]+"";
+								alarmSign=obj[8]+"";
+								isSendMessage=obj[9]+"";
+								isSendMail=obj[10]+"";
 								break;
 							}
 						}
@@ -823,6 +835,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
 								+ "\"value\":\""+value+"\","
 								+ "\"delay\":\""+delay+"\","
+								+ "\"retriggerTime\":\""+retriggerTime+"\","
 								+ "\"alarmLevel\":\""+alarmLevel+"\","
 								+ "\"alarmSign\":\""+alarmSign+"\","
 								+ "\"isSendMessage\":\""+isSendMessage+"\","
@@ -839,7 +852,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolCommStatusAlarmItemsConfigData(String protocolName,String classes,String code){
@@ -863,7 +876,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		commStatusItemsList.add("离线");
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.delay,"
+			String sql="select t.itemname,t.itemcode,"
+					+ " t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
@@ -879,7 +893,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		for(int i=0;i<commStatusItemsList.size();i++){
 			boolean checked=false;
-			String delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 			String itemCode="online";
 			int value=1;
 			if("离线".equals(commStatusItemsList.get(i))){
@@ -892,10 +906,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(commStatusItemsList.get(i).equalsIgnoreCase(obj[0]+"")){
 						checked=true;
 						delay=obj[2]+"";
-						alarmLevel=obj[3]+"";
-						alarmSign=obj[4]+"";
-						isSendMessage=obj[5]+"";
-						isSendMail=obj[6]+"";
+						retriggerTime=obj[3]+"";
+						alarmLevel=obj[4]+"";
+						alarmSign=obj[5]+"";
+						isSendMessage=obj[6]+"";
+						isSendMail=obj[7]+"";
 						break;
 					}
 				}
@@ -906,6 +921,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"code\":\""+itemCode+"\","
 					+ "\"value\":\""+value+"\","
 					+ "\"delay\":\""+delay+"\","
+					+ "\"retriggerTime\":\""+retriggerTime+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
 					+ "\"alarmSign\":\""+alarmSign+"\","
 					+ "\"isSendMessage\":\""+isSendMessage+"\","
@@ -917,7 +933,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolRunStatusAlarmItemsConfigData(String protocolName,String classes,String code){
@@ -941,7 +957,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		runStatusItemsList.add("停止");
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.delay,"
+			String sql="select t.itemname,t.itemcode,"
+					+ " t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
@@ -957,7 +974,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		for(int i=0;i<runStatusItemsList.size();i++){
 			boolean checked=false;
-			String delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 			String itemCode="run";
 			int value=1;
 			if("停止".equals(runStatusItemsList.get(i))){
@@ -971,10 +988,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(runStatusItemsList.get(i).equalsIgnoreCase(obj[0]+"")){
 						checked=true;
 						delay=obj[2]+"";
-						alarmLevel=obj[3]+"";
-						alarmSign=obj[4]+"";
-						isSendMessage=obj[5]+"";
-						isSendMail=obj[6]+"";
+						retriggerTime=obj[3]+"";
+						alarmLevel=obj[4]+"";
+						alarmSign=obj[5]+"";
+						isSendMessage=obj[6]+"";
+						isSendMail=obj[7]+"";
 						break;
 					}
 				}
@@ -985,6 +1003,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"code\":\""+itemCode+"\","
 					+ "\"value\":\""+value+"\","
 					+ "\"delay\":\""+delay+"\","
+					+ "\"retriggerTime\":\""+retriggerTime+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
 					+ "\"alarmSign\":\""+alarmSign+"\","
 					+ "\"isSendMessage\":\""+isSendMessage+"\","
@@ -996,7 +1015,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getModbusProtocolFESDiagramConditionsAlarmItemsConfigData(String protocolName,String classes,String code){
@@ -1020,7 +1039,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<?> conditionsList=this.findCallSql(conditionsSql);
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.delay,"
+			String sql="select t.itemname,t.itemcode,"
+					+ " t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
@@ -1038,17 +1058,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			boolean checked=false;
 			Object[] conditionsObj = (Object[]) conditionsList.get(i);
 			
-			String delay="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 			if(StringManagerUtils.existOrNot(itemsList,conditionsObj[0]+"",false)){
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
 					if((conditionsObj[0]+"").equalsIgnoreCase(obj[0]+"")){
 						checked=true;
 						delay=obj[2]+"";
-						alarmLevel=obj[3]+"";
-						alarmSign=obj[4]+"";
-						isSendMessage=obj[5]+"";
-						isSendMail=obj[6]+"";
+						retriggerTime=obj[3]+"";
+						alarmLevel=obj[4]+"";
+						alarmSign=obj[5]+"";
+						isSendMessage=obj[6]+"";
+						isSendMail=obj[7]+"";
 						break;
 					}
 				}
@@ -1058,6 +1079,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"title\":\""+conditionsObj[0]+"\","
 					+ "\"code\":\""+conditionsObj[1]+"\","
 					+ "\"delay\":\""+delay+"\","
+					+ "\"retriggerTime\":\""+retriggerTime+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
 					+ "\"alarmSign\":\""+alarmSign+"\","
 					+ "\"isSendMessage\":\""+isSendMessage+"\","
@@ -1069,7 +1091,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getProtocolDisplayUnitAcqItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId){
@@ -3599,7 +3621,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
+				+ "t.delay,t.retriggerTime,"
 				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
@@ -3609,7 +3632,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " order by t.itemaddr";
 		
 		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
+					+ "t.delay,t.retriggerTime,"
 					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
@@ -3630,10 +3654,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"lowerLimit\":\""+obj[5]+"\","
 					+ "\"hystersis\":\""+obj[6]+"\","
 					+ "\"delay\":\""+obj[7]+"\","
-					+ "\"alarmLevel\":\""+obj[8]+"\","
-					+ "\"alarmSign\":\""+obj[9]+"\","
-					+ "\"isSendMessage\":\""+obj[10]+"\","
-					+ "\"isSendMail\":\""+obj[11]+"\"},");
+					+ "\"retriggerTime\":\""+obj[8]+"\","
+					+ "\"alarmLevel\":\""+obj[9]+"\","
+					+ "\"alarmSign\":\""+obj[10]+"\","
+					+ "\"isSendMessage\":\""+obj[11]+"\","
+					+ "\"isSendMail\":\""+obj[12]+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){
@@ -3678,7 +3703,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+		String itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
+				+ "t.delay,t.retriggerTime,"
 				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
@@ -3688,7 +3714,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " order by t.id";
 		
 		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
+			itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
+					+ "t.delay,t.retriggerTime,"
 					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
@@ -3718,10 +3745,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"lowerLimit\":\""+obj[4]+"\","
 					+ "\"hystersis\":\""+obj[5]+"\","
 					+ "\"delay\":\""+obj[6]+"\","
-					+ "\"alarmLevel\":\""+obj[7]+"\","
-					+ "\"alarmSign\":\""+obj[8]+"\","
-					+ "\"isSendMessage\":\""+obj[9]+"\","
-					+ "\"isSendMail\":\""+obj[10]+"\"},");
+					+ "\"retriggerTime\":\""+obj[7]+"\","
+					+ "\"alarmLevel\":\""+obj[8]+"\","
+					+ "\"alarmSign\":\""+obj[9]+"\","
+					+ "\"isSendMessage\":\""+obj[10]+"\","
+					+ "\"isSendMail\":\""+obj[11]+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){
@@ -3753,7 +3781,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,t.delay,"
+		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
+				+ "t.delay,t.retriggerTime,"
 				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
 				+ " t2.protocol "
@@ -3763,7 +3792,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t.type="+resolutionMode
 				+ " order by t.itemaddr,t.bitindex";
 		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,t.delay,"
+			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
+					+ "t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
 					+ " t2.protocol "
@@ -3805,10 +3835,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"meaning\":\""+meaning+"\","
 					+ "\"value\":\""+("1".equalsIgnoreCase(obj[5]+"")?"开":"关")+"\","
 					+ "\"delay\":\""+obj[6]+"\","
-					+ "\"alarmLevel\":\""+obj[7]+"\","
-					+ "\"alarmSign\":\""+obj[8]+"\","
-					+ "\"isSendMessage\":\""+obj[9]+"\","
-					+ "\"isSendMail\":\""+obj[10]+"\"},");
+					+ "\"retriggerTime\":\""+obj[7]+"\","
+					+ "\"alarmLevel\":\""+obj[8]+"\","
+					+ "\"alarmSign\":\""+obj[9]+"\","
+					+ "\"isSendMessage\":\""+obj[10]+"\","
+					+ "\"isSendMail\":\""+obj[11]+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){
@@ -3837,7 +3868,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,t.delay,"
+		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
+				+ "t.delay,t.retriggerTime,"
 				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'),"
 				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
 				+ " t2.protocol "
@@ -3847,7 +3879,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t.type="+resolutionMode
 				+ " order by t.itemaddr,t.bitindex";
 		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,t.delay,"
+			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
+					+ "t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'),"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
 					+ " t2.protocol "
@@ -3888,10 +3921,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"value\":\""+obj[4]+"\","
 					+ "\"meaning\":\""+meaning+"\","
 					+ "\"delay\":\""+obj[5]+"\","
-					+ "\"alarmLevel\":\""+obj[6]+"\","
-					+ "\"alarmSign\":\""+obj[7]+"\","
-					+ "\"isSendMessage\":\""+obj[8]+"\","
-					+ "\"isSendMail\":\""+obj[9]+"\"},");
+					+ "\"retriggerTime\":\""+obj[6]+"\","
+					+ "\"alarmLevel\":\""+obj[7]+"\","
+					+ "\"alarmSign\":\""+obj[8]+"\","
+					+ "\"isSendMessage\":\""+obj[9]+"\","
+					+ "\"isSendMail\":\""+obj[10]+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){
@@ -3916,7 +3950,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.delay,"
+		String itemsSql="select t.id, t.itemname,t.itemcode,"
+				+ "t.delay,t.retriggerTime,"
 				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign, "
 				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
@@ -3925,7 +3960,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t.type="+resolutionMode
 				+ " order by t.id";
 		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.delay,"
+			itemsSql="select t.id, t.itemname,t.itemcode,"
+					+ "t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
@@ -3941,10 +3977,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"title\":\""+obj[1]+"\","
 					+ "\"code\":\""+obj[2]+"\","
 					+ "\"delay\":\""+obj[3]+"\","
-					+ "\"alarmLevel\":\""+obj[4]+"\","
-					+ "\"alarmSign\":\""+obj[5]+"\","
-					+ "\"isSendMessage\":\""+obj[6]+"\","
-					+ "\"isSendMail\":\""+obj[7]+"\"},");
+					+ "\"retriggerTime\":\""+obj[4]+"\","
+					+ "\"alarmLevel\":\""+obj[5]+"\","
+					+ "\"alarmSign\":\""+obj[6]+"\","
+					+ "\"isSendMessage\":\""+obj[7]+"\","
+					+ "\"isSendMail\":\""+obj[8]+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){
@@ -3969,7 +4006,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.delay,"
+		String itemsSql="select t.id, t.itemname,t.itemcode,"
+				+ "t.delay,t.retriggerTime,"
 				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign, "
 				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
@@ -3978,7 +4016,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t.type="+resolutionMode
 				+ " order by t.id";
 		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.delay,"
+			itemsSql="select t.id, t.itemname,t.itemcode,"
+					+ "t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
@@ -3994,10 +4033,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"title\":\""+obj[1]+"\","
 					+ "\"code\":\""+obj[2]+"\","
 					+ "\"delay\":\""+obj[3]+"\","
-					+ "\"alarmLevel\":\""+obj[4]+"\","
-					+ "\"alarmSign\":\""+obj[5]+"\","
-					+ "\"isSendMessage\":\""+obj[6]+"\","
-					+ "\"isSendMail\":\""+obj[7]+"\"},");
+					+ "\"retriggerTime\":\""+obj[4]+"\","
+					+ "\"alarmLevel\":\""+obj[5]+"\","
+					+ "\"alarmSign\":\""+obj[6]+"\","
+					+ "\"isSendMessage\":\""+obj[7]+"\","
+					+ "\"isSendMail\":\""+obj[8]+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){
@@ -4022,7 +4062,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.delay,"
+		String itemsSql="select t.id, t.itemname,t.itemcode,"
+				+ "t.delay,t.retriggerTime,"
 				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign, "
 				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
@@ -4031,7 +4072,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t.type="+resolutionMode
 				+ " order by t.id";
 		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.delay,"
+			itemsSql="select t.id, t.itemname,t.itemcode,"
+					+ "t.delay,t.retriggerTime,"
 					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
 					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
@@ -4047,10 +4089,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"title\":\""+obj[1]+"\","
 					+ "\"code\":\""+obj[2]+"\","
 					+ "\"delay\":\""+obj[3]+"\","
-					+ "\"alarmLevel\":\""+obj[4]+"\","
-					+ "\"alarmSign\":\""+obj[5]+"\","
-					+ "\"isSendMessage\":\""+obj[6]+"\","
-					+ "\"isSendMail\":\""+obj[7]+"\"},");
+					+ "\"retriggerTime\":\""+obj[4]+"\","
+					+ "\"alarmLevel\":\""+obj[5]+"\","
+					+ "\"alarmSign\":\""+obj[6]+"\","
+					+ "\"isSendMessage\":\""+obj[7]+"\","
+					+ "\"isSendMail\":\""+obj[8]+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){

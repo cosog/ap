@@ -2933,6 +2933,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 									alarmUnitItem.setDelay(StringManagerUtils.stringToInteger(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getDelay()));
 								}
 								
+								if(StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getRetriggerTime())){
+									alarmUnitItem.setRetriggerTime(StringManagerUtils.stringToInteger(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getRetriggerTime()));
+								}
+								
 								int alarmLevel=0;
 								int alarmSign=0;
 								if("正常".equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){

@@ -2564,7 +2564,9 @@ public class MemoryDataManagerTask {
 			String instanceSql="select t.code from tbl_protocolalarminstance t where 1=1 ";
 			String sql="select t3.code as instanceCode,t.unitid,t2.protocol,"
 					+ " t.id as itemId,t.itemname,t.itemcode,t.itemaddr,t.bitindex,"
-					+ "t.value,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,decode(t.alarmsign,0,0,t.alarmlevel) as alarmlevel,t.alarmsign,t.type,t.issendmessage,t.issendmail "
+					+ " t.value,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,t.retriggerTime,"
+					+ " decode(t.alarmsign,0,0,t.alarmlevel) as alarmlevel,t.alarmsign,t.type,"
+					+ " t.issendmessage,t.issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
 					+ " where t.unitid=t2.id and t2.id=t3.alarmunitid";
 			if(StringManagerUtils.isNotNull(instanceId)){
@@ -2630,14 +2632,15 @@ public class MemoryDataManagerTask {
 					alarmItem.setLowerLimit(rs.getFloat(11));
 					alarmItem.setHystersis(rs.getFloat(12));
 					alarmItem.setDelay(rs.getInt(13));
+					alarmItem.setRetriggerTime(rs.getInt(14));
 					
-					alarmItem.setAlarmLevel(rs.getInt(14));
-					alarmItem.setAlarmSign(rs.getInt(15));
+					alarmItem.setAlarmLevel(rs.getInt(15));
+					alarmItem.setAlarmSign(rs.getInt(16));
 					
-					alarmItem.setType(rs.getInt(16));
+					alarmItem.setType(rs.getInt(17));
 
-					alarmItem.setIsSendMessage(rs.getInt(17));
-					alarmItem.setIsSendMail(rs.getInt(18));
+					alarmItem.setIsSendMessage(rs.getInt(18));
+					alarmItem.setIsSendMail(rs.getInt(19));
 					
 					int index=-1;
 					for(int i=0;i<alarmInstanceOwnItem.getItemList().size();i++){

@@ -34,6 +34,8 @@ public class ModbusProtocolAlarmUnitSaveData {
 	    private String hystersis;
 
 	    private String delay;
+	    
+	    private String retriggerTime;
 
 	    private String alarmLevel;
 
@@ -132,6 +134,12 @@ public class ModbusProtocolAlarmUnitSaveData {
 		}
 		public void setItemCode(String itemCode) {
 			this.itemCode = itemCode;
+		}
+		public String getRetriggerTime() {
+			return retriggerTime;
+		}
+		public void setRetriggerTime(String retriggerTime) {
+			this.retriggerTime = retriggerTime;
 		}
 	}
 

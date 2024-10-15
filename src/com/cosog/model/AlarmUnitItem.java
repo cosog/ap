@@ -25,6 +25,7 @@ public class AlarmUnitItem implements java.io.Serializable {
 	private Float lowerLimit;
 	private Float hystersis;
 	private Integer delay;
+	private Integer retriggerTime;
 	private Integer alarmLevel;
 	private Integer alarmSign;
 	private Integer isSendMessage;
@@ -38,7 +39,8 @@ public class AlarmUnitItem implements java.io.Serializable {
 	/** full constructor */
 	public AlarmUnitItem(Integer id, Integer unitId, Integer itemId, String itemName, String itemCode,
 			Integer itemAddr, Integer type, Float value, Integer bitIndex, Float upperLimit, Float lowerLimit,
-			Float hystersis, Integer delay, Integer alarmLevel, Integer alarmSign, Integer isSendMessage, Integer isSendMail) {
+			Float hystersis, Integer delay, Integer retriggerTime, 
+			Integer alarmLevel, Integer alarmSign, Integer isSendMessage, Integer isSendMail) {
 		super();
 		this.id = id;
 		this.unitId = unitId;
@@ -53,6 +55,7 @@ public class AlarmUnitItem implements java.io.Serializable {
 		this.lowerLimit = lowerLimit;
 		this.hystersis = hystersis;
 		this.delay = delay;
+		this.retriggerTime = retriggerTime;
 		this.alarmLevel = alarmLevel;
 		this.alarmSign = alarmSign;
 		this.isSendMessage = isSendMessage;
@@ -211,6 +214,15 @@ public class AlarmUnitItem implements java.io.Serializable {
 
 	public void setIsSendMail(Integer isSendMail) {
 		this.isSendMail = isSendMail;
+	}
+
+	@Column(name = "RETRIGGERTIME")
+	public Integer getRetriggerTime() {
+		return retriggerTime;
+	}
+
+	public void setRetriggerTime(Integer retriggerTime) {
+		this.retriggerTime = retriggerTime;
 	}
 
 	

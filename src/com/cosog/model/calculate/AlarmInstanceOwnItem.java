@@ -25,6 +25,7 @@ public class AlarmInstanceOwnItem implements Serializable {
 		public float lowerLimit;
 		public float hystersis;
 		public int delay;
+		public int retriggerTime;
 		
 		public int alarmLevel;
 		public int alarmSign;
@@ -127,6 +128,12 @@ public class AlarmInstanceOwnItem implements Serializable {
 		}
 		public void setIsSendMail(int isSendMail) {
 			this.isSendMail = isSendMail;
+		}
+		public int getRetriggerTime() {
+			return retriggerTime;
+		}
+		public void setRetriggerTime(int retriggerTime) {
+			this.retriggerTime = retriggerTime;
 		}
 	}
 	

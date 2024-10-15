@@ -154,14 +154,16 @@ public class CalculateDataManagerTask {
 	
 	public static void AcquisitionDataTimingTotalCalculation(String timeStr){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+//		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:00:00");
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/AcquisitionDataTimingTotalCalculation?time="+time;
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	public static void RPCTimingTotalCalculation(String timeStr){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+//		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:00:00");
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPCTimingTotalCalculation?time="+time;
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
@@ -199,7 +201,8 @@ public class CalculateDataManagerTask {
 	@SuppressWarnings("static-access")
 	public static void PCPTimingTotalCalculation(String timeStr){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+//		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
+		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:00:00");
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/PCPTimingTotalCalculation?time="+time;
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}

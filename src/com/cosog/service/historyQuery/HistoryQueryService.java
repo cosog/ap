@@ -2884,12 +2884,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												if(alarmType<3){//采集数据报警
 													if(finalProtocolItemResolutionDataList.get(index).getAddr().equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")){
 														if(alarmType==2 && StringManagerUtils.isNotNull(rawValue)){//数据量报警
-															
-															if((StringManagerUtils.stringToFloat(rawValue)>upperLimit+hystersis)
-																	||(StringManagerUtils.stringToFloat(rawValue)<lowerLimit-hystersis)
+															if((StringManagerUtils.stringToFloat(rawValue)>upperLimit)
+																	||(StringManagerUtils.stringToFloat(rawValue)<lowerLimit)
 																	){
 																alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-																
 															}
 															break;
 														}else if(alarmType==0){//开关量报警
@@ -2914,8 +2912,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}
 												}else if(alarmType==5){//计算数据报警
 													if(finalProtocolItemResolutionDataList.get(index).getColumn().equals(alarmInstanceOwnItem.getItemList().get(l).getItemCode())){
-														if((StringManagerUtils.stringToFloat(rawValue)>upperLimit+hystersis)
-																||(StringManagerUtils.stringToFloat(rawValue)<lowerLimit-hystersis)
+														if((StringManagerUtils.stringToFloat(rawValue)>upperLimit)
+																||(StringManagerUtils.stringToFloat(rawValue)<lowerLimit)
 																){
 															alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
 														}

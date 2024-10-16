@@ -245,9 +245,7 @@ public class CalculateDataManagerTask {
 	public static void AcquisitionTimingCalculate() {
 		AcquisitionTimingCalculateExecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
-//        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
-//        initDelay=StringManagerUtils.getTimeMillis("08:00:00") - System.currentTimeMillis();
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
@@ -258,7 +256,6 @@ public class CalculateDataManagerTask {
             	try {
             		AcquisitionDataTimingTotalCalculation(timeStr);
 				}catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
             }

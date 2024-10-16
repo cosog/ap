@@ -474,7 +474,7 @@ function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,cod
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigNumItemsHandsontableHelper==null || protocolAlarmUnitConfigNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigNumItemsHandsontableHelper = ProtocolAlarmUnitConfigNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','地址','上限','下限','回差','延时持续检测(s)','再次触发等待时间(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['','序号','名称','地址','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}},"
 						+"{data:'upperLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}},"
@@ -573,7 +573,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,120,80,80,80,80,120,130,80,80,90,90],
+	        		colWidths: [25,50,120,80,80,80,80,100,100,80,80,90,90],
 	                columns:protocolAlarmUnitConfigNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -682,7 +682,7 @@ function CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(deviceType,classes,co
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper==null || protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCalNumItemsHandsontableHelper = ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','上限','下限','回差','延时持续检测(s)','再次触发等待时间(s)','报警级别','报警使能','是否发送短信','是否发送邮件','代码']";
+				var colHeaders="['','序号','名称','单位','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件','代码']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},{data:'unit'},"
 					 	+"{data:'upperLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCalNumItemsHandsontableHelper);}},"
 						+"{data:'lowerLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCalNumItemsHandsontableHelper);}}," 
@@ -784,7 +784,7 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,120,80,80,80,80,120,130,80,80,90,90],
+	        		colWidths: [25,50,120,80,80,80,80,100,100,80,80,90,90],
 	                columns:protocolAlarmUnitConfigCalNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1060,7 +1060,7 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,un
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigEnumItemsHandsontableHelper==null || protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigEnumItemsHandsontableHelper = ProtocolAlarmUnitConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','数值','含义','延时持续检测(s)','再次触发等待时间(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['','序号','数值','含义','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'}," 
 					+"{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"
@@ -1146,7 +1146,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,50,120,120,130,80,80,90,90],
+	        		colWidths: [25,50,50,120,100,100,80,80,90,90],
 	                columns:protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1255,7 +1255,7 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper==null || protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigSwitchItemsHandsontableHelper = ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','位','含义','触发状态','延时持续检测(s)','再次触发等待时间(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['','序号','位','含义','触发状态','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'}," 
 					+"{data:'bitIndex',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"
@@ -1350,7 +1350,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,50,120,80,120,130,80,80,90,90],
+	        		colWidths: [25,50,50,120,80,100,100,80,80,90,90],
 	                columns:protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1460,7 +1460,7 @@ function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,clas
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCommStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','延时持续检测(s)','再次触发等待时间(s)','报警级别','报警使能','是否发送短信','是否发送邮件','编码','值']";
+				var colHeaders="['','序号','名称','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件','编码','值']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}}," 
@@ -1556,7 +1556,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,120,130,80,80,80,80],
+	        		colWidths: [25,50,80,100,100,80,80,80,80],
 	                columns:protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1665,7 +1665,7 @@ function CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(protocolName
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper==null || protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','延时持续检测(s)','再次触发等待时间(s)','报警级别','报警使能','是否发送短信','是否发送邮件','编码']";
+				var colHeaders="['','序号','名称','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件','编码']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}}," 
@@ -1761,7 +1761,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,120,130,80,80,80,80],
+	        		colWidths: [25,50,80,100,100,80,80,80,80],
 	                columns:protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1869,7 +1869,7 @@ function CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(protocolName,class
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigRunStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','延时持续检测(s)','再次触发等待时间(s)','报警级别','报警使能','是否发送短信','是否发送邮件','编码','值']";
+				var colHeaders="['','序号','名称','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件','编码','值']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigRunStatusItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigRunStatusItemsHandsontableHelper);}}," 
@@ -1957,7 +1957,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,120,130,80,80,80,80],
+	        		colWidths: [25,50,80,100,100,80,80,80,80],
 	                columns:protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

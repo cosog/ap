@@ -81,7 +81,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 		List<AcquisitionItemInfo> saveAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 		for(int i=0;i<acquisitionItemInfoList.size();i++){
-			if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
+			if(acquisitionItemInfoList.get(i).getAlarmLevel()>0 && acquisitionItemInfoList.get(i).getAlarmDelay()==0){
 				String alarmLevelName="";
 				if(acquisitionItemInfoList.get(i).getAlarmLevel()==100){
 					alarmLevelName="一级报警";
@@ -94,7 +94,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String lastAlarmTime=alarmInfoMap.get(key);
 				
 				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-				if(timeDiff>acquisitionItemInfoList.get(i).getAlarmDelay()*1000){
+				if(timeDiff>acquisitionItemInfoList.get(i).getRetriggerTime()*1000){
 					alarmInfoMap.put(key, acqTime);
 					saveAcquisitionItemInfoList.add(acquisitionItemInfoList.get(i));
 					if(acquisitionItemInfoList.get(i).getIsSendMessage()==1){//如果该报警项发送短信

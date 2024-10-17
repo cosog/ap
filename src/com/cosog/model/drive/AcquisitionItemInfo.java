@@ -26,6 +26,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public String alarmInfo;
 	public int alarmType;
 	public int alarmDelay;
+	public int retriggerTime;
 	public int isSendMessage;
 	public int isSendMail;
 	public AcquisitionItemInfo() {
@@ -241,6 +242,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setRawTitle(String rawTitle) {
 		this.rawTitle = rawTitle;
+	}
+
+	public int getRetriggerTime() {
+		return retriggerTime;
+	}
+
+	public void setRetriggerTime(int retriggerTime) {
+		this.retriggerTime = retriggerTime;
 	}
 	
 }

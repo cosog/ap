@@ -228,33 +228,35 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				+ "{\"header\":\"报警时间\",\"dataIndex\":\"alarmTime\",flex:10,children:[]},"
 				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] }"
 				+ "]";
-		String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtype,v.alarmtime from "
-				+ " (select t.orgid,t.deviceid,t.devicename,t.devicetypename,t.alarmtype,max(t.alarmtime) as alarmtime "
+		String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtime from ("
+				+ " select t.orgid,t.deviceid,t.devicename,t.devicetypename,max(t.alarmtime) as alarmtime  "
 				+ " from "+tableName+" t "
-				+ " where 1=1";
+				+ " where t.orgid in("+orgId+")";
 		if(StringManagerUtils.isNum(deviceType)){
 			sql+= " and t.devicetype="+deviceType;
 		}else{
 			sql+= " and t.devicetype in ("+deviceType+")";
 		}
+		
+		if(StringManagerUtils.stringToInteger(alarmType)==2){
+			sql+=" and (t.alarmType=2 or t.alarmType=5)";
+		}else {
+			sql+= " and t.alarmtype="+alarmType;
+		}
+		
 		if(StringManagerUtils.isNotNull(alarmLevel)){
 			sql+=" and t.alarmLevel="+alarmLevel+"";
 		}
 		if(StringManagerUtils.isNotNull(isSendMessage)){
 			sql+=" and t.isSendMessage="+isSendMessage+"";
 		}
-		sql+= " group by t.orgid,t.deviceid,t.devicename,t.devicetypename,t.alarmtype) v "
-				+ " where v.orgid in("+orgId+") ";
-		
-		if(StringManagerUtils.stringToInteger(alarmType)==2){
-			sql+=" and v.alarmType=2 or v.alarmType=5";
-		}else {
-			sql+= " and v.alarmtype="+alarmType;
-		}
 		
 		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and v.deviceName='"+deviceName+"'";
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
+		
+		sql+= " group by t.orgid,t.deviceid,t.devicename,t.devicetypename) v ";
+		
 		sql+=" order by v.alarmtime desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
@@ -270,8 +272,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
-			result_json.append("\"alarmType\":\""+obj[3]+"\",");
-			result_json.append("\"alarmTime\":\""+obj[4]+"\"},");
+			result_json.append("\"alarmTime\":\""+obj[3]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -283,33 +284,35 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	public String getAlarmOverviewExportData(String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String tableName="viw_alarminfo_latest";
-		String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtype,v.alarmtime from "
-				+ " (select t.orgid,t.deviceid,t.devicename,t.devicetypename,t.alarmtype,max(t.alarmtime) as alarmtime "
+		String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtime from ("
+				+ " select t.orgid,t.deviceid,t.devicename,t.devicetypename,max(t.alarmtime) as alarmtime  "
 				+ " from "+tableName+" t "
-				+ " where 1=1";
+				+ " where t.orgid in("+orgId+")";
 		if(StringManagerUtils.isNum(deviceType)){
 			sql+= " and t.devicetype="+deviceType;
 		}else{
 			sql+= " and t.devicetype in ("+deviceType+")";
 		}
+		
+		if(StringManagerUtils.stringToInteger(alarmType)==2){
+			sql+=" and (t.alarmType=2 or t.alarmType=5)";
+		}else {
+			sql+= " and t.alarmtype="+alarmType;
+		}
+		
 		if(StringManagerUtils.isNotNull(alarmLevel)){
 			sql+=" and t.alarmLevel="+alarmLevel+"";
 		}
 		if(StringManagerUtils.isNotNull(isSendMessage)){
 			sql+=" and t.isSendMessage="+isSendMessage+"";
 		}
-		sql+= " group by t.orgid,t.deviceid,t.devicename,t.devicetypename,t.alarmtype) v "
-				+ " where v.orgid in("+orgId+") ";
-		
-		if(StringManagerUtils.stringToInteger(alarmType)==2){
-			sql+=" and v.alarmType=2 or v.alarmType=5";
-		}else {
-			sql+= " and v.alarmtype="+alarmType;
-		}
 		
 		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and v.deviceName='"+deviceName+"'";
+			sql+=" and t.deviceName='"+deviceName+"'";
 		}
+		
+		sql+= " group by t.orgid,t.deviceid,t.devicename,t.devicetypename) v ";
+		
 		sql+=" order by v.alarmtime desc";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("[");
@@ -318,8 +321,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
-			result_json.append("\"alarmType\":\""+obj[3]+"\",");
-			result_json.append("\"alarmTime\":\""+obj[4]+"\"},");
+			result_json.append("\"alarmTime\":\""+obj[3]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

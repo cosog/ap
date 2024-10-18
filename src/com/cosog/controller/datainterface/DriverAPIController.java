@@ -1034,8 +1034,15 @@ public class DriverAPIController extends BaseController{
 						deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
 					}
 				}
+				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
 			}
 			acquisitionItemInfoList.add(acquisitionItemInfo);
+		}
+		
+		if(deviceAlarmInfo.getAlarmInfoMap()==null || deviceAlarmInfo.getAlarmInfoMap().size()==0){
+			deviceAlarmInfoMap.remove(deviceInfo.getId());
+		}else {
+			deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
 		}
 		return acquisitionItemInfoList;
 	}

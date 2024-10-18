@@ -4,20 +4,21 @@ import java.util.List;
 
 public class ModbusProtocolAlarmUnitSaveData {
 
-	int id;
-	int resolutionMode;
-	String unitCode;
-	String unitName;
-	String oldUnitName;
-	String protocol;
-	String remark;
+	public int id;
+	public int resolutionMode;
+	public String unitCode;
+	public String unitName;
+	public String oldUnitName;
+	public String protocol;
+	public int calculateType;
+	public String remark;
 	
-	String alarmItemName;
-	int alarmItemAddr;
+	public String alarmItemName;
+	public int alarmItemAddr;
 	
-	private List<String> delidslist;
+	public List<String> delidslist;
 	
-	private List<AlarmItems> alarmItems;
+	public List<AlarmItems> alarmItems;
 	
 	public static class AlarmItems
 	{
@@ -229,5 +230,13 @@ public class ModbusProtocolAlarmUnitSaveData {
 
 	public void setAlarmItemAddr(int alarmItemAddr) {
 		this.alarmItemAddr = alarmItemAddr;
+	}
+
+	public int getCalculateType() {
+		return calculateType;
+	}
+
+	public void setCalculateType(int calculateType) {
+		this.calculateType = calculateType;
 	}
 }

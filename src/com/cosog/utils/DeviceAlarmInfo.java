@@ -32,9 +32,10 @@ public class DeviceAlarmInfo {
 		executorService.schedule(new Thread(new Runnable() {
             @Override
             public void run() {
+            	String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
             	Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
             	
-//            	SaveDelayAlarmData(deviceName,deviceType+"",alarmInfo.getAlarmTime(),alarmInfo);
+//            	SaveDelayAlarmData(deviceName,deviceType+"",time,alarmInfo);
             	
             	boolean isSendSMS=alarmInfo.getIsSendMail()==1;
         		boolean isSendMail=alarmInfo.getIsSendMessage()==1;
@@ -52,10 +53,10 @@ public class DeviceAlarmInfo {
 				String key=deviceId+","+deviceType+","+alarmInfo.getColumn()+","+alarmInfo.getAlarmInfo();
 				String lastAlarmTime=alarmInfoMap.get(key);
 				
-				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, alarmInfo.getAlarmTime(), "yyyy-MM-dd HH:mm:ss");
+				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, time, "yyyy-MM-dd HH:mm:ss");
 				if(timeDiff>alarmInfo.getRetriggerTime()*1000){
-					SaveDelayAlarmData(deviceName,deviceType+"",alarmInfo.getAlarmTime(),alarmInfo);
-					alarmInfoMap.put(key, alarmInfo.getAlarmTime());
+					SaveDelayAlarmData(deviceName,deviceType+"",time,alarmInfo);
+					alarmInfoMap.put(key, time);
 					if(alarmInfo.getIsSendMessage()==1){//如果该报警项发送短信
 						if(alarmInfo.getAlarmType()==3){//开关量报警
 							SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
@@ -102,7 +103,7 @@ public class DeviceAlarmInfo {
             	}
             	alarmInfoTimerMap.remove(alarmKey);
             }
-        }), delay,TimeUnit.MINUTES);
+        }), delay,TimeUnit.SECONDS);
 		alarmInfoTimerMap.put(alarmKey,executorService);
 	}
 	

@@ -1329,8 +1329,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getModbusProtocolCalNumAlarmItemsConfigData(deviceType,classes,code);
+		json = acquisitionUnitItemManagerService.getModbusProtocolCalNumAlarmItemsConfigData(deviceType,classes,code,calculateType);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2898,6 +2899,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				alarmUnit.setUnitCode(modbusProtocolAlarmUnitSaveData.getUnitCode());
 				alarmUnit.setUnitName(modbusProtocolAlarmUnitSaveData.getUnitName());
 				alarmUnit.setProtocol(modbusProtocolAlarmUnitSaveData.getProtocol());
+				alarmUnit.setCalculateType(modbusProtocolAlarmUnitSaveData.getCalculateType());
 				alarmUnit.setRemark(modbusProtocolAlarmUnitSaveData.getRemark());
 				try {
 					this.alarmUnitManagerService.doAlarmUnitEdit(alarmUnit);

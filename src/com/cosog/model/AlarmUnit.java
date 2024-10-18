@@ -25,7 +25,7 @@ public class AlarmUnit implements java.io.Serializable {
 	private String unitCode;
 	private String unitName;
 	private String protocol;
-	
+	private Integer calculateType;
 	private String remark;
 
 	// Constructors
@@ -90,6 +90,15 @@ public class AlarmUnit implements java.io.Serializable {
 
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
+	}
+
+	@Column(name = "calculateType")
+	public Integer getCalculateType() {
+		return calculateType;
+	}
+
+	public void setCalculateType(Integer calculateType) {
+		this.calculateType = calculateType;
 	}
 
 }

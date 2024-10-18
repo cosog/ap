@@ -409,20 +409,20 @@ public class EquipmentDriverServerTask {
 //				sendCycle=60;
 //				timeDifference=0;
 				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
-				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
-				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
-				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
-				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
-				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
-				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
-				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
-				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
+//				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
+//				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
+//				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
+//				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
+//				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
+//				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
+//				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
+//				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
+//				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
 //				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
 //				new ExampleDataManageThread("rpc12",sendCycle,timeDifference*0).start();
 				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

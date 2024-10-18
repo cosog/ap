@@ -87,10 +87,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                     				}
                             	}else if(record.data.classes==1){
                             		CreateProtocolAlarmUnitNumItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-                            		CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(record.data.deviceType,record.data.classes,record.data.code);
+                            		CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(record.data.deviceType,record.data.classes,record.data.code,0);
                             	}else if(record.data.classes==2||record.data.classes==3){
                             		CreateProtocolAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
-                            		CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(record.data.deviceType,record.data.classes,record.data.code);
+                            		CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(record.data.deviceType,record.data.classes,record.data.code,record.data.calculateType);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
                         		var gridPanel=Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsGridPanel_Id");
@@ -143,9 +143,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                     					protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper=null;
                     				}
                             	}else if(record.data.classes==1){
-                            		CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
+                            		CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(record.data.text,record.data.classes,record.data.code,0);
                             	}else if(record.data.classes==2||record.data.classes==3){
-                            		CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
+                            		CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.calculateType);
                             	}
                         	}
                         	CreateProtocolAlarmUnitConfigPropertiesInfoTable(record.data);

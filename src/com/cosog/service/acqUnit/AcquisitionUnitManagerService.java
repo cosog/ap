@@ -585,7 +585,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolCalNumAlarmItemsConfigData(String calculateType,String classes,String code){
+	public String getModbusProtocolCalNumAlarmItemsConfigData(String deviceType,String classes,String code,String calculateType){
 		StringBuffer result_json = new StringBuffer();
 		
 		List<CalItem> calItemList=null;
@@ -4877,7 +4877,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
-			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol"
+			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol,"
+					+ " t.calculateType, "
+					+ " decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName"
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
 					+ " where t.protocol=t2.name ";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -4895,21 +4897,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("{\"classes\":1,");
 					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					tree_json.append("\"deviceType\":"+0+",");
+					tree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
 					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
 					tree_json.append("\"iconCls\": \"protocol\",");
 					tree_json.append("\"expanded\": true,");
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
 						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						String protocol=unitObj[4]+"";
+						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(protocol)){
 							tree_json.append("{\"classes\":3,");
 							tree_json.append("\"id\":"+unitObj[0]+",");
 							tree_json.append("\"deviceType\":"+0+",");
 							tree_json.append("\"code\":\""+unitObj[1]+"\",");
 							tree_json.append("\"text\":\""+unitObj[2]+"\",");
 							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+							tree_json.append("\"protocol\":\""+protocol+"\",");
+							tree_json.append("\"calculateType\":\""+unitObj[5]+"\",");
+							tree_json.append("\"calculateTypeName\":\""+unitObj[6]+"\",");
 							tree_json.append("\"iconCls\": \"acqGroup\",");
 							tree_json.append("\"leaf\": true");
 							tree_json.append("},");

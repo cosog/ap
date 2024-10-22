@@ -1,5 +1,4 @@
 CREATE OR REPLACE TRIGGER BEF_HIBERNATE_SEQUENCE_INSERT
-CREATE OR REPLACE TRIGGER BEF_HIBERNATE_SEQUENCE_INSERT
 BEFORE INSERT ON TBL_DIST_ITEM
 FOR EACH ROW
 BEGIN
@@ -22,18 +21,6 @@ end;
 CREATE OR REPLACE TRIGGER trg_b_acqrawdata_i   before  insert on tbl_acqrawdata FOR EACH ROW
 BEGIN
   SELECT seq_acqrawdata.nextval INTO :new.id FROM dual;
-end;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_alarminfo_latest_i   before  insert on tbl_alarminfo_latest FOR EACH ROW
-BEGIN
-  SELECT seq_alarminfo_latest.nextval INTO :new.id FROM dual;
-end;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_alarminfo_hist_i   before  insert on tbl_alarminfo_hist FOR EACH ROW
-BEGIN
-  SELECT seq_alarminfo_hist.nextval INTO :new.id FROM dual;
 end;
 /
 
@@ -61,6 +48,18 @@ BEGIN
 end;
 /
 
+CREATE OR REPLACE TRIGGER trg_b_alarminfo_hist_i   before  insert on tbl_alarminfo_hist FOR EACH ROW
+BEGIN
+  SELECT seq_alarminfo_hist.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_alarminfo_latest_i   before  insert on tbl_alarminfo_latest FOR EACH ROW
+BEGIN
+  SELECT seq_alarminfo_latest.nextval INTO :new.id FROM dual;
+end;
+/
+
 CREATE OR REPLACE TRIGGER trg_b_alarm_item2unit_conf_i   before  insert on TBL_ALARM_ITEM2UNIT_CONF FOR EACH ROW
 BEGIN
   SELECT seq_alarm_item2unit_conf.nextval INTO :new.id FROM dual;
@@ -73,8 +72,7 @@ BEGIN
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_auxiliary2master_i   before  insert on TBL_AUXILIARY2MASTER FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_auxiliary2master_i   before  insert on TBL_AUXILIARY2MASTER FOR EACH ROW
 BEGIN
   SELECT seq_auxiliary2master.nextval INTO :new.id FROM dual;
 end;
@@ -86,8 +84,7 @@ BEGIN
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_auxiliarydevice_i   before  insert on tbl_auxiliarydevice FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_auxiliarydevice_i   before  insert on tbl_auxiliarydevice FOR EACH ROW
 BEGIN
   SELECT seq_auxiliarydevice.nextval INTO :new.id FROM dual;
 end;
@@ -141,15 +138,13 @@ BEGIN
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_devicetype2role_i   before  insert  on TBL_DEVICETYPE2ROLE FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_devicetype2role_i   before  insert  on TBL_DEVICETYPE2ROLE FOR EACH ROW
 BEGIN
        SELECT seq_role_devicetype.nextval INTO :new.rd_id FROM dual;
 END;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_devicetypeinfo_i   before  insert on TBL_DEVICETYPEINFO FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_devicetypeinfo_i   before  insert on TBL_DEVICETYPEINFO FOR EACH ROW
 BEGIN
   SELECT seq_devicetypeinfo.nextval INTO :new.id FROM dual;
 end;
@@ -251,6 +246,12 @@ end;
 CREATE OR REPLACE TRIGGER trg_b_protocol_i   before  insert on tbl_protocol FOR EACH ROW
 BEGIN
   SELECT seq_protocol.nextval,'protocol' || seq_protocol.nextval INTO :new.id, :new.code FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_REALTIMETOTALCALCULATIONDATA_i   before  insert on TBL_REALTIMETOTALCALCULATIONDATA FOR EACH ROW
+BEGIN
+  SELECT SEQ_REALTIMETOTALCALCULATIONDATA.nextval INTO :new.id FROM dual;
 end;
 /
 

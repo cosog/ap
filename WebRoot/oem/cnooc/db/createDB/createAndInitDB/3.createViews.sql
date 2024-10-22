@@ -60,7 +60,7 @@ t2.recoverytime,t.orgid
 /*==============================================================*/
 /* View: viw_dailycalculationdata                                         */
 /*==============================================================*/
-create or replace view viw_dailycalculationdata as
+create or replace force view viw_dailycalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calDate,
@@ -126,7 +126,7 @@ left outer join viw_devicetypeinfo t10 on t.devicetype=t10.id;
 /*==============================================================*/
 /* View: viw_deviceoperationlog                                         */
 /*==============================================================*/
-create or replace view viw_deviceoperationlog as
+create or replace force view viw_deviceoperationlog as
 select t.id,t.devicetype,tab.name as deviceTypeName,
 t.devicename,t.createtime,u.user_no,t.user_id,r.role_id,r.role_level,t.loginip,t.action,code2.itemname as actionname,t.remark ,
 decode(t.action,2,t.remark,(case when t.devicetype>=300 then t4.orgid else t2.orgid end)) as orgid
@@ -431,7 +431,7 @@ and t.action=t3.itemvalue and upper(t3.itemcode)=upper('systemAction');
 /*==============================================================*/
 /* View: viw_timingcalculationdata                                         */
 /*==============================================================*/
-create or replace view viw_timingcalculationdata as
+create or replace force view viw_timingcalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calTime,

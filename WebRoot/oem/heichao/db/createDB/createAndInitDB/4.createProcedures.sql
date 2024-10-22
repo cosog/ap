@@ -62,10 +62,25 @@ begin
 end;
 /
 
+CREATE OR REPLACE PROCEDURE prd_reset_sequence (sequencename IN VARCHAR2) as
+  curr_val INTEGER;
+BEGIN
+  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' MINVALUE 0';
+  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' cache 20';
+  EXECUTE IMMEDIATE 'SELECT ' || sequencename || '.nextval FROM dual'
+    INTO curr_val;
+  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' increment by -' ||
+                    curr_val;
+  EXECUTE IMMEDIATE 'SELECT ' || sequencename || '.nextval FROM dual'
+    INTO curr_val;
+  EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' increment by 1';
+END prd_reset_sequence;
+/
+
 CREATE OR REPLACE PROCEDURE prd_clear_data is
 begin
 --清空所有数据
-EXECUTE IMMEDIATE 'truncate table tbl_acqdata_latest';
+--EXECUTE IMMEDIATE 'truncate table tbl_acqdata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_acqdata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_hist';
@@ -88,19 +103,19 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcpdailycalculationdata';
 EXECUTE IMMEDIATE 'truncate table tbl_pcptimingcalculationdata';
 
 
-EXECUTE IMMEDIATE 'truncate table tbl_deviceaddinfo';
-EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
-EXECUTE IMMEDIATE 'truncate table tbl_devicegraphicset';
+--EXECUTE IMMEDIATE 'truncate table tbl_deviceaddinfo';
+--EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
+--EXECUTE IMMEDIATE 'truncate table tbl_devicegraphicset';
 
-EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
-EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
-EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
+--EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
+--EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
+--EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
 
-EXECUTE IMMEDIATE 'truncate table tbl_device';
-EXECUTE IMMEDIATE 'truncate table tbl_smsdevice';
+--EXECUTE IMMEDIATE 'truncate table tbl_device';
+--EXECUTE IMMEDIATE 'truncate table tbl_smsdevice';
 
 --重置所有序列
- prd_reset_sequence('seq_acqdata_latest');
+ --prd_reset_sequence('seq_acqdata_latest');
  prd_reset_sequence('seq_acqdata_hist');
  prd_reset_sequence('seq_alarminfo_latest');
  prd_reset_sequence('seq_alarminfo_hist');
@@ -116,22 +131,22 @@ EXECUTE IMMEDIATE 'truncate table tbl_smsdevice';
  prd_reset_sequence('seq_rpcacqdata_hist');
  prd_reset_sequence('seq_rpcdailycalculationdata');
  prd_reset_sequence('seq_rpctimingcalculationdata');
- 
+
  prd_reset_sequence('seq_pcpacqdata_latest');
  prd_reset_sequence('seq_pcpacqdata_hist');
  prd_reset_sequence('seq_pcpdailycalculationdata');
  prd_reset_sequence('seq_pcptimingcalculationdata');
 
- prd_reset_sequence('seq_deviceaddinfo');
- prd_reset_sequence('seq_auxiliary2master');
- prd_reset_sequence('seq_devicegraphicset');
+ --prd_reset_sequence('seq_deviceaddinfo');
+ --prd_reset_sequence('seq_auxiliary2master');
+ --prd_reset_sequence('seq_devicegraphicset');
 
- prd_reset_sequence('seq_deviceoperationlog');
- prd_reset_sequence('seq_systemlog');
- prd_reset_sequence('seq_resourcemonitoring');
+ --prd_reset_sequence('seq_deviceoperationlog');
+ --prd_reset_sequence('seq_systemlog');
+ --prd_reset_sequence('seq_resourcemonitoring');
 
- prd_reset_sequence('seq_device');
- prd_reset_sequence('seq_smsdevice');
+ --prd_reset_sequence('seq_device');
+ --prd_reset_sequence('seq_smsdevice');
 end prd_clear_data;
 /
 
@@ -149,6 +164,21 @@ begin
     where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
     and t.headerlabelinfo is null;
     commit;
+
+/*
+    insert into tbl_pcpdailycalculationdata (wellid,caldate)
+    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_pcpdevice well
+    where well.id not in ( select t2.wellid from tbl_pcpdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    commit;
+
+    update tbl_pcpdailycalculationdata t set t.headerlabelinfo=
+    ( select t2.headerlabelinfo from  tbl_pcpdailycalculationdata t2
+    where t2.wellid=t.wellid and t2.caldate=
+    ( select max(t3.caldate) from tbl_pcpdailycalculationdata t3 where t3.wellid=t2.wellid and t3.headerlabelinfo is not null ))
+    where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
+    and t.headerlabelinfo is null;
+    commit;
+*/
 end prd_init_device_daily;
 /
 
@@ -205,7 +235,7 @@ begin
         (stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
         =(
           select t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
-          from TBL_RPCDAILYCALCULATIONDATA t2 
+          from TBL_RPCDAILYCALCULATIONDATA t2
            where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
            and t2.deviceid=v_deviceId
            and rownum=1
@@ -213,15 +243,15 @@ begin
         where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
       commit;
       --更新采集实时产量
-      update tbl_rpctimingcalculationdata t set 
+      update tbl_rpctimingcalculationdata t set
            (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
            ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
-           from tbl_rpcacqdata_hist t2 
+           from tbl_rpcacqdata_hist t2
            where t2.id=(
                  select v2.id from
                  (select v.id,rownum r from
-                 (select t3.id from  tbl_rpcacqdata_hist t3 
-                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
+                 (select t3.id from  tbl_rpcacqdata_hist t3
+                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null
                  and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
                  and t3.deviceid=v_deviceId
                  order by t3.acqtime desc) v
@@ -242,7 +272,7 @@ begin
         (tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
         =(
           select t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
-          from TBL_PCPDAILYCALCULATIONDATA t2 
+          from TBL_PCPDAILYCALCULATIONDATA t2
            where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
            and t2.deviceid=v_deviceId
            and rownum=1
@@ -250,15 +280,15 @@ begin
         where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
       commit;
       --更新采集实时产量
-      update tbl_pcptimingcalculationdata t set 
+      update tbl_pcptimingcalculationdata t set
            (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
            ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
-           from tbl_pcpacqdata_hist t2 
+           from tbl_pcpacqdata_hist t2
            where t2.id=(
                  select v2.id from
                  (select v.id,rownum r from
-                 (select t3.id from  tbl_pcpacqdata_hist t3 
-                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null 
+                 (select t3.id from  tbl_pcpacqdata_hist t3
+                 where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null
                  and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
                  and t3.deviceid=v_deviceId
                  order by t3.acqtime desc) v
@@ -384,13 +414,50 @@ CREATE OR REPLACE PROCEDURE prd_save_alarminfo (
   ) is
   p_msg varchar2(3000) := 'error';
   counts number :=0;
+  counts_latest number :=0;
   p_deviceid number :=0;
 begin
+  select t.id into p_deviceid from tbl_device t where t.devicename=v_deviceName and t.devicetype=v_deviceType ;
+
   select count(1) into counts from tbl_alarminfo_hist t
-  where t.deviceid=( select t2.id from tbl_device t2 where t2.devicename=v_deviceName and t2.devicetype=v_deviceType )
+  where t.deviceid=p_deviceid
   and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
   and t.itemname=v_itemName;
-  select t.id into p_deviceid from tbl_device t where t.devicename=v_deviceName and t.devicetype=v_deviceType ;
+
+  select count(1) into counts_latest from tbl_alarminfo_latest t
+  where t.deviceid=p_deviceid
+  and t.alarmtype=v_alarmType;
+
+  if counts_latest=0 and p_deviceid>0 then
+    insert into tbl_alarminfo_latest (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
+    hystersis,alarmlevel,issendmessage,issendmail)
+    values(
+         p_deviceid,
+         to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
+         v_itemName,
+         v_alarmType,
+         v_alarmValue,
+         v_alarmInfo,
+         v_alarmLimit,
+         v_hystersis,
+         v_alarmLevel,
+         v_isSendMessage,
+         v_isSendMail
+      );
+    commit;
+    p_msg := '实时数据插入成功';
+  elsif counts_latest>0 then
+    update tbl_alarminfo_latest t set alarmvalue=v_alarmValue,
+    alarminfo=v_alarmInfo,alarmlimit=v_alarmLimit,hystersis=v_hystersis,alarmlevel=v_alarmLevel,
+    issendmessage=v_isSendMessage,issendmail=v_isSendMail,
+    t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
+    t.itemname=v_itemName
+    where t.deviceid=p_deviceid
+    and t.alarmtype=v_alarmType;
+    commit;
+    p_msg := '实时数据更新成功';
+  end if;
+
   if counts=0 and p_deviceid>0 then
     insert into tbl_alarminfo_hist (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
     hystersis,alarmlevel,issendmessage,issendmail)
@@ -496,13 +563,13 @@ begin
     commit;
     p_msg := '插入成功';
   elsif counts>0 then
-    update tbl_dailytotalcalculate_latest t 
+    update tbl_dailytotalcalculate_latest t
     set  t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),t.totalvalue=v_totalValue,t.todayvalue=v_todayValue,t.itemname=v_itemName
     where t.deviceid=v_deviceId and t.itemcolumn=v_itemColumn;
     commit;
     p_msg := '更新成功';
   end if;
-  
+
   select count(1) into histCounts from tbl_dailytotalcalculate_hist t
   where t.deviceid=v_deviceId and t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss') and t.itemcolumn=v_itemColumn;
   if histCounts=0 then
@@ -1001,7 +1068,7 @@ begin
           t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
        where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
        commit;
-       update tbl_pcptimingcalculationdata t set 
+       update tbl_pcptimingcalculationdata t set
              (
              t.theoreticalproduction,
              t.realtimeliquidvolumetricproduction,t.realtimeoilvolumetricproduction,t.realtimewatervolumetricproduction,
@@ -1010,9 +1077,9 @@ begin
              t.systemefficiency,t.energyper100mlift,
              t.submergence,
              t.rpm
-             ) 
-             =( 
-             select 
+             )
+             =(
+             select
              t2.theoreticalproduction,
              t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
              t2.realtimeliquidweightproduction,t2.realtimeoilweightproduction,t2.realtimewaterweightproduction,
@@ -1020,15 +1087,15 @@ begin
              t2.systemefficiency,t2.energyper100mlift,
              t2.submergence,
              t2.rpm
-             from tbl_pcpacqdata_hist t2 
+             from tbl_pcpacqdata_hist t2
              where t2.id=(
                    select v2.id from
                    (select v.id,rownum r from
-                   (select t3.id from  tbl_pcpacqdata_hist t3  
-                   where t3.commstatus=1 and t3.resultstatus=1 
-                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   (select t3.id from  tbl_pcpacqdata_hist t3
+                   where t3.commstatus=1 and t3.resultstatus=1
+                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')
                    and t3.deviceid=v_wellId
-                   order by t3.acqtime desc) v 
+                   order by t3.acqtime desc) v
                    ) v2
                    where r=1
              )
@@ -1081,14 +1148,15 @@ CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_cpuUsedPercent in varchar2,
   v_memUsedPercent in number,
   v_tableSpaceSize in number,
-  v_jedisStatus in number
+  v_jedisStatus in number,
+  v_resourceMonitoringSaveData in number
   ) is
   p_msg varchar2(3000) := 'error';
   counts number :=0;
 begin
   select count(1) into counts from tbl_resourcemonitoring;
-  if counts>1000 then
-    delete from TBL_RESOURCEMONITORING where id not in (select id from (select id from TBL_RESOURCEMONITORING t order by t.acqtime desc) v where rownum <=1000);
+  if counts>v_resourceMonitoringSaveData then
+    delete from TBL_RESOURCEMONITORING where id not in (select id from (select id from TBL_RESOURCEMONITORING t order by t.acqtime desc) v where rownum <=v_resourceMonitoringSaveData);
     commit;
     update TBL_RESOURCEMONITORING t
     set t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
@@ -1099,7 +1167,7 @@ begin
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
      p_msg := '删除多余记录并更新成功';
-  elsif counts=1000 then
+  elsif counts=v_resourceMonitoringSaveData then
     update TBL_RESOURCEMONITORING t
     set t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
         t.acrunstatus=v_acRunStatus,t.acversion=v_acVersion,t.cpuusedpercent=v_cpuUsedPercent,
@@ -1109,7 +1177,7 @@ begin
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
     p_msg := '更新成功';
-   elsif counts<1000 then
+   elsif counts<v_resourceMonitoringSaveData then
      insert into tbl_resourcemonitoring (
          acqtime,acrunstatus,acversion,cpuusedpercent,adrunstatus,adversion,memusedpercent,tablespacesize,jedisStatus
       )values(
@@ -1597,7 +1665,7 @@ begin
       where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
       commit;
       --更新实时计算数据
-      update tbl_rpctimingcalculationdata t set 
+      update tbl_rpctimingcalculationdata t set
              (
              t.resultcode,t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,
              t.theoreticalproduction,
@@ -1609,9 +1677,9 @@ begin
              t.calcProducingfluidLevel,t.levelDifferenceValue,
              t.submergence,
              t.rpm
-             ) 
-             =( 
-             select 
+             )
+             =(
+             select
              t2.resultcode,t2.stroke,t2.spm,t2.fmax,t2.fmin,t2.fullnesscoefficient,
              t2.theoreticalproduction,
              t2.realtimeliquidvolumetricproduction,t2.realtimeoilvolumetricproduction,t2.realtimewatervolumetricproduction,
@@ -1622,13 +1690,13 @@ begin
              t2.calcProducingfluidLevel,t2.levelDifferenceValue,
              t2.submergence,
              t2.rpm
-             from tbl_rpcacqdata_hist t2 
+             from tbl_rpcacqdata_hist t2
              where t2.id=(
                    select v2.id from
                    (select v.id,rownum r from
-                   (select t3.id from  tbl_rpcacqdata_hist t3  
-                   where t3.commstatus=1 and t3.resultstatus=1 
-                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') 
+                   (select t3.id from  tbl_rpcacqdata_hist t3
+                   where t3.commstatus=1 and t3.resultstatus=1
+                   and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')
                    and t3.deviceid=v_wellId
                    order by t3.acqtime desc) v
                    ) v2

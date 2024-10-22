@@ -43,7 +43,7 @@ others:
    iot: true                      #是否为物联网模式
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: all                     #模块 ""-仅监测 rpc-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
-   showVideo: false                     #是否含视频
+   showVideo: true                     #是否含视频
    showLogo: true                  #是否显示图标
    printLog: true                  #是否打印日志
    exportAdInitData: false         #是否可导出ad初始化数据

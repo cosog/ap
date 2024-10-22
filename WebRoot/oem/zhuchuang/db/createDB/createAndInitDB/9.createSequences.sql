@@ -1,91 +1,91 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 162197
+start with 150017
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQDATA_HIST
 minvalue 1
 maxvalue 999999999999999999999999
-start with 3281
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQDATA_LATEST
 minvalue 1
 maxvalue 999999999999999999999999
-start with 81
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQRAWDATA
 minvalue 1
 maxvalue 999999999999999999999999
-start with 3261
-increment by 1
-cache 20;
-
-create sequence SEQ_ALARMINFO_LATEST
-minvalue 1
-maxvalue 999999999999999999999999
-start with 81
-increment by 1
-cache 20;
-
-create sequence SEQ_ALARMINFO_HIST
-minvalue 1
-maxvalue 999999999999999999999999
-start with 81
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQUISITIONGROUP
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 65
+start with 105
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQUISITIONUNIT
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 3
+start with 103
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQ_GROUP_ITEM
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 57
+start with 1050
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQ_UNIT_GROUP
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 65
+start with 105
+increment by 1
+cache 20;
+
+create sequence SEQ_ALARMINFO_HIST
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
+create sequence SEQ_ALARMINFO_LATEST
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_ALARM_ITEM2UNIT_CONF
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 34
+start with 159
 increment by 1
 cache 20;
 
 create sequence SEQ_ALARM_UNIT_CONF
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 23
+start with 43
 increment by 1
 cache 20;
 
 create sequence SEQ_AUXILIARY2MASTER
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 122
+start with 142
 increment by 1
 cache 20;
 
@@ -113,42 +113,42 @@ cache 20;
 create sequence SEQ_DAILYCALCULATIONDATA
 minvalue 1
 maxvalue 999999999999999999999999
-start with 1621
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_DAILYTOTALCALCULATE_HIST
 minvalue 1
 maxvalue 999999999999999999999999
-start with 3021
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_DAILYTOTALCALCULATE_LATEST
 minvalue 1
 maxvalue 999999999999999999999999
-start with 81
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_DATAMAPPING
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 36
+start with 1081
 increment by 1
 cache 20;
 
 create sequence SEQ_DEVICE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 61
+start with 101
 increment by 1
 cache 20;
 
 create sequence SEQ_DEVICEADDINFO
 minvalue 1
 maxvalue 999999999999999999999999
-start with 61
+start with 81
 increment by 1
 cache 20;
 
@@ -162,28 +162,28 @@ cache 20;
 create sequence SEQ_DEVICEOPERATIONLOG
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 321
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_DEVICETYPEINFO
 minvalue 1
 maxvalue 999999999999999999999999
-start with 5
+start with 9
 increment by 1
 cache 2;
 
 create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 200
+start with 2056
 increment by 1
 cache 20;
 
 create sequence SEQ_DISPLAY_UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 63
+start with 103
 increment by 1
 cache 20;
 
@@ -197,63 +197,63 @@ cache 20;
 create sequence SEQ_ORG
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 42
+start with 82
 increment by 1
 cache 20;
 
 create sequence SEQ_PCPACQDATA_HIST
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 2081
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_PCPACQDATA_LATEST
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 61
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_PCPDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
-start with 1368
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_PCPTIMINGCALCULATIONDATA
 minvalue 1
 maxvalue 999999999999999999999999
-start with 1061
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_PROTOCOL
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 2
+start with 145
 increment by 1
 cache 20;
 
 create sequence SEQ_PROTOCOLALARMINSTANCE
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 23
+start with 43
 increment by 1
 cache 20;
 
 create sequence SEQ_PROTOCOLDISPLAYINSTANCE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 63
+start with 103
 increment by 1
 cache 20;
 
 create sequence SEQ_PROTOCOLINSTANCE
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 65
+start with 105
 increment by 1
 cache 20;
 
@@ -278,10 +278,17 @@ start with 20
 increment by 1
 cache 20;
 
+create sequence SEQ_REALTIMETOTALCALCULATIONDATA
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
 create sequence SEQ_REPORT_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 150
+start with 3000
 increment by 1
 cache 20;
 
@@ -295,7 +302,7 @@ cache 20;
 create sequence SEQ_RESOURCEMONITORING
 minvalue 0
 maxvalue 999999999999999999999999
-start with 2021
+start with 1
 increment by 1
 cache 20;
 
@@ -309,7 +316,7 @@ cache 20;
 create sequence SEQ_ROLE_DEVICETYPE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 13
+start with 161
 increment by 1
 cache 20;
 
@@ -323,28 +330,28 @@ cache 20;
 create sequence SEQ_RPCACQDATA_HIST
 minvalue 0
 maxvalue 999999999999999999999999
-start with 4681
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_RPCACQDATA_LATEST
 minvalue 0
 maxvalue 999999999999999999999999
-start with 121
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_RPCDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
-start with 2050
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_RPCTIMINGCALCULATIONDATA
 minvalue 1
 maxvalue 999999999999999999999999
-start with 1861
+start with 1
 increment by 1
 cache 20;
 
@@ -379,21 +386,21 @@ cache 20;
 create sequence SEQ_SYSTEMLOG
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 7041
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_TIMINGCALCULATIONDATA
 minvalue 1
 maxvalue 999999999999999999999999
-start with 621
+start with 1
 increment by 1
 cache 20;
 
 create sequence SEQ_USER
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 43
+start with 83
 increment by 1
 cache 20;
 

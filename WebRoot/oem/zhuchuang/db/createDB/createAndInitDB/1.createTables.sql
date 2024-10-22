@@ -447,11 +447,12 @@ alter table TBL_ACQ_GROUP2UNIT_CONF add constraint PK_ACQ_UNIT_GROUP primary key
 /*==============================================================*/
 create table TBL_ALARM_UNIT_CONF
 (
-  id        NUMBER(10) not null,
-  unit_code VARCHAR2(50) not null,
-  unit_name VARCHAR2(50),
-  protocol  VARCHAR2(50),
-  remark    VARCHAR2(2000)
+  id            NUMBER(10) not null,
+  unit_code     VARCHAR2(50) not null,
+  unit_name     VARCHAR2(50),
+  protocol      VARCHAR2(50),
+  remark        VARCHAR2(2000),
+  calculatetype NUMBER(2) default 0
 )
 tablespace AP_DATA
   storage
@@ -486,7 +487,8 @@ create table TBL_ALARM_ITEM2UNIT_CONF
   type          NUMBER(1),
   bitindex      NUMBER(3),
   issendmessage NUMBER(1) default 0,
-  issendmail    NUMBER(1) default 0
+  issendmail    NUMBER(1) default 0,
+  retriggertime NUMBER(10)
 )
 tablespace AP_DATA
   storage
@@ -957,7 +959,8 @@ create table TBL_ACQDATA_LATEST
   runtimeefficiency  NUMBER(10,4) default 0,
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
-  acqdata            CLOB
+  acqdata            CLOB,
+  checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
   storage
@@ -987,7 +990,8 @@ create table TBL_ACQDATA_HIST
   runtimeefficiency  NUMBER(10,4) default 0,
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
-  acqdata            CLOB
+  acqdata            CLOB,
+  checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
   storage
@@ -1199,6 +1203,37 @@ tablespace AP_DATA
 /
 alter table TBL_TIMINGCALCULATIONDATA
   add constraint PK_TIMINGALCULATIONDATA primary key (ID)
+/
+
+/*==============================================================*/
+/* Table: TBL_REALTIMETOTALCALCULATIONDATA                                    */
+/*==============================================================*/
+create table TBL_REALTIMETOTALCALCULATIONDATA
+(
+  id                 NUMBER(10) not null,
+  deviceid           NUMBER(10),
+  caltime            DATE,
+  commstatus         NUMBER(2) default 0,
+  commtime           NUMBER(8,2) default 0,
+  commtimeefficiency NUMBER(10,4) default 0,
+  commrange          CLOB,
+  runstatus          NUMBER(2) default 0,
+  runtimeefficiency  NUMBER(10,4) default 0,
+  runtime            NUMBER(8,2) default 0,
+  runrange           CLOB,
+  caldata            CLOB,
+  remark             VARCHAR2(4000)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_REALTIMETOTALCALCULATIONDATA
+  add constraint PK_REALTIMETOTALCALCULATIONDATA primary key (ID)
 /
 
 /*==============================================================*/

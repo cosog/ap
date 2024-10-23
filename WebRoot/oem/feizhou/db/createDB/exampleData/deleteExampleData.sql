@@ -1,7 +1,14 @@
 /*==============================================================*/
+/* 删除组织数据                                                   */
+/*==============================================================*/
+truncate table tbl_org;
+
+/*==============================================================*/
 /* 删除设备数据                                                */
 /*==============================================================*/
-truncate table tbl_rpcdevice;
-truncate table tbl_pcpdevice;
+truncate table tbl_device;
+
+truncate table TBL_AUXILIARY2MASTER;
+truncate table tbl_deviceaddinfo;
 
 exit;

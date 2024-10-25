@@ -252,7 +252,7 @@ public class CalculateDataManagerTask {
         AcquisitionTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
-                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:00:00");
             	try {
             		AcquisitionDataTimingTotalCalculation(timeStr);
 				}catch (Exception e) {
@@ -274,7 +274,7 @@ public class CalculateDataManagerTask {
         RPCTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
-                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:00:00");
             	try {
 					RPCTimingTotalCalculation(timeStr);
 				}catch (Exception e) {
@@ -297,7 +297,7 @@ public class CalculateDataManagerTask {
         PCPTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
-                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:00:00");
                 try {
 					PCPTimingTotalCalculation(timeStr);
 				}catch (Exception e) {

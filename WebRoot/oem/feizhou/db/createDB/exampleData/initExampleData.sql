@@ -1,6 +1,7 @@
 /*==============================================================*/
 /* 初始化组织数据                                                 */
 /*==============================================================*/
+ALTER TRIGGER trg_b_org_i_u DISABLE;
 insert into tbl_org (ORG_ID, ORG_CODE, ORG_NAME, ORG_MEMO, ORG_PARENT, ORG_SEQ)
 values (1, '0000', '组织根节点', '组织根节点', 0, null);
 
@@ -515,6 +516,8 @@ values (1423, null, '六区', null, 382, 6);
 /*==============================================================*/
 /* 初始化设备数据                                              */
 /*==============================================================*/
+ALTER TRIGGER trg_b_device_i DISABLE;
+
 insert into tbl_device (ID, ORGID, DEVICENAME, DEVICETYPE, APPLICATIONSCENARIOS, TCPTYPE, SIGNINID, IPPORT, SLAVE, PEAKDELAY, INSTANCECODE, ALARMINSTANCECODE, DISPLAYINSTANCECODE, REPORTINSTANCECODE, VIDEOURL1, VIDEOURL2, VIDEOKEYID1, VIDEOKEYID2, VIDEOACCESSTOKEN, PRODUCTIONDATA, PRODUCTIONDATAUPDATETIME, PUMPINGMODELID, STROKE, BALANCEINFO, STATUS, SORTNUM, CALCULATETYPE)
 values (1, 9, '厂内测试', 3, 0, 'TCP Client', '00000000126', null, '01', null, 'instance105', 'alarminstance43', 'displayinstance103', null, null, null, null, null, null, '{}', to_date('16-07-2024 18:18:03', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, 1, 1001, 0);
 
@@ -2132,6 +2135,8 @@ values (170577, 27, '375', 3, 0, 'TCP Client', '00000000375', null, '01', null, 
 /*==============================================================*/
 /* 初始化辅件设备数据                                                 */
 /*==============================================================*/
+ALTER TRIGGER trg_b_auxiliary2master_i DISABLE;
+
 insert into TBL_AUXILIARY2MASTER (ID, MASTERID, AUXILIARYID, MATRIX)
 values (1426, 2, 85, '0,0,0');
 
@@ -3002,6 +3007,8 @@ values (636, 10380, 142, '0,0,0');
 /*==============================================================*/
 /* 初始化设备附加信息数据                                                 */
 /*==============================================================*/
+ALTER TRIGGER trg_b_DEVICEADDINFO_i DISABLE;
+
 insert into tbl_deviceaddinfo (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT)
 values (1034, 1, '测试', '11', '单位');
 
@@ -15258,5 +15265,10 @@ insert into tbl_deviceaddinfo (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT)
 values (4295, 11506, '其他', 'S71200/G3C载波模块', null);
 
 commit;
+
+ALTER TRIGGER trg_b_org_i_u ENABLE;
+ALTER TRIGGER trg_b_device_i ENABLE;
+ALTER TRIGGER trg_b_auxiliary2master_i ENABLE;
+ALTER TRIGGER trg_b_DEVICEADDINFO_i ENABLE;
 
 exit;

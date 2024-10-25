@@ -771,9 +771,6 @@ public class TimingTotalCalculateThread extends Thread {
     		
     		DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
     		RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
-//    		if(realtimeTotalInfo==null){
-//    			realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataFromDbById(deviceId+"");
-//    		}
 
 			String labelInfoSql = "select t.deviceId, t.headerlabelinfo from tbl_timingcalculationdata t " +
 	                " where t.id=(" +

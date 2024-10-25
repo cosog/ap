@@ -2156,9 +2156,10 @@ public class DriverAPIController extends BaseController{
 										totalItem.getTotalStatus().setNewestValue(newValue);
 									}
 									//判断该项是否进行日汇总计算
-									if(dailyTotalItemMap!=null && dailyTotalItemMap.containsKey(mappingColumn)){
+									String totalCode=(mappingColumn+"_total").toUpperCase();
+									if(dailyTotalItemMap!=null && dailyTotalItemMap.containsKey(totalCode)){
 										totalItem.getTotalStatus().setDailyTotalSign(true);
-										totalItem.getTotalStatus().setDailyTotalValue(dailyTotalItemMap.get(mappingColumn).getTotalValue());
+										totalItem.getTotalStatus().setDailyTotalValue(dailyTotalItemMap.get(totalCode).getTodayValue());
 									}
 									totalItemMap.put(mappingColumn, totalItem);
 								}

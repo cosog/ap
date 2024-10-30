@@ -301,7 +301,7 @@ create table TBL_DATAMAPPING
   id              NUMBER(10) not null,
   name            VARCHAR2(50) not null,
   mappingcolumn   VARCHAR2(128) not null,
-  protocoltype    NUMBER(1) not null,
+  protocoltype    NUMBER(1),
   calcolumn       VARCHAR2(128),
   repetitiontimes NUMBER(2),
   mappingmode     NUMBER(1)

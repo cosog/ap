@@ -86,6 +86,41 @@
 <p>oem内容修改后，修改静态资源时间戳（首次部署不需要），无需清理浏览器缓存即可生效。</p>
 <h2 id="1-5-">1.5 软件启停</h2>
 <h3 id="1-5-1-">1.5.1 手动启停</h3>
+<h4 id="1-5-1-1-windows-">1.5.1.1 windows环境</h4>
+<p>1、单井计算开发包ac</p>
+<p>启动：</p>
+<p>双击exe文件启动或者通过命令行启动</p>
+<p>停止：</p>
+<p>关闭运行窗口即停止</p>
+<p>2、协议通ad</p>
+<p>启动：</p>
+<p>双击exe文件启动或者通过命令行启动</p>
+<p>停止：</p>
+<p>关闭运行窗口即停止</p>
+<p>3、缓存数据库redis</p>
+<p>启动：</p>
+<p>运行“redis-server
+C://redis7/redis.conf”启动redis，命令中的配置文件路径以实际为准。</p>
+<p><img src="media/fff296bcc12ecec93b9cfc7f1d121d72.png" alt=""></p>
+<p>停止：</p>
+<p>关闭运行窗口即停止</p>
+<p>4、oracle数据库</p>
+<p>启动：</p>
+<p>运行“services.msc”打开服务管理界面，将监听服务与数据库服务启动。</p>
+<p><img src="media/3536a1b223f2c905fcd20b835d4cb861.png" alt=""></p>
+<p><img src="media/445498d2bd57679fb9ee141c3135b7f3.png" alt=""></p>
+<p>停止：</p>
+<p>运行“services.msc”打开服务管理界面，将监听服务与数据库服务停止。</p>
+<p><img src="media/3536a1b223f2c905fcd20b835d4cb861.png" alt=""></p>
+<p><img src="media/14b8516bec7eaffb76baa561f75ef429.png" alt=""></p>
+<p>5、tomcat</p>
+<p>启动：</p>
+<p>找到在系统栏加载的Tomcat运行图标，右键→Start service</p>
+<p><img src="media/b401f5d04fb5f6247b739d648d818082.png" alt=""></p>
+<p>停止：</p>
+<p>找到在系统栏加载的Tomcat运行图标，右键→Stop service</p>
+<p><img src="media/7c50f40bd869dbf0c02937c0fe0e23aa.png" alt=""></p>
+<h4 id="1-5-1-2-linux-">1.5.1.2 linux环境</h4>
 <p>1、单井计算开发包ac</p>
 <p>启动：</p>
 <p>nohup /usr/local/ac -o file&amp;</p>
@@ -126,6 +161,32 @@
 <p>停止：</p>
 <p>/opt/apache-tomcat-9.0.73/bin/shutdown.sh</p>
 <h3 id="1-5-2-">1.5.2 开机启动</h3>
+<h4 id="1-5-2-1-windows-">1.5.2.1 windows环境</h4>
+<p>1、oracle开机启动：</p>
+<p>运行“services.msc”打开服务管理界面，将监听服务与数据库服务启动类型设为自动，设置步骤：右键→属性→启动类型选自动。</p>
+<p><img src="media/3536a1b223f2c905fcd20b835d4cb861.png" alt=""></p>
+<p><img src="media/5f6c89a7d9dbb5724d5faac191b8d0ab.png" alt=""></p>
+<p><img src="media/f6e397998349556811789329d6c0d317.png" alt=""></p>
+<p>2、tomcat开机启动：</p>
+<p>找到在系统栏加载的Tomcat运行图标，右键可以看到设置项目</p>
+<p><img src="media/ce0517df16f3703e971dca2152b498ff.png" alt=""></p>
+<p>Configure或直接双击系统栏加载的Tomcat图标，出现Tomcat设置界面</p>
+<p><img src="media/c44a88161a15125cba47b4d785d5e223.png" alt=""></p>
+<blockquote>
+<p>  Startup
+  type：Tomcat启动方式，Automatic-自动、Manual-手动、Disabled-禁用，选择Automatic</p>
+</blockquote>
+<p><img src="media/9ab22a4eaeb5d4c3d8b859dff58a5ef3.png" alt=""></p>
+<p>3、ac、ad与redis开机启动：</p>
+<p>可利用批处理文件bat批量启动</p>
+<p>（1）创建批处理文件startup.bat文件，右键→编辑，录入一下内容：</p>
+<p>@echo off</p>
+<p>start &quot;&quot; &quot;C:\Users\Administrator\Desktop\ac.exe&quot;</p>
+<p>start &quot;&quot; &quot;C:\Users\Administrator\Desktop\ad.exe&quot;</p>
+<p>redis-server C://redis7/redis.conf</p>
+<p>（2）将startup.bat文件放到启动文件夹“C:\ProgramData\Microsoft\Windows\Start
+Menu\Programs\StartUp”下，如此则系统启动后，自动执行startup.bat文件。</p>
+<h4 id="1-5-2-2-linux-">1.5.2.2 linux环境</h4>
 <p><strong>1、root用户修改/etc/rc.d/rc.local文件</strong></p>
 <p>su root</p>
 <p>vim /etc/rc.d/rc.local</p>

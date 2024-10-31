@@ -320,17 +320,12 @@ Ext.define('AP.view.frame.IframeView', {
                     value: '',
                     hidden: true
                 }, {
+                    id: 'realtimeTurnToHisyory_DeviceName', //选择的统计项的类型
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                }, , {
                     id: 'selectedDeviceId_global',
-                    xtype: 'textfield',
-                    value: '0',
-                    hidden: true
-                }, {
-                    id: 'selectedRPCDeviceId_global',
-                    xtype: 'textfield',
-                    value: '0',
-                    hidden: true
-                }, {
-                    id: 'selectedPCPDeviceId_global',
                     xtype: 'textfield',
                     value: '0',
                     hidden: true

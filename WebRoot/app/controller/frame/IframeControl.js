@@ -309,15 +309,27 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var orgId = Ext.getCmp('leftOrg_Id').getValue();
 		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
 		
-		
-		if(selectedDeviceType_global!=deviceType){
-//			tabPanel.setActiveTab("RealTimeMonitoringTabPanel_"+deviceType);
-//			tabChange=true;
-		}
-		if(!tabChange){
+		if(selectedDeviceType_global==0){
 			Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
 			realTimeDataRefresh();
+		}else{
+			if(selectedDeviceType_global!=deviceType){
+				var deviceTypeActiveId=getDeviceTypeActiveId();
+				tabPanel.setActiveTab(deviceTypeActiveId.firstActiveTab);
+				if(tabPanel.getActiveTab().xtype=='tabpanel'){
+					tabPanel.getActiveTab().setActiveTab(deviceTypeActiveId.secondActiveTab);
+				}
+			}else{
+				Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+				realTimeDataRefresh();
+			}
 		}
+		
+		
+//		if(!tabChange){
+//			Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+//			realTimeDataRefresh();
+//		}
 	}else if(module_Code == "DeviceHistoryQuery"){
 		var tabChange=false;
 		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
@@ -329,14 +341,24 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
 		
 		if(selectedDeviceType_global!=deviceType){
+			var deviceTypeActiveId=getDeviceTypeActiveId();
+			
+			tabPanel.setActiveTab(deviceTypeActiveId.firstActiveTab);
+			if(tabPanel.getActiveTab().xtype=='tabpanel'){
+				tabPanel.getActiveTab().setActiveTab(deviceTypeActiveId.secondActiveTab);
+			}
+			
 //			tabPanel.setActiveTab("HistoryQueryRootTabPanel_"+deviceType);
 //			tabChange=true;
-		}
-		
-		if(!tabChange){
+		}else{
 			Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
 			historyDataRefresh();
 		}
+		
+//		if(!tabChange){
+//			Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+//			historyDataRefresh();
+//		}
 	}else if(module_Code == "DailyReport"){
 		var tabChange=false;
 		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();

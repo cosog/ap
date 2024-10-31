@@ -2493,17 +2493,41 @@ var VideoInfoHandsontableHelper = {
 	        videoInfoHandsontableHelper.colWidths=[];
 	        
 	        videoInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(col<=2){
-	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
-	            }
-	            if(col!=3){
-	            	td.style.whiteSpace='nowrap'; //文本不换行
-	            	td.style.overflow='hidden';//超出部分隐藏
-	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	            }
+	        	if(videoInfoHandsontableHelper.columns[col].type=='checkbox'){
+//	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+//		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        	}else if(videoInfoHandsontableHelper.columns[col].type=='dropdown'){
+		            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+		            td.style.whiteSpace='nowrap'; //文本不换行
+		        	td.style.overflow='hidden';//超出部分隐藏
+		        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+		        }else{
+		            Handsontable.renderers.TextRenderer.apply(this, arguments);
+		            td.style.whiteSpace='nowrap'; //文本不换行
+		        	td.style.overflow='hidden';//超出部分隐藏
+		        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+		        }
 	        }
-
+	        
+	        videoInfoHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(videoInfoHandsontableHelper.columns[col].type=='checkbox'){
+	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        	}else if(videoInfoHandsontableHelper.columns[col].type=='dropdown'){
+		            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            td.style.whiteSpace='nowrap'; //文本不换行
+		        	td.style.overflow='hidden';//超出部分隐藏
+		        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+		        }else{
+		            Handsontable.renderers.TextRenderer.apply(this, arguments);
+		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            td.style.whiteSpace='nowrap'; //文本不换行
+		        	td.style.overflow='hidden';//超出部分隐藏
+		        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+		        }
+	        }
+	        
 	        videoInfoHandsontableHelper.createTable = function (data) {
 	            $('#' + videoInfoHandsontableHelper.divid).empty();
 	            var hotElement = document.querySelector('#' + videoInfoHandsontableHelper.divid);
@@ -2536,11 +2560,15 @@ var VideoInfoHandsontableHelper = {
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex < 2) {
 								cellProperties.readOnly = true;
+								cellProperties.renderer = videoInfoHandsontableHelper.addReadOnlyBg;
+			                }else{
+			                	cellProperties.renderer=videoInfoHandsontableHelper.addCellStyle;
 			                }
 	                    }else{
 							cellProperties.readOnly = true;
+							cellProperties.renderer = videoInfoHandsontableHelper.addReadOnlyBg;
 		                }
-	                    cellProperties.renderer = videoInfoHandsontableHelper.addCellStyle;
+	                    
 	                    
 	                    return cellProperties;
 	                },

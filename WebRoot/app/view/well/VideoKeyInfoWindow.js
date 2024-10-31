@@ -308,7 +308,7 @@ var VideoKeyDataHandsontableHelper = {
 	                        	CreateAndLoadRPCProductionDataTable(recordId,deviceName);
 	                        	CreateAndLoadRPCVideoInfoTable(recordId,deviceName);
 	                        	
-	                        	Ext.getCmp("selectedRPCDeviceId_global").setValue(recordId);
+	                        	Ext.getCmp("selectedDeviceId_global").setValue(recordId);
 	                    	}
 	                    	Ext.getCmp("VideoKeySelectRow_Id").setValue(startRow);
 	                    	Ext.getCmp("VideoKeySelectEndRow_Id").setValue(endRow);

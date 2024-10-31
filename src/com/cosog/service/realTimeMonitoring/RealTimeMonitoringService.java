@@ -500,7 +500,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
-					+ "t.calculateType";//18
+					+ "t.calculateType,t.deviceType";//18~19
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
@@ -582,7 +582,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[17])+"\",");
 				result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 				result_json.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
-				result_json.append("\"calculateType\":"+obj[18]+"},");
+				result_json.append("\"calculateType\":"+obj[18]+",");
+				result_json.append("\"deviceType\":"+obj[19]+"},");
 			}
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);

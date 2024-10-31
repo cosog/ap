@@ -53,14 +53,14 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                     	},
                     	rowclick: function( grid, record, element, index, e, eOpts) {
                     		var deviceId=record.data.id;
-                    		Ext.getCmp("selectedPCPDeviceId_global").setValue(deviceId);
+                    		Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").setValue(index);
                     		
                     		var combDeviceName=Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
                     		if(combDeviceName!=''){
-                        		Ext.getCmp("selectedPCPDeviceId_global").setValue(record.data.id);
+                        		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
                     		}
                     		
                     		resetPCPCalculateMaintainingQueryParams();
@@ -93,7 +93,7 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;
-            	var selectedDeviceId=parseInt(Ext.getCmp("selectedPCPDeviceId_global").getValue());
+            	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
     			if(selectedDeviceId>0){
     				for(var i=0;i<store.data.items.length;i++){
             			if(selectedDeviceId==store.data.items[i].data.id){

@@ -12,6 +12,50 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         var RealTimeMonitoringInfoPanel = Ext.create('AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel');
         
         var items=[];
+        
+        var globalDeviceType=Ext.getCmp("selectedDeviceType_global").getValue();
+        var firstActiveTab=0;
+        var secondActiveTab=0;
+        if(globalDeviceType>0){
+        	if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
+        		for(var i=0;i<tabInfo.children.length;i++){
+        			var exit=false;
+        			if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
+        				var allSecondIds='';
+        				for(var j=0;j<tabInfo.children[i].children.length;j++){
+        					if(j==0){
+                				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
+                    		}else{
+                    			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
+                    		}
+        					if(isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].children[j].deviceTypeId){
+            					firstActiveTab=i;
+            					secondActiveTab=j;
+            					exit=true;
+            					break;
+            				}
+        				}
+        				//判断是否选中的是全部
+        				if(globalDeviceType==allSecondIds){
+        					firstActiveTab=i;
+        					secondActiveTab=tabInfo.children[i].children.length;
+        					exit=true;
+        				}
+        				
+        			}else{
+        				if( isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].deviceTypeId ){
+        					firstActiveTab=i;
+        					exit=true;
+        				}
+        			}
+        			
+        			if(exit){
+        				break;
+        			}
+        		}
+        	}
+        }
+        
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -21,10 +65,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
         	        		id: 'RealTimeMonitoringTabPanel_'+tabInfo.children[i].deviceTypeId,
-        	        		activeTab: 0,
+        	        		activeTab: i==firstActiveTab?secondActiveTab:0,
         	        		border: false,
         	        		tabPosition: 'left',
-        	        		iconCls: i==0?'check1':null,
+        	        		iconCls: i==firstActiveTab?'check1':null,
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -50,15 +94,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         						title: tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
-        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
+//        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
         						id: 'RealTimeMonitoringTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
             			if(j==0){
-//            				if(i==0){
-//            					secondTabPanel.items=[];
-//                				secondTabPanel.items.push(RealTimeMonitoringInfoPanel);
-//            				}
             				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
                 		}else{
                 			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
@@ -67,21 +107,23 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         			}
         			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
-//        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
         						title: '全部',
         						tpl:'全部',
-        						iconCls:'check2',
+//        						iconCls:'check2',
         						layout: 'fit',
         						id: 'RealTimeMonitoringTabPanel_'+allSecondIds,
         						border: false
         				};
-//        				panelItem.items.push(secondTabPanel_all);
         				panelItem.items.splice(0, 0, secondTabPanel_all);
         			}
         			
-        			if(i==0 && panelItem.items.length>0){
-        				panelItem.items[0].items=[];
-        				panelItem.items[0].items.push(RealTimeMonitoringInfoPanel);
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].iconCls='check2';
+        			}
+        			
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].items=[];
+        				panelItem.items[secondActiveTab].items.push(RealTimeMonitoringInfoPanel);
     				}
         		}else{
         			panelItem={
@@ -89,10 +131,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'RealTimeMonitoringTabPanel_'+tabInfo.children[i].deviceTypeId,
-    						iconCls: i==0?'check1':null,
+    						iconCls: i==firstActiveTab?'check1':null,
     						border: false
         			};
-        			if(i==0){
+        			if(i==firstActiveTab){
             			panelItem.items=[];
             			panelItem.items.push(RealTimeMonitoringInfoPanel);
             		}
@@ -105,7 +147,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	items: [{
         		xtype: 'tabpanel',
         		id:"RealTimeMonitoringTabPanel",
-        		activeTab: 0,
+        		activeTab: firstActiveTab,
         		border: false,
         		tabPosition: 'bottom',
         		tabBar:{
@@ -622,8 +664,9 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagra
 
 
 
-function gotoDeviceHistory(deviceName,deviceType){
+function gotoDeviceHistory(deviceId,deviceName,deviceType){
 	Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('true');//跳转标志
+	Ext.getCmp("realtimeTurnToHisyory_DeviceName").setValue(deviceName);
 	var tabPanel = Ext.getCmp("frame_center_ids");
 	var moduleId="DeviceHistoryQuery";
 	var getTabId = tabPanel.getComponent(moduleId);
@@ -655,10 +698,8 @@ function gotoDeviceHistory(deviceName,deviceType){
 		haveModule=true;
 	}
 	if(haveModule){
-		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue(deviceName);
-		var historyGridPanel=Ext.getCmp("HistoryQueryListGridPanel_Id");
 		tabPanel.setActiveTab(moduleId);
-		var HistoryQueryRootTabPanel = Ext.getCmp("HistoryQueryRootTabPanel");
+		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue(deviceName);
 	}
 }
 
@@ -1555,7 +1596,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 			}
 			
 			
-			if(videoPlayrHelper.player1!=null){
+			if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus!=null){
 				if(videoPlayrHelper.player1.pluginStatus.state.play){
 					videoPlayrHelper.player1.stop()
 					.then(()=>{

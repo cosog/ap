@@ -64,7 +64,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		var calculateType=record.data.calculateType;
                     		
                     		var combDeviceName=Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
-                    		if(combDeviceName!=''){
+                    		if(combDeviceName!=undefined || combDeviceName!=''){
                         		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
                     		}
                     		

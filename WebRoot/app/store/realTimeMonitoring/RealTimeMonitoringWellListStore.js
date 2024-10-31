@@ -51,8 +51,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		
-//                    		Ext.getCmp("RealTimeMonitoringInfoPanel_Id").el.mask(cosog.string.loading).show();
-                    		
                     		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
                     		var deviceName=record.data.deviceName;
                     		var deviceId=record.data.id;
@@ -62,7 +60,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		
                     		
                     		var combDeviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
-                    		if(combDeviceName!=''){
+                    		if(combDeviceName!=undefined || combDeviceName!=''){
                         		Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
                     		}
                     		
@@ -177,7 +175,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		}
                     	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
-                    		gotoDeviceHistory(record.data.wellName,0);
+                    		gotoDeviceHistory(record.data.id,record.data.deviceName,record.data.deviceType);
                     	}
                     }
                 });

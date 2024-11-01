@@ -73,7 +73,7 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore', {
         	var endTime_Second=Ext.getCmp('RPCCalculateMaintainingEndTime_Second_Id').getValue();
             
             var calculateSign=Ext.getCmp('RPCCalculateMaintainingCalculateSignComBox_Id').getValue();
-            var deviceType=0;
+            var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
             var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
             		orgId: orgId,

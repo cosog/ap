@@ -375,7 +375,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getTotalCalculateResultData(orgId, deviceName, pager,deviceType,startDate,endDate,calculateType);
+		String json = calculateManagerService.getTotalCalculateResultData(orgId, deviceId,deviceName, pager,deviceType,startDate,endDate,calculateType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

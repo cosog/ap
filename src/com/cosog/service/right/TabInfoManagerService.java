@@ -35,7 +35,7 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 					+ " and u.user_no="+user.getUserNo()
 					+" ) ";
 		}
-		queryString+= " order by t.sortnum";
+		queryString+= " order by t.sortnum,t.id";
 		return this.findCallSql(queryString);
 	}
 	
@@ -53,7 +53,7 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 					+ " and u.user_no="+user.getUserNo()
 					+" ) ";
 		}
-		queryString+= " order by t.sortnum";
+		queryString+= " order by t.sortnum,t.id";
 		
 		List<?> list=getBaseDao().findCallSql(queryString);
 		for(int i=0;i<list.size();i++){

@@ -334,6 +334,11 @@ Ext.define('AP.view.frame.IframeView', {
                     xtype: 'textfield',
                     value: '0',
                     hidden: true
+                }, {
+                    id: 'selectedFirstDeviceType_global',
+                    xtype: 'textfield',
+                    value: '0',
+                    hidden: true
                 }]
             },
             listeners: {

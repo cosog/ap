@@ -4786,43 +4786,51 @@ function getDeviceTypeActiveId(){
 	var globalDeviceType=Ext.getCmp("selectedDeviceType_global").getValue();
     var firstActiveTab=0;
     var secondActiveTab=0;
-	if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
-		for(var i=0;i<tabInfo.children.length;i++){
-			var exit=false;
-			if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
-				var allSecondIds='';
-				for(var j=0;j<tabInfo.children[i].children.length;j++){
-					if(j==0){
-        				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
-            		}else{
-            			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
-            		}
-					if(isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].children[j].deviceTypeId){
-    					firstActiveTab=i;
-    					secondActiveTab=j;
-    					exit=true;
-    					break;
+    
+    if(globalDeviceType!=0 && globalDeviceType!='' && globalDeviceType!='0'){
+    	if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
+    		for(var i=0;i<tabInfo.children.length;i++){
+    			var exit=false;
+    			
+    			if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
+    				var allSecondIds='';
+    				var childrenLength=tabInfo.children[i].children.length;
+    				for(var j=0;j<tabInfo.children[i].children.length;j++){
+    					if(j==0){
+            				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
+                		}else{
+                			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
+                		}
+    					if(isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].children[j].deviceTypeId){
+        					firstActiveTab=i;
+        					secondActiveTab=childrenLength>1?j+1:j;
+        					exit=true;
+        				}
     				}
-				}
-				//判断是否选中的是全部
-				if(globalDeviceType==allSecondIds){
-					firstActiveTab=i;
-					secondActiveTab=tabInfo.children[i].children.length;
-					exit=true;
-				}
-				
-			}else{
-				if( isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].deviceTypeId ){
-					firstActiveTab=i;
-					exit=true;
-				}
-			}
-			
-			if(exit){
-				break;
-			}
-		}
-	}
+    				//判断是否选中的是全部
+    				if(!exit){
+    					if(globalDeviceType==allSecondIds){
+        					firstActiveTab=i;
+        					secondActiveTab=0;
+        					exit=true;
+        				}
+    				}
+    			}else{
+    				if( isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].deviceTypeId ){
+    					firstActiveTab=i;
+    					secondActiveTab=0;
+    					exit=true;
+    				}
+    			}
+    			
+    			if(exit){
+    				break;
+    			}
+    		}
+    	}
+    }
+	
+	
 	var deviceTypeActiveId={};
 	deviceTypeActiveId.firstActiveTab=firstActiveTab;
 	deviceTypeActiveId.secondActiveTab=secondActiveTab;

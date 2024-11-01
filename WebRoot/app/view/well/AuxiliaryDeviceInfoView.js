@@ -67,6 +67,10 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoView", {
         				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         				var AuxiliaryDeviceInfoPanel = Ext.create('AP.view.well.AuxiliaryDeviceInfoPanel');
         				newCard.add(AuxiliaryDeviceInfoPanel);
+        				
+        				
+        				var firstDeviceType=getDeviceTypeFromTabId_first("AuxiliaryDeviceManagerTabPanel");
+        				Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
         				CreateAndLoadAuxiliaryDeviceInfoTable(true);
         			}
         		}

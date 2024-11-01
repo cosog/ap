@@ -8,50 +8,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         var HistoryQueryInfoPanel = Ext.create('AP.view.historyQuery.HistoryQueryInfoPanel');
         
         var items=[];
-        
-        var globalDeviceType=Ext.getCmp("selectedDeviceType_global").getValue();
-        var firstActiveTab=0;
-        var secondActiveTab=0;
-        if(globalDeviceType>0){
-        	if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
-        		for(var i=0;i<tabInfo.children.length;i++){
-        			var exit=false;
-        			if(tabInfo.children[i].children!=undefined && tabInfo.children[i].children!=null && tabInfo.children[i].children.length>0){
-        				var allSecondIds='';
-        				for(var j=0;j<tabInfo.children[i].children.length;j++){
-        					if(j==0){
-                				allSecondIds+=tabInfo.children[i].children[j].deviceTypeId;
-                    		}else{
-                    			allSecondIds+=(','+tabInfo.children[i].children[j].deviceTypeId);
-                    		}
-        					if(isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].children[j].deviceTypeId){
-            					firstActiveTab=i;
-            					secondActiveTab=j;
-            					exit=true;
-            					break;
-            				}
-        				}
-        				//判断是否选中的是全部
-        				if(globalDeviceType==allSecondIds){
-        					firstActiveTab=i;
-        					secondActiveTab=tabInfo.children[i].children.length;
-        					exit=true;
-        				}
-        				
-        			}else{
-        				if( isNumber(globalDeviceType) && parseInt(globalDeviceType) ==tabInfo.children[i].deviceTypeId ){
-        					firstActiveTab=i;
-        					exit=true;
-        				}
-        			}
-        			
-        			if(exit){
-        				break;
-        			}
-        		}
-        	}
-        }
-        
+        var deviceTypeActiveId=getDeviceTypeActiveId();
+        var firstActiveTab=deviceTypeActiveId.firstActiveTab;
+        var secondActiveTab=deviceTypeActiveId.secondActiveTab;
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -185,9 +144,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
 function historyDataRefresh(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+	var firstDeviceType=getDeviceTypeFromTabId_first("HistoryQueryRootTabPanel");
 	var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
 	
 	Ext.getCmp("selectedDeviceType_global").setValue(deviceType); 
+	Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
 	
 	var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
 	var realtimeTurnToHisyoryDeviceName=Ext.getCmp("realtimeTurnToHisyory_DeviceName").getValue();
@@ -225,7 +186,10 @@ function historyDataRefresh(){
 		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue('');
 		Ext.getCmp('HistoryQueryDeviceListComb_Id').setRawValue('');
 	}
-	refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
+	if(!removeHistoryFESdiagramResultStatGraphPanel){//如果删除了工况统计，则不刷新表格，由统计tabchange刷新
+		refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
+	}
+	
 }
 
 function createHistoryQueryDeviceListColumn(columnInfo) {

@@ -8,6 +8,9 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         var DailyReportPanel = Ext.create('AP.view.reportOut.DailyReportPanel');
         
         var items=[];
+        var deviceTypeActiveId=getDeviceTypeActiveId();
+        var firstActiveTab=deviceTypeActiveId.firstActiveTab;
+        var secondActiveTab=deviceTypeActiveId.secondActiveTab;
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -17,10 +20,10 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
         	        		id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].deviceTypeId,
-        	        		activeTab: 0,
+        	        		activeTab: i==firstActiveTab?secondActiveTab:0,
         	        		border: false,
         	        		tabPosition: 'left',
-        	        		iconCls: i==0?'check1':null,
+        	        		iconCls: i==firstActiveTab?'check1':null,
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -33,29 +36,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         	        				var DailyReportPanel = Ext.create('AP.view.reportOut.DailyReportPanel');
         	        				newCard.add(DailyReportPanel);
         	        				
-        	        				var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
-        	        				Ext.getCmp('selectedDeviceType_global').setValue();
-        	        				
-        	        				var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
-        	        				if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
-        	        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
-        	        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setValue('');
-        	        					var gridPanel = Ext.getCmp("SingleWellDailyReportGridPanel_Id");
-        	        					if (isNotVal(gridPanel)) {
-        	        						gridPanel.getStore().load();
-        	        					}else{
-        	        						Ext.create('AP.store.reportOut.SingleWellDailyReportWellListStore');
-        	        					}
-        	        				}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
-        	        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setRawValue('');
-        	        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setValue('');
-        	        					var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
-        	        	    			if (isNotVal(gridPanel)) {
-        	        	    				gridPanel.getStore().load();
-        	        	    			}else{
-        	        	    				Ext.create('AP.store.reportOut.ProductionDailyReportInstanceListStore');
-        	        	    			}
-        	        				}
+        	        				reportDataRefresh();
         	        			},
         	        			afterrender: function (panel, eOpts) {
         	        				
@@ -68,7 +49,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         						title: tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
-        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
+//        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
         						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
@@ -83,27 +64,30 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         				var secondTabPanel_all={
         						title: '全部',
         						tpl:'全部',
-        						iconCls:'check2',
+//        						iconCls:'check2',
         						layout: 'fit',
         						id: 'ProductionReportRootTabPanel_'+allSecondIds,
         						border: false
         				};
         				panelItem.items.splice(0, 0, secondTabPanel_all);
         			}
-        			if(i==0 && panelItem.items.length>0){
-        				panelItem.items[0].items=[];
-        				panelItem.items[0].items.push(DailyReportPanel);
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].iconCls='check2';
+        			}
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].items=[];
+        				panelItem.items[secondActiveTab].items.push(DailyReportPanel);
     				}
         		}else{
         			panelItem={
         					title: tabInfo.children[i].text,
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
-        					iconCls: i==0?'check1':null,
+        					iconCls: i==firstActiveTab?'check1':null,
     						id: 'ProductionReportRootTabPanel_'+tabInfo.children[i].deviceTypeId,
     						border: false
         			};
-        			if(i==0){
+        			if(i==firstActiveTab){
             			panelItem.items=[];
             			panelItem.items.push(DailyReportPanel);
             		}
@@ -117,7 +101,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
             items: [{
                 xtype: 'tabpanel',
                 id:'ProductionReportRootTabPanel',
-                activeTab: 0,
+                activeTab: firstActiveTab,
                 border: false,
                 tabPosition: 'bottom',
                 items: items,
@@ -142,29 +126,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
 	        				newCard.add(DailyReportPanel);
         				}
         				
-        				var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
-        				Ext.getCmp('selectedDeviceType_global').setValue();
-        				
-        				var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
-        				if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
-        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
-        					Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setValue('');
-        					var gridPanel = Ext.getCmp("SingleWellDailyReportGridPanel_Id");
-        					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
-        					}else{
-        						Ext.create('AP.store.reportOut.SingleWellDailyReportWellListStore');
-        					}
-        				}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
-        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setRawValue('');
-        					Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setValue('');
-        					var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
-        	    			if (isNotVal(gridPanel)) {
-        	    				gridPanel.getStore().load();
-        	    			}else{
-        	    				Ext.create('AP.store.reportOut.ProductionDailyReportInstanceListStore');
-        	    			}
-        				}
+        				reportDataRefresh();
                     },
                     delay: 500
                 }
@@ -173,3 +135,29 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         me.callParent(arguments);
     }
 });
+
+function reportDataRefresh(){
+	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
+	Ext.getCmp('selectedDeviceType_global').setValue(deviceType);
+	
+	var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
+	if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
+		Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setRawValue('');
+		Ext.getCmp('SingleWellDailyReportPanelWellListCombo_Id').setValue('');
+		var gridPanel = Ext.getCmp("SingleWellDailyReportGridPanel_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.reportOut.SingleWellDailyReportWellListStore');
+		}
+	}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
+		Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setRawValue('');
+		Ext.getCmp('ProductionDailyReportPanelWellListCombo_Id').setValue('');
+		var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.reportOut.ProductionDailyReportInstanceListStore');
+		}
+	}
+}

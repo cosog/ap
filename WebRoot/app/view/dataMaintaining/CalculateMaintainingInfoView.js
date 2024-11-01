@@ -8,6 +8,9 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
     	var CalculateMaintainingInfoPanel = Ext.create('AP.view.dataMaintaining.CalculateMaintainingInfoPanel');
         
         var items=[];
+        var deviceTypeActiveId=getDeviceTypeActiveId();
+        var firstActiveTab=deviceTypeActiveId.firstActiveTab;
+        var secondActiveTab=deviceTypeActiveId.secondActiveTab;
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -17,8 +20,8 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
         	        		id: 'CalculateMaintainingRootTabPanel_'+tabInfo.children[i].deviceTypeId,
-        	        		activeTab: 0,
-        	        		iconCls: i==0?'check1':null,
+        	        		activeTab: i==firstActiveTab?secondActiveTab:0,
+        	        				iconCls: i==firstActiveTab?'check1':null,
         	        		border: false,
         	        		tabPosition: 'left',
         	        		items:[],
@@ -33,13 +36,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         	        				var CalculateMaintainingInfoPanel = Ext.create('AP.view.dataMaintaining.CalculateMaintainingInfoPanel');
         	        				newCard.add(CalculateMaintainingInfoPanel);
         	        				
-        	        				var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
-        	        				var activeId = tabPanel.getActiveTab().id;
-        	        				if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
-        	        					refreshRPCCalculateMaintainingData();
-        	        				}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
-        	        					refreshPCPCalculateMaintainingData();
-        	        				}
+        	        				refreshCalculateMaintainingData();
         	        			},
         	        			afterrender: function (panel, eOpts) {
         	        				
@@ -53,7 +50,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
         						id: 'CalculateMaintainingRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
-        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
+//        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
         						border: false
         				};
             			if(j==0){
@@ -67,16 +64,19 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         				var secondTabPanel_all={
         						title: '全部',
         						tpl:'全部',
-        						iconCls:'check2',
+//        						iconCls:'check2',
         						layout: 'fit',
         						id: 'CalculateMaintainingRootTabPanel_'+allSecondIds,
         						border: false
         				};
         				panelItem.items.splice(0, 0, secondTabPanel_all);
         			}
-        			if(i==0 && panelItem.items.length>0){
-        				panelItem.items[0].items=[];
-        				panelItem.items[0].items.push(CalculateMaintainingInfoPanel);
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].iconCls='check2';
+        			}
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].items=[];
+        				panelItem.items[secondActiveTab].items.push(CalculateMaintainingInfoPanel);
     				}
         		}else{
         			panelItem={
@@ -84,10 +84,10 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'CalculateMaintainingRootTabPanel_'+tabInfo.children[i].deviceTypeId,
-    						iconCls: i==0?'check1':null,
+    						iconCls: i==firstActiveTab?'check1':null,
     						border: false
         			};
-        			if(i==0){
+        			if(i==firstActiveTab){
             			panelItem.items=[];
             			panelItem.items.push(CalculateMaintainingInfoPanel);
             		}
@@ -116,7 +116,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
     		items: [{
         		xtype: 'tabpanel',
         		id:"CalculateMaintainingRootTabPanel",
-        		activeTab: 0,
+        		activeTab: firstActiveTab,
         		border: false,
         		tabPosition: 'bottom',
         		items: items,
@@ -141,13 +141,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
 	        				newCard.add(CalculateMaintainingInfoPanel);
         				}
         				
-        				var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
-        				var activeId = tabPanel.getActiveTab().id;
-        				if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
-        					refreshRPCCalculateMaintainingData();
-        				}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
-        					refreshPCPCalculateMaintainingData();
-        				}
+        				refreshCalculateMaintainingData();
     				}
     			}
             }]
@@ -155,3 +149,18 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         this.callParent(arguments);
     }
 });
+
+function refreshCalculateMaintainingData(){
+	var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
+	Ext.getCmp("selectedDeviceType_global").setValue(deviceType); 
+	var firstDeviceType=getDeviceTypeFromTabId_first("CalculateMaintainingRootTabPanel");
+	Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
+	
+	var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
+		refreshRPCCalculateMaintainingData();
+	}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
+		refreshPCPCalculateMaintainingData();
+	}
+}

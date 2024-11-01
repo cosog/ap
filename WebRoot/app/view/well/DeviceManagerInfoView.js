@@ -8,6 +8,9 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         var me = this;
         var DeviceInfoPanel = Ext.create('AP.view.well.DeviceInfoPanel');
         var items=[];
+        var deviceTypeActiveId=getDeviceTypeActiveId();
+        var firstActiveTab=deviceTypeActiveId.firstActiveTab;
+        var secondActiveTab=deviceTypeActiveId.secondActiveTab;
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -17,10 +20,10 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
         	        		id: 'DeviceManagerPanel_'+tabInfo.children[i].deviceTypeId,
-        	        		activeTab: 0,
+        	        		activeTab: i==firstActiveTab?secondActiveTab:0,
         	        		border: false,
         	        		tabPosition: 'left',
-        	        		iconCls: i==0?'check1':null,
+        	        		iconCls: i==firstActiveTab?'check1':null,
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -31,11 +34,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        				var DeviceInfoPanel = Ext.create('AP.view.well.DeviceInfoPanel');
         	        				newCard.add(DeviceInfoPanel);
-        	        				Ext.getCmp("selectedDeviceType_global").setValue(newCard.id.split('_')[1]); 
-        	        				
-        	        				Ext.getCmp("DeviceSelectRow_Id").setValue(0);
-        	        		    	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
-        	        				CreateAndLoadDeviceInfoTable(true);
+        	        				deviceManagerDataRefresh();
         	        			},
         	        			afterrender: function (panel, eOpts) {
         	        				
@@ -49,7 +48,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         						title:tabInfo.children[i].children[j].text,
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
-        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
+//        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
         						id: 'DeviceManagerPanel_'+tabInfo.children[i].children[j].deviceTypeId,
         						border: false
         				};
@@ -62,20 +61,21 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         			}
         			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
-//        						title: '<div style="color:#000000;font-size:11px;font-family:SimSun">全部</div>',
         						title: '全部',
         						tpl:'全部',
-        						iconCls:'check2',
+//        						iconCls:'check2',
         						layout: 'fit',
         						id: 'DeviceManagerPanel_'+allSecondIds,
         						border: false
         				};
-//        				panelItem.items.push(secondTabPanel_all);
         				panelItem.items.splice(0, 0, secondTabPanel_all);
         			}
-        			if(i==0 && panelItem.items.length>0){
-        				panelItem.items[0].items=[];
-        				panelItem.items[0].items.push(DeviceInfoPanel);
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].iconCls='check2';
+        			}
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].items=[];
+        				panelItem.items[secondActiveTab].items.push(DeviceInfoPanel);
     				}
         		}else{
         			panelItem={
@@ -83,10 +83,10 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'DeviceManagerPanel_'+tabInfo.children[i].deviceTypeId,
-    						iconCls: i==0?'check1':null,
+    						iconCls: i==firstActiveTab?'check1':null,
     						border: false
         			};
-        			if(i==0){
+        			if(i==firstActiveTab){
             			panelItem.items=[];
             			panelItem.items.push(DeviceInfoPanel);
             		}
@@ -116,7 +116,7 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
             items: [{
         		xtype: 'tabpanel',
         		id:"DeviceManagerTabPanel",
-        		activeTab: 0,
+        		activeTab: firstActiveTab,
         		border: false,
         		tabPosition: 'bottom',
         		items:items,
@@ -133,19 +133,13 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         				var DeviceInfoPanel = Ext.create('AP.view.well.DeviceInfoPanel');
-        				var deviceTypeId=0;
+        				
         				if(newCard.xtype=='tabpanel'){
         					newCard.activeTab.add(DeviceInfoPanel);
-        					deviceTypeId=newCard.activeTab.id.split('_')[1];
         				}else{
 	        				newCard.add(DeviceInfoPanel);
-	        				deviceTypeId=newCard.id.split('_')[1];
         				}
-        				Ext.getCmp("selectedDeviceType_global").setValue(deviceTypeId); 
-        				
-        				Ext.getCmp("DeviceSelectRow_Id").setValue(0);
-        		    	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
-						CreateAndLoadDeviceInfoTable(true);
+        				deviceManagerDataRefresh();
         			}
         		}
             	}],
@@ -197,3 +191,14 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
     }
 
 });
+
+function deviceManagerDataRefresh(){
+	var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+	Ext.getCmp("selectedDeviceType_global").setValue(deviceType); 
+	var firstDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+	Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
+	
+	Ext.getCmp("DeviceSelectRow_Id").setValue(0);
+	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
+	CreateAndLoadDeviceInfoTable(true);
+}

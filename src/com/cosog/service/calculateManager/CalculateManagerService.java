@@ -131,12 +131,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ prodCol
 				+ "t.productiondata"
 				+ " from viw_rpc_calculatemain t "
-				+ " where t.orgid in("+orgId+") "
+				+ " where t.deviceid="+deviceId
 				+ " and t.resultStatus<>-1"
 				+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
-			}
 			if(StringManagerUtils.isNotNull(calculateSign)){
 				if("0".equals(calculateSign)){
 					sql+=" and  t.resultstatus in(0,2) ";
@@ -319,11 +316,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ prodCol
 			+ "t.rpm,"
 			+ "t.productiondata"
-			+ " from viw_pcp_calculatemain t where t.orgid in("+orgId+") "
+			+ " from viw_pcp_calculatemain t "
+			+ " where t.deviceid="+deviceId
 			+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
-		}
+		
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			if("0".equals(calculateSign)){
 				sql+=" and  t.resultstatus in(0,2) ";
@@ -1361,19 +1357,19 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return requestData;
 	}
 	
-	public String getTotalCalculateResultData(String orgId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
 			throws Exception {
 		String json="";
 		if("3".equals(calculateType)){
-			json=this.getFESDiagramTotalCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate,  calculateType);
+			json=this.getFESDiagramTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate,  calculateType);
 		}else if("4".equals(calculateType)){
-			json=this.getRPMTotalCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate, calculateType);
+			json=this.getRPMTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate, calculateType);
 		}
 		
 		return json;
 	}
 	
-	public String getFESDiagramTotalCalculateResultData(String orgId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getFESDiagramTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -1398,11 +1394,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.resultname,t.resultString,"
 			+ prodCol
 			+ " t.pumpeff,t.systemefficiency,t.wattDegreeBalance,t.iDegreeBalance,t.todayKWattH"
-			+ " from viw_rpcdailycalculationdata t where t.org_id in("+orgId+") "
+			+ " from viw_rpcdailycalculationdata t "
+			+ " where t.org_id in("+orgId+") "
+			+ " and t.deviceid="+deviceId
 			+ " and t.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
-		}
+//		if(StringManagerUtils.isNotNull(deviceName)){
+//			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
+//		}
 		sql+=" order by t.caldate desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
@@ -1445,7 +1443,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getRPMTotalCalculateResultData(String orgId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getRPMTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -1469,11 +1467,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		sql="select t.id,t.deviceId,t.deviceName,to_char(t.caldate,'yyyy-mm-dd'),"
 			+ prodCol
 			+ " t.pumpeff,t.systemefficiency,t.todayKWattH"
-			+ " from viw_pcpdailycalculationdata t where t.org_id in("+orgId+") "
+			+ " from viw_pcpdailycalculationdata t "
+			+ " where t.org_id in("+orgId+") "
+			+ " and t.deviceid="+deviceId
 			+ " and t.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
-		}
+//		if(StringManagerUtils.isNotNull(deviceName)){
+//			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
+//		}
 		sql+=" order by t.caldate desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();

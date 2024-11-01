@@ -8,6 +8,9 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
     	var DeviceOperationLogInfoPanel = Ext.create('AP.view.log.DeviceOperationLogInfoPanel');
         
         var items=[];
+        var deviceTypeActiveId=getDeviceTypeActiveId();
+        var firstActiveTab=deviceTypeActiveId.firstActiveTab;
+        var secondActiveTab=deviceTypeActiveId.secondActiveTab;
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -17,8 +20,8 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         					tpl: tabInfo.children[i].text,
         					xtype: 'tabpanel',
         	        		id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].deviceTypeId,
-        	        		activeTab: 0,
-        	        		iconCls: i==0?'check1':null,
+        	        		activeTab: i==firstActiveTab?secondActiveTab:0,
+        	        				iconCls: i==firstActiveTab?'check1':null,
         	        		border: false,
         	        		tabPosition: 'left',
         	        		items:[],
@@ -33,12 +36,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         	        				var DeviceOperationLogInfoPanel = Ext.create('AP.view.log.DeviceOperationLogInfoPanel');
         	        				newCard.add(DeviceOperationLogInfoPanel);
         	        				
-        	        				var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
-        	        				if (isNotVal(gridPanel)) {
-        	        					gridPanel.getStore().load();
-        	        				}else{
-        	        					Ext.create('AP.store.log.DeviceOperationLogStore');
-        	        				}
+        	        				deviceOperationLogDataRefresh();
         	        			},
         	        			afterrender: function (panel, eOpts) {
         	        				
@@ -53,7 +51,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         						tpl:tabInfo.children[i].children[j].text,
         						layout: 'fit',
         						id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
-        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
+//        						iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
         						border: false
         				};
             			if(j==0){
@@ -67,16 +65,19 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         				var secondTabPanel_all={
         						title: '全部',
         						tpl:'全部',
-        						iconCls:'check2',
+//        						iconCls:'check2',
         						layout: 'fit',
         						id: 'DeviceOperationLogRootTabPanel_'+allSecondIds,
         						border: false
         				};
         				panelItem.items.splice(0, 0, secondTabPanel_all);
         			}
-        			if(i==0 && panelItem.items.length>0){
-        				panelItem.items[0].items=[];
-        				panelItem.items[0].items.push(DeviceOperationLogInfoPanel);
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].iconCls='check2';
+        			}
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].items=[];
+        				panelItem.items[secondActiveTab].items.push(DeviceOperationLogInfoPanel);
     				}
         		}else{
         			panelItem={
@@ -84,10 +85,10 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         					tpl: tabInfo.children[i].text,
         					layout: 'fit',
     						id: 'DeviceOperationLogRootTabPanel_'+tabInfo.children[i].deviceTypeId,
-    						iconCls: i==0?'check1':null,
+    						iconCls: i==firstActiveTab?'check1':null,
     						border: false
         			};
-        			if(i==0){
+        			if(i==firstActiveTab){
             			panelItem.items=[];
             			panelItem.items.push(DeviceOperationLogInfoPanel);
             		}
@@ -100,7 +101,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
     		items: [{
         		xtype: 'tabpanel',
         		id:"DeviceOperationLogRootTabPanel",
-        		activeTab: 0,
+        		activeTab: firstActiveTab,
         		border: false,
         		tabPosition: 'bottom',
         		items: items,
@@ -124,12 +125,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
 	        				newCard.add(DeviceOperationLogInfoPanel);
         				}
         				
-        				var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
-        				if (isNotVal(gridPanel)) {
-        					gridPanel.getStore().load();
-        				}else{
-        					Ext.create('AP.store.log.DeviceOperationLogStore');
-        				}
+        				deviceOperationLogDataRefresh();
     				}
     			}
             }]
@@ -137,6 +133,20 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         this.callParent(arguments);
     }
 });
+
+function deviceOperationLogDataRefresh(){
+	var deviceType=getDeviceTypeFromTabId("DeviceOperationLogRootTabPanel");
+	Ext.getCmp("selectedDeviceType_global").setValue(deviceType); 
+	var firstDeviceType=getDeviceTypeFromTabId_first("DeviceOperationLogRootTabPanel");
+	Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
+	
+	var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
+	if (isNotVal(gridPanel)) {
+		gridPanel.getStore().load();
+	}else{
+		Ext.create('AP.store.log.DeviceOperationLogStore');
+	}
+}
 
 function createDeviceOperationLogColumn(columnInfo) {
     var myArr = columnInfo;

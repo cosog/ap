@@ -8,6 +8,10 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         var AlarmQueryInfoPanel = Ext.create('AP.view.alarmQuery.AlarmQueryInfoPanel');
         
         var items=[];
+        var deviceTypeActiveId=getDeviceTypeActiveId();
+        var firstActiveTab=deviceTypeActiveId.firstActiveTab;
+        var secondActiveTab=deviceTypeActiveId.secondActiveTab;
+        
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -17,8 +21,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         				tpl: tabInfo.children[i].text,
         				xtype: 'tabpanel',
         	        	id: 'AlarmQueryRootTabPanel_'+tabInfo.children[i].deviceTypeId,
-        	        	activeTab: 0,
-        	        	iconCls: i==0?'check1':null,
+        	        	activeTab: i==firstActiveTab?secondActiveTab:0,
+        	        	iconCls: i==firstActiveTab?'check1':null,
         	        	border: false,
         	        	tabPosition: 'left',
         	        	items:[],
@@ -47,7 +51,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         					tpl:tabInfo.children[i].children[j].text,
         					layout: 'fit',
         					id: 'AlarmQueryRootTabPanel_'+tabInfo.children[i].children[j].deviceTypeId,
-        					iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
+//        					iconCls: (panelItem.items.length==1&&j==0)?'check2':null,
         					border: false
         				};
             			if(j==0){
@@ -61,16 +65,19 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         				var secondTabPanel_all={
         						title: '全部',
         						tpl:'全部',
-        						iconCls:'check2',
+//        						iconCls:'check2',
         						layout: 'fit',
         						id: 'AlarmQueryRootTabPanel_'+allSecondIds,
         						border: false
         				};
         				panelItem.items.splice(0, 0, secondTabPanel_all);
         			}
-        			if(i==0 && panelItem.items.length>0){
-        				panelItem.items[0].items=[];
-        				panelItem.items[0].items.push(AlarmQueryInfoPanel);
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].iconCls='check2';
+        			}
+        			if(i==firstActiveTab && panelItem.items.length>secondActiveTab){
+        				panelItem.items[secondActiveTab].items=[];
+        				panelItem.items[secondActiveTab].items.push(AlarmQueryInfoPanel);
     				}
         		}else{
         			panelItem={
@@ -78,10 +85,10 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         				tpl: tabInfo.children[i].text,
         				layout: 'fit',
     					id: 'AlarmQueryRootTabPanel_'+tabInfo.children[i].deviceTypeId,
-    					iconCls: i==0?'check1':null,
+    					iconCls: i==firstActiveTab?'check1':null,
     					border: false
         			};
-        			if(i==0){
+        			if(i==firstActiveTab){
             			panelItem.items=[];
             			panelItem.items.push(AlarmQueryInfoPanel);
             		}
@@ -94,7 +101,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         	items: [{
         		xtype: 'tabpanel',
         		id:"AlarmQueryRootTabPanel",
-        		activeTab: 0,
+        		activeTab: firstActiveTab,
         		border: false,
         		tabPosition: 'bottom',
         		items: items,
@@ -325,9 +332,11 @@ function exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,startDate,end
 function alarmQueryDataRefresh(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
+	var firstDeviceType=getDeviceTypeFromTabId_first("AlarmQueryRootTabPanel");
 	var deviceCount=getCalculateTypeDeviceCount(orgId,deviceType,1);
 	
-	Ext.getCmp("selectedDeviceType_global").setValue(deviceType); 
+	Ext.getCmp("selectedDeviceType_global").setValue(deviceType);
+	Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
 	
 	var removeFESDiagramResultAlarmInfoPanel=false;
 	var alarmTypeTabChange=false;

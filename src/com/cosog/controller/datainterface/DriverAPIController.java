@@ -3310,7 +3310,9 @@ public class DriverAPIController extends BaseController{
 //				List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				String protocolName="";
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
-				
+				if(acqInstanceOwnItem!=null){
+					protocolName=acqInstanceOwnItem.getProtocol();
+				}
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
 				if(protocol!=null){
@@ -3321,15 +3323,7 @@ public class DriverAPIController extends BaseController{
 					
 					PCPCalculateRequestData pcpCalculateRequestData=new PCPCalculateRequestData();
 					pcpCalculateRequestData.init();
-					
-					if(deviceInfo.getApplicationScenarios()==0){
-						pcpCalculateRequestData.setScene("cbm");
-					}else{
-						pcpCalculateRequestData.setScene("oil");
-					}
-					updateRPMRequestData(pcpCalculateRequestData,deviceInfo);
-					
-					
+					updateRPMRequestData(pcpCalculateRequestData,deviceInfo,acqTime);
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=null;
 					TotalAnalysisRequestData totalAnalysisRequestData=null;
@@ -4061,14 +4055,14 @@ public class DriverAPIController extends BaseController{
 		
 	}
 	
-	public void updateRPMRequestData(PCPCalculateRequestData pcpCalculateRequestData,DeviceInfo deviceInfo){
+	public void updateRPMRequestData(PCPCalculateRequestData pcpCalculateRequestData,DeviceInfo deviceInfo,String acqTime){
 		if(deviceInfo.getApplicationScenarios()==0){
 			pcpCalculateRequestData.setScene("cbm");
 		}else{
 			pcpCalculateRequestData.setScene("oil");
 		}
 		pcpCalculateRequestData.setWellName(deviceInfo.getDeviceName());
-//		pcpCalculateRequestData.setAcqTime(acqTime);
+		pcpCalculateRequestData.setAcqTime(acqTime);
 		pcpCalculateRequestData.setFluidPVT(deviceInfo.getPcpCalculateRequestData().getFluidPVT());
 		pcpCalculateRequestData.setReservoir(deviceInfo.getPcpCalculateRequestData().getReservoir());
 		pcpCalculateRequestData.setRodString(deviceInfo.getPcpCalculateRequestData().getRodString());

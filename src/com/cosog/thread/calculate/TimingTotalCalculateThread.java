@@ -492,7 +492,7 @@ public class TimingTotalCalculateThread extends Thread {
             String updateSql = "update tbl_pcptimingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
 
             try {
-                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, 1);
+                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, calculateType);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -811,7 +811,7 @@ public class TimingTotalCalculateThread extends Thread {
             String updateSql = "update tbl_timingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
 
             try {
-                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, 0);
+                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, calculateType);
             } catch (Exception e) {
                 e.printStackTrace();
             }

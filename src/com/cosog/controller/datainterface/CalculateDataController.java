@@ -361,6 +361,7 @@ public class CalculateDataController extends BaseController{
 	public String PCPTimingTotalCalculation() throws ParseException, SQLException, IOException{
 		String time=ParamUtils.getParameter(request, "time");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+//		timeStr="2024-11-04 18:00:00";
 		calculateDataService.PCPTimingTotalCalculation(timeStr);
 		System.out.println("转速数据定时汇总完成");
 		

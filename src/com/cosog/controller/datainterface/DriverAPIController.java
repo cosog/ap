@@ -2282,6 +2282,7 @@ public class DriverAPIController extends BaseController{
 					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap);
 					
 					//如果跨天,删除非当天采集的数据
+//					isSameDay=false;
 					if(!isSameDay){
 						MemoryDataManagerTask.delDeviceRealtimeAcqData(deviceInfo.getId()+"", StringManagerUtils.getCurrentTime());
 					}
